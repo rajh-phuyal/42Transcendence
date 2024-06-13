@@ -1,7 +1,30 @@
-create the volumns
+version: '3.8'
 
-(re)build/reuse and start all 3 docker services
+services:
+  frontend:
+    extends:
+      file: requirements/service-frontend/docker-compose-nginx.yml
+      service: nginx
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - database
 
-- db
-- backend
-- frontend
+  backend:
+    extends:
+      file: requirements/service-backend/docker-compose-django.yml
+      service: django
+    restart: unless-stopped
+    depends_on:
+      - database
+
+  database:
+    extends:
+      file: requirements/service-db/docker-compose-postgres.yml
+      service: postgres
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ${DOCKER_NETWORK}
+    external: true 
