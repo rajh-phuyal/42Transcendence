@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   django:
     container_name: transcendence-django
@@ -7,13 +5,10 @@ services:
     restart: unless-stopped
     ports:
       - 8000:8000
-    environment:
-      - name=${VALUE}
+    volumes:
+      - ./django:/app
 
 networks:
   default:
-    name: ${DOCKER_NETWORK}
+    name: transcendence-network
     external: true
-
-volumes:
-  - ./django:/app

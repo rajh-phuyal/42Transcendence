@@ -1,2 +1,3 @@
 Environments/*
 Logs/*
+docker/requirements/service-db/postgres-data/*
