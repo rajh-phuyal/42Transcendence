@@ -164,7 +164,7 @@ function create_docker_network {
 
 function install_database {
 
-	local CONTEXT="./docker/requirements/service-db"
+	local CONTEXT="./Database"
 	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-postgres.yml"
 	local DOCKERFILE="$CONTEXT/postgres.dockerfile"
 	local IMAGE_NAME="transcendence-postgres:latest"
@@ -189,7 +189,7 @@ function install_database {
 
 function install_backend {
 
-	local CONTEXT="./docker/requirements/service-backend"
+	local CONTEXT="./Backend"
 	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-django.yml"
 	local DOCKERFILE="$CONTEXT/django.dockerfile"
 	local IMAGE_NAME="transcendence-django:latest"
@@ -220,7 +220,7 @@ function install_backend {
 
 function install_frontend {
 
-	local CONTEXT="./docker/requirements/service-frontend"
+	local CONTEXT="./Frontend"
 	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-nginx.yml"
 	local DOCKERFILE="$CONTEXT/nginx.dockerfile"
 	local IMAGE_NAME="transcendence-nginx:latest"
