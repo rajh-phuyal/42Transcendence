@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcendence</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .centered-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .centered-form form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-field {
+            width: 95%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .action-buttons {
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .action-button {
+            width: 49%;
+            padding: 10px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .register-button {
+            background-color: white;
+            color: #007BFF;
+        }
+        .register-button:hover {
+            background-color: #d3d3d3;
+            color: white;
+        }
+        .login-button {
+            background-color: #007BFF;
+            color: white;
+        }
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Barely Alive</h1>
+    <div class="centered-form">
+        <form>
+            <input type="username" name="username" placeholder="Username" required class="input-field">
+            <input type="password" name="password" placeholder="Password" required class="input-field">
+            <div class="action-buttons">
+                <input type="submit" value="Register" class="action-button register-button">
+                <input type="button" value="Login" class="action-button login-button" onclick="redirectOnLogin()">
+            </div>
+        </form>
+    </div>
+    <script>
+        function redirectOnLogin() {
+            window.location.href = 'pong.html'; // Adjust path as needed
+        }
+    </script>
+</body>
+</html>
