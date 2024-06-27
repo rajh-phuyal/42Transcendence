@@ -63,21 +63,24 @@
     </style>
 </head>
 <body>
-    <h1 class="title">Barely Alive</h1>
+    <h1 class="title">BarelyAlive</h1>
     <div class="centered-form">
         <form>
             <input type="username" name="username" placeholder="Username" required class="input-field">
             <input type="password" name="password" placeholder="Password" required class="input-field">
             <div class="action-buttons">
-                <input type="submit" value="Register" class="action-button register-button">
+                <input type="submit" value="Register" class="action-button register-button" onclick="redirectOnRegister()">
                 <input type="button" value="Login" class="action-button login-button" onclick="redirectOnLogin()">
             </div>
         </form>
     </div>
     <script>
         function redirectOnLogin() {
-            window.location.href = 'pong.html'; // Adjust path as needed
+            window.location.href = 'pong';
         }
+		function redirectOnRegister() {
+			window.location.href = 'register';
+		}
     </script>
 </body>
 </html>
