@@ -1,3 +1,5 @@
 Environments/*
 Logs/*
 Database/postgres-data
+
+**/__pycache__/
