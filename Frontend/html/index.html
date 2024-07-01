@@ -4,8 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transcendence</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 50px;
+            color: black;
+            margin-bottom: 20px;
+        }
         .centered-form {
             display: flex;
             flex-direction: column;
@@ -65,22 +81,32 @@
 <body>
     <h1 class="title">BarelyAlive</h1>
     <div class="centered-form">
-        <form>
-            <input type="username" name="username" placeholder="Username" required class="input-field">
-            <input type="password" name="password" placeholder="Password" required class="input-field">
+        <form id="loginForm">
+            <input type="text" id="username" name="username" placeholder="Username" required class="input-field">
+            <input type="password" id="password" name="password" placeholder="Password" required class="input-field">
             <div class="action-buttons">
-                <input type="submit" value="Register" class="action-button register-button" onclick="redirectOnRegister()">
-                <input type="button" value="Login" class="action-button login-button" onclick="redirectOnLogin()">
+                <input type="button" value="Register" class="action-button register-button" onclick="redirectOnRegister()">
+                <input type="submit" value="Login" class="action-button login-button">
             </div>
         </form>
     </div>
     <script>
-        function redirectOnLogin() {
-            window.location.href = 'pong';
+        function redirectOnLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username && password) {
+                window.location.href = 'pong';
+            } else {
+                alert('Please fill in both username and password.');
+            }
         }
-		function redirectOnRegister() {
-			window.location.href = 'register';
-		}
+
+        function redirectOnRegister() {
+            window.location.href = 'register';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', redirectOnLogin);
     </script>
 </body>
 </html>

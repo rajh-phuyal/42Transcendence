@@ -10,9 +10,9 @@ NC='\033[0m'
 
 TARGET_LIST=("database" "backend" "frontend")
 
-DATABASE_CONTAINER_NAME="database"
-BACKEND_CONTAINER_NAME="backend"
-FRONTEND_CONTAINER_NAME="frontend"
+DATABASE_CONTAINER_NAME="transcendence-postgres"
+BACKEND_CONTAINER_NAME="transcendence-django"
+FRONTEND_CONTAINER_NAME="transcendence-nginx"
 
 DOCKER_NETWORK=transcendence-network
 
@@ -125,7 +125,7 @@ function build_docker_image {
 }
 
 function is_docker_container_running {
-  # $1 Docker container name
+  echo -e $"Checking if container is running: $1"
   local NAME=${1}
   if [ "$(docker ps -qa -f name=^$NAME$)" ]; then # Check if container exists
 	echo_log "Found container: $NAME"
@@ -241,11 +241,12 @@ function install_frontend {
 		echo_log_exit "Dockerfile \"$DOCKERFILE\" does not exist."
 	fi
 
-	is_docker_container_running $FRONTEND_CONTAINER_NAME
+	is_docker_container_running $BACKEND_CONTAINER_NAME
 	if [ $? -ne 0 ]; then
 		echo_log "Backend container is not running. Installing backend first."
 		install_backend
 	fi
+	stop_and_rm_docker_container $BACKEND_CONTAINER_NAME
 
     echo_log "Installing frontend"
 
@@ -259,9 +260,9 @@ function install_frontend {
 function install_targets {
 	for target in "${TARGET_ENV[@]}"; do
 		case $target in
-			frontend) install_frontend && echo_log "Frontend installed succesfully";;
-			backend) install_backend && echo_log "Backend installed succesfully";;
-			database) install_database && echo_log "Database installed succesfully";;
+			frontend) install_frontend && echo_log "${GR}Frontend installed succesfully${NC}";;
+			backend) install_backend && echo_log "${GR}Backend installed succesfully${NC}";;
+			database) install_database && echo_log "${GR}Database installed succesfully${NC}";;
 			*)
 				echo -e $RD"Argument \"$target\" must be one of the following: ${TARGET_LIST[*]}."
 				echo -e "$USAGE"
