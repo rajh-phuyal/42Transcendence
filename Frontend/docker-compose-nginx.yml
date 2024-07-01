@@ -1,7 +1,7 @@
 services:
   nginx:
     container_name: transcendence-nginx
-    image: transcendence-nginx:latest
+    image: nginx:1.27.0-alpine #transcendence-nginx:latest if dockerfile needed change this
     restart: unless-stopped
     ports:
       - 8080:80

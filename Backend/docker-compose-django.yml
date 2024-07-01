@@ -4,9 +4,16 @@ services:
     image: transcendence-django:latest
     restart: unless-stopped
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
-      - ./django:/app
+      - ./app:/ap
+    environment:
+      - DJANGO_SETTINGS_MODULE: app.settings
+      - POSTGRES_DB: postgres
+      - POSTGRES_USER: admin
+      - POSTGRES_PASSWORD: admin
+      - POSTGRES_HOST: localhost
+      - POSTGRES_PORT: 5432
 
 networks:
   default:
