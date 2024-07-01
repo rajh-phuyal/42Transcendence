@@ -8,7 +8,7 @@ YL='\033[0;33m'
 GR='\033[0;32m'
 NC='\033[0m'
 
-TARGET_LIST=("transcendence" "database" "backend" "frontend")
+TARGET_LIST=("database" "backend" "frontend")
 
 DATABASE_CONTAINER_NAME="database"
 BACKEND_CONTAINER_NAME="backend"
@@ -21,9 +21,9 @@ LOG_FILE="$LOG_FOLDER/deploy.log"
 
 USAGE=$YL"Usage: ./deploy.sh [OPTIONS]
 Options:
-    -h | --help      Display this message
-    -t | --target    Service to be installed. (default: all || ${TARGET_LIST[*]})
-    -c | --conf      Relative path to the .env file"$NC
+    -h |  Display this message
+    -t |  Service to be installed. (default: all || ${TARGET_LIST[*]})
+    -c |  Relative path to the .env file"$NC
 
 #######################################
 #	   Utility functions
@@ -35,6 +35,7 @@ function echo_log {
 
 function echo_log_exit {
   echo_log "${RD}ERROR - ${@:-NO_MESSAGE_SUPPLIED}" 
+  echo -e $USAGE
   exit 1
 }
 
@@ -46,70 +47,72 @@ function exec_log {
 
 function check_cli_args {
 
-TARGET_ENV=()
-	if [ "$#" -eq 0 ]; then
-		echo -e $RD"Error: No arguments provided."$NC
-		echo -e "$USAGE"
-		exit 1
-	fi
-
-    while [ "$#" -gt 0 ]; do
-        case "$1" in
-            -h|--help)
-                echo -e "$USAGE"
-                exit 0
-                ;;
-            -t|--target)
-                if [ -n "${2-}" ]; then
-                    TARGET_ENV+=("$2")
+    echo_log "Checking CLI arguments: $@"
+    TARGET_ENV=()
+    CONFIG_FILE=""
+    
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            -t)
+                if [[ "$#" -gt 1 && "$2" != -* ]]; then
+                    IFS=',' read -ra TARGET_VALUES <<< "$2"
+                    for val in "${TARGET_VALUES[@]}"; do
+                        TARGET_ENV+=("$val")
+                    done
                     shift 2
                 else
-                    echo -e $RD"Error: Missing value for the target option $1 $NC"
-                    echo -e "$USAGE"
-                    exit 1
+                    echo_log_exit "-t option requires a non-empty argument."
                 fi
                 ;;
-            -c|--conf)
-                if [ -n "${2-}" ]; then
+            -c)
+                if [[ "$#" -gt 1 && "$2" != -* ]]; then
                     CONFIG_FILE="$2"
                     shift 2
                 else
-                    echo -e $RD"ERROR: Missing value for the config option $1 $NC"
-                    echo -e "$USAGE"
-                    exit 1
+                    echo_log_exit "-c option requires a non-empty argument."
                 fi
                 ;;
-            *)
-                echo -e $RD"ERROR: Invalid option $1 $NC"
+            -h)
                 echo -e "$USAGE"
-                exit 1
+                exit 0
+                ;;
+            *)
+				echo_log_exit "Unknown option: $1"
                 ;;
         esac
     done
 
-if [ -z "${CONFIG_FILE:-}" ]; then
-    echo -e $RD".env file must be specified. $NC"
-    echo -e "$USAGE"
-    exit 1
-fi
+    if [ -z "$CONFIG_FILE" ]; then
+		echo_log_exit "ENV must be specified."
+    fi
+
+    if [ ${#TARGET_ENV[@]} -eq 0 ]; then
+        TARGET_ENV=("${TARGET_LIST[@]}")
+    fi
+
+	# Remove duplicates
+	TARGET_ENV=($(echo "${TARGET_ENV[@]}" | tr ' ' '\n' | awk '!seen[$0]++'))
 }
 
 function  create_folder_if_not_exists() {
     local folder_path="$1"
     if [ ! -d "$folder_path" ]; then
-        mkdir -p "$folder_path"
         echo_log "Folder does not exist. Creating \"$folder_path\""
+        mkdir -p "$folder_path"
+	else
+		echo_log "Log folder found: \"$folder_path\""
     fi
 }
 
 function load_env_file {
 	local env_file="$1"
 	if [ -f "$env_file" ]; then
-		source "$env_file"
 		echo_log "Loading environment variables from \"$env_file\""
+		source "$env_file"
 	else
 		echo_log_exit "Environment file \"$env_file\" does not exist."
 	fi
+	echo_log "Environment variables loaded."
 }
 
 function build_docker_image {
@@ -151,12 +154,18 @@ function stop_and_rm_docker_container {
 }
 
 function create_docker_network {
-	docker network inspect ${DOCKER_NETWORK} > /dev/null 2>&1
-	if [ $? != 0 ]; then
-		docker network create --driver bridge ${DOCKER_NETWORK}
-		echo_log "Docker network created: $DOCKER_NETWORK"
-	fi
+    echo_log "Creating Docker network \"$DOCKER_NETWORK\" if it does not exist."
+    
+    # Redirect stderr to stdout and suppress the output
+    if docker network inspect $DOCKER_NETWORK &> /dev/null; then
+        echo_log "Docker network \"$DOCKER_NETWORK\" already exists."
+    else
+        echo_log "Creating Docker network \"$DOCKER_NETWORK\"."
+        exec_log docker network create --driver bridge $DOCKER_NETWORK
+		echo_log "Docker network \"$DOCKER_NETWORK\" created."
+    fi
 }
+
 
 #######################################
 #       install functions
@@ -250,12 +259,13 @@ function install_frontend {
 function install_targets {
 	for target in "${TARGET_ENV[@]}"; do
 		case $target in
-			transcendence) install_database; install_backend; install_frontend ;;
-			frontend) install_frontend ;;
-			backend) install_backend ;;
-			database) install_database ;;
+			frontend) install_frontend && echo_log "Frontend installed succesfully";;
+			backend) install_backend && echo_log "Backend installed succesfully";;
+			database) install_database && echo_log "Database installed succesfully";;
 			*)
-				echo_log_exit "Argument \"$target\" must be one of the following: ${TARGET_LIST[*]}."
+				echo -e $RD"Argument \"$target\" must be one of the following: ${TARGET_LIST[*]}."
+				echo -e "$USAGE"
+				exit 1
 				;;
 		esac
 	done
@@ -268,7 +278,7 @@ function install_targets {
 
 
 check_cli_args "$@"
-load_env_file $CONFIG_FILE
 create_folder_if_not_exists $LOG_FOLDER
+load_env_file $CONFIG_FILE
 create_docker_network $DOCKER_NETWORK
 install_targets
