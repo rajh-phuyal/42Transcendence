@@ -1,7 +1,0 @@
-create the volumns
-
-(re)build/reuse and start all 3 docker services
-
-- db
-- backend
-- frontend

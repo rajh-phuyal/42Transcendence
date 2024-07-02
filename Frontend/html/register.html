@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcendence</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 50px;
+            color: black;
+            margin-bottom: 20px;
+        }
+        .centered-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .centered-form form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-field {
+            width: 95%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .action-buttons {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .action-button {
+            width: 100%;
+            max-width: 200px;
+            padding: 15px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+        .register-button {
+            background-color: #007BFF;
+            color: white;
+        }
+        .register-button:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Create BarelyAlive Account</h1>
+    <div class="centered-form">
+        <form onsubmit="return validateForm()">
+            <input type="email" id="email" name="email" placeholder="Email" required class="input-field">
+            <input type="text" name="username" placeholder="Username" required class="input-field">
+            <input type="password" name="password" placeholder="Password" required class="input-field">
+            <div class="action-buttons">
+                <input type="submit" value="Register" class="action-button register-button">
+            </div>
+        </form>
+    </div>
+    <script>
+        function validateForm() {
+            var email = document.getElementById('email').value;
+            if (email === "") {
+                alert("Email must be filled out");
+                return false;
+            }
+
+            // Add any other custom validation you need here
+
+            // If validation passes, redirect to Pong
+            window.location.href = 'pong';
+            return true;
+        }
+    </script>
+</body>
+</html>
