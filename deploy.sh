@@ -246,7 +246,7 @@ function install_frontend {
 		echo_log "Backend container is not running. Installing backend first."
 		install_backend
 	fi
-	stop_and_rm_docker_container $BACKEND_CONTAINER_NAME
+	stop_and_rm_docker_container $FRONTEND_CONTAINER_NAME
 
     echo_log "Installing frontend"
 
