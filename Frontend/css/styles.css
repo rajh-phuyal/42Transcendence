@@ -1,13 +1,28 @@
-body {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
+html {
 	margin: 0;
-	font-family: 'Helvetica', sans-serif;
-	background-color: #f0f0f0;
+	padding: 0;
 }
+
+body {
+	margin: 0;
+	padding: 0px 50px;
+	background-color: red !important;
+}
+
+#navigator {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	background-color: #00ff15;
+}
+
+#router-view {
+	margin-top: 10px;
+	height: 80vh;
+	background-color: blue;
+}
+
 h1 {
 	text-align: center;
 	font-size: 50px;
