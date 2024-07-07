@@ -3,3 +3,4 @@ Logs/*
 Database/postgres-data
 
 **/__pycache__/
+db.sqlite3
