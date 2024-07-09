@@ -1,0 +1,85 @@
+
+// Users and Auth
+
+Table user {
+  id int [PK, increment]                                               // Primary key, unique identifier for each player
+  username varchar(250)                                                // Username of the player
+}
+
+Table user_profile_picture {
+  id int [PK, increment]
+  user_id FK [ref: > user.id]
+  profile_picture bytea
+}
+
+// Maintain uniqueness logic so that A->B is considered a duplicate of B->A
+Table is_cool_with {
+  id integer [primary key]                                              // Primary key, unique identifier for each isCoolWith entry
+  first_user FK [ref: > user.id]                                        // Foreign key, references the user table (user1)
+  second_user FK [ref: > user.id]                                       // Foreign key, references the user table (user2)
+  blocked_by FK [ref: > user.id]                                        // Foreign key, references the user table (blockedBy)
+  status enum                                                            // Status of the relationship (0: Pending, 1: Accepted, 2: Declined, 3: Blocked)
+}
+
+// Add RLS (Information of a user readable only by the user who owns them)
+// Hashing Algorithm should be constant for simplicity
+Table user_auth {
+  id int [PK, increment]
+  user_id FK [ref: > user.id]
+  passwordHash varchar(250)
+  passwordSalt varchar(100)
+}
+
+//  Tournament
+
+Table tournament {
+  id int [PK, increment]                                               // Primary key, unique identifier for each tournament
+  tournament_name varchar(100)                                         // Name of the tournament
+  tournament_map_id FK [ref: > tournament_map.id]                       // Foreign key, references the tournament map table
+  min_level int
+  max_level int
+  end_timestamp date                                                   // End date of the tournament
+  number_of_rounds int                                                 // Number of rounds in the tournament
+}
+
+Table tournament_map {
+  id int [PK, increment]                                               // Primary key, unique identifier for each game map
+  image bytea                                                          // Map image blob
+}
+
+Table player_registration {
+  id int [PK, increment]                                              // Primary key, unique identifier for each registration player entry
+  registration_date date                                              // Date of registration
+  player_id int [ref: > user.id]                                      // Foreign key, references the player table
+  tournament_id  int [ref: > tournament.id]                           // Foreign key, references the tournament table
+}
+
+// special effects logic
+Table match {
+  id int [PK, increment]                                              // Primary key, unique identifier for each match
+  end_timestamp date                                                  // Timestamp for when the game ended
+  tournament_id int [ref: > tournament.id]                            // Foreign key, references the tournament table
+  round int                                                           // Round number of the match if it is associated with a tournament
+  first_player_registration_id FK [ref: > player_registration.id]     // Foreign key, references the first player in the registration table
+  second_player_registration_id FK [ref: > player_registration.id]    // Foreign key, references the second player in the registration table
+  winner_registration_id FK [ref: > player_registration.id]           // Foreign key, references the registration table (winner)
+}
+
+Table match_score {
+  id int [PK, increment]                                               // Primary key, unique identifier for each match score
+  match_id int [ref: > match.id]                                       // Foreign key, references the match table
+  sets_played int                                                      // Number of sets played in the match
+  first_player_points int                                              // Points scored by the first player/team in the match
+  second_player_points int                                             // Points scored by the second player/team in the match
+}
+
+Table player_standings {
+  id int [PK, increment]                                               // Primary key, unique identifier for each player's standings
+  tournament_id int [ref: > tournament.id]                             // Foreign key, references the tournament table
+  player_registration_id int [ref: > player_registration.id]           // Foreign key, references the registration table
+  matches_played int                                                   // Number of matches played by the player
+  matches_won int                                                      // Number of matches won by the player
+  sets_won int                                                         // Number of sets won by the player
+  total_points int                                                     // Total points scored by the player
+  current_score int                                                    // Current score of the player in the tournament
+}
