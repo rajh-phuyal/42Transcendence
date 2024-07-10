@@ -1,3 +1,4 @@
+\c postgres
 
 -- Table: transcendence.is_cool_with
 

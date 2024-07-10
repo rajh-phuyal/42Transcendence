@@ -1,3 +1,4 @@
+\c postgres
 
 -- Table: transcendence.tournament_standings
 
