@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS transcendence.tournament_match
 	, round INT NOT NULL
 	, FOREIGN KEY (tournament_id) REFERENCES transcendence.tournament(id)
 	, FOREIGN KEY (match_id) REFERENCES transcendence.match(id)
-	, CONSTRAINT unique_relationship UNIQUE (tournament_id, match_id, round)
+	, CONSTRAINT unique_tournament_match UNIQUE (tournament_id, match_id, round)
 );
 
 ALTER TABLE IF EXISTS transcendence.tournament_match OWNER to "admin";
