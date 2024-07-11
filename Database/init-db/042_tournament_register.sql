@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS transcendence.tournament_register
 (
 	id SERIAL PRIMARY KEY
 	, player_id INT NOT NULL
-	, tournament_id INT
+	, tournament_id INT NOT NULL
 	, FOREIGN KEY (player_id) REFERENCES transcendence.user(id)
 	, FOREIGN KEY (tournament_id) REFERENCES transcendence.tournament(id)
 );

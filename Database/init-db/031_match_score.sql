@@ -7,7 +7,7 @@
 CREATE TABLE IF NOT EXISTS transcendence.match_score
 (
 	id SERIAL PRIMARY KEY
-	, match_id INT NOT NULL
+	, match_id INT NOT NULL UNIQUE
 	, sets_played INT NOT NULL
 	, first_player_points INT NOT NULL
 	, second_player_points INT NOT NULL

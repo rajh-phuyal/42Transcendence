@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS transcendence.is_cool_with
 	, status transcendence.relationship_status_enum NOT NULL DEFAULT 'pending'
 	, FOREIGN KEY (first_user_id) REFERENCES transcendence.user(id)
 	, FOREIGN KEY (second_user_id) REFERENCES transcendence.user(id)
+	, CONSTRAINT unique_relationship UNIQUE (first_user_id, second_user_id)
 );
 
 ALTER TABLE IF EXISTS transcendence.is_cool_with OWNER to "admin";
