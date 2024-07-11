@@ -4,6 +4,8 @@ This folder contains SQL scripts that populate the database tables with dummy da
 
 It will create a virtual environment and install the necessary dependencies to run the script.
 
+The db credentials and connection details are stored in the python script, change them if needed.
+
 # Requirements
 1. Python 3.12 or higher
 
