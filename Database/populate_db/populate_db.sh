@@ -21,3 +21,7 @@ pip install psycopg2-binary
 python populate_db.py
 
 deactivate
+
+if [ -d env ]; then # Remove virtual environment if it exists
+	rm -rf env
+fi
