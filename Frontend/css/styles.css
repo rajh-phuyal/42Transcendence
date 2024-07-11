@@ -6,7 +6,7 @@ html {
 body {
 	margin: 0;
 	padding: 0px 50px;
-	background-color: red !important;
+	background-color: rgb(0, 0, 0) !important;
 }
 
 #navigator {
@@ -20,7 +20,7 @@ body {
 #router-view {
 	margin-top: 10px;
 	height: 80vh;
-	background-color: blue;
+	background-color: rgb(91, 91, 98);
 }
 
 h1 {

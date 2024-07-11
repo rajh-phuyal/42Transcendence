@@ -35,3 +35,5 @@ class Auth {
         return this.jwtToken;
     }
 }
+
+export { Auth, doSomething };

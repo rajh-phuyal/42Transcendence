@@ -1,50 +1,10 @@
 <div id="auth-view">
     Auth html
-    <p id="username">
-    </p>
-    <button onclick="doSomething()"></button>
+    {{this.variables.username('John Doe')}}
 </div>
 
-<script data-view-config="true">
-    ({
-        variables: {
-            username: (value) => {
-                // update an element with the uername or do something else
-                console.log('username', value);
-            },
-            password: (value) => {
-                // update an element with the password or do something else
-                console.log('password', value);
-            },
-            errorMessage: (value) => {
-                // update an element with the error message or do something else
-                console.log('errorMessage', value);
-            }
-        },
-
-        functions: {
-            doSomething: () => {
-                console.log('doSomething');
-            }
-        },
-
-        hooks: {
-            beforeRouteEnter: () => {
-                console.log('beforeRouteEnter');
-            },
-            beforeDomInsersion: () => {
-                console.log('beforeDomInsersion');
-            },
-            afterDomInsersion: () => {
-                console.log('afterDomInsersion');
-            },
-        }
-    })
-</script>
-
-<script>
-   console.log('auth view no config');
-</script>
+<script type="module" src="./js/views/authView.js" view-config></script>
+<script type="module" src="./js/auth.js" async></script>
 
 <style>
     #auth-view {
