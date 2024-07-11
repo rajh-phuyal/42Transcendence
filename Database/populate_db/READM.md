@@ -20,4 +20,4 @@ The db credentials and connection details are stored in the python script, chang
 ````
 
 4. The script will try to populate the database with dummy data.
-5. If the script fails, psycopg2 will raise an error with the reason for the failure.
+5. If the script fails, psycopg2 will raise an error with the reason for the failure.gi
