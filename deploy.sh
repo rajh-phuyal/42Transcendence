@@ -97,10 +97,10 @@ function check_cli_args {
 function  create_folder_if_not_exists() {
     local folder_path="$1"
     if [ ! -d "$folder_path" ]; then
-        echo_log "Folder does not exist. Creating \"$folder_path\""
+        echo "Folder does not exist. Creating \"$folder_path\""
         mkdir -p "$folder_path"
 	else
-		echo_log "Log folder found: \"$folder_path\""
+		echo "Log folder found: \"$folder_path\""
     fi
 }
 
@@ -278,8 +278,8 @@ function install_targets {
 #######################################
 
 
-check_cli_args "$@"
 create_folder_if_not_exists $LOG_FOLDER
+check_cli_args "$@"
 load_env_file $CONFIG_FILE
 create_docker_network $DOCKER_NETWORK
 install_targets
