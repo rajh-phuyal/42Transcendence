@@ -1,8 +1,14 @@
 import { $id } from './abstracts/dollars.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
+import { webComponents } from './components/components.js';
 
 setViewLoading(true);
+
+// import all web components
+for (const component of webComponents) {
+    import(`./components/${component}.js`);
+}
 
 // initilize the nav bar
 const navigationBarMap = [
