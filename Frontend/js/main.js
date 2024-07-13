@@ -5,6 +5,8 @@ import router from './navigation/router.js';
 const navigationBarMap = [
     { id: 'home-nav', path: '/home' },
     { id: 'game-nav', path: '/game' },
+    { id: 'tornament-nav', path: '/tornament' },
+    { id: 'chat-nav', path: '/chat' },
     { id: 'profile-nav', path: '/profile' },
     { id: 'login-nav', path: '/auth', params: { login: true } },
     { id: 'register-nav', path: '/auth', params: { login: false } }

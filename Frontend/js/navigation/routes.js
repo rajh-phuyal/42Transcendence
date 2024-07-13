@@ -16,7 +16,7 @@ const routes = [
     },
     {
         path: "/tornament",
-        view: "battle",
+        view: "tornament",
         requireAuth: true
     },
     {
