@@ -7,21 +7,43 @@
     <title>Barely alive</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="icon" href="./assets/logo.png" type="image/x-icon">
 </head>
 
 <body>
     <!-- this navigation is temporary -->
-    <div id="navigator">
-        <div id="home-nav">Home</div>
-        <div id="game-nav">Game</div>
-        <div id="tornament-nav">Tornamnet</div>
-        <div id="chat-nav">Chat</div>
-        <div id="profile-nav">Profile</div>
-        <div id="login-nav">Login</div>
-        <div id="register-nav">Register</div>
-    </div>
+    <nav id="navigator" class="navbar navbar-light bg-light">
+        <div class="d-flex flex-row justify-content-between w-100">
+            <div class="d-flex flex-row">
+                <div id="home-nav" class="navbar-brand">
+                    <img src="./assets/logo.png" width="30" height="30" alt="">
+                </div>
+                <!-- <p id="home-nav" class="navbar-brand">Home</p> -->
+                <p id="game-nav" class="navbar-brand">Game</p>
+                <p id="tornament-nav" class="navbar-brand">Tornament</p>
+                <p id="chat-nav" class="navbar-brand">Chat</p>
+                <p id="profile-nav" class="navbar-brand">Profile</p>
+            </div>
+            <div class="d-flex flex-row">
+                <p id="login-nav" class="navbar-brand">Login</p>
+                <p id="register-nav" class="navbar-brand">Register</p>
+            </div>
+        </div>
+    </nav>
 
     <main>
+        <div id="view-loader">
+            <div class="d-flex justify-content-center pt-5 mb-n5">
+                <img src="./assets/loading.png" alt="loading" width="200" height="200">
+            </div>
+
+            <div class="d-flex justify-content-center mt-n5">
+                <div class="spinner-grow" role="status">
+                </div>
+            </div>
+        </div>
+
+        <!-- this is where the views will be loaded -->
         <div id="router-view"></div>
     </main>
 

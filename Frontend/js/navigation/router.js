@@ -1,4 +1,5 @@
 import { routes } from './routes.js';
+import { setViewLoading } from '../abstracts/loading.js';
 
 const objectToBind = (config) => {
     let binder = {};
@@ -46,6 +47,8 @@ async function router(path, params = null) {
     // bind everything except the hooks to the object
     lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave.bind(objectToBind(lastViewHooks))();
 
+    setViewLoading(true); // later this responsibility will the that of the view
+
     // about to change route
     viewHooks?.hooks?.beforeRouteEnter.bind(viewConfigWithoutHooks)();
 
@@ -58,6 +61,10 @@ async function router(path, params = null) {
     viewHooks?.hooks?.beforeDomInsersion.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
     viewHooks?.hooks?.afterDomInsersion.bind(viewConfigWithoutHooks)();
+
+    setTimeout(() => {
+        setViewLoading(false);
+    }, 1000);
 
     // ser the view name to the container
     viewContainer.dataset.view = route.view;

@@ -1,5 +1,8 @@
-import { $id } from './dollars.js';
+import { $id } from './abstracts/dollars.js';
+import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
+
+setViewLoading(true);
 
 // initilize the nav bar
 const navigationBarMap = [
@@ -7,7 +10,7 @@ const navigationBarMap = [
     { id: 'game-nav', path: '/game' },
     { id: 'tornament-nav', path: '/tornament' },
     { id: 'chat-nav', path: '/chat' },
-    { id: 'profile-nav', path: '/profile' },
+    { id: 'profile-nav', path: '/profile', params: { id: 1 } },
     { id: 'login-nav', path: '/auth', params: { login: true } },
     { id: 'register-nav', path: '/auth', params: { login: false } }
 ];
@@ -18,3 +21,6 @@ for (const route of navigationBarMap) {
 
 // get the path and call the router
 router(window.location.pathname);
+
+// set the loading to false
+setViewLoading(false);
