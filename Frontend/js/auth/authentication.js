@@ -36,4 +36,4 @@ class Auth {
     }
 }
 
-export { Auth, doSomething };
+export { Auth };

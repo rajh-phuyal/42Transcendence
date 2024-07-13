@@ -1,37 +1,37 @@
 const routes = [
     {
         path: "/",
-        view: "home.html",
+        view: "home",
         requireAuth: true
     },
     {
         path: "/home",
-        view: "home.html",
+        view: "home",
         requireAuth: true
     },
     {
-        path: "/battle",
-        view: "battle.html",
+        path: "/game",
+        view: "game",
         requireAuth: true
     },
     {
         path: "/tornament",
-        view: "battle.html",
+        view: "battle",
         requireAuth: true
     },
     {
         path: "/profile",
-        view: "profile.html",
+        view: "profile",
         requireAuth: true
     },
     {
         path: "/chat",
-        view: "chat.html",
+        view: "chat",
         requireAuth: true
     },
     {
         path: "/auth",
-        view: "auth.html",
+        view: "auth",
         requireAuth: false,
     },
 ];

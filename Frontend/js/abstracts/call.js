@@ -1,16 +1,15 @@
-
-// const BASE_URL = 'https://localhost:80';
-const BASE_URL = "https://random.dog"; // temporary
+// abstract out the fetch api to make it easier to call the api
 
 async function call(url, method, data) {
-
+    const BASE_URL = "https://random.dog";
     const fullUrl = `${BASE_URL}${url}`;
+
     let payload = {
         mode: 'no-cors',
         cache: 'no-cache',
         method: method,
         headers: {
-            'Access-Control-Allow-Origin': '*', // temporary
+            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
         },
         ...(method !== 'GET' && method !== 'DELETE') ? {
@@ -19,14 +18,8 @@ async function call(url, method, data) {
     };
 
     return await fetch(fullUrl, payload).then((res) => {
-        console.log("first callback called!");
         return res;
     });
-    // return await fetch(fullUrl, payload).then((res) => {
-    //     console.log("first callback called!");
-    //     return res;
-    // });
 }
 
-
-export { call };
+export default call;

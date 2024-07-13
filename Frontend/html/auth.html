@@ -1,10 +1,14 @@
 <div id="auth-view">
-    Auth html
-    {{this.variables.username('John Doe')}}
+    <h1>
+        Auth html
+    </h1>
 </div>
 
-<script type="module" src="./js/views/authView.js" view-config></script>
-<script type="module" src="./js/auth.js" async></script>
+<script>
+    import { Auth } from '../js/auth.js';
+
+    console.log('Auth script in html');
+</script>
 
 <style>
     #auth-view {
