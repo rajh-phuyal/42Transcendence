@@ -1,13 +1,18 @@
 import { routes } from './routes.js';
 
 const objectToBind = (config) => {
-    let { hooks, ...rest } = config;
+    let binder = {};
+    let { hooks, attributes, methods } = config;
 
-    for (let key in config.methods) {
-        config.methods[key] = config.methods[key].bind(rest);
+    for (const [key, value] of Object.entries(attributes)) {
+        binder[key] = value;
     }
 
-    return rest;
+    for (const [key, value] of Object.entries(methods)) {
+        binder[key] = value.bind(binder);
+    }
+
+    return binder;
 }
 
 async function getViewHooks(viewName) {

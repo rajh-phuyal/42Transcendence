@@ -1,41 +1,29 @@
-import { anotherFunction } from './helpers.js';
-
 export default {
-    variables: {
+    attributes: {
         someVar: 'someValue',
     },
 
     methods: {
         doSomething() {
-            console.log('doSomething: ', anotherFunction());
             console.log('doSomething', this, window, document);
-            this.methods.doSomethingElse();
-        },
-
-        doSomethingElse() {
-            console.log('doSomethingElse', this, window, document);
         }
     },
 
     hooks: {
         beforeRouteEnter() {
-            console.log('beforeRouteEnter', this);
+            console.log('beforeRouteEnter', this, window, document);
         },
 
         beforeRouteLeave() {
-            console.log('beforeRouteLeave', this);
-            console.log('this.vars.someVar', this.variables.someVar);
-            this.methods.doSomething();
+            console.log('beforeRouteLeave', this, window, document);
         },
 
         beforeDomInsersion() {
-            console.log('beforeDomInsersion', this);
-            this.variables.someVar = 'someOtherValue';
+            console.log('beforeDomInsersion', this, window, document);
         },
 
         afterDomInsersion() {
-            console.log('afterDomInsersion', this);
-            console.log('this.vars.someVar', this.variables.someVar);
+            console.log('afterDomInsersion', this, window, document);
         },
     }
 }

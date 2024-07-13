@@ -1,5 +1,5 @@
 export default {
-    variables: {
+    attributes: {
         someVar: 'someValue',
     },
 
