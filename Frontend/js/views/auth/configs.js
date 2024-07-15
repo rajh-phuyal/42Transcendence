@@ -28,13 +28,13 @@ export default {
             this.doSomething();
         },
 
-        beforeDomInsersion() {
-            console.log('beforeDomInsersion', this);
+        beforeDomInsertion() {
+            console.log('beforeDomInsertion', this);
             this.someVar = 'someOtherValue';
         },
 
-        afterDomInsersion() {
-            console.log('afterDomInsersion', this);
+        afterDomInsertion() {
+            console.log('afterDomInsertion', this);
             console.log('this.vars.someVar', this.someVar);
         },
     }

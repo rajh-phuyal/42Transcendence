@@ -18,12 +18,12 @@ export default {
             console.log('beforeRouteLeave', this, window, document);
         },
 
-        beforeDomInsersion() {
-            console.log('beforeDomInsersion', this, window, document);
+        beforeDomInsertion() {
+            console.log('beforeDomInsertion', this, window, document);
         },
 
-        afterDomInsersion() {
-            console.log('afterDomInsersion', this, window, document);
+        afterDomInsertion() {
+            console.log('afterDomInsertion', this, window, document);
         },
     }
 }

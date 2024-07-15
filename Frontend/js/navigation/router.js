@@ -58,9 +58,9 @@ async function router(path, params = null) {
     history.pushState({}, 'newUrl', pathWithParams);
 
     // DOM manipulation
-    viewHooks?.hooks?.beforeDomInsersion.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.beforeDomInsertion.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
-    viewHooks?.hooks?.afterDomInsersion.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.afterDomInsertion.bind(viewConfigWithoutHooks)();
 
     setTimeout(() => {
         setViewLoading(false);
