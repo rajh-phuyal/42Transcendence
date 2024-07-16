@@ -1,0 +1,47 @@
+html {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	margin: 0;
+	padding: 0px 0px;
+	background-color: rgb(255, 255, 255) !important;
+}
+
+#navigator {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	background-color: #00ccff;
+	cursor: pointer;
+}
+
+.navbar-brand {
+	padding: 4px 8px;
+	margin: 0px;
+	margin-left: 10px;
+	border: 1px dashed grey;
+	border-radius: 8px;
+	background-color: rgba(246, 255, 0, 0.603);
+}
+
+#view-loader {
+	height: 95vh;
+	color: white;
+	background-color: black;
+}
+
+#router-view {
+	margin-top: 0px;
+	height: 95vh;
+	background-color: rgb(91, 91, 98);
+}
+
+h1 {
+	text-align: center;
+	font-size: 50px;
+	color: black;
+	margin-bottom: 20px;
+}
