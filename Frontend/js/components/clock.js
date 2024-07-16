@@ -1,8 +1,11 @@
+import call from "../abstracts/call.js";
+
 class ClockDisplay extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
         this.intervalId = null;
+        call("sddf", "asdasd", "asdsd");
     }
 
     connectedCallback() {
