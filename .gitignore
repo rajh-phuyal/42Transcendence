@@ -3,6 +3,5 @@ Logs/*
 Database/postgres-data
 
 **/__pycache__/
-db.sqlite3
-
-**/env/
+venv
+Backend/src/db.sqlite3
