@@ -15,8 +15,8 @@ const routes = [
         requireAuth: true
     },
     {
-        path: "/tornament",
-        view: "tornament",
+        path: "/tournament",
+        view: "tournament",
         requireAuth: true
     },
     {

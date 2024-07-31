@@ -52,12 +52,12 @@ async function router(path, params = null) {
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
 
     // bind everything except the hooks to the object
-    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave.bind(objectToBind(lastViewHooks))();
+    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
     setViewLoading(true); // later this responsibility will the that of the view
 
     // about to change route
-    viewHooks?.hooks?.beforeRouteEnter.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
 
     // reduce the params to a query string
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
@@ -65,9 +65,9 @@ async function router(path, params = null) {
     history.pushState({}, 'newUrl', pathWithParams);
 
     // DOM manipulation
-    viewHooks?.hooks?.beforeDomInsersion.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
-    viewHooks?.hooks?.afterDomInsersion.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
 
     setViewLoading(false);
 
