@@ -25,6 +25,10 @@ for (const route of navigationBarMap) {
     $id(route.id)?.addEventListener('click', () => router(route.path, route.params));
 }
 
+window.addEventListener('popstate', () => {
+    router(window.location.pathname)
+});
+
 // get the path and call the router
 router(window.location.pathname);
 

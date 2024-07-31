@@ -1,6 +1,10 @@
 import { routes } from './routes.js';
 import { setViewLoading } from '../abstracts/loading.js';
 
+// bind store and auth singleton to 'this' in the hooks
+import { $store } from '../store/store.js';
+import { $auth } from '../auth/authentication.js';
+
 const objectToBind = (config) => {
     let binder = {};
     let { hooks, attributes, methods } = config;
@@ -12,6 +16,9 @@ const objectToBind = (config) => {
     for (const [key, value] of Object.entries(methods)) {
         binder[key] = value.bind(binder);
     }
+
+    binder.$store = $store;
+    binder.$auth = $auth;
 
     return binder;
 }
@@ -62,9 +69,7 @@ async function router(path, params = null) {
     viewContainer.innerHTML = htmlContent;
     viewHooks?.hooks?.afterDomInsersion.bind(viewConfigWithoutHooks)();
 
-    setTimeout(() => {
-        setViewLoading(false);
-    }, 1000);
+    setViewLoading(false);
 
     // ser the view name to the container
     viewContainer.dataset.view = route.view;
