@@ -7,6 +7,8 @@ class Auth {
 
         // Check if the user is authenticated
         this.isAuthenticated = this.isUserAuthenticated();
+
+        return this;
     }
 
     // Check if the user is authenticated
@@ -17,7 +19,7 @@ class Auth {
     // Get the Authorization header with the JWT token
     getAuthHeader() {
         const token = this.jwtToken;
-        return token ? `Bearer ${token}` : '';
+        return token ? `Bearer ${token}` : null;
     }
 
     authenticate(username, password) {
