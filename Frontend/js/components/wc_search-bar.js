@@ -1,7 +1,3 @@
-// https://www.youtube.com/watch?v=TlP5WIxVirU&t=600s&ab_channel=WebDevSimplified
-// https://www.youtube.com/watch?v=f6ocDCkCmhM&ab_channel=dcode
-
-
 class SearchBar extends HTMLElement {
     constructor() {
         super();
@@ -14,7 +10,7 @@ class SearchBar extends HTMLElement {
 
     connectedCallback() {
         this.render();
-        const inputElement = this.shadow.getElementById("sbbutton");
+        const inputElement = this.shadow.getElementById("searchBarButton");
         inputElement.addEventListener('click', this.handleClick.bind(this));
         const inputElement2 = this.shadow.getElementById("input-bar");
         inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
@@ -111,7 +107,7 @@ class SearchBar extends HTMLElement {
 
             <div class="container">
                 <input id="input-bar" type="search" placeholder="${this.placeholder || 'Search...'}" class="search-box">
-                <button id="sbbutton">Go</button>
+                <button id="searchBarButton">Go</button>
             </div>
         `;
     }

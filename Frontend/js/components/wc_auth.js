@@ -8,22 +8,22 @@ class AuthCard extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["button1", "button2", "login"];
+        return ["primary-button", "secundary-button", "login"];
     }
 
     connectedCallback() {
         this.render();
-        const inputElement = this.shadow.getElementById("button1");
-        inputElement.addEventListener('click', this.buttonclick.bind(this));
-        const inputElement2 = this.shadow.getElementById("input1");
+        const buttonElement = this.shadow.getElementById("primaryButton");
+        buttonElement.addEventListener('click', this.buttonclick.bind(this));
+        const inputElement2 = this.shadow.getElementById("usernameInput");
         inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
-        const inputElement3 = this.shadow.getElementById("input2");
+        const inputElement3 = this.shadow.getElementById("passwordInput");
         inputElement3.addEventListener('keypress', this.handleKeyPress.bind(this));
     }
 
     buttonclick(){
-        const inputElement1 = this.shadow.getElementById("input1");
-        const inputElement2 = this.shadow.getElementById("input2");
+        const inputElement1 = this.shadow.getElementById("usernameInput");
+        const inputElement2 = this.shadow.getElementById("passwordInput");
 
         const values = {username: inputElement1.value, password: inputElement2.value};
 
@@ -47,11 +47,11 @@ class AuthCard extends HTMLElement {
         this.buttonclick();
     }
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "button1") {
-            this.button1 = newValue;
+        if (name === "primary-button") {
+            this.primaryButton = newValue;
         }
-        else if (name === "button2") {
-            this.button2 = newValue;
+        else if (name === "secundary-button") {
+            this.secundaryButton = newValue;
         }
         else if (name === "login") {
             this.login = true;
@@ -62,13 +62,13 @@ class AuthCard extends HTMLElement {
     render() {
         this.shadow.innerHTML = `
             <style>
-            .container1{
+            .main-container{
                 display: flex;
                 flex-direction: column;
                 margin: 332px 325px;
             }
 
-            .container2{
+            .buttons-container{
                 display: flex;
                 flex-direction: row;
                 margin: 30px 40px;
@@ -110,12 +110,12 @@ class AuthCard extends HTMLElement {
             }
             </style>
 
-            <div class="container1">
-                <input id="input1" placeholder="username"></input>
-                <input id="input2" placeholder="password" type="Password"></input>
-                <div class="container2">
-                    <button id="button1">${this.button1}</button>
-                    <button id="button2">${this.button2}</button>
+            <div class="main-container">
+                <input id="usernameInput" placeholder="username"></input>
+                <input id="passwordInput" placeholder="password" type="Password"></input>
+                <div class="buttons-container">
+                    <button id="primaryButton">${this.primaryButton}</button>
+                    <button id="secundaryButton">${this.secundaryButton}</button>
                 <div>
             </div>
         `;

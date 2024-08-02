@@ -8,7 +8,7 @@ class BarelyAButton extends HTMLElement
 
     static get observedAttributes()
     {
-        return["name", "route", "method", "datapayload", "onresolve", "buttonclass"];
+        return["name", "route", "method", "datapayload", "onresolve", "buttonclass", "onerror"];
     }
 
     connectedCallback()
@@ -33,6 +33,8 @@ class BarelyAButton extends HTMLElement
             this.buttonclass = newValue;
         else if (name === "cocoxixi")
             this.cocoxixi = newValue;
+        else if (name === "onerror")
+            console.log("Error");
         this.render();
     }
 

@@ -81,10 +81,3 @@ class UserCard extends HTMLElement
 
 
 customElements.define("user-card", UserCard);
-
-
-
-
-
-// https://www.youtube.com/watch?v=vLkPBj9ZaU0
-// https://www.youtube.com/watch?v=2I7uX8m0Ta0

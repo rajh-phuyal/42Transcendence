@@ -10,7 +10,7 @@ class TextField extends HTMLElement {
 
     connectedCallback() {
         this.render();
-        const inputElement = this.shadow.getElementById("tfbutton");
+        const inputElement = this.shadow.getElementById("textFieldButton");
         inputElement.addEventListener('click', this.buttonclick.bind(this));
         const inputElement2 = this.shadow.getElementById("text-field");
         inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
@@ -114,7 +114,7 @@ class TextField extends HTMLElement {
             </style>
             <div>
                 <textarea id="text-field" type="search" placeholder="${this.placeholder || 'Search...'}"></textarea>
-                <button id="tfbutton">Send</button>
+                <button id="textFieldButton">Send</button>
             </div>
         `;
     }
