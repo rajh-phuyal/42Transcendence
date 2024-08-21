@@ -144,10 +144,10 @@ function stop_and_rm_docker_container {
     if [ "$(docker ps -q -f name=^$NAME$)" ]; then # Check if container is running
         echo_log "Stopping running container:  $NAME"
         exec_log docker stop $NAME;
-		exec_log docker rm $NAME;
+		exec_log docker rm $NAME || true;
     fi
     echo_log "Removing stopped container - $NAME"
-    exec_log docker rm $NAME;
+    exec_log docker rm $NAME || true;
   else
     echo_log "Container not found: $NAME"
   fi
@@ -175,23 +175,18 @@ function install_database {
 
 	local CONTEXT="./Database"
 	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-postgres.yml"
-	local DOCKERFILE="$CONTEXT/postgres.dockerfile"
 	local IMAGE_NAME="transcendence-postgres:latest"
 
 	if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
 		echo_log_exit "Docker compose file \"$DOCKER_COMPOSE_FILE\" does not exist."
-	fi
-	if [ ! -f "$DOCKERFILE" ]; then
-		echo_log_exit "Dockerfile \"$DOCKERFILE\" does not exist."
 	fi
 
     echo_log "Installing database"
 
 	stop_and_rm_docker_container $DATABASE_CONTAINER_NAME
 
-	build_docker_image $IMAGE_NAME $DOCKERFILE $CONTEXT
-
-	echo_log "Database image built. Starting database container."
+	# No need to build the Docker image since we're using an existing image
+	# echo_log "Database image built. Starting database container."
 
 	exec_log docker-compose -f $DOCKER_COMPOSE_FILE --env-file $CONFIG_FILE up -d
 }

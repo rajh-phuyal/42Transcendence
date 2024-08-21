@@ -12,7 +12,24 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d/
 
+  pgadmin:
+    container_name: transcendence-pgadmin
+    build:
+      dockerfile: pgadmin.dockerfile
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin_password
+    ports:
+      - "1234:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
 networks:
   default:
     name: transcendence-network
     external: true 
+
+volumes:
+  pgadmin-data:
