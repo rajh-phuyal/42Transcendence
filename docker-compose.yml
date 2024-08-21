@@ -1,0 +1,46 @@
+version: "3.8"
+
+# This is the configuration for all docker services we use to stay:
+# BARELY ALIVE
+
+services:
+  db:
+    container_name: db
+    image: db:latest
+    build:
+      context: ./Database
+      dockerfile: postgres.dockerfile
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER : $POSTGRES_USER
+      POSTGRES_PASSWORD : $POSTGRES_PASSWORD
+#    volumes:
+#      - ./postgres-data:/var/lib/postgresql/data
+#      - ./init-db:/docker-entrypoint-initdb.d/
+
+  pg:
+    container_name: pg
+    image: pg:latest
+    build:
+      context: ./Database
+      dockerfile: pgadmin.dockerfile
+    environment:
+      PGADMIN_DEFAULT_EMAIL : $PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD : $PGADMIN_DEFAULT_PASSWORD
+    ports:
+      - "1234:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+
+networks:
+  default:
+    name: barely-a-network
+    external: true 
+
+volumes:
+  pgadmin-data:
