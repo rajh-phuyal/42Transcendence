@@ -44,12 +44,19 @@ OR='\033[38;5;208m'
 GR='\033[0;32m'
 NC='\033[0m'
 
-FRONTEND_CONTAINER_NAME="fe"
-BACKEND_CONTAINER_NAME="be"
-DATABASE_CONTAINER_NAME="db"
-PGADMIN_CONTAINER_NAME="pa"
-ALL_SERVICES="${FRONTEND_CONTAINER_NAME} ${BACKEND_CONTAINER_NAME} ${DATABASE_CONTAINER_NAME} ${PGADMIN_CONTAINER_NAME}"
-DATABASE_VOLUME_NAME=db-volume
+FE_CONTAINER_NAME="fe"
+BE_CONTAINER_NAME="be"
+DB_CONTAINER_NAME="db"
+PA_CONTAINER_NAME="pa"
+ALL_SERVICES="${FE_CONTAINER_NAME} ${BE_CONTAINER_NAME} ${DB_CONTAINER_NAME} ${PA_CONTAINER_NAME}"
+
+# Docker Volumes
+VOLUME_ROOT_PATH="$HOME/barely-some-data/"
+DB_VOLUME_NAME=db-volume
+PA_VOLUME_NAME=pa-volume
+
+DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
+PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
 
 # FUNCTIONS
 # ------------------------------------------------------------------------------ 
@@ -124,8 +131,10 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker network..."
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker volumes..."
-	docker volume rm "$DATABASE_VOLUME_NAME" || true
+	docker volume rm "$DB_VOLUME_NAME" || true
 	docker-compose --env-file "$STORED_ENV_PATH" down -v --rmi all --remove-orphans
+	print_header "${OR}" "Deleting folders of docker volumes..."
+	sudo rm -rf ${VOLUME_ROOT_PATH}
 }
 
 docker_reset() {
@@ -161,8 +170,19 @@ print_header ${GR} "Using environment file: $STORED_ENV_PATH"
 # Load the .env file into this script (and update some variable):
 source "$STORED_ENV_PATH"
 
-# TODO
 # CHECK IF FOLDERS ARE THERE AND FILES AND OTHER STUFF HERE
+# create folders for volumes if they don't exist yet:
+print_header ${GR} "Creating folder for volumes at: $DB_VOLUME_PATH"
+mkdir -p ${DB_VOLUME_PATH}
+#print_header ${OR} "Changing ownership of volume folder at: $DB_VOLUME_PATH"
+## TODO
+## THIS SHOULD NOT BE DONE IF FOLDER EXISTS
+#chown -R "$USER:$USER" "${DB_VOLUME_PATH}"
+
+print_header ${GR} "Creating folders for volumes at: $PA_VOLUME_PATH"
+mkdir -p ${PA_VOLUME_PATH}
+#print_header ${OR} "Changing ownership of volume folder at: $PA_VOLUME_PATH"
+#chown -R "$USER:$USER" "${PA_VOLUME_PATH}"
 
 # Main logic for Docker commands
 COMMAND="${1:-start}"  				# Default to 'start' if no command is provided

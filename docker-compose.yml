@@ -35,7 +35,7 @@ services:
     ports:
       - "1234:80"
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - pa-volume:/var/lib/pgadmin
     restart: unless-stopped
 
   be:
@@ -71,18 +71,40 @@ services:
     ports:
       - "8080:80" #Maybe need to change later 443
     volumes:
+      # TODO
+      # ----
+      # All those mount points are usefull for development sincee we dont
+      # have to restart the container if we do small changes.
+      # For delivery we should have entrypoint-script which will be called
+      # by the dockerfile to copy all those files (if not already there) to
+      # the fe-volume.
+      #
+      # To make the ssl more secure we do not mount the certificate at all
+      # we copy and conif it as a first step in the dockerfile
       - ./Frontend/html:/usr/share/nginx/html
       - ./Frontend/css:/usr/share/nginx/css
       - ./Frontend/js:/usr/share/nginx/js
       - ./Frontend/assets:/usr/share/nginx/assets
       - ./Frontend/nginx.conf:/etc/nginx/nginx.conf
-      - ./Frontend/openssl:/etc/nginx/ssl
+      #- ./Frontend/openssl:/etc/nginx/ssl
     restart: unless-stopped
 
 networks:
   default:
     name: $DOCKER_NETWORK
     driver: bridge
-    
+
+# TODO    
+# HERE WE CONFIGURE THE VOLUME BEFORE DELIVERING
 volumes:
-  pgadmin-data:
+  pa-volume:
+    name: pa-volume
+    driver_opts:
+      type: none
+      device: /home/astein/barely-some-data/pa-volume/
+      o: bind
+#name: fe-volume
+#    driver_opts:
+#      type: none
+#      device: /home/...
+#      o: bind
