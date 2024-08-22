@@ -10,37 +10,79 @@ services:
     build:
       context: ./Database
       dockerfile: postgres.dockerfile
-    restart: unless-stopped
+    environment:
+      DB_NAME : $DB_NAME
+      DB_USER : $DB_USER
+      DB_PSWD : $DB_PSWD
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_USER : $POSTGRES_USER
-      POSTGRES_PASSWORD : $POSTGRES_PASSWORD
-#    volumes:
-#      - ./postgres-data:/var/lib/postgresql/data
-#      - ./init-db:/docker-entrypoint-initdb.d/
+    volumes:
+      - ./Database/postgres-data:/var/lib/postgresql/data
+      - ./Database/init-db:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
 
-  pg:
-    container_name: pg
-    image: pg:latest
+  pa:
+    container_name: pa
+    image: pa:latest
     build:
       context: ./Database
       dockerfile: pgadmin.dockerfile
-    environment:
-      PGADMIN_DEFAULT_EMAIL : $PGADMIN_DEFAULT_EMAIL
-      PGADMIN_DEFAULT_PASSWORD : $PGADMIN_DEFAULT_PASSWORD
-    ports:
-      - "1234:80"
     depends_on:
       - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL : $PA_MAIL
+      PGADMIN_DEFAULT_PASSWORD : $PA_PSWD
+    ports:
+      - "1234:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+    restart: unless-stopped
 
+  be:
+    container_name: be
+    image: be:latest
+    build:
+      context: ./Backend
+      dockerfile: django.dockerfile
+    depends_on:
+      - db
+    environment:
+      - BE_DB_HOST=db
+      - BE_DB_PORT=5432
+      - BE_DB_NAME=$BE_DB_NAME
+      - BE_DB_USER=$BE_DB_USER
+      - BE_DB_PSWD=$BE_DB_PSWD
+    ports:
+      - "8000:8000" #need to be changed
+    volumes:
+      - ./Backend/src:/app
+    restart: unless-stopped
+
+  fe:
+    container_name: fe
+    image: fe:latest
+    build:
+      context: ./Frontend
+      dockerfile: nginx.dockerfile
+    depends_on:
+      - be
+    #environment:
+    #  - name=value
+    ports:
+      - "8080:80" #Maybe need to change later 443
+    volumes:
+      - ./Frontend/html:/usr/share/nginx/html
+      - ./Frontend/css:/usr/share/nginx/css
+      - ./Frontend/js:/usr/share/nginx/js
+      - ./Frontend/assets:/usr/share/nginx/assets
+      - ./Frontend/nginx.conf:/etc/nginx/nginx.conf
+      - ./Frontend/openssl:/etc/nginx/ssl
+    restart: unless-stopped
 
 networks:
   default:
-    name: barely-a-network
-    external: true 
-
+    name: $DOCKER_NETWORK
+    driver: bridge
+    
 volumes:
   pgadmin-data:

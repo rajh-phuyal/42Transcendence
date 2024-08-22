@@ -2,6 +2,8 @@ Environments/*
 Logs/*
 Database/postgres-data
 
+.transcendence_env_path
+
 **/__pycache__/
 db.sqlite3
 

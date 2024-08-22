@@ -11,7 +11,7 @@
 #	fe		frontend	fr
 #	be		backend		be
 #	db		database	db				db_volume
-#	pg		pgadmin 	pg				pg_volume
+#	pa		pgadmin 	pa				pa_volume
 #
 # COMMANDS:
 # (If no container is specified ALL containers will be affected)
@@ -34,6 +34,7 @@ HELP_ENDS_AT_LINE=30
 # Script should stop if something goes wrong:
 set -euo pipefail
 
+
 # VARIABLES
 # ------------------------------------------------------------------------------
 # COLORS
@@ -46,9 +47,8 @@ NC='\033[0m'
 FRONTEND_CONTAINER_NAME="fe"
 BACKEND_CONTAINER_NAME="be"
 DATABASE_CONTAINER_NAME="db"
-PGADMIN_CONTAINER_NAME="pg"
+PGADMIN_CONTAINER_NAME="pa"
 ALL_SERVICES="${FRONTEND_CONTAINER_NAME} ${BACKEND_CONTAINER_NAME} ${DATABASE_CONTAINER_NAME} ${PGADMIN_CONTAINER_NAME}"
-DOCKER_NETWORK=barely-a-network
 DATABASE_VOLUME_NAME=db-volume
 
 # FUNCTIONS
@@ -97,14 +97,14 @@ docker_build() {
 }
 
 docker_start() {
-	docker_stop $1
-	docker_build $1
+	docker_stop "$1"
+	docker_build "$1"
 	print_header "${GR}" "Starting containers: $1"
 	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINER
 }
 
 docker_clean() {
-	docker_stop $1
+	docker_stop "$1"
 	print_header "${OR}" "Deleting containers..."
 	docker container rm $1 || true
 	print_header "${OR}" "Deleting images..."
@@ -120,7 +120,7 @@ docker_fclean() {
         return 1
     fi
 	print_header "${RD}" "Force cleaning containers and volumes..."
-	docker_clean $1
+	docker_clean "$ALL_SERVICES"
 	print_header "${OR}" "Deleting docker network..."
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker volumes..."
@@ -129,13 +129,13 @@ docker_fclean() {
 }
 
 docker_reset() {
-	docker_clean $1
-	docker_start $1
+	docker_clean "$1"
+	docker_start "$1"
 }
 
 docker_re() {
-	docker_fclean $ALL_SERVICES
-	docker_start $ALL_SERVICES
+	docker_fclean "$ALL_SERVICES"
+	docker_start "$ALL_SERVICES"
 }
 
 
@@ -158,6 +158,9 @@ else
 fi
 print_header ${GR} "Using environment file: $STORED_ENV_PATH"
 
+# Load the .env file into this script (and update some variable):
+source "$STORED_ENV_PATH"
+
 # TODO
 # CHECK IF FOLDERS ARE THERE AND FILES AND OTHER STUFF HERE
 
@@ -167,22 +170,22 @@ CONTAINER="${2:-$ALL_SERVICES}"	# Optional container name
 
 case "$COMMAND" in
     start)
-        docker_start $CONTAINER
+        docker_start "$CONTAINER"
         ;;
     stop)
-        docker_stop $CONTAINER
+        docker_stop "$CONTAINER"
         ;;
     clean)
-		docker_clean $CONTAINER
+		docker_clean "$CONTAINER"
         ;;
     fclean)
 		docker_fclean
         ;;
     build)
-        docker_build $CONTAINER
+        docker_build "$CONTAINER"
         ;;
 	reset)
-		docker_reset $CONTAINER
+		docker_reset "$CONTAINER"
         ;;
     re)
 		docker_re
