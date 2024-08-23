@@ -1,4 +1,11 @@
 #!/bin/bash
+# TODO:
+# This script is working but needs to be imporved a little bit with those things:
+# - Check if the folders for the volumes are there so dont print the messages
+# - Therfore maybe put them in a function
+# - add a command to put dummy data into the database+
+# - sort out all the volumes and mounts we use
+# - include healthcheck for the containers proabably in the doocker-compose file
 
 # BARELY ALIVE
 # ------------
@@ -15,13 +22,17 @@
 #
 # COMMANDS:
 # (If no container is specified ALL containers will be affected)
-#	start [contaier]		| down build up [THIS IS THE DEFAULT TARGET]
-#	stop [contaier]			| Stops the container(s)
-#	clean [contaier]		| down + Deletes the container(s) and the image(s)
-#	fclean [contaier]		| Deletes the container(s) + Volumes + Network
-#	build [contaier]		| Building the container(s)
-#	re [container]			| fclean + start
-#
+#	| Option  | Description                                                                                                            |
+#	|---------|------------------------------------------------------------------------------------------------------------------------|
+#	| `help`  | Prints this message                                                                                                    |
+#	| `stop`  | Stops the container(s)                                                                                                 |
+#	| `build` | Building the container(s)                                                                                              |
+#	| `start` | `stop`, `build`, uping container(s)                                                                                    |
+#	| `clean` | `stop`, deletes the container(s) and the image(s)                                                                      |
+#	| `fclean`| `clean`, removes docker volumes and docker network, deleting the volume folders, deleting the linkt to the `.env` file |
+#	| `reset` | `clean` + `start`                                                                                                      |
+#	| `re`    | `fclean` + `start`                                                                                                     |
+#	
 # ENVIROMENT VARIABLES
 # The used env file will be stored in the file
 ENV_PATH_FILE=".transcendence_env_path"
@@ -29,11 +40,14 @@ ENV_PATH_FILE=".transcendence_env_path"
 # if its not set u need to run with the flag:
 #	./deploy.sh -e <pathToEnvFile>
 #
-HELP_ENDS_AT_LINE=30
+# MORE INFO AT:
+# https://github.com/rajh-phuyal/42Transcendence/wiki/
+# ------------------------------------------------------------------------------
+# UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
+HELP_ENDS_AT_LINE=45
 
 # Script should stop if something goes wrong:
 set -euo pipefail
-
 
 # VARIABLES
 # ------------------------------------------------------------------------------
@@ -135,6 +149,9 @@ docker_fclean() {
 	docker-compose --env-file "$STORED_ENV_PATH" down -v --rmi all --remove-orphans
 	print_header "${OR}" "Deleting folders of docker volumes..."
 	sudo rm -rf ${VOLUME_ROOT_PATH}
+	print_header "${OR}" "Deltete the link to the environment file..."
+	rm -f ".transcendence_env_path"
+	print_header "${GR}" "All containers, images, volumes, and network have been deleted."
 }
 
 docker_reset() {
@@ -158,12 +175,16 @@ docker_re() {
 if [ "${1:-}" == "-e" ] && [ -n "${2:-}" ]; then
     save_env_path "$2"
     print_header "${GR}" "Environment path saved: $2"
+    print_header "${OR}" "Rerun the script without the -e flag to deploy the application."
+	exit 0
 elif [ -f "$ENV_PATH_FILE" ]; then
     STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
     validate_stored_path "$STORED_ENV_PATH"
     echo "Using stored environment file: $STORED_ENV_PATH"
 else
-    print_error "No environment file path is set. Please provide the path using the -e option."
+    print_header $RD "No environment file path is set. Please provide the path using the -e option."
+	print_header $OR "Example: ./deploy.sh -e /path/to/.env"
+	exit 1
 fi
 print_header ${GR} "Using environment file: $STORED_ENV_PATH"
 
@@ -189,6 +210,9 @@ COMMAND="${1:-start}"  				# Default to 'start' if no command is provided
 CONTAINER="${2:-$ALL_SERVICES}"	# Optional container name
 
 case "$COMMAND" in
+	help)
+        cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
+        ;;
     start)
         docker_start "$CONTAINER"
         ;;
@@ -211,18 +235,6 @@ case "$COMMAND" in
 		docker_re
         ;;
     *)
-        print_error "Invalid command: $COMMAND. Valid commands are start, stop, clean, fclean, build, re."
+		print_error "Invalid command: >$COMMAND<, run >./deploy.sh help< to see the available commands."
         ;;
 esac
-
-
-
-
-
-
-
-# To print the top of this file
-# cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
-
-
-

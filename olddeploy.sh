@@ -1,4 +1,11 @@
 #!/bin/bash
+# =============================================================================
+# 	DEPRECATED
+# =============================================================================
+# WE DONT USE THIS SCRIPT ANYMORE!
+# THE NEW SCRIPT IS deploy.sh
+# =============================================================================
+
 
 # This script is used to deploy the application to a target environment.
 

@@ -1,3 +1,4 @@
+# astein: This dockerfile will be used from the main docker-compose file
 # Start with the official pgAdmin image
 FROM dpage/pgadmin4:latest
 
