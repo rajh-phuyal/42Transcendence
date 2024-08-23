@@ -5,6 +5,8 @@ async function call(url, method, data) {
 
     const fullUrl = `${BASE_URL}${url}`;
 
+    console.log("in the call function:", data);
+    return ;
     let payload = {
         mode: 'no-cors', // temporary
         cache: 'no-cache',
