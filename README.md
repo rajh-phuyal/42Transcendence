@@ -1,5 +1,5 @@
 # 42Transcendence
-A web-based Pong game with enhanced gameplay features
+A web-based Pong game with enhanced gameplay featureskk
 
 ## Deployment Instructions
 :bulb: For detailed instructions on setting up the project, please visit our :book: [Project Setup Wiki Page](https://github.com/rajh-phuyal/42Transcendence/wiki/Project-Setup).
