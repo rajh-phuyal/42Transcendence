@@ -12,14 +12,19 @@ services:
       dockerfile: postgres.dockerfile
     environment:
       DB_NAME : $DB_NAME
-      DB_USER : $DB_USER
-      DB_PSWD : $DB_PSWD
+      POSTGRES_USER : $DB_USER #POSTGRES_USER is the default var name for the user and can not be changed
+      POSTGRES_PASSWORD : $DB_PSWD #POSTGRES_PASSWORD is the default var name for the password and can not be changed
     ports:
       - 5432:5432
     volumes:
-      - ./Database/postgres-data:/var/lib/postgresql/data
-      - ./Database/init-db:/docker-entrypoint-initdb.d/
+      - db-volume:/var/lib/postgresql/data
+      - ./Database/Postgres/init-db:/docker-entrypoint-initdb.d/
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pa:
     container_name: pa
@@ -103,6 +108,12 @@ networks:
 # TODO    
 # HERE WE CONFIGURE THE VOLUME BEFORE DELIVERING
 volumes:
+  db-volume:
+    name: db-volume
+    driver_opts:
+      type: none
+      device: /home/astein/barely-some-data/db-volume/
+      o: bind
   pa-volume:
     name: pa-volume
     driver_opts:
