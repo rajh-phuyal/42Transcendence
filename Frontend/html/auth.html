@@ -1,12 +1,21 @@
-<div id="auth-view">
+<div id="auth-view" class="background-image-div">
     <h1>
         Auth view
     </h1>
+    <auth-card primary-button="login" secundary-button="register"></auth-card>
 </div>
 
 <style>
     #auth-view {
         height: 100%;
         background-color: #00c3ff6c;
+    }
+    
+    .background-image-div {
+        width: 896px; /* Set the desired width */
+        height: 512px; /* Set the desired height */
+        background-image: url('../assets/Loginpage.webp'); /* Set the path to your image */
+        background-size: cover; /* Cover the entire div */
+        background-position: center; /* Center the image */
     }
 </style>
