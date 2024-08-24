@@ -159,6 +159,9 @@ docker_reset() {
 	docker_start "$1"
 }
 
+# TODO: Doesnt work since the .env file will be deleted during fclean...
+# TODO: Also the volumes wont be created again atm...
+# TODO: Work around is to call fclean then -e and then start
 docker_re() {
 	docker_fclean "$ALL_SERVICES"
 	docker_start "$ALL_SERVICES"
