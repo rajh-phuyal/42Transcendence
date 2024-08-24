@@ -8,7 +8,7 @@ services:
     container_name: db
     image: db:latest
     build:
-      context: ./Database
+      context: ./Database/Postgres
       dockerfile: postgres.dockerfile
     environment:
       DB_NAME : $DB_NAME
@@ -25,7 +25,7 @@ services:
     container_name: pa
     image: pa:latest
     build:
-      context: ./Database
+      context: ./Database/PgAdmin
       dockerfile: pgadmin.dockerfile
     depends_on:
       - db
@@ -37,6 +37,12 @@ services:
     volumes:
       - pa-volume:/var/lib/pgadmin
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"] #PORT 80 is correct since it is the port of the container not the exposed port
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   be:
     container_name: be

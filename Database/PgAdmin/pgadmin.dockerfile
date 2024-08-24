@@ -5,9 +5,11 @@ FROM dpage/pgadmin4:latest
 # Switch to root user
 USER root
 
+RUN apk --no-cache add curl
+
 # Copy the necessary files into the container
-COPY ./pgadmin/servers.json /pgadmin4/servers.json
-COPY ./pgadmin/.pgpass /pgpassfile
+COPY ./config/servers.json /pgadmin4/servers.json
+COPY ./config/.pgpass /pgpassfile
 RUN chmod 600 /pgadmin4/servers.json /pgpassfile
 
 USER pgadmin
