@@ -1,285 +1,243 @@
 #!/bin/bash
+# TODO:
+# This script is working but needs to be imporved a little bit with those things:
+# - Check if the folders for the volumes are there so dont print the messages
+# - Therfore maybe put them in a function
+# - add a command to put dummy data into the database+
+# - sort out all the volumes and mounts we use
+# - include healthcheck for the containers proabably in the doocker-compose file
 
+# BARELY ALIVE
+# ------------
 # This script is used to deploy the application to a target environment.
+# It handels all the different docker containers and u always can specify
+# the action for a specific container. Those are:
+#
+#	CODE	SERVICE		CONTAINER NAME	VOLUMES
+#	------|-----------|----------------|-------------
+#	fe		frontend	fr
+#	be		backend		be
+#	db		database	db				db_volume
+#	pa		pgadmin 	pa				pa_volume
+#
+# COMMANDS:
+# (If no container is specified ALL containers will be affected)
+#	| Option  | Description                                                                                                            |
+#	|---------|------------------------------------------------------------------------------------------------------------------------|
+#	| `help`  | Prints this message                                                                                                    |
+#	| `stop`  | Stops the container(s)                                                                                                 |
+#	| `build` | Building the container(s)                                                                                              |
+#	| `start` | `stop`, `build`, uping container(s)                                                                                    |
+#	| `clean` | `stop`, deletes the container(s) and the image(s)                                                                      |
+#	| `fclean`| `clean`, removes docker volumes and docker network, deleting the volume folders, deleting the linkt to the `.env` file |
+#	| `reset` | `clean` + `start`                                                                                                      |
+#	| `re`    | `fclean` + `start`                                                                                                     |
+#	
+# ENVIROMENT VARIABLES
+# The used env file will be stored in the file
+ENV_PATH_FILE=".transcendence_env_path"
+#
+# if its not set u need to run with the flag:
+#	./deploy.sh -e <pathToEnvFile>
+#
+# MORE INFO AT:
+# https://github.com/rajh-phuyal/42Transcendence/wiki/
+# ------------------------------------------------------------------------------
+# UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
+HELP_ENDS_AT_LINE=45
 
+# Script should stop if something goes wrong:
 set -euo pipefail
+
+# VARIABLES
+# ------------------------------------------------------------------------------
+# COLORS
 RD='\033[0;31m'
 YL='\033[0;33m'
+OR='\033[38;5;208m'
 GR='\033[0;32m'
 NC='\033[0m'
 
-TARGET_LIST=("database" "backend" "frontend")
+FE_CONTAINER_NAME="fe"
+BE_CONTAINER_NAME="be"
+DB_CONTAINER_NAME="db"
+PA_CONTAINER_NAME="pa"
+ALL_SERVICES="${FE_CONTAINER_NAME} ${BE_CONTAINER_NAME} ${DB_CONTAINER_NAME} ${PA_CONTAINER_NAME}"
 
-DATABASE_CONTAINER_NAME="transcendence-postgres"
-BACKEND_CONTAINER_NAME="transcendence-django"
-FRONTEND_CONTAINER_NAME="transcendence-nginx"
+# Docker Volumes
+VOLUME_ROOT_PATH="$HOME/barely-some-data/"
+DB_VOLUME_NAME=db-volume
+PA_VOLUME_NAME=pa-volume
 
-DOCKER_NETWORK=transcendence-network
+DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
+PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
 
-LOG_FOLDER="Logs"
-LOG_FILE="$LOG_FOLDER/deploy.log"
-
-USAGE=$YL"Usage: ./deploy.sh [OPTIONS]
-Options:
-    -h |  Display this message
-    -t |  Service to be installed. (default: all || ${TARGET_LIST[*]})
-    -c |  Relative path to the .env file"$NC
-
-#######################################
-#	   Utility functions
-#######################################
-
-function echo_log { 
-  echo -e "$(date +%Y%m%d.%H%M%S): ${@:-NO_MESSAGE_SUPPLIED} ${NC}" 2>&1 | tee -a $LOG_FILE
+# FUNCTIONS
+# ------------------------------------------------------------------------------ 
+# Function to print a important message in color
+print_header() {
+    printf "$1 >>> %s${NC}\n" "$2"
 }
 
-function echo_log_exit {
-  echo_log "${RD}ERROR - ${@:-NO_MESSAGE_SUPPLIED}" 
-  echo -e $USAGE
-  exit 1
+# Function to print error messages in red
+print_error() {
+    print_header "${RD}" "Error: $1"
+    exit 1
 }
 
-function exec_log {
-  PARAMS="$@"
-  echo -e "$(date +%Y%m%d.%H%M%S): ${GR} $PARAMS" ${NC} 2>&1 | tee -a $LOG_FILE
-  eval $PARAMS 2>&1 | tee -a $LOG_FILE
+# Function to save the environment path
+save_env_path() {
+    echo "$1" > "$ENV_PATH_FILE"
+	STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
 }
 
-function check_cli_args {
-
-    echo_log "Checking CLI arguments: $@"
-    TARGET_ENV=()
-    CONFIG_FILE=""
-    
-    while [[ "$#" -gt 0 ]]; do
-        case $1 in
-            -t)
-                if [[ "$#" -gt 1 && "$2" != -* ]]; then
-                    IFS=',' read -ra TARGET_VALUES <<< "$2"
-                    for val in "${TARGET_VALUES[@]}"; do
-                        TARGET_ENV+=("$val")
-                    done
-                    shift 2
-                else
-                    echo_log_exit "-t option requires a non-empty argument."
-                fi
-                ;;
-            -c)
-                if [[ "$#" -gt 1 && "$2" != -* ]]; then
-                    CONFIG_FILE="$2"
-                    shift 2
-                else
-                    echo_log_exit "-c option requires a non-empty argument."
-                fi
-                ;;
-            -h)
-                echo -e "$USAGE"
-                exit 0
-                ;;
-            *)
-				echo_log_exit "Unknown option: $1"
-                ;;
-        esac
-    done
-
-    if [ -z "$CONFIG_FILE" ]; then
-		echo_log_exit "ENV must be specified."
-    fi
-
-    if [ ${#TARGET_ENV[@]} -eq 0 ]; then
-        TARGET_ENV=("${TARGET_LIST[@]}")
-    fi
-
-	# Remove duplicates
-	TARGET_ENV=($(echo "${TARGET_ENV[@]}" | tr ' ' '\n' | awk '!seen[$0]++'))
-}
-
-function  create_folder_if_not_exists() {
-    local folder_path="$1"
-    if [ ! -d "$folder_path" ]; then
-        echo "Folder does not exist. Creating \"$folder_path\""
-        mkdir -p "$folder_path"
-	else
-		echo "Log folder found: \"$folder_path\""
+# Function to check if the stored path is valid
+validate_stored_path() {
+    if [ ! -f "$1" ]; then
+        print_error "Stored environment file path is invalid or does not exist: $1"
     fi
 }
 
-function load_env_file {
-	local env_file="$1"
-	if [ -f "$env_file" ]; then
-		echo_log "Loading environment variables from \"$env_file\""
-		source "$env_file"
-	else
-		echo_log_exit "Environment file \"$env_file\" does not exist."
-	fi
-	echo_log "Environment variables loaded."
+# DOCKER BASIC FUNCTIONS
+#	start [contaier]		| down build up [THIS IS THE DEFAULT TARGET]
+#	stop [contaier]			| Stops the container(s)
+#	clean [contaier]		| down + Deletes the container(s) and the image(s)
+#	fclean 					| Deletes the container(s) + Volumes + Network
+#	build [contaier]		| Building the container(s)
+#	reset [container]		| clean + start
+#	re 						| fclean + start
+
+docker_stop() {
+	print_header "${YL}" "Stopping containers: $1"
+	docker-compose --env-file "$STORED_ENV_PATH" stop $1
 }
 
-function build_docker_image {
-  local NAME=${1}
-  local TAG=${1}
-  local DOCKERFILE=${2}
-  local CONTEXT=${3}
-  echo_log "Building Docker image: $NAME"
-  exec_log docker build -f $DOCKERFILE -t $NAME $CONTEXT
+docker_build() {
+	print_header "${GR}" "Building containers: $1"
+	docker-compose --env-file "$STORED_ENV_PATH" build $1
 }
 
-function is_docker_container_running {
-  echo -e $"Checking if container is running: $1"
-  local NAME=${1}
-  if [ "$(docker ps -qa -f name=^$NAME$)" ]; then # Check if container exists
-	echo_log "Found container: $NAME"
-	if [ "$(docker ps -q -f name=^$NAME$)" ]; then # Check if container is running
-		return 0
-	fi
-  fi
-  return 1
+docker_start() {
+	docker_stop "$1"
+	docker_build "$1"
+	print_header "${GR}" "Starting containers: $1"
+	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINER
 }
 
-function stop_and_rm_docker_container {
-  # $1 Docker container name
-  local NAME=${1}
-  if [ "$(docker ps -qa -f name=^$NAME$)" ]; then # Check if container exists
-	echo_log "Found container: $NAME"
-    if [ "$(docker ps -q -f name=^$NAME$)" ]; then # Check if container is running
-        echo_log "Stopping running container:  $NAME"
-        exec_log docker stop $NAME;
-		exec_log docker rm $NAME;
+docker_clean() {
+	docker_stop "$1"
+	print_header "${OR}" "Deleting containers..."
+	docker container rm $1 || true
+	print_header "${OR}" "Deleting images..."
+	docker image rm $1 || true
+}
+
+docker_fclean() {    
+	# Prompt user for confirmation
+	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL CONTAINERS, IMAGES, VOLUMES, AND THE DOCKER NETWORK (y/n): "
+    read -p "choose: " confirm
+    if [[ "$confirm" != "y" ]]; then
+        print_header "${RD}" "Operation cancelled."
+        return 1
     fi
-    echo_log "Removing stopped container - $NAME"
-    exec_log docker rm $NAME;
-  else
-    echo_log "Container not found: $NAME"
-  fi
+	print_header "${RD}" "Force cleaning containers and volumes..."
+	docker_clean "$ALL_SERVICES"
+	print_header "${OR}" "Deleting docker network..."
+	docker network rm "$DOCKER_NETWORK" || true
+	print_header "${OR}" "Deleting docker volumes..."
+	docker volume rm "$DB_VOLUME_NAME" || true
+	docker-compose --env-file "$STORED_ENV_PATH" down -v --rmi all --remove-orphans
+	print_header "${OR}" "Deleting folders of docker volumes..."
+	sudo rm -rf ${VOLUME_ROOT_PATH}
+	print_header "${OR}" "Deltete the link to the environment file..."
+	rm -f ".transcendence_env_path"
+	print_header "${GR}" "All containers, images, volumes, and network have been deleted."
 }
 
-function create_docker_network {
-    echo_log "Creating Docker network \"$DOCKER_NETWORK\" if it does not exist."
-    
-    # Redirect stderr to stdout and suppress the output
-    if docker network inspect $DOCKER_NETWORK &> /dev/null; then
-        echo_log "Docker network \"$DOCKER_NETWORK\" already exists."
-    else
-        echo_log "Creating Docker network \"$DOCKER_NETWORK\"."
-        exec_log docker network create --driver bridge $DOCKER_NETWORK
-		echo_log "Docker network \"$DOCKER_NETWORK\" created."
-    fi
+docker_reset() {
+	docker_clean "$1"
+	docker_start "$1"
+}
+
+# TODO: Doesnt work since the .env file will be deleted during fclean...
+# TODO: Also the volumes wont be created again atm...
+# TODO: Work around is to call fclean then -e and then start
+docker_re() {
+	docker_fclean "$ALL_SERVICES"
+	docker_start "$ALL_SERVICES"
 }
 
 
-#######################################
-#       install functions
-#######################################
-
-function install_database {
-
-	local CONTEXT="./Database"
-	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-postgres.yml"
-	local DOCKERFILE="$CONTEXT/postgres.dockerfile"
-	local IMAGE_NAME="transcendence-postgres:latest"
-
-	if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
-		echo_log_exit "Docker compose file \"$DOCKER_COMPOSE_FILE\" does not exist."
-	fi
-	if [ ! -f "$DOCKERFILE" ]; then
-		echo_log_exit "Dockerfile \"$DOCKERFILE\" does not exist."
-	fi
-
-    echo_log "Installing database"
-
-	stop_and_rm_docker_container $DATABASE_CONTAINER_NAME
-
-	build_docker_image $IMAGE_NAME $DOCKERFILE $CONTEXT
-
-	echo_log "Database image built. Starting database container."
-
-	exec_log docker-compose -f $DOCKER_COMPOSE_FILE --env-file $CONFIG_FILE up -d
-}
-
-function install_backend {
-
-	local CONTEXT="./Backend"
-	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-django.yml"
-	local DOCKERFILE="$CONTEXT/django.dockerfile"
-	local IMAGE_NAME="transcendence-django:latest"
-
-	if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
-		echo_log_exit "Docker compose file \"$DOCKER_COMPOSE_FILE\" does not exist."
-	fi
-	if [ ! -f "$DOCKERFILE" ]; then
-		echo_log_exit "Dockerfile \"$DOCKERFILE\" does not exist."
-	fi
-
-	is_docker_container_running $DATABASE_CONTAINER_NAME
-	if [ $? -ne 0 ]; then
-		echo_log "Database container is not running. Installing database first."
-		install_database
-	fi
-
-	stop_and_rm_docker_container $BACKEND_CONTAINER_NAME
-
-    echo_log "Installing backend"
-
-	build_docker_image $IMAGE_NAME $DOCKERFILE $CONTEXT
-
-	echo_log "Backend image built. Starting backend container."
-
-	exec_log docker-compose -f $DOCKER_COMPOSE_FILE --env-file $CONFIG_FILE up -d
-}
-
-function install_frontend {
-
-	local CONTEXT="./Frontend"
-	local DOCKER_COMPOSE_FILE="$CONTEXT/docker-compose-nginx.yml"
-	local DOCKERFILE="$CONTEXT/nginx.dockerfile"
-	local IMAGE_NAME="transcendence-nginx:latest"
-
-	if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
-		echo_log_exit "Docker compose file \"$DOCKER_COMPOSE_FILE\" does not exist."
-	fi
-	if [ ! -f "$DOCKERFILE" ]; then
-		echo_log_exit "Dockerfile \"$DOCKERFILE\" does not exist."
-	fi
-
-	is_docker_container_running $BACKEND_CONTAINER_NAME
-	if [ $? -ne 0 ]; then
-		echo_log "Backend container is not running. Installing backend first."
-		install_backend
-	fi
-	stop_and_rm_docker_container $FRONTEND_CONTAINER_NAME
-
-    echo_log "Installing frontend"
-
-	build_docker_image $IMAGE_NAME $DOCKERFILE $CONTEXT
-
-	echo_log "Frontend image built. Starting frontend container."
-
-	exec_log docker-compose -f $DOCKER_COMPOSE_FILE --env-file $CONFIG_FILE up -d
-}
-
-function install_targets {
-	for target in "${TARGET_ENV[@]}"; do
-		case $target in
-			frontend) install_frontend && echo_log "${GR}Frontend installed succesfully${NC}";;
-			backend) install_backend && echo_log "${GR}Backend installed succesfully${NC}";;
-			database) install_database && echo_log "${GR}Database installed succesfully${NC}";;
-			*)
-				echo -e $RD"Argument \"$target\" must be one of the following: ${TARGET_LIST[*]}."
-				echo -e "$USAGE"
-				exit 1
-				;;
-		esac
-	done
-
-}
-
-#######################################
+################################################################################
 #       Main Script
-#######################################
+################################################################################
 
+# CHECK FOR ENV FILE
+# ------------------------------------------------------------------------------ 
+# Check if the -e flag is provided to set a new environment path
+if [ "${1:-}" == "-e" ] && [ -n "${2:-}" ]; then
+    save_env_path "$2"
+    print_header "${GR}" "Environment path saved: $2"
+    print_header "${OR}" "Rerun the script without the -e flag to deploy the application."
+	exit 0
+elif [ -f "$ENV_PATH_FILE" ]; then
+    STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
+    validate_stored_path "$STORED_ENV_PATH"
+    echo "Using stored environment file: $STORED_ENV_PATH"
+else
+    print_header $RD "No environment file path is set. Please provide the path using the -e option."
+	print_header $OR "Example: ./deploy.sh -e /path/to/.env"
+	exit 1
+fi
+print_header ${GR} "Using environment file: $STORED_ENV_PATH"
 
-create_folder_if_not_exists $LOG_FOLDER
-check_cli_args "$@"
-load_env_file $CONFIG_FILE
-create_docker_network $DOCKER_NETWORK
-install_targets
+# Load the .env file into this script (and update some variable):
+source "$STORED_ENV_PATH"
+
+# CHECK IF FOLDERS ARE THERE AND FILES AND OTHER STUFF HERE
+# create folders for volumes if they don't exist yet:
+print_header ${GR} "Creating folder for volumes at: $DB_VOLUME_PATH"
+mkdir -p ${DB_VOLUME_PATH}
+#print_header ${OR} "Changing ownership of volume folder at: $DB_VOLUME_PATH"
+## TODO
+## THIS SHOULD NOT BE DONE IF FOLDER EXISTS
+#chown -R "$USER:$USER" "${DB_VOLUME_PATH}"
+
+print_header ${GR} "Creating folders for volumes at: $PA_VOLUME_PATH"
+mkdir -p ${PA_VOLUME_PATH}
+#print_header ${OR} "Changing ownership of volume folder at: $PA_VOLUME_PATH"
+#chown -R "$USER:$USER" "${PA_VOLUME_PATH}"
+
+# Main logic for Docker commands
+COMMAND="${1:-start}"  				# Default to 'start' if no command is provided
+CONTAINER="${2:-$ALL_SERVICES}"	# Optional container name
+
+case "$COMMAND" in
+	help)
+        cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
+        ;;
+    start)
+        docker_start "$CONTAINER"
+        ;;
+    stop)
+        docker_stop "$CONTAINER"
+        ;;
+    clean)
+		docker_clean "$CONTAINER"
+        ;;
+    fclean)
+		docker_fclean
+        ;;
+    build)
+        docker_build "$CONTAINER"
+        ;;
+	reset)
+		docker_reset "$CONTAINER"
+        ;;
+    re)
+		docker_re
+        ;;
+    *)
+		print_error "Invalid command: >$COMMAND<, run >./deploy.sh help< to see the available commands."
+        ;;
+esac

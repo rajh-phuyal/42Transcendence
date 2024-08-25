@@ -1,8 +1,22 @@
-Environments/*
-Logs/*
-Database/postgres-data
+#TODO: Do we need all those sections?
 
-**/__pycache__/
+# Environment-specific files and directories
+Environments/*
+
+# Logs
+Logs/*
+
+# Database files
+Database/postgres-data
 db.sqlite3
 
+# Python environment and cache files
 **/env/
+**/__pycache__/
+
+# Environment variables
+.transcendence_env_path
+.env
+
+# VS-CODE
+.vscode/
