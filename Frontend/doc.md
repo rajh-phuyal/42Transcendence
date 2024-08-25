@@ -1,3 +1,0 @@
-# Frontend Technical Documentation
-
-## Flowchart

@@ -1,7 +1,7 @@
 // abstract out the fetch api to make it easier to call the api
 
 async function call(url, method, data) {
-    const BASE_URL = "http://localhost:8000"; // backend django server
+    const BASE_URL = "http://localhost:8080"; // backend django server
 
     const fullUrl = `${BASE_URL}${url}`;
 
