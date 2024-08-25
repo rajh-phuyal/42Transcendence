@@ -1,4 +1,5 @@
 {
+	"_comment": "TODO: need to remove credentials at replace them from the .env",
 	"Servers":
 	{
 	  "1":
