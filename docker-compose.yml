@@ -131,13 +131,13 @@ volumes:
     name: db-volume
     driver_opts:
       type: none
-      device: /home/astein/barely-some-data/db-volume/
+      device: /home/${USER}/barely-some-data/db-volume/
       o: bind
   pa-volume:
     name: pa-volume
     driver_opts:
       type: none
-      device: /home/astein/barely-some-data/pa-volume/
+      device: /home/${USER}/barely-some-data/pa-volume/
       o: bind
 #name: fe-volume
 #    driver_opts:
