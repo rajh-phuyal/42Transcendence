@@ -47,7 +47,6 @@ ENV_PATH_FILE=".transcendence_env_path"
 HELP_ENDS_AT_LINE=45
 
 # Script should stop if something goes wrong:
-set -e 				#This option causes the script to exit immediately if any command exits with a non-zero status (i.e., an error). This is useful because it prevents the script from continuing in an unpredictable state after a failure.
 set -o pipefail		#This option ensures that if any command in a pipeline fails, the entire pipeline fails. Without this, only the exit status of the last command in the pipeline would be considered.
 
 # VARIABLES
@@ -77,6 +76,9 @@ PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
 # Used by check_env_link
 REMAINING_ARGS=()
 
+# Global variable to track the spinner PID
+SPINNER_PID=""
+
 # FUNCTIONS
 # ------------------------------------------------------------------------------ 
 # Function to print a important message in color
@@ -84,10 +86,10 @@ print_header() {
     printf "$1 >>> %s${NC}\n" "$2"
 }
 
-# Function to print error messages in red
+# Function to print error messages in red and exit the script
 print_error() {
-    echo -e "\u274C "  # Red cross emoji
-	echo $1
+	print_header "${RD}" "Error: $1"
+    exit 1
 }
 
 print_success() {
@@ -99,46 +101,124 @@ print_fail() {
 	print_header "${RD}" "Failed: $1"
 }
 
+# Function to start the spinner with a message
+start_spinner() {
+    local message="$1"
+    local spin='-\|/'
+
+    # Start the spinner in the background
+    ( while :; do
+        for i in $(seq 0 3); do
+            printf "\r%s %s" "${spin:$i:1}" "$message"
+            sleep 0.1
+        done
+    done ) &
+    
+    # Save the PID of the spinner process
+    SPINNER_PID=$!
+}
+
+# Function to stop the spinner and update the message
+stop_spinner() {
+    local exit_code=$1
+    local message="$2"
+    local failure_message="$3"
+	local fail_continue="${4:-false}"
+
+    # Kill the spinner process
+    if [[ -n "$SPINNER_PID" ]]; then
+        kill "$SPINNER_PID" 2>/dev/null
+        wait "$SPINNER_PID" 2>/dev/null
+        SPINNER_PID=""
+    fi
+
+    # Move to the beginning of the line and print the final status
+    if [ $exit_code -eq 0 ]; then
+        printf "\r\u2705 %s\n" "$message"
+    else
+		printf "\r\u274C "
+		echo -e "$message" "$RD" "$failure_message" "$NC"
+		if [ "$fail_continue" == "false" ]; then
+            exit 1  # Exit the script with a failure
+        fi
+    fi
+	return $exit_code
+}
+
+# Function to perform a task with a spinner
+perform_task_with_spinner() {
+    local message="$1..."
+    local task="$2"
+    local failure_message="$3"
+	local fail_continue="${4:-false}"
+
+    # Start the spinner
+    start_spinner "$message"
+
+    # Perform the task
+    eval "$task"
+    local exit_code=$?
+
+	# Stop the spinner and print the final status
+    stop_spinner "$exit_code" "$message" "$failure_message" "$fail_continue"
+	return $?
+}
+
 # Function to check if an .env file is linked
 check_env_link() {
+	print_header "${YL}" "Checking for the .env file link..."
 	# Initialize an empty array to hold the remaining arguments
     local args=("$@")
 
 	# Step 1: Check if the -e flag is provided
-    if [ "${args[0]:-}" == "-e" ] && [ -n "${args[1]:-}" ]; then
-        # Save environment path
-        echo "${args[1]}" > "$ENV_PATH_FILE"
-        print_success "Environment path updated to: ${args[1]}"
-        
+	if perform_task_with_spinner \
+		"Checking if the -e flag is provided" \
+		'[ "${args[0]:-}" == "-e" ] && [ -n "${args[1]:-}" ]' \
+		"Flag -e not provided or second argument is missing." \
+		true; then
+
+		perform_task_with_spinner \
+			"Updating environment path to: ${args[1]}" \
+			'echo "${args[1]}" > "$ENV_PATH_FILE"' \
+			"Could not update the environment path." \
+			false
+		
         # Remove the first two arguments (-e and the path)
         args=("${args[@]:2}")
     fi
 
 	# Step 2: Check if a stored path is there and valid
-    if [ ! -f "$ENV_PATH_FILE" ]; then
-        print_fail "No environment file path is set. Please provide the path using the -e option."
-        return 1
-    else
-        STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
-        if [ ! -f "$STORED_ENV_PATH" ]; then
-            print_fail "Stored environment file path is invalid or does not exist: $STORED_ENV_PATH"
-            return 1
-        fi
-        # Load the .env file into this script
-        source "$STORED_ENV_PATH"
-        print_success "Environment file loaded from: $STORED_ENV_PATH"
-    fi
+    if perform_task_with_spinner \
+		"Searching for storred .env path" \
+		'[ -r "$ENV_PATH_FILE" ]' \
+		"No environment file path is set. Please provide the path using the -e option." \
+		false; then
+        
+		STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
+		if perform_task_with_spinner \
+			"Checking if path ($STORED_ENV_PATH) is valid" \
+			'[ -f "$STORED_ENV_PATH" ]' \
+			"Stored environment file path is invalid or does not exist: $STORED_ENV_PATH" \
+			false; then
 
+			perform_task_with_spinner \
+				"Sourcing env vars from ($STORED_ENV_PATH)" \
+				'source "$STORED_ENV_PATH"' \
+				"" \
+				false
+		fi  
+	fi
+	
     # Step 3: Make a sample test to see if the .env file is loaded
-    if [ -z "${DB_NAME:-}" ]; then
-		print_fail "Sample test with DB_NAME"
-        print_error "The .env file is not loaded correctly. Sample test with DB_NAME failed."
-	else
-		print_success "Sample test with DB_NAME"
-    fi
-
+	perform_task_with_spinner \
+		"Sample test with <DB_NAME> " \
+		'[ ! -z "${DB_NAME:-}" ]' \
+		"Sample test with <DB_NAME> failed." "The .env file is not loaded correctly." \
+		false
+	
     # Assign remaining arguments to the global variable
     REMAINING_ARGS=("${args[@]}")
+	print_header "${GR}" "Checking for the .env file link...DONE"
 }
 
 # DOCKER BASIC FUNCTIONS
