@@ -1,12 +1,9 @@
 #!/bin/bash
 # TODO:
 # This script is working but needs to be imporved a little bit with those things:
-# - Check if the folders for the volumes are there so dont print the messages
-# - Therfore maybe put them in a function
 # - add a command to put dummy data into the database+
 # - sort out all the volumes and mounts we use
-# - include healthcheck for the containers proabably in the doocker-compose file
-
+#
 # BARELY ALIVE
 # ------------
 # This script is used to deploy the application to a target environment.
@@ -21,6 +18,12 @@
 # 	
 # e.g.:	./deploy.sh -e ./path/to/.env
 # 
+# PARSING THE ARGUMENTS:
+#   This will populate the global variables:
+NEW_ENV_PATH=""
+COMMAND=""
+CONTAINERS=""
+#
 # The link to the .env file will be stored in the file:
 ENV_PATH_FILE=".transcendence_env_path"
 #
@@ -99,13 +102,13 @@ NC='\033[0m'
 # https://github.com/rajh-phuyal/42Transcendence/wiki/
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
-HELP_ENDS_AT_LINE=45
-
-# Global variable to hold remaining arguments
-# Used by check_env_link
-REMAINING_ARGS=()
+HELP_ENDS_AT_LINE=105
+# ------------------------------------------------------------------------------
 
 
+
+
+################################################################################
 # PRINT FUNCTIONS
 # ------------------------------------------------------------------------------ 
 # Function to print a important message in color
@@ -275,50 +278,33 @@ parse_args()
 	fi
 	echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
-	exit 1 #TODO: Remove this
 }
 
 check_setup() {
-	# CHECK FOR ENV FILE and process arguments
-check_env_link "$@"
-#TODO: PROBLEM THAT THE -e cant be removed if this function is called after the switch in main
-# UPDATE ARGUMENTS: Use the global REMAINING_ARGS variable
-# Set positional parameters for further use
-# this needs to be done since the check_env_link function may use the -e flag
-set -- "${REMAINING_ARGS[@]}"
-
-# CHECK IF FOLDERS ARE THERE for the volumes
-check_volume_folders
-
-
-
-	check_env_link "$@"
+	check_env_link
 	check_volume_folders
 }
-
 
 # Function to check (and update) the link to the .env file which will then be 
 # sourced and sample tested with $DB_NAME
 check_env_link() {
 	print_header "${BL}" "Checking for the .env file link..."
-	# Initialize an empty array to hold the remaining arguments
-    local args=("$@")
 
 	# Step 1: Check if the -e flag is provided
 	if perform_task_with_spinner \
 		"Checking if the -e flag is provided" \
-		'[ "${args[0]:-}" == "-e" ] && [ -n "${args[1]:-}" ]' \
-		"Flag -e not provided or second argument is missing." \
+		'[ -n "$NEW_ENV_PATH" ]' \
+		"Flag -e not provided" \
 		true; then
 
 		perform_task_with_spinner \
-			"Updating environment path to: ${args[1]}" \
-			'echo "${args[1]}" > "$ENV_PATH_FILE"' \
+			"Updating environment path to: $NEW_ENV_PATH" \
+			'echo "$NEW_ENV_PATH" > "$ENV_PATH_FILE"' \
 			"Could not update the environment path." \
 			false
 		
-        # Remove the first two arguments (-e and the path)
-        args=("${args[@]:2}")
+        # Unset the NEW_ENV_PATH variable
+        NEW_ENV_PATH=""
     fi
 
 	# Step 2: Check if a stored path is there and valid
@@ -332,7 +318,7 @@ check_env_link() {
 		if perform_task_with_spinner \
 			"Checking if path ($STORED_ENV_PATH) is valid" \
 			'[ -f "$STORED_ENV_PATH" ]' \
-			"Stored environment file path is invalid or does not exist: $STORED_ENV_PATH" \
+			"Stored environment file path is invalid or does not exist: ($STORED_ENV_PATH); update the path using the -e option." \
 			false; then
 
 			perform_task_with_spinner \
@@ -350,8 +336,6 @@ check_env_link() {
 		"Sample test with <DB_NAME> failed." "The .env file is not loaded correctly." \
 		false
 	
-    # Assign remaining arguments to the global variable
-    REMAINING_ARGS=("${args[@]}")
 	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}" 
 }
 
@@ -409,28 +393,33 @@ check_volume_folders()
 #	re 						| fclean + start
 # ------------------------------------------------------------------------------ 
 docker_stop() {
-	print_header "${YL}" "Stopping containers: $1"
-	docker-compose --env-file "$STORED_ENV_PATH" stop $1
+	print_header "${BL}" "Stopping containers: $CONTAINERS..."
+	docker-compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
+	print_header "${BL}" "Stopping containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_build() {
-	print_header "${GR}" "Building containers: $1"
-	docker-compose --env-file "$STORED_ENV_PATH" build $1
+	print_header "${BL}" "Building containers: $CONTAINERS"
+	docker-compose --env-file "$STORED_ENV_PATH" build $CONTAINERS
+	print_header "${BL}" "Building containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_start() {
-	docker_stop "$1"
-	docker_build "$1"
-	print_header "${GR}" "Starting containers: $1"
-	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINER
+	docker_stop
+	docker_build
+	print_header "${BL}" "Starting containers: $CONTAINERS"
+	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINERS
+	print_header "${BL}" "Starting containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_clean() {
-	docker_stop "$1"
+	docker_stop
 	print_header "${OR}" "Deleting containers..."
-	docker container rm $1 || true
+	docker container rm $CONTAINERS || true
+	print_header "${OR}" "Deleting containers...${GR}DONE${NC}"
 	print_header "${OR}" "Deleting images..."
-	docker image rm $1 || true
+	docker image rm $CONTAINERS || true
+	print_header "${OR}" "Deleting images...${GR}DONE${NC}"
 }
 
 docker_fclean() {    
@@ -441,32 +430,48 @@ docker_fclean() {
         print_header "${RD}" "Operation cancelled."
         return 1
     fi
-	print_header "${RD}" "Force cleaning containers and volumes..."
 	docker_clean "$ALLOWED_CONTAINERS"
+
 	print_header "${OR}" "Deleting docker network..."
 	docker network rm "$DOCKER_NETWORK" || true
+	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
+
+	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network..."
+	docker-compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
+	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
+
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
-	docker-compose --env-file "$STORED_ENV_PATH" down -v --rmi all --remove-orphans
+	docker volume rm "$PA_VOLUME_NAME" || true
+	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
+
 	print_header "${OR}" "Deleting folders of docker volumes..."
 	sudo rm -rf ${VOLUME_ROOT_PATH}
+	print_header "${OR}" "Deleting folders of docker volumes...${GR}DONE${NC}"
+
 	print_header "${OR}" "Deltete the link to the environment file..."
 	rm -f ".transcendence_env_path"
+	print_header "${OR}" "Deltete the link to the environment file...${GR}DONE${NC}"
+
 	# print_success "All containers, images, volumes, and network have been deleted."
-	# TODO CHANGE THIS
+	print_header "${RD}" "All containers, images, volumes, and network have been deleted successfully."
 }
 
 docker_reset() {
-	docker_clean "$1"
-	docker_start "$1"
+	docker_clean
+	docker_start
 }
 
-# TODO: Doesnt work since the .env file will be deleted during fclean...
-# TODO: Also the volumes wont be created again atm...
-# TODO: Work around is to call fclean then -e and then start
 docker_re() {
-	docker_fclean "$ALLOWED_CONTAINERS"
-	docker_start "$ALLOWED_CONTAINERS"
+	#Save the old env path since fclean will delete it
+	$NEW_ENV_PATH=cat "$ENV_PATH_FILE"
+	docker_fclean
+
+	#Restore the old env path
+	check_setup
+
+	#Start the containers
+	docker_start
 }
 
 
@@ -485,46 +490,37 @@ perform_task_with_spinner \
 # Assign the global variables from the arguments
 parse_args "$@"
 
-# Show the command that will be executed
-echo ""
-perform_task_with_spinner \
-	"Starting to execute command: $COMMAND for container(s): $CONTAINER" \
-	'sleep 1' \
-	"Failed to show the command." \
-	false
-
-
 # Execute the command
 case "$COMMAND" in
 	help)
         cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
         ;;
     start)
-		check_setup #TODO: Check if this is needed
-        docker_start "$CONTAINER"
+		check_setup
+        docker_start
         ;;
     stop)
-		check_setup #TODO: Check if this is needed
-        docker_stop "$CONTAINER"
+		check_setup
+        docker_stop
         ;;
     clean)
-		check_setup #TODO: Check if this is needed
-		docker_clean "$CONTAINER"
+		check_setup
+		docker_clean
         ;;
     fclean)
-		check_setup #TODO: Check if this is needed
+		check_setup
 		docker_fclean
         ;;
     build)
-		check_setup #TODO: Check if this is needed
-        docker_build "$CONTAINER"
+		check_setup
+        docker_build
         ;;
 	reset)
-		check_setup #TODO: Check if this is needed
-		docker_reset "$CONTAINER"
+		check_setup
+		docker_reset
         ;;
     re)
-		check_setup #TODO: Check if this is needed
+		check_setup
 		docker_re
         ;;
     *)
