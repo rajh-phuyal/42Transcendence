@@ -1,13 +1,18 @@
-import { state, mutations } from './states.js';
-import { $getLocal, $setLocal, $setSession } from '../abstracts/dollars.js';
+import { state } from './states.js';
+import { mutations } from './mutations.js';
+import { actions } from './actions.js';
+import { $getLocal, $setLocal } from '../abstracts/dollars.js';
 
 class Store {
-    constructor(initialState) {
+    constructor(initialState, mutations, actions) {
         this.state = { ...initialState };
 
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
+
+        this.actions = actions;
+        this.mutations = mutations;
 
         this.mutationListeners = [];
     }
@@ -32,14 +37,18 @@ class Store {
     commit(mutationName, value) {
         this.notifyListeners(mutationName);
 
-        mutations[mutationName]?.method(this.state, value);
+        this.mutations[mutationName]?.method(this.state, value);
 
-        if (!mutations[mutationName]?.presistence) return;
+        if (!this.mutations[mutationName]?.presistence) return;
 
         $setLocal("store", JSON.stringify(this.state));
     }
+
+    dispatch(actionName, payload) {
+        this.actions[actionName](this, payload);
+    }
 }
 
-const $store = new Store(state);
+const $store = new Store(state, mutations, actions);
 
 export { $store };

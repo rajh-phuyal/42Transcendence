@@ -21,11 +21,11 @@ class AuthCard extends HTMLElement {
         inputElement3.addEventListener('keypress', this.handleKeyPress.bind(this));
     }
 
-    buttonclick(){
+    buttonclick() {
         const inputElement1 = this.shadow.getElementById("usernameInput");
         const inputElement2 = this.shadow.getElementById("passwordInput");
 
-        const values = {username: inputElement1.value, password: inputElement2.value};
+        const values = { username: inputElement1.value, password: inputElement2.value };
 
         inputElement1.value = "";
         inputElement2.value = "";
@@ -40,10 +40,10 @@ class AuthCard extends HTMLElement {
         })
     }
 
-    handleKeyPress(event){
+    handleKeyPress(event) {
 
         if (event.key !== 'Enter' || event.shiftKey)
-            return ;
+            return;
         this.buttonclick();
     }
     attributeChangedCallback(name, oldValue, newValue) {
@@ -88,9 +88,9 @@ class AuthCard extends HTMLElement {
                 outline: none;
                 background-color: #FFF6D4;
                 resize: none;
-                overflow: auto; 
+                overflow: auto;
             }
-            
+
             button{
                 display: flex;
                 font-family: 'Courier';

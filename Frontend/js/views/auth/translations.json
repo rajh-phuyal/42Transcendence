@@ -1,0 +1,16 @@
+{
+    "loginButton": {
+        "en-US": "LOGIN",
+        "pt-PT": "ENTRAR",
+        "np-NP": "लगइन गर्नुहोस्",
+        "de-DE": "LOGIN",
+        "uk-UA": "ВХІД"
+    },
+    "registerButton": {
+        "en-US": "REGISTER",
+        "pt-PT": "REGISTAR",
+        "np-NP": "दर्ता गर्नुहोस्",
+        "de-DE": "REGISTRIEREN",
+        "uk-UA": "РЕЄСТРАЦІЯ"
+    }
+}
