@@ -10,19 +10,25 @@
 # BARELY ALIVE
 # ------------
 # This script is used to deploy the application to a target environment.
-# It handels all the different docker containers and u always can specify
-# the action for a specific container. Those are:
+# 
+# USAGE:
+#	./deploy.sh [FLAGS] [COMMAND] [CONTAINER]
 #
-#	CODE	SERVICE		CONTAINER NAME	VOLUMES
-#	------|-----------|----------------|-------------
-#	fe		frontend	fr
-#	be		backend		be
-#	db		database	db				db_volume
-#	pa		pgadmin 	pa				pa_volume
+# FLAGS:
+#	| Flag  | Description                                                                                                            |
+#	|-------|------------------------------------------------------------------------------------------------------------------------|
+#	| `-e`  | Path to the .env file. If not set the script will look for the file in the current directory.                          |
+# 	
+# e.g.:	./deploy.sh -e ./path/to/.env
+# 
+# The link to the .env file will be stored in the file:
+ENV_PATH_FILE=".transcendence_env_path"
 #
 # COMMANDS:
-# (If no container is specified ALL containers will be affected)
-#	| Option  | Description                                                                                                            |
+ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re")
+#   If no command is specified the default command is `start`.
+#
+#	| Command | Description                                                                                                            |
 #	|---------|------------------------------------------------------------------------------------------------------------------------|
 #	| `help`  | Prints this message                                                                                                    |
 #	| `stop`  | Stops the container(s)                                                                                                 |
@@ -32,25 +38,55 @@
 #	| `fclean`| `clean`, removes docker volumes and docker network, deleting the volume folders, deleting the linkt to the `.env` file |
 #	| `reset` | `clean` + `start`                                                                                                      |
 #	| `re`    | `fclean` + `start`                                                                                                     |
-#	
-# ENVIROMENT VARIABLES
-# The used env file will be stored in the file
-ENV_PATH_FILE=".transcendence_env_path"
 #
-# if its not set u need to run with the flag:
-#	./deploy.sh -e <pathToEnvFile>
+# CONTAINER:
+ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
+#   The container is the service that should be affected by the command.
+#   If no container is specified ALL containers will be affected.
+#   The allowed containers are:
 #
-# MORE INFO AT:
-# https://github.com/rajh-phuyal/42Transcendence/wiki/
-# ------------------------------------------------------------------------------
-# UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
-HELP_ENDS_AT_LINE=45
-
-# Script should stop if something goes wrong:
-set -o pipefail		#This option ensures that if any command in a pipeline fails, the entire pipeline fails. Without this, only the exit status of the last command in the pipeline would be considered.
-
-# VARIABLES
-# ------------------------------------------------------------------------------
+#	| Container  | Service  | Volumes   | Description                                  |
+#	|------------|----------|-----------|----------------------------------------------|
+#	| `fe`       | frontend |           | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  |           | The backend service (django)                 |
+#	| `db`       | database | db-volume | The database service (postgres)              |
+#	| `pa`       | pgadmin  | pa-volume | The pgadmin service (pgadmin)                |
+#
+# DOCKER VOLUMES
+#   The Script also creates the docker volumes!
+#   Therfore the folders will be created at:
+VOLUME_ROOT_PATH="$HOME/barely-some-data/"
+DB_VOLUME_NAME=db-volume
+PA_VOLUME_NAME=pa-volume
+DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
+PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
+#
+# THE SPINNER
+# To make thinks pretty we use a spinner to show that the script is working.
+# The spinner allows os to nest a task in it and show a message while the task 
+# is running. The result of the task will be shown after the spinner stops.
+# USAGE:
+# 	perform_task_with_spinner "Message" "Task" "Failure Message" "Fail Continue"
+#		- Message: The message to show while the task is running
+#		- Task: The task to perform
+#		- Failure Message: The message to show if the task fails
+#		- Fail Continue: If the task fails, should the script continue or exit
+#
+#	Example:
+#		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "File does not exist" false
+# 
+# The functions start_spinner & stop_spinner are helper functions for the
+# spinner and should not be called directly!
+# 
+# Here we store the PID of the spinner process in a global variable so that we
+# can kill it if the script is stopped:
+SPINNER_PID=""
+# ------------------------------------------------------------------------------ 
+#
+# OTHER VARIABLES:
+#This option ensures that if any command in a pipeline fails, the entire pipeline fails. Without this, only the exit status of the last command in the pipeline would be considered.
+set -o pipefail
+#
 # COLORS
 RD='\033[0;31m'
 YL='\033[0;33m'
@@ -58,32 +94,17 @@ OR='\033[38;5;208m'
 GR='\033[0;32m'
 BL='\033[0;36m'
 NC='\033[0m'
-
-# Global Variables for the script
-NEW_ENV_PATH=""
-COMMAND=""
-CONTAINERS=""
-
-FE_CONTAINER_NAME="fe"
-BE_CONTAINER_NAME="be"
-DB_CONTAINER_NAME="db"
-PA_CONTAINER_NAME="pa"
-ALL_SERVICES="${FE_CONTAINER_NAME} ${BE_CONTAINER_NAME} ${DB_CONTAINER_NAME} ${PA_CONTAINER_NAME}"
-
-# Docker Volumes
-VOLUME_ROOT_PATH="$HOME/barely-some-data/"
-DB_VOLUME_NAME=db-volume
-PA_VOLUME_NAME=pa-volume
-
-DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
-PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
+#
+# MORE INFO AT:
+# https://github.com/rajh-phuyal/42Transcendence/wiki/
+# ------------------------------------------------------------------------------
+# UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
+HELP_ENDS_AT_LINE=45
 
 # Global variable to hold remaining arguments
 # Used by check_env_link
 REMAINING_ARGS=()
 
-# Global variable to track the spinner PID
-SPINNER_PID=""
 
 # PRINT FUNCTIONS
 # ------------------------------------------------------------------------------ 
@@ -100,22 +121,7 @@ print_error() {
 # ------------------------------------------------------------------------------ 
 # SPINNER FUNCTIONS
 # ------------------------------------------------------------------------------ 
-# To make thinks pretty we use a spinner to show that the script is working.
-# The spinner allows ous to nest a task in it and show a message while the task 
-# is running. The result of the task will be shown after the spinner stops.
-# USAGE:
-# 	perform_task_with_spinner "Message" "Task" "Failure Message" "Fail Continue"
-#		- Message: The message to show while the task is running
-#		- Task: The task to perform
-#		- Failure Message: The message to show if the task fails
-#		- Fail Continue: If the task fails, should the script continue or exit
-#
-#	Example:
-#		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "File does not exist" false
-# 
-# The functions start_spinner & stop_spinner are helper functions for the
-# spinner and should not be called directly!
-# ------------------------------------------------------------------------------ 
+# see comment block above
 start_spinner() {
     local message="$1"
     local spin='-\|/'
@@ -177,6 +183,7 @@ perform_task_with_spinner() {
     stop_spinner "$exit_code" "$message" "$failure_message" "$fail_continue"
 	return $?
 }
+
 # ------------------------------------------------------------------------------ 
 # SETUP FUNCTIONS
 # ------------------------------------------------------------------------------
@@ -204,8 +211,6 @@ parse_args()
 	CONTAINERS=""
 	ENV_FLAG_FOUND=false
 	MSG_MISSING_PATH="The -e flag is used but the path is missing. Flag will be ignored!"
-	# Main logic for Docker commands
-	# Loop through all the arguments
 	for arg in "$@"
 	do
 		if [ "$arg" == "-e" ]; then
@@ -217,38 +222,60 @@ parse_args()
 		elif [ "$COMMAND" == "" ]; then
 			COMMAND=$arg
 		else
-			CONTAINERS="$CONTAINERS $arg"
+			if [ -z "$CONTAINERS" ]; then
+            	CONTAINERS="$arg"
+        	else
+            	CONTAINERS="$CONTAINERS $arg"
+        	fi
 		fi
 	done
 
-	# Fallbacks for the variable
-	# 	Default command is start
-	COMMAND="${COMMAND:-start}"			
+	# 	checking the COMMAND
+	COMMAND="${COMMAND:-start}" # If no command is specified the default command is start
+	is_cmd_valid=false
+    for allowed_cmd in "${ALLOWED_COMMANDS[@]}"; do
+        if [[ "$COMMAND" == "$allowed_cmd" ]]; then
+            is_cmd_valid=true
+			break
+        fi
+    done
+    if [ "$is_cmd_valid" == false ]; then
+		print_error "Invalid command: '$COMMAND' (only '${ALLOWED_COMMANDS[@]}' are allowed!)"
+	fi
 	echo -e "COMMAND:\t$COMMAND"
-	CONTAINERS="${CONTAINERS:-$ALL_SERVICES}"	# If no container is specified, all containers will be affected
 
+	# 	checking the CONTAINERS
 	# 	Containers can't be specified for the commands fclean, re and help
-	if [[ "$COMMAND" == "fclean" || "$COMMAND" == "re" || "$COMMAND" == "help" ]] && [[ "$CONTAINERS" != "$ALL_SERVICES" ]]; then
+	if [[ "$COMMAND" == "fclean" || "$COMMAND" == "re" || "$COMMAND" == "help" ]] && [[ "$CONTAINERS" != "" ]]; then
 		echo -e $OR "Containers can't be specified for the commands fclean, re and help" $NC
 		echo -e $OR "The input '$CONTAINERS' will be ignored" $NC
 		CONTAINERS=""
 	fi
-	# 	Containers can only be those from the $ALL_SERVICES list
-	for item in $CONTAINERS; do
-        if ! [[ " $ALL_SERVICES " =~ " $item " ]]; then
-            print_error "Invalid container: '$item' (only '$ALL_SERVICES' are allowed!)"
-        fi
-    done
+
+	if [ -z "$CONTAINERS" ]; then
+	    for container in "${ALLOWED_CONTAINERS[@]}"; do
+	        CONTAINERS="$CONTAINERS $container"
+	    done
+	    CONTAINERS="${CONTAINERS# }"  # Trim leading space
+	else
+	    # Containers can only be those from the $ALLOWED_CONTAINERS list
+	    for item in $CONTAINERS; do
+	        if ! [[ " ${ALLOWED_CONTAINERS[*]} " =~ " $item " ]]; then
+	            print_error "Invalid container: '$item' (only '${ALLOWED_CONTAINERS[*]}' are allowed!)"
+	        fi
+	    done
+	fi
+	
 	echo -e "CONTAINERS:\t$CONTAINERS"
 
-	#	Environment path is not set
+	#	checking the ENV_PATH
 	if [ "$NEW_ENV_PATH" == "$MSG_MISSING_PATH" ]; then
 		echo -e $OR $MSG_MISSING_PATH $NC
 		NEW_ENV_PATH=""
 	fi
 	echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
-	exit 1
+	exit 1 #TODO: Remove this
 }
 
 check_setup() {
@@ -415,7 +442,7 @@ docker_fclean() {
         return 1
     fi
 	print_header "${RD}" "Force cleaning containers and volumes..."
-	docker_clean "$ALL_SERVICES"
+	docker_clean "$ALLOWED_CONTAINERS"
 	print_header "${OR}" "Deleting docker network..."
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker volumes..."
@@ -438,8 +465,8 @@ docker_reset() {
 # TODO: Also the volumes wont be created again atm...
 # TODO: Work around is to call fclean then -e and then start
 docker_re() {
-	docker_fclean "$ALL_SERVICES"
-	docker_start "$ALL_SERVICES"
+	docker_fclean "$ALLOWED_CONTAINERS"
+	docker_start "$ALLOWED_CONTAINERS"
 }
 
 
