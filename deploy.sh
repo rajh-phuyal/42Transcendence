@@ -428,7 +428,7 @@ docker_fclean() {
     read -p "choose: " confirm
     if [[ "$confirm" != "y" ]]; then
         print_header "${RD}" "Operation cancelled."
-        return 1
+        exit 1
     fi
 	docker_clean "$ALLOWED_CONTAINERS"
 
@@ -464,10 +464,16 @@ docker_reset() {
 
 docker_re() {
 	#Save the old env path since fclean will delete it
-	$NEW_ENV_PATH=cat "$ENV_PATH_FILE"
+	ENV_BUFFER=$(cat "$ENV_PATH_FILE")
+
+	# Do the fclean
 	docker_fclean
 
-	#Restore the old env path
+	# Restore the old env path
+	parse_args "-e" "$ENV_BUFFER"
+	ENV_BUFFER=""
+
+	# Check the setup to make sure the .env file is loaded and the volumes are there
 	check_setup
 
 	#Start the containers
