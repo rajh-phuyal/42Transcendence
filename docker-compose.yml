@@ -12,16 +12,15 @@ services:
       dockerfile: postgres.dockerfile
     environment:
       DB_NAME : $DB_NAME
-      POSTGRES_USER : $DB_USER #POSTGRES_USER is the default var name for the user and can not be changed
-      POSTGRES_PASSWORD : $DB_PSWD #POSTGRES_PASSWORD is the default var name for the password and can not be changed
+      POSTGRES_USER : $DB_USER      #POSTGRES_USER is the default var name for the user and can not be changed
+      POSTGRES_PASSWORD : $DB_PSWD  #POSTGRES_PASSWORD is the default var name for the password and can not be changed
     ports:
       - "${DB_PORT}:5432"
     volumes:
       - db-volume:/var/lib/postgresql/data
-      - ./Database/Postgres/init-db:/docker-entrypoint-initdb.d/
-    restart: unless-stopped
+    #restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      test: ["CMD-SHELL", "pg_isready -U $DB_USER -d $DB_NAME"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -42,7 +41,7 @@ services:
       - "1234:80"
     volumes:
       - pa-volume:/var/lib/pgadmin
-    restart: unless-stopped
+    #restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"] #PORT 80 is correct since it is the port of the container not the exposed port
       interval: 30s

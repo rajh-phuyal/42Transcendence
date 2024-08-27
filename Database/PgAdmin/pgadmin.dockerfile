@@ -7,10 +7,12 @@ USER root
 
 RUN apk --no-cache add curl
 
+USER pgadmin
+
 # Copy the necessary files into the container
-COPY ./config/servers.json /pgadmin4/servers.json
-COPY ./config/.pgpass /pgpassfile
-RUN chmod 600 /pgadmin4/servers.json /pgpassfile
+#COPY ./config/servers.json /pgadmin4/servers.json
+#COPY ./config/.pgpass /pgpassfile
+#RUN chmod 777 /pgadmin4/servers.json /pgpassfile
 
 USER pgadmin
 

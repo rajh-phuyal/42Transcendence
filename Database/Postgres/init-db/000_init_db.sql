@@ -1,14 +1,23 @@
---  This script is used to create the transcendence schema in the "postgres" database
-\c postgres
+-- Create the database if it doesn't exist
+CREATE DATABASE ${DB_NAME};
 
--- Create schema if it doesn't exist
-CREATE SCHEMA IF NOT EXISTS transcendence;
+-- Introduce a short delay to allow PostgreSQL to register the new database
+DO $$ 
+BEGIN
+   PERFORM pg_sleep(1);
+END $$;
 
--- Grant privileges on the public schema to admin
-GRANT USAGE, CREATE ON SCHEMA transcendence TO "admin";
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA transcendence TO "admin";
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA transcendence TO "admin";
+-- Check if the database is created successfully
+\l
+
+-- Connect to the newly created database
+\c ${DB_NAME}
+
+-- Grant privileges on the public schema to the specified user
+GRANT USAGE, CREATE ON SCHEMA public TO "${POSTGRES_USER}";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "${POSTGRES_USER}";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "${POSTGRES_USER}";
 
 -- Create ENUM types
-CREATE TYPE transcendence.relationship_status_enum AS ENUM ('pending' , 'accepted', 'rejected', 'blocked');
-CREATE TYPE transcendence.progress_status_enum AS ENUM ('not_started', 'in_progress', 'finished');
+CREATE TYPE relationship_status_enum AS ENUM ('pending', 'accepted', 'rejected', 'blocked');
+CREATE TYPE progress_status_enum AS ENUM ('not_started', 'in_progress', 'finished');
