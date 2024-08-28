@@ -35,7 +35,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA barelyaschema TO "$
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA barelyaschema TO "${POSTGRES_USER}";
 
 \! echo -e "\e[1m Create ENUM types: relationship_status_enum & progress_status_enum \e[0m"
-CREATE TYPE relationship_status_enum AS ENUM ('pending', 'accepted', 'rejected', 'blocked');
-CREATE TYPE progress_status_enum AS ENUM ('not_started', 'in_progress', 'finished');
+CREATE TYPE barelyaschema.relationship_status_enum AS ENUM ('pending', 'accepted', 'rejected', 'blocked');
+CREATE TYPE barelyaschema.progress_status_enum AS ENUM ('not_started', 'in_progress', 'finished');
 
  \! echo -e "\e[1m END of 000_init_db.sql \e[0m"

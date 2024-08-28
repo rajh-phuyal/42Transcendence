@@ -1,21 +1,19 @@
 -- [astein]:
 -- This is the second file of the configuration of the postgres db
--- Steps:
---   -  
 
 \! echo -e "\e[1m START of 010_user.sql \e[0m"
 
 -- Switching to our DB
 \c ${DB_NAME}
 
-\! echo -e "creating the table for the users..."
+\! echo -e "creating the table: 'barelyaschema.users'..."
 CREATE TABLE IF NOT EXISTS barelyaschema.users
 (
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(255) NOT NULL
 );
 
-\! echo -e "changing the ownership of the table 'users' to user '${POSTGRES_USER}'"
+\! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
 ALTER TABLE IF EXISTS barelyaschema.users OWNER to "${POSTGRES_USER}";
 
 -- [astein] this was done by joao. seems smart but i don't fully get it yet.
