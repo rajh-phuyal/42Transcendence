@@ -358,19 +358,20 @@ check_path_and_permission()
 			false
 	fi
 	
-	if ! perform_task_with_spinner \
-		"Checking permissions of folder: <$path>" \
-		'[ -r "$path" ] && [ -w "$path" ]' \
-		"no read and write permissions!" \
-		true; then
+	# Change the ownership of the folder
+	perform_task_with_spinner \
+		"Changing ownership of folder: <$path>" \
+		'sudo chown -R "$USER:docker" "$path"' \
+		"couldn't change ownership of folder: <$path>!" \
+		false
+	#TODO: NO IDEA ABOUT THE PERMISSION TOPIC!
 
-		# Change the ownership of the folder
-		perform_task_with_spinner \
-			"Changing ownership of folder: <$path>" \
-			'sudo chown -R "$USER:$USER" "$path"' \
-			"couldn't change ownership of folder: <$path>!" \
-			false
-	fi
+	# Change the permissions of the folder
+	perform_task_with_spinner \
+		"Changing permission of folder: <$path>" \
+		'sudo chmod -R 755 "$path"' \
+		"couldn't change permission of folder: <$path>!" \
+		false
 }
 
 # Function to check if the folders for the volumes are there
@@ -452,6 +453,10 @@ docker_fclean() {
 	print_header "${OR}" "Deltete the link to the environment file..."
 	rm -f ".transcendence_env_path"
 	print_header "${OR}" "Deltete the link to the environment file...${GR}DONE${NC}"
+
+	print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks..."
+    docker system prune -a --volumes -f
+	print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks...${GR}DONE${NC}"
 
 	# print_success "All containers, images, volumes, and network have been deleted."
 	print_header "${RD}" "All containers, images, volumes, and network have been deleted successfully."

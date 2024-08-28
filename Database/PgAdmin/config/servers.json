@@ -6,12 +6,12 @@
 	  {
 		"Name": "Transcendence Postgres",
 		"Group": "Servers",
-		"Host": "transcendence-postgres",
+		"Host": "pg",
 		"Port": 5432,
 		"MaintenanceDB": "postgres",
 		"Username": "admin",
 		"SSLMode": "prefer",
-		"PassFile": "/pgpassfile"
+		"PassFile": "/.pgpass"
 	  }
 	}
 }

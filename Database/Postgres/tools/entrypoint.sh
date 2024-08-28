@@ -14,6 +14,5 @@ mv /tmp/*.sql /docker-entrypoint-initdb.d/
 
 echo "STARTING MY ENTRYPOINT.SH...DONE"
 echo "STARTING THE OFFICIAL ENTRYPOINT..."
-# Execute the original entrypoint script with the provided arguments
 exec docker-entrypoint.sh "$@"
 echo "STARTING THE OFFICIAL ENTRYPOINT...DONE"
