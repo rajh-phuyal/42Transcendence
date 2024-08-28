@@ -1,4 +1,15 @@
--- Create the database if it doesn't exist
+-- [astein]:
+-- This is the first file of the configuration of the postgres db
+-- Steps:
+--   - creating database
+--   - creating custom schema
+--   - granting privileges for the db user
+--   - creating enums for later use
+
+\! echo -e "\e[1m START of 000_init_db.sql \e[0m"
+
+
+\! echo -e "\e[1m Creating Database: ${DB_NAME} \e[0m"
 CREATE DATABASE ${DB_NAME};
 
 -- Introduce a short delay to allow PostgreSQL to register the new database
@@ -7,17 +18,24 @@ BEGIN
    PERFORM pg_sleep(1);
 END $$;
 
--- Check if the database is created successfully
-\l
-
--- Connect to the newly created database
+\! echo -e "\e[1m Connect to the newly created database \e[0m"
 \c ${DB_NAME}
 
--- Grant privileges on the public schema to the specified user
-GRANT USAGE, CREATE ON SCHEMA public TO "${POSTGRES_USER}";
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "${POSTGRES_USER}";
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "${POSTGRES_USER}";
+-- Comment: somehow this database is needed. If drop it I get this msg:
+-- "psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  database "admin" does not exist"
+-- \! echo -e "\e[1m Deleting template db admin \e[0m"
+-- DROP DATABASE IF EXISTS admin;
 
--- Create ENUM types
+\! echo -e "\e[1m Creating Schema: barelyaschema \e[0m"
+CREATE SCHEMA IF NOT EXISTS barelyaschema AUTHORIZATION "${POSTGRES_USER}";
+
+\! echo -e "\e[1m Grant privileges on the public schema to the specified user: ${POSTGRES_USER} \e[0m"
+GRANT USAGE, CREATE ON SCHEMA barelyaschema TO "${POSTGRES_USER}";
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA barelyaschema TO "${POSTGRES_USER}";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA barelyaschema TO "${POSTGRES_USER}";
+
+\! echo -e "\e[1m Create ENUM types: relationship_status_enum & progress_status_enum \e[0m"
 CREATE TYPE relationship_status_enum AS ENUM ('pending', 'accepted', 'rejected', 'blocked');
 CREATE TYPE progress_status_enum AS ENUM ('not_started', 'in_progress', 'finished');
+
+ \! echo -e "\e[1m END of 000_init_db.sql \e[0m"
