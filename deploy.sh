@@ -358,19 +358,19 @@ check_path_and_permission()
 			false
 	fi
 	
-	if ! perform_task_with_spinner \
-		"Checking permissions of folder: <$path>" \
-		'[ -r "$path" ] && [ -w "$path" ]' \
-		"no read and write permissions!" \
-		true; then
-
-		# Change the ownership of the folder
-		perform_task_with_spinner \
-			"Changing ownership of folder: <$path>" \
-			'sudo chown -R "$USER:$USER" "$path"' \
-			"couldn't change ownership of folder: <$path>!" \
-			false
-	fi
+	# Change the ownership of the folder
+	perform_task_with_spinner \
+		"Changing ownership of folder: <$path>" \
+		'sudo chown -R "$USER:docker" "$path"' \
+		"couldn't change ownership of folder: <$path>!" \
+		false
+	
+	# Change the permissions of the folder
+	perform_task_with_spinner \
+		"Changing permission of folder: <$path>" \
+		'sudo chmod -R 755 "$path"' \
+		"couldn't change permission of folder: <$path>!" \
+		false
 }
 
 # Function to check if the folders for the volumes are there
@@ -425,11 +425,11 @@ docker_clean() {
 docker_fclean() {    
 	# Prompt user for confirmation
 	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL CONTAINERS, IMAGES, VOLUMES, AND THE DOCKER NETWORK (y/n): "
-    read -p "choose: " confirm
-    if [[ "$confirm" != "y" ]]; then
-        print_header "${RD}" "Operation cancelled."
-        exit 1
-    fi
+	read -p "choose: " confirm
+	if [[ "$confirm" != "y" ]]; then
+		print_header "${RD}" "Operation cancelled."
+		exit 1
+	fi
 	docker_clean "$ALLOWED_CONTAINERS"
 
 	print_header "${OR}" "Deleting docker network..."
@@ -452,6 +452,16 @@ docker_fclean() {
 	print_header "${OR}" "Deltete the link to the environment file..."
 	rm -f ".transcendence_env_path"
 	print_header "${OR}" "Deltete the link to the environment file...${GR}DONE${NC}"
+
+	print_header "${RD}" "Do u additionaly do a full clean aka 'docker system prune -a --volumes -f' (y/n): "
+	read -p "choose: " confirm
+	if [[ "$confirm" == "y" ]]; then
+		print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks..."
+		docker system prune -a --volumes -f
+		print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks...${GR}DONE${NC}"
+	else
+		print_header "${RD}" "Operation cancelled."
+	fi
 
 	# print_success "All containers, images, volumes, and network have been deleted."
 	print_header "${RD}" "All containers, images, volumes, and network have been deleted successfully."
@@ -499,37 +509,37 @@ parse_args "$@"
 # Execute the command
 case "$COMMAND" in
 	help)
-        cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
-        ;;
-    start)
+		cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
+		;;
+	start)
 		check_setup
-        docker_start
-        ;;
-    stop)
+		docker_start
+		;;
+	stop)
 		check_setup
-        docker_stop
-        ;;
-    clean)
+		docker_stop
+		;;
+	clean)
 		check_setup
 		docker_clean
-        ;;
-    fclean)
+		;;
+	fclean)
 		check_setup
 		docker_fclean
-        ;;
-    build)
+		;;
+	build)
 		check_setup
-        docker_build
-        ;;
+		docker_build
+		;;
 	reset)
 		check_setup
 		docker_reset
-        ;;
-    re)
+		;;
+	re)
 		check_setup
 		docker_re
-        ;;
-    *)
+		;;
+	*)
 		print_error "Invalid command: >$COMMAND<, run >./deploy.sh help< to see the available commands."
-        ;;
+		;;
 esac
