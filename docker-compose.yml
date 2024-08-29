@@ -39,9 +39,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD : $PA_PSWD
     ports:
       - "1234:80"
-    volumes:
-      - pa-volume:/var/lib/pgadmin
-    #restart: unless-stopped
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"] #PORT 80 is correct since it is the port of the container not the exposed port
       interval: 30s
@@ -131,12 +129,6 @@ volumes:
     driver_opts:
       type: none
       device: /home/${USER}/barely-some-data/db-volume/
-      o: bind
-  pa-volume:
-    name: pa-volume
-    driver_opts:
-      type: none
-      device: /home/${USER}/barely-some-data/pa-volume/
       o: bind
 #name: fe-volume
 #    driver_opts:
