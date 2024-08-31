@@ -60,9 +60,7 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #   Therfore the folders will be created at:
 VOLUME_ROOT_PATH="$HOME/barely-some-data/"
 DB_VOLUME_NAME=db-volume
-PA_VOLUME_NAME=pa-volume
 DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
-PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -358,19 +356,26 @@ check_path_and_permission()
 			false
 	fi
 	
-	# Change the ownership of the folder
+	# [astein]:
+	# Since i had a lot of trouble with the permissions i will set them here
+	# accoring to this guide:
+	# https://medium.com/@nielssj/docker-volumes-and-file-system-permissions-772c1aee23ca
 	perform_task_with_spinner \
 		"Changing ownership of folder: <$path>" \
-		'sudo chown -R "$USER:docker" "$path"' \
+		'sudo chown -R ":1024" "$path"' \
 		"couldn't change ownership of folder: <$path>!" \
 		false
-	#TODO: NO IDEA ABOUT THE PERMISSION TOPIC!
-
-	# Change the permissions of the folder
+	
 	perform_task_with_spinner \
 		"Changing permission of folder: <$path>" \
-		'sudo chmod -R 755 "$path"' \
+		'sudo chmod -R 775 "$path"' \
 		"couldn't change permission of folder: <$path>!" \
+		false
+
+	perform_task_with_spinner \
+		"Ensure all future content in the folder <$path> will inherit group ownership" \
+		'sudo chmod g+s "$path"' \
+		'could not run sudo chmod g+s "$path"' \
 		false
 }
 
@@ -379,7 +384,6 @@ check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
 	check_path_and_permission $DB_VOLUME_PATH
-	check_path_and_permission $PA_VOLUME_PATH
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -426,11 +430,11 @@ docker_clean() {
 docker_fclean() {    
 	# Prompt user for confirmation
 	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL CONTAINERS, IMAGES, VOLUMES, AND THE DOCKER NETWORK (y/n): "
-    read -p "choose: " confirm
-    if [[ "$confirm" != "y" ]]; then
-        print_header "${RD}" "Operation cancelled."
-        return 1
-    fi
+	read -p "choose: " confirm
+	if [[ "$confirm" != "y" ]]; then
+		print_header "${RD}" "Operation cancelled."
+		exit 1
+	fi
 	docker_clean "$ALLOWED_CONTAINERS"
 
 	print_header "${OR}" "Deleting docker network..."
@@ -443,7 +447,6 @@ docker_fclean() {
 
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
-	docker volume rm "$PA_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folders of docker volumes..."
@@ -454,9 +457,15 @@ docker_fclean() {
 	rm -f ".transcendence_env_path"
 	print_header "${OR}" "Deltete the link to the environment file...${GR}DONE${NC}"
 
-	print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks..."
-    docker system prune -a --volumes -f
-	print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks...${GR}DONE${NC}"
+	print_header "${RD}" "Do u additionaly do a full clean aka 'docker system prune -a --volumes -f' (y/n): "
+	read -p "choose: " confirm
+	if [[ "$confirm" == "y" ]]; then
+		print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks..."
+		docker system prune -a --volumes -f
+		print_header "${OR}" "Performing a full system prune to remove all remaining images, containers, volumes, and networks...${GR}DONE${NC}"
+	else
+		print_header "${RD}" "Operation cancelled."
+	fi
 
 	# print_success "All containers, images, volumes, and network have been deleted."
 	print_header "${RD}" "All containers, images, volumes, and network have been deleted successfully."
@@ -469,10 +478,16 @@ docker_reset() {
 
 docker_re() {
 	#Save the old env path since fclean will delete it
-	$NEW_ENV_PATH=cat "$ENV_PATH_FILE"
+	ENV_BUFFER=$(cat "$ENV_PATH_FILE")
+
+	# Do the fclean
 	docker_fclean
 
-	#Restore the old env path
+	# Restore the old env path
+	parse_args "-e" "$ENV_BUFFER"
+	ENV_BUFFER=""
+
+	# Check the setup to make sure the .env file is loaded and the volumes are there
 	check_setup
 
 	#Start the containers
@@ -498,37 +513,37 @@ parse_args "$@"
 # Execute the command
 case "$COMMAND" in
 	help)
-        cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
-        ;;
-    start)
+		cat ./deploy.sh | head -n ${HELP_ENDS_AT_LINE}
+		;;
+	start)
 		check_setup
-        docker_start
-        ;;
-    stop)
+		docker_start
+		;;
+	stop)
 		check_setup
-        docker_stop
-        ;;
-    clean)
+		docker_stop
+		;;
+	clean)
 		check_setup
 		docker_clean
-        ;;
-    fclean)
+		;;
+	fclean)
 		check_setup
 		docker_fclean
-        ;;
-    build)
+		;;
+	build)
 		check_setup
-        docker_build
-        ;;
+		docker_build
+		;;
 	reset)
 		check_setup
 		docker_reset
-        ;;
-    re)
+		;;
+	re)
 		check_setup
 		docker_re
-        ;;
-    *)
+		;;
+	*)
 		print_error "Invalid command: >$COMMAND<, run >./deploy.sh help< to see the available commands."
-        ;;
+		;;
 esac
