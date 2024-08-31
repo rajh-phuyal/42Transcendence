@@ -9,10 +9,11 @@ USER root
 # envsubst (gettext package) for env var expanision in config files
 RUN apk --no-cache add curl gettext
 
-# Define build arguments
-ARG PA_DB_PORT
+# Define build arguments will be set in the docker-compose file
 ARG PA_DB_NAME
+ARG PA_DB_PORT
 ARG PA_DB_USER
+ARG PA_DB_PSWD
 
 # Copy the necessary files into the container
 COPY ./config/servers.json /pgadmin4/servers.json

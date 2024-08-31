@@ -6,7 +6,7 @@
 		"Name": "Transcendence Postgres",
 		"Group": "Servers",
 		"Host": "db",
-		"Port": "${PA_DB_PORT}",
+		"Port": ${PA_DB_PORT},
 		"MaintenanceDB": "${PA_DB_NAME}",
 		"Username": "${PA_DB_USER}",
 		"SSLMode": "prefer",
