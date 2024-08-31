@@ -356,18 +356,26 @@ check_path_and_permission()
 			false
 	fi
 	
-	# Change the ownership of the folder
+	# [astein]:
+	# Since i had a lot of trouble with the permissions i will set them here
+	# accoring to this guide:
+	# https://medium.com/@nielssj/docker-volumes-and-file-system-permissions-772c1aee23ca
 	perform_task_with_spinner \
 		"Changing ownership of folder: <$path>" \
-		'sudo chown -R "$USER:docker" "$path"' \
+		'sudo chown -R ":1024" "$path"' \
 		"couldn't change ownership of folder: <$path>!" \
 		false
 	
-	# Change the permissions of the folder
 	perform_task_with_spinner \
 		"Changing permission of folder: <$path>" \
-		'sudo chmod -R 755 "$path"' \
+		'sudo chmod -R 775 "$path"' \
 		"couldn't change permission of folder: <$path>!" \
+		false
+
+	perform_task_with_spinner \
+		"Ensure all future content in the folder <$path> will inherit group ownership" \
+		'sudo chmod g+s "$path"' \
+		'could not run sudo chmod g+s "$path"' \
 		false
 }
 
