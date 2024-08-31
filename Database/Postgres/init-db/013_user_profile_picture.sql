@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.user_profile_picture
 	id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 	profile_picture BYTEA NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES barelyaschema.users(id)
+	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

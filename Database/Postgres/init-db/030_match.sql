@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS barelyaschema.match
 	winner_id INT,
 	status barelyaschema.progress_status_enum NOT NULL DEFAULT 'not_started',
 	FOREIGN KEY (map_id) REFERENCES barelyaschema.map(id),
-	FOREIGN KEY (first_player_id) REFERENCES barelyaschema.users(id),
-	FOREIGN KEY (second_player_id) REFERENCES barelyaschema.users(id),
-	FOREIGN KEY (winner_id) REFERENCES barelyaschema.users(id)
+	FOREIGN KEY (first_player_id) REFERENCES barelyaschema.user(id),
+	FOREIGN KEY (second_player_id) REFERENCES barelyaschema.user(id),
+	FOREIGN KEY (winner_id) REFERENCES barelyaschema.user(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

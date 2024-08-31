@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.tournament_register
 	id SERIAL PRIMARY KEY,
 	player_id INT NOT NULL,
 	tournament_id INT NOT NULL,
-	FOREIGN KEY (player_id) REFERENCES barelyaschema.users(id),
+	FOREIGN KEY (player_id) REFERENCES barelyaschema.user(id),
 	FOREIGN KEY (tournament_id) REFERENCES barelyaschema.tournament(id)
 );
 

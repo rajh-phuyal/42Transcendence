@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS barelyaschema.is_cool_with
 	blocked_by_first BOOLEAN NOT NULL DEFAULT FALSE,
 	blocked_by_second BOOLEAN NOT NULL DEFAULT FALSE,
 	status barelyaschema.relationship_status_enum NOT NULL DEFAULT 'pending',
-	FOREIGN KEY (first_user_id) REFERENCES barelyaschema.users(id),
-	FOREIGN KEY (second_user_id) REFERENCES barelyaschema.users(id),
+	FOREIGN KEY (first_user_id) REFERENCES barelyaschema.user(id),
+	FOREIGN KEY (second_user_id) REFERENCES barelyaschema.user(id),
 	CONSTRAINT unique_relationship UNIQUE (first_user_id, second_user_id)
 );
 

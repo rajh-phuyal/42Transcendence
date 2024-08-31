@@ -6,15 +6,15 @@
 -- Switching to our DB
 \c ${DB_NAME}
 
-\! echo -e "creating the table: 'barelyaschema.users'..."
-CREATE TABLE IF NOT EXISTS barelyaschema.users
+\! echo -e "creating the table: 'barelyaschema.user'..."
+CREATE TABLE IF NOT EXISTS barelyaschema.user
 (
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(255) NOT NULL
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
-ALTER TABLE IF EXISTS barelyaschema.users OWNER to "${POSTGRES_USER}";
+ALTER TABLE IF EXISTS barelyaschema.user OWNER to "${POSTGRES_USER}";
 
 -- [astein] this was done by joao. seems smart but i don't fully get it yet.
 -- so leave it for later:
