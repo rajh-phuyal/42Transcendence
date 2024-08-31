@@ -60,9 +60,7 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #   Therfore the folders will be created at:
 VOLUME_ROOT_PATH="$HOME/barely-some-data/"
 DB_VOLUME_NAME=db-volume
-PA_VOLUME_NAME=pa-volume
 DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
-PA_VOLUME_PATH="${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}"
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -378,7 +376,6 @@ check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
 	check_path_and_permission $DB_VOLUME_PATH
-	check_path_and_permission $PA_VOLUME_PATH
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -442,7 +439,6 @@ docker_fclean() {
 
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
-	docker volume rm "$PA_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folders of docker volumes..."
