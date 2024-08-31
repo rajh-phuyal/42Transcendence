@@ -9,6 +9,12 @@ ENV TZ UTC
 # Install envsubst (part of gettext)
 RUN apk add --no-cache gettext
 
+# Create a new group and user to match the host GID for the mounted volume
+RUN addgroup -g 1024 pg_group && adduser postgres pg_group
+# With this cmd on the host u can double check that it workded:
+#  docker exec -it db sh -c "id postgres"
+#   ->> "uid=70(postgres) gid=70(postgres) groups=70(postgres),70(postgres),1024(pg_group)"
+
 # Copy the initialization scripts into the image
 # All those Scripts will be executed in alphabetical order when the container starts
 COPY ./init-db /docker-entrypoint-initdb.d/
