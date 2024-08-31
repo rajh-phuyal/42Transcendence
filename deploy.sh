@@ -29,7 +29,7 @@ ENV_PATH_FILE=".transcendence_env_path"
 #
 # COMMANDS:
 ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re")
-# Join the array into a single string with spaces separating the elements
+# Join the array in a single string for error messages
 ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #
 #   If no command is specified the default command is `start`.
