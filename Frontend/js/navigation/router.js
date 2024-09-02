@@ -1,6 +1,10 @@
 import { routes } from './routes.js';
 import { setViewLoading } from '../abstracts/loading.js';
 
+// bind store and auth singleton to 'this' in the hooks
+import { $store } from '../store/store.js';
+import { $auth } from '../auth/authentication.js';
+
 const objectToBind = (config) => {
     let binder = {};
     let { hooks, attributes, methods } = config;
@@ -12,6 +16,9 @@ const objectToBind = (config) => {
     for (const [key, value] of Object.entries(methods)) {
         binder[key] = value.bind(binder);
     }
+
+    binder.$store = $store;
+    binder.$auth = $auth;
 
     return binder;
 }
@@ -45,12 +52,12 @@ async function router(path, params = null) {
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
 
     // bind everything except the hooks to the object
-    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave.bind(objectToBind(lastViewHooks))();
+    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
     setViewLoading(true); // later this responsibility will the that of the view
 
     // about to change route
-    viewHooks?.hooks?.beforeRouteEnter.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
 
     // reduce the params to a query string
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
@@ -58,13 +65,11 @@ async function router(path, params = null) {
     history.pushState({}, 'newUrl', pathWithParams);
 
     // DOM manipulation
-    viewHooks?.hooks?.beforeDomInsertion.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
-    viewHooks?.hooks?.afterDomInsertion.bind(viewConfigWithoutHooks)();
+    viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
 
-    setTimeout(() => {
-        setViewLoading(false);
-    }, 1000);
+    setViewLoading(false);
 
     // ser the view name to the container
     viewContainer.dataset.view = route.view;

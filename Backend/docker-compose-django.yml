@@ -1,3 +1,6 @@
+# DEPRECATED!!!
+# astein: Francisco and me merged the services into one docker-compose file at the root of the repository
+# This file is kept for reference only and to see if u changed stuff on ur branches...
 services:
   django:
     container_name: transcendence-django

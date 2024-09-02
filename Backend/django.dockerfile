@@ -1,3 +1,4 @@
+# astein: This dockerfile will be used from the main docker-compose file
 # Use an official Python runtime as a parent image
 FROM python:3.10
 

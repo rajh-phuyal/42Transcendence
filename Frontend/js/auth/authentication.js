@@ -1,39 +1,76 @@
-/* all the authentication logic is incapsulated here*/
+import { $store } from '../store/store.js';
 
 class Auth {
     constructor() {
-        this.jwtToken = localStorage.getItem('jwtToken');
+        // Initialize the state from localStorage if available
+        this.jwtToken = $store.fromState('jwtToken');
+
+        // Check if the user is authenticated
+        this.isAuthenticated = this.isUserAuthenticated();
 
         return this;
     }
 
-    isAuthenticated = () => {
-        return this.jwtToken !== null;
+    // Check if the user is authenticated
+    isUserAuthenticated() {
+        return $store.fromState('isAuthenticated') && this.verifyJWTToken();
     }
 
+    // Get the Authorization header with the JWT token
     getAuthHeader() {
-        return `Bearer ${this.jwtToken}`;
+        const token = this.jwtToken;
+        return token ? `Bearer ${token}` : null;
     }
 
-    login(username, password) {
-        // make a request to the server to authenticate the user
-        this.jwtToken = token;
-        localStorage.setItem('jwtToken', token);
+    authenticate(username, password) {
+        call('authentication/login', 'POST', { username, password })
+        .then(({ token, user }) => {
+            $store.commit('setUser', user);
+            $store.commit('setIsAuthenticated', true);
+            $store.commit('setJWTToken', token);
+
+            // TODO: need to have a success message on global level
+        })
+        .catch(error => {
+            console.error('Failed to authenticate', error);
+
+            // the view needs to handle the error
+            throw error;
+        });
     }
 
+    // Logout the user by clearing the JWT token and state
     logout() {
-        this.jwtToken = null;
-        localStorage.removeItem('jwtToken');
+        $store.commit('setUser', null);
+        $store.commit('setIsAuthenticated', false);
+        $store.commit('setJWTToken', null);
     }
 
-    verifyJWTToken = () => {
-        // check if the token is valid
+    // Verify the JWT token's validity
+    verifyJWTToken() {
+        const token = this.jwtToken;
+        if (!token) return false;
+
+        const [header, payload, signature] = token.split('.');
+        if (!header || !payload || !signature) return false;
+
+        try {
+            const { exp } = JSON.parse(atob(payload));
+            if (Date.now() >= exp * 1000) {
+                this.logout();
+                return false;
+            }
+        } catch (e) {
+            // TODO: try to refresh the token
+            console.error('Invalid token', e);
+            this.logout();
+            return false;
+        }
         return true;
-    }
-
-    getJWTToken = () => {
-        return this.jwtToken;
     }
 }
 
-export { Auth };
+// Create a single global instance of the Auth class
+const $auth = new Auth();
+
+export { $auth };

@@ -30,6 +30,18 @@ export const $off = (element, event, callback) => element.removeEventListener(ev
 
 export const $emit = (element, event) => element.dispatchEvent(new Event(event)) || null;
 
+export const $getLocal = (key) => localStorage.getItem(key) || null;
+
+export const $setLocal = (key, value) => localStorage.setItem(key, value) || null;
+
+export const $removeLocal = (key) => localStorage.removeItem(key) || null;
+
+export const $getSession = (key) => sessionStorage.getItem(key) || null;
+
+export const $setSession = (key, value) => sessionStorage.setItem(key, value) || null;
+
+export const $removeSession = (key) => sessionStorage.removeItem(key) || null;
+
 export default {
     $id,
     $class,
@@ -45,5 +57,11 @@ export default {
     $hasClass,
     $on,
     $off,
-    $emit
+    $emit,
+    $getLocal,
+    $setLocal,
+    $removeLocal,
+    $getSession,
+    $setSession,
+    $removeSession
 };

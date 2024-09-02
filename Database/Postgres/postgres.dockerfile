@@ -1,3 +1,4 @@
+# astein: This dockerfile will be used from the main docker-compose file
 FROM postgres:16-alpine
 
 # Set the default encoding to UTF-8
