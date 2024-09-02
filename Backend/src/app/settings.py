@@ -81,14 +81,16 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
 		'OPTIONS': {
-			'options': '-c search_path=transcendence'
+			'options': '-c search_path=barelyaschema'
 		},
 		'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-		'NAME' : os.getenv('DB_NAME'),
-		'USER' : os.getenv('DB_USER'),
-		'PASSWORD' : os.getenv('DB_PSWD'),
-		'HOST' : 'host.docker.internal',
-		'PORT' : os.getenv('DB_PORT'),
+		'NAME' : os.getenv('BE_DB_NAME'),
+		'USER' : os.getenv('BE_DB_USER'),
+		'PASSWORD' : os.getenv('BE_DB_PSWD'),
+		# 'HOST' : os.getenv('BE_DB_HOST'),
+		# 'HOST' : 'host.docker.internal',
+		'HOST' : 'db',
+		'PORT' : os.getenv('BE_DB_PORT'),
     }
 }
 
