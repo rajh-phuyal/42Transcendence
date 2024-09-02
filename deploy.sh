@@ -29,6 +29,9 @@ ENV_PATH_FILE=".transcendence_env_path"
 #
 # COMMANDS:
 ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re")
+# Join the array in a single string for error messages
+ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
+#
 #   If no command is specified the default command is `start`.
 #
 #	| Command | Description                                                                                                            |
@@ -241,7 +244,7 @@ parse_args()
         fi
     done
     if [ "$is_cmd_valid" == false ]; then
-		print_error "Invalid command: '$COMMAND' (only '${ALLOWED_COMMANDS[@]}' are allowed!)"
+		print_error "Invalid command: '${COMMAND}' (only '${ALLOWED_COMMANDS_STR}' are allowed!)"
 	fi
 	echo -e "COMMAND:\t$COMMAND"
 
@@ -544,6 +547,6 @@ case "$COMMAND" in
 		docker_re
 		;;
 	*)
-		print_error "Invalid command: >$COMMAND<, run >./deploy.sh help< to see the available commands."
+		print_error "Invalid command: >${COMMAND}<, run >./deploy.sh help< to see the available commands."
 		;;
 esac
