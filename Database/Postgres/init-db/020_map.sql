@@ -1,20 +1,25 @@
-\c postgres
+-- [astein]:
+-- This is an essential part of the db configuration process!
 
--- Table: transcendence.map
+\! echo -e "\e[1m START of 020_map.sql \e[0m"
 
--- DROP TABLE IF EXISTS transcendence.map;
+-- Switching to our DB
+\c ${DB_NAME}
 
-CREATE TABLE IF NOT EXISTS transcendence.map
+\! echo -e "creating the table: 'barelyaschema.map'..."
+CREATE TABLE IF NOT EXISTS barelyaschema.map
 (
-	id SERIAL PRIMARY KEY
-	, map_name VARCHAR(255) NOT NULL
-	, map_image BYTEA NOT NULL
+	id SERIAL PRIMARY KEY,
+	map_name VARCHAR(255) NOT NULL,
+	map_image BYTEA NOT NULL
 );
 
-ALTER TABLE IF EXISTS transcendence.map OWNER to "admin";
+\! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
+ALTER TABLE IF EXISTS barelyaschema.map OWNER to "${POSTGRES_USER}";
 
+-- [astein] this was done by joao. seems smart but i don't fully get it yet.
 -- Index: idx_map
-
 -- DROP INDEX IF EXISTS idx_map;
+-- CREATE INDEX IF NOT EXISTS idx_map ON barelyaschema.map USING btree(map_name);
 
-CREATE INDEX IF NOT EXISTS idx_map ON transcendence.map USING btree(map_name);
+\! echo -e "\e[1m END of 020_map.sql \e[0m"
