@@ -59,7 +59,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,11 +84,11 @@ DATABASES = {
 			'options': '-c search_path=transcendence'
 		},
 		'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-		'NAME' : 'postgres',
-		'USER' : 'admin',
-		'PASSWORD' : 'admin',
+		'NAME' : os.getenv('DB_NAME'),
+		'USER' : os.getenv('DB_USER'),
+		'PASSWORD' : os.getenv('DB_PSWD'),
 		'HOST' : 'host.docker.internal',
-		'PORT' : '5432'
+		'PORT' : os.getenv('DB_PORT'),
     }
 }
 
