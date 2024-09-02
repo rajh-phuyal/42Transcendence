@@ -32,7 +32,7 @@ BE_DB_NAME=$DB_NAME
 BE_DB_PORT=$DB_PORT
 BE_DB_USER=$DB_USER
 BE_DB_PSWD=$DB_PSWD
-	  
+BE_DB_HOST=host.docker.internal
 
 # CONTAINER FRONTEND AKA FE
 # -------------------------------------------------------------------

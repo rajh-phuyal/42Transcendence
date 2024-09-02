@@ -84,13 +84,11 @@ DATABASES = {
 			'options': '-c search_path=barelyaschema'
 		},
 		'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-		'NAME' : os.getenv('BE_DB_NAME'),
-		'USER' : os.getenv('BE_DB_USER'),
-		'PASSWORD' : os.getenv('BE_DB_PSWD'),
-		# 'HOST' : os.getenv('BE_DB_HOST'),
-		# 'HOST' : 'host.docker.internal',
-		'HOST' : 'db',
-		'PORT' : os.getenv('BE_DB_PORT'),
+		'NAME' : os.environ.get('BE_DB_NAME'),
+		'USER' : os.environ.get('BE_DB_USER'),
+		'PASSWORD' : os.environ.get('BE_DB_PSWD'),
+		'HOST' : os.getenv('BE_DB_HOST'),
+		'PORT' : os.environ.get('BE_DB_PORT'),
     }
 }
 
