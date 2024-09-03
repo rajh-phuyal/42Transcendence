@@ -11,7 +11,7 @@ DOCKER_NETWORK=barely-a-network
 # -------------------------------------------------------------------
 # POSTGRES AKA DATABASE AKA DB
 # ---
-DB_NAME=barelyAliveDB
+DB_NAME=barelyalivedb
 DB_PORT=5432
 DB_USER=admin
 DB_PSWD=admin
@@ -20,6 +20,11 @@ DB_PSWD=admin
 # ---
 PA_MAIL=admin@example.com
 PA_PSWD=admin_password
+PA_DB_NAME=$DB_NAME
+PA_DB_PORT=$DB_PORT
+PA_DB_USER=$DB_USER
+PA_DB_PSWD=$DB_PSWD
+
 
 # CONTAINER BACKEND AKA BE
 # -------------------------------------------------------------------
