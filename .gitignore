@@ -19,6 +19,7 @@ Backend/src/db.sqlite3
 # Environment variables
 .transcendence_env_path
 *.env
+example.enviroment
 
 # VS-CODE
 .vscode/

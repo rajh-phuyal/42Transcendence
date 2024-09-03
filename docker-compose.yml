@@ -67,6 +67,7 @@ services:
       - BE_DB_NAME=$BE_DB_NAME
       - BE_DB_USER=$BE_DB_USER
       - BE_DB_PSWD=$BE_DB_PSWD
+      - BE_SECRET_KEY=$BE_SECRET_KEY
     ports:
       - "8000:8000" #need to be changed
     volumes:
