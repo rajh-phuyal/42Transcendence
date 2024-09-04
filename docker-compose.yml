@@ -69,7 +69,7 @@ services:
       - BE_DB_PSWD=$BE_DB_PSWD
       - BE_SECRET_KEY=$BE_SECRET_KEY
     ports:
-      - "8000:8000" #need to be changed
+      - "8000:8000" #need to be changed. remove it after
     volumes:
       - ./Backend/src:/app
     restart: unless-stopped

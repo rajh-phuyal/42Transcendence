@@ -6,19 +6,20 @@ FROM python:3.10
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set the working directory
+# Changing the working directory (cd)
 WORKDIR /app
 
-COPY src /app/
+# COPY src /app/ we might need it for later when the project is ready for submission
 
-RUN pip install -r requirements.txt
+# We need the requirements file during the buildng phase of the image,
+# so we copy it and remove it after the requirements are installed.
+# This is necessary because the volume is not moynted during the build time yet
+RUN mkdir /tempReqBuild/
+COPY ./src/requirements.txt /tempReqBuild/requirements.txt
+RUN pip install -r /tempReqBuild/requirements.txt
+RUN rm -rf /tempReqBuild/
 
 EXPOSE 8000
-
-# Copy the project code into the container
-
-# Set the working directory to where manage.py is located
-WORKDIR /app
 
 # make migrations on the entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
