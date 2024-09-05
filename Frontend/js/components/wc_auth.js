@@ -1,4 +1,5 @@
-import call from "../abstracts/call.js";
+import { $auth } from '../auth/authentication.js';
+import router from '../navigation/router.js';
 
 class AuthCard extends HTMLElement {
     constructor() {
@@ -11,8 +12,13 @@ class AuthCard extends HTMLElement {
     }
 
     hideNav(){
-        var nav = document.getElementById('navigator');
+        let nav = document.getElementById('navigator');
         nav.style.display = 'none';
+    }
+
+    showNav(){
+        let nav = document.getElementById('navigator');
+        nav.style.display = 'flex';
     }
 
     connectedCallback() {
@@ -28,31 +34,38 @@ class AuthCard extends HTMLElement {
     }
 
     primaryButtonclick(){
-        const inputElement1 = this.shadow.getElementById("usernameInput");
-        const inputElement2 = this.shadow.getElementById("passwordInput");
+        const usernameField = this.shadow.getElementById("usernameInput");
+        const passwordField = this.shadow.getElementById("passwordInput");
 
-        const values = {username: inputElement1.value, password: inputElement2.value};
+        // todo: block if empty and other validations
 
-        inputElement1.value = "";
-        inputElement2.value = "";
-        console.log("input values:", values);
-        inputElement1.blur();
-        inputElement2.blur();
+        usernameField.blur();
+        passwordField.blur();
 
-        call("/home", "POST", values).then(() => {
-            console.log("it came here");
-        }).catch(() => {
-            console.log("Error");
+        const authAction = this.login ? "authenticate" : "createUser";
+        $auth?.[authAction](usernameField?.value, passwordField?.value)
+        .then((x) => {
+            console.log("auth response:", x);
+
+            this.showNav();
+            router("/home");
+
+            // todo: additional stuff: add to store, show success message
         })
+        .catch(error => {
+            console.error(error);
+        })
+        .finally(() => {
+            usernameField.value = "";
+            passwordField.value = "";
+        });
     }
 
     secondaryButtonclick(){
-            
         let temp = this.primaryButton;
         this.primaryButton = this.secundaryButton;
         this.secundaryButton = temp;
         this.login = !this.login;
-        console.log(this.login);
         this.connectedCallback();
     }
 
@@ -63,7 +76,6 @@ class AuthCard extends HTMLElement {
         this.primaryButtonclick();
     }
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(name, ":", newValue);
         if (name === "login") {
             if (newValue === "true" || newValue === "True")
             {
@@ -112,7 +124,7 @@ class AuthCard extends HTMLElement {
                 border-radius: 3px;
                 background-color: #100C09;
                 resize: none;
-                overflow: auto; 
+                overflow: auto;
             }
 
             input:hover{
@@ -122,7 +134,7 @@ class AuthCard extends HTMLElement {
             input:focus{
                 background-color: #201C19;
             }
-            
+
             button {
                 display: flex;
                 justify-content: center;
@@ -138,13 +150,13 @@ class AuthCard extends HTMLElement {
                 height: 80px;
                 border: 8px double #100C09;
                 color: #3D3D3D;
-                background-color: #FFFCE6; 
+                background-color: #FFFCE6;
             }
 
             .secundary-button{
                 border: 2px solid #FFFCE6;
                 color: #FFFCE6;
-                background-color: #100C09; 
+                background-color: #100C09;
             }
 
             button:hover{
@@ -154,7 +166,7 @@ class AuthCard extends HTMLElement {
             button:active{
                 background-color: #DFDCC6;
             }
-            
+
             .secundary-button:hover{
                 background-color: #201C19;
             }

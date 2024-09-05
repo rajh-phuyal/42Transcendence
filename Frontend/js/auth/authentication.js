@@ -1,4 +1,5 @@
 import { $store } from '../store/store.js';
+import call from '../abstracts/call.js';
 
 class Auth {
     constructor() {
@@ -16,27 +17,12 @@ class Auth {
         return $store.fromState('isAuthenticated') && this.verifyJWTToken();
     }
 
-    // Get the Authorization header with the JWT token
-    getAuthHeader() {
-        const token = this.jwtToken;
-        return token ? `Bearer ${token}` : null;
+    authenticate(username, password) {
+        return call('auth/login/', 'POST', { username: username, password: password });
     }
 
-    authenticate(username, password) {
-        call('authentication/login', 'POST', { username, password })
-        .then(({ token, user }) => {
-            $store.commit('setUser', user);
-            $store.commit('setIsAuthenticated', true);
-            $store.commit('setJWTToken', token);
-
-            // TODO: need to have a success message on global level
-        })
-        .catch(error => {
-            console.error('Failed to authenticate', error);
-
-            // the view needs to handle the error
-            throw error;
-        });
+    createUser(username, password) {
+        return call('auth/register/', 'POST', { username: username, password: password });
     }
 
     // Logout the user by clearing the JWT token and state
@@ -44,6 +30,11 @@ class Auth {
         $store.commit('setUser', null);
         $store.commit('setIsAuthenticated', false);
         $store.commit('setJWTToken', null);
+    }
+
+    // Get the Authorization header with the JWT token
+    getAuthHeader() {
+        return this.jwtToken ? `Bearer ${this.jwtToken}` : undefined;
     }
 
     // Verify the JWT token's validity

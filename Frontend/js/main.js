@@ -5,9 +5,13 @@ import { webComponents } from './components/components.js';
 
 setViewLoading(true);
 
-// import all web components
-for (const component of webComponents) {
-    import(`./components/${component}.js`);
+try {
+    // import all web components
+    for (const component of webComponents) {
+        import(`./components/${component}.js`);
+    }
+} catch (error) {
+    console.error('Error importing web components:', error);
 }
 
 // initilize the nav bar
