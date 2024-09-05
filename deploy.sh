@@ -60,24 +60,27 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
-#   Therfore the folders will be created at:
-VOLUME_ROOT_PATH="$HOME/barely-some-data/"
+#	To work on linux and mac the path to the volumes is different and is set by
+#   the function: "check_os" will set the var below:
+OS_HOME_PATH=""
+#   The volume folders will be created in a folder located at home called:
+VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
-DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
 # The spinner allows os to nest a task in it and show a message while the task 
 # is running. The result of the task will be shown after the spinner stops.
 # USAGE:
-# 	perform_task_with_spinner "Message" "Task" "Failure Message" "Fail Continue"
+# 	perform_task_with_spinner "Message" "Task" "Success Message" "Failure Message" "Fail Continue"
 #		- Message: The message to show while the task is running
 #		- Task: The task to perform
+#		- Success Message: The message to show if the task succeeds
 #		- Failure Message: The message to show if the task fails
 #		- Fail Continue: If the task fails, should the script continue or exit
 #
 #	Example:
-#		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "File does not exist" false
+#		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "" "File does not exist" false
 # 
 # The functions start_spinner & stop_spinner are helper functions for the
 # spinner and should not be called directly!
@@ -146,8 +149,9 @@ start_spinner() {
 stop_spinner() {
     local exit_code=$1
     local message="$2"
-    local failure_message="$3"
-	local fail_continue="${4:-false}"
+    local sucess_message="$3"
+    local failure_message="$4"
+	local fail_continue="${5:-false}"
 
     # Kill the spinner process
     if [[ -n "$SPINNER_PID" ]]; then
@@ -157,24 +161,45 @@ stop_spinner() {
     fi
 
     # Move to the beginning of the line and print the final status
-    if [ $exit_code -eq 0 ]; then
-        printf "\r\u2705 %s\n" "$message"
-    else
-		printf "\r\u274C "
-		echo -e "$message" "$RD" "$failure_message" "$NC"
-		if [ "$fail_continue" == "false" ]; then
-            exit 1  # Exit the script with a failure
-        fi
-    fi
+	if [ $exit_code -eq 0 ]; then
+	    printf "\r\u2705 "
+	    echo -e "$message $GR \"$success_message\" $NC"
+	else
+	    printf "\r\u274C "
+	    echo -e "$message $RD \"$failure_message\" $NC"
+	    if [ "$fail_continue" == "false" ]; then
+	        exit 1  # Exit the script with a failure
+	    fi
+	fi
 	return $exit_code
 }
 
 # see comment block above
 perform_task_with_spinner() {
-    local message="$1..."
+
+	local message="$1..."
     local task="$2"
-    local failure_message="$3"
-	local fail_continue="${4:-false}"
+	# Since the feature sucess msg was added later the following logic happens:
+	# If 5 args we have the new sucess msg feature
+	# If only 4 args we set it to ""
+	if [ "$#" -eq 4 ]; then
+	    local success_message=""
+	    local failure_message="$3"
+	    local fail_continue="${4:-false}"
+	elif [ "$#" -eq 5 ]; then
+	    local success_message="$3"
+		echo "sucess msg: $success_message"
+	    local failure_message="$4"
+	    local fail_continue="${5:-false}"
+	else
+	    echo "Error: This function requires 4-5 arguments! Delivered:"
+	    echo -e "msg\t\t:$1"
+	    echo -e "task\t\t:$2"
+	    echo -e "success msg\t:$3"
+	    echo -e "fail msg\t:$4"
+	    echo -e "fail continue\t:$5"
+	    return 1
+	fi
 
     # Start the spinner
     start_spinner "$message"
@@ -184,7 +209,7 @@ perform_task_with_spinner() {
     local exit_code=$?
 
 	# Stop the spinner and print the final status
-    stop_spinner "$exit_code" "$message" "$failure_message" "$fail_continue"
+    stop_spinner "$exit_code" "$message" "$sucess_message" "$failure_message" "$fail_continue"
 	return $?
 }
 
@@ -282,8 +307,30 @@ parse_args()
 }
 
 check_setup() {
+	check_os
 	check_env_link
 	check_volume_folders
+}
+
+# To set the volume location we need to differ between linux and mac
+check_os()
+{
+	OS_HOME_PATH=""
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+	    # macOS
+	    OS_HOME_PATH="/Users/$(whoami)/"
+	elif [[ "$OSTYPE" == "linux"* ]]; then
+	    # Any Linux distribution
+	    OS_HOME_PATH="$HOME/"
+	else
+		print_error "Unsupported OS: $OSTYPE"
+	fi
+	perform_task_with_spinner \
+		"Setting the home path for this OS" \
+		'[ -n "$OS_HOME_PATH" ]' \
+		"$OS_HOME_PATH" \
+		"Could not figure out home path on this os!" \
+		false
 }
 
 # Function to check (and update) the link to the .env file which will then be 
@@ -386,7 +433,7 @@ check_path_and_permission()
 check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
-	check_path_and_permission $DB_VOLUME_PATH
+	check_path_and_permission "TODO"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -453,7 +500,7 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folders of docker volumes..."
-	sudo rm -rf ${VOLUME_ROOT_PATH}
+	sudo rm -rf "$OS_HOME_PATH$V TODO"
 	print_header "${OR}" "Deleting folders of docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deltete the link to the environment file..."
