@@ -377,10 +377,47 @@ check_env_link() {
 	perform_task_with_spinner \
 		"Sample test with <DB_NAME> " \
 		'[ ! -z "${DB_NAME:-}" ]' \
-		"" \
+		"$DB_NAME" \
 		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
 	
+	# Step 4: Append or update the var VOLUME_ROOT_PATH in the .env file
+	if perform_task_with_spinner \
+		"Checking if env VOLUME_ROOT_PATH already exists" \
+		"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
+		"" \
+		"" \
+		true; then
+			perform_task_with_spinner \
+				"Updating var VOLUME_ROOT_PATH in env file" \
+				"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
+				"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+				"failed to update var VOLUME_ROOT_PATH in env file" \
+				false
+		else
+			perform_task_with_spinner \
+			"Adding var VOLUME_ROOT_PATH to env file" \
+			"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
+			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+			"failed to add var VOLUME_ROOT_PATH to env file" \
+			false
+	fi
+
+	# Step 5: Source again
+	perform_task_with_spinner \
+		"Sourcing updated env vars from ($STORED_ENV_PATH)" \
+		"source $STORED_ENV_PATH" \
+		"" \
+		"couldn't source env file!" \
+		false
+
+    # Step 5: Make a sample test to see if the .env file is loaded
+	perform_task_with_spinner \
+		"Sample test with <VOLUME_ROOT_PATH> " \
+		'[ ! -z "${VOLUME_ROOT_PATH:-}" ]' \
+		"$VOLUME_ROOT_PATH" \
+		"Sample test with <VOLUME_ROOT_PATH> failed. The .env file is not loaded correctly." \
+		false
 	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}" 
 }
 
