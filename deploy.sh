@@ -163,10 +163,10 @@ stop_spinner() {
     # Move to the beginning of the line and print the final status
 	if [ $exit_code -eq 0 ]; then
 	    printf "\r\u2705 "
-	    echo -e "$message $GR \"$success_message\" $NC"
+	    echo -e "$message $GR ${success_message} $NC"
 	else
 	    printf "\r\u274C "
-	    echo -e "$message $RD \"$failure_message\" $NC"
+	    echo -e "$message $RD ${failure_message} $NC"
 	    if [ "$fail_continue" == "false" ]; then
 	        exit 1  # Exit the script with a failure
 	    fi
@@ -177,30 +177,21 @@ stop_spinner() {
 # see comment block above
 perform_task_with_spinner() {
 
-	local message="$1..."
-    local task="$2"
-	# Since the feature sucess msg was added later the following logic happens:
-	# If 5 args we have the new sucess msg feature
-	# If only 4 args we set it to ""
-	if [ "$#" -eq 4 ]; then
-	    local success_message=""
-	    local failure_message="$3"
-	    local fail_continue="${4:-false}"
-	elif [ "$#" -eq 5 ]; then
-	    local success_message="$3"
-		echo "sucess msg: $success_message"
-	    local failure_message="$4"
-	    local fail_continue="${5:-false}"
-	else
-	    echo "Error: This function requires 4-5 arguments! Delivered:"
+	if [ "$#" -ne 5 ]; then
+		echo "Error: This function requires arguments! Delivered:"
 	    echo -e "msg\t\t:$1"
 	    echo -e "task\t\t:$2"
 	    echo -e "success msg\t:$3"
 	    echo -e "fail msg\t:$4"
 	    echo -e "fail continue\t:$5"
-	    return 1
+	    exit 1
 	fi
-
+	local message="$1..."
+    local task="$2"
+	local success_message="${3:-"done"}"
+	local failure_message="$4"
+	local fail_continue="${5:-false}"
+	    
     # Start the spinner
     start_spinner "$message"
 
@@ -342,12 +333,14 @@ check_env_link() {
 	if perform_task_with_spinner \
 		"Checking if the -e flag is provided" \
 		'[ -n "$NEW_ENV_PATH" ]' \
+		"" \
 		"Flag -e not provided" \
 		true; then
 
 		perform_task_with_spinner \
 			"Updating environment path to: $NEW_ENV_PATH" \
 			'echo "$NEW_ENV_PATH" > "$ENV_PATH_FILE"' \
+			"" \
 			"Could not update the environment path." \
 			false
 		
@@ -359,6 +352,7 @@ check_env_link() {
     if perform_task_with_spinner \
 		"Searching for storred .env path" \
 		'[ -r "$ENV_PATH_FILE" ]' \
+		"" \
 		"No environment file path is set. Please provide the path using the -e option." \
 		false; then
         
@@ -366,12 +360,14 @@ check_env_link() {
 		if perform_task_with_spinner \
 			"Checking if path ($STORED_ENV_PATH) is valid" \
 			'[ -f "$STORED_ENV_PATH" ]' \
+			"" \
 			"Stored environment file path is invalid or does not exist: ($STORED_ENV_PATH); update the path using the -e option." \
 			false; then
 
 			perform_task_with_spinner \
 				"Sourcing env vars from ($STORED_ENV_PATH)" \
 				'source "$STORED_ENV_PATH"' \
+				"" \
 				"" \
 				false
 		fi  
@@ -381,7 +377,8 @@ check_env_link() {
 	perform_task_with_spinner \
 		"Sample test with <DB_NAME> " \
 		'[ ! -z "${DB_NAME:-}" ]' \
-		"Sample test with <DB_NAME> failed." "The .env file is not loaded correctly." \
+		"" \
+		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
 	
 	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}" 
@@ -395,6 +392,7 @@ check_path_and_permission()
 	if ! perform_task_with_spinner \
 		"Checking presents of folder: <$path>" \
 		'[ -e "$path" ]' \
+		"is there" \
 		"doesn't exist" \
 		true; then
 
@@ -402,6 +400,7 @@ check_path_and_permission()
 		perform_task_with_spinner \
 			"Creating folder: <$path>" \
 			'mkdir -p $path' \
+			"created" \
 			"couldn't create folder: <$path>!" \
 			false
 	fi
@@ -413,18 +412,21 @@ check_path_and_permission()
 	perform_task_with_spinner \
 		"Changing ownership of folder: <$path>" \
 		'sudo chown -R ":1024" "$path"' \
+		"" \
 		"couldn't change ownership of folder: <$path>!" \
 		false
 	
 	perform_task_with_spinner \
 		"Changing permission of folder: <$path>" \
 		'sudo chmod -R 775 "$path"' \
+		"" \
 		"couldn't change permission of folder: <$path>!" \
 		false
 
 	perform_task_with_spinner \
 		"Ensure all future content in the folder <$path> will inherit group ownership" \
 		'sudo chmod g+s "$path"' \
+		"" \
 		'could not run sudo chmod g+s "$path"' \
 		false
 }
@@ -433,7 +435,7 @@ check_path_and_permission()
 check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
-	check_path_and_permission "TODO"
+	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$DB_VOLUME_NAME/"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -554,6 +556,7 @@ echo ""
 perform_task_with_spinner \
 	"Welcome to Barely Alive" \
 	'sleep 1' \
+	"Let's go" \
 	"Failed to print welcome message." \
 	false
 
