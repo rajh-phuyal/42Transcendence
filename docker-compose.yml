@@ -58,9 +58,9 @@ services:
     build:
       context: ./Backend
       dockerfile: django.dockerfile
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       - BE_DB_HOST=db
       - BE_DB_PORT=$BE_DB_PORT
