@@ -32,6 +32,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# [astein:] DO WE NEED ALL OF THEM? THEY CREATE A LOT OF TABLES IN THE DATABASE
+# @RAJH: please review :)
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'authentication',
+    'user',
 ]
 
 MIDDLEWARE = [
