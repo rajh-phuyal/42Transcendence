@@ -1,3 +1,5 @@
+// TODO put the css styling in a css file (for all web components)
+
 import call from "../abstracts/call.js";
 
 class AuthCard extends HTMLElement {

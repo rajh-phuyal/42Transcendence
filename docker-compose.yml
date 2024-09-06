@@ -93,7 +93,7 @@ services:
     #environment:
     #  - name=value
     ports:
-      - "8080:80" #Maybe need to change later 443
+      - "443:443" #Maybe need to change later 443
     volumes:
       # TODO
       # ----
