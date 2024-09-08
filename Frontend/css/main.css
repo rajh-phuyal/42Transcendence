@@ -35,7 +35,7 @@ body {
 
 #router-view {
 	margin-top: 0px;
-	height: 95vh;
+	height: 100vh;
 	background-color: rgb(255, 247, 230);
 }
 

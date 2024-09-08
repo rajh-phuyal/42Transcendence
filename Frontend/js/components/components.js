@@ -5,5 +5,5 @@ export const webComponents = [
     'wc_barely-a-button',
     'wc_search-bar',
     'wc_text-field',
-    'wc_user-card'
+    'wc_user-card',
 ];

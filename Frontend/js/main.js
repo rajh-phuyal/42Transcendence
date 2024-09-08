@@ -39,3 +39,24 @@ router(window.location.pathname);
 
 // set the loading to false
 setViewLoading(false);
+
+
+
+
+
+
+
+
+/* DESABLE ZOOM*/
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=')) {
+        event.preventDefault();
+    }
+});
+
+document.addEventListener('wheel', function(event) {
+    if (event.ctrlKey) {
+        event.preventDefault();
+    }
+}, { passive: false });

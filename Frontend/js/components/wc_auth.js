@@ -2,6 +2,8 @@ import $auth from '../auth/authentication.js';
 import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
+// TODO put the css styling in a css file (for all web components)
+
 
 class AuthCard extends HTMLElement {
     constructor() {
