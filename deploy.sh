@@ -60,24 +60,27 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
-#   Therfore the folders will be created at:
-VOLUME_ROOT_PATH="$HOME/barely-some-data/"
+#	To work on linux and mac the path to the volumes is different and is set by
+#   the function: "check_os" will set the var below:
+OS_HOME_PATH=""
+#   The volume folders will be created in a folder located at home called:
+VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
-DB_VOLUME_PATH="${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}"
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
 # The spinner allows os to nest a task in it and show a message while the task 
 # is running. The result of the task will be shown after the spinner stops.
 # USAGE:
-# 	perform_task_with_spinner "Message" "Task" "Failure Message" "Fail Continue"
+# 	perform_task_with_spinner "Message" "Task" "Success Message" "Failure Message" "Fail Continue"
 #		- Message: The message to show while the task is running
 #		- Task: The task to perform
+#		- Success Message: The message to show if the task succeeds
 #		- Failure Message: The message to show if the task fails
 #		- Fail Continue: If the task fails, should the script continue or exit
 #
 #	Example:
-#		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "File does not exist" false
+#		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "" "File does not exist" false
 # 
 # The functions start_spinner & stop_spinner are helper functions for the
 # spinner and should not be called directly!
@@ -146,8 +149,9 @@ start_spinner() {
 stop_spinner() {
     local exit_code=$1
     local message="$2"
-    local failure_message="$3"
-	local fail_continue="${4:-false}"
+    local sucess_message="$3"
+    local failure_message="$4"
+	local fail_continue="${5:-false}"
 
     # Kill the spinner process
     if [[ -n "$SPINNER_PID" ]]; then
@@ -157,25 +161,37 @@ stop_spinner() {
     fi
 
     # Move to the beginning of the line and print the final status
-    if [ $exit_code -eq 0 ]; then
-        printf "\r\u2705 %s\n" "$message"
-    else
-		printf "\r\u274C "
-		echo -e "$message" "$RD" "$failure_message" "$NC"
-		if [ "$fail_continue" == "false" ]; then
-            exit 1  # Exit the script with a failure
-        fi
-    fi
+	if [ $exit_code -eq 0 ]; then
+	    printf "\r\u2705 "
+	    echo -e "$message $GR ${success_message} $NC"
+	else
+	    printf "\r\u274C "
+	    echo -e "$message $RD ${failure_message} $NC"
+	    if [ "$fail_continue" == "false" ]; then
+	        exit 1  # Exit the script with a failure
+	    fi
+	fi
 	return $exit_code
 }
 
 # see comment block above
 perform_task_with_spinner() {
-    local message="$1..."
-    local task="$2"
-    local failure_message="$3"
-	local fail_continue="${4:-false}"
 
+	if [ "$#" -ne 5 ]; then
+		echo "Error: This function requires arguments! Delivered:"
+	    echo -e "msg\t\t:$1"
+	    echo -e "task\t\t:$2"
+	    echo -e "success msg\t:$3"
+	    echo -e "fail msg\t:$4"
+	    echo -e "fail continue\t:$5"
+	    exit 1
+	fi
+	local message="$1..."
+    local task="$2"
+	local success_message="${3:-"done"}"
+	local failure_message="$4"
+	local fail_continue="${5:-false}"
+	    
     # Start the spinner
     start_spinner "$message"
 
@@ -184,7 +200,7 @@ perform_task_with_spinner() {
     local exit_code=$?
 
 	# Stop the spinner and print the final status
-    stop_spinner "$exit_code" "$message" "$failure_message" "$fail_continue"
+    stop_spinner "$exit_code" "$message" "$sucess_message" "$failure_message" "$fail_continue"
 	return $?
 }
 
@@ -282,8 +298,30 @@ parse_args()
 }
 
 check_setup() {
+	check_os
 	check_env_link
 	check_volume_folders
+}
+
+# To set the volume location we need to differ between linux and mac
+check_os()
+{
+	OS_HOME_PATH=""
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+	    # macOS
+	    OS_HOME_PATH="/Users/$(whoami)/"
+	elif [[ "$OSTYPE" == "linux"* ]]; then
+	    # Any Linux distribution
+	    OS_HOME_PATH="$HOME/"
+	else
+		print_error "Unsupported OS: $OSTYPE"
+	fi
+	perform_task_with_spinner \
+		"Setting the home path for this OS" \
+		'[ -n "$OS_HOME_PATH" ]' \
+		"$OS_HOME_PATH" \
+		"Could not figure out home path on this os!" \
+		false
 }
 
 # Function to check (and update) the link to the .env file which will then be 
@@ -295,12 +333,14 @@ check_env_link() {
 	if perform_task_with_spinner \
 		"Checking if the -e flag is provided" \
 		'[ -n "$NEW_ENV_PATH" ]' \
+		"" \
 		"Flag -e not provided" \
 		true; then
 
 		perform_task_with_spinner \
 			"Updating environment path to: $NEW_ENV_PATH" \
 			'echo "$NEW_ENV_PATH" > "$ENV_PATH_FILE"' \
+			"" \
 			"Could not update the environment path." \
 			false
 		
@@ -312,6 +352,7 @@ check_env_link() {
     if perform_task_with_spinner \
 		"Searching for storred .env path" \
 		'[ -r "$ENV_PATH_FILE" ]' \
+		"" \
 		"No environment file path is set. Please provide the path using the -e option." \
 		false; then
         
@@ -319,12 +360,14 @@ check_env_link() {
 		if perform_task_with_spinner \
 			"Checking if path ($STORED_ENV_PATH) is valid" \
 			'[ -f "$STORED_ENV_PATH" ]' \
+			"" \
 			"Stored environment file path is invalid or does not exist: ($STORED_ENV_PATH); update the path using the -e option." \
 			false; then
 
 			perform_task_with_spinner \
 				"Sourcing env vars from ($STORED_ENV_PATH)" \
 				'source "$STORED_ENV_PATH"' \
+				"" \
 				"" \
 				false
 		fi  
@@ -334,9 +377,47 @@ check_env_link() {
 	perform_task_with_spinner \
 		"Sample test with <DB_NAME> " \
 		'[ ! -z "${DB_NAME:-}" ]' \
-		"Sample test with <DB_NAME> failed." "The .env file is not loaded correctly." \
+		"$DB_NAME" \
+		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
 	
+	# Step 4: Append or update the var VOLUME_ROOT_PATH in the .env file
+	if perform_task_with_spinner \
+		"Checking if env VOLUME_ROOT_PATH already exists" \
+		"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
+		"" \
+		"" \
+		true; then
+			perform_task_with_spinner \
+				"Updating var VOLUME_ROOT_PATH in env file" \
+				"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
+				"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+				"failed to update var VOLUME_ROOT_PATH in env file" \
+				false
+		else
+			perform_task_with_spinner \
+			"Adding var VOLUME_ROOT_PATH to env file" \
+			"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
+			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+			"failed to add var VOLUME_ROOT_PATH to env file" \
+			false
+	fi
+
+	# Step 5: Source again
+	perform_task_with_spinner \
+		"Sourcing updated env vars from ($STORED_ENV_PATH)" \
+		"source $STORED_ENV_PATH" \
+		"" \
+		"couldn't source env file!" \
+		false
+
+    # Step 5: Make a sample test to see if the .env file is loaded
+	perform_task_with_spinner \
+		"Sample test with <VOLUME_ROOT_PATH> " \
+		'[ ! -z "${VOLUME_ROOT_PATH:-}" ]' \
+		"$VOLUME_ROOT_PATH" \
+		"Sample test with <VOLUME_ROOT_PATH> failed. The .env file is not loaded correctly." \
+		false
 	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}" 
 }
 
@@ -348,6 +429,7 @@ check_path_and_permission()
 	if ! perform_task_with_spinner \
 		"Checking presents of folder: <$path>" \
 		'[ -e "$path" ]' \
+		"is there" \
 		"doesn't exist" \
 		true; then
 
@@ -355,6 +437,7 @@ check_path_and_permission()
 		perform_task_with_spinner \
 			"Creating folder: <$path>" \
 			'mkdir -p $path' \
+			"created" \
 			"couldn't create folder: <$path>!" \
 			false
 	fi
@@ -366,18 +449,21 @@ check_path_and_permission()
 	perform_task_with_spinner \
 		"Changing ownership of folder: <$path>" \
 		'sudo chown -R ":1024" "$path"' \
+		"" \
 		"couldn't change ownership of folder: <$path>!" \
 		false
 	
 	perform_task_with_spinner \
 		"Changing permission of folder: <$path>" \
 		'sudo chmod -R 775 "$path"' \
+		"" \
 		"couldn't change permission of folder: <$path>!" \
 		false
 
 	perform_task_with_spinner \
 		"Ensure all future content in the folder <$path> will inherit group ownership" \
 		'sudo chmod g+s "$path"' \
+		"" \
 		'could not run sudo chmod g+s "$path"' \
 		false
 }
@@ -386,7 +472,7 @@ check_path_and_permission()
 check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
-	check_path_and_permission $DB_VOLUME_PATH
+	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$DB_VOLUME_NAME/"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -453,7 +539,7 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folders of docker volumes..."
-	sudo rm -rf ${VOLUME_ROOT_PATH}
+	sudo rm -rf "$OS_HOME_PATH$V TODO"
 	print_header "${OR}" "Deleting folders of docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deltete the link to the environment file..."
@@ -507,6 +593,7 @@ echo ""
 perform_task_with_spinner \
 	"Welcome to Barely Alive" \
 	'sleep 1' \
+	"Let's go" \
 	"Failed to print welcome message." \
 	false
 
