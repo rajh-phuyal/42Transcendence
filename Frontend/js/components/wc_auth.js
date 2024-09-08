@@ -1,5 +1,7 @@
-import { $auth } from '../auth/authentication.js';
+import $auth from '../auth/authentication.js';
+import $store from '../store/store.js';
 import router from '../navigation/router.js';
+import { $id } from '../abstracts/dollars.js';
 
 class AuthCard extends HTMLElement {
     constructor() {
@@ -44,13 +46,24 @@ class AuthCard extends HTMLElement {
 
         const authAction = this.login ? "authenticate" : "createUser";
         $auth?.[authAction](usernameField?.value, passwordField?.value)
-        .then((x) => {
-            console.log("auth response:", x);
+        .then((response) => {
+            console.log("auth response:", response);
+
+            $store.commit('setIsAuthenticated', true);
+            $store.commit('setJWTTokens', {
+                access: response.access,
+                refresh: response.refresh
+            });
+            $store.commit('setUser', {
+                id: response.userId,
+                username: response.username
+            });
+
+            const successToast = $id('logged-in-toast');
+            new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
 
             this.showNav();
             router("/home");
-
-            // todo: additional stuff: add to store, show success message
         })
         .catch(error => {
             console.error(error);

@@ -45,3 +45,53 @@ h1 {
 	color: black;
 	margin-bottom: 20px;
 }
+
+/* toast notifications */
+.toast-container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 1050;
+}
+
+.toast {
+	background-color: #111;
+	border: 2px solid #f5c518;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+	font-family: 'Courier New', Courier, monospace;
+}
+
+.toast-header {
+	background-color: #000;
+	color: #f5c518;
+	font-weight: bold;
+}
+
+.toast-body {
+	font-size: 14px;
+	color: #fff;
+}
+
+.custom-toast {
+	border: 2px solid #f5c518;
+	color: #f5c518;
+	background-color: #1a1a1a;
+}
+
+.toast-symbol {
+	font-size: 18px;
+	color: #f5c518;
+	margin-right: 10px;
+}
+
+.btn-close {
+	filter: invert(1);
+}
+
+.mystic-symbol {
+	display: block;
+	font-size: 24px;
+	margin-bottom: 8px;
+	text-align: center;
+	color: #f5c518;
+}

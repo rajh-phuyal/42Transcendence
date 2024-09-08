@@ -1,5 +1,5 @@
 // abstract out the fetch api to make it easier to call the api
-import { $auth } from '../auth/authentication.js';
+import $auth from '../auth/authentication.js';
 
 async function call(url, method, data) {
     const BASE_URL = "http://localhost:8000"; // backend django server

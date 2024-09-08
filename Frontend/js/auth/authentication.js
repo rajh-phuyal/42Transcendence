@@ -1,10 +1,10 @@
-import { $store } from '../store/store.js';
+import $store from '../store/store.js';
 import call from '../abstracts/call.js';
 
 class Auth {
     constructor() {
         // Initialize the state from localStorage if available
-        this.jwtToken = $store.fromState('jwtToken');
+        this.jwtToken = $store.fromState('jwtTokens').access;
 
         // Check if the user is authenticated
         this.isAuthenticated = this.isUserAuthenticated();
@@ -12,8 +12,8 @@ class Auth {
         return this;
     }
 
-    // Check if the user is authenticated
     isUserAuthenticated() {
+        // return $store.fromState('isAuthenticated');
         return $store.fromState('isAuthenticated') && this.verifyJWTToken();
     }
 
@@ -25,20 +25,33 @@ class Auth {
         return call('auth/register/', 'POST', { username: username, password: password });
     }
 
-    // Logout the user by clearing the JWT token and state
-    logout() {
-        $store.commit('setUser', null);
-        $store.commit('setIsAuthenticated', false);
-        $store.commit('setJWTToken', null);
+    async refreshToken() {
+        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh }).then((response) => {
+            this.jwtToken = response.access;
+
+            $store.commit('setJWTTokens', {
+                ...$store.fromState('jwtTokens'),
+                access: this.jwtToken
+            });
+
+            return true;
+        })
+        .catch((error) => {
+            console.error('Error refreshing token:', error);
+            this.logout();
+            return false;
+        });
     }
 
-    // Get the Authorization header with the JWT token
+    logout() {
+        $store.clear();
+    }
+
     getAuthHeader() {
         return this.jwtToken ? `Bearer ${this.jwtToken}` : undefined;
     }
 
-    // Verify the JWT token's validity
-    verifyJWTToken() {
+    async verifyJWTToken() {
         const token = this.jwtToken;
         if (!token) return false;
 
@@ -48,15 +61,15 @@ class Auth {
         try {
             const { exp } = JSON.parse(atob(payload));
             if (Date.now() >= exp * 1000) {
-                this.logout();
-                return false;
+                const refreshed = await this.refreshToken();
+                return refreshed;
             }
         } catch (e) {
-            // TODO: try to refresh the token
-            console.error('Invalid token', e);
-            this.logout();
-            return false;
+            console.error('Error verifying token:', e);
+            const refreshed = await this.refreshToken();
+            return refreshed;
         }
+
         return true;
     }
 }
@@ -64,4 +77,4 @@ class Auth {
 // Create a single global instance of the Auth class
 const $auth = new Auth();
 
-export { $auth };
+export default $auth;
