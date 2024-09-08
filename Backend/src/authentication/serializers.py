@@ -1,6 +1,6 @@
-from rest_framework import serializers # type: ignore
+from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # type: ignore
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 class InternalTokenObtainPairSerializer(TokenObtainPairSerializer):

@@ -1,12 +1,12 @@
-from rest_framework import generics, status # type: ignore
-from rest_framework import exceptions # type: ignore
-from rest_framework.response import Response # type: ignore
-from rest_framework_simplejwt.tokens import RefreshToken # type: ignore
+from rest_framework import generics, status
+from rest_framework import exceptions
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer
-from rest_framework.permissions import AllowAny # type: ignore
-from rest_framework.views import exception_handler # type: ignore
-from rest_framework import exceptions # type: ignore
-from rest_framework_simplejwt.views import TokenObtainPairView # type: ignore
+from rest_framework.permissions import AllowAny
+from rest_framework.views import exception_handler
+from rest_framework import exceptions
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import InternalTokenObtainPairSerializer
 
 class InternalTokenObtainPairView(TokenObtainPairView):
