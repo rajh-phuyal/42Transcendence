@@ -2,8 +2,7 @@
 import $auth from '../auth/authentication.js';
 
 async function call(url, method, data) {
-    const BASE_URL = "http://localhost:8000"; // backend django server
-    const fullUrl = `${BASE_URL}/${url}`;
+    const fullUrl = `${window.location.origin}/api/${url}`;
 
     const headers = {
         'Content-Type': 'application/json'
