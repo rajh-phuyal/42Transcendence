@@ -1,6 +1,7 @@
 import call from "../abstracts/call.js";
 
 class AuthCard extends HTMLElement {
+	
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
@@ -85,34 +86,42 @@ class AuthCard extends HTMLElement {
         this.hideNav();
         this.shadow.innerHTML = `
             <style>
-            .main-container{
+            .main-container {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -31.5%);
+				z-index: 1;
                 display: flex;
                 flex-direction: column;
-                height: 410px;
-                width: 585px
+                height: 46%;
+                width: 65%;
+				gap: 0.8rem;
+				align-items: center;
+				justify-content: space-around;
             }
+
+			.main-container > input {
+				position: relative;
+				width: 90%;
+				height: 2rem;
+				font-size: 1.5rem;
+                font-family: 'Courier';
+                color: #FFF6D4;
+				padding: 1.2rem 0;
+                border: 3px solid #FFF6D4;
+                border-radius: 0.2rem;
+                background-color: #100C09;
+                resize: none;
+                overflow: auto;
+				text-align: center;
+			}
 
             .buttons-container{
                 display: flex;
                 flex-direction: row;
-                margin: 30px 0px;
-                width: 585px;
-            }
-
-            input {
-                font-size: 25px;
-                font-family: 'Courier';
-                color: #FFF6D4;
-                width: 500px;
-                height: 35px;
-                flex: 1;
-                padding: 5px;
-                margin: 30px;
-                border:  3px solid #FFF6D4;
-                border-radius: 3px;
-                background-color: #100C09;
-                resize: none;
-                overflow: auto; 
+				justify-content: space-around;
+                width: 100%;
             }
 
             input:hover{
@@ -123,25 +132,24 @@ class AuthCard extends HTMLElement {
                 background-color: #201C19;
             }
             
-            button {
+            .buttons-container > button {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-family: 'Courier';
                 font-size: 35px;
                 font-weight: 700;
-                margin: 0px 30px;
-                padding: 3px;
-                border-radius: 2px;
+                padding: 0.5rem;
+                border-radius: 0.2rem;
                 cursor: pointer;
-                width: 225px;
-                height: 80px;
+                width: 40%;
+                height: 100%;
                 border: 8px double #100C09;
                 color: #3D3D3D;
                 background-color: #FFFCE6; 
             }
 
-            .secundary-button{
+            .buttons-container > .secundary-button{
                 border: 2px solid #FFFCE6;
                 color: #FFFCE6;
                 background-color: #100C09; 
@@ -165,17 +173,15 @@ class AuthCard extends HTMLElement {
             </style>
 
             <div class="main-container">
-                <input id="usernameInput" placeholder="username"></input>
-                <input id="passwordInput" placeholder="password" type="Password"></input>
-                <div class="buttons-container">
-                    <button id="primaryButton">${this.primaryButton}</button>
-                    <button class="secundary-button" id="secundaryButton">${this.secundaryButton}</button>
-                <div>
-            </div>
-        `;
-    }
-}
+				<input id="usernameInput" placeholder="username"/>
+				<input id="passwordInput" placeholder="password" type="Password">
+				<div class="buttons-container">
+					<button id="primaryButton">${this.primaryButton}</button>
+					<button class="secundary-button" id="secundaryButton">${this.secundaryButton}</button>
+				</div>
+			</div>
+				`;
+		}
+	}
 
 customElements.define("auth-card", AuthCard);
-
-
