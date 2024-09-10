@@ -7,4 +7,4 @@ class User(models.Model):
     pswd = models.CharField(max_length=255, null=False)
 
     class Meta:
-        db_table = 'barelyaschema.user'
+        db_table = '"barelyaschema"."user"'
