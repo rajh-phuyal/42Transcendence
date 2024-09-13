@@ -10,7 +10,8 @@
 CREATE TABLE IF NOT EXISTS barelyaschema.user
 (
 	id SERIAL PRIMARY KEY,
-	username VARCHAR(255) NOT NULL
+	username VARCHAR(255) NOT NULL,
+	pswd VARCHAR(255) NOT NULL
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
