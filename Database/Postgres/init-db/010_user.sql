@@ -1,5 +1,5 @@
 -- [astein]:
--- This is the second file of the configuration of the postgres db
+-- This is an essential part of the db configuration process!
 
 \! echo -e "\e[1m START of 010_user.sql \e[0m"
 
