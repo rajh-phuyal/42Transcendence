@@ -9,7 +9,7 @@ from .serializers import ChatSerializer, ChatMemberSerializer#, MessageSerialize
 # Create a chat and add members
 # If chat already exists, return the chat_id
 class CreateChatView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
     def post(self, request):
         from user.models import User
@@ -75,6 +75,31 @@ class CreateChatView(APIView):
         except Exception as e:
             # If any error occurs during the transaction, rollback and return an error
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class RenameChatView(APIView):
+    permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
+
+    def post(self, request):
+
+        chat_id = request.data.get('chat_id')
+        # Try to get the chat object
+        try:
+            chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Get the new name from the request data
+        new_name = request.data.get('new_name')
+
+        # Perform a simple validation to check if the name is empty
+        if not new_name or not new_name.strip():
+            return Response({'error': 'New chat name cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # If valid, update the chat name
+        chat.name = new_name
+        chat.save()
+
+        return Response({'chat_id': chat.id, 'new_name': chat.name}, status=status.HTTP_200_OK)
 
 ## Send a message
 #class SendMessageView(APIView):
