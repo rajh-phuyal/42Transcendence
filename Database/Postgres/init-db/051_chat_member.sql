@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.chat_member
 	chat_id INT NOT NULL,
 	user_id INT NOT NULL,
 	FOREIGN KEY (chat_id) REFERENCES barelyaschema.chat(id),
-	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
+	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

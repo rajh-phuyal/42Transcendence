@@ -3,9 +3,9 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import RegisterView
+from .views import CreateChatView#, SendMessageView
 
 urlpatterns = [
 	path('create-chat/', CreateChatView.as_view(), name='create_chat'),
-    path('send-message/<int:chat_id>/', SendMessageView.as_view(), name='send_message'),
+    #path('send-message/<int:chat_id>/', SendMessageView.as_view(), name='send_message'),
 ]

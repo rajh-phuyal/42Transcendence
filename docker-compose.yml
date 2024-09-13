@@ -76,11 +76,11 @@ services:
     # [astein] CHAT GPT told me that this is a good way to check if the service is healthy
     # not sure what it means but u need to create a Health Check Endpoint
     # u think its a good idea?
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8000/health/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    #healthcheck:
+    #  test: ["CMD-SHELL", "curl --silent --fail http://localhost:8000/health/ || exit 1"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 3
 
   fe:
     container_name: fe
