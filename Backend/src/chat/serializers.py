@@ -12,7 +12,7 @@ class ChatMemberSerializer(serializers.ModelSerializer):
         model = ChatMember
         fields = ('__all__')
 
-#class MessageSerializer(serializers.ModelSerializer):
-#    class Meta:
-#        model = Message
-#        fields = '__all__'
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'

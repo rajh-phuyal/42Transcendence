@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Chat, ChatMember, Message
-from .serializers import ChatSerializer, ChatMemberSerializer#, MessageSerializer
+from .serializers import ChatSerializer, ChatMemberSerializer, MessageSerializer
 
 # Create a chat and add members
 # If chat already exists, return the chat_id
@@ -101,18 +101,43 @@ class RenameChatView(APIView):
 
         return Response({'chat_id': chat.id, 'new_name': chat.name}, status=status.HTTP_200_OK)
 
-## Send a message
-#class SendMessageView(APIView):
-#    permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
-#    def post(self, request, chat_id):
-#        sender_id = request.data.get('sender_id')
-#        content = request.data.get('content')
-#
-#        # Create the message
-#        message = Message.objects.create(
-#            chat_id=chat_id,
-#            sender_id=sender_id,
-#            content=content
-#        )
-#
-#        return Response({'message_id': message.id, 'content': message.content}, status=status.HTTP_201_CREATED)
+# Send a message
+class SendMessageView(APIView):
+    permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
+    
+    def post(self, request):
+        from user.models import User
+        sender_id = request.data.get('sender_id')
+        chat_id = request.data.get('chat_id')
+        content = request.data.get('content')
+
+        # Check if the sender exists
+        try:
+            sender = User.objects.get(id=sender_id)
+        except User.DoesNotExist:
+            return Response({'error': f'Invalid sender id: {sender_id}'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the chat exists
+        try:
+            chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            return Response({'error': f'Invalid chat id: {chat_id}'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the sender is a member of the chat
+        try:
+            ChatMember.objects.get(chat=chat, user=sender)
+        except ChatMember.DoesNotExist:
+            return Response({'error': 'Sender is not a member of the chat'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the content is empty
+        if not content or not content.strip():
+            return Response({'error': 'Message content cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+                            
+        # Create the message
+        message = MessageSerializer(data={'sender': sender.id, 'chat': chat.id, 'content': content})
+        if message.is_valid():
+            message = message.save()
+        else:
+            return Response(message.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'message_id': message.id, 'content': message.content}, status=status.HTTP_201_CREATED)
