@@ -1,3 +1,13 @@
 Starting python manage.py makemigrations
 ================
-Starting python manage.py migrate
+It is impossible to add a non-nullable field 'pswd' to user without specifying a default. This is because the database needs something to populate existing rows.
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+ 2) Quit and manually define a default value in models.py.
+Select an option: Starting python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, user
+Running migrations:
+  No migrations to apply.
+  Your models in app(s): 'chat', 'user' have changes that are not yet reflected in a migration, and so won't be applied.
+  Run 'manage.py makemigrations' to make new migrations, and then re-run 'manage.py migrate' to apply them.
