@@ -12,9 +12,10 @@ To be able to start this project you have to have installed:
 - run the `deploy.sh` script to link your `*.env` once like: `./deploy -e path/to/your/.env`
     - -> This will create a `.transcendence_env_path` file to store the location of your `.env` file.
     - -> The `.transcendence_env_path` is listed in the `.gitignore` file
-- rerun the `./deploy.sh` script to build the application
+    - it will also build all images and uping the container
 - now the app should be running...
 
+from now on u can use the script without the `-e` flag
 
 Once the deployment is complete, open your web browser and navigate to the game:
 
