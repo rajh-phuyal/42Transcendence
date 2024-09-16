@@ -538,9 +538,9 @@ docker_fclean() {
 	docker volume rm "$DB_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
-	print_header "${OR}" "Deleting folders of docker volumes..."
-	sudo rm -rf "$OS_HOME_PATH$V TODO"
-	print_header "${OR}" "Deleting folders of docker volumes...${GR}DONE${NC}"
+	print_header "${OR}" "Deleting folder of docker volumes...($OS_HOME_PATH$VOLUME_FOLDER_NAME/)"
+	sudo rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
+	print_header "${OR}" "Deleting folder of docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deltete the link to the environment file..."
 	rm -f ".transcendence_env_path"
