@@ -4,13 +4,6 @@
         <auth-card login="true"></auth-card>
     </div>
 </div>
-    
-<script>
-    function hideNav(){
-        var nav = document.getElementById('navigator');
-        nav.style.display = 'none';
-    }
-</script>
 
 <style>
 	.out-div {
@@ -23,16 +16,18 @@
 	}
 
     #auth-view {
-		width: 45%;
-        height: 80%;
-		position: relative;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		max-width: 1000px;
-		min-width: 700px;
-		min-height: 800px;
-		max-height: 900px;
+        height: 100%;
+        background-color: #fff7e6;
+    }
+
+    .background-image-div {
+        width: 900px; /* Set the desired width */
+        height: 900px; /* Set the desired height */
+        background-image: url('../assets/AUTH_BOX.png'); /* Set the path to your image */
+        background-size: cover; /* Cover the entire div */
+        background-position: center; /* Center the image */
+        margin: 0% 27%;
+        padding: 325px 0px 0px 160px;
     }
 
 	#auth-view > img {

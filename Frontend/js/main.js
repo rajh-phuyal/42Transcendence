@@ -5,9 +5,13 @@ import { webComponents } from './components/components.js';
 
 setViewLoading(true);
 
-// import all web components
-for (const component of webComponents) {
-    import(`./components/${component}.js`);
+try {
+    // import all web components
+    for (const component of webComponents) {
+        import(`./components/${component}.js`);
+    }
+} catch (error) {
+    console.error('Error importing web components:', error);
 }
 
 // initilize the nav bar
@@ -16,6 +20,7 @@ const navigationBarMap = [
     { id: 'game-nav', path: '/game' },
     { id: 'tournament-nav', path: '/tournament' },
     { id: 'chat-nav', path: '/chat' },
+    { id: 'logout-nav', path: '/logout' },
     { id: 'profile-nav', path: '/profile', params: { id: 1 } },
     { id: 'login-nav', path: '/auth', params: { login: true } },
     { id: 'register-nav', path: '/auth', params: { login: false } }
