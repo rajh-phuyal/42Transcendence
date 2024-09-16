@@ -16,11 +16,11 @@ export default {
 
         },
 
-        beforeDomInsersion() {
+        beforeDomInsertion() {
 
         },
 
-        afterDomInsersion() {
+        afterDomInsertion() {
 
         },
     }

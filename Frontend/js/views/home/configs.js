@@ -16,11 +16,11 @@ export default {
 
         },
 
-        beforeDomInsersion() {
+        beforeDomInsertion() {
             console.log('store', this.$store);
         },
 
-        afterDomInsersion() {
+        afterDomInsertion() {
 
         },
     }

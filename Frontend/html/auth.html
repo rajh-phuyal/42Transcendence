@@ -1,22 +1,25 @@
 <div class="out-div">
-    <div id="auth-view" class="background-image-div">
+    <div id="auth-view">
+		<img src="../assets/AUTH_BOX.png" alt="Autentication Box">
         <auth-card login="true"></auth-card>
     </div>
 </div>
-    
-<script>
-    function hideNav(){
-        var nav = document.getElementById('navigator');
-        nav.style.display = 'none';
-    }
-</script>
 
 <style>
+	.out-div {
+		width: 100vw;
+		height: 100vh;
+		background-color: #fff7e6;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
     #auth-view {
         height: 100%;
         background-color: #fff7e6;
     }
-    
+
     .background-image-div {
         width: 900px; /* Set the desired width */
         height: 900px; /* Set the desired height */
@@ -27,11 +30,12 @@
         padding: 325px 0px 0px 160px;
     }
 
-    .out-div{
-        width: 100%;
-        height: 100%; /* Set the desired height */
-        padding: 50px;
-        background-color: #fff7e6;
-        padding: 0px;
-    }
+	#auth-view > img {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+	}
+
 </style>

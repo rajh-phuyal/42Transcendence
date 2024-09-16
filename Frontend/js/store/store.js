@@ -38,8 +38,13 @@ class Store {
 
         $setLocal("store", JSON.stringify(this.state));
     }
+
+    clear() {
+        this.state = { ...state };
+        $setLocal("store", JSON.stringify(this.state));
+    }
 }
 
 const $store = new Store(state);
 
-export { $store };
+export default $store;

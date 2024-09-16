@@ -1,28 +1,32 @@
 // abstract out the fetch api to make it easier to call the api
+import $auth from '../auth/authentication.js';
 
 async function call(url, method, data) {
-    const BASE_URL = "http://localhost:8080"; // backend django server
+    const fullUrl = `${window.location.origin}/api/${url}`;
 
-    const fullUrl = `${BASE_URL}${url}`;
+    const headers = {
+        'Content-Type': 'application/json'
+    };
 
-    console.log("in the call function:", data);
-    return ;
+    if ($auth.getAuthHeader() && $auth.isUserAuthenticated()) {
+        headers['Authorization'] = $auth.getAuthHeader();
+    }
+
     let payload = {
-        mode: 'no-cors', // temporary
-        cache: 'no-cache',
         method: method,
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-        },
+        headers: headers,
         ...(method !== 'GET' && method !== 'DELETE') ? {
             body: JSON.stringify(data),
         } : {},
     };
 
-    return await fetch(fullUrl, payload).then((res) => {
-        return res;
-    });
+    const response = await fetch(fullUrl, payload);
+
+    if (!response.ok) {
+        throw new Error(await response.json().detail || 'Request failed');
+    }
+
+    return await response.json();
 }
 
 export default call;
