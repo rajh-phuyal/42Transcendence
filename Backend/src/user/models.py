@@ -26,13 +26,11 @@ class IsCoolWith(models.Model):
         db_table = '"barelyaschema"."is_cool_with"'
         unique_together = ('requester', 'requestee')  # Enforce the unique constraint in Django
 
-# Table: barelyaschema.no_chill_with
-#class NoChillWith(models.Model):
-#    id = models.AutoField(primary_key=True)
-#    blocker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocker_no_chill')
-#    blocked = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked_no_chill')
-#    created_at = models.DateTimeField(auto_now_add=True)  # Automatically adds the timestamp when a block occurs
-#
-#    class Meta:
-#        db_table = '"barelyaschema"."no_chill_with"'
-#        unique_together = ('blocker', 'blocked')  # Optional: Enforce unique blocks between users
+# Table: barelyaschema.no_cool_with
+class NoCoolWith(models.Model):
+    id = models.AutoField(primary_key=True)
+    blocker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocker_no_cool')
+    blocked = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked_no_cool')
+
+    class Meta:
+        db_table = '"barelyaschema"."no_cool_with"'
