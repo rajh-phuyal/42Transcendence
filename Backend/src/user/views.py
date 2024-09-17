@@ -14,6 +14,7 @@ class ProfileView(generics.RetrieveAPIView):
     lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
 
+
 class SendFriendRequestView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
@@ -96,6 +97,7 @@ class SendFriendRequestView(APIView):
         # Return a success message
         return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED)
     
+
 class AcceptFriendRequestView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
@@ -141,3 +143,41 @@ class AcceptFriendRequestView(APIView):
         friend_requests.status = CoolStatus.ACCEPTED
         friend_requests.save()
         return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
+    
+
+class RejectFriendRequestView(APIView):
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication
+
+    def post(self, request):
+        requestee_id = request.data.get('requestee_id')
+        requester_id = request.data.get('requester_id')
+
+        # Check if both requester and requestee IDs are provided
+        if not requestee_id or not requester_id:
+            return Response({'error': 'Both requester and requestee IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the friend request exists
+        try:
+            friend_requests = IsCoolWith.objects.get(
+                requester_id=requester_id,
+                requestee_id=requestee_id
+            )
+        except IsCoolWith.DoesNotExist:
+            return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check if the users are already friends
+        if friend_requests.status == CoolStatus.ACCEPTED:
+            return Response({'error': 'You are already friends with this user'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the friend request is already rejected
+        if friend_requests.status == CoolStatus.REJECTED:
+            return Response({'error': 'Friend request has already been rejected'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the friend request is pending
+        if friend_requests.status != CoolStatus.PENDING:
+            return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Reject the friend request
+        friend_requests.status = CoolStatus.REJECTED
+        friend_requests.save()
+        return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
