@@ -220,3 +220,30 @@ class BlockUserView(APIView):
 
         return Response({'success': 'User blocked'}, status=status.HTTP_200_OK)
 
+
+class UnblockUserView(APIView):
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication
+
+    def post(self, request):
+        blocker_id = request.data.get('blocker_id')
+        blocked_id = request.data.get('blocked_id')
+
+        # Check if both blocker and blocked IDs are provided
+        if not blocker_id or not blocked_id:
+            return Response({'error': 'Both blocker and blocked IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Chech if we are trying to unblock ourselves
+        if blocker_id == blocked_id:
+            return Response({'error': 'You cannot unblock yourself'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the block exists
+        block = NoCoolWith.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id)
+
+        if not block.exists():
+            return Response({'error': 'You have not blocked this user'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        block.delete()
+
+        return Response({'success': 'User unblocked'}, status=status.HTTP_200_OK)
+    
+    
