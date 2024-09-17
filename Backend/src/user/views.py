@@ -183,6 +183,35 @@ class RejectFriendRequestView(APIView):
         return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
     
 
+class ListFriendsView(APIView):
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication
+
+    def get(self, request):
+        user_id = request.query_params.get('user_id')
+
+        if not user_id:
+            return Response({'error': 'User ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        friendships = IsCoolWith.objects.filter(
+           (Q(requester_id=user_id) | Q(requestee_id=user_id)) & Q(status=CoolStatus.ACCEPTED)
+        )
+
+        friends_list = []
+
+        for friendship in friendships:
+            if friendship.requester_id == int(user_id):
+                friend = friendship.requestee
+            else:
+                friend = friendship.requester
+        
+            friends_list.append({
+                'id': friend.id,
+                'username': friend.username,
+            })
+
+        return Response({'friends': friends_list}, status=status.HTTP_200_OK)
+                
+
 class BlockUserView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
@@ -245,5 +274,8 @@ class UnblockUserView(APIView):
         block.delete()
 
         return Response({'success': 'User unblocked'}, status=status.HTTP_200_OK)
+    
+
+# class RemoveFriendView(APIView): 
     
     
