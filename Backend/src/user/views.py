@@ -17,6 +17,12 @@ class ProfileView(generics.RetrieveAPIView):
 class SendFriendRequestView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
+    # TODO: things to concider:
+    # Efficiency: The current code makes multiple queries (e.g., checking for existing friendships, blocked users). You might want to optimize by reducing the number of database queries. For example:
+        # Use select_related or prefetch_related to load related objects in one query where necessary.
+        # You can refactor your query logic for the IsCoolWith and NoCoolWith relationships by combining the queries into a single Q object for clarity and efficiency.
+
+
     def post(self, request):
         requester_id = request.data.get('requester_id')
         requestee_id = request.data.get('requestee_id')
@@ -88,4 +94,39 @@ class SendFriendRequestView(APIView):
         new_cool = IsCoolWith(requester_id=requester_id, requestee_id=requestee_id)
         new_cool.save()
         # Return a success message
-        return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED) 
+        return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED)
+    
+class AcceptFriendRequestView(APIView):
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication!
+
+    def post(self, request):
+        requester_id = request.data.get('requester_id')
+        requestee_id = request.data.get('requestee_id')
+
+        # Check if both requester and requestee IDs are provided
+        if not requestee_id or not requester_id:
+            return Response({'error': 'Both requester and requestee IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the friend request exists
+        try:
+            friend_requests = IsCoolWith.objects.get(
+                requester_id=requester_id,
+                requestee_id=requestee_id,
+                status=CoolStatus.PENDING
+            )
+        except IsCoolWith.DoesNotExist:
+            return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+        # TODO: verify if the user is the requestee, when we have authentication implemented
+
+        # Check if either user has blocked the other
+        requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id).exists()
+        requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id).exists()
+
+        if requester_blocked or requestee_blocked:
+            return Response({'error': 'One of the users has blocked the other'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Accept the friend request
+        friend_requests.status = CoolStatus.ACCEPTED
+        friend_requests.save()
+        return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
