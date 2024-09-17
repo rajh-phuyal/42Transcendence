@@ -111,21 +111,32 @@ class AcceptFriendRequestView(APIView):
         try:
             friend_requests = IsCoolWith.objects.get(
                 requester_id=requester_id,
-                requestee_id=requestee_id,
-                status=CoolStatus.PENDING
+                requestee_id=requestee_id
             )
         except IsCoolWith.DoesNotExist:
             return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
     
-        # TODO: verify if the user is the requestee, when we have authentication implemented
+        # TODO: verify if the requester is the requestee, when we have authentication implemented
 
-        # Check if either user has blocked the other
+        # Check if the friend request is already accepted
+        if friend_requests.status == CoolStatus.ACCEPTED:
+            return Response({'error': 'Friend request has already been accepted'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if status is pending
+        if friend_requests.status != CoolStatus.PENDING:
+            return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # TODO: logic for rejecting the friend request
+
+        ''' Do we need this? Doed it make sense to check if the users have blocked each other here? If they're blocked, they cant send a friend request in the first place
+          Check if either user has blocked the other
         requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id).exists()
         requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id).exists()
 
         if requester_blocked or requestee_blocked:
             return Response({'error': 'One of the users has blocked the other'}, status=status.HTTP_400_BAD_REQUEST)
-        
+        '''
+
         # Accept the friend request
         friend_requests.status = CoolStatus.ACCEPTED
         friend_requests.save()
