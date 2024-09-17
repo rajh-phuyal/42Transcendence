@@ -276,6 +276,27 @@ class UnblockUserView(APIView):
         return Response({'success': 'User unblocked'}, status=status.HTTP_200_OK)
     
 
-# class RemoveFriendView(APIView): 
-    
+class RemoveFriendView(APIView): 
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication
+
+    def post(self, request):
+        user_id = request.data.get('user_id')
+        friend_id = request.data.get('friend_id')
+
+        # Check if both user and friend IDs are provided
+        if not user_id or not friend_id:
+            return Response({'error': 'Both user and friend IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        friendship = IsCoolWith.objects.filter(
+            (Q(requester_id=user_id) & Q(requestee_id=friend_id)) |
+            (Q(requester_id=friend_id) & Q(requestee_id=user_id)),
+            status=CoolStatus.ACCEPTED
+        )
+
+        if not friendship.exists():
+            return Response({'error': 'You are not friends with this user'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        friendship.delete()
+
+        return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
     
