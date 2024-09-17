@@ -181,3 +181,42 @@ class RejectFriendRequestView(APIView):
         friend_requests.status = CoolStatus.REJECTED
         friend_requests.save()
         return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
+    
+
+class BlockUserView(APIView):
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication
+
+    def post(self, request):
+        blocker_id = request.data.get('blocker_id')
+        blocked_id = request.data.get('blocked_id')
+
+        # Check if both blocker and blocked IDs are provided
+        if not blocker_id or not blocked_id:
+            return Response({'error': 'Both blocker and blocked IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if we are trying to block ourselves
+        if blocker_id == blocked_id:
+            return Response({'error': 'You cannot block yourself'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the block already exists
+        block_exists = NoCoolWith.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id).exists()
+
+        if block_exists:
+            return Response({'error': 'You have already blocked this user'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the users are already friends
+        friendship = IsCoolWith.objects.filter(
+            (Q(requester_id=blocker_id) & Q(requestee_id=blocked_id)) |
+            (Q(requester_id=blocked_id) & Q(requestee_id=blocker_id)),
+            status=CoolStatus.ACCEPTED
+        )
+
+        # If they are friends, delete the friendship
+        if friendship.exists():
+            friendship.delete()
+
+        new_block = NoCoolWith(blocker_id=blocker_id, blocked_id=blocked_id)
+        new_block.save()
+
+        return Response({'success': 'User blocked'}, status=status.HTTP_200_OK)
+
