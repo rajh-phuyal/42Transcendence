@@ -15,16 +15,24 @@ class ProfileView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
 
 
-class SendFriendRequestView(APIView):
+class FriendRequestView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
-    # TODO: things to concider:
-    # Efficiency: The current code makes multiple queries (e.g., checking for existing friendships, blocked users). You might want to optimize by reducing the number of database queries. For example:
-        # Use select_related or prefetch_related to load related objects in one query where necessary.
-        # You can refactor your query logic for the IsCoolWith and NoCoolWith relationships by combining the queries into a single Q object for clarity and efficiency.
-
-
     def post(self, request):
+        action = request.data.get('action')
+
+        if not action or action not in ['send', 'accept', 'reject']:
+            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if action == 'send':
+            return self.send_friend_request(request)
+        elif action == 'accept':
+            return self.accept_friend_request(request)
+        elif action == 'reject':
+            return self.reject_friend_request(request)
+        
+    
+    def send_friend_request(self, request):
         requester_id = request.data.get('requester_id')
         requestee_id = request.data.get('requestee_id')
     
@@ -96,12 +104,9 @@ class SendFriendRequestView(APIView):
         new_cool.save()
         # Return a success message
         return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED)
-    
 
-class AcceptFriendRequestView(APIView):
-    permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
-    def post(self, request):
+    def accept_friend_request(self, request):
         requester_id = request.data.get('requester_id')
         requestee_id = request.data.get('requestee_id')
 
@@ -143,12 +148,9 @@ class AcceptFriendRequestView(APIView):
         friend_requests.status = CoolStatus.ACCEPTED
         friend_requests.save()
         return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
-    
 
-class RejectFriendRequestView(APIView):
-    permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
-    def post(self, request):
+    def reject_friend_request(self, request):
         requestee_id = request.data.get('requestee_id')
         requester_id = request.data.get('requester_id')
 

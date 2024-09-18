@@ -5,9 +5,7 @@ from rest_framework_simplejwt.views import (
 )
 from .views import (
     ProfileView,
-    SendFriendRequestView,
-    AcceptFriendRequestView,
-    RejectFriendRequestView,
+    FriendRequestView,
     BlockUserView,
     UnblockUserView,
     ListFriendsView,
@@ -18,14 +16,12 @@ urlpatterns = [
 	path('profile/<int:id>/', ProfileView.as_view(), name='profile'),
 
 	# Friend requesting
-    path('friend-request/send/', SendFriendRequestView.as_view(), name='send_friend_request'),
-    path('friend-request/accept/', AcceptFriendRequestView.as_view(), name='accept_friend_request'),
-    path('friend-request/reject/', RejectFriendRequestView.as_view(), name='reject_friend_request'),
+    path('friend-request/', FriendRequestView.as_view(), name='friend_request'),
     path('friends/list/', ListFriendsView.as_view(), name='list_friends'),
 
     # Blocking/unblocking users
-    path('friends/block/', BlockUserView.as_view(), name='block_user'),
-    path('friends/unblock/', UnblockUserView.as_view(), name='unblock_user'),
+    path('block/', BlockUserView.as_view(), name='block_user'),
+    path('unblock/', UnblockUserView.as_view(), name='unblock_user'),
 
     # Remove friend
     path('friends/remove/', RemoveFriendView.as_view(), name='remove_friend'),
