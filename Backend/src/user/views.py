@@ -24,37 +24,37 @@ class FriendRequestView(APIView):
         if not action or action not in ['send', 'accept', 'reject', 'cancel']:
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if action == 'send':
-            return self.send_friend_request(request)
-        elif action == 'accept':
-            return self.accept_friend_request(request)
-        elif action == 'reject':
-            return self.reject_friend_request(request)
-        elif action == 'cancel':
-            return self.cancel_friend_request(request)
-        
-    
-    def send_friend_request(self, request):
         requester_id = request.data.get('requester_id')
         requestee_id = request.data.get('requestee_id')
-    
-        # Check if the requester exists
+
+        # Check if requester exists
         try:
             requester = User.objects.get(id=requester_id)
-        except User.DoesNotExist:
-            return Response({'error': f'User with id {requester_id} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist: #TODO: remove Key "requester_id" after development 
+            return Response({'error': f'Key --> requester_id.     Requester with id {requester_id} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the requestee exists
+        # Check if requestee exists
         try:
             requestee = User.objects.get(id=requestee_id)
         except User.DoesNotExist:
-            return Response({'error': f'User with id {requestee_id} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response({'error': f'Key --> requestee_id.     Requestee with id {requestee_id} does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
         # Check if the requester and requestee are the same user
         if requester_id == requestee_id:
-            return Response({'error': 'You cannot send a friend request to yourself'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Requester and requestee cannot be the same user'}, status=status.HTTP_400_BAD_REQUEST)
 
-
+        if action == 'send':
+            return self.send_friend_request(request, requester_id, requestee_id)
+        elif action == 'accept':
+            return self.accept_friend_request(request, requester_id, requestee_id)
+        elif action == 'reject':
+            return self.reject_friend_request(request, requester_id, requestee_id)
+        elif action == 'cancel':
+            return self.cancel_friend_request(request, requester_id, requestee_id)
+        
+    
+    def send_friend_request(self, request, requester_id, requestee_id):
+    
         # Get the current cool state between the requester and requestee
         already_cool = IsCoolWith.objects.filter(
             (Q(requester_id=requester_id) & Q(requestee_id=requestee_id)) |
@@ -108,14 +108,8 @@ class FriendRequestView(APIView):
         return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED)
 
 
-    def accept_friend_request(self, request):
-        requester_id = request.data.get('requester_id')
-        requestee_id = request.data.get('requestee_id')
+    def accept_friend_request(self, request, requester_id, requestee_id):
 
-        # Check if both requester and requestee IDs are provided
-        if not requestee_id or not requester_id:
-            return Response({'error': 'Both requester and requestee IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
         # Check if the friend request exists
         try:
             friend_requests = IsCoolWith.objects.get(
@@ -152,13 +146,7 @@ class FriendRequestView(APIView):
         return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
 
 
-    def reject_friend_request(self, request):
-        requestee_id = request.data.get('requestee_id')
-        requester_id = request.data.get('requester_id')
-
-        # Check if both requester and requestee IDs are provided
-        if not requestee_id or not requester_id:
-            return Response({'error': 'Both requester and requestee IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+    def reject_friend_request(self, request, requester_id, requestee_id):
         
         # Check if the friend request exists
         try:
@@ -187,12 +175,7 @@ class FriendRequestView(APIView):
         return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
     
 
-    def cancel_friend_request(self, request):
-        requester_id = request.data.get('requester_id')
-        requestee_id = request.data.get('requestee_id')
-
-        if not requestee_id or not requester_id:
-            return Response({'error': 'Both requester and requestee IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+    def cancel_friend_request(self, request, requester_id, requestee_id):
         
         # Check if the friend request exists
         friend_requests = IsCoolWith.objects.filter(
