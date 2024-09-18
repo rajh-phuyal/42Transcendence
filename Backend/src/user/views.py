@@ -21,7 +21,7 @@ class FriendRequestView(APIView):
     def post(self, request):
         action = request.data.get('action')
 
-        if not action or action not in ['send', 'accept', 'reject']:
+        if not action or action not in ['send', 'accept', 'reject', 'cancel']:
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         
         if action == 'send':
@@ -30,6 +30,8 @@ class FriendRequestView(APIView):
             return self.accept_friend_request(request)
         elif action == 'reject':
             return self.reject_friend_request(request)
+        elif action == 'cancel':
+            return self.cancel_friend_request(request)
         
     
     def send_friend_request(self, request):
@@ -184,6 +186,28 @@ class FriendRequestView(APIView):
         friend_requests.save()
         return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
     
+
+    def cancel_friend_request(self, request):
+        requester_id = request.data.get('requester_id')
+        requestee_id = request.data.get('requestee_id')
+
+        if not requestee_id or not requester_id:
+            return Response({'error': 'Both requester and requestee IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if the friend request exists
+        friend_requests = IsCoolWith.objects.filter(
+            requester_id=requester_id,
+            requestee_id=requestee_id,
+            status=CoolStatus.PENDING
+        ).first()
+
+        if not friend_requests:
+            return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        friend_requests.delete()
+
+        return Response({'success': 'Friend request cancelled'}, status=status.HTTP_200_OK)
+
 
 class ListFriendsView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
