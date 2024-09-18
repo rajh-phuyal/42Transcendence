@@ -1,22 +1,24 @@
 import { routes } from './routes.js';
 import { setViewLoading } from '../abstracts/loading.js';
+import { $id } from '../abstracts/dollars.js';
 
 // bind store and auth singleton to 'this' in the hooks
-import { $store } from '../store/store.js';
-import { $auth } from '../auth/authentication.js';
+import $store from '../store/store.js';
+import $auth from '../auth/authentication.js';
 
 const objectToBind = (config) => {
     let binder = {};
-    let { hooks, attributes, methods } = config;
+    let { _, attributes, methods } = config;
 
-    for (const [key, value] of Object.entries(attributes)) {
+    for (const [key, value] of Object.entries(attributes || {})) {
         binder[key] = value;
     }
 
-    for (const [key, value] of Object.entries(methods)) {
+    for (const [key, value] of Object.entries(methods || {})) {
         binder[key] = value.bind(binder);
     }
 
+    binder.router = router;
     binder.$store = $store;
     binder.$auth = $auth;
 
@@ -35,7 +37,18 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null) {
-    const viewContainer = document.getElementById('router-view');
+    setViewLoading(true); // later this responsibility will the that of the view
+
+    if ($auth.isUserAuthenticated() && path === '/auth') {
+        path = '/home';
+    }
+
+    if (!$auth.isUserAuthenticated() && path !== '/auth') {
+        path = '/auth';
+        params = { login: true };
+    }
+
+    const viewContainer = $id('router-view');
 
     // find the route that matches the path
     const route = routes.find(route => route.path === path) || {
@@ -54,8 +67,6 @@ async function router(path, params = null) {
     // bind everything except the hooks to the object
     lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
-    setViewLoading(true); // later this responsibility will the that of the view
-
     // about to change route
     viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
 
@@ -71,7 +82,7 @@ async function router(path, params = null) {
 
     setViewLoading(false);
 
-    // ser the view name to the container
+    // set the view name to the container
     viewContainer.dataset.view = route.view;
 }
 

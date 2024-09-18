@@ -4,7 +4,10 @@ const state = {
         username: undefined,
     },
     isAuthenticated: false,
-    jwtToken: undefined,
+    jwtTokens: {
+        access: undefined,
+        refresh: undefined,
+    }
 };
 
 const mutations = {
@@ -20,9 +23,9 @@ const mutations = {
         },
         presistence: false,
     },
-    setJWTToken: {
+    setJWTTokens: {
         method: (state, value) => {
-            state.jwtToken = value;
+            state.jwtTokens = value;
         },
         presistence: true,
     }
