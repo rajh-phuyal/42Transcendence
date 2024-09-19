@@ -197,25 +197,51 @@ class ListFriendsView(APIView):
 class ModifyFriendshipView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
+    def get_and_validate_data(self, request, action):
+
+        blocker_id = request.data.get('blocker_id')
+        if not blocker_id:
+            return None, Response({'error': 'Key --> "blocker_id".     Blocker ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        blocked_id = request.data.get('blocked_id')
+        if not blocked_id:
+            return None, Response({'error': 'Key --> "blocked_id".     Blocked ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if blocker_id == blocked_id:
+            return None, Response({'error': f'You cannot {action} yourself'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return blocker_id, blocked_id
+
+
     def put(self, request):
         action = request.data.get('action')
-
         if not action or action not in ['block', 'unblock']:
-            return Response({'error': 'Key --> "block" or "unblock".     Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        blocker_id = request.data.get('blocker_id')
-        blocked_id = request.data.get('blocked_id')
+            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
 
+        blocker_id, blocked_id = self.get_and_validate_data(request, action)
+       
+        # If the data is invalid, return the error response
         if not blocker_id:
-            return Response({'error': 'Key --> "blocker_id".     Blocker ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        if not blocked_id:
-            return Response({'error': 'Key --> "blocked_id".     Blocked ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        if blocker_id == blocked_id:
-            return Response({'error': f'You cannot {action} yourself'}, status=status.HTTP_400_BAD_REQUEST)
+            return blocked_id       
         
         if action == 'block':
             return self.block_user(request, blocker_id, blocked_id)
         elif action == 'unblock':
             return self.unblock_user(request, blocker_id, blocked_id)
+
+    def post(self, request):
+        action = request.data.get('action')
+        if not action or action not in ['remove']:
+            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # NOTE: inside of this method it makes sense to name the variables requester_id and requestee_id rather than blocker_id and blocked_id
+        requester_id, requestee_id = self.get_and_validate_data(request, action)
+       
+        # If the data is invalid, return the error response
+        if not requester_id:
+            return requestee_id
+        
+        return self.remove_friend(request, requester_id, requestee_id)
         
 
     def block_user(self, request, blocker_id, blocked_id):
@@ -242,22 +268,10 @@ class ModifyFriendshipView(APIView):
         # No need to recreate the friendship in is_cool_with if it already exists
         return Response({'success': 'User unblocked'}, status=status.HTTP_200_OK)
 
-
-    
-class RemoveFriendView(APIView): 
-    permission_classes = [AllowAny] #TODO: implement the token-based authentication
-
-    def post(self, request):
-        user_id = request.data.get('user_id')
-        friend_id = request.data.get('friend_id')
-
-        # Check if both user and friend IDs are provided
-        if not user_id or not friend_id:
-            return Response({'error': 'Both user and friend IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    def remove_friend(self, request, blocker_id, blocked_id):
         friendship = IsCoolWith.objects.filter(
-            (Q(requester_id=user_id) & Q(requestee_id=friend_id)) |
-            (Q(requester_id=friend_id) & Q(requestee_id=user_id)),
+            (Q(requester_id=blocker_id) & Q(requestee_id=blocked_id)) |
+            (Q(requester_id=blocked_id) & Q(requestee_id=blocker_id)),
             status=CoolStatus.ACCEPTED
         )
 
@@ -267,4 +281,3 @@ class RemoveFriendView(APIView):
         friendship.delete()
 
         return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
-    

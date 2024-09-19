@@ -8,7 +8,6 @@ from .views import (
     FriendRequestView,
     ModifyFriendshipView,
     ListFriendsView,
-    RemoveFriendView
 )
 
 urlpatterns = [
@@ -18,9 +17,6 @@ urlpatterns = [
     path('friend-request/', FriendRequestView.as_view(), name='friend_request'),
     path('friend/list/', ListFriendsView.as_view(), name='list_friends'),
 
-    # Blocking/unblocking users
+    # Blocking/unblocking users / removing friends
     path('modify-friendship/', ModifyFriendshipView.as_view(), name='modify_friendship'),
-
-    # Remove friend
-    path('friend/remove/', RemoveFriendView.as_view(), name='remove_friend'),
 ]
