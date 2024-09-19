@@ -7,6 +7,7 @@ const state = {
     jwtTokens: {
         access: undefined,
         refresh: undefined,
+        homeViewUImageState: 0,
     }
 };
 
@@ -28,7 +29,13 @@ const mutations = {
             state.jwtTokens = value;
         },
         presistence: true,
-    }
+    },
+    setHomeViewUImageState: {
+        method: (state, value) => {
+            state.homeViewUImageState = value;
+        },
+        presistence: true,
+    },
 };
 
 export { state, mutations };
