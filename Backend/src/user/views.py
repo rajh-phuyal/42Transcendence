@@ -41,7 +41,17 @@ class FriendRequestView(APIView):
 
         # Check if the requester and requestee are the same user
         if requester_id == requestee_id:
-            return Response({'error': 'Requester and requestee cannot be the same user'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': f'Key --> {action}.    Requester and requestee cannot be the same user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the requestee has blocked the requester
+        requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
+        if requestee_blocked.exists():
+            return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the requester has blocked the requestee
+        requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
+        if requester_blocked.exists():
+            return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
 
         if action == 'send':
             return self.send_friend_request(request, requester_id, requestee_id)
@@ -61,45 +71,19 @@ class FriendRequestView(APIView):
             (Q(requester_id=requestee_id) & Q(requestee_id=requester_id))
         )
 
-        # Check if the requester and requestee are already friends
-        # -> Message that the users are already friends
-        
+        # Check if the users are already friends
         if already_cool.filter(status=CoolStatus.ACCEPTED).exists():
             return Response({'error': 'You are already friends with this user'}, status=status.HTTP_400_BAD_REQUEST)
-        elif already_cool.filter(status=CoolStatus.PENDING).exists():
-            if already_cool.filter(status=CoolStatus.PENDING).first().requester_id == requester_id:
-                # Check if the requester has already sent a friend request to the requestee
-                # -> Message be patient, the request is pending
-                return Response({'error': 'Friend request is pending'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # Check if the requestee has already sent a friend request to the requester
-                # -> Accept the friend request
-                already_cool.update(status=CoolStatus.ACCEPTED)
-                return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
-        elif already_cool.filter(status=CoolStatus.REJECTED).exists():
-            if already_cool.filter(status=CoolStatus.REJECTED).first().requester_id == requester_id:
-                # Check if the requestee has rejected a previous friend request from the requester
-                # -> Message that the requestee has rejected the request
-                return Response({'error': 'Friend request was rejected'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # Check if the requester has rejected a previous friend request from the requestee
-                # -> Update the status to accepted
-                already_cool.update(status=CoolStatus.ACCEPTED)
-                return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
+        
+         # Check if the friend request is pending
+        if already_cool.filter(status=CoolStatus.PENDING).exists():
+            return Response({'error': 'Friend request is already pending'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # So there was no previous cool state between the requester and requestee...
+        # Check if the friend request was previously rejected
+        if already_cool.filter(status=CoolStatus.REJECTED).exists():
+            return Response({'error': 'Friend request was rejected'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the requestee has blocked the requester
-        # -> Message that the requestee has blocked the requester
-        requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
-        if requestee_blocked.exists():
-            return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Check if the requester has blocked the requestee
-        # -> Message u need to unblock the user first
-        requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
-        if requester_blocked.exists():
-            return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
+        # If there was no previous cool state between the requester and requestee...
 
         # Create a new friend request
         new_cool = IsCoolWith(requester_id=requester_id, requestee_id=requestee_id)
@@ -128,17 +112,6 @@ class FriendRequestView(APIView):
         # Check if status is pending
         if friend_requests.status != CoolStatus.PENDING:
             return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # TODO: logic for rejecting the friend request
-
-        ''' Do we need this? Doed it make sense to check if the users have blocked each other here? If they're blocked, they cant send a friend request in the first place
-          Check if either user has blocked the other
-        requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id).exists()
-        requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id).exists()
-
-        if requester_blocked or requestee_blocked:
-            return Response({'error': 'One of the users has blocked the other'}, status=status.HTTP_400_BAD_REQUEST)
-        '''
 
         # Accept the friend request
         friend_requests.status = CoolStatus.ACCEPTED
