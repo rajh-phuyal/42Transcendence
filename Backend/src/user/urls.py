@@ -6,8 +6,7 @@ from rest_framework_simplejwt.views import (
 from .views import (
     ProfileView,
     FriendRequestView,
-    BlockUserView,
-    UnblockUserView,
+    ModifyFriendshipView,
     ListFriendsView,
     RemoveFriendView
 )
@@ -20,8 +19,7 @@ urlpatterns = [
     path('friend/list/', ListFriendsView.as_view(), name='list_friends'),
 
     # Blocking/unblocking users
-    path('block/', BlockUserView.as_view(), name='block_user'),
-    path('unblock/', UnblockUserView.as_view(), name='unblock_user'),
+    path('modify-friendship/', ModifyFriendshipView.as_view(), name='modify_friendship'),
 
     # Remove friend
     path('friend/remove/', RemoveFriendView.as_view(), name='remove_friend'),

@@ -221,70 +221,56 @@ class ListFriendsView(APIView):
         return Response({'friends': friends_list}, status=status.HTTP_200_OK)
                 
 
-class BlockUserView(APIView):
+class ModifyFriendshipView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
-    def post(self, request):
+    def put(self, request):
+        action = request.data.get('action')
+
+        if not action or action not in ['block', 'unblock']:
+            return Response({'error': 'Key --> "block" or "unblock".     Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         blocker_id = request.data.get('blocker_id')
         blocked_id = request.data.get('blocked_id')
 
-        # Check if both blocker and blocked IDs are provided
-        if not blocker_id or not blocked_id:
-            return Response({'error': 'Both blocker and blocked IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Check if we are trying to block ourselves
+        if not blocker_id:
+            return Response({'error': 'Key --> "blocker_id".     Blocker ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        if not blocked_id:
+            return Response({'error': 'Key --> "blocked_id".     Blocked ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         if blocker_id == blocked_id:
-            return Response({'error': 'You cannot block yourself'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': f'You cannot {action} yourself'}, status=status.HTTP_400_BAD_REQUEST)
         
+        if action == 'block':
+            return self.block_user(request, blocker_id, blocked_id)
+        elif action == 'unblock':
+            return self.unblock_user(request, blocker_id, blocked_id)
+        
+
+    def block_user(self, request, blocker_id, blocked_id):
         # Check if the block already exists
         block_exists = NoCoolWith.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id).exists()
 
         if block_exists:
             return Response({'error': 'You have already blocked this user'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Check if the users are already friends
-        friendship = IsCoolWith.objects.filter(
-            (Q(requester_id=blocker_id) & Q(requestee_id=blocked_id)) |
-            (Q(requester_id=blocked_id) & Q(requestee_id=blocker_id)),
-            status=CoolStatus.ACCEPTED
-        )
-
-        # If they are friends, delete the friendship
-        if friendship.exists():
-            friendship.delete()
-
-        new_block = NoCoolWith(blocker_id=blocker_id, blocked_id=blocked_id)
-        new_block.save()
+        NoCoolWith.objects.create(blocker_id=blocker_id, blocked_id=blocked_id)
 
         return Response({'success': 'User blocked'}, status=status.HTTP_200_OK)
-
-
-class UnblockUserView(APIView):
-    permission_classes = [AllowAny] #TODO: implement the token-based authentication
-
-    def post(self, request):
-        blocker_id = request.data.get('blocker_id')
-        blocked_id = request.data.get('blocked_id')
-
-        # Check if both blocker and blocked IDs are provided
-        if not blocker_id or not blocked_id:
-            return Response({'error': 'Both blocker and blocked IDs must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Chech if we are trying to unblock ourselves
-        if blocker_id == blocked_id:
-            return Response({'error': 'You cannot unblock yourself'}, status=status.HTTP_400_BAD_REQUEST)
-        
+    
+    def unblock_user(self, request, blocker_id, blocked_id):
         # Check if the block exists
-        block = NoCoolWith.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id)
+        block = NoCoolWith.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id).first()
 
-        if not block.exists():
+        if not block:
             return Response({'error': 'You have not blocked this user'}, status=status.HTTP_400_BAD_REQUEST)
         
         block.delete()
 
+        # The users go back to their friendship state
+        # No need to recreate the friendship in is_cool_with if it already exists
         return Response({'success': 'User unblocked'}, status=status.HTTP_200_OK)
-    
 
+
+    
 class RemoveFriendView(APIView): 
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
