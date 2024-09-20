@@ -1,10 +1,5 @@
-import imageBook from './objects.js'
-import backgroundImageBook from './objects.js'
-import labels from './objects.js'
-import lines from './objects.js'
-import $store from '../../store/store.js'
-
-console.log("here");
+import {imageDir, imageBook, backgroundImageBook, labels, lines} from './objects.js'
+import canvasData from './data.js'
 
 /* 
 *************************************************************
@@ -13,20 +8,25 @@ console.log("here");
 */
 
 // Draw the image on the canvas
-function drawImg(image, color) {
+function drawImg(image) {
+    canvasData.image = image;
     return new Promise((resolve) => {
         let imgageObject = new Image();
-        let shadowColor;
+        let image = canvasData.image;
 
         imgageObject.src = image.src;
-        
-        if (color)
-            shadowColor = color;
-        else
-            shadowColor = '#100C09';
-        
+      
         imgageObject.onload = function () {
-            // Draw the image on the canvas once it's loaded
+            let context = canvasData.context;
+            let shadowColor;
+            let image = canvasData.image;
+
+        // Draw the image on the canvas once it's loaded
+            if (image.highleted)
+                shadowColor = '#FFFCE6'
+            else
+                shadowColor = '#100C09';
+
             context.shadowColor = shadowColor;
             context.shadowOffsetX = image.shadow;
             context.shadowOffsetY = image.shadow;
@@ -62,6 +62,8 @@ async function drawImageBook(){
 
 // draw the label in the canvas
 function drawLabel(label){
+
+    let context = canvasData.context;
     
     // Draw the rectangle
     context.beginPath();
@@ -85,6 +87,8 @@ function drawLabel(label){
 
 // draw a line in the canvas
 function drawLine(line){
+
+    let context = canvasData.context;
 
     context.beginPath();
     context.strokeStyle = '#D32929';
@@ -114,13 +118,13 @@ export async function buildCanvas(){
         drawLine(element);
 }
 
-async function redraw(image, color)
+async function redraw(image)
 {
-    if (image == undefined)
-        return;
-    await drawImg(image, color);
-    for (element of image.lines)
+    await drawImg(image);
+    for (let element of image.lines)
+    {
         drawLine(lines[element]);
+    }
 
 }
 
@@ -137,27 +141,67 @@ function isContained(x, y, img){
 
 
 // deals with the hovering events
-export function isHovering(event){
+export async function isHovering(event){
 
-    let mouseX = event.clientX;
-    let mouseY = event.clientY;
+    let canvas = canvasData.canvas;
+
+    // get the canvas position relative to the viewport
+    const rect = canvas.getBoundingClientRect();
+
+    // Adjust the mouse position relative to the canvas
+    let mouseX = (event.clientX - rect.left) * (canvas.width / canvas.clientWidth);
+    let mouseY = (event.clientY - rect.top) * (canvas.height / canvas.clientHeight);
     
-    let state = $store.state.homeViewUImageState;
+    let state = canvasData.highlitedImageID;
 
-    foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
+    let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
     
     if ((!foundElement && state == 0) || (foundElement && foundElement.id == state))
         return ;
     
-    if (state)
-        redraw(imageBook[state - 1], '#100C09');
-    
-    if (foundElement){
-        redraw(foundElement, '#FFFCE6');
-        $store.commit("setHomeViewUImageState", foundElement.id);
+    if (foundElement)
+        foundElement.highleted = true;
+
+
+    for (const element of imageBook) {
+        if (element !== foundElement) {
+            if (element.highleted) {
+                element.highleted = false;
+                console.log(element.id, "set to false");
+                await redraw(element);
+            }
+        }
     }
-    else
-        $store.commit("setHomeViewUImageState", 0);
+
+    // for (let i = 0; i < 5; i++)
+    // {
+    //     if (imageBook[i] !== foundElement){
+    //         if (imageBook[i].highleted){
+    //             imageBook[i].highleted = false;
+    //             console.log(imageBook[i].id , "set to false");
+    //             await redraw(imageBook[i]);
+    //         }
+    //     }
+    // }
+
+    // imageBook.forEach(element => {
+    //     if (element !== foundElement){
+    //         if (element.highleted){
+    //             element.highleted = false;
+    //             console.log(element.id , "set to false");
+    //             await redraw(element);
+    //         }
+    //     }
+    // });
+
+    if (foundElement == undefined)
+    {
+        canvasData.highlitedImageID = 0;
+        return ;
+    }
+
+    canvasData.highlitedImageID = foundElement.id;
+    await redraw(foundElement);
 }
 
 // deals with the clicking events
@@ -167,10 +211,10 @@ export function mouseClick(event){
         drawLine(element);
     });
     
-    mouseX = event.clientX;
-    mouseY = event.clientY;
+    let mouseX = event.clientX;
+    let mouseY = event.clientY;
     
-    foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
+    let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
 
     if (!foundElement)
         foundElement = backgroundImageBook.find(element => isContained(mouseX, mouseY, element));
@@ -178,12 +222,20 @@ export function mouseClick(event){
     
     if (!foundElement){
         console.log("offbounds");
-        return;
     }
 
-    console.log('=========================');
-    console.log('element src:', foundElement.src);
-    console.log('mouse position:', mouseX, mouseY);
+
+    // console.log("==== HIGHLIGHT TABLE ====");
+    imageBook.forEach(element =>{
+        if (element.highleted)
+            console.log(element.id, "True");
+        else
+            console.log(element.id, "False");
+    });
+    
+    // console.log('=========================');
+    // console.log('element src:', foundElement.src);
+    // console.log('mouse position:', mouseX, mouseY);
     
 }
 
@@ -214,7 +266,7 @@ export function mouseClick(event){
 // context.scale(scale, scale);
 
 // build thexport e first frame
-buildCanvas();
+// buildCanvas();
 
 // event listeners
 // document.addEventListener("mousemove", isHovering);

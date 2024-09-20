@@ -8,7 +8,6 @@ const state = {
         access: undefined,
         refresh: undefined,
     },
-    homeViewUImageState: 0,
 };
 
 const mutations = {

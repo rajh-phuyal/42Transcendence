@@ -1,56 +1,61 @@
 
-imageDir = '../../../assets/homeView/';
+export const imageDir = '../../../assets/homeView/';
 
 // Array containing the objects for each element of the home-view that should be responsive
 export const imageBook = [
     {
+        id: 1,
         src: imageDir + 'AICard.png',
+        highleted: false,
         x: 65,
         y: 210,
         width: 160,
         height: 300,
         shadow: 5,
-        id: 1,
         lines: [0],
     },
     {
+        id: 2,
         src: imageDir + 'lizardPeopleCard.png',
+        highleted: false,
         x: 250,
         y: 210,
         width: 160,
         height: 300,
         shadow: 5,
-        id: 2,
         lines: [1, 3],
     },
     {
+        id: 3,
         src: imageDir + 'bigfootCard.png',
+        highleted: false,
         x: 450,
         y: 210,
         width: 160,
         height: 300,
         shadow: 5,
-        id: 3,
         lines: [2, 4, 5],
     },
     {
+        id: 4,
         src: imageDir + 'chatroomCard.png',
+        highleted: false,
         x: 800,
         y: 90,
         width: 260,
         height: 290,
         shadow: 5,
-        id: 4,
         lines: [11, 12, 15],
     },
     {
+        id: 5,
         src: imageDir + 'area51Map.png',
+        highleted: false,
         x: 1450,
         y: 100,
         width: 260,
         height: 260,
         shadow: 5,
-        id: 5,
         lines: [10, 11, 13, 14],
     },
 ]
