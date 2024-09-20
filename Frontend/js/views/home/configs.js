@@ -26,7 +26,7 @@ export default {
         afterDomInsertion() {
             console.log("step 4");
             
-            // state of the mouse => if its hovering an image (= 0) or not (> 0), and if it is, which one (its indicated by the imageBook.id)
+            // stores the id of the element currently highlighted
             canvasData.highlitedImageID = 0;
 
             // Get the canvas element and its context
@@ -41,6 +41,7 @@ export default {
 
             const scale = window.devicePixelRatio;
 
+            // Adjusts the canvas size
             canvas.width = canvas.clientWidth * scale;
             canvas.height = canvas.clientHeight * scale;
 

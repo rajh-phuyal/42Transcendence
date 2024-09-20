@@ -43,13 +43,12 @@ function drawImg(image) {
             context.shadowOffsetX = 0;
             context.shadowOffsetY = 0;
             
-            // Resolve the promise after drawing is complete
             resolve();
         };
 
         imgageObject.onerror = function () {
             console.error("Error loading image:", image.src);
-            resolve();  // Resolve even on error to avoid blocking
+            resolve();
         };
     });
 }
@@ -152,6 +151,7 @@ export async function isHovering(event){
     let mouseX = (event.clientX - rect.left) * (canvas.width / canvas.clientWidth);
     let mouseY = (event.clientY - rect.top) * (canvas.height / canvas.clientHeight);
     
+    // the state variable stores the id of the element currently highlighted
     let state = canvasData.highlitedImageID;
 
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
@@ -167,32 +167,10 @@ export async function isHovering(event){
         if (element !== foundElement) {
             if (element.highleted) {
                 element.highleted = false;
-                console.log(element.id, "set to false");
                 await redraw(element);
             }
         }
     }
-
-    // for (let i = 0; i < 5; i++)
-    // {
-    //     if (imageBook[i] !== foundElement){
-    //         if (imageBook[i].highleted){
-    //             imageBook[i].highleted = false;
-    //             console.log(imageBook[i].id , "set to false");
-    //             await redraw(imageBook[i]);
-    //         }
-    //     }
-    // }
-
-    // imageBook.forEach(element => {
-    //     if (element !== foundElement){
-    //         if (element.highleted){
-    //             element.highleted = false;
-    //             console.log(element.id , "set to false");
-    //             await redraw(element);
-    //         }
-    //     }
-    // });
 
     if (foundElement == undefined)
     {
@@ -223,52 +201,8 @@ export function mouseClick(event){
     if (!foundElement){
         console.log("offbounds");
     }
-
-
-    // console.log("==== HIGHLIGHT TABLE ====");
-    imageBook.forEach(element =>{
-        if (element.highleted)
-            console.log(element.id, "True");
-        else
-            console.log(element.id, "False");
-    });
-    
-    // console.log('=========================');
-    // console.log('element src:', foundElement.src);
-    // console.log('mouse position:', mouseX, mouseY);
-    
+ 
+    console.log('=========================');
+    console.log('element src:', foundElement.src);
+    console.log('mouse position:', mouseX, mouseY);
 }
-
-/* 
-*************************************************************
-************************* SETUP *****************************
-*************************************************************
-*/
-
-// state of the mouse => if its hovering an image (= 0) or not (> 0), and if it is, which one (its indicated by the imageBook.id)
-// state = 0;
-
-// // Get the canvas element and its context
-// canvas = document.getElementById('canvas');
-// console.log(canvas);
-// context = canvas.getContext('2d');
-
-// // Adjust the pixel ratio so it draws the images with higher resolution
-// canvas.width = window.innerWidth;
-// canvas.height = window.innerHeight;
-
-// const scale = window.devicePixelRatio;
-
-// canvas.width = canvas.clientWidth * scale;
-// canvas.height = canvas.clientHeight * scale;
-
-// context.imageSmoothingEnabled = true;
-// context.scale(scale, scale);
-
-// build thexport e first frame
-// buildCanvas();
-
-// event listeners
-// document.addEventListener("mousemove", isHovering);
-// document.addEventListener("click", mouseClick);
-
