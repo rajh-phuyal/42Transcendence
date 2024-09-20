@@ -6,6 +6,7 @@ from rest_framework import status
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
 from .serializers import UserSerializer
+from .utils import get_and_validate_data
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
@@ -204,28 +205,12 @@ class ListFriendsView(APIView):
 class ModifyFriendshipView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
-    def get_and_validate_data(self, request, action):
-
-        blocker_id = request.data.get('blocker_id')
-        if not blocker_id:
-            return None, Response({'error': 'Key --> "blocker_id".     Blocker ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-        blocked_id = request.data.get('blocked_id')
-        if not blocked_id:
-            return None, Response({'error': 'Key --> "blocked_id".     Blocked ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if blocker_id == blocked_id:
-            return None, Response({'error': f'You cannot {action} yourself'}, status=status.HTTP_400_BAD_REQUEST)
-
-        return blocker_id, blocked_id
-
-
     def put(self, request):
         action = request.data.get('action')
         if not action or action not in ['block', 'unblock']:
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        blocker_id, blocked_id = self.get_and_validate_data(request, action)
+        blocker_id, blocked_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
        
         # If the data is invalid, return the error response
         if not blocker_id:
