@@ -13,6 +13,13 @@ class ProfileView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
+    
+    ''' TODO: add more fields like
+    * friends list count
+    * user points
+    * match history
+    * etc.
+    '''
 
 
 class FriendRequestView(APIView):
@@ -96,7 +103,7 @@ class FriendRequestView(APIView):
 
         # Check if the friend request exists
         try:
-            friend_requests = IsCoolWith.objects.get(
+            friend_request = IsCoolWith.objects.get(
                 requester_id=requester_id,
                 requestee_id=requestee_id
             )
@@ -106,16 +113,16 @@ class FriendRequestView(APIView):
         # TODO: verify if the requester is the requestee, when we have authentication implemented
 
         # Check if the friend request is already accepted
-        if friend_requests.status == CoolStatus.ACCEPTED:
+        if friend_request.status == CoolStatus.ACCEPTED:
             return Response({'error': 'Friend request has already been accepted'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if status is pending
-        if friend_requests.status != CoolStatus.PENDING:
+        if friend_request.status != CoolStatus.PENDING:
             return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Accept the friend request
-        friend_requests.status = CoolStatus.ACCEPTED
-        friend_requests.save()
+        friend_request.status = CoolStatus.ACCEPTED
+        friend_request.save()
         return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
 
 
@@ -123,7 +130,7 @@ class FriendRequestView(APIView):
         
         # Check if the friend request exists
         try:
-            friend_requests = IsCoolWith.objects.get(
+            friend_request = IsCoolWith.objects.get(
                 requester_id=requester_id,
                 requestee_id=requestee_id
             )
@@ -131,36 +138,36 @@ class FriendRequestView(APIView):
             return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
         
         # Check if the users are already friends
-        if friend_requests.status == CoolStatus.ACCEPTED:
+        if friend_request.status == CoolStatus.ACCEPTED:
             return Response({'error': 'You are already friends with this user'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Check if the friend request is already rejected
-        if friend_requests.status == CoolStatus.REJECTED:
+        if friend_request.status == CoolStatus.REJECTED:
             return Response({'error': 'Friend request has already been rejected'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Check if the friend request is pending
-        if friend_requests.status != CoolStatus.PENDING:
+        if friend_request.status != CoolStatus.PENDING:
             return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Reject the friend request
-        friend_requests.status = CoolStatus.REJECTED
-        friend_requests.save()
+        friend_request.status = CoolStatus.REJECTED
+        friend_request.save()
         return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
     
 
     def cancel_friend_request(self, request, requester_id, requestee_id):
         
         # Check if the friend request exists
-        friend_requests = IsCoolWith.objects.filter(
+        friend_request = IsCoolWith.objects.filter(
             requester_id=requester_id,
             requestee_id=requestee_id,
             status=CoolStatus.PENDING
         ).first()
 
-        if not friend_requests:
+        if not friend_request:
             return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        friend_requests.delete()
+        friend_request.delete()
 
         return Response({'success': 'Friend request cancelled'}, status=status.HTTP_200_OK)
 

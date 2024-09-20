@@ -1,8 +1,4 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 from .views import (
     ProfileView,
     FriendRequestView,
@@ -11,7 +7,7 @@ from .views import (
 )
 
 urlpatterns = [
-	path('profile/<int:id>/', ProfileView.as_view(), name='profile'),
+    path('profile/<int:id>/', ProfileView.as_view(), name='profile'),
 
 	# Friend requesting
     path('friend-request/', FriendRequestView.as_view(), name='friend_request'),
