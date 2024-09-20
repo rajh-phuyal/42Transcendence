@@ -7,8 +7,8 @@ const state = {
     jwtTokens: {
         access: undefined,
         refresh: undefined,
-        homeViewUImageState: 0,
-    }
+    },
+    homeViewUImageState: 0,
 };
 
 const mutations = {

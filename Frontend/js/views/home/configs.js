@@ -1,11 +1,6 @@
 import { $on } from '../../abstracts/dollars.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
-// import { imageBook } from './objects.js'
-// import { backgroundImageBook } from './objects.js'
-// import { labels } from './objects.js'
-// import { lines } from './objects.js'
 
-// import { isHovering } from './script.js'
 
 export default {
     attributes: {
@@ -30,6 +25,7 @@ export default {
 
         afterDomInsertion() {
             console.log("step 4");
+            
             // state of the mouse => if its hovering an image (= 0) or not (> 0), and if it is, which one (its indicated by the imageBook.id)
             $store.commit("setHomeViewUImageState", 0);
 
