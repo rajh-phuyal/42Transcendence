@@ -9,7 +9,6 @@ import $auth from '../auth/authentication.js';
 const objectToBind = (config) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
-    // let { _, attributes, methods } = config || {};
 
     for (const [key, value] of Object.entries(attributes || {})) {
         binder[key] = value;

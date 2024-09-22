@@ -1,4 +1,4 @@
-import { $id, $on } from '../../abstracts/dollars.js';
+import { $id, $on, $off } from '../../abstracts/dollars.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
 import canvasData from './data.js'
 
@@ -11,39 +11,34 @@ export default {
     
     hooks: {
         beforeRouteEnter() {
-            console.log("step 1");
+
         },
         
         beforeRouteLeave() {
-            console.log("step 2");
+            $off(document, "click", mouseClick);
+            $off(document, "mousemove", isHovering);
         },
 
         beforeDomInsertion() {
-            console.log('store', this.$store);
-            console.log("dstep 3");
+
         },
 
         afterDomInsertion() {
-            console.log("step 4");
-            
+
             // stores the id of the element currently highlighted
             canvasData.highlitedImageID = 0;
 
             // Get the canvas element and its context
             canvasData.canvas = $id("home-canvas");
             let canvas = canvasData.canvas;
-            console.log(canvas);
-            canvasData.context = canvas.getContext('2d');
 
-            // Adjust the pixel ratio so it draws the images with higher resolution
+            canvasData.context = canvas.getContext('2d');
+            
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-
+            
+            // Adjust the pixel ratio so it draws the images with higher resolution
             const scale = window.devicePixelRatio;
-
-            // Adjusts the canvas size
-            canvas.width = canvas.clientWidth * scale;
-            canvas.height = canvas.clientHeight * scale;
 
             canvasData.context.imageSmoothingEnabled = true;
             canvasData.context.scale(scale, scale);

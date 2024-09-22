@@ -11,12 +11,12 @@ import canvasData from './data.js'
 function drawImg(image) {
     canvasData.image = image;
     return new Promise((resolve) => {
-        let imgageObject = new Image();
+        let imageObject = new Image();
         let image = canvasData.image;
 
-        imgageObject.src = image.src;
+        imageObject.src = image.src;
       
-        imgageObject.onload = function () {
+        imageObject.onload = function () {
             let context = canvasData.context;
             let shadowColor;
             let image = canvasData.image;
@@ -30,14 +30,13 @@ function drawImg(image) {
             context.shadowColor = shadowColor;
             context.shadowOffsetX = image.shadow;
             context.shadowOffsetY = image.shadow;
-            
-            context.drawImage(imgageObject, image.x, image.y, image.width, image.height);
+            context.drawImage(imageObject, image.x, image.y, image.width, image.height);
             
             context.shadowColor = shadowColor;
             context.shadowOffsetX = -image.shadow;
             context.shadowOffsetY = -image.shadow;
             
-            context.drawImage(imgageObject, image.x, image.y, image.width, image.height);
+            context.drawImage(imageObject, image.x, image.y, image.width, image.height);
             
             // Reset shadow offsets
             context.shadowOffsetX = 0;
@@ -46,7 +45,7 @@ function drawImg(image) {
             resolve();
         };
 
-        imgageObject.onerror = function () {
+        imageObject.onerror = function () {
             console.error("Error loading image:", image.src);
             resolve();
         };
@@ -55,8 +54,8 @@ function drawImg(image) {
 
 // draw the imageBook
 async function drawImageBook(){
-    for (let i = 0; i < imageBook.length; i++)
-       await drawImg(imageBook[i], undefined);
+    for (const element of imageBook)
+       await drawImg(element);
 }
 
 // draw the label in the canvas
@@ -108,7 +107,7 @@ function drawLine(line){
 export async function buildCanvas(){
     await drawImageBook();
     for (const element of backgroundImageBook)
-        await drawImg(element, undefined);
+        await drawImg(element);
 
     for (const element of labels)
         drawLabel(element);
@@ -196,13 +195,4 @@ export function mouseClick(event){
 
     if (!foundElement)
         foundElement = backgroundImageBook.find(element => isContained(mouseX, mouseY, element));
-    
-    
-    if (!foundElement){
-        console.log("offbounds");
-    }
- 
-    console.log('=========================');
-    console.log('element src:', foundElement.src);
-    console.log('mouse position:', mouseX, mouseY);
 }

@@ -29,12 +29,6 @@ const mutations = {
         },
         presistence: true,
     },
-    setHomeViewUImageState: {
-        method: (state, value) => {
-            state.homeViewUImageState = value;
-        },
-        presistence: true,
-    },
 };
 
 export { state, mutations };
