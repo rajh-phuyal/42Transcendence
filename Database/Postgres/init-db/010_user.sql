@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.user
 (
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(255) NOT NULL,
+	-- TODO: rename to 'password' later, it doen not work like that on Anatoli's machine
 	pswd VARCHAR(255) NOT NULL
 );
 

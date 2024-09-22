@@ -33,8 +33,6 @@ class FriendRequestView(APIView):
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         
         requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
-
-        # If the data is invalid, return the error response
         if not requester_id:
             return requestee_id
 
@@ -60,8 +58,6 @@ class FriendRequestView(APIView):
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         
         requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
-
-        # If the data is invalid, return the error response
         if not requester_id:
             return requestee_id
         
@@ -85,8 +81,6 @@ class FriendRequestView(APIView):
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
         
         requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
-
-        # If the data is invalid, return the error response
         if not requester_id:
             return requestee_id
         
@@ -227,36 +221,31 @@ class ListFriendsView(APIView):
 class ModifyFriendshipView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
-    def put(self, request):
-        action = request.data.get('action')
-        if not action or action not in ['block', 'unblock']:
-            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-        blocker_id, blocked_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
-       
-        # If the data is invalid, return the error response
-        if not blocker_id:
-            return blocked_id       
-        
-        if action == 'block':
-            return self.block_user(request, blocker_id, blocked_id)
-        elif action == 'unblock':
-            return self.unblock_user(request, blocker_id, blocked_id)
-
     def post(self, request):
         action = request.data.get('action')
-        if not action or action not in ['remove']:
+        if not action or action not in ['remove', 'block']:
             return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         # NOTE: inside of this method it makes sense to name the variables requester_id and requestee_id rather than blocker_id and blocked_id
-        requester_id, requestee_id = get_and_validate_data(request, action, 'blocker', 'blocked_id')
-       
-        # If the data is invalid, return the error response
+        requester_id, requestee_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
         if not requester_id:
             return requestee_id
         
+        if action == 'block':
+            return self.block_user(request, requester_id, requestee_id)
         return self.remove_friend(request, requester_id, requestee_id)
+
+
+    def delete(self, request):
+        action = request.data.get('action')
+        if not action or action not in ['unblock']:
+            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        blocker_id, blocked_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
+        if not blocker_id:
+            return blocked_id
         
+        return self.unblock_user(request, blocker_id, blocked_id) 
 
     def block_user(self, request, blocker_id, blocked_id):
         # Check if the block already exists
