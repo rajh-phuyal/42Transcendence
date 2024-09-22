@@ -192,8 +192,8 @@ class FriendRequestView(APIView):
 class ListFriendsView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication
 
-    def get(self, request):
-        user_id = request.query_params.get('user_id')
+    def get(self, request,id):
+        user_id = id
 
         if not user_id:
             return Response({'error': 'User ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
