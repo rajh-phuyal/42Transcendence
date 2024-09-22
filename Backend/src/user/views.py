@@ -84,7 +84,7 @@ class FriendRequestView(APIView):
 
         try:
             if not action or action not in ['cancel']:
-                return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Invalid action. DELETE valid action is "cancel"'}, status=status.HTTP_400_BAD_REQUEST)
             
             requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
             if not requester_id:
