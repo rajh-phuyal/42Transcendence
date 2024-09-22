@@ -30,7 +30,7 @@ class FriendRequestView(APIView):
         action = request.data.get('action')
 
         if not action or action not in ['accept', 'reject']:
-            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid action. PUT valid actions are "accept" and "reject"'}, status=status.HTTP_400_BAD_REQUEST)
         
         requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
         if not requester_id:
@@ -55,7 +55,7 @@ class FriendRequestView(APIView):
         action = request.data.get('action')
 
         if not action or action not in ['send']:
-            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid action. POST valid action is "send"'}, status=status.HTTP_400_BAD_REQUEST)
         
         requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
         if not requester_id:
@@ -224,7 +224,7 @@ class ModifyFriendshipView(APIView):
     def post(self, request):
         action = request.data.get('action')
         if not action or action not in ['remove', 'block']:
-            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid action. PUT valid actions are "remove" and "block"'}, status=status.HTTP_400_BAD_REQUEST)
 
         # NOTE: inside of this method it makes sense to name the variables requester_id and requestee_id rather than blocker_id and blocked_id
         requester_id, requestee_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
@@ -239,7 +239,7 @@ class ModifyFriendshipView(APIView):
     def delete(self, request):
         action = request.data.get('action')
         if not action or action not in ['unblock']:
-            return Response({'error': 'Valid action must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid action. DELETE valid action is "unblock"'}, status=status.HTTP_400_BAD_REQUEST)
 
         blocker_id, blocked_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
         if not blocker_id:
