@@ -143,9 +143,9 @@ class FriendRequestView(APIView):
             return Response({'error': 'Friend request has already been accepted'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if status is pending
-        if friend_request.status != CoolStatus.PENDING:
-            return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
-
+        if friend_request.status != CoolStatus.PENDING and friend_request.status != CoolStatus.REJECTED:
+            return Response({'error': 'Friend request is not pending or rejected'}, status=status.HTTP_400_BAD_REQUEST)
+        
         # Accept the friend request
         friend_request.status = CoolStatus.ACCEPTED
         friend_request.save()
