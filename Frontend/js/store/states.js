@@ -7,7 +7,7 @@ const state = {
     jwtTokens: {
         access: undefined,
         refresh: undefined,
-    }
+    },
 };
 
 const mutations = {
@@ -28,7 +28,7 @@ const mutations = {
             state.jwtTokens = value;
         },
         presistence: true,
-    }
+    },
 };
 
 export { state, mutations };
