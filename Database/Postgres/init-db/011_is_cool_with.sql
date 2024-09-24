@@ -10,7 +10,7 @@
 CREATE TYPE barelyaschema.cool_status AS ENUM ('pending', 'accepted', 'rejected');
 
 \! echo -e "creating the table: 'barelyaschema.is_cool_with'..."
-CREATE TABLE IF NOT EXISTS barelyaschema.is_cool_with
+CREATE TABLE IF NOT EXISTS barelyaschema.^
 (
 	id SERIAL PRIMARY KEY,
 	requester_id INT NOT NULL,
