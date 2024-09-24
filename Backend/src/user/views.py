@@ -37,21 +37,21 @@ class FriendRequestView(APIView):
             return Response({'error': 'Invalid action. PUT valid actions are "accept" and "reject"'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
+            requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
        
             # Check if the requestee has blocked the requester
-            requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
+            requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester.id)
             if requestee_blocked.exists():
                 return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Check if the requester has blocked the requestee
-            requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
+            requester_blocked = NoCoolWith.objects.filter(blocker_id=requester.id, blocked_id=requestee_id)
             if requester_blocked.exists():
                 return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
 
             if action == 'accept':
-                return self.accept_friend_request(request, requester_id, requestee_id)
-            return self.reject_friend_request(request, requester_id, requestee_id)
+                return self.accept_friend_request(request, requester.id, requestee_id)
+            return self.reject_friend_request(request, requester.id, requestee_id)
         
         except ValidationException as e:
             return Response(e.detail, status=e.status_code)
@@ -64,19 +64,19 @@ class FriendRequestView(APIView):
             return Response({'error': 'Invalid action. POST valid action is "send"'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
+            requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
             
             # Check if the requestee has blocked the requester
-            requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
+            requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester.id)
             if requestee_blocked.exists():
                 return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
             
             # Check if the requester has blocked the requestee
-            requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
+            requester_blocked = NoCoolWith.objects.filter(blocker_id=requester.id, blocked_id=requestee_id)
             if requester_blocked.exists():
                 return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
             
-            return self.send_friend_request(request, requester_id, requestee_id)
+            return self.send_friend_request(request, requester.id, requestee_id)
         
         except ValidationException as e:
             return Response(e.detail, status=e.status_code)
@@ -89,9 +89,7 @@ class FriendRequestView(APIView):
             if not action or action not in ['cancel']:
                 return Response({'error': 'Invalid action. DELETE valid action is "cancel"'}, status=status.HTTP_400_BAD_REQUEST)
             
-            requester_id, requestee_id = get_and_validate_data(request, action, 'requester_id', 'requestee_id')
-            if not requester_id:
-                return requestee_id
+            requester_id, requestee_id = get_and_validate_data(request, action, 'requestee_id')
             
             return self.cancel_friend_request(request, requester_id, requestee_id)
 
@@ -99,12 +97,12 @@ class FriendRequestView(APIView):
             return Response(e.detail, status=e.status_code)
 
 
-    def send_friend_request(self, request, requester_id, requestee_id):
+    def send_friend_request(self, request, requester, requestee_id):
     
         # Get the current cool state between the requester and requestee
         already_cool = IsCoolWith.objects.filter(
-            (Q(requester_id=requester_id) & Q(requestee_id=requestee_id)) |
-            (Q(requester_id=requestee_id) & Q(requestee_id=requester_id))
+            (Q(requester_id=requester.id) & Q(requestee_id=requestee_id)) |
+            (Q(requester_id=requestee_id) & Q(requestee_id=requester.id))
         )
 
         # Check if the users are already friends
@@ -122,7 +120,7 @@ class FriendRequestView(APIView):
         # If there was no previous cool state between the requester and requestee...
 
         # Create a new friend request
-        new_cool = IsCoolWith(requester_id=requester_id, requestee_id=requestee_id)
+        new_cool = IsCoolWith(requester_id=requester.id, requestee_id=requestee_id)
         new_cool.save()
         # Return a success message
         return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED)
@@ -139,8 +137,6 @@ class FriendRequestView(APIView):
         except IsCoolWith.DoesNotExist:
             return Response({'error': 'Friend request not found'}, status=status.HTTP_404_NOT_FOUND)
     
-        # TODO: verify if the requester is the requestee, when we have authentication implemented
-
         # Check if the friend request is already accepted
         if friend_request.status == CoolStatus.ACCEPTED:
             return Response({'error': 'Friend request has already been accepted'}, status=status.HTTP_400_BAD_REQUEST)
@@ -242,9 +238,7 @@ class ModifyFriendshipView(APIView):
 
         try:
             # NOTE: inside of this method it makes sense to name the variables requester_id and requestee_id rather than blocker_id and blocked_id
-            requester_id, requestee_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
-            if not requester_id:
-                return requestee_id
+            requester_id, requestee_id = get_and_validate_data(request, action, 'blocked_id')
             
             if action == 'block':
                 return self.block_user(request, requester_id, requestee_id)
@@ -260,9 +254,7 @@ class ModifyFriendshipView(APIView):
             return Response({'error': 'Invalid action. DELETE valid action is "unblock"'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            blocker_id, blocked_id = get_and_validate_data(request, action, 'blocker_id', 'blocked_id')
-            if not blocker_id:
-                return blocked_id
+            blocker_id, blocked_id = get_and_validate_data(request, action, 'blocked_id')
             
             return self.unblock_user(request, blocker_id, blocked_id)
         

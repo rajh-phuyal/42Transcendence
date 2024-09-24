@@ -2,17 +2,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from .exceptions import ValidationException
 
-def get_and_validate_data(request, action, doer_name, target_name):
+def get_and_validate_data(request, action, target_name):
 
-    doer = request.data.get(doer_name)
-    if not doer:
-        raise ValidationException(f'Key --> "{doer_name}".    {doer_name} must be provided')
+    doer = request.user
+    # We don't need to check if doer is there because the user must be authenticated to reach this point
     
+    # We extract the target from the JSON data
     target = request.data.get(target_name)
     if not target:
         raise ValidationException(f'Key --> "{target_name}".    {target_name} must be provided')
     
-    if doer == target:
-        raise ValidationException(f'"{action}" failed.    {doer_name} and {target_name} cannot be the same')
+    if doer.username == target:
+        raise ValidationException(f'"{action}" failed.    {doer.username} and {target_name} cannot be the same')
     
     return doer, target
