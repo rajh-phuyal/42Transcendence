@@ -1,5 +1,5 @@
 -- [astein]:
--- This is the second file of the configuration of the postgres db
+-- This is an essential part of the db configuration process!
 
 \! echo -e "\e[1m START of 010_user.sql \e[0m"
 
@@ -10,7 +10,9 @@
 CREATE TABLE IF NOT EXISTS barelyaschema.user
 (
 	id SERIAL PRIMARY KEY,
-	username VARCHAR(255) NOT NULL
+	username VARCHAR(255) NOT NULL,
+	-- TODO: rename to 'password' later, it doen not work like that on Anatoli's machine
+	pswd VARCHAR(255) NOT NULL
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

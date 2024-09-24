@@ -5,6 +5,7 @@ Environments/*
 
 # Logs
 Logs/*
+*/*.log
 
 # Database files
 Database/postgres-data
