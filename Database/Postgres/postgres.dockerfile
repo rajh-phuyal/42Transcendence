@@ -23,6 +23,10 @@ COPY ./init-db /docker-entrypoint-initdb.d/
 COPY ./tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Copy the dummy data script
+COPY ./tools/create_dummy.sh /usr/local/bin/create_dummy.sh
+COPY ./tools/create_dummy.sql /usr/local/bin/create_dummy.sql
+
 # Set the custom entrypoint script as the default entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
