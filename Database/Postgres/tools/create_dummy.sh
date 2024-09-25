@@ -5,7 +5,7 @@ delete_old_data()
 {
   local table_name=$1
   psql -U "$POSTGRES_USER" -w -d "$DB_NAME" -c "DELETE FROM $table_name;"
-  printf "\e[31mDeleted old rows from table '%s' (if exist)...\e[0m\n\n" "$table_name"
+  printf "\e[31mDeleted old rows from table '%s' (if exist)...\e[0m\n" "$table_name"
 }
 
 # Function to insert dummy data into a table
@@ -21,7 +21,7 @@ insert_dummy()
 
 # MAIN
 #-------------------------------------------------------------------------------
-printf "\e[32mStarting to create dummy data...\e[0m\n\n"
+printf "\e[32mRunning 'create_dummy.sh'...\e[0m\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n"
 
 # STEP 1: Delete old Data (start from weak entity too not to break FK constraints)
 delete_old_data "barelyaschema.is_cool_with"
@@ -58,5 +58,7 @@ insert_dummy "$TABLE_NAME" \
 		(2, 3, 4), \
 		(3, 4, 3);"
 
-printf "\e[32mStarting to create dummy data...DONE\e[0m\n\n"
-# TODO: Link GitHub Wiki Image here!
+printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\e[32mRunning 'create_dummy.sh'...DONE\e[0m\n"
+
+printf "\033[1m > Check the wiki for details about the inserted dummy data:\033[0m\n"
+printf "\033[1m > https://github.com/rajh-phuyal/42Transcendence/wiki/Database\033[0m\n"
