@@ -1,5 +1,6 @@
 import {imageDir, imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
+import { $id } from '../../abstracts/dollars.js';
 
 /* 
 *************************************************************
@@ -141,6 +142,10 @@ function isContained(x, y, img){
 // deals with the hovering events
 export async function isHovering(event){
 
+    let modalElement = $id('home-modal');
+    if (modalElement.classList.contains('show'))
+        return ;
+
     let canvas = canvasData.canvas;
 
     // get the canvas position relative to the viewport
@@ -184,15 +189,32 @@ export async function isHovering(event){
 // deals with the clicking events
 export function mouseClick(event){
     
-    lines.forEach(element => {
-        drawLine(element);
-    });
+    let modalElement = $id('home-modal');
+    
+    if (modalElement.classList.contains('show'))
+        return ;
+    
     
     let mouseX = event.clientX;
     let mouseY = event.clientY;
     
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
-
+    
     if (!foundElement)
         foundElement = backgroundImageBook.find(element => isContained(mouseX, mouseY, element));
+    
+    if (!foundElement)
+        return ;
+    
+    let modalBody = $id('home-modal-body');
+
+    modalBody.style.backgroundImage = "url('../../../assets/homeView/AICard.png')";
+    modalBody.style.height = '90vh';
+    modalBody.style.width = '30vw';
+    modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
+    modalBody.style.backgroundPosition = 'center'; // Center the image
+    modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+
 }
