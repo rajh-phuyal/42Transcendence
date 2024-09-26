@@ -17,10 +17,12 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
+        # Save the user and generate tokens
         user = serializer.save()
-
         refresh = RefreshToken.for_user(user)
-        self.response_data = {
+        
+        # Return the data that needs to be sent in the response
+        return {
             "message": "Registration successful",
             "refresh": str(refresh),
             "access": str(refresh.access_token),
@@ -29,8 +31,15 @@ class RegisterView(generics.CreateAPIView):
         }
 
     def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        return Response(self.response_data, status=status.HTTP_201_CREATED)
+        # Call the parent class's create method
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Use perform_create to save the user and get the response data
+        response_data = self.perform_create(serializer)
+
+        # Return the response with the appropriate status
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
     def handle_exception(self, exc):
         response = exception_handler(exc, self.get_exception_handler_context())
