@@ -12,11 +12,12 @@ from .exceptions import ValidationException
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
+    authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
+    permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
-    authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
-    permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
     
     ''' TODO: add more fields like
     * friends list count
@@ -30,6 +31,7 @@ class FriendRequestView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    # functionality: accept and reject friend requests
     def put(self, request):
         action = request.data.get('action')
 
@@ -56,7 +58,8 @@ class FriendRequestView(APIView):
         except ValidationException as e:
             return Response(e.detail, status=e.status_code)
         
-    
+
+    # functionality: send friend request
     def post(self, request):
         action = request.data.get('action')
 
@@ -67,21 +70,23 @@ class FriendRequestView(APIView):
             requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
             
             # Check if the requestee has blocked the requester
+            # Todo: maybe put in function
             requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester.id)
             if requestee_blocked.exists():
                 return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
-            
+
             # Check if the requester has blocked the requestee
             requester_blocked = NoCoolWith.objects.filter(blocker_id=requester.id, blocked_id=requestee_id)
             if requester_blocked.exists():
                 return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
             
-            return self.send_friend_request(request, requester.id, requestee_id)
+            return self.send_friend_request(request, requester, requestee_id)
         
         except ValidationException as e:
             return Response(e.detail, status=e.status_code)
 
 
+    # functionality: cancel friend request
     def delete(self, request):
         action = request.data.get('action')
 
