@@ -1,5 +1,8 @@
 
 export const imageDir = '../../../assets/homeView/';
+import { AIModalCallback, battleModalCallback, 
+    tournamentModalCallback, chatRoomModalCallback,
+    leaderboardModalCallback } from './callbacks.js';
 
 // Array containing the objects for each element of the home-view that should be responsive
 export const imageBook = [
@@ -13,6 +16,7 @@ export const imageBook = [
         height: 300,
         shadow: 5,
         lines: [0],
+        callback: AIModalCallback,
     },
     {
         id: 2,
@@ -24,6 +28,7 @@ export const imageBook = [
         height: 300,
         shadow: 5,
         lines: [1, 3],
+        callback: battleModalCallback,
     },
     {
         id: 3,
@@ -35,6 +40,7 @@ export const imageBook = [
         height: 300,
         shadow: 5,
         lines: [2, 4, 5],
+        callback: tournamentModalCallback,
     },
     {
         id: 4,
@@ -46,6 +52,7 @@ export const imageBook = [
         height: 290,
         shadow: 5,
         lines: [11, 12, 15],
+        callback: chatRoomModalCallback,
     },
     {
         id: 5,
@@ -57,6 +64,7 @@ export const imageBook = [
         height: 260,
         shadow: 5,
         lines: [10, 11, 13, 14],
+        callback: leaderboardModalCallback,
     },
 ]
 

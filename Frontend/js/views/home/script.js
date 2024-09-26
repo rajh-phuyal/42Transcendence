@@ -202,19 +202,12 @@ export function mouseClick(event){
     
     if (!foundElement)
         foundElement = backgroundImageBook.find(element => isContained(mouseX, mouseY, element));
+    else
+        foundElement.callback();
     
     if (!foundElement)
         return ;
     
-    let modalBody = $id('home-modal-body');
-
-    modalBody.style.backgroundImage = "url('../../../assets/homeView/AICard.png')";
-    modalBody.style.height = '90vh';
-    modalBody.style.width = '30vw';
-    modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
-    modalBody.style.backgroundPosition = 'center'; // Center the image
-    modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
+   
 
 }
