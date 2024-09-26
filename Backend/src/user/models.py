@@ -3,7 +3,10 @@ from django.db import models
 
 # Table: barelyaschema.user
 class User(AbstractUser):
-    # We inherit the functionality of the AbstractUser class, which provides the funcitonality of a user model
+    # We inherit the functionality of the AbstractUser class, which provides the
+	# funcitonality of a user model, and change the table name to
+	# "barelyaschema.user" which will be created form our 010_user.sql file
+    # during the database container build.
     
     class Meta:
         db_table = '"barelyaschema"."user"'

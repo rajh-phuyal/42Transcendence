@@ -9,10 +9,11 @@
 \! echo -e "creating the table: 'barelyaschema.user'..."
 CREATE TABLE IF NOT EXISTS barelyaschema.user
 (
-	id SERIAL PRIMARY KEY,
-	username VARCHAR(255) NOT NULL,
-	-- TODO: rename to 'password' later, it doen not work like that on Anatoli's machine
-	pswd VARCHAR(255) NOT NULL
+	id SERIAL PRIMARY KEY
+	-- [astein] Since django manages our user, the migrate of django will
+	-- automatically create all other columns we need.
+	-- We still create the table here so that we can have a reference to it
+	-- in other tables like: is_cool_with, no_cool_with, ...
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
