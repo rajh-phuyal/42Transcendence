@@ -20,7 +20,7 @@ class RegisterView(generics.CreateAPIView):
         # Save the user and generate tokens
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
-        
+
         # Return the data that needs to be sent in the response
         return {
             "message": "Registration successful",
@@ -63,5 +63,7 @@ class RegisterView(generics.CreateAPIView):
             else:
                 response.data = {'detail': str(exc)}
                 response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+            return response
 
         return response
