@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'authentication',
     'user',
+
+    # TODO: REMOVE .for listing tokens. remove after development
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
@@ -170,4 +173,8 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
+
+    # TODO: REMOVE .for listing tokens. remove after development
+    'BLACKLIST_AFTER_ROTATION': True,  # This ensures tokens are tracked
+    'ROTATE_REFRESH_TOKENS': True,
 }

@@ -10,6 +10,12 @@ from .serializers import UserSerializer
 from .utils import get_and_validate_data
 from .exceptions import ValidationException
 
+# TODO: REMOVE .this is for listing all tokens. remove after development
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny
+
+
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
     authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
@@ -70,7 +76,7 @@ class FriendRequestView(APIView):
             requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
             
             # Check if the requestee has blocked the requester
-            # Todo: maybe put in function
+            # TODO: maybe put in function
             requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester.id)
             if requestee_blocked.exists():
                 return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
@@ -304,3 +310,34 @@ class ModifyFriendshipView(APIView):
         friendship.delete()
 
         return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
+
+
+# TODO: REMOVE after development
+class ListTokensView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        # Fetch all outstanding tokens
+        tokens = OutstandingToken.objects.all()
+
+        token_list = []
+        for token in tokens:
+            print(f"Processing token: {token.token}")  # Debugging
+            try:
+                # Parse token as RefreshToken
+                refresh_token = RefreshToken(token.token)
+                # Create access token from refresh token
+                access_token = refresh_token.access_token
+                token_data = {
+                    "user_id": token.user_id,
+                    "username": token.user.username,
+                    "access_token": str(access_token),
+                }
+                token_list.append(token_data)
+            except Exception as e:
+                print(f"Error parsing token: {str(e)}")  # Debugging
+                continue
+
+        return Response({
+            "tokens": token_list
+        })
