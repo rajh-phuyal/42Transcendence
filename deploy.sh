@@ -1,7 +1,6 @@
 #!/bin/bash
 # TODO:
 # This script is working but needs to be imporved a little bit with those things:
-# - add a command to put dummy data into the database+
 # - sort out all the volumes and mounts we use
 #
 # BARELY ALIVE
@@ -28,7 +27,7 @@ CONTAINERS=""
 ENV_PATH_FILE=".transcendence_env_path"
 #
 # COMMANDS:
-ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re")
+ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re" "dummy")
 # Join the array in a single string for error messages
 ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #
@@ -44,6 +43,8 @@ ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #	| `fclean`| `clean`, removes docker volumes and docker network, deleting the volume folders, deleting the linkt to the `.env` file |
 #	| `reset` | `clean` + `start`                                                                                                      |
 #	| `re`    | `fclean` + `start`                                                                                                     |
+#	|---------|------------------------------------------------------------------------------------------------------------------------|
+#	| `dummy` | Puts dummy data into the database                                                                                      |
 #
 # CONTAINER:
 ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
@@ -106,11 +107,8 @@ NC='\033[0m'
 # https://github.com/rajh-phuyal/42Transcendence/wiki/
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
-HELP_ENDS_AT_LINE=105
+HELP_ENDS_AT_LINE=108
 # ------------------------------------------------------------------------------
-
-
-
 
 ################################################################################
 # PRINT FUNCTIONS
@@ -265,9 +263,9 @@ parse_args()
 	echo -e "COMMAND:\t$COMMAND"
 
 	# 	checking the CONTAINERS
-	# 	Containers can't be specified for the commands fclean, re and help
-	if [[ "$COMMAND" == "fclean" || "$COMMAND" == "re" || "$COMMAND" == "help" ]] && [[ "$CONTAINERS" != "" ]]; then
-		echo -e $OR "Containers can't be specified for the commands fclean, re and help" $NC
+	# 	Containers can't be specified for the commands fclean, re, help and dummy
+	if [[ "$COMMAND" == "dummy" || "$COMMAND" == "fclean" || "$COMMAND" == "re" || "$COMMAND" == "help" ]] && [[ "$CONTAINERS" != "" ]]; then
+		echo -e $OR "Containers can't be specified for the commands fclean, re, help and dummy" $NC
 		echo -e $OR "The input '$CONTAINERS' will be ignored" $NC
 		CONTAINERS=""
 	fi
@@ -485,7 +483,9 @@ check_volume_folders()
 #	fclean 					| Deletes the container(s) + Volumes + Network
 #	reset [container]		| clean + start
 #	re 						| fclean + start
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
+# 	insert_dummy_data		| Puts dummy data into the database
+# ------------------------------------------------------------------------------
 docker_stop() {
 	print_header "${BL}" "Stopping containers: $CONTAINERS..."
 	docker-compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
@@ -583,6 +583,25 @@ docker_re() {
 	docker_start
 }
 
+insert_dummy_data() {
+	perform_task_with_spinner \
+		"Checking if the database is online" \
+		"[ $(docker ps --filter 'health=healthy' --filter 'name=db' | wc -l) -eq 2 ];" \
+		"db container is up and healthy" \
+		"db container isn't running (or unhealthy)!\nRun './deploy.sh start db' first!" \
+		false
+
+	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL THE DATA FROM THE DATABASE AND INSERT DUMMY DATA INSTEAD (y/n): "
+	read -p "choose: " confirm
+	if [[ "$confirm" != "y" ]]; then
+		print_header "${RD}" "Operation cancelled."
+		exit 1
+	fi
+
+	print_header "${OR}" "Inserting dummy data into the database..."
+	docker exec -it db  bash /usr/local/bin/create_dummy.sh                                                                                             
+	print_header "${OR}" "Inserting dummy data into the database...${GR}DONE${NC}"
+}
 
 ################################################################################
 #       Main Script
@@ -632,6 +651,10 @@ case "$COMMAND" in
 	re)
 		check_setup
 		docker_re
+		;;
+	dummy)
+		check_setup
+		insert_dummy_data
 		;;
 	*)
 		print_error "Invalid command: >${COMMAND}<, run >./deploy.sh help< to see the available commands."
