@@ -24,6 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('BE_SECRET_KEY')
 
+# Enforce the use of the custom user model
+AUTH_USER_MODEL = 'user.User'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -35,9 +38,9 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # [astein:] DO WE NEED ALL OF THEM? THEY CREATE A LOT OF TABLES IN THE DATABASE
 # @RAJH: please review :)
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin', 			# [astein:] needed for migrations
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.contenttypes',		# [astein:] required for the auth app
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',

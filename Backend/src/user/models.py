@@ -1,11 +1,12 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Table: barelyaschema.user
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=255, null=False, default='this isn\'t a username but helpful for migration')
-    # TODO: rename pswd to password before submitting. it does not work on Anatolii's machine for some reason
-    pswd = models.CharField(max_length=255, null=False, default='this isn\'t a password but helpful for migration')
+class User(AbstractUser):
+    # We inherit the functionality of the AbstractUser class, which provides the
+	# funcitonality of a user model, and change the table name to
+	# "barelyaschema.user" which will be created form our 010_user.sql file
+    # during the database container build.
 
     class Meta:
         db_table = '"barelyaschema"."user"'
