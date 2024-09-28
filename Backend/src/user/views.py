@@ -250,11 +250,11 @@ class ModifyFriendshipView(APIView):
 
         try:
             # NOTE: inside of this method it makes sense to name the variables requester_id and requestee_id rather than blocker_id and blocked_id
-            requester_id, requestee_id = get_and_validate_data(request, action, 'blocked_id')
+            requester, requestee_id = get_and_validate_data(request, action, 'blocked_id')
             
             if action == 'block':
-                return self.block_user(request, requester_id, requestee_id)
-            return self.remove_friend(request, requester_id, requestee_id)
+                return self.block_user(request, requester.id, requestee_id)
+            return self.remove_friend(request, requester.id, requestee_id)
         
         except ValidationException as e:
             return Response(e.detail, status=e.status_code)
@@ -266,9 +266,9 @@ class ModifyFriendshipView(APIView):
             return Response({'error': 'Invalid action. DELETE valid action is "unblock"'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            blocker_id, blocked_id = get_and_validate_data(request, action, 'blocked_id')
+            blocker, blocked_id = get_and_validate_data(request, action, 'blocked_id')
             
-            return self.unblock_user(request, blocker_id, blocked_id)
+            return self.unblock_user(request, blocker.id, blocked_id)
         
         except ValidationException as e:
             return Response(e.detail, status=e.status_code)
@@ -323,7 +323,6 @@ class ListTokensView(APIView):
 
         token_list = []
         for token in tokens:
-            print(f"Processing token: {token.token}")  # Debugging
             try:
                 # Parse token as RefreshToken
                 refresh_token = RefreshToken(token.token)
@@ -336,7 +335,6 @@ class ListTokensView(APIView):
                 }
                 token_list.append(token_data)
             except Exception as e:
-                print(f"Error parsing token: {str(e)}")  # Debugging
                 continue
 
         return Response({

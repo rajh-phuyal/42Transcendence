@@ -12,7 +12,10 @@ def get_and_validate_data(request, action, target_name):
     if not target:
         raise ValidationException(f'Key --> "{target_name}".    {target_name} must be provided')
     
-    if doer.username == target:
-        raise ValidationException(f'"{action}" failed.    {doer.username} and {target_name} cannot be the same')
+    if doer.id == target:
+        if action == 'remove':
+            action = 'remov'
+
+        raise ValidationException(f'{action}ing failed.  Cannot do it to yourself')
     
     return doer, target
