@@ -11,7 +11,11 @@ def get_and_validate_data(request, action, target_name):
     target = request.data.get(target_name)
     if not target:
         raise ValidationException(f'Key --> "{target_name}".    {target_name} must be provided')
-    
+
+    # Check if the target is in a user table
+    if not doer.__class__.objects.filter(id=target).exists():
+        raise ValidationException(f'{target_name} not found')
+
     if doer.id == target:
         if action == 'remove':
             action = 'remov'
