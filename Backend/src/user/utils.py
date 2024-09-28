@@ -1,6 +1,6 @@
 from rest_framework.response import Response
-from rest_framework import status
-from .exceptions import ValidationException
+from .models import NoCoolWith
+from .exceptions import ValidationException, BlockingException
 
 def get_and_validate_data(request, action, target_name):
 
@@ -19,3 +19,15 @@ def get_and_validate_data(request, action, target_name):
         raise ValidationException(f'{action}ing failed.  Cannot do it to yourself')
     
     return doer, target
+
+
+def check_blocking(requestee_id, requester_id):
+    # Check if the requestee has blocked the requester
+    requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
+    if requestee_blocked.exists():
+        raise BlockingException(detail='You have been blocked by this user.')
+
+    # Check if the requester has blocked the requestee
+    requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
+    if requester_blocked.exists():
+        raise BlockingException(detail='You have blocked this user, you need to unblock them first.')

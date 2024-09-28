@@ -7,8 +7,8 @@ from rest_framework import status
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
 from .serializers import UserSerializer
-from .utils import get_and_validate_data
-from .exceptions import ValidationException
+from .utils import get_and_validate_data, check_blocking
+from .exceptions import ValidationException, BlockingException
 
 # TODO: REMOVE .this is for listing all tokens. remove after development
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
@@ -45,25 +45,17 @@ class FriendRequestView(APIView):
             return Response({'error': 'Invalid action. PUT valid actions are "accept" and "reject"'}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            # requestee = request.user
             requestee, requester_id = get_and_validate_data(request, action, 'requester_id')
 
-            # Check if the requestee has blocked the requester
-            requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee.id, blocked_id=requester_id)
-            if requestee_blocked.exists():
-                return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Check if the requester has blocked the requestee
-            requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee.id)
-            if requester_blocked.exists():
-                return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
+            # Check blocking status
+            check_blocking(requestee.id, requester_id)
 
             if action == 'accept':
                 return self.accept_friend_request(request, requester_id, requestee.id)
             return self.reject_friend_request(request, requester_id, requestee.id)
         
-        except ValidationException as e:
-            return Response(e.detail, status=e.status_code)
+        except (BlockingException, ValidationException) as e:
+            return Response({'error': getattr(e, 'detail', str(e))}, status=getattr(e, 'status_code', status.HTTP_400_BAD_REQUEST))
         
 
     # functionality: send friend request
@@ -76,22 +68,13 @@ class FriendRequestView(APIView):
         try:
             requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
             
-            # Check if the requestee has blocked the requester
-            # TODO: maybe put in function
-            requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester.id)
-            if requestee_blocked.exists():
-                return Response({'error': 'You have been blocked by this user'}, status=status.HTTP_400_BAD_REQUEST)
+            # Check blocking status
+            check_blocking(requestee_id, requester.id)
 
-            # Check if the requester has blocked the requestee
-            requester_blocked = NoCoolWith.objects.filter(blocker_id=requester.id, blocked_id=requestee_id)
-            if requester_blocked.exists():
-                return Response({'error': 'You have blocked this user, you need to unblock them first'}, status=status.HTTP_400_BAD_REQUEST)
-            
             return self.send_friend_request(request, requester, requestee_id)
         
-        except ValidationException as e:
-            return Response(e.detail, status=e.status_code)
-
+        except (BlockingException, ValidationException) as e:
+            return Response({'error': getattr(e, 'detail', str(e))}, status=getattr(e, 'status_code', status.HTTP_400_BAD_REQUEST))
 
     # functionality: cancel friend request
     def delete(self, request):
