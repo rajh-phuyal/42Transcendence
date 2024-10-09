@@ -5,26 +5,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
-from .serializers import UserSerializer
+from .serializers import ProfileSerializer
 from .utils import get_and_validate_data
 from .exceptions import ValidationException
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
+    serializer_class = ProfileSerializer
+    lookup_field = 'id'
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
     
-	HERE I START WORKING
-    ''' TODO: add more fields like
-    * friends list count
-    * user points
-    * match history
-    * etc.
-    '''
-
-
 class FriendRequestView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
