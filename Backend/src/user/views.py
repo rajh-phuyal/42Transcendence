@@ -16,6 +16,7 @@ class ProfileView(generics.RetrieveAPIView):
     lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
     
+	HERE I START WORKING
     ''' TODO: add more fields like
     * friends list count
     * user points
