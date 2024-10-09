@@ -20,12 +20,11 @@ async function call(url, method, data) {
         } : {},
     };
 
-    const response = await fetch(fullUrl, payload);
+    let response = await fetch(fullUrl, payload);
 
     if (!response.ok) {
         throw new Error(await response.json().detail || 'Request failed');
     }
-
     return await response.json();
 }
 

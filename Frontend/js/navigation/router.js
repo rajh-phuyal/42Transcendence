@@ -6,7 +6,7 @@ import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
 
-const objectToBind = (config) => {
+const objectToBind = (config, params = null) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
 
@@ -21,6 +21,7 @@ const objectToBind = (config) => {
     binder.router = router;
     binder.$store = $store;
     binder.$auth = $auth;
+    binder.routeParams = params;
 
     return binder;
 }
@@ -59,7 +60,7 @@ async function router(path, params = null) {
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
-    const viewConfigWithoutHooks = objectToBind(viewHooks);
+    const viewConfigWithoutHooks = objectToBind(viewHooks, params);
 
     // get the hooks of the last view and call the beforeRouteLeave hook
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);

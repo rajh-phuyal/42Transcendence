@@ -16,6 +16,14 @@ class ProfileView(generics.RetrieveAPIView):
     lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
     
+    def get(self, request, id):
+        try:
+            user = self.queryset.get(id=id)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
     ''' TODO: add more fields like
     * friends list count
     * user points
