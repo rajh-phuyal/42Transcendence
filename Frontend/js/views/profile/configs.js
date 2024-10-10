@@ -22,10 +22,10 @@ export default {
         },
 
         afterDomInsertion() {
-            console.log("yoo");
+            console.log("sss");
             console.log(this.routeParams.id);
-            console.log(`/user/profile/${this.routeParams.id}`);
-            call(`/user/profile/${this.routeParams.id}`, 'GET').then((res)=>{
+            console.log(`user/profile/${this.routeParams.id}`);
+            call("user/profile/1/", "GET").then((res)=>{
                 console.log(res);
             })            
         },
