@@ -10,12 +10,6 @@ from .serializers import UserSerializer
 from .utils import get_and_validate_data, check_blocking
 from .exceptions import ValidationException, BlockingException
 
-# TODO: REMOVE .this is for listing all tokens. remove after development
-from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import AllowAny
-
-
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
     authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
@@ -294,32 +288,3 @@ class ModifyFriendshipView(APIView):
         friendship.delete()
 
         return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
-
-
-# TODO: REMOVE after development
-class ListTokensView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request, *args, **kwargs):
-        # Fetch all outstanding tokens
-        tokens = OutstandingToken.objects.all()
-
-        token_list = []
-        for token in tokens:
-            try:
-                # Parse token as RefreshToken
-                refresh_token = RefreshToken(token.token)
-                # Create access token from refresh token
-                access_token = refresh_token.access_token
-                token_data = {
-                    "user_id": token.user_id,
-                    "username": token.user.username,
-                    "access_token": str(access_token),
-                }
-                token_list.append(token_data)
-            except Exception as e:
-                continue
-
-        return Response({
-            "tokens": token_list
-        })
