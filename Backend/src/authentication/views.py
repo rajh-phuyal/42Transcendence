@@ -10,46 +10,49 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import InternalTokenObtainPairSerializer
 from .models import DevUserData
 
-class InternalTokenObtainPairView(TokenObtainPairView):
-    serializer_class = InternalTokenObtainPairSerializer
-
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
-        # Save the user and generate tokens
-        user = serializer.save()
-        refresh = RefreshToken.for_user(user)
+        try:
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
 
-        # Store tokens in DevUserData table
-        DevUserData.objects.update_or_create(
-            user=user,
-            defaults={
-                'access_token': str(refresh.access_token),
-                'refresh_token': str(refresh),
-            }
-        )
+            DevUserData.objects.update_or_create(
+                user=user,
+                defaults={
+                    'username': user.username,
+                    'access_token': str(refresh.access_token),
+                    'refresh_token': str(refresh),
+                }
+            )
+        except Exception as e:
+            raise exceptions.APIException(f"Error during user registration: {str(e)}")
 
-        # Return the data that needs to be sent in the response
-        return {
-            "message": "Registration successful",
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-            "userId": user.id,
-            "username": user.username,
-        }
 
     def create(self, request, *args, **kwargs):
-        # Call the parent class's create method
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Use perform_create to save the user and get the response data
-        response_data = self.perform_create(serializer)
+        try:
+            self.perform_create(serializer)
+        except exceptions.APIException as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Return the response with the appropriate status
+        user = serializer.instance
+        refresh = RefreshToken.for_user(user)
+
+        response_data = {
+            "message": "Registration successful",
+            "userId": user.id,
+            "username": user.username,
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
+
         return Response(response_data, status=status.HTTP_201_CREATED)
+
 
     def handle_exception(self, exc):
         response = exception_handler(exc, self.get_exception_handler_context())
