@@ -24,3 +24,6 @@ example.enviroment
 
 # VS-CODE
 .vscode/
+
+# Migrations
+Backend/src/authentication/migrations/*
