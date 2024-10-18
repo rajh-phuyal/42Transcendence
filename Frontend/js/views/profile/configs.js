@@ -1,4 +1,6 @@
 import call from '../../abstracts/call.js'
+import { $id } from '../../abstracts/dollars.js';
+
 export default {
     attributes: {
         
@@ -22,12 +24,12 @@ export default {
         },
 
         afterDomInsertion() {
-            console.log("sss");
-            console.log(this.routeParams.id);
-            console.log(`user/profile/${this.routeParams.id}`);
-            call("user/profile/1/", "GET").then((res)=>{
+            call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 console.log(res);
-            })            
+                let username = $id("username");   
+                username.textContent = "Subject: " + res.username;
+            })
+            // on error?
         },
     }
 }
