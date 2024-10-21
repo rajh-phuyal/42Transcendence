@@ -9,9 +9,9 @@
 \! echo -e "creating the table: 'barelyaschema.conversation_member'..."
 CREATE TABLE IF NOT EXISTS barelyaschema.conversation_member
 (
+	id SERIAL PRIMARY KEY,
 	conversation_id INT NOT NULL,
 	user_id INT NOT NULL,
-	PRIMARY KEY (conversation_id, user_id),
 	FOREIGN KEY (conversation_id) REFERENCES barelyaschema.conversation(id),
 	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id)
 );

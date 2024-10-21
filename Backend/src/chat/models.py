@@ -15,15 +15,16 @@ class Conversation(models.Model):
 
 # ConversationMember Model
 class ConversationMember(models.Model):
+    id = models.AutoField(primary_key=True)
     # The ForeignKey of django adds a _id suffix to the field name so chat becomes chat_id
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, primary_key=True)
-    user = models.ForeignKey('user.User', on_delete=models.CASCADE, primary_key=True)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user_id.username} in {self.chat_id.name}'
     
     class Meta:
-        db_table = '"barelyaschema"."chat_member"'
+        db_table = '"barelyaschema"."conversation_member"'
         unique_together = ('conversation', 'user')
 
 # Message Model

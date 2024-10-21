@@ -4,12 +4,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponse #For basic ShowChatView test
-from .models import Chat, ChatMember, Message
-from .serializers import ChatSerializer, ChatMemberSerializer, MessageSerializer
+from .models import Conversation, ConversationMember, Message
+from .serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 
-# Create a chat and add members
-# If chat already exists, return the chat_id
-class CreateChatView(APIView):
+# Create a conversation and add members
+# If conversation already exists, return the conversation_id
+class CreateConversationView(APIView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
     def post(self, request):
@@ -32,75 +32,75 @@ class CreateChatView(APIView):
         if sender == receiver:
             return Response({'error': 'Sender and receiver cannot be the same'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Check if a chat between these two users already exists
+        # Check if a conversation between these two users already exists
         # TODO: SHOULD BE FINE FOR NOW, BUT NEEDS TO BE FIXED IF WE INTRODUCE GROUP CHATS
-        # Get the chat IDs where the sender is a member
-        sender_chats = ChatMember.objects.filter(user=sender).values_list('chat_id', flat=True)
+        # Get the conversation IDs where the sender is a member
+        sender_conversations = ConversationMember.objects.filter(user=sender).values_list('conversation_id', flat=True)
 
-        # Check if the receiver is in any of the same chats
-        existing_chat = ChatMember.objects.filter(user=receiver, chat_id__in=sender_chats).first()
+        # Check if the receiver is in any of the same conversations # TODO: wich isn't a group chat
+        existing_conversation = ConversationMember.objects.filter(user=receiver, conversation__in=sender_conversations).first()
 
-        # If the chat exists, return the chat information
-        if existing_chat:
-            chat = existing_chat.chat  # Get the chat object from the ChatMember instance
-            return Response({'chat_id': chat.id, 'name': chat.name}, status=status.HTTP_200_OK)
+        # If the conversation exists, return the conversation information
+        if existing_conversation:
+            conversation = existing_conversation.conversation  # Get the conversation object from the ConversationMember instance
+            return Response({'conversation_id': conversation.id, 'name': conversation.name}, status=status.HTTP_200_OK)
         
         # Start a transaction to make sure all database operations happen together
         try:
             with transaction.atomic():
-                # Create the Chat
-                chat_name = f'{sender.username} blasphemes with {receiver.username}'
-                chat_serializer = ChatSerializer(data={'name': chat_name})
+                # Create the Conversation
+                conversation_name = f'{sender.username} blasphemes with {receiver.username}'
+                conversation_serializer = ConversationSerializer(data={'name': conversation_name})
 
-                if chat_serializer.is_valid():
-                    chat = chat_serializer.save()  # Chat is created
+                if conversation_serializer.is_valid():
+                    conversation = conversation_serializer.save()  # Conversation is created
                 else:
-                    return Response(chat_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(conversation_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-                # Add sender and receiver to the ChatMember table
-                chat_member_serializer_sender = ChatMemberSerializer(data={'chat': chat.id, 'user': sender.id})
-                if chat_member_serializer_sender.is_valid():
-                    chat_member_serializer_sender.save()
+                # Add sender and receiver to the ConversationMember table
+                conversation_member_serializer_sender = ConversationMemberSerializer(data={'conversation': conversation.id, 'user': sender.id})
+                if conversation_member_serializer_sender.is_valid():
+                    conversation_member_serializer_sender.save()
                 else:
-                    raise Exception('Error adding sender to chat members')
+                    raise Exception('Error adding sender to conversation members')
 
-                chat_member_serializer_receiver = ChatMemberSerializer(data={'chat': chat.id, 'user': receiver.id})
-                if chat_member_serializer_receiver.is_valid():
-                    chat_member_serializer_receiver.save()
+                conversation_member_serializer_receiver = ConversationMemberSerializer(data={'conversation': conversation.id, 'user': receiver.id})
+                if conversation_member_serializer_receiver.is_valid():
+                    conversation_member_serializer_receiver.save()
                 else:
-                    raise Exception('Error adding receiver to chat members')
+                    raise Exception('Error adding receiver to conversation members')
 
             # If everything is successful, return a success response
-            return Response({'chat_id': chat.id, 'name': chat.name}, status=status.HTTP_201_CREATED)
+            return Response({'conversation_id': conversation.id, 'name': conversation.name}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             # If any error occurs during the transaction, rollback and return an error
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class RenameChatView(APIView):
+class RenameConversationView(APIView):
     permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
 
     def post(self, request):
 
-        chat_id = request.data.get('chat_id')
-        # Try to get the chat object
+        conversation_id = request.data.get('conversation_id')
+        # Try to get the conversation object
         try:
-            chat = Chat.objects.get(id=chat_id)
-        except Chat.DoesNotExist:
-            return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
+            conversation = Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
+            return Response({'error': 'Conversation not found'}, status=status.HTTP_404_NOT_FOUND)
 
         # Get the new name from the request data
         new_name = request.data.get('new_name')
 
         # Perform a simple validation to check if the name is empty
         if not new_name or not new_name.strip():
-            return Response({'error': 'New chat name cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'New conversation name cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # If valid, update the chat name
-        chat.name = new_name
-        chat.save()
+        # If valid, update the conversation name
+        conversation.name = new_name
+        conversation.save()
 
-        return Response({'chat_id': chat.id, 'new_name': chat.name}, status=status.HTTP_200_OK)
+        return Response({'conversation_id': conversation.id, 'new_name': conversation.name}, status=status.HTTP_200_OK)
 
 # Send a message
 class SendMessageView(APIView):
@@ -109,7 +109,7 @@ class SendMessageView(APIView):
     def post(self, request):
         from user.models import User
         sender_id = request.data.get('sender_id')
-        chat_id = request.data.get('chat_id')
+        conversation_id = request.data.get('conversation_id')
         content = request.data.get('content')
 
         # Check if the sender exists
@@ -118,24 +118,24 @@ class SendMessageView(APIView):
         except User.DoesNotExist:
             return Response({'error': f'Invalid sender id: {sender_id}'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Check if the chat exists
+        # Check if the conversation exists
         try:
-            chat = Chat.objects.get(id=chat_id)
+            conversation = Chat.objects.get(id=conversation_id)
         except Chat.DoesNotExist:
-            return Response({'error': f'Invalid chat id: {chat_id}'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': f'Invalid conversation id: {conversation_id}'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Check if the sender is a member of the chat
+        # Check if the sender is a member of the conversation
         try:
-            ChatMember.objects.get(chat=chat, user=sender)
-        except ChatMember.DoesNotExist:
-            return Response({'error': 'Sender is not a member of the chat'}, status=status.HTTP_400_BAD_REQUEST)
+            ConversationMember.objects.get(conversation=conversation, user=sender)
+        except ConversationMember.DoesNotExist:
+            return Response({'error': 'Sender is not a member of the conversation'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Check if the content is empty
         if not content or not content.strip():
             return Response({'error': 'Message content cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
                             
         # Create the message
-        message = MessageSerializer(data={'sender': sender.id, 'chat': chat.id, 'content': content})
+        message = MessageSerializer(data={'sender': sender.id, 'conversation': conversation.id, 'content': content})
         if message.is_valid():
             message = message.save()
         else:
@@ -143,14 +143,14 @@ class SendMessageView(APIView):
 
         return Response({'message_id': message.id, 'content': message.content}, status=status.HTTP_201_CREATED)
 
-class ShowChatView(APIView):
+class ShowConversationView(APIView):
     permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
 
     def post(self, request):
         from user.models import User
-        # Get sender_id and chat_id from the request
+        # Get sender_id and conversation_id from the request
         sender_id = request.data.get('sender_id')
-        chat_id = request.data.get('chat_id')
+        conversation_id = request.data.get('conversation_id')
 
         # Validate that the sender exists
         try:
@@ -158,18 +158,18 @@ class ShowChatView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'Sender not found'}, status=status.HTTP_404_NOT_FOUND)
 
-         # Validate that the chat exists
+         # Validate that the conversation exists
         try:
-            chat = Chat.objects.get(id=chat_id)
-        except Chat.DoesNotExist:
+            conversation = Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
             return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Check if the sender is a member of the chat
-        if not chat.members.filter(user=sender).exists():
-            return Response({'error': 'You are not a member of this chat'}, status=status.HTTP_403_FORBIDDEN)
+        # Check if the sender is a member of the conversation
+        if not conversation.members.filter(user=sender).exists():
+            return Response({'error': 'You are not a member of this conversation'}, status=status.HTTP_403_FORBIDDEN)
 
-        # Get the last 10 messages from the chat, ordered by creation time
-        messages = Message.objects.filter(chat=chat).order_by('created_at')[:10]
+        # Get the last 10 messages from the conversation, ordered by creation time
+        messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:10]
 
          # Create a simple HTML structure to return the messages
         html_content = f"""
@@ -186,7 +186,7 @@ class ShowChatView(APIView):
             <body>
                 <div class="message-container">
                     <h3>Last 10 Messages in Chat:</h3>
-                    <h2>» {chat.name}« </h2>
+                    <h2>» {conversation.name}« </h2>
                     <ul style="list-style-type: none; padding: 0;">
         """
 

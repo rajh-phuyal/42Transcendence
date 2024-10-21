@@ -3,15 +3,15 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import CreateChatView, RenameChatView, ShowChatView, SendMessageView
+from .views import CreateConversationView, RenameConversationView, ShowConversationView, SendMessageView
 
 urlpatterns = [
-	path('create-chat/', CreateChatView.as_view(), name='create_chat'),
-	path('rename-chat/', RenameChatView.as_view(), name='rename_chat'),
-    path('show-chat/', ShowChatView.as_view(), name='show_chat'),
+	path('create-conversation/', CreateConversationView.as_view(), name='create_conversation'),
+	path('rename-conversation/', RenameConversationView.as_view(), name='rename_conversation'),
+    path('show-conversation/', ShowConversationView.as_view(), name='show_conversation'),
     path('send-message/', SendMessageView.as_view(), name='send_message'),
 
-	# TODO:
+	# TODO: REVIEW THE NAMES OF THE ENDPOINTS CHAT -> CONVERSATION
 	# Chat listing and deletion
     # path('chats/list/', ListChatsView.as_view(), name='list_chats'),
     # path('chat/delete/', DeleteChatView.as_view(), name='delete_chat'),
