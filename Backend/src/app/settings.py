@@ -24,10 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('BE_SECRET_KEY')
 
+# Enforce the use of the custom user model
+AUTH_USER_MODEL = 'user.User'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -35,12 +38,13 @@ ALLOWED_HOSTS = []
 # [astein:] DO WE NEED ALL OF THEM? THEY CREATE A LOT OF TABLES IN THE DATABASE
 # @RAJH: please review :)
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin', 			# [astein:] needed for migrations
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.contenttypes',		# [astein:] required for the auth app
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'authentication',
@@ -56,6 +60,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost"
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -148,7 +157,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=130), # temporary for development
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
