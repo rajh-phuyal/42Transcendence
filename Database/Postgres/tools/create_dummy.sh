@@ -72,7 +72,7 @@ insert_dummy "$TABLE_NAME" \
 		(1, NULL, FALSE, TRUE), \
 		(2, NULL, FALSE, TRUE), \
 		(3, 'barely a tournament chat', TRUE, FALSE), \
-		(4, 'barely ascrum room', TRUE, TRUE);"
+		(4, 'barely a scrum room', TRUE, TRUE);"
 
 TABLE_NAME="barelyaschema.conversation_member"
 insert_dummy "$TABLE_NAME" \
@@ -99,14 +99,16 @@ insert_dummy "$TABLE_NAME" \
 		(4, 1, 2, 'Hi Anatolii, how are you?', '2024-01-01 10:42:03+00', '2024-01-01 10:42:03+00'), \
 		(5, 3, 2, 'Hi Alê, I am fine, thank you. How are you?', '2024-01-01 10:42:04+00', '2024-01-01 10:42:04+00'), \
 		(6, 1, 2, 'I am fine too, thank you.', '2024-01-01 10:42:05+00', '2024-01-01 10:42:05+00'), \
-		(7, 1, 3, 'Lets play this tournament', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(8, 1, 3, 'Someone in this chat???', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(9, 1, 4, 'This is the scrum roooooom', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(10, 2, 4, 'Oye Oye', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(11, 3, 4, 'Yes, I am here', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(12, 4, 4, 'I am here too', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(13, 5, 4, 'Me as well', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
-		(14, 1, 4, 'Ok lets do this!', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00');"
+		(7, 1, 3, 'Lets play this tournament', '2024-01-01 10:42:06+00', NULL), \
+		(8, 1, 3, 'Someone in this conversation???', '2024-01-01 10:45:06+00', NULL), \
+		(9, 1, 3, 'Booooriiiiinnggg!!!', '2024-01-01 10:55:06+00', NULL), \
+		(10, 2, 4, 'This is the scrum roooooom!! Are u guys here?', '2024-01-01 10:42:06+00', NULL), \
+		(11, 1, 4, 'Hello :)', '2024-01-01 10:43:06+00', NULL), \
+		(12, 3, 4, 'Yes, I am here', '2024-01-01 10:44:06+00', NULL), \
+		(13, 4, 4, 'I am here too', '2024-01-01 10:44:10+00', NULL), \
+		(14, 2, 4, 'Oye oye, what about u @rphuyal?', '2024-01-01 10:50:06+00', NULL), \
+		(15, 5, 4, 'Me as well', '2024-01-01 10:51:06+00', NULL), \
+		(16, 1, 4, 'Ok lets do this!', '2024-01-01 10:52:56+00',NULL);"
 
 
 printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\e[32mRunning 'create_dummy.sh'...DONE\e[0m\n"
