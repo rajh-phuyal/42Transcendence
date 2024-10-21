@@ -10,12 +10,13 @@
 CREATE TABLE IF NOT EXISTS barelyaschema.message
 (
 	id SERIAL PRIMARY KEY,
-	chat_id INT NOT NULL,
-	sender_id INT NOT NULL,
+	user_id INT NOT NULL,
+	conversation_id INT NOT NULL,
 	content TEXT NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	FOREIGN KEY (chat_id) REFERENCES barelyaschema.chat(id),
-	FOREIGN KEY (sender_id) REFERENCES barelyaschema.user(id)
+	seen_at TIMESTAMP,
+	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
+	FOREIGN KEY (conversation_id) REFERENCES barelyaschema.conversation(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
