@@ -24,6 +24,7 @@ insert_dummy()
 printf "\e[32mRunning 'create_dummy.sh'...\e[0m\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n"
 
 # STEP 1: Delete old Data (start from weak entity too not to break FK constraints)
+delete_old_data "barelyaschema.dev_user_data"
 delete_old_data "barelyaschema.is_cool_with"
 delete_old_data "barelyaschema.no_cool_with"
 delete_old_data "barelyaschema.user"
