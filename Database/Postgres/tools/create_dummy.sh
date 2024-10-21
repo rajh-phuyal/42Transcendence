@@ -28,6 +28,9 @@ delete_old_data "barelyaschema.dev_user_data"
 delete_old_data "barelyaschema.is_cool_with"
 delete_old_data "barelyaschema.no_cool_with"
 delete_old_data "barelyaschema.user"
+delete_old_data "barelyaschema.message"
+delete_old_data "barelyaschema.conversation_member"
+delete_old_data "barelyaschema.conversation"
 
 # STEP 2: Insert dummy data
 TABLE_NAME="barelyaschema.user"
@@ -58,6 +61,53 @@ insert_dummy "$TABLE_NAME" \
 		(1, 3, 1), \
 		(2, 3, 4), \
 		(3, 4, 3);"
+
+# Conversation 1: 1-2
+# Conversation 2: 1-3
+# Conversation 3: Group 1-2-3 name "barely a tournament chat" (not editable)
+# Conversation 4: Group 1-2-3-4-5 name "barely ascrum room"
+TABLE_NAME="barelyaschema.conversation"
+insert_dummy "$TABLE_NAME" \
+	"INSERT INTO $TABLE_NAME (id, name, is_group_conversation, is_editable) VALUES \
+		(1, NULL, FALSE, TRUE), \
+		(2, NULL, FALSE, TRUE), \
+		(3, 'barely a tournament chat', TRUE, FALSE), \
+		(4, 'barely ascrum room', TRUE, TRUE);"
+
+TABLE_NAME="barelyaschema.conversation_member"
+insert_dummy "$TABLE_NAME" \
+	"INSERT INTO $TABLE_NAME (id, conversation_id, user_id) VALUES \
+		(1, 1, 1), \
+		(2, 1, 2), \
+		(3, 2, 1), \
+		(4, 2, 3), \
+		(5, 3, 1), \
+		(6, 3, 2), \
+		(7, 3, 3), \
+		(8, 4, 1), \
+		(9, 4, 2), \
+		(10, 4, 3), \
+		(11, 4, 4), \
+		(12, 4, 5);"
+
+TABLE_NAME="barelyaschema.message"
+insert_dummy "$TABLE_NAME" \
+	"INSERT INTO $TABLE_NAME (id, user_id, conversation_id, content, created_at, seen_at) VALUES \
+		(1, 1, 1, 'Hi Alex, how are you?', '2024-01-01 10:42:00+00', '2024-01-01 10:42:00+00'), \
+		(2, 2, 1, 'Hi Alê, I am fine, thank you. How are you?', '2024-01-01 10:42:01+00', '2024-01-01 10:42:01+00'), \
+		(3, 1, 1, 'I am fine too, thank you.', '2024-01-01 10:42:02+00', '2024-01-01 10:42:02+00'), \
+		(4, 1, 2, 'Hi Anatolii, how are you?', '2024-01-01 10:42:03+00', '2024-01-01 10:42:03+00'), \
+		(5, 3, 2, 'Hi Alê, I am fine, thank you. How are you?', '2024-01-01 10:42:04+00', '2024-01-01 10:42:04+00'), \
+		(6, 1, 2, 'I am fine too, thank you.', '2024-01-01 10:42:05+00', '2024-01-01 10:42:05+00'), \
+		(7, 1, 3, 'Lets play this tournament', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(8, 1, 3, 'Someone in this chat???', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(9, 1, 4, 'This is the scrum roooooom', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(10, 2, 4, 'Oye Oye', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(11, 3, 4, 'Yes, I am here', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(12, 4, 4, 'I am here too', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(13, 5, 4, 'Me as well', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00'), \
+		(14, 1, 4, 'Ok lets do this!', '2024-01-01 10:42:06+00', '2024-01-01 10:42:06+00');"
+
 
 printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\e[32mRunning 'create_dummy.sh'...DONE\e[0m\n"
 

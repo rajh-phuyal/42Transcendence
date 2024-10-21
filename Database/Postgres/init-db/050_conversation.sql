@@ -10,7 +10,7 @@
 CREATE TABLE IF NOT EXISTS barelyaschema.conversation
 (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(255),
 	is_group_conversation BOOLEAN NOT NULL DEFAULT FALSE,
 	is_editable BOOLEAN NOT NULL DEFAULT FALSE
 );

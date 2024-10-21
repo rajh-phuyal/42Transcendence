@@ -158,7 +158,7 @@ class ShowConversationView(APIView):
         except User.DoesNotExist:
             return Response({'error': 'Sender not found'}, status=status.HTTP_404_NOT_FOUND)
 
-         # Validate that the conversation exists
+        # Validate that the conversation exists
         try:
             conversation = Conversation.objects.get(id=conversation_id)
         except Conversation.DoesNotExist:
@@ -196,7 +196,7 @@ class ShowConversationView(APIView):
             formatted_time = message.created_at.strftime('%Y-%m-%d %H:%M:%S')
 
             # Check if the message was sent by the current sender
-            if message.sender.id == sender_id:
+            if message.user.id == sender_id:
                 alignment = "message-right"
             else:
                 alignment = "message-left"
@@ -204,7 +204,7 @@ class ShowConversationView(APIView):
             # Add each message to the HTML with conditional alignment
             html_content += f"""
                 <li class="message {alignment}">
-                    <strong>{message.sender.username}:</strong> {message.content}
+                    <strong>{message.user.username}:</strong> {message.content}
                     <div class="timestamp">{formatted_time}</div>
                 </li>
             """
