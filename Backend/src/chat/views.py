@@ -185,8 +185,8 @@ class ShowConversationView(APIView):
             </head>
             <body>
                 <div class="message-container">
-                    <h3>Last 10 Messages in Chat:</h3>
-                    <h2>» {conversation.name}« </h2>
+                    <h3>Last 10 Messages in Chat (id:{conversation.id}):</h3>
+                    <h2>»{conversation.name}« </h2>
                     <ul style="list-style-type: none; padding: 0;">
         """
 
