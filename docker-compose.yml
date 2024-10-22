@@ -83,8 +83,8 @@ services:
       timeout: 10s
       retries: 3
     command: daphne -b 0.0.0.0 -p 8000 app.asgi:application  # astein: we need daphne to run the asgi server
-
-
+  # django inbuild asgi server instead?
+  
   fe:
     container_name: fe
     image: fe:latest
