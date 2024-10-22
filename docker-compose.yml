@@ -68,6 +68,7 @@ services:
       - BE_DB_USER=$BE_DB_USER
       - BE_DB_PSWD=$BE_DB_PSWD
       - BE_SECRET_KEY=$BE_SECRET_KEY
+      - DJANGO_SETTINGS_MODULE=app.settings
     ports:
       - "8000:8000" #need to be changed. remove it after
     volumes:
@@ -81,6 +82,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    command: daphne -b 0.0.0.0 -p 8000 app.asgi:application  # astein: we need daphne to run the asgi server
+
 
   fe:
     container_name: fe
