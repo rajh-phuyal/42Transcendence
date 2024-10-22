@@ -34,6 +34,11 @@ const routes = [
         view: "auth",
         requireAuth: false,
     },
+    {
+        path: "/logout",
+        view: "logout",
+        requireAuth: false,
+    },
 ];
 
 export { routes };

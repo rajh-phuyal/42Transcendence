@@ -16,12 +16,11 @@ export default {
 
         },
 
-        beforeDomInsersion() {
-            this.$store.commit('setUser', { id: 1, username: 'test' });
-            console.log('store', this.$store);
+        beforeDomInsertion() {
+
         },
 
-        afterDomInsersion() {
+        afterDomInsertion() {
 
         },
     }

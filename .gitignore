@@ -5,6 +5,7 @@ Environments/*
 
 # Logs
 Logs/*
+**/*.log
 
 # Database files
 Database/postgres-data
@@ -13,10 +14,16 @@ db.sqlite3
 # Python environment and cache files
 **/env/
 **/__pycache__/
+venv
+Backend/src/db.sqlite3
 
 # Environment variables
 .transcendence_env_path
-.env
+*.env
+example.enviroment
 
 # VS-CODE
 .vscode/
+
+# Migrations
+Backend/src/authentication/migrations/*

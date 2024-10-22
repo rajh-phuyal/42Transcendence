@@ -47,8 +47,13 @@ class Store {
     dispatch(actionName, payload) {
         this.actions[actionName](this, payload);
     }
+
+    clear() {
+        this.state = { ...state };
+        $setLocal("store", JSON.stringify(this.state));
+    }
 }
 
 const $store = new Store(state, mutations, actions);
 
-export { $store };
+export default $store;
