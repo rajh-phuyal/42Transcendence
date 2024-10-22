@@ -1,12 +1,54 @@
-<div id="chat-view">
-    <h1>
-        Chat view
-    </h1>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+</head>
+<body>
+    <div id="chat-view">
+        <h1>Chat view</h1>
 
-<style>
-    #chat-view {
-        height: 100%;
-        background-color: #ffbf006c;
-    }
-</style>
+        <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
+        <input id="chat-message-input" type="text" size="100"><br>
+        <button id="chat-message-submit">Send</button>
+    </div>
+
+    <style>
+        #chat-view {
+            height: 100%;
+            background-color: #ffbf006c;
+        }
+
+        /* Optional: You can style the chat elements */
+        textarea {
+            width: 90%;
+            margin: 20px 0;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffbf00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Include the chat view's JavaScript -->
+    <script type="module" src="../js/views/chat/configs.js"></script> <!-- Adjust this path to the correct location -->
+</body>
+</html>

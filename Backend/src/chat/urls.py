@@ -4,12 +4,14 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from .views import CreateConversationView, RenameConversationView, ShowConversationView, SendMessageView
+from . import views
 
 urlpatterns = [
 	path('create-conversation/', CreateConversationView.as_view(), name='create_conversation'),
 	path('rename-conversation/', RenameConversationView.as_view(), name='rename_conversation'),
     path('show-conversation/', ShowConversationView.as_view(), name='show_conversation'),
     path('send-message/', SendMessageView.as_view(), name='send_message'),
+    path('test/', views.test_chat, name='test'),
 
 	# TODO: REVIEW THE NAMES OF THE ENDPOINTS CHAT -> CONVERSATION
 	# Chat listing and deletion

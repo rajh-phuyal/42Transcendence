@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'channels',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -87,6 +88,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
+# We need this for DJANGO CHANNELS!
+ASGI_APPLICATION = 'app.asgi.application'
+
+# This is the default channel layer configuration #TODO change it to redis later
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

@@ -6,6 +6,11 @@ from rest_framework.views import APIView
 from django.http import HttpResponse #For basic ShowChatView test
 from .models import Conversation, ConversationMember, Message
 from .serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
+from django.shortcuts import render #TODO: remove - this is for the test chat page
+
+# TODO: remove - this is for the test chat page
+def test_chat(request):
+    return render(request, 'chat/test-chat.html')
 
 # Create a conversation and add members
 # If conversation already exists, return the conversation_id
