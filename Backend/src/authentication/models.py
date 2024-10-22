@@ -9,4 +9,4 @@ class DevUserData(models.Model):
     refresh_token = models.TextField()
 
     class Meta:
-        db_table = 'dev_user_data'
+        db_table = '"barelyaschema"."dev_user_data"'
