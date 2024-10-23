@@ -33,7 +33,4 @@ GRANT USAGE, CREATE ON SCHEMA barelyaschema TO "${POSTGRES_USER}";
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA barelyaschema TO "${POSTGRES_USER}";
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA barelyaschema TO "${POSTGRES_USER}";
 
--- TODO: Delete enum later or at least move to a more appropriate file
-CREATE TYPE barelyaschema.progress_status_enum AS ENUM ('not_started', 'in_progress', 'finished');
-
  \! echo -e "\e[1m END of 000_init_db.sql \e[0m"
