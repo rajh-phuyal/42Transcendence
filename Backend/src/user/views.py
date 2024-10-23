@@ -18,7 +18,6 @@ class ProfileView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'id'
-    permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
     
 class FriendRequestView(APIView):
     authentication_classes = [JWTAuthentication]

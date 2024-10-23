@@ -30,7 +30,7 @@ export default {
                 let birthName =$id("birth-name");
                 birthName.textContent = "Birth name: " + res.lastName + ", " + res.firstName;
                 let lastSeenText =$id("last-seen-text");
-                lastSeenText.textContent = "Last seen: 2024.03.12 12:23" // + res.lastLogin;
+                lastSeenText.textContent = "Last seen: " + res.lastLogin;
                 let lastSeenImg =$id("last-seen-image");
                 lastSeenImg.src = "../../../../assets/onlineIcon.png";
                 let language =$id("language");
@@ -40,3 +40,8 @@ export default {
         },
     }
 }
+
+/*
+        2024.02.02  06:30h
+        Under Surveillance
+*/

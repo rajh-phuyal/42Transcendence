@@ -14,21 +14,23 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
-        try:
-            user = serializer.save()
-            refresh = RefreshToken.for_user(user)
+    # TODO: main branch was fucked, so I commented this...
+    # 
+    # def perform_create(self, serializer):
+    #     try:
+    #         user = serializer.save()
+    #         refresh = RefreshToken.for_user(user)
 
-            DevUserData.objects.update_or_create(
-                user=user,
-                defaults={
-                    'username': user.username,
-                    'access_token': str(refresh.access_token),
-                    'refresh_token': str(refresh),
-                }
-            )
-        except Exception as e:
-            raise exceptions.APIException(f"Error during user registration: {str(e)}")
+    #         DevUserData.objects.update_or_create(
+    #             user=user,
+    #             defaults={
+    #                 'username': user.username,
+    #                 'access_token': str(refresh.access_token),
+    #                 'refresh_token': str(refresh),
+    #             }
+    #         )
+    #     except Exception as e:
+    #         raise exceptions.APIException(f"Error during user registration: {str(e)}")
 
 
     def create(self, request, *args, **kwargs):
