@@ -19,10 +19,8 @@ class InternalTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        # additional data
         token['username'] = user.username
         token['userId'] = user.id
-
         return token
 
 
