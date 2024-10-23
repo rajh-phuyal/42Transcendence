@@ -29,19 +29,19 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_stats(self, obj):
         return {
             "game": {
-                "won": 0,
-                "played": 0
+                "won": 42,
+                "played": 420
             },
             "tournament": {
-                "firstPlace": 0,
-                "secondPlace": 0,
-                "thirdPlace": 0,
-                "played": 0
+                "firstPlace": 5,
+                "secondPlace": 6,
+                "thirdPlace": 7,
+                "played": 42
             },
             "score": {
-                "skill": 0,
-                "experience": 0,
-                "performance": 0,
-                "total": 0
+                "skill": 0.10,
+                "experience": 0.25,
+                "performance": 0.75,
+                "total": 0.50
             }
         }
