@@ -86,6 +86,7 @@ TEMPLATES = [
     },
 ]
 
+# This is for HTTP requests
 WSGI_APPLICATION = 'app.wsgi.application'
 
 # We need this for DJANGO CHANNELS!
