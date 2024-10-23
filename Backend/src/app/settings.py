@@ -38,16 +38,21 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # [astein:] DO WE NEED ALL OF THEM? THEY CREATE A LOT OF TABLES IN THE DATABASE
 # @RAJH: please review :)
 INSTALLED_APPS = [
+	# Core Django Apps
     'django.contrib.admin', 			# [astein:] needed for migrations
     'django.contrib.auth',
     'django.contrib.contenttypes',		# [astein:] required for the auth app
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'channels',
+	
+	# Third-party Apps
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+	'channels',
+
+	# Custom Apps
     'authentication',
     'user',
     'chat',
