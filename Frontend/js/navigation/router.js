@@ -6,7 +6,7 @@ import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
 import call from '../abstracts/call.js';
-import loading from '../abstracts/loading.js';
+//import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
 
 const objectToBind = (config) => {
@@ -25,7 +25,7 @@ const objectToBind = (config) => {
     binder.$store = $store;
     binder.$auth = $auth;
     binder.call = call;
-    binder.loading = loading;
+   // binder.loading = loading;
     binder.domManip = dollars;
 
     return binder;

@@ -20,8 +20,8 @@ class ConversationMember(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='members')
     user = models.ForeignKey('user.User', on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'{self.user_id.username} in {self.chat_id.name}'
+    #def __str__(self):
+    #    return f'{self.user_id.username} in {self.chat_id.name}'
     
     class Meta:
         db_table = '"barelyaschema"."conversation_member"'

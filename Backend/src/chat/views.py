@@ -3,6 +3,8 @@ from rest_framework.permissions import AllowAny  # Import AllowAny #TODO: remove
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import HttpResponse #For basic ShowChatView test
 from .models import Conversation, ConversationMember, Message
 from .serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
@@ -11,6 +13,21 @@ from django.shortcuts import render #TODO: remove - this is for the test chat pa
 # TODO: remove - this is for the test chat page
 def test_chat(request):
     return render(request, 'chat/test-chat.html')
+
+class ListConversationsView(APIView):
+    authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
+    permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        
+        # Get all conversations where the user is a member
+        conversation_memberships = ConversationMember.objects.filter(user=user)
+        conversations = [membership.conversation for membership in conversation_memberships]
+        
+        # Serialize only the conversation id and name
+        serializer = ConversationSerializer(conversations, many=True)
+        return Response(serializer.data)
 
 # Create a conversation and add members
 # If conversation already exists, return the conversation_id

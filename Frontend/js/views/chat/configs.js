@@ -1,57 +1,137 @@
 
 export default {
     attributes: {
-		converations: [], // Array of all conversations
-		selectedConversation: undefined, // The selected conversation
-		messages: [], // Array of loaded conversion aka all messages; empty on start because no conversation is selected
+		conversations: [], // All conversations for the user
+        selectedConversation: null, // The active conversation
+        messages: [], // Messages of the active conversation
     },
 
     methods: {
-		// Load all conversations
-		// this is calling an endpoint that returns all conversations as json
-		// e.g. /chat/conversations
-			// the user id is in the jwt token and will be fetched like this.$store.fromState(
-		loadAllConversations() {
-			// fetch all conversations
-			// save them in this.conversations
+		// Load all conversations via API
+		async loadConversations() {
+			try {
+				const response = await fetch('/chat/conversations/', {
+					headers: {
+						'Authorization': 'Bearer ' + this.getJWTToken()  // Replace this logic with your own token retrieval method
+					}
+				});
+		
+				if (!response.ok) {
+					throw new Error('Failed to load conversations');
+				}
+		
+				const conversations = await response.json();
+		
+				// Assuming you want to store the conversations in the 'conversations' attribute
+				this.conversations = conversations;
+		
+				// Populate the conversation list dynamically in the DOM
+				const conversationListElement = document.getElementById('conversation-items');
+				conversationListElement.innerHTML = '';  // Clear previous content
+		
+				conversations.forEach(conversation => {
+					const listItem = document.createElement('li');
+					listItem.textContent = conversation.name || `Conversation ${conversation.id}`;
+					listItem.setAttribute('data-id', conversation.id);
+					listItem.style.cursor = 'pointer';
+					listItem.addEventListener('click', () => this.selectConversation(conversation));
+					conversationListElement.appendChild(listItem);
+				});
+		
+			} catch (error) {
+				console.error('Failed to load conversations:', error);
+			}
 		},
 
-		// Select a conversation
-		selectConversation(conversation) {
-			// set this.selectedConversation to the selected conversation
-			// load all messages of the selected conversation
-			
-		},
+        // Select a conversation
+        async selectConversation(conversation) {
+            this.selectedConversation = conversation;
+            this.messages = []; // Clear old messages
+            await this.loadMessages(conversation.id); // Load messages for the selected conversation
 
-		// Load all messages of a conversation
+            // After selecting conversation, open WebSocket
+            this.openWebSocket(conversation.id);
+        },
 
-		// Send a message to a conversation
+        // Load all messages of the selected conversation
+        async loadMessages(conversationId) {
+            try {
+                const response = await fetch(`/chat/messages/${conversationId}`);
+                this.messages = await response.json();
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+            }
+        },
+
+        // Open a single WebSocket connection
+        openWebSocket(conversationId) {
+            // Close previous WebSocket if any
+            if (this.chatSocket) {
+                this.chatSocket.close();
+            }
+
+            const token = $store.fromState('jwtTokens').access;
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            this.chatSocket = new WebSocket(`${protocol}${window.location.host}/ws/chat/${conversationId}/?token=${token}`);
+
+            this.chatSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                this.messages.push(data.message); // Add new message to the chat log
+            };
+
+            this.chatSocket.onclose = (event) => {
+                console.error('Chat WebSocket closed unexpectedly.');
+            };
+        },
+
+        // Send a message
+        sendMessage(message) {
+            if (this.chatSocket && message.trim() !== '') {
+                this.chatSocket.send(JSON.stringify({ message }));
+            }
+        },
     },
 
     hooks: {
-        beforeRouteEnter() {
-			// Load all conversations
-			this.loadAllConversations();
+        async beforeRouteEnter() {
+            await this.loadAllConversations(); // Load all conversations when the chat is entered
         },
 
         beforeRouteLeave() {
-			// Clear all attributes
-			// Close (all) websocket connection(s)
+            // Close WebSocket when leaving the chat view
+            if (this.chatSocket) {
+                this.chatSocket.close();
+            }
+            this.chatSocket = null;
+            this.selectedConversation = null;
+            this.messages = [];
         },
 
         beforeDomInsertion() {
-			// open a websocket connection to the selected conversation
-			// RAJH: one websocket client not per conversation!
-			// TODO: check this
-			// research about DOM manipulation !!!!
+            // This hook is invoked when the DOM is being created, before the insertion.
+            console.log("Before DOM Insertion");
         },
 
         afterDomInsertion() {
+            // Add DOM event listeners after the view is inserted
+            const sendButton = document.getElementById("chat-message-submit");
+            const messageInput = document.getElementById("chat-message-input");
 
+            if (sendButton && messageInput) {
+                sendButton.onclick = () => {
+                    this.sendMessage(messageInput.value);
+                    messageInput.value = '';
+                };
+
+                messageInput.onkeyup = (e) => {
+                    if (e.keyCode === 13) { // Enter key sends the message
+                        sendButton.click();
+                    }
+                };
+            }
         },
-    }
-}
-
+    },
+};
 
 
 
