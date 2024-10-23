@@ -42,11 +42,11 @@ export const friendshipObjects = [
     },
     // users are friends
     {
-        buttonTopLeftImagePath: "",
+        buttonTopLeftImagePath: "../../../../assets/profileView/friendsIcon.png",
         buttonTopLeftMethod: "",
-        buttonTopMiddleImagePath: "",
+        buttonTopMiddleImagePath: "../../../../assets/profileView/invitePongIcon.png",
         buttonTopMiddleMethod: "",
-        buttonTopRightImagePath: "",
+        buttonTopRightImagePath: "../../../../assets/profileView/sendMessageIcon.png",
         buttonTopRightMethod: "",
         buttonTopRightSecondImagePath: "",
     },

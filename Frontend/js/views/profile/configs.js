@@ -1,5 +1,6 @@
 import call from '../../abstracts/call.js'
-import { $id } from '../../abstracts/dollars.js';
+import { populateUserInfo, populateStats, populateProgress, populateButtons } from './script.js';
+import { friendshipObjects } from "./objects.js"
 
 export default {
     attributes: {
@@ -25,16 +26,20 @@ export default {
 
         afterDomInsertion() {
             call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
-                let username = $id("username");   
-                username.textContent = "Subject: " + res.username;
-                let birthName =$id("birth-name");
-                birthName.textContent = "Birth name: " + res.lastName + ", " + res.firstName;
-                let lastSeenText =$id("last-seen-text");
-                lastSeenText.textContent = "Last seen: " + res.lastLogin;
-                let lastSeenImg =$id("last-seen-image");
-                lastSeenImg.src = "../../../../assets/onlineIcon.png";
-                let language =$id("language");
-                language.textContent = "language: " + res.language;
+                console.log(res);
+                populateUserInfo(res);
+                populateStats(res);
+                populateProgress(res.stats.score.skill, "score-skill-");
+                populateProgress(res.stats.score.experience, "score-game-exp-");
+                populateProgress(res.stats.score.performance, "score-tournament-exp-");
+                populateProgress(res.stats.score.total, "score-total-");
+                populateButtons(friendshipObjects[4]);
+                
+                // let skillProgressBar =$id("progress");
+                // let skillPercentageValue = res.stats.score.skill * 100;
+                // skillProgressBar.style.width =  skillPercentageValue + '%';
+                // let skillPercentage =$id("score-skill-percentage");
+                // skillPercentage.textContent = skillPercentageValue + "%";
             })
             // on error?
         },

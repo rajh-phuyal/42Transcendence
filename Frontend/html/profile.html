@@ -9,9 +9,52 @@
                 <img id="last-seen-image" src="" alt="img not found">
             </div>
             <h3 id="language"> language</h2>
-            </div>
+        </div>
         <div id="main-right-div">
-            
+            <div id="top-buttons">
+                <img class="button" id="button-top-left"></img>
+                <img class="button" id="button-top-middle"></img>
+                <img class="button" id="button-top-right"></img>
+            </div>
+            <div id="stats-div">
+                <!-- STATS -->
+                <h2>STATS</h2>
+                <h3 class="game-stats-parameters" id="stats-games">Games won: 0/0</h3>
+                <h3 class="game-stats-parameters" id="stats-tournament-first-place">1st place: 0/0</h3>
+                <h3 class="game-stats-parameters" id="stats-tournament-second-place">2nd place: 0/0</h3>
+                <h3 class="game-stats-parameters" id="stats-tournament-third-place">3rd place: 0/0</h3>
+                <!-- Player's Grading -->
+                <div id="progress-grid">
+                    <!-- Skill section -->
+                    <h2 id="score-skill-name" class="progress-grid-name">Skill</h2>
+                    <div class="progress">
+                        <div id="score-skill-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-skill-percentage" class="progress-grid-percentage">0%</h2>
+                    <!-- game exp section -->
+                    <h2 id="score-game-exp-name" class="progress-grid-name">GExp</h2>
+                    <div class="progress">
+                        <div id="score-game-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-game-exp-percentage" class="progress-grid-percentage">0%</h2>
+                    <!-- tournament exp section -->
+                    <h2 id="score-tournament-exp-name" class="progress-grid-name">TExp</h2>
+                    <div class="progress">
+                        <div id="score-tournament-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-tournament-exp-percentage" class="progress-grid-percentage">0%</h2>
+                    <!-- total section -->
+                    <h2 id="score-total-name" class="progress-grid-name">Total</h2>
+                    <div class="progress">
+                        <div id="score-total-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-total-percentage" class="progress-grid-percentage">0%</h2>
+                </div>
+                <div id="bottom-buttons">
+                    <img class="button" id="button-bottom-left"></img>
+                    <img class="button" id="button-bottom-right"></img>
+                </div>
+            </div>
         </div>
     </div>    
 </div>
@@ -21,6 +64,48 @@
         height: 100%;
         background-color: #ff00ff6c;
     }
+
+    #top-buttons{
+        display:flex;
+        flex-direction: row;
+        margin: 12vh 0vh 8vh 1vw;
+        height: 5vh;
+    }
+
+    #bottom-buttons {
+        display:flex;
+        flex-direction: row;
+        margin: 12vh 0vh 8vh 7.5vw;
+        height: 5vh;
+    }
+
+    .button {
+        height: 8vh;
+        width: 10vh;
+        margin: 0vh 1vw;
+        background-image: "";
+    }
+
+    /* .game-stats-parameters{
+        margin: 0vh 0vh 0vh 2vw;
+    } */
+
+    #progress-grid {
+        display: grid;
+        grid-template-columns: 4vw 10vw 4vw;
+        margin-top: 8vh; 
+    }
+
+    .progress {
+        margin: 1.5vh 2vw;
+        height: 1vh;
+        background-color: rgb(150, 150, 150);
+    }
+
+    .progress-bar {
+        background-color: black;
+    }
+
     #username {
         padding: 15vh 0vh 0vh 4vw;
     }
@@ -62,7 +147,7 @@
         flex-direction: column;
         width: 25vw;
         height: 100vh;
-        margin: 0vh 25vw 0vh 0vh;
+        margin: 0vh 25vw 0vh 5vw;
     }
     #background-image{
         display: flex;
