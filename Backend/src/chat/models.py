@@ -17,8 +17,8 @@ class Conversation(models.Model):
 class ConversationMember(models.Model):
     id = models.AutoField(primary_key=True)
     # The ForeignKey of django adds a _id suffix to the field name so chat becomes chat_id
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='members')
     user = models.ForeignKey('user.User', on_delete=models.CASCADE)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='members')
 
     #def __str__(self):
     #    return f'{self.user_id.username} in {self.chat_id.name}'

@@ -42,6 +42,7 @@ insert_dummy "$TABLE_NAME" \
         (4, 'hashed_password_4', '2024-04-01 13:42:03+00', FALSE, 'fda-estr', 'Francisco', 'Inácio', 'we dont use email', FALSE, FALSE, '2004-09-01 10:15:30+00'), \
         (5, 'hashed_password_5', '2024-05-01 14:42:04+00', FALSE, 'rphuyal', 'Rajh', 'Phuyal', 'we dont use email', FALSE, FALSE, '2005-09-01 10:15:30+00');"
 
+# TODO: add realtions to AI and the OVERLOARDS!
 TABLE_NAME="barelyaschema.is_cool_with"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME (id, requester_id, requestee_id, status) VALUES \

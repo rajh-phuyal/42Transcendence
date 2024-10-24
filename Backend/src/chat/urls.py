@@ -14,6 +14,7 @@ urlpatterns = [
     path('test/', views.test_chat, name='test'),
     path('conversations/', ListConversationsView.as_view(), name='list_conversations'),
 
+
 	# TODO: REVIEW THE NAMES OF THE ENDPOINTS CHAT -> CONVERSATION
 	# Chat listing and deletion
     # path('chats/list/', ListChatsView.as_view(), name='list_chats'),

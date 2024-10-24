@@ -10,10 +10,10 @@
 CREATE TABLE IF NOT EXISTS barelyaschema.conversation_member
 (
 	id SERIAL PRIMARY KEY,
-	conversation_id INT NOT NULL,
 	user_id INT NOT NULL,
-	FOREIGN KEY (conversation_id) REFERENCES barelyaschema.conversation(id),
-	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id)
+	conversation_id INT NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
+	FOREIGN KEY (conversation_id) REFERENCES barelyaschema.conversation(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
