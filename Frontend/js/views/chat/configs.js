@@ -37,7 +37,7 @@ export default {
             }
         },
 
-        // 1. Open WebSocket connection
+        // Open WebSocket connection
         openWebSocket() {
             const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
             //const socketUrl = `${protocol}${window.location.host}/ws/chat/`;
@@ -52,20 +52,23 @@ export default {
                 const data = JSON.parse(event.data);
                 console.log("WebSocket message received:", data);
 
-                // If it's a chat message, add it to the messages array
+                // If it's a chat message
                 if (data.type === 'chat_message') {
-                    this.messages.push({
-                        sender: data.sender,
-                        message: data.message,
-                    });
-                    this.updateChatLog(); // Update chat log
+                    // Add the new message to the chat log
+                    this.messages.push(data.message);
+                } else if (data.type === 'chat_messages') {
+					// Handle receiving multiple messages (for conversation loading)
+					this.messages = undefined;
+                    this.messages = data.messages;
                 }
+				this.displayMessages();  // Function to update the UI
 
+                // TODO: later
                 // If it's a notification, you can handle it here too
-                if (data.type === 'notification') {
-                    console.log('Notification received:', data.content);
-                    // Handle notifications here
-                }
+                //if (data.type === 'notification') {
+                //    console.log('Notification received:', data.content);
+                //    // Handle notifications here
+                //}
             };
 
             // Handle WebSocket closure
@@ -74,7 +77,22 @@ export default {
             };
         },
 
-        // 2. Send a chat message
+        // Method to load messages when a conversation is selected
+        async selectConversation(conversation) {
+            console.log('Selected conversation:', conversation);
+            this.selectedConversation = conversation;
+        
+            // Send a request to the backend to load messages for this conversatio
+			console.log('Send a request to the backend to load messages for this conversation:', conversation.id);
+            if (this.chatSocket) {
+                this.chatSocket.send(JSON.stringify({
+                    'type': 'load_messages',
+                    'conversation_id': conversation.id
+                }));
+            }
+        },
+
+        // Send a chat message
         sendMessage(message) {
             if (this.chatSocket && message.trim() !== '') {
                 // Prepare the message payload
@@ -89,16 +107,19 @@ export default {
             }
         },
 
-        // 3. Update chat log (this will display the messages in the UI)
-        updateChatLog() {
-            const chatLogElement = document.getElementById("chat-log");
-            chatLogElement.value = ''; // Clear the log
-
-            // Display all messages in the chat log
+        // Display messages in the chat log
+        displayMessages() {
+            const chatLog = document.getElementById("chat-log");
+            chatLog.value = '';  // Clear previous content
+			console.log(this.$store.fromState('user').id);
             this.messages.forEach(msg => {
-                chatLogElement.value += `${msg.sender}: ${msg.message}\n`;
+				if (msg.sender === this.$store.fromState('user').id) {
+                	chatLog.value += `                  ${msg.content}\n`;
+				}
+				else
+                	chatLog.value += `${msg.sender}: ${msg.content}\n`;
             });
-        }        
+        }
     },
 
     hooks: {
