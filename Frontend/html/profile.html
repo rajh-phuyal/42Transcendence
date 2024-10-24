@@ -3,12 +3,12 @@
         <div id="main-left-div">
             <h2 id="username">username</h2>
             <div id="avatar"></div>
-            <h3 id="birth-name"> actual name</h2>
-            <div id="last-seen">
+            <h3 id="birth-name" class="blackout"> actual name</h2>
+            <div id="last-seen" class="blackout">
                 <h3 id="last-seen-text">last seen</h2>
                 <img id="last-seen-image" src="" alt="img not found">
             </div>
-            <h3 id="language"> language</h2>
+            <h3 id="language"  class="blackout"> language</h2>
         </div>
         <div id="main-right-div">
             <div id="top-buttons">
@@ -18,13 +18,13 @@
             </div>
             <div id="stats-div">
                 <!-- STATS -->
-                <h2>STATS</h2>
+                <h2 class="blackout">STATS</h2>
                 <h3 class="game-stats-parameters" id="stats-games">Games won: 0/0</h3>
                 <h3 class="game-stats-parameters" id="stats-tournament-first-place">1st place: 0/0</h3>
                 <h3 class="game-stats-parameters" id="stats-tournament-second-place">2nd place: 0/0</h3>
                 <h3 class="game-stats-parameters" id="stats-tournament-third-place">3rd place: 0/0</h3>
                 <!-- Player's Grading -->
-                <div id="progress-grid">
+                <div id="progress-grid" class="blackout">
                     <!-- Skill section -->
                     <h2 id="score-skill-name" class="progress-grid-name">Skill</h2>
                     <div class="progress">
@@ -50,19 +50,41 @@
                     </div>
                     <h2 id="score-total-percentage" class="progress-grid-percentage">0%</h2>
                 </div>
-                <div id="bottom-buttons">
+                <div id="bottom-buttons" class="blackout">
                     <img class="button" id="button-bottom-left"></img>
                     <img class="button" id="button-bottom-right"></img>
                 </div>
             </div>
         </div>
-    </div>    
-</div>
+    </div>  
+    
+    
+    <!-- Friendship Modal -->
+    <div class="modal fade" id="friendship-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <h3 id="friendshp-modal-friendship-text" class="friendship-modal-text"></h3>
+              <div id="friendship-modal-friendship-buttons">
+                    <button id="friendship-modal-friendship-primary-button" class="friendship-modal-buttons"></button>
+                    <button id="friendship-modal-friendship-secundary-button" class="friendship-modal-buttons"></button>
+              </div>
+              <h3 id="friendshp-modal-block-text" class="friendship-modal-text"></h3>
+              <div id="friendship-modal-block-buttons">
+                    <button id="friendship-modal-block-button" class="friendship-modal-buttons"></button>
+              </div>
+              <button id="friendship-modal-cancel-button" class="friendship-modal-buttons">Cancel</button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
 
 <style>
     #profie-view {
         height: 100%;
         background-color: #ff00ff6c;
+        color: black;
     }
 
     #top-buttons{
@@ -76,7 +98,7 @@
         display:flex;
         flex-direction: row;
         margin: 12vh 0vh 8vh 7.5vw;
-        height: 5vh;
+        height: 8vh;
     }
 
     .button {
@@ -84,6 +106,16 @@
         width: 10vh;
         margin: 0vh 1vw;
         background-image: "";
+    }
+
+    .button:hover {
+        height: 9vh;
+        width: 11vh;
+        margin: 0vh 0.75vw;
+
+        border-color: black;
+        border-radius: 3px;
+        border-width: 4px;
     }
 
     /* .game-stats-parameters{

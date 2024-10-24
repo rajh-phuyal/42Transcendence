@@ -48,6 +48,16 @@ async function router(path, params = null) {
         path = '/auth';
         params = { login: true };
     }
+    // if (!params) {
+    //     const paramsString = window.location.href;
+    //     console.log(paramsString);
+    //     const searchParams = new URLSearchParams(paramsString);
+    //     params = {};
+    //     for (const [key, value] of searchParams) {
+    //         params[key] = value;
+    //         console.log(key, value)
+    //     }
+    // }
 
     const viewContainer = $id('router-view');
 
