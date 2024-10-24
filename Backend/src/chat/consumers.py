@@ -1,76 +1,52 @@
-# chat/consumers.py
-from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.tokens import AccessToken
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # Extract the JWT token from the query string
-        token = self.scope['query_string'].decode().split('=')[-1]
-
-        try:
-            # Decode the JWT token to get the user ID
-            access_token = AccessToken(token)
-            user_id = access_token['user_id']
-            
-            # Fetch the user object and set it in the scope
-            self.scope['user'] = await self.get_user(user_id)  # You need to implement this method
-        except:
-            # Log errors and reject connection
-            print(f"Token validation error: {e}")
-            await self.close()
-
-        # Only allow connection if the user is authenticated
-        if self.scope['user'].is_authenticated:
-            self.room_name = self.scope['url_route']['kwargs']['room_name']
-            self.room_group_name = f'chat_{self.room_name}'
-
-            # Join the room group
-            await self.channel_layer.group_add(
-                self.room_group_name,
-                self.channel_name
-            )
-
-            # Accept the WebSocket connection
-            await self.accept()
-        else:
-            # If user is not authenticated, reject the connection
-            await self.close()
+        self.user = self.scope["user"]
+        # In this example, we're connecting to a global notification channel for now
+        await self.channel_layer.group_add(
+            'global_notifications',  # Single WebSocket group for notifications
+            self.channel_name
+        )
+        await self.accept()
 
     async def disconnect(self, close_code):
-        # Leave the room group on WebSocket disconnect
         await self.channel_layer.group_discard(
-            self.room_group_name,
+            'global_notifications',
             self.channel_name
         )
 
     async def receive(self, text_data):
-        # Receive message from WebSocket
+        # Parse the incoming WebSocket message
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        event_type = text_data_json.get('type', '')
 
-        # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message
-            }
-        )
+        # Handle different event types
+        if event_type == 'chat_message':
+            # Handle chat messages
+            await self.handle_chat_message(text_data_json)
+#        elif event_type == 'friend_request':
+#            # Handle friend requests
+#            # TODO: this could come in handy later for the notification system
+        elif event_type == 'notification':
+            # Handle other notifications (you can extend this as needed)
+            await self.handle_notification(text_data_json)
 
-    async def chat_message(self, event):
-        # Send message to WebSocket
-        message = event['message']
+    # Example of handling a chat message
+    async def handle_chat_message(self, event):
+        # You can do any message processing here
         await self.send(text_data=json.dumps({
-            'message': message
+            'type': 'chat_message',
+            'message': event['message'],
+            'sender': self.user.id
         }))
 
-    async def get_user(self, user_id):
-        # Fetch user from the database (implement this according to your project)
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        try:
-            user = await User.objects.get(id=user_id)
-            return user
-        except User.DoesNotExist:
-            return AnonymousUser()
+    # Example of handling notifications
+    async def handle_notification(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'notification',
+            'event': event['event'],
+            'content': event['content']
+        }))
