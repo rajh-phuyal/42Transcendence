@@ -14,17 +14,29 @@ class ProfileSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(source='first_name', default="John")
     lastName = serializers.CharField(source='last_name', default="Doe")
     online = serializers.BooleanField(default=False)
-    lastLogin = serializers.DateTimeField(source='last_login', default="2023-01-01T00:00:00Z")
+    lastLogin = serializers.CharField(default="YYYY-MM-DD hh:mm")
     language = serializers.CharField(default="en")
-    chatId = serializers.CharField(default="dummy_chat_id")
+    chatId = serializers.CharField(default=42)
+    newMessage = serializers.BooleanField(default=True)
     
+    # Add relationship field
+    relationship = serializers.SerializerMethodField()
     # Add the stats section with dummy data
     stats = serializers.SerializerMethodField()
 
     class Meta:
         model = User
 				# id and username are the same key than in the model.py, thats why i dont need them in the above section
-        fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'stats']
+        fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
+    
+	# TODO: This is dummy and should be replaced with actual data
+    # Valid types are 'yourself' 'noFriend', 'friend', 'sendRequest', 'recievedRequest'
+    def get_relationship(self, obj):
+        return {
+            "state": "friend",
+            "isBlocking": False,
+            "isBlocked": False
+        }
     
     def get_stats(self, obj):
         return {
