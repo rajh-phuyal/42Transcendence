@@ -1,6 +1,28 @@
 import { openConversation } from "./methods.js"
 
-export const friendshipObjects = [
+export const buttonObjects = [
+    // send message button
+    {
+        imageMessage: "../../../../assets/profileView/sendMessageIcon.png",
+        imageMessageUnseen: "",
+        method: undefined
+    },
+    // logout button
+    {
+        image: "",
+        method: undefined
+    },
+    // edit button
+    {
+        image: "",
+        method: undefined
+    },
+    // invite to play
+    {
+        image: "",
+        method: undefined
+    },
+
     // player views his own profile
     {
         buttonTopLeftImagePath: undefined,

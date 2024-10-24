@@ -51,4 +51,13 @@ function populateButtons(object) {
     element.src = "../../../../assets/profileView/FriendsListIcon.png";
 }
 
-export { populateUserInfo, populateStats, populateProgress, populateButtons };
+function populateInfoAndStats(res) {
+    populateUserInfo(res);
+    populateStats(res);
+    populateProgress(res.stats.score.skill, "score-skill-");
+    populateProgress(res.stats.score.experience, "score-game-exp-");
+    populateProgress(res.stats.score.performance, "score-tournament-exp-");
+    populateProgress(res.stats.score.total, "score-total-");
+}
+
+export {populateButtons, populateInfoAndStats };
