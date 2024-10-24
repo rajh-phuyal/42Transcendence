@@ -1,4 +1,5 @@
 import call from '../../abstracts/call.js'
+import { $id, $on } from '../../abstracts/dollars.js';
 import { populateUserInfo, populateStats, populateProgress, populateButtons } from './script.js';
 import { friendshipObjects } from "./objects.js"
 
@@ -35,11 +36,8 @@ export default {
                 populateProgress(res.stats.score.total, "score-total-");
                 populateButtons(friendshipObjects[4]);
                 
-                // let skillProgressBar =$id("progress");
-                // let skillPercentageValue = res.stats.score.skill * 100;
-                // skillProgressBar.style.width =  skillPercentageValue + '%';
-                // let skillPercentage =$id("score-skill-percentage");
-                // skillPercentage.textContent = skillPercentageValue + "%";
+                let element = $id("button-top-right");
+                $on(element, "click", friendshipObjects[4].buttonTopRightMethod);
             })
             // on error?
         },

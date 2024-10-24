@@ -46,7 +46,7 @@ function populateButtons(object) {
     element = $id("button-top-right");
     element.src = object.buttonTopRightImagePath;
     element = $id("button-bottom-left");
-    element.src = "./gamingHistoryIcon.png";
+    element.src = "../../../../assets/profileView/gamingHistoryIcon.png";
     element = $id("button-bottom-right");
     element.src = "../../../../assets/profileView/FriendsListIcon.png";
 }

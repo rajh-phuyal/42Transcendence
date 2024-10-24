@@ -1,3 +1,4 @@
+import { openConversation } from "./methods.js"
 
 export const friendshipObjects = [
     // player views his own profile
@@ -47,7 +48,7 @@ export const friendshipObjects = [
         buttonTopMiddleImagePath: "../../../../assets/profileView/invitePongIcon.png",
         buttonTopMiddleMethod: "",
         buttonTopRightImagePath: "../../../../assets/profileView/sendMessageIcon.png",
-        buttonTopRightMethod: "",
+        buttonTopRightMethod: openConversation,
         buttonTopRightSecondImagePath: "",
     },
     // profile of a user that is blocked
