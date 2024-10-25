@@ -8,32 +8,42 @@ import logging
 
 class ChatConsumer(AsyncWebsocketConsumer):
     
-	# Main function to connect to the WebSocket
+    # Main function to connect to the WebSocket
     async def connect(self):
         # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():
             await self.close()
         else:
-            # In this example, we're connecting to a global notification channel for now
-            await self.channel_layer.group_add(
-                'global_notifications',  # Single WebSocket group for notifications
-                self.channel_name
-            )
-            await self.accept()
-        
+            # Get the conversations the user is part of asynchronously
+            user_conversations = await self.get_user_conversations(self.scope['user'])
 
-	# Main function to disconnect from the WebSocket
+            # Loop over the conversations asynchronously
+            for conversation in await sync_to_async(list)(user_conversations):
+                await self.channel_layer.group_add(
+                    f'chat_{conversation.id}',  # Add the user to each conversation's WebSocket group
+                    self.channel_name
+                )
+                print(f"User {self.scope['user'].username} added to chat_{conversation.id}")
+        
+            await self.accept()
+
+    # Main function to disconnect from the WebSocket
     async def disconnect(self, close_code):
+        # Remove the user from all conversation groups they were part of
+        user_conversations = await self.get_user_conversations(self.scope['user'])
+        for conversation in user_conversations:
+            await self.channel_layer.group_discard(f'chat_{conversation.id}', self.channel_name)
+        
         await self.channel_layer.group_discard(
             'global_notifications',
             self.channel_name
         )
 
-	# Main function to receive messages from the WebSocket
+    # Main function to receive messages from the WebSocket
     # Checks the event_type and calls the appropriate function
-    #  - chat_message 		= receive a chat message to store
-    #  - load_conversation 	= load previous messages for a conversation
-    #  - notification 		= handle notifications #TODO: what notiffications does the frontend send?
+    #  - chat_message         = receive a chat message to store
+    #  - load_conversation     = load previous messages for a conversation
+    #  - notification         = handle notifications #TODO: what notiffications does the frontend send?
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         event_type = text_data_json.get('type', '')
@@ -63,7 +73,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         conversation_id = event['conversation_id']
         content = event['message']
         
-		# Access the authenticated user from scope
+        # Access the authenticated user from scope
         sender = self.scope['user']
         logging.info(f'Params: {conversation_id}, {content}, {sender}')
         
@@ -77,16 +87,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Save the message in the DB
         message = await self.save_message(conversation_id, sender, content)
 
-        # Broadcast the message to all users in this conversation
+        # Broadcast the message ID to all users in this conversation
         await self.channel_layer.group_send(
             f'chat_{conversation_id}',  # Group for conversation
             {
                 'type': 'chat_message',
-                'message': message.content,
-                'sender': sender.username,
+                'message_id': message.id,  # Pass the message ID
                 'conversation_id': conversation_id
             }
         )
+
+    async def chat_message(self, event):
+        message_id = event['message_id']
+    
+        # Fetch the message from the DB to match the correct format
+        message = await sync_to_async(Message.objects.get)(id=message_id)
+    
+        # Fetch the user asynchronously
+        sender_user = await sync_to_async(lambda: message.user.id)()
+        
+        # Send the message to the WebSocket client in the same format as previous messages
+        await self.send(text_data=json.dumps({
+            'type': 'chat_message',
+            'id': message.id,
+            'sender': sender_user,  # Sender's user ID
+            'content': message.content,
+            'created_at': message.created_at.isoformat(),  # Add timestamp
+            'conversation_id': message.conversation_id  # Include conversation ID
+        }))
 
     @sync_to_async
     def save_message(self, conversation_id, sender, content):
@@ -94,7 +122,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Message.objects.create(conversation=conversation, user=sender, content=content)
 
     @sync_to_async
-	# Get all messages for the selected conversation
+    # Get all messages for the selected conversation
     def handle_load_conversation(self, conversation_id):
         logging.info(f"Loading conversation: {conversation_id}")
         messages = Message.objects.filter(conversation_id=conversation_id).order_by('created_at')
@@ -104,3 +132,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def handle_notification(self, event):
         logging.info(f"Received notification: {event}")
         # TODO: Handle notifications as needed
+    
+    # Get the conversations the user is part of
+    @sync_to_async
+    def get_user_conversations(self, user):
+        # Query ConversationMember to get the conversations the user is part of
+        return Conversation.objects.filter(members__user=user)

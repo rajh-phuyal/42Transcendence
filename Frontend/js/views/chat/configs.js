@@ -55,7 +55,15 @@ export default {
                 // If it's a chat message
                 if (data.type === 'chat_message') {
                     // Add the new message to the chat log
-                    this.messages.push(data.message);
+					if (data.conversation_id === this.selectedConversationId) {
+						// Push the new message to the messages array
+                    	this.messages.push(data.message);
+					}
+					else {
+						// TODO: later
+						// Add a notification for the new message
+						console.log('New message received in another conversation:', data.message);
+					}
                 } else if (data.type === 'chat_messages') {
 					// Handle receiving multiple messages (for conversation loading)
 					this.messages = undefined;
