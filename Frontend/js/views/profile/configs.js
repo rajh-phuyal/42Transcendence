@@ -2,6 +2,7 @@ import call from '../../abstracts/call.js'
 import { $id, $on, $class } from '../../abstracts/dollars.js';
 import { populateInfoAndStats } from './script.js';
 import { buttonObjects } from "./objects.js"
+import router from '../../navigation/router.js';
 
 export default {
     attributes: {
@@ -19,7 +20,7 @@ export default {
         },
         result: undefined,
         frendshipStateIndex: undefined,
-        BlockedState: false,
+        blockerState: false,
     },
 
     methods: {
@@ -28,11 +29,7 @@ export default {
             if (this.result.relationship.state != "yourself")
             {
                 this.buttonTopLeft.method = this.friendshipMethod;
-                if (this.result.relationship.isBlocking) {
-                    this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
-                    this.BlockedState = true;
-                }
-                else if (this.result.relationship.state == "friend") {
+                if (this.result.relationship.state == "friend") {
                     this.buttonTopLeft.image = "../../../../assets/profileView/friendsIcon.png";
                     this.frendshipStateIndex = 0;
                 }
@@ -48,6 +45,10 @@ export default {
                     this.buttonTopLeft.image = "../../../../assets/profileView/sentFriendRequest.png";
                     this.frendshipStateIndex = 3;
                 }
+                if (this.result.relationship.isBlocking) {
+                    this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
+                    this.blockerState = true;
+                }
             }
 
             // Top middle Button
@@ -59,17 +60,18 @@ export default {
                     this.buttonTopMiddle.image = "../../../../assets/profileView/unreadMessageIcon.png";
                 else
                     this.buttonTopMiddle.image = "../../../../assets/profileView/sendMessageIcon.png";
+                    this.buttonTopMiddle.method = this.messageMethod;
             }
 
             // Top right Button
             if (this.result.relationship.state == "yourself") {
                 this.buttonTopRight.image = "../../../../assets/profileView/logoutIcon.png";
+                this.buttonTopRight.method = this.logoutMethod;
             }
-            else {
-                if (this.result.relationship.state == "friend" && !this.result.relationship.isBlocking && !this.result.relationship.isBlocked) {
+            else if (this.result.relationship.state == "friend" && !this.result.relationship.isBlocking && !this.result.relationship.isBlocked) {
                 this.buttonTopRight.image = "../../../../assets/profileView/invitePongIcon.png";
-                }
             }
+    
 
             // put images in the buttons
             let element = $id("button-top-left");
@@ -119,15 +121,44 @@ export default {
 
         friendshipMethod() {
 
+            console.log("friendship index", this.frendshipStateIndex);
+            let blockIndex;
+            if (this.blockerState)
+                blockIndex = 5;
+            else
+                blockIndex = 4;
+
             let element = $id("friendshp-modal-friendship-text")
             element.textContent = buttonObjects[this.frendshipStateIndex].text;
 
-            element = $id("friendship-modal-friendship-primary-button")
-            element.textContent = buttonObjects[this.frendshipStateIndex].leftButtonText;
+
+            if (!buttonObjects[this.frendshipStateIndex].secundaryButton) {
+                element = $id("friendship-modal-friendship-secundary-button")
+                element.style.display = "none";
+            }
+
+            if (this.result.relationship.state == "requestReceived" || this.result.relationship.state == "requestSent") {
+                element = $id("friendship-modal-block")
+                element.style.display = "none";
+            }
+            else {
+                element = $id("friendshp-modal-block-text")
+                element.textContent = buttonObjects[blockIndex].text;
+            }
+
+            
 
             let modalElement = $id("friendship-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
+        },
+
+        messageMethod() {
+            router("/chat");
+        },
+        
+        logoutMethod() {
+            router("/logout");
         }
 
     },
@@ -161,8 +192,18 @@ export default {
                 
                 
                 // callback functions
-                let element = $id("button-top-left");
-                $on(element, "click", this.buttonTopLeft.method);
+                if (this.buttonTopLeft.method) {
+                    let element = $id("button-top-left");
+                    $on(element, "click", this.buttonTopLeft.method);
+                }
+                if (this.buttonTopMiddle.method) {
+                    let element = $id("button-top-middle");
+                    $on(element, "click", this.buttonTopMiddle.method);
+                }
+                if (this.buttonTopRight.method) {
+                    let element = $id("button-top-right");
+                    $on(element, "click", this.buttonTopRight.method);
+                }
             })
             // on error?
         },

@@ -63,17 +63,17 @@
     <div class="modal fade" id="friendship-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-            <div class="modal-body">
+            <div class="modal-body" id="friendship-modal-body">
               <h3 id="friendshp-modal-friendship-text" class="friendship-modal-text"></h3>
               <div id="friendship-modal-friendship-buttons">
-                    <button id="friendship-modal-friendship-primary-button" class="friendship-modal-buttons"></button>
-                    <button id="friendship-modal-friendship-secundary-button" class="friendship-modal-buttons"></button>
+                    <barely-a-button id="friendship-modal-friendship-primary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
+                    <barely-a-button id="friendship-modal-friendship-secundary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="No"></barely-a-button>
               </div>
-              <h3 id="friendshp-modal-block-text" class="friendship-modal-text"></h3>
-              <div id="friendship-modal-block-buttons">
-                    <button id="friendship-modal-block-button" class="friendship-modal-buttons"></button>
+              <div id="friendship-modal-block">
+                    <h3 id="friendshp-modal-block-text" class="friendship-modal-text"></h3>
+                    <barely-a-button id="friendship-modal-block-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
               </div>
-              <button id="friendship-modal-cancel-button" class="friendship-modal-buttons">Cancel</button>
+              <barely-a-button id="friendship-modal-cancel-button" class="friendship-modal-buttons" name="Cancel" buttonclass="rect-button"></barely-a-button>
             
           </div>
         </div>
@@ -85,6 +85,15 @@
         height: 100%;
         background-color: #ff00ff6c;
         color: black;
+    }
+
+    #friendship-modal-body {
+        text-align: center;
+    }
+
+    #friendship-modal-friendship-buttons {
+        display: flex;
+        display: row;
     }
 
     #top-buttons{
