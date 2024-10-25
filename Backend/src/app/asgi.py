@@ -11,10 +11,11 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 django.setup()
 
 import chat.routing
+from chat.middleware import JWTAuthMiddleware  # Import your custom middleware
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),  # Handle traditional HTTP requests
-    "websocket": AuthMiddlewareStack(
+    "websocket": JWTAuthMiddleware(
         URLRouter(
             chat.routing.websocket_urlpatterns
         )

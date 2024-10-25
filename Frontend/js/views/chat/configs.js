@@ -41,7 +41,7 @@ export default {
         openWebSocket() {
             const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
             //const socketUrl = `${protocol}${window.location.host}/ws/chat/`;
-            const socketUrl = `ws://127.0.0.1:8000/ws/chat/`; //TODO: change later
+            const socketUrl = `ws://127.0.0.1:8000/ws/chat/?token=${this.$store.fromState('jwtTokens').access}`; //TODO: change later
             console.log("Opening WebSocket connection to", socketUrl);
 
             // Store the WebSocket connection
@@ -79,14 +79,14 @@ export default {
 
         // Method to load messages when a conversation is selected
         async selectConversation(conversation) {
-            console.log('Selected conversation:', conversation);
-            this.selectedConversation = conversation;
+            console.log('Selected conversation:', conversation, 'ID:', conversation.id);
+            this.selectedConversation = conversation.id
         
             // Send a request to the backend to load messages for this conversatio
 			console.log('Send a request to the backend to load messages for this conversation:', conversation.id);
             if (this.chatSocket) {
                 this.chatSocket.send(JSON.stringify({
-                    'type': 'load_messages',
+                    'type': 'load_conversation',
                     'conversation_id': conversation.id
                 }));
             }
@@ -99,11 +99,12 @@ export default {
                 const payload = JSON.stringify({
                     type: 'chat_message',
                     message: message,
+					conversation_id: this.selectedConversation,
                 });
 
                 // Send the message through WebSocket
                 this.chatSocket.send(payload);
-                console.log("Message sent:", message);
+                console.log("Message sent:", message + 'to conversation: ' + this.selectedConversation);
             }
         },
 

@@ -38,7 +38,7 @@ class Message(models.Model):
     seen_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f'Message from {self.sender.username} in {self.chat.name}'
+        return f'Message from {self.user.username} in {self.conversation.name}'
     
     class Meta:
         db_table = '"barelyaschema"."message"'
