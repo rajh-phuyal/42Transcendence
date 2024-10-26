@@ -1,5 +1,5 @@
 // translations
-import { $store } from '../store/store.js';
+import $store from '../store/store.js';
 
 /**
  *
@@ -19,11 +19,4 @@ export const $translate = (namespace, key, param = null) => {
     return translation.replace(/{{\s*(\w+)\s*}}/g, (match, paramKey) => {
         return param[paramKey];
     });
-}
-
-export const $loadTranslations = async (views) => {
-    const response = await fetch(`/translations/${locale}.json`);
-    const translations = await response.json();
-
-    $store.commit('setTranslations', translations);
-}
+};

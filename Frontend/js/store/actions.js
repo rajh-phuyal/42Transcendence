@@ -11,7 +11,7 @@ export const actions = {
                     continue;
                 }
 
-                const translationData = await response.json();
+                const translationData = await viewTranslation.json();
                 translations[view] = translationData;
 
             } catch (error) {

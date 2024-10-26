@@ -2,8 +2,8 @@ import { $id } from './abstracts/dollars.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
-import { routes } from './routes.js';
-import { $store } from './store/store.js';
+import { routes } from './navigation/routes.js';
+import $store from './store/store.js';
 
 setViewLoading(true);
 
@@ -44,11 +44,6 @@ router(window.location.pathname);
 
 // set the loading to false
 setViewLoading(false);
-
-
-
-
-
 
 
 

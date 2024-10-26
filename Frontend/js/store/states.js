@@ -12,7 +12,7 @@ export const state = {
     translations: {}
 };
 
-const mutations = {
+export const mutations = {
     setUser: {
         method: (state, value) => {
             state.user = value;
@@ -44,5 +44,3 @@ const mutations = {
         presistence: true,
     },
 };
-
-export { state, mutations };

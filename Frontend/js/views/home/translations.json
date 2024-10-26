@@ -1,0 +1,6 @@
+{
+    "someKey": {
+        "en-US": "Some text in English",
+        "pt-PT": "Some text in Spanish"
+    }
+}
