@@ -6,7 +6,7 @@
 # BARELY ALIVE
 # ------------
 # This script is used to deploy the application to a target environment.
-# 
+#
 # USAGE:
 #	./deploy.sh [FLAGS] [COMMAND] [CONTAINER]
 #
@@ -14,9 +14,9 @@
 #	| Flag  | Description                                                                                                            |
 #	|-------|------------------------------------------------------------------------------------------------------------------------|
 #	| `-e`  | Path to the .env file. If not set the script will look for the file in the current directory.                          |
-# 	
+#
 # e.g.:	./deploy.sh -e ./path/to/.env
-# 
+#
 # PARSING THE ARGUMENTS:
 #   This will populate the global variables:
 NEW_ENV_PATH=""
@@ -70,7 +70,7 @@ DB_VOLUME_NAME=db-volume
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
-# The spinner allows os to nest a task in it and show a message while the task 
+# The spinner allows os to nest a task in it and show a message while the task
 # is running. The result of the task will be shown after the spinner stops.
 # USAGE:
 # 	perform_task_with_spinner "Message" "Task" "Success Message" "Failure Message" "Fail Continue"
@@ -82,14 +82,14 @@ DB_VOLUME_NAME=db-volume
 #
 #	Example:
 #		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "" "File does not exist" false
-# 
+#
 # The functions start_spinner & stop_spinner are helper functions for the
 # spinner and should not be called directly!
-# 
+#
 # Here we store the PID of the spinner process in a global variable so that we
 # can kill it if the script is stopped:
 SPINNER_PID=""
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 #
 # OTHER VARIABLES:
 #This option ensures that if any command in a pipeline fails, the entire pipeline fails. Without this, only the exit status of the last command in the pipeline would be considered.
@@ -112,7 +112,7 @@ HELP_ENDS_AT_LINE=108
 
 ################################################################################
 # PRINT FUNCTIONS
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # Function to print a important message in color
 print_header() {
 	printf "$1 >>> %b${NC}\n" "$2"
@@ -123,9 +123,9 @@ print_error() {
 	print_header "${RD}" "Error: $1"
     exit 1
 }
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # SPINNER FUNCTIONS
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # see comment block above
 start_spinner() {
     local message="$1"
@@ -138,7 +138,7 @@ start_spinner() {
             sleep 0.1
         done
     done ) &
-    
+
     # Save the PID of the spinner process
     SPINNER_PID=$!
 }
@@ -189,7 +189,7 @@ perform_task_with_spinner() {
 	local success_message="${3:-"done"}"
 	local failure_message="$4"
 	local fail_continue="${5:-false}"
-	    
+
     # Start the spinner
     start_spinner "$message"
 
@@ -202,7 +202,7 @@ perform_task_with_spinner() {
 	return $?
 }
 
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # SETUP FUNCTIONS
 # ------------------------------------------------------------------------------
 # As a short pre-setup the arguments are processed via parse_args. This function
@@ -210,7 +210,7 @@ perform_task_with_spinner() {
 # - NEW_ENV_PATH
 # - COMMAND
 # - CONTAINERS
-# 
+#
 # The main function check_setup is called by the main script to check if the
 # environment is set up correctly. It checks:
 # 	- if the .env file is linked and loaded
@@ -220,7 +220,7 @@ perform_task_with_spinner() {
 #
 # Besides the function check_setup all other functions are helper functions and
 # should not be called directly!
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 parse_args()
 {
 	print_header "${BL}" "Parsing arguments..."
@@ -283,7 +283,7 @@ parse_args()
 	        fi
 	    done
 	fi
-	
+
 	echo -e "CONTAINERS:\t$CONTAINERS"
 
 	#	checking the ENV_PATH
@@ -308,9 +308,11 @@ check_os()
 	if [[ "$OSTYPE" == "darwin"* ]]; then
 	    # macOS
 	    OS_HOME_PATH="/Users/$(whoami)/"
+		IS_MACOS=true
 	elif [[ "$OSTYPE" == "linux"* ]]; then
 	    # Any Linux distribution
 	    OS_HOME_PATH="$HOME/"
+		IS_MACOS=false
 	else
 		print_error "Unsupported OS: $OSTYPE"
 	fi
@@ -322,7 +324,7 @@ check_os()
 		false
 }
 
-# Function to check (and update) the link to the .env file which will then be 
+# Function to check (and update) the link to the .env file which will then be
 # sourced and sample tested with $DB_NAME
 check_env_link() {
 	print_header "${BL}" "Checking for the .env file link..."
@@ -341,7 +343,7 @@ check_env_link() {
 			"" \
 			"Could not update the environment path." \
 			false
-		
+
         # Unset the NEW_ENV_PATH variable
         NEW_ENV_PATH=""
     fi
@@ -353,7 +355,7 @@ check_env_link() {
 		"" \
 		"No environment file path is set. Please provide the path using the -e option." \
 		false; then
-        
+
 		STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
 		if perform_task_with_spinner \
 			"Checking if path ($STORED_ENV_PATH) is valid" \
@@ -368,9 +370,9 @@ check_env_link() {
 				"" \
 				"" \
 				false
-		fi  
+		fi
 	fi
-	
+
     # Step 3: Make a sample test to see if the .env file is loaded
 	perform_task_with_spinner \
 		"Sample test with <DB_NAME> " \
@@ -378,7 +380,7 @@ check_env_link() {
 		"$DB_NAME" \
 		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
-	
+
 	# Step 4: Append or update the var VOLUME_ROOT_PATH in the .env file
 	if perform_task_with_spinner \
 		"Checking if env VOLUME_ROOT_PATH already exists" \
@@ -416,7 +418,7 @@ check_env_link() {
 		"$VOLUME_ROOT_PATH" \
 		"Sample test with <VOLUME_ROOT_PATH> failed. The .env file is not loaded correctly." \
 		false
-	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}" 
+	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}"
 }
 
 # Used to prepare the folders for the docker volumes
@@ -439,31 +441,36 @@ check_path_and_permission()
 			"couldn't create folder: <$path>!" \
 			false
 	fi
-	
+
 	# [astein]:
 	# Since i had a lot of trouble with the permissions i will set them here
 	# accoring to this guide:
 	# https://medium.com/@nielssj/docker-volumes-and-file-system-permissions-772c1aee23ca
-	perform_task_with_spinner \
-		"Changing ownership of folder: <$path>" \
-		'sudo chown -R ":1024" "$path"' \
-		"" \
-		"couldn't change ownership of folder: <$path>!" \
-		false
-	
-	perform_task_with_spinner \
-		"Changing permission of folder: <$path>" \
-		'sudo chmod -R 775 "$path"' \
-		"" \
-		"couldn't change permission of folder: <$path>!" \
-		false
+	if [ "$IS_MACOS" != true ]; then
+        # On Linux, perform ownership and permission changes
+        perform_task_with_spinner \
+            "Changing ownership of folder: <$path>" \
+            'sudo chown -R ":1024" "$path"' \
+            "" \
+            "couldn't change ownership of folder: <$path>!" \
+            false
 
-	perform_task_with_spinner \
-		"Ensure all future content in the folder <$path> will inherit group ownership" \
-		'sudo chmod g+s "$path"' \
-		"" \
-		'could not run sudo chmod g+s "$path"' \
-		false
+        perform_task_with_spinner \
+            "Changing permission of folder: <$path>" \
+            'sudo chmod -R 775 "$path"' \
+            "" \
+            "couldn't change permission of folder: <$path>!" \
+            false
+
+        perform_task_with_spinner \
+            "Ensure all future content in the folder <$path> will inherit group ownership" \
+            'sudo chmod g+s "$path"' \
+            "" \
+            'could not run sudo chmod g+s "$path"' \
+            false
+    else
+        echo "Skipping ownership and permission changes on macOS"
+    fi
 }
 
 # Function to check if the folders for the volumes are there
@@ -474,7 +481,7 @@ check_volume_folders()
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # DOCKER BASIC FUNCTIONS
 #	stop [contaier]			| Stops the container(s)
 #	build [contaier]		| Building the container(s)
@@ -516,7 +523,7 @@ docker_clean() {
 	print_header "${OR}" "Deleting images...${GR}DONE${NC}"
 }
 
-docker_fclean() {    
+docker_fclean() {
 	# Prompt user for confirmation
 	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL CONTAINERS, IMAGES, VOLUMES, AND THE DOCKER NETWORK (y/n): "
 	read -p "choose: " confirm
@@ -599,7 +606,7 @@ insert_dummy_data() {
 	fi
 
 	print_header "${OR}" "Inserting dummy data into the database..."
-	docker exec -it db  bash /usr/local/bin/create_dummy.sh                                                                                             
+	docker exec -it db  bash /usr/local/bin/create_dummy.sh
 	print_header "${OR}" "Inserting dummy data into the database...${GR}DONE${NC}"
 }
 
