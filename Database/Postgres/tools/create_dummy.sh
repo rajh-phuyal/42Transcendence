@@ -1,10 +1,21 @@
 #!/bin/bash
 
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Function to display error message and exit
+err_msg() {
+  local message=$1
+  echo -e "\e[31mDUMMY DATA ERROR: $message\e[0m"  # Print message in red
+  exit 1
+}
+
 # Function to clean a table from all its rows
 delete_old_data()
 {
   local table_name=$1
-  psql -U "$POSTGRES_USER" -w -d "$DB_NAME" -c "DELETE FROM $table_name;"
+  psql -U "$POSTGRES_USER" -w -d "$DB_NAME" -c "DELETE FROM $table_name;" \
+  	|| err_msg "Failed to delete data from table '$table_name' due to foreign key constraints or other issues."
   printf "\e[31mDeleted old rows from table '%s' (if exist)...\e[0m\n" "$table_name"
 }
 
@@ -14,9 +25,20 @@ insert_dummy()
   local table_name=$1
   local sql_query=$2
   printf "\e[33mInserting dummy data into table '%s'...\e[0m\n" "$table_name"
-  psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "$sql_query"
+  psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "$sql_query" \
+  	|| err_msg "Failed to insert dummy data into table '$table_name'."
   printf "\e[32mInserted dummy data into table '%s':\e[0m\n" "$table_name"
   psql -U $POSTGRES_USER -d $DB_NAME -c "SELECT * FROM $table_name;"
+}
+
+# Function to reset the sequence of a table's primary key
+reset_sequence()
+{
+  local table_name=$1
+  local sequence_name="${table_name}_id_seq"  # Conventionally, PostgreSQL sequence names are in this format
+  psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT setval('$sequence_name', COALESCE((SELECT MAX(id) FROM $table_name), 1) + 1, false);" \
+  	|| err_msg "Failed to reset sequence for table '$table_name'."
+  printf "\e[32mSequence for table '%s' reset to match the highest current ID...\e[0m\n" "$table_name"
 }
 
 # MAIN
@@ -27,10 +49,10 @@ printf "\e[32mRunning 'create_dummy.sh'...\e[0m\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 delete_old_data "barelyaschema.dev_user_data"
 delete_old_data "barelyaschema.is_cool_with"
 delete_old_data "barelyaschema.no_cool_with"
-delete_old_data "barelyaschema.user"
 delete_old_data "barelyaschema.message"
 delete_old_data "barelyaschema.conversation_member"
 delete_old_data "barelyaschema.conversation"
+delete_old_data "barelyaschema.user"
 
 # STEP 2: Insert dummy data
 TABLE_NAME="barelyaschema.user"
@@ -111,6 +133,15 @@ insert_dummy "$TABLE_NAME" \
 		(15, 5, 4, 'Me as well', '2024-01-01 10:51:06+00', NULL), \
 		(16, 1, 4, 'Ok lets do this!', '2024-01-01 10:52:56+00',NULL);"
 
+printf "\e[33mResetting sequences that django will use...\e[0m\n"
+
+# List of tables with primary key sequences to reset
+reset_sequence "barelyaschema.user"
+reset_sequence "barelyaschema.is_cool_with"
+reset_sequence "barelyaschema.no_cool_with"
+reset_sequence "barelyaschema.conversation"
+reset_sequence "barelyaschema.conversation_member"
+reset_sequence "barelyaschema.message"
 
 printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\e[32mRunning 'create_dummy.sh'...DONE\e[0m\n"
 
