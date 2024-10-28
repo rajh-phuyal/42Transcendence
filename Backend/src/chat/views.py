@@ -15,9 +15,10 @@ def test_chat(request):
     return render(request, 'chat/test-chat.html')
 
 class ListConversationsView(APIView):
-    authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
-    permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
-
+    #authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
+    #permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
+    permission_classes = [AllowAny] #TODO: implement the token-based authentication!
+    
     def get(self, request, *args, **kwargs):
         user = request.user
         

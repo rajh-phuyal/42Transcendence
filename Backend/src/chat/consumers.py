@@ -12,6 +12,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():
+            logging.error("User is not authenticated.")
             await self.close()
         else:
             # Get the conversations the user is part of asynchronously
@@ -137,4 +138,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def get_user_conversations(self, user):
         # Query ConversationMember to get the conversations the user is part of
+        logging.info(f"Getting conversations for user: {user}")
         return Conversation.objects.filter(members__user=user)
