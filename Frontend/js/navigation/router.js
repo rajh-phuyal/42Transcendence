@@ -6,6 +6,8 @@ import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
 
+import { translate } from '../locale/locale.js';
+
 const objectToBind = (config) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
@@ -21,6 +23,7 @@ const objectToBind = (config) => {
     binder.router = router;
     binder.$store = $store;
     binder.$auth = $auth;
+    binder.translate = translate;
 
     return binder;
 }

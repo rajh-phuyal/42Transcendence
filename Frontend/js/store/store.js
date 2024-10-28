@@ -41,7 +41,16 @@ class Store {
 
         if (!this.mutations[mutationName]?.presistence) return;
 
-        $setLocal("store", JSON.stringify(this.state));
+        // cleare all the mutations, that have presistence set to false
+        let savedObject = {};
+        for (const [key, value] of Object.entries(this.mutations)) {
+            // setUser -> user using lodash
+            const stateKey = key.charAt(3).toLowerCase() + key.slice(4);
+            if (value.presistence) {
+                savedObject[stateKey] = this.state[stateKey];
+            }
+        }
+        $setLocal("store", JSON.stringify(savedObject));
     }
 
     dispatch(actionName, payload) {

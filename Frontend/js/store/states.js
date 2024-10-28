@@ -41,6 +41,6 @@ export const mutations = {
         method: (state, value) => {
             state.translations = value;
         },
-        presistence: true,
+        presistence: false,
     },
 };

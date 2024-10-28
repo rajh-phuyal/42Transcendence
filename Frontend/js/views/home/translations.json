@@ -1,6 +1,10 @@
 {
-    "someKey": {
+    "title": {
         "en-US": "Some text in English",
         "pt-PT": "Some text in Spanish"
+    },
+    "placeholder": {
+        "en-US": "Some text in English value: {keyName}",
+        "pt-PT": "Some text in Spanish value: {keyName}"
     }
 }

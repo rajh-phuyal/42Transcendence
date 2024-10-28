@@ -5,22 +5,23 @@ import canvasData from './data.js'
 export default {
     attributes: {
     },
-    
+
     methods: {
     },
-    
+
     hooks: {
         beforeRouteEnter() {
 
         },
-        
+
         beforeRouteLeave() {
             $off(document, "click", mouseClick);
             $off(document, "mousemove", isHovering);
         },
 
         beforeDomInsertion() {
-
+            console.log(this.translate("home", "title"));
+            console.log(this.translate("home", "placeholder", { keyName: "John" }));
         },
 
         afterDomInsertion() {
@@ -33,10 +34,10 @@ export default {
             let canvas = canvasData.canvas;
 
             canvasData.context = canvas.getContext('2d');
-            
+
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            
+
             // Adjust the pixel ratio so it draws the images with higher resolution
             const scale = window.devicePixelRatio;
 

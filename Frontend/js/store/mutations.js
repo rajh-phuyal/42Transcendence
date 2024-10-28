@@ -11,7 +11,7 @@ export const mutations = {
         },
         presistence: false,
     },
-    setJWTToken: {
+    setJWTTokens: {
         method: (state, value) => {
             state.jwtToken = value;
         },
