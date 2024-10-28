@@ -1,7 +1,25 @@
 #!/bin/bash
 
+# ADD ALL TABLES INTO THIS ARRAY!
+# (start from weak entity too not to break FK constraints)
+# ------------------------------------------------------------------------------
+ALL_TABLES=("barelyaschema.dev_user_data" 
+			"barelyaschema.is_cool_with" 
+			"barelyaschema.no_cool_with" 
+			"barelyaschema.message" 
+			"barelyaschema.conversation_member" 
+			"barelyaschema.conversation" 
+			"barelyaschema.user")
+
 # Exit immediately if a command exits with a non-zero status
 set -e
+
+# Print header
+print_header() {
+  echo -e "\e[32m##############################################################\e[0m"
+  echo -e "\e[32m# >>> $1 <<<\e[0m"
+  echo -e "\e[32m##############################################################\e[0m"
+}
 
 # Function to display error message and exit
 err_msg() {
@@ -43,18 +61,14 @@ reset_sequence()
 
 # MAIN
 #-------------------------------------------------------------------------------
-printf "\e[32mRunning 'create_dummy.sh'...\e[0m\nvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n"
+print_header "Running 'create_dummy.sh'..."
 
-# STEP 1: Delete old Data (start from weak entity too not to break FK constraints)
-delete_old_data "barelyaschema.dev_user_data"
-delete_old_data "barelyaschema.is_cool_with"
-delete_old_data "barelyaschema.no_cool_with"
-delete_old_data "barelyaschema.message"
-delete_old_data "barelyaschema.conversation_member"
-delete_old_data "barelyaschema.conversation"
-delete_old_data "barelyaschema.user"
+print_header "DELETING OLD DATA..."
+for table in "${ALL_TABLES[@]}"; do
+    delete_old_data "$table"
+done
 
-# STEP 2: Insert dummy data
+print_header "INSERTING DUMMY DATA..."
 TABLE_NAME="barelyaschema.user"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) VALUES \
@@ -133,17 +147,12 @@ insert_dummy "$TABLE_NAME" \
 		(15, 5, 4, 'Me as well', '2024-01-01 10:51:06+00', NULL), \
 		(16, 1, 4, 'Ok lets do this!', '2024-01-01 10:52:56+00',NULL);"
 
-printf "\e[33mResetting sequences that django will use...\e[0m\n"
+print_header "RESETING SEQUENCES..."
+for table in "${ALL_TABLES[@]}"; do
+    reset_sequence "$table"
+done
 
-# List of tables with primary key sequences to reset
-reset_sequence "barelyaschema.user"
-reset_sequence "barelyaschema.is_cool_with"
-reset_sequence "barelyaschema.no_cool_with"
-reset_sequence "barelyaschema.conversation"
-reset_sequence "barelyaschema.conversation_member"
-reset_sequence "barelyaschema.message"
-
-printf "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\e[32mRunning 'create_dummy.sh'...DONE\e[0m\n"
+print_header "Running 'create_dummy.sh'... DONE!"
 
 printf "\033[1m > Check the wiki for details about the inserted dummy data:\033[0m\n"
 printf "\033[1m > https://github.com/rajh-phuyal/42Transcendence/wiki/Database\033[0m\n"
