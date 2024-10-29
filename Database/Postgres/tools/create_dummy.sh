@@ -53,7 +53,7 @@ insert_dummy()
 reset_sequence()
 {
   local table_name=$1
-  local sequence_name="${table_name}_id_seq"  # Conventionally, PostgreSQL sequence names are in this format
+  local sequence_name="${table_name}_id_seq"
   psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT setval('$sequence_name', COALESCE((SELECT MAX(id) FROM $table_name), 1) + 1, false);" \
   	|| err_msg "Failed to reset sequence for table '$table_name'."
   printf "\e[32mSequence for table '%s' reset to match the highest current ID...\e[0m\n" "$table_name"

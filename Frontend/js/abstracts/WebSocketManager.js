@@ -12,7 +12,7 @@ class WebSocketManager {
         }
 
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${this.getToken()}`; // Main service URL
+		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
 
         this.socket = new WebSocket(socketUrl);
 
@@ -36,7 +36,7 @@ class WebSocketManager {
         };
     }
 
-    // Disconnect from WebSocket
+    // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
             this.socket.close();

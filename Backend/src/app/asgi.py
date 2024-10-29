@@ -14,7 +14,7 @@ from services import websocket_routing
 from chat.middleware import JWTAuthMiddleware  # Import your custom middleware
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),  # Handle traditional HTTP requests
+    "http": get_asgi_application(),  # Handle traditional HTTP(s) requests
     "websocket": JWTAuthMiddleware(
         URLRouter(
             websocket_routing.websocket_urlpatterns

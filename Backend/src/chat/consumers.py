@@ -8,7 +8,13 @@ import logging
 
 class ChatConsumer(AsyncWebsocketConsumer):
     
+
+	# TODO:
+    # Here it should look smth like:
+    # ../servies/websocket_servcie recive msh
+
     # Main function to connect to the WebSocket
+    # TODO: ALl the connection logic should be moved to the websocket_service
     async def connect(self):
         # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():

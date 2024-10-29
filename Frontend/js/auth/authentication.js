@@ -19,25 +19,7 @@ class Auth {
     }
 
     authenticate(username, password) {
-		console.log("Authenticating with username:", username, "and password *****");
-        return call('auth/login/', 'POST', { username: username, password: password })
-            .then(response => {
-                this.jwtToken = response.access;
-
-                $store.commit('setJWTTokens', {
-                    ...$store.fromState('jwtTokens'),
-                    access: this.jwtToken
-                });
-
-				console.log("JWT Token:", this.jwtToken);
-                WebSocketManager.connect(this.jwtToken);  // Connect WebSocket here
-
-                return true;
-            })
-            .catch(error => {
-                console.error('Error during authentication:', error);
-                return false;
-            });
+        return call('auth/login/', 'POST', { username: username, password: password });
     }
 
     createUser(username, password) {
@@ -45,28 +27,13 @@ class Auth {
     }
 
     async refreshToken() {
-        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh }).then((response) => {
-            this.jwtToken = response.access;
-
-            $store.commit('setJWTTokens', {
-                ...$store.fromState('jwtTokens'),
-                access: this.jwtToken
-            });
-
-			WebSocketManager.connect(this.jwtToken);  // Reconnect WebSocket with new token
-
-            return true;
-        })
-        .catch((error) => {
-            console.error('Error refreshing token:', error);
-            this.logout();
-            return false;
-        });
+        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh });
+        //TODO: Refresh the WebSocket connection with the new token
     }
 
     logout() {
         $store.clear();
-		WebSocketManager.disconnect();  // Close the WebSocket connection
+		WebSocketManager.disconnect();
     }
 
     getAuthHeader() {
