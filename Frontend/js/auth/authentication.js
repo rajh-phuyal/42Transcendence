@@ -1,5 +1,6 @@
 import $store from '../store/store.js';
 import call from '../abstracts/call.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class Auth {
     constructor() {
@@ -18,7 +19,25 @@ class Auth {
     }
 
     authenticate(username, password) {
-        return call('auth/login/', 'POST', { username: username, password: password });
+		console.log("Authenticating with username:", username, "and password *****");
+        return call('auth/login/', 'POST', { username: username, password: password })
+            .then(response => {
+                this.jwtToken = response.access;
+
+                $store.commit('setJWTTokens', {
+                    ...$store.fromState('jwtTokens'),
+                    access: this.jwtToken
+                });
+
+				console.log("JWT Token:", this.jwtToken);
+                WebSocketManager.connect(this.jwtToken);  // Connect WebSocket here
+
+                return true;
+            })
+            .catch(error => {
+                console.error('Error during authentication:', error);
+                return false;
+            });
     }
 
     createUser(username, password) {
@@ -34,6 +53,8 @@ class Auth {
                 access: this.jwtToken
             });
 
+			WebSocketManager.connect(this.jwtToken);  // Reconnect WebSocket with new token
+
             return true;
         })
         .catch((error) => {
@@ -45,6 +66,7 @@ class Auth {
 
     logout() {
         $store.clear();
+		WebSocketManager.disconnect();  // Close the WebSocket connection
     }
 
     getAuthHeader() {

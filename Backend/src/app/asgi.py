@@ -10,14 +10,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 # Make sure Django is initialized before importing your chat routing
 django.setup()
 
-import chat.routing
+from services import websocket_routing
 from chat.middleware import JWTAuthMiddleware  # Import your custom middleware
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),  # Handle traditional HTTP requests
     "websocket": JWTAuthMiddleware(
         URLRouter(
-            chat.routing.websocket_urlpatterns
+            websocket_routing.websocket_urlpatterns
         )
     ),
 })
