@@ -3,10 +3,16 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import CreateConversationView, RenameConversationView, ShowConversationView, SendMessageView, ListConversationsView
+from .views import CreateConversationView, RenameConversationView, ShowConversationView, SendMessageView, ListConversationsView, LoadConversationsView, LoadConversationView, LoadUnreadMessagesView
 from . import views
 
 urlpatterns = [
+	path('count/unread/', LoadUnreadMessagesView.as_view(), name='load_unread_messages'),
+	path('load/conversations/', LoadConversationsView.as_view(), name='load_conversations'),
+	path('load/conversation/<int:conversation_id>/messages/', LoadConversationView.as_view(), name='load_conversation'),
+
+
+	# Below is old code!
 	path('create-conversation/', CreateConversationView.as_view(), name='create_conversation'),
 	path('rename-conversation/', RenameConversationView.as_view(), name='rename_conversation'),
     path('show-conversation/', ShowConversationView.as_view(), name='show_conversation'),

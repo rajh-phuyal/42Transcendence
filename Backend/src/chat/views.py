@@ -6,9 +6,69 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import HttpResponse #For basic ShowChatView test
+from user.models import User
 from .models import Conversation, ConversationMember, Message
 from .serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.shortcuts import render #TODO: remove - this is for the test chat page
+
+class LoadUnreadMessagesView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+	# TODO: return the unread messages as a single int like:
+    #			{"unread":4}
+
+class LoadConversationsView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Get the user from the request
+        user = request.user
+
+        # Get all conversations where the user is a member
+        conversation_memberships = ConversationMember.objects.filter(user=user)
+        conversations = [membership.conversation for membership in conversation_memberships]
+
+        # Serialize only the conversation id and name
+        serializer = ConversationSerializer(conversations, many=True)
+        return Response(serializer.data)
+
+class LoadConversationView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, conversation_id=None):
+        # Get the user from the request
+        user = request.user
+
+		# Get offset from the request for pagination
+        offset = request.GET.get('offset', 0)
+        
+        # Validate that the conversation exists
+        try:
+            conversation = Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
+            return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the sender is a member of the conversation
+        if not conversation.members.filter(user=user).exists():
+            return Response({'error': 'You are not a member of this conversation'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Get the last 10 messages from the conversation, ordered by creation time
+        messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:10]
+
+        # TODO:
+		# change from get to put since we need to update the seen_at value here!
+
+		# Serialize the messages
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
+
+
+################################################################################
+# BELOW IS OLD CODE!!!
+################################################################################
 
 # TODO: remove - this is for the test chat page
 def test_chat(request):
@@ -170,29 +230,7 @@ class ShowConversationView(APIView):
     permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
 
     def post(self, request):
-        from user.models import User
-        # Get sender_id and conversation_id from the request
-        sender_id = request.data.get('sender_id')
-        conversation_id = request.data.get('conversation_id')
-
-        # Validate that the sender exists
-        try:
-            sender = User.objects.get(id=sender_id)
-        except User.DoesNotExist:
-            return Response({'error': 'Sender not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # Validate that the conversation exists
-        try:
-            conversation = Conversation.objects.get(id=conversation_id)
-        except Conversation.DoesNotExist:
-            return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # Check if the sender is a member of the conversation
-        if not conversation.members.filter(user=sender).exists():
-            return Response({'error': 'You are not a member of this conversation'}, status=status.HTTP_403_FORBIDDEN)
-
-        # Get the last 10 messages from the conversation, ordered by creation time
-        messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:10]
+        
 
          # Create a simple HTML structure to return the messages
         html_content = f"""
