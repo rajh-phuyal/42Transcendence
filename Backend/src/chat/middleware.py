@@ -7,7 +7,7 @@ import logging
 
 class JWTAuthMiddleware(BaseMiddleware):
     """
-    Custom middleware that takes JWT from the query string and authenticates the user.
+    Custom middleware that takes JWT from the query string and authenticates the user. <url>?token=<token>
     """
     
     async def __call__(self, scope, receive, send):
@@ -39,6 +39,7 @@ class JWTAuthMiddleware(BaseMiddleware):
 
         else:
             # If no token is provided, mark the user as AnonymousUser
+            # TODO: Probably should return error instead of marking as AnonymousUser
             logging.info("No token provided")
             scope['user'] = AnonymousUser()
 
