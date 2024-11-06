@@ -7,24 +7,21 @@ import $store from '../store/store.js';
  * @param {Object} param - param to replace in the translation
  * @returns {String} string mapped to the key and replaced with the param
  */
-export const translate = (namespace, key, param = null) => {
+export const translate = (namespace, key, params = null) => {
     const locale = $store.state.locale;
-    console.log($store.state.translations);
-    console.log(namespace);
-    console.log(key);
-    console.log(locale);
-    console.log($store.state.translations[namespace]);
-    console.log($store.state.translations[namespace][key]);
-    console.log($store.state.translations[namespace][key][locale]);
-    console.log(param);
 
-    const translation = $store.state.translations[namespace][key][locale];
+    let translation = $store.state.translations?.[namespace]?.[key]?.[locale];
 
     if (!translation) return key;
 
-    if (!param) return translation;
+    if (!params) return translation;
 
-    return translation.replace(/{{\s*(\w+)\s*}}/g, (match, paramKey) => {
-        return param[paramKey];
-    });
+    let regex = new RegExp(`(?<!\\\\){([^}]+)}`, 'g');
+    let matches = translation.matchAll(regex);
+    for (const match of matches) {
+        const [matched, key] = match;
+        translation = translation.replace(matched, params[key]);
+    }
+
+    return translation;
 };

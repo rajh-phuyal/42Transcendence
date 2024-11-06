@@ -21,7 +21,7 @@ class Store {
         return this.state[key];
     }
 
-    mutationListeners(mutationName, action) {
+    addMutationListener(mutationName, action) {
         this.mutationListeners.push({
             mutationName: mutationName,
             action: action
@@ -35,17 +35,16 @@ class Store {
     }
 
     commit(mutationName, value) {
-        this.notifyListeners(mutationName);
-
         this.mutations[mutationName]?.method(this.state, value);
+
+        this.notifyListeners(mutationName);
 
         if (!this.mutations[mutationName]?.presistence) return;
 
-        // cleare all the mutations, that have presistence set to false
+        // clear all the mutations, that have presistence set to false
         let savedObject = {};
         for (const [key, value] of Object.entries(this.mutations)) {
-            // setUser -> user using lodash
-            const stateKey = key.charAt(3).toLowerCase() + key.slice(4);
+            const stateKey = key.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
             if (value.presistence) {
                 savedObject[stateKey] = this.state[stateKey];
             }

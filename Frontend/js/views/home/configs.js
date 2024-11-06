@@ -20,12 +20,10 @@ export default {
         },
 
         beforeDomInsertion() {
-            console.log(this.translate("home", "title"));
-            console.log(this.translate("home", "placeholder", { keyName: "John" }));
+            
         },
 
         afterDomInsertion() {
-
             // stores the id of the element currently highlighted
             canvasData.highlitedImageID = 0;
 

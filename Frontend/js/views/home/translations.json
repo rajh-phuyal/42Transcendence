@@ -1,10 +1,10 @@
 {
-    "title": {
-        "en-US": "Some text in English",
-        "pt-PT": "Some text in Spanish"
-    },
-    "placeholder": {
-        "en-US": "Some text in English value: {keyName}",
-        "pt-PT": "Some text in Spanish value: {keyName}"
+    "inviteFriends": {
+        "en-US": "Invite Friends",
+        "pt-PT": "Convidar Amigos",
+        "pt-BR": "Convidar Amigos",
+        "de-DE": "Freunde einladen",
+        "ne-NP": "मित्रहरूलाई आमन्त्रित गर्नुहोस्",
+        "uk-UA": "Запросити друзів"
     }
 }

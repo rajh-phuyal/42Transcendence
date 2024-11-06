@@ -39,12 +39,14 @@ window.addEventListener('popstate', () => {
 // get the translations for all the registered views
 $store.dispatch('loadTranslations', routes.map(route => route.view));
 
-// get the path and call the router
-router(window.location.pathname);
 
-// set the loading to false
-setViewLoading(false);
+// go to path only after the translations are loaded
+$store.addMutationListener('setTranslations', (state) => {
+    router(window.location.pathname);
 
+    // set the loading to false
+    setViewLoading(false);
+});
 
 
 /* DESABLE ZOOM*/

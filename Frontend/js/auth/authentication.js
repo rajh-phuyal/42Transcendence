@@ -13,8 +13,9 @@ class Auth {
     }
 
     isUserAuthenticated() {
-        // return $store.fromState('isAuthenticated');
-        return $store.fromState('isAuthenticated') && this.verifyJWTToken();
+        return $store.fromState('isAuthenticated') || false;
+        // TODO:  after the refresh issue is fixed, USE THE LINE BELOW
+        // return $store.fromState('isAuthenticated') && this.verifyJWTToken();
     }
 
     authenticate(username, password) {
