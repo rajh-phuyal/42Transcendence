@@ -10,7 +10,7 @@ RUN mkdir /etc/nginx/ssl \
     && openssl x509 -req -days 365 -in /etc/nginx/ssl/barely-alive.42.fr.csr \
     -signkey /etc/nginx/ssl/barely-alive.42.fr.key -out /etc/nginx/ssl/barely-alive.42.fr.crt
     
-
+COPY ./assets/default_avatar.png ./media/avatars/default_avatar.png
 
 # Expose port 80
 EXPOSE 443
