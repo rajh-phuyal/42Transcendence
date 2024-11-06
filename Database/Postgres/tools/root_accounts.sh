@@ -32,15 +32,15 @@ set -e
 end_script() {
 	if [ $1 -eq 0 ]; then
 		echo -e "STARTING ROOT ACCOUNTS SCRIPT...$GR DONE (Status: $1) $NC";
-		echo -e $BL"################################################################################" $NC
+		echo -e $BL"##############################################################" $NC
 	else
 		echo -e "STARTING ROOT ACCOUNTS SCRIPT...$RD DONE (Status: $1) $NC";
-		echo -e $BL"################################################################################" $NC
+		echo -e $BL"##############################################################" $NC
 	fi
 	exit $1;
 }
 
-echo -e $BL"################################################################################" $NC
+echo -e $BL"##############################################################" $NC
 echo "STARTING ROOT ACCOUNTS SCRIPT..."
 
 # Check if the user table is empty
