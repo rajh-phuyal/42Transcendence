@@ -40,4 +40,4 @@ BE_SECRET_KEY=django-insecure-@ry+-mwb0wgdn0koep$_!a0^k^59+z!pa6pmdi2aq9z143lxy4
 
 # THIS IS THE PATH TO OUR VOULME ON THE HOST MACHINE
 # IT WILL BE AUTO-UPDATED VIA THE DEPLOY.SH ACCORDING TO UR OS
-VOLUME_ROOT_PATH="/Users/rajphuyal/barely-some-data/"
+VOLUME_ROOT_PATH="/home/xico/barely-some-data/"
