@@ -1,14 +1,19 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import AllowAny # TODO REMOVE
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
 from .serializers import UserSerializer
 from .utils import get_and_validate_data, check_blocking
 from .exceptions import ValidationException, BlockingException
+from django.conf import settings
+import os
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
@@ -288,3 +293,32 @@ class ModifyFriendshipView(APIView):
         friendship.delete()
 
         return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
+
+class UpdateAvatarView(APIView):
+    #authentication_classes = [JWTAuthentication]
+    #permission_classes = [IsAuthenticated] #TODO CHANGE THIS LATER
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        print(request.user.id)
+        if 'avatar' not in request.FILES:
+            return Response({'error': 'Avatar must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the avatar file
+        avatar = request.FILES['avatar']
+
+        if not avatar.content_type.startswith('image'):
+            return Response({'error': 'File type not supported'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Define a path to save the file, e.g., in 'media/avatars/user_id_avatar.jpg'
+        filename = f"avatars/{request.user.id}_avatar.{avatar.name.split('.')[-1]}"
+        file_path = os.path.join(settings.MEDIA_ROOT, filename)
+        
+        # Save the file
+        default_storage.save(file_path, ContentFile(avatar.read()))
+
+        # Optionally, you could save the file path to the user's profile in the database
+        
+        # Respond with a success message and possibly the file URL
+        avatar_url = os.path.join(settings.MEDIA_URL, filename)
+        return Response({'success': 'Avatar uploaded successfully', 'avatar_url': avatar_url}, status=status.HTTP_200_OK)
