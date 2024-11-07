@@ -9,6 +9,7 @@ import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 //import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
 
 const objectToBind = (config, params = null) => {
     let binder = {};
@@ -26,6 +27,7 @@ const objectToBind = (config, params = null) => {
     binder.$store = $store;
     binder.$auth = $auth;
     binder.routeParams = params;
+    binder.translate = translate;
     binder.call = call;
 	binder.webSocketManager = WebSocketManager;
    // binder.loading = loading;
