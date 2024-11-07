@@ -14,6 +14,7 @@ from .utils import get_and_validate_data, check_blocking
 from .exceptions import ValidationException, BlockingException
 from django.conf import settings
 import os
+from .utils import process_avatar
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
@@ -295,30 +296,24 @@ class ModifyFriendshipView(APIView):
         return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
 
 class UpdateAvatarView(APIView):
-    #authentication_classes = [JWTAuthentication]
-    #permission_classes = [IsAuthenticated] #TODO CHANGE THIS LATER
-    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] #TODO CHANGE THIS LATER
+    #permission_classes = [AllowAny]
 
     def post(self, request):
-        print(request.user.id)
+        # Check if 'avatar' is in request.FILES
         if 'avatar' not in request.FILES:
             return Response({'error': 'Avatar must be provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get the avatar file
+        # Get the avatar file from request.FILES
         avatar = request.FILES['avatar']
 
-        if not avatar.content_type.startswith('image'):
-            return Response({'error': 'File type not supported'}, status=status.HTTP_400_BAD_REQUEST)
+        # Call the utility function to process the avatar
+        result = process_avatar(request.user, avatar)
 
-        # Define a path to save the file, e.g., in 'media/avatars/user_id_avatar.jpg'
-        filename = f"avatars/{request.user.id}_avatar.{avatar.name.split('.')[-1]}"
-        file_path = os.path.join(settings.MEDIA_ROOT, filename)
-        
-        # Save the file
-        default_storage.save(file_path, ContentFile(avatar.read()))
+        # Check if there was an error during processing
+        if result.get('error'):
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
-        # Optionally, you could save the file path to the user's profile in the database
-        
-        # Respond with a success message and possibly the file URL
-        avatar_url = os.path.join(settings.MEDIA_URL, filename)
-        return Response({'success': 'Avatar uploaded successfully', 'avatar_url': avatar_url}, status=status.HTTP_200_OK)
+        # Return the success response with the avatar URL
+        return Response(result, status=status.HTTP_200_OK)

@@ -1,3 +1,9 @@
+import os
+import uuid
+from PIL import Image
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.conf import settings
 from rest_framework.response import Response
 from .models import NoCoolWith
 from .exceptions import ValidationException, BlockingException
@@ -24,7 +30,6 @@ def get_and_validate_data(request, action, target_name):
     
     return doer, target
 
-
 def check_blocking(requestee_id, requester_id):
     # Check if the requestee has blocked the requester
     requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
@@ -35,3 +40,65 @@ def check_blocking(requestee_id, requester_id):
     requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
     if requester_blocked.exists():
         raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
+
+def process_avatar(user, avatar_file):
+    if not avatar_file.content_type.startswith('image'):
+        return {'error': 'File type not supported'}
+
+    try:
+        # Try to open the image
+        try:
+            image = Image.open(avatar_file)
+        except FileNotFoundError as e:
+            return {'error': 'Avatar file not found', 'details': str(e)}
+        except IOError as e:
+            return {'error': 'Error opening image file', 'details': str(e)}
+        except Exception as e:
+            return {'error': 'Unexpected error opening image', 'details': str(e)}
+
+        # Try to convert the image to RGB mode
+        try:
+            image = image.convert("RGB")
+        except Exception as e:
+            return {'error': 'Error converting image to RGB', 'details': str(e)}
+
+        # Try to resize the image while maintaining aspect ratio
+        max_size = 512
+        try:
+            image.thumbnail((max_size, max_size), Image.LANCZOS)
+        except Exception as e:
+            return {'error': 'Error resizing image', 'details': str(e)}
+
+        # Try to generate a unique filename
+        try:
+            file_name = f"{uuid.uuid4()}.jpg"
+            file_path = os.path.join(settings.MEDIA_ROOT, 'avatars/', file_name)
+        except Exception as e:
+            return {'error': 'Error generating unique filename', 'details': str(e)}
+
+        # Try to save the image with compression
+        try:
+            temp_file = ContentFile(b'')  # Create a temporary file object
+            try:
+                image.save(temp_file, format="JPEG", quality=85)  # Adjust quality for compression
+            except IOError as e:
+                return {'error': 'Error saving image with compression', 'details': str(e)}
+            temp_file.seek(0)  # Move to the beginning of the file so it can be read
+        except Exception as e:
+            return {'error': 'Error creating temporary file or setting up compression', 'details': str(e)}
+
+        # Try to save the file to default storage
+        try:
+            default_storage.save(file_path, temp_file)
+        except Exception as e:
+            return {'error': 'Error saving image to storage', 'details': str(e)}
+
+    except Exception as e:
+        return {'error': 'Unexpected error during image processing', 'details': str(e)}
+
+    # Update user's avatar_path field and save the user model
+    user.avatar_path = file_name
+    user.save()
+
+    # Return the avatar URL
+    return {'success': 'Avatar uploaded successfully', 'avatar_url': file_path}

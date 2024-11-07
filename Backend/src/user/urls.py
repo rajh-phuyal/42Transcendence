@@ -18,5 +18,4 @@ urlpatterns = [
     path('modify-friendship/', ModifyFriendshipView.as_view(), name='modify_friendship'),
 
 	path('update-avatar/', UpdateAvatarView.as_view(), name='update_avatar'),
-
 ]
