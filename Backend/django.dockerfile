@@ -5,6 +5,7 @@ FROM python:3.10
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV DJANGO_SETTINGS_MODULE=app.settings
 
 # Changing the working directory (cd)
 WORKDIR /app
@@ -25,4 +26,7 @@ EXPOSE 8000
 ENTRYPOINT ["./entrypoint.sh"]
 
 # Run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Run with ASGI server
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "app.asgi:application"]
