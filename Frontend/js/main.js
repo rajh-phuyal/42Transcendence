@@ -2,12 +2,8 @@ import { $id } from './abstracts/dollars.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
-<<<<<<< HEAD
-import $store from "./store/store.js"
-=======
 import { routes } from './navigation/routes.js';
 import $store from './store/store.js';
->>>>>>> main
 
 setViewLoading(true);
 
