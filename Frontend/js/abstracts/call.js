@@ -2,7 +2,8 @@
 import $auth from '../auth/authentication.js';
 
 async function call(url, method, data) {
-    const fullUrl = `${window.location.origin}/api/${url}`;
+    // TODO: WHY IS THERE API IN THE URL? [astein is asking :D]
+	const fullUrl = `${window.location.origin}/api/${url}`;
 
     const headers = {
         'Content-Type': 'application/json'
@@ -19,8 +20,8 @@ async function call(url, method, data) {
             body: JSON.stringify(data),
         } : {},
     };
-
-    let response = await fetch(fullUrl, payload);
+	console.log("Full URL: ", fullUrl);
+    const response = await fetch(fullUrl, payload);
 
     if (!response.ok) {
         throw new Error(await response.json().detail || 'Request failed');

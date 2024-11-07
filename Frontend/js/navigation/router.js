@@ -5,6 +5,10 @@ import { $id } from '../abstracts/dollars.js';
 // bind store and auth singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
+import call from '../abstracts/call.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
+//import loading from '../abstracts/loading.js'; TODO this should be added later
+import dollars from '../abstracts/dollars.js';
 
 const objectToBind = (config, params = null) => {
     let binder = {};
@@ -22,6 +26,10 @@ const objectToBind = (config, params = null) => {
     binder.$store = $store;
     binder.$auth = $auth;
     binder.routeParams = params;
+    binder.call = call;
+	binder.webSocketManager = WebSocketManager;
+   // binder.loading = loading;
+    binder.domManip = dollars;
 
     return binder;
 }
@@ -38,7 +46,7 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null) {
-    setViewLoading(true); // later this responsibility will the that of the view
+    setViewLoading(true); // TODO: later this responsibility will the that of the view
 
     if ($auth.isUserAuthenticated() && path === '/auth') {
         path = '/home';
@@ -46,7 +54,7 @@ async function router(path, params = null) {
 
     if (!$auth.isUserAuthenticated() && path !== '/auth') {
         path = '/auth';
-        params = { login: true };
+        params = { login: true }; // TODO: maybe we can remove this with issue #73
     }
     // if (!params) {
     //     const paramsString = window.location.href;

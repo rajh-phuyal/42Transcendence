@@ -27,3 +27,5 @@ example.enviroment
 
 # Migrations
 Backend/src/authentication/migrations/*
+Backend/src/chat/migrations/*
+Backend/src/user/migrations/*
