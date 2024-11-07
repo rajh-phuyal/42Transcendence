@@ -24,6 +24,10 @@ export default {
     },
 
     methods: {
+        insertAvatar() {
+            const element = $id("avatar");
+            element.src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
+        },
         populateButtons(){
             // Top left Button
             if (this.result.relationship.state != "yourself")
@@ -181,6 +185,7 @@ export default {
             call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log(res);
+                this.insertAvatar();
                 populateInfoAndStats(res);
                 this.populateButtons();
                 if (res.relationship.isBlocked)
