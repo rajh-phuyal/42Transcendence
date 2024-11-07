@@ -1,4 +1,4 @@
-import { $id } from "../../abstracts/dollars.js";
+import { $id } from "../../abstracts/dollars.js"; //TODO: replace by binder.domManip
 
 export default {
     attributes: {
