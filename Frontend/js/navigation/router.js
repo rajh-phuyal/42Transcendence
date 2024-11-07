@@ -10,6 +10,8 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 //import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
 
+import { translate } from '../locale/locale.js';
+
 const objectToBind = (config) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
@@ -25,6 +27,7 @@ const objectToBind = (config) => {
     binder.router = router;
     binder.$store = $store;
     binder.$auth = $auth;
+    binder.translate = translate;
     binder.call = call;
 	binder.webSocketManager = WebSocketManager;
    // binder.loading = loading;

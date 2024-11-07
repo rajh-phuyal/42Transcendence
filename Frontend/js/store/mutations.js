@@ -1,17 +1,3 @@
-export const state = {
-    user: {
-        id: undefined,
-        username: undefined,
-    },
-    isAuthenticated: false,
-    jwtTokens: {
-        access: undefined,
-        refresh: undefined,
-    },
-    locale: 'en-US',
-    translations: {}
-};
-
 export const mutations = {
     setUser: {
         method: (state, value) => {
@@ -27,7 +13,7 @@ export const mutations = {
     },
     setJWTTokens: {
         method: (state, value) => {
-            state.jwtTokens = value;
+            state.jwtToken = value;
         },
         presistence: true,
     },
