@@ -30,7 +30,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
     
 	# TODO: This is dummy and should be replaced with actual data
-    # Valid types are 'yourself' 'noFriend', 'friend', 'sendRequest', 'recievedRequest'
+    # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
         return {
             "state": "friend",
