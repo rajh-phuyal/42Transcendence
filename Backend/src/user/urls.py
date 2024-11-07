@@ -15,4 +15,5 @@ urlpatterns = [
 
     # Blocking/unblocking users / removing friends
     path('modify-friendship/', ModifyFriendshipView.as_view(), name='modify_friendship'),
+
 ]

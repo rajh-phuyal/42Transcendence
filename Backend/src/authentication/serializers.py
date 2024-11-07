@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+User = get_user_model()
 
 class InternalTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -18,10 +19,8 @@ class InternalTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        # additional data
         token['username'] = user.username
         token['userId'] = user.id
-
         return token
 
 
