@@ -67,6 +67,7 @@ OS_HOME_PATH=""
 #   The volume folders will be created in a folder located at home called:
 VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
+PA_VOLUME_NAME=pa-volume
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -107,7 +108,8 @@ NC='\033[0m'
 # https://github.com/rajh-phuyal/42Transcendence/wiki/
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
-HELP_ENDS_AT_LINE=108
+# to this line number - 2
+HELP_ENDS_AT_LINE=109
 # ------------------------------------------------------------------------------
 
 ################################################################################
@@ -478,6 +480,7 @@ check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$DB_VOLUME_NAME/"
+	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$PA_VOLUME_NAME/"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -531,27 +534,28 @@ docker_fclean() {
 		print_header "${RD}" "Operation cancelled."
 		exit 1
 	fi
+	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network..."
 	docker_clean "$ALLOWED_CONTAINERS"
 
 	print_header "${OR}" "Deleting docker network..."
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
 
-	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network..."
 	docker-compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
 	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
+	docker volume rm "$PA_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folder of docker volumes...($OS_HOME_PATH$VOLUME_FOLDER_NAME/)"
 	sudo rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
 	print_header "${OR}" "Deleting folder of docker volumes...${GR}DONE${NC}"
 
-	print_header "${OR}" "Deltete the link to the environment file..."
+	print_header "${OR}" "Delete the link to the environment file..."
 	rm -f ".transcendence_env_path"
-	print_header "${OR}" "Deltete the link to the environment file...${GR}DONE${NC}"
+	print_header "${OR}" "Delete the link to the environment file...${GR}DONE${NC}"
 
 	print_header "${RD}" "Do u additionaly do a full clean aka 'docker system prune -a --volumes -f' (y/n): "
 	read -p "choose: " confirm
