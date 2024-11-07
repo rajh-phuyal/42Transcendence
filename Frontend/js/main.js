@@ -2,6 +2,8 @@ import { $id } from './abstracts/dollars.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
+import { routes } from './navigation/routes.js';
+import $store from './store/store.js';
 
 setViewLoading(true);
 
@@ -34,17 +36,17 @@ window.addEventListener('popstate', () => {
     router(window.location.pathname)
 });
 
-// get the path and call the router
-router(window.location.pathname);
-
-// set the loading to false
-setViewLoading(false);
+// get the translations for all the registered views
+$store.dispatch('loadTranslations', routes.map(route => route.view));
 
 
+// go to path only after the translations are loaded
+$store.addMutationListener('setTranslations', (state) => {
+    router(window.location.pathname);
 
-
-
-
+    // set the loading to false
+    setViewLoading(false);
+});
 
 
 /* DESABLE ZOOM*/

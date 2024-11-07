@@ -2,13 +2,14 @@ import $auth from '../auth/authentication.js';
 import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 // TODO put the css styling in a css file (for all web components)
 
 
 class AuthCard extends HTMLElement {
-	
+
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
@@ -91,7 +92,7 @@ class AuthCard extends HTMLElement {
         this.connectedCallback();
     }
 
-    handleKeyPress(event){
+    handleKeyPress(event) {
 
         if (event.key !== 'Enter')
             return ;
@@ -102,14 +103,14 @@ class AuthCard extends HTMLElement {
             if (newValue === "true" || newValue === "True")
             {
                 this.login = true;
-                this.primaryButton = "LOGIN";
-                this.secundaryButton = "REGISTER";
+                this.primaryButton = translate("auth", "loginButton")
+                this.secundaryButton = translate("auth", "registerButton")
             }
             else
             {
                 this.login = false;
-                this.primaryButton = "REGISTER";
-                this.secundaryButton = "LOGIN";
+                this.primaryButton = translate("auth", "registerButton")
+                this.secundaryButton = translate("auth", "loginButton")
             }
         }
         this.render();
@@ -164,7 +165,7 @@ class AuthCard extends HTMLElement {
             input:focus{
                 background-color: #201C19;
             }
-            
+
             .buttons-container > button {
                 display: flex;
                 justify-content: center;
