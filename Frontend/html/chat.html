@@ -1,12 +1,17 @@
-<div id="chat-view">
-    <h1>
-        Chat view
-    </h1>
-</div>
+<div id="chat-view" style="display: flex;">
+    <!-- Conversations list on the left -->
+    <div id="conversation-list" style="width: 30%; padding-right: 10px; border-right: 1px solid black;">
+        <h3>Conversations</h3>
+        <ul id="conversation-items" style="list-style-type: none; padding: 0;">
+            <!-- Conversations will be populated here dynamically -->
+        </ul>
+    </div>
 
-<style>
-    #chat-view {
-        height: 100%;
-        background-color: #ffbf006c;
-    }
-</style>
+    <!-- Chat log and input on the right -->
+    <div id="chat-window" style="width: 70%; padding-left: 10px;">
+        <h1>Chat view</h1>
+        <textarea id="chat-log" cols="80" rows="20" readonly></textarea><br>
+        <input id="chat-message-input" type="text" size="80"><br>
+        <button id="chat-message-submit">Send</button>
+    </div>
+</div>

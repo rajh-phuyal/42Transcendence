@@ -1,5 +1,6 @@
 import $store from '../store/store.js';
 import call from '../abstracts/call.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class Auth {
     constructor() {
@@ -27,25 +28,13 @@ class Auth {
     }
 
     async refreshToken() {
-        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh }).then((response) => {
-            this.jwtToken = response.access;
-
-            $store.commit('setJWTTokens', {
-                ...$store.fromState('jwtTokens'),
-                access: this.jwtToken
-            });
-
-            return true;
-        })
-        .catch((error) => {
-            console.error('Error refreshing token:', error);
-            this.logout();
-            return false;
-        });
+        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh });
+        //TODO: Refresh the WebSocket connection with the new token
     }
 
     logout() {
         $store.clear();
+		WebSocketManager.disconnect();
     }
 
     getAuthHeader() {

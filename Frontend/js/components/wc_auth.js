@@ -3,6 +3,7 @@ import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 // TODO put the css styling in a css file (for all web components)
 
@@ -54,6 +55,7 @@ class AuthCard extends HTMLElement {
         .then((response) => {
             console.log("auth response:", response);
 
+			// Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
             $store.commit('setJWTTokens', {
                 access: response.access,
@@ -63,6 +65,9 @@ class AuthCard extends HTMLElement {
                 id: response.userId,
                 username: response.username
             });
+
+			// Connect to WebSocket with the new token
+			WebSocketManager.connect(response.access);
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
