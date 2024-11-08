@@ -13,10 +13,8 @@ class Auth {
         return this;
     }
 
-    isUserAuthenticated() {
-        return $store.fromState('isAuthenticated') || false;
-        // TODO:  after the refresh issue is fixed, USE THE LINE BELOW
-        // return $store.fromState('isAuthenticated') && this.verifyJWTToken();
+    async isUserAuthenticated() {
+        return await this.verifyJWTToken();
     }
 
     authenticate(username, password) {
@@ -42,7 +40,7 @@ class Auth {
     }
 
     async verifyJWTToken() {
-        const token = this.jwtToken;
+        const token = $store.fromState('jwtTokens').access;
         if (!token) return false;
 
         const [header, payload, signature] = token.split('.');
@@ -51,13 +49,17 @@ class Auth {
         try {
             const { exp } = JSON.parse(atob(payload));
             if (Date.now() >= exp * 1000) {
-                const refreshed = await this.refreshToken();
-                return refreshed;
+                this.logout(); //? Token has expired, for now just log out the user
+                // TODO: fix the refresh issue here
+                // const refreshed = await this.refreshToken();
+                // return refreshed;
             }
         } catch (e) {
             console.error('Error verifying token:', e);
-            const refreshed = await this.refreshToken();
-            return refreshed;
+            this.logout(); //? Token is invalid, for now just log out the user
+            // TODO: fix the refresh issue here
+            // const refreshed = await this.refreshToken();
+            // return refreshed;
         }
 
         return true;
