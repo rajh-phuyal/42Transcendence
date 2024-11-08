@@ -35,7 +35,7 @@ class Store {
     }
 
     commit(mutationName, value) {
-        this.mutations[mutationName]?.method(this.state, value);
+        this.mutations[mutationName]?.onUpdate(this.state, value);
 
         this.notifyListeners(mutationName);
 
@@ -43,12 +43,14 @@ class Store {
 
         // clear all the mutations, that have presistence set to false
         let savedObject = {};
-        for (const [key, value] of Object.entries(this.mutations)) {
-            const stateKey = key.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+        for (const value of _.values(this.mutations)) {
+            const stateKey = value.stateName;
+
             if (value.presistence) {
                 savedObject[stateKey] = this.state[stateKey];
             }
         }
+
         $setLocal("store", JSON.stringify(savedObject));
     }
 
