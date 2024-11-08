@@ -10,6 +10,8 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 //import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
 
+import { translate } from '../locale/locale.js';
+
 const objectToBind = (config) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
@@ -25,6 +27,7 @@ const objectToBind = (config) => {
     binder.router = router;
     binder.$store = $store;
     binder.$auth = $auth;
+    binder.translate = translate;
     binder.call = call;
 	binder.webSocketManager = WebSocketManager;
    // binder.loading = loading;
@@ -47,11 +50,13 @@ async function getViewHooks(viewName) {
 async function router(path, params = null) {
     setViewLoading(true); // TODO: later this responsibility will the that of the view
 
-    if ($auth.isUserAuthenticated() && path === '/auth') {
+    const userAuthenticated = await $auth.isUserAuthenticated();
+
+    if (userAuthenticated && path === '/auth') {
         path = '/home';
     }
 
-    if (!$auth.isUserAuthenticated() && path !== '/auth') {
+    if (!userAuthenticated && path !== '/auth') {
         path = '/auth';
         params = { login: true }; // TODO: maybe we can remove this with issue #73
     }
