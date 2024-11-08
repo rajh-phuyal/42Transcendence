@@ -13,12 +13,12 @@ OVERLORDS_ID=1
 OVERLORDS_USERNAME="overlords"
 OVERLORDS_FIRST_NAME="The"
 OVERLORDS_LAST_NAME="Overlords"
-OVERLORDS_AVATAR="overlords.png"
+OVERLORDS_AVATAR="c5d1dcf4-3f76-497d-9208-d230c7020dce.png"
 AI_ID=2
 AI_USERNAME="ai"
 AI_FIRST_NAME="The"
 AI_LAST_NAME="AI Opponent"
-AI_AVATAR="ai.jpg"
+AI_AVATAR="670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"
 # CHANGE THE VALUES ABOVE FOR ANY ADJUSTMENTS!
 ################################################################################
 # COLORS
