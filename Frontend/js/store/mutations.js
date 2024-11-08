@@ -1,30 +1,35 @@
 export const mutations = {
     setUser: {
-        method: (state, value) => {
+        stateName: 'user',
+        onUpdate: (state, value) => {
             state.user = value;
         },
         presistence: true,
     },
     setIsAuthenticated: {
-        method: (state, value) => {
+        stateName: 'isAuthenticated',
+        onUpdate: (state, value) => {
             state.isAuthenticated = value;
         },
         presistence: false,
     },
     setJWTTokens: {
-        method: (state, value) => {
-            state.jwtToken = value;
+        stateName: 'jwtTokens',
+        onUpdate: (state, value) => {
+            state.jwtTokens = value;
         },
         presistence: true,
     },
     setLocale: {
-        method: (state, value) => {
+        stateName: 'locale',
+        onUpdate: (state, value) => {
             state.locale = value;
         },
         presistence: true,
     },
     setTranslations: {
-        method: (state, value) => {
+        stateName: 'translations',
+        onUpdate: (state, value) => {
             state.translations = value;
         },
         presistence: false,

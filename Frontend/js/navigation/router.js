@@ -50,11 +50,13 @@ async function getViewHooks(viewName) {
 async function router(path, params = null) {
     setViewLoading(true); // TODO: later this responsibility will the that of the view
 
-    if ($auth.isUserAuthenticated() && path === '/auth') {
+    const userAuthenticated = await $auth.isUserAuthenticated();
+
+    if (userAuthenticated && path === '/auth') {
         path = '/home';
     }
 
-    if (!$auth.isUserAuthenticated() && path !== '/auth') {
+    if (!userAuthenticated && path !== '/auth') {
         path = '/auth';
         params = { login: true }; // TODO: maybe we can remove this with issue #73
     }
