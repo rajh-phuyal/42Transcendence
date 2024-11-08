@@ -42,6 +42,48 @@ def check_blocking(requestee_id, requester_id):
     if requester_blocked.exists():
         raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
 
+def resize_and_crop(image, min_width=186, min_height=208):
+    """
+    Resizes an image to meet minimum width and height requirements, maintaining aspect ratio,
+    and then center-crops to the exact dimensions.
+    
+    :param image: PIL Image object to resize and crop
+    :param min_width: Minimum width of the resulting image
+    :param min_height: Minimum height of the resulting image
+    :return: Resized and cropped PIL Image object
+    """
+    try:
+        # Get the current dimensions and aspect ratio
+        width, height = image.size
+        aspect_ratio = width / height
+
+        # Calculate new dimensions to meet minimum width and height while preserving aspect ratio
+        if width < min_width or height < min_height:
+            if aspect_ratio > 1:  # Wider than tall
+                new_width = max(min_width, int(height * aspect_ratio))
+                new_height = max(min_height, int(new_width / aspect_ratio))
+            else:  # Taller than wide or square
+                new_height = max(min_height, int(width / aspect_ratio))
+                new_width = max(min_width, int(new_height * aspect_ratio))
+        else:
+            new_width = max(min_width, width)
+            new_height = max(min_height, height)
+
+        # Resize the image
+        image = image.resize((new_width, new_height), Image.LANCZOS)
+
+        # Center-crop to the exact target size
+        left = (new_width - min_width) / 2
+        top = (new_height - min_height) / 2
+        right = (new_width + min_width) / 2
+        bottom = (new_height + min_height) / 2
+        image = image.crop((left, top, right, bottom))
+
+        return image
+
+    except Exception as e:
+        raise RuntimeError(f"Error resizing or cropping image: {str(e)}")
+
 def process_avatar(user, avatar_file):
     if not avatar_file.content_type.startswith('image'):
         return {'error': 'File type not supported'}
@@ -57,6 +99,7 @@ def process_avatar(user, avatar_file):
         except Exception as e:
             return {'error': 'Unexpected error opening image', 'details': str(e)}
 
+        
         # Apply a sepia filter and some noise for an old-fashioned look
         try:
             # Convert the image to grayscale first
@@ -84,12 +127,36 @@ def process_avatar(user, avatar_file):
         except Exception as e:
             return {'error': 'Error converting image to RGB', 'details': str(e)}
 
-        # Try to resize the image while maintaining aspect ratio
-        max_size = 512
+        # Resize and crop the image to fit the avatar frame
         try:
-            image.thumbnail((max_size, max_size), Image.LANCZOS)
+            image = resize_and_crop(image)
         except Exception as e:
-            return {'error': 'Error resizing image', 'details': str(e)}
+            return {'error': 'Error resizing and cropping image', 'details': str(e)}
+            
+        # Load the frame image
+        try:
+            frame_path = os.path.join(settings.MEDIA_ROOT, 'avatars/avatar_frame.png')
+            frame = Image.open(frame_path)
+        except FileNotFoundError as e:
+            return {'error': 'Frame file not found', 'details': str(e)}
+        except IOError as e:
+            return {'error': 'Error opening frame image file', 'details': str(e)}
+
+        # Ensure frame has an alpha channel
+        frame = frame.convert("RGBA")
+        
+        # Ensure the avatar image is also in RGBA mode (required for transparency)
+        image = image.convert("RGBA")
+        
+        # Create a blank image the same size as the frame, with transparency
+        positioned_image = Image.new("RGBA", frame.size)
+        positioned_image.paste(image, (15, 19))  # Paste the avatar image at (15, 19)
+        
+        # Combine the frame and positioned image, preserving transparency
+        final_image = Image.alpha_composite(positioned_image, frame)
+
+        # Paste the avatar onto the frame at the specified coordinates
+        #frame.paste(image, (15, 19))
 
         # Try to generate a unique filename
         try:
@@ -102,7 +169,7 @@ def process_avatar(user, avatar_file):
         try:
             temp_file = ContentFile(b'')  # Create a temporary file object
             try:
-                image.save(temp_file, format="JPEG", quality=85)  # Adjust quality for compression
+                final_image.save(temp_file, format="PNG", quality=85)  # Adjust quality for compression
             except IOError as e:
                 return {'error': 'Error saving image with compression', 'details': str(e)}
             temp_file.seek(0)  # Move to the beginning of the file so it can be read
