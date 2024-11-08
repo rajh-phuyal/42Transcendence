@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .utils import get_relationship_status
 
 # class UserSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -29,14 +30,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 				# id and username are the same key than in the model.py, thats why i dont need them in the above section
         fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
     
-	# TODO: This is dummy and should be replaced with actual data
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
-        return {
-            "state": "friend",
-            "isBlocking": False,
-            "isBlocked": False
-        }
+        # `user1` is the current authenticated user
+        user1 = self.context['request'].user  
+        
+        # `user2` is the user object being serialized (from the URL)
+        user2 = obj
+
+        # Use the utility function to get the relationship status
+        return get_relationship_status(user1, user2)
     
     def get_stats(self, obj):
         return {
