@@ -1,10 +1,202 @@
 <div id="profie-view">
-    <h1>Profile view</h1>
-</div>
+    <div id="background-image">
+        <div id="main-left-div">
+            <h2 id="username">username</h2>
+            <img id="avatar"></img>
+            <h3 id="birth-name" class="blackout"> actual name</h2>
+            <div id="last-seen" class="blackout">
+                <h3 id="last-seen-text">last seen</h2>
+                <img id="last-seen-image" src="" alt="img not found">
+            </div>
+            <h3 id="language"  class="blackout"> language</h2>
+        </div>
+        <div id="main-right-div">
+            <div id="top-buttons">
+                <img class="button" id="button-top-left"></img>
+                <img class="button" id="button-top-middle"></img>
+                <img class="button" id="button-top-right"></img>
+            </div>
+            <div id="stats-div">
+                <!-- STATS -->
+                <h2 class="blackout">STATS</h2>
+                <h3 class="game-stats-parameters" id="stats-games">Games won: 0/0</h3>
+                <h3 class="game-stats-parameters" id="stats-tournament-first-place">1st place: 0/0</h3>
+                <h3 class="game-stats-parameters" id="stats-tournament-second-place">2nd place: 0/0</h3>
+                <h3 class="game-stats-parameters" id="stats-tournament-third-place">3rd place: 0/0</h3>
+                <!-- Player's Grading -->
+                <div id="progress-grid" class="blackout">
+                    <!-- Skill section -->
+                    <h2 id="score-skill-name" class="progress-grid-name">Skill</h2>
+                    <div class="progress">
+                        <div id="score-skill-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-skill-percentage" class="progress-grid-percentage">0%</h2>
+                    <!-- game exp section -->
+                    <h2 id="score-game-exp-name" class="progress-grid-name">GExp</h2>
+                    <div class="progress">
+                        <div id="score-game-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-game-exp-percentage" class="progress-grid-percentage">0%</h2>
+                    <!-- tournament exp section -->
+                    <h2 id="score-tournament-exp-name" class="progress-grid-name">TExp</h2>
+                    <div class="progress">
+                        <div id="score-tournament-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-tournament-exp-percentage" class="progress-grid-percentage">0%</h2>
+                    <!-- total section -->
+                    <h2 id="score-total-name" class="progress-grid-name">Total</h2>
+                    <div class="progress">
+                        <div id="score-total-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <h2 id="score-total-percentage" class="progress-grid-percentage">0%</h2>
+                </div>
+                <div id="bottom-buttons" class="blackout">
+                    <img class="button" id="button-bottom-left"></img>
+                    <img class="button" id="button-bottom-right"></img>
+                </div>
+            </div>
+        </div>
+    </div>  
+    
+    
+    <!-- Friendship Modal -->
+    <div class="modal fade" id="friendship-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body" id="friendship-modal-body">
+              <h3 id="friendshp-modal-friendship-text" class="friendship-modal-text"></h3>
+              <div id="friendship-modal-friendship-buttons">
+                    <barely-a-button id="friendship-modal-friendship-primary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
+                    <barely-a-button id="friendship-modal-friendship-secundary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="No"></barely-a-button>
+              </div>
+              <div id="friendship-modal-block">
+                    <h3 id="friendshp-modal-block-text" class="friendship-modal-text"></h3>
+                    <barely-a-button id="friendship-modal-block-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
+              </div>
+              <barely-a-button id="friendship-modal-cancel-button" class="friendship-modal-buttons" name="Cancel" buttonclass="rect-button"></barely-a-button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
 
 <style>
     #profie-view {
         height: 100%;
         background-color: #ff00ff6c;
+        color: black;
+    }
+
+    #friendship-modal-body {
+        text-align: center;
+    }
+
+    #friendship-modal-friendship-buttons {
+        display: flex;
+        display: row;
+    }
+
+    #top-buttons{
+        display:flex;
+        flex-direction: row;
+        margin: 12vh 0vh 8vh 1vw;
+        height: 5vh;
+    }
+
+    #bottom-buttons {
+        display:flex;
+        flex-direction: row;
+        margin: 12vh 0vh 8vh 7.5vw;
+        height: 8vh;
+    }
+
+    .button {
+        height: 8vh;
+        width: 10vh;
+        margin: 0vh 1vw;
+        background-image: "";
+    }
+
+    .button:hover {
+        height: 9vh;
+        width: 11vh;
+        margin: 0vh 0.75vw;
+
+        border-color: black;
+        border-radius: 3px;
+        border-width: 4px;
+    }
+
+    /* .game-stats-parameters{
+        margin: 0vh 0vh 0vh 2vw;
+    } */
+
+    #progress-grid {
+        display: grid;
+        grid-template-columns: 4vw 10vw 4vw;
+        margin-top: 8vh; 
+    }
+
+    .progress {
+        margin: 1.5vh 2vw;
+        height: 1vh;
+        background-color: rgb(150, 150, 150);
+    }
+
+    .progress-bar {
+        background-color: black;
+    }
+
+    #username {
+        padding: 15vh 0vh 0vh 4vw;
+    }
+    #avatar {
+        margin: 6vh 0vh 0vh 2.3vw;
+        width: 11.8vw;
+        height: 34vh;
+        background-image: url('../assets/profileView/testAvatar.png'); /* Set the path to your image */
+        background-size: cover; /* Cover the entire div */
+        background-position: center; /* Center the image */
+    }
+    #birth-name{
+        margin: 5vh 0vh 0vh 2vw;
+    }
+    #last-seen {
+        display: flex;
+        flex-direction: row;
+        margin: 2.3vh 0vh 0vh 2vw;
+    }
+    #last-seen-image {
+        background-size: cover; /* Cover the entire div */
+        background-position: center; /* Center the image */
+        width: 2.3vw;
+        height: 3vh;
+    }
+    #language {
+        margin: 2vh 0vh 0vh 2vw;
+    }
+
+    #main-left-div {
+        display: flex;
+        flex-direction: column;
+        width: 25vw;
+        height: 100vh;
+        margin: 0vh 0vh 0vh 25vw;
+    }
+    #main-right-div {
+        display: flex;
+        flex-direction: column;
+        width: 25vw;
+        height: 100vh;
+        margin: 0vh 25vw 0vh 5vw;
+    }
+    #background-image{
+        display: flex;
+        flex-direction: row;
+        width: 100vw; /* Set the desired width */
+        height: 100vh; /* Set the desired height */
+        background-image: url('../assets/profileView/profilePageBackground.png'); /* Set the path to your image */
+        background-size: cover; /* Cover the entire div */
+        background-position: center; /* Center the image */
     }
 </style>

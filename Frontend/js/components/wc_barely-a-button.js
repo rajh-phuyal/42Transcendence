@@ -14,7 +14,7 @@ class BarelyAButton extends HTMLElement
     connectedCallback()
     {
         this.render();
-        this.shadow.addEventListener('click', this.method.bind(this));
+        // this.shadow.addEventListener('click', this.method.bind(this));
     }
 
     attributeChangedCallback(name, oldValue, newValue)
@@ -31,8 +31,6 @@ class BarelyAButton extends HTMLElement
             this.onresolve = newValue;
         else if (name === "buttonclass")
             this.buttonclass = newValue;
-        else if (name === "cocoxixi")
-            this.cocoxixi = newValue;
         else if (name === "onerror")
             console.log("Error");
         this.render();
@@ -64,10 +62,12 @@ class BarelyAButton extends HTMLElement
                     display: flex;
                     font-family: 'Courier';
                     font-size: 25px;
+                    vertical-align: middle;
                     text-align: center;
                     line-height: 50px;
                     font-weight: 700;
                     color: #FFFCE6;
+                    height: 30px;
                     width: 150px;
                     flex-direction: row;
                     margin: 15px;

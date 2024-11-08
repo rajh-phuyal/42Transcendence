@@ -1,5 +1,3 @@
-version: "3.8"
-
 # This is the configuration for all docker services we use to stay:
 # BARELY ALIVE
 
