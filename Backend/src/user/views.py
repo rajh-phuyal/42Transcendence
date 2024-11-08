@@ -13,7 +13,7 @@ from .utils import get_and_validate_data, check_blocking
 from .exceptions import ValidationException, BlockingException
 from django.conf import settings
 import os
-from .utils import process_avatar
+from .utils_img import process_avatar
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
