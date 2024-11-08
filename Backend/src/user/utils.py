@@ -57,7 +57,7 @@ def process_avatar(user, avatar_file):
         except Exception as e:
             return {'error': 'Unexpected error opening image', 'details': str(e)}
 
-		# Apply a sepia filter and some noise for an old-fashioned look
+        # Apply a sepia filter and some noise for an old-fashioned look
         try:
             # Convert the image to grayscale first
             image = ImageOps.grayscale(image)
@@ -118,6 +118,12 @@ def process_avatar(user, avatar_file):
     except Exception as e:
         return {'error': 'Unexpected error during image processing', 'details': str(e)}
 
+    # Check if there's an existing avatar and delete it if it's not the default
+    if user.avatar_path and user.avatar_path != "default_avatar.png":
+        old_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars/', user.avatar_path)
+        if default_storage.exists(old_avatar_path):
+            default_storage.delete(old_avatar_path)
+    
     # Update user's avatar_path field and save the user model
     user.avatar_path = file_name
     user.save()
