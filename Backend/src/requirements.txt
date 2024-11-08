@@ -11,4 +11,5 @@ sqlparse==0.5.1
 channels==4.0.0
 daphne==4.0.0	# ASGI server for Django WebSockets
 Pillow==10.0.0  # Image processing library for user avatar
+numpy==1.26.0	# Needed for sepia filter of user avatar
 

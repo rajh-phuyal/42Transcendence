@@ -1,6 +1,7 @@
 import os
 import uuid
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageOps
+import numpy as np
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
@@ -56,6 +57,27 @@ def process_avatar(user, avatar_file):
         except Exception as e:
             return {'error': 'Unexpected error opening image', 'details': str(e)}
 
+		# Apply a sepia filter and some noise for an old-fashioned look
+        try:
+            # Convert the image to grayscale first
+            image = ImageOps.grayscale(image)
+
+            # Enhance contrast to make it look more aged
+            enhancer = ImageEnhance.Contrast(image)
+            image = enhancer.enhance(1.5)
+
+            # Apply sepia tone by blending with an orange color
+            sepia = Image.new("RGB", image.size, (112, 66, 20))  # Sepia color
+            image = Image.blend(image.convert("RGB"), sepia, 0.3)
+
+            # Add some noise for a grainy effect
+            noise = np.random.normal(0, 25, (image.height, image.width, 3))
+            noise_image = np.array(image) + noise
+            noise_image = np.clip(noise_image, 0, 255).astype("uint8")
+            image = Image.fromarray(noise_image)
+        except Exception as e:
+            return {'error': 'Error applying vintage filter', 'details': str(e)}
+        
         # Try to convert the image to RGB mode
         try:
             image = image.convert("RGB")
