@@ -128,7 +128,6 @@ DATABASES = {
 MEDIA_ROOT = '/media'  # Path in the Docker container
 MEDIA_URL = '/media/'  # URL prefix for media files
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
