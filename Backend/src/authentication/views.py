@@ -97,13 +97,14 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             access_token = response.data.get('access')
             
             # Store the tokens in the DevUserData table
-            DevUserData.objects.update_or_create(
-                user=user,
-                defaults={
-                    'access_token': access_token,
-                    'refresh_token': refresh_token,
-                }
-            )
+            # TODO: Main branch was fucked so i commented this...
+            # DevUserData.objects.update_or_create(
+            #     user=user,
+            #     defaults={
+            #         'access_token': access_token,
+            #         'refresh_token': refresh_token,
+            #     }
+            #)
         
         return response
 
