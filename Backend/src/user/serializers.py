@@ -32,14 +32,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
-        # `user1` is the current authenticated user
-        user1 = self.context['request'].user  
+        # `requester` is the current authenticated user
+        requester = self.context['request'].user  
         
-        # `user2` is the user object being serialized (from the URL)
-        user2 = obj
+        # `requested` is the user object being serialized (from the URL)
+        requested = obj
 
         # Use the utility function to get the relationship status
-        return get_relationship_status(user1, user2)
+        return get_relationship_status(requester, requested)
     
     def get_stats(self, obj):
         return {

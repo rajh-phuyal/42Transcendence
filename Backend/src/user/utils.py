@@ -31,12 +31,11 @@ def is_blocked(doer, target):
     return NoCoolWith.objects.filter(blocker=target, blocked=doer).exists()
     
 def are_friends(doer, target):
-    is_friendship = False
-    relation_1_2 = IsCoolWith.objects.filter(requester=doer, requestee=target).first()
-    relation_2_1 = IsCoolWith.objects.filter(requester=target, requestee=doer).first()
-    if relation_1_2 or relation_1_2.status == CoolStatus.ACCEPTED:
-        is_friendship = True
-    return is_friendship
+    relation_1_2 = IsCoolWith.objects.filter(requester=doer, requestee=target, status=CoolStatus.ACCEPTED).exists()
+    relation_2_1 = IsCoolWith.objects.filter(requester=target, requestee=doer, status=CoolStatus.ACCEPTED).exists()
+    if relation_1_2 or relation_1_2:
+        return True
+    return False
 
 def is_request_sent(doer, target):
     return IsCoolWith.objects.filter(requester=doer, requestee=target, status=CoolStatus.PENDING).exists()
@@ -53,43 +52,37 @@ def check_blocking(requestee_id, requester_id):
         raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
 
 # This checks the relationship status between two users
-# from the perspective of user1 towards user2
-def get_relationship_status(user1, user2):
+# from the perspective of requester towards requested
+def get_relationship_status(requester, requested):
     # Initialize the variables for the return value
     state = "yourself"
     isBlocking = False
     isBlocked = False
 
     # Check if the users are the same
-    if user1 == user2:
+    if requester == requested:
         return {
             "state": state,
             "isBlocking": isBlocking,
             "isBlocked": isBlocked
         }
 
-    # Default to no relationship
-    state = "noFriend"
-
     # Check if there is a blocking relationship
-    blocking_relationship = NoCoolWith.objects.filter(blocker=user1, blocked=user2).exists()
-    blocked_by_relationship = NoCoolWith.objects.filter(blocker=user2, blocked=user1).exists()
-    # Set the variables to True if the relationship exists
-    if is_blocking(user1, user2):
+    if is_blocking(requester, requested):
         isBlocking = True
-    if is_blocked(user1, user2):
+    if is_blocked(requester, requested):
         isBlocked = True
 
     # Check for friendship
-    if are_friends(user1, user2):
-        state = "friend"
-
-    # Check for pending requests
-    if is_request_sent(user1, user2):
+    if is_request_sent(requester, requested):
         state = "requestSent"
-    if is_request_received(user1, user2):
+    elif is_request_received(requester, requested):
         state = "requestReceived"
-    
+    elif are_friends(requester, requested):
+        state = "friend"
+    else:
+        state = "noFriend"
+
     # Return the relationship status
     return {
         "state": state,
