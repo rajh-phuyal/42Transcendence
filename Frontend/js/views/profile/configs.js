@@ -198,16 +198,59 @@ export default {
             let element = $id("edit-profile-modal-avatar-change-file-input");
             element.click();
         },
-
+        
         cropImage() {
-
-            const croppedCanvas = this.cropper.getCroppedCanvas();
+            
+            const croppedCanvas = this.cropper.getCroppedCanvas({
+                width: 186,
+                height: 208
+            });
+            
             const croppedImageUrl = croppedCanvas.toDataURL('image/png');
-
             let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
             croppedImageElement.src = croppedImageUrl;
-            console.log("element:", croppedImageElement);
-            this.showElement(croppedImageElement);
+
+            croppedCanvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('avatar', blob, 'avatar.png'); // Append file to FormData
+        
+                try {
+                    console.log(formData);
+                    const response = await fetch('user/update-avatar/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                
+                    const responseData = await response.json();
+                    console.log('Upload successful:', responseData);
+                } catch (error) {
+                    console.error('Upload failed:', error);
+                }
+                
+            }, 'image/png');
+            // croppedCanvas.toBlob(async (blob) => {
+            //     // Create a FormData object
+            //     const formData = new FormData();
+            //     formData.append('avatar', blob, 'avatar.png'); // Add file with key 'avatar'
+        
+            //     // Call API with FormData
+            //     try {
+            //         const response = await call('user/update-avatar/', 'POST', formData);
+            //         console.log('Upload successful:', response);
+            //     } catch (error) {
+            //         console.error('Upload failed:', error);
+            //     }
+            // }, 'image/png'); // Specify image type as 'image/png' or 'image/jpeg'
+
+
+            // console.log(croppedImageUrl);
+            // call('user/update-avatar/', 'POST', { avatar: croppedImageUrl});
+            // console.log("element:", croppedImageElement);
+            // this.showElement(croppedImageElement);
 
 
             // let uploadedImage = $id("edit-profile-modal-avatar-change-uploaded-image"); 
