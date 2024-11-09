@@ -12,8 +12,8 @@ from .exceptions import ValidationException, BlockingException
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
-    authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
-    permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     queryset = User.objects.all()
     serializer_class = ProfileSerializer

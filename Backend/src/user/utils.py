@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from .models import NoCoolWith
+from .models import User, IsCoolWith, NoCoolWith, CoolStatus
 from .exceptions import ValidationException, BlockingException
 
 def get_and_validate_data(request, action, target_name):
@@ -24,14 +24,68 @@ def get_and_validate_data(request, action, target_name):
     
     return doer, target
 
+def is_blocking(doer, target):
+    return NoCoolWith.objects.filter(blocker=doer, blocked=target).exists()
+    
+def is_blocked(doer, target):
+    return NoCoolWith.objects.filter(blocker=target, blocked=doer).exists()
+    
+def are_friends(doer, target):
+    relation_1_2 = IsCoolWith.objects.filter(requester=doer, requestee=target, status=CoolStatus.ACCEPTED).exists()
+    relation_2_1 = IsCoolWith.objects.filter(requester=target, requestee=doer, status=CoolStatus.ACCEPTED).exists()
+    if relation_1_2 or relation_1_2:
+        return True
+    return False
+
+def is_request_sent(doer, target):
+    return IsCoolWith.objects.filter(requester=doer, requestee=target, status=CoolStatus.PENDING).exists()
+    
+def is_request_received(doer, target):
+    return IsCoolWith.objects.filter(requester=target, requestee=doer, status=CoolStatus.PENDING).exists()
 
 def check_blocking(requestee_id, requester_id):
-    # Check if the requestee has blocked the requester
-    requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
-    if requestee_blocked.exists():
+    if is_blocked(requester_id, requestee_id):
         raise BlockingException(detail='You have been blocked by this user.')
 
     # Check if the requester has blocked the requestee
-    requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
-    if requester_blocked.exists():
+    if is_blocking(requester_id, requestee_id):
         raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
+
+# This checks the relationship status between two users
+# from the perspective of requester towards requested
+def get_relationship_status(requester, requested):
+    # Initialize the variables for the return value
+    state = "yourself"
+    isBlocking = False
+    isBlocked = False
+
+    # Check if the users are the same
+    if requester == requested:
+        return {
+            "state": state,
+            "isBlocking": isBlocking,
+            "isBlocked": isBlocked
+        }
+
+    # Check if there is a blocking relationship
+    if is_blocking(requester, requested):
+        isBlocking = True
+    if is_blocked(requester, requested):
+        isBlocked = True
+
+    # Check for friendship
+    if is_request_sent(requester, requested):
+        state = "requestSent"
+    elif is_request_received(requester, requested):
+        state = "requestReceived"
+    elif are_friends(requester, requested):
+        state = "friend"
+    else:
+        state = "noFriend"
+
+    # Return the relationship status
+    return {
+        "state": state,
+        "isBlocking": isBlocking,
+        "isBlocked": isBlocked
+    }
