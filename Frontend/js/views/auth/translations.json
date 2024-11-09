@@ -3,7 +3,7 @@
         "en-US": "LOGIN",
         "pt-PT": "ENTRAR",
         "np-NP": "लगइन गर्नुहोस्",
-        "de-DE": "LOGIN",
+        "de-DE": "ANMELDEN",
         "uk-UA": "ВХІД"
     },
     "registerButton": {
@@ -12,5 +12,19 @@
         "np-NP": "दर्ता गर्नुहोस्",
         "de-DE": "REGISTRIEREN",
         "uk-UA": "РЕЄСТРАЦІЯ"
+    },
+    "usernamePlaceholder": {
+        "en-US": "username",
+        "pt-PT": "nome de utilizador",
+        "np-NP": "प्रयोगकर्ता नाम",
+        "de-DE": "Benutzername",
+        "uk-UA": "ім'я користувача"
+    },
+    "passwordPlaceholder": {
+        "en-US": "password",
+        "pt-PT": "senha",
+        "np-NP": "पासवर्ड",
+        "de-DE": "Passwort",
+        "uk-UA": "пароль"
     }
 }
