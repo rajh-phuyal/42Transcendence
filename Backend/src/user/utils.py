@@ -33,7 +33,7 @@ def is_blocked(doer, target):
 def are_friends(doer, target):
     relation_1_2 = IsCoolWith.objects.filter(requester=doer, requestee=target, status=CoolStatus.ACCEPTED).exists()
     relation_2_1 = IsCoolWith.objects.filter(requester=target, requestee=doer, status=CoolStatus.ACCEPTED).exists()
-    if relation_1_2 or relation_1_2:
+    if relation_1_2 or relation_2_1:
         return True
     return False
 
