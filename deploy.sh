@@ -54,8 +54,8 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #
 #	| Container  | Service  | Volumes   | Description                                  |
 #	|------------|----------|-----------|----------------------------------------------|
-#	| `fe`       | frontend |           | The frontend service (nginx, html, css, Js)  |
-#	| `be`       | backend  |           | The backend service (django)                 |
+#	| `fe`       | frontend | media     | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  | media     | The backend service (django)                 |
 #	| `db`       | database | db-volume | The database service (postgres)              |
 #	| `pa`       | pgadmin  | pa-volume | The pgadmin service (pgadmin)                |
 #
@@ -68,6 +68,7 @@ OS_HOME_PATH=""
 VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
 PA_VOLUME_NAME=pa-volume
+MEDIA_VOLUME_NAME=media
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -103,13 +104,15 @@ OR='\033[38;5;208m'
 GR='\033[0;32m'
 BL='\033[0;36m'
 NC='\033[0m'
+# BOLD
+BOLD='\e[1m'
 #
 # MORE INFO AT:
 # https://github.com/rajh-phuyal/42Transcendence/wiki/
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
 # to this line number - 2
-HELP_ENDS_AT_LINE=109
+HELP_ENDS_AT_LINE=112
 # ------------------------------------------------------------------------------
 
 ################################################################################
@@ -124,6 +127,13 @@ print_header() {
 print_error() {
 	print_header "${RD}" "Error: $1"
     exit 1
+}
+
+# URL clickable format function
+url() {
+    local url=$1
+    local text=$2
+    echo -e "\e]8;;${url}\a${text}\e]8;;\a"
 }
 # ------------------------------------------------------------------------------
 # SPINNER FUNCTIONS
@@ -427,9 +437,10 @@ check_env_link() {
 check_path_and_permission()
 {
 	local path=$1
+	path_formated=$(url "file://$path" "$path")
 
 	if ! perform_task_with_spinner \
-		"Checking presents of folder: <$path>" \
+		"Checking presents of folder: $path_formated ..." \
 		'[ -e "$path" ]' \
 		"is there" \
 		"doesn't exist" \
@@ -437,10 +448,10 @@ check_path_and_permission()
 
 		# Create the folder
 		perform_task_with_spinner \
-			"Creating folder: <$path>" \
+			" ...creating the folder" \
 			'mkdir -p $path' \
 			"created" \
-			"couldn't create folder: <$path>!" \
+			"couldn't create folder: $path_formated!" \
 			false
 	fi
 
@@ -451,21 +462,21 @@ check_path_and_permission()
 	if [ "$IS_MACOS" != true ]; then
         # On Linux, perform ownership and permission changes
         perform_task_with_spinner \
-            "Changing ownership of folder: <$path>" \
+            " ...changing ownership of the folder" \
             'sudo chown -R ":1024" "$path"' \
             "" \
-            "couldn't change ownership of folder: <$path>!" \
+            "couldn't change ownership of folder: $path_formated!" \
             false
 
         perform_task_with_spinner \
-            "Changing permission of folder: <$path>" \
+            " ...changing permission of the folder" \
             'sudo chmod -R 775 "$path"' \
             "" \
-            "couldn't change permission of folder: <$path>!" \
+            "couldn't change permission of folder: $path_formated!" \
             false
 
         perform_task_with_spinner \
-            "Ensure all future content in the folder <$path> will inherit group ownership" \
+            " ...ensure all future content in the folder will inherit group ownership" \
             'sudo chmod g+s "$path"' \
             "" \
             'could not run sudo chmod g+s "$path"' \
@@ -481,6 +492,7 @@ check_volume_folders()
 	print_header "${YL}" "Checking paths for volumes..."
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$DB_VOLUME_NAME/"
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$PA_VOLUME_NAME/"
+	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$MEDIA_VOLUME_NAME/"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
@@ -547,6 +559,7 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
 	docker volume rm "$PA_VOLUME_NAME" || true
+	docker volume rm "$MEDIA_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folder of docker volumes...($OS_HOME_PATH$VOLUME_FOLDER_NAME/)"
