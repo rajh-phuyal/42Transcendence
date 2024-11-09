@@ -1,4 +1,4 @@
-import {imageDir, imageBook, backgroundImageBook, labels, lines} from './objects.js'
+import {imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
 
 /* 

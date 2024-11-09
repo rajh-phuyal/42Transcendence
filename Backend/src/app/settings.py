@@ -69,9 +69,12 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+# TODO instead of using this:
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost"
+    "https://localhost:443",
+    "http://127.0.0.1:8000"
 ]
+
 
 ROOT_URLCONF = 'app.urls'
 
@@ -187,4 +190,5 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
+    
 }
