@@ -33,7 +33,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
         return {
-            "state": "friend",
+            "state": "yourself",
             "isBlocking": False,
             "isBlocked": False
         }

@@ -63,6 +63,7 @@ export default {
         },
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
+                this.buttonTopMiddle.method = this.profileEditMethod;
                 this.buttonTopMiddle.image = "../../../../assets/profileView/penIcon.png";
             }
             else {
@@ -120,6 +121,34 @@ export default {
             let element = $id(elementId)
             element.style.display = "none";
         },
+        showElement(elementId){
+            let element = $id(elementId)
+            element.style.display = "block";
+        },
+
+        profileEditMethod() {
+            this.hideElement("edit-profile-modal-form");   
+            this.hideElement("edit-profile-modal-password-change");
+            this.showElement("edit-profile-modal-autentication");
+
+            let modalElement = $id("edit-profile-modal");
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        },
+
+        editProfileAuthSubmit() {
+            // to show error message
+            // let element = $id("edit-profile-modal-autentication-error");
+            // element.style.display = "block";
+
+            this.hideElement("edit-profile-modal-autentication");   
+            this.showElement("edit-profile-modal-form");
+        },
+
+        changePasswordMethod() {
+            this.hideElement("edit-profile-modal-form");
+            this.showElement("edit-profile-modal-password-change");
+        },
 
         friendshipMethod() {
 
@@ -172,9 +201,17 @@ export default {
         },
 
         beforeRouteLeave() {
+            let element = $id("button-top-left");
             $off(element, "click", this.buttonTopLeft.method);
+            element = $id("button-top-middle");
             $off(element, "click", this.buttonTopMiddle.method);
+            element = $id("button-top-right");
             $off(element, "click", this.buttonTopRight.method);
+            element = $id("edit-profile-modal-autentication-submit-button");
+            $off(element, "click", this.editProfileAuthSubmit);
+            element = $id("edit-profile-modal-form-change-password-button");
+            $off(element, "click", this.changePasswordMethod);
+
         },
 
         beforeDomInsertion() {
@@ -210,6 +247,12 @@ export default {
                     let element = $id("button-top-right");
                     $on(element, "click", this.buttonTopRight.method);
                 }
+
+                let element = $id("edit-profile-modal-autentication-submit-button");
+                $on(element, "click", this.editProfileAuthSubmit);
+                element = $id("edit-profile-modal-form-change-password-button");
+                $on(element, "click", this.changePasswordMethod);
+                
             })
             // on error?
         },
