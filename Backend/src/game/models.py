@@ -1,10 +1,5 @@
 from django.db import models
 
-# Create your models here.
-class Game:
-    class GameState(models.TextChoices):
-        PEfrom django.db import models
-
 class Game(models.Model):
     class GameState(models.TextChoices):
         PENDING = 'pending', 'Pending'
