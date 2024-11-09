@@ -3,6 +3,7 @@ import { $id, $on, $queryAll, $off } from '../../abstracts/dollars.js';
 import { populateInfoAndStats } from './script.js';
 import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
+import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 
 export default {
     attributes: {
@@ -21,6 +22,7 @@ export default {
         result: undefined,
         frendshipStateIndex: undefined,
         blockerState: false,
+        cropper: undefined,
 
         buttonSettings: {
             friend: {
@@ -128,8 +130,10 @@ export default {
 
         profileEditMethod() {
             this.hideElement("edit-profile-modal-form");   
+            this.hideElement("edit-profile-modal-avatar-change");   
             this.hideElement("edit-profile-modal-password-change");
             this.showElement("edit-profile-modal-autentication");
+            
 
             let modalElement = $id("edit-profile-modal");
             const modal = new bootstrap.Modal(modalElement);
@@ -148,6 +152,11 @@ export default {
         changePasswordMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-password-change");
+        },
+        changeAvatarMethod() {
+            this.hideElement("edit-profile-modal-form");
+            this.showElement("edit-profile-modal-avatar-change");
+            this.hideElement("edit-profile-modal-avatar-change-crop-image");
         },
 
         friendshipMethod() {
@@ -185,6 +194,57 @@ export default {
             modal.show();
         },
 
+        openFileExplorer() {
+            let element = $id("edit-profile-modal-avatar-change-file-input");
+            element.click();
+        },
+
+        cropImage() {
+
+            const croppedCanvas = this.cropper.getCroppedCanvas();
+            const croppedImageUrl = croppedCanvas.toDataURL('image/png');
+
+            let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
+            croppedImageElement.src = croppedImageUrl;
+            console.log("element:", croppedImageElement);
+            this.showElement(croppedImageElement);
+
+
+            // let uploadedImage = $id("edit-profile-modal-avatar-change-uploaded-image"); 
+            // let imageSrc = uploadedImage.src;
+            // let croppedImage = this.cropper.getCroppedCanvas().toDataUrl(imageSrc);
+            // uploadedImage.src = croppedImage;
+        },
+
+        extractFile(event) {
+            const file = event.target.files[0]; // Get the selected file
+            if (file) {
+                const reader = new FileReader(); // Create a FileReader to read the file
+
+                reader.onload = e => {
+                    let uploadedImage = $id("edit-profile-modal-avatar-change-uploaded-image");
+                    uploadedImage.src = e.target.result; // Set the src to the image data
+                    uploadedImage.style.display = 'block'; // Make the img tag visible
+
+                    // Initialize Cropper after the image has fully loaded
+                    uploadedImage.onload = () => {
+                        // Destroy any previous Cropper instance before creating a new one
+                        if (this.cropper) {
+                            this.cropper.destroy();
+                        }
+                
+                        this.cropper = new Cropper(uploadedImage, {
+                            aspectRatio: 0.894, // Adjust aspect ratio as needed
+                            viewMode: 1,
+                        });
+                        this.showElement("edit-profile-modal-avatar-change-crop-image");
+                    };
+                };
+
+                reader.readAsDataURL(file); // Read the file as a data URL
+            }
+        },
+
         messageMethod() {
             router("/chat");
         },
@@ -211,6 +271,8 @@ export default {
             $off(element, "click", this.editProfileAuthSubmit);
             element = $id("edit-profile-modal-form-change-password-button");
             $off(element, "click", this.changePasswordMethod);
+            element = $id("edit-profile-modal-form-change-avatar-button");
+            $on(element, "click", this.changeAvatarMethod);
 
         },
 
@@ -252,6 +314,14 @@ export default {
                 $on(element, "click", this.editProfileAuthSubmit);
                 element = $id("edit-profile-modal-form-change-password-button");
                 $on(element, "click", this.changePasswordMethod);
+                element = $id("edit-profile-modal-form-change-avatar-button");
+                $on(element, "click", this.changeAvatarMethod);
+                element = $id("edit-profile-modal-avatar-change-upload-button");
+                $on(element, "click", this.openFileExplorer);
+                element = $id("edit-profile-modal-avatar-change-file-input");
+                $on(element, "change", this.extractFile);
+                element = $id("edit-profile-modal-avatar-change-crop-image");
+                $on(element, "click", this.cropImage);
                 
             })
             // on error?
