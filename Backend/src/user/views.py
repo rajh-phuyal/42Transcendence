@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
-from .serializers import UserSerializer
+from .serializers import ProfileSerializer
 from .utils import get_and_validate_data, check_blocking
 from .exceptions import ValidationException, BlockingException
 
@@ -16,17 +16,9 @@ class ProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
 
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    lookup_field = 'id'  # This tells Django to look up the user by the 'id' field
+    serializer_class = ProfileSerializer
+    lookup_field = 'id'
     
-    ''' TODO: add more fields like
-    * friends list count
-    * user points
-    * match history
-    * etc.
-    '''
-
-
 class FriendRequestView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

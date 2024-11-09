@@ -26,7 +26,6 @@ async function call(url, method, data) {
     if (!response.ok) {
         throw new Error(await response.json().detail || 'Request failed');
     }
-
     return await response.json();
 }
 
