@@ -13,6 +13,8 @@ class AuthCard extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
+        this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
     }
 
     static get observedAttributes() {
@@ -207,8 +209,8 @@ class AuthCard extends HTMLElement {
             </style>
 
             <div class="main-container">
-				<input id="usernameInput" placeholder="username"/>
-				<input id="passwordInput" placeholder="password" type="Password">
+				<input id="usernameInput" placeholder="${this.usernamePlaceholder}"/>
+				<input id="passwordInput" placeholder="${this.passwordPlaceholder}" type="Password">
 				<div class="buttons-container">
 					<button id="primaryButton">${this.primaryButton}</button>
 					<button class="secundary-button" id="secundaryButton">${this.secundaryButton}</button>
