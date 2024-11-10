@@ -206,9 +206,7 @@ export default {
                 height: 208
             });
             
-            const croppedImageUrl = croppedCanvas.toDataURL('image/png');
-            let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
-            croppedImageElement.src = croppedImageUrl;
+            
 
             croppedCanvas.toBlob(async (blob) => {
                 const formData = new FormData();
