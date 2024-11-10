@@ -104,14 +104,14 @@
                   <div class="form-row">
                     <div class="col-md-4 mb-3">
                       <label for="validationCustom01">First name</label>
-                      <input type="text" class="form-control" id="validationCustom01" placeholder="First name" value="Mark" required>
+                      <input type="text" class="form-control" id="edit-profile-modal-form-input-first-name" placeholder="First name" value="John" required>
                       <div class="valid-feedback">
                         Looks good!
                       </div>
                     </div>
                     <div class="col-md-4 mb-3">
                       <label for="validationCustom02">Last name</label>
-                      <input type="text" class="form-control" id="validationCustom02" placeholder="Last name" value="Otto" required>
+                      <input type="text" class="form-control" id="edit-profile-modal-form-input-last-name" placeholder="Last name" value="Doe" required>
                       <div class="valid-feedback">
                         Looks good!
                       </div>
@@ -124,7 +124,7 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text" id="inputGroupPrepend">@</span>
                         </div>
-                        <input type="text" class="form-control" id="validationCustomUsername" placeholder="Username" aria-describedby="inputGroupPrepend" required>
+                        <input type="text" class="form-control" id="edit-profile-modal-form-input-username" placeholder="Username" value="user" aria-describedby="inputGroupPrepend" required>
                         <div class="invalid-feedback">
                           Please choose a username.
                         </div>
@@ -132,13 +132,14 @@
                     </div>
                     <div class="form-group">
                       <label for="exampleFormControlSelect1">Language</label>
-                      <select class="form-control" id="exampleFormControlSelect1">
-                        <option>Deutsch(DE)</option>
-                        <option>English(US)</option>
-                        <option>Nepalese (NP)</option>
-                        <option>Portugues(BR)</option>
-                        <option>Portugues(PT)</option>
-                        <option>Ukrainian (UK)</option>
+                      <select class="form-control" id="edit-profile-modal-form-language-selector">
+                        <option value="none">Chose a Language</option>
+                        <option value="de-DE">Deutsch(DE)</option>
+                        <option value="en-US">English(US)</option>
+                        <option value="ne-NP">Nepalese (NP)</option>
+                        <option value="pt-BR">Portugues(BR)</option>
+                        <option value="pt-PT">Portugues(PT)</option>
+                        <option value="uk-UA">Ukrainian (UK)</option>
                       </select>
                     </div>
                   </div>
@@ -150,13 +151,13 @@
               <form>
                 <div class="form-group">
                   <label for="exampleInputEmail1">New Password</label>
-                  <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Password">
+                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-new-password" aria-describedby="emailHelp" placeholder="Password">
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Repeat Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-repeat-password" placeholder="Password">
                 </div>
-                <barely-a-button id="edit-profile-modal-form-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
+                <barely-a-button id="edit-profile-modal-password-change-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
               </form>
             </div>
             <!--  Avatar Change Body -->

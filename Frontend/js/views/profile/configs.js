@@ -4,6 +4,7 @@ import { populateInfoAndStats } from './script.js';
 import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
 import Cropper from '../../libraries/cropperjs/cropper.esm.js'
+import $store from '../../store/store.js';
 
 export default {
     attributes: {
@@ -140,11 +141,20 @@ export default {
             modal.show();
         },
 
-        editProfileAuthSubmit() {
+        editProfileFormAuthentication() {
             // to show error message
             // let element = $id("edit-profile-modal-autentication-error");
             // element.style.display = "block";
 
+            const password = $id("edit-profile-modal-autentication-input").value;
+            console.log(password);
+
+            // TODO call password entrypoint
+
+            $id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
+            $id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
+            $id("edit-profile-modal-form-input-username").value = this.result.username;
+            $id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
             this.hideElement("edit-profile-modal-autentication");   
             this.showElement("edit-profile-modal-form");
         },
@@ -208,28 +218,28 @@ export default {
             
             
 
-            croppedCanvas.toBlob(async (blob) => {
-                const formData = new FormData();
-                formData.append('avatar', blob, 'avatar.png'); // Append file to FormData
+            // croppedCanvas.toBlob(async (blob) => {
+            //     const formData = new FormData();
+            //     formData.append('avatar', blob, 'avatar.png'); // Append file to FormData
         
-                try {
-                    console.log(formData);
-                    const response = await fetch('user/update-avatar/', {
-                        method: 'POST',
-                        body: formData
-                    });
+            //     try {
+            //         console.log(formData);
+            //         const response = await fetch('user/update-avatar/', {
+            //             method: 'POST',
+            //             body: formData
+            //         });
                 
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
+            //         if (!response.ok) {
+            //             throw new Error(`HTTP error! Status: ${response.status}`);
+            //         }
                 
-                    const responseData = await response.json();
-                    console.log('Upload successful:', responseData);
-                } catch (error) {
-                    console.error('Upload failed:', error);
-                }
+            //         const responseData = await response.json();
+            //         console.log('Upload successful:', responseData);
+            //     } catch (error) {
+            //         console.error('Upload failed:', error);
+            //     }
                 
-            }, 'image/png');
+            // }, 'image/png');
             // croppedCanvas.toBlob(async (blob) => {
             //     // Create a FormData object
             //     const formData = new FormData();
@@ -244,17 +254,19 @@ export default {
             //     }
             // }, 'image/png'); // Specify image type as 'image/png' or 'image/jpeg'
 
-
+            // let croppedImageUrl = croppedCanvas.toDataUrl('image/png');
             // console.log(croppedImageUrl);
             // call('user/update-avatar/', 'POST', { avatar: croppedImageUrl});
             // console.log("element:", croppedImageElement);
             // this.showElement(croppedImageElement);
 
 
-            // let uploadedImage = $id("edit-profile-modal-avatar-change-uploaded-image"); 
-            // let imageSrc = uploadedImage.src;
-            // let croppedImage = this.cropper.getCroppedCanvas().toDataUrl(imageSrc);
-            // uploadedImage.src = croppedImage;
+            let uploadedImageElement = $id("edit-profile-modal-avatar-change-uploaded-image");
+            let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
+            let imageSrc = uploadedImageElement.src;
+            croppedImageElement.src = croppedCanvas.toDataURL(imageSrc);
+
+            
         },
 
         extractFile(event) {
@@ -286,6 +298,35 @@ export default {
             }
         },
 
+        submitNewPassword() {
+            const newPassword = $id("edit-profile-modal-password-change-input-new-password").value;
+            const repeatPassword = $id("edit-profile-modal-password-change-input-repeat-password").value;
+            
+            console.log("new password:", newPassword);
+            console.log("rep password:", repeatPassword);
+
+            if (newPassword !== repeatPassword)
+                console.log("Error: Passwords dont match");
+            else
+                console.log("Success! Password changed!!");
+        },
+
+        submitForm() {
+            
+
+            const firstName = $id("edit-profile-modal-form-input-first-name").value;
+            const lastName = $id("edit-profile-modal-form-input-last-name").value;
+            const username = $id("edit-profile-modal-form-input-username").value;
+            const language = $id("edit-profile-modal-form-language-selector").value;
+
+            console.log("First name:", firstName);
+            console.log("Last name:", lastName);
+            console.log("Username:", username);
+            console.log("Language:", language);
+
+            // call("http://127.0.0.1:8000/user/update-user-info/", "PUT", {username: username, firstName: firstName, lastName: lastName, language: language});
+        },
+
         messageMethod() {
             router("/chat");
         },
@@ -309,11 +350,21 @@ export default {
             element = $id("button-top-right");
             $off(element, "click", this.buttonTopRight.method);
             element = $id("edit-profile-modal-autentication-submit-button");
-            $off(element, "click", this.editProfileAuthSubmit);
+            $off(element, "click", this.editProfileFormAuthentication);
             element = $id("edit-profile-modal-form-change-password-button");
             $off(element, "click", this.changePasswordMethod);
             element = $id("edit-profile-modal-form-change-avatar-button");
-            $on(element, "click", this.changeAvatarMethod);
+            $off(element, "click", this.changeAvatarMethod);
+            element = $id("edit-profile-modal-avatar-change-upload-button");
+            $off(element, "click", this.openFileExplorer);
+            element = $id("edit-profile-modal-avatar-change-file-input");
+            $off(element, "change", this.extractFile);
+            element = $id("edit-profile-modal-avatar-change-crop-image");
+            $off(element, "click", this.cropImage);
+            element = $id("edit-profile-modal-form-submit-button");
+            $off(element, "click", this.submitForm);
+            element = $id("edit-profile-modal-password-change-submit-button");
+            $off(element, "click", this.submitNewPassword);
 
         },
 
@@ -352,7 +403,7 @@ export default {
                 }
 
                 let element = $id("edit-profile-modal-autentication-submit-button");
-                $on(element, "click", this.editProfileAuthSubmit);
+                $on(element, "click", this.editProfileFormAuthentication);
                 element = $id("edit-profile-modal-form-change-password-button");
                 $on(element, "click", this.changePasswordMethod);
                 element = $id("edit-profile-modal-form-change-avatar-button");
@@ -363,6 +414,11 @@ export default {
                 $on(element, "change", this.extractFile);
                 element = $id("edit-profile-modal-avatar-change-crop-image");
                 $on(element, "click", this.cropImage);
+                element = $id("edit-profile-modal-form-submit-button");
+                $on(element, "click", this.submitForm);
+                element = $id("edit-profile-modal-password-change-submit-button");
+                $on(element, "click", this.submitNewPassword);
+                
                 
             })
             // on error?
