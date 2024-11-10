@@ -329,6 +329,11 @@ class UpdateUserInfoView(APIView):
         # Check if the new username is valid
         # TODO: Wait for issue #108
 
+        # Check if the language is valid
+        valid_languages = ['en-US', 'pt-PT', 'np-NP', 'de-DE', 'uk-UA']
+        if new_language not in valid_languages:
+            return Response({'error': 'Invalid language'}, status=status.HTTP_400_BAD_REQUEST)
+        
         # Update the user info
         user.username = new_username
         user.first_name = new_first_name
