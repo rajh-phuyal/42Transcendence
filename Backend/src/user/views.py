@@ -99,10 +99,6 @@ class FriendRequestView(APIView):
         if already_cool.filter(status=CoolStatus.PENDING).exists():
             return Response({'error': 'Friend request is already pending'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if the friend request was previously rejected
-        if already_cool.filter(status=CoolStatus.REJECTED).exists():
-            return Response({'error': 'Friend request was rejected'}, status=status.HTTP_400_BAD_REQUEST)
-
         # If there was no previous cool state between the requester and requestee...
 
         # Create a new friend request
@@ -128,8 +124,8 @@ class FriendRequestView(APIView):
             return Response({'error': 'Friend request has already been accepted'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if status is pending
-        if friend_request.status != CoolStatus.PENDING and friend_request.status != CoolStatus.REJECTED:
-            return Response({'error': 'Friend request is not pending or rejected'}, status=status.HTTP_400_BAD_REQUEST)
+        if friend_request.status != CoolStatus.PENDING:
+            return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Accept the friend request
         friend_request.status = CoolStatus.ACCEPTED
@@ -152,17 +148,12 @@ class FriendRequestView(APIView):
         if friend_request.status == CoolStatus.ACCEPTED:
             return Response({'error': 'You are already friends with this user'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Check if the friend request is already rejected
-        if friend_request.status == CoolStatus.REJECTED:
-            return Response({'error': 'Friend request has already been rejected'}, status=status.HTTP_400_BAD_REQUEST)
-        
         # Check if the friend request is pending
         if friend_request.status != CoolStatus.PENDING:
             return Response({'error': 'Friend request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Reject the friend request
-        friend_request.status = CoolStatus.REJECTED
-        friend_request.save()
+        friend_request.delete()
         return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
     
 

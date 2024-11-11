@@ -15,7 +15,6 @@ class User(AbstractUser):
 class CoolStatus(models.TextChoices):
     PENDING = 'pending', 'Pending'
     ACCEPTED = 'accepted', 'Accepted'
-    REJECTED = 'rejected', 'Rejected'
 
 # Table: barelyaschema.is_cool_with
 class IsCoolWith(models.Model):

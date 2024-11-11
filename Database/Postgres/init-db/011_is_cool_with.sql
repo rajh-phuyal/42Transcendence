@@ -7,7 +7,7 @@
 \c ${DB_NAME}
 
 \! echo -e "creating the enum type: 'barelyaschema.cool_status'..."
-CREATE TYPE barelyaschema.cool_status AS ENUM ('pending', 'accepted', 'rejected');
+CREATE TYPE barelyaschema.cool_status AS ENUM ('pending', 'accepted');
 
 \! echo -e "creating the table: 'barelyaschema.is_cool_with'..."
 CREATE TABLE IF NOT EXISTS barelyaschema.is_cool_with

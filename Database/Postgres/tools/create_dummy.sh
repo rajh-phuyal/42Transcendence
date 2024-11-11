@@ -88,9 +88,7 @@ insert_dummy "$TABLE_NAME" \
 		(4, 1, 5, 'accepted'), \
 		(5, 2, 3, 'accepted'), \
 		(6, 2, 4, 'pending'), \
-		(7, 5, 4, 'pending'), \
-		(8, 2, 5, 'rejected');"
-
+		(7, 5, 4, 'pending');"
 
 TABLE_NAME="barelyaschema.no_cool_with"
 insert_dummy "$TABLE_NAME" \
