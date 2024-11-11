@@ -11,7 +11,7 @@ from .utils import get_relationship_status
 # This will prepare the data to be sent to the frontend as JSON
 class ProfileSerializer(serializers.ModelSerializer):
     # Add fields that will return dummy data for now
-    avatarUrl = serializers.URLField(default="http://dummyavatar.url")
+    avatarUrl = serializers.CharField(source='avatar_path', default='default_avatar.png')
     firstName = serializers.CharField(source='first_name', default="John")
     lastName = serializers.CharField(source='last_name', default="Doe")
     online = serializers.BooleanField(default=False)

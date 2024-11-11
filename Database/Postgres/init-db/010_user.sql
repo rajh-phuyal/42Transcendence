@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS barelyaschema."user" (
     email VARCHAR(254) NOT NULL,
     is_staff BOOLEAN NOT NULL,
     is_active BOOLEAN NOT NULL,
-    date_joined TIMESTAMP WITH TIME ZONE NOT NULL
+    date_joined TIMESTAMP WITH TIME ZONE NOT NULL,
+	avatar_path VARCHAR(255) DEFAULT '54c455d5-761b-46a2-80a2-7a557d9ec618.png' NOT NULL
 );
 
 \! echo -e "Changing the ownership of the table to user '${POSTGRES_USER}'"

@@ -4,11 +4,16 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
 from .serializers import ProfileSerializer
 from .utils import get_and_validate_data, check_blocking
 from .exceptions import ValidationException, BlockingException
+from django.conf import settings
+import os
+from .utils_img import process_avatar
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
@@ -280,3 +285,25 @@ class ModifyFriendshipView(APIView):
         friendship.delete()
 
         return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
+
+class UpdateAvatarView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] #TODO CHANGE THIS LATER
+
+    def post(self, request):
+        # Check if 'avatar' is in request.FILES
+        if 'avatar' not in request.FILES:
+            return Response({'error': 'Avatar must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the avatar file from request.FILES
+        avatar = request.FILES['avatar']
+
+        # Call the utility function to process the avatar
+        result = process_avatar(request.user, avatar)
+
+        # Check if there was an error during processing
+        if result.get('error'):
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return the success response with the avatar URL
+        return Response(result, status=status.HTTP_200_OK)
