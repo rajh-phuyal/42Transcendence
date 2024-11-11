@@ -8,6 +8,8 @@ class User(AbstractUser):
     # "barelyaschema.user" which will be created form our 010_user.sql file
     # during the database container build.
     avatar_path = models.CharField(max_length=255, default='54c455d5-761b-46a2-80a2-7a557d9ec618.png', blank=True)
+    language = models.CharField(max_length=5, default='en-US', blank=True)
+
     class Meta:
         db_table = '"barelyaschema"."user"'
 
