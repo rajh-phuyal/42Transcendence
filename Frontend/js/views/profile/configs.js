@@ -231,7 +231,6 @@ export default {
                 const modal = bootstrap.Modal.getInstance(modalElement);
                 modal.hide();
                 router('/profile', { id: $store.fromState("user").id});
-
             }).catch((error) => {
                 console.error('Error:', error);
             });
@@ -314,6 +313,14 @@ export default {
                 firstName: firstName, 
                 lastName: lastName, 
                 language: language
+            }).then(data => {
+                console.log('Success:', data);
+                let modalElement = $id("edit-profile-modal");
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+                router('/profile', { id: $store.fromState("user").id});
+            }).catch((error) => {
+                console.error('Error:', error);
             });
         },
 
