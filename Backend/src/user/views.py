@@ -330,7 +330,7 @@ class UpdateUserInfoView(APIView):
         # TODO: Wait for issue #108
 
         # Check if the language is valid
-        valid_languages = ['en-US', 'pt-PT', 'np-NP', 'de-DE', 'uk-UA']
+        valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
         if new_language not in valid_languages:
             return Response({'error': 'Invalid language'}, status=status.HTTP_400_BAD_REQUEST)
         
