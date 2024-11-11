@@ -1,3 +1,7 @@
+import os
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.conf import settings
 from rest_framework.response import Response
 from .models import NoCoolWith
 from .exceptions import ValidationException, BlockingException
@@ -24,7 +28,6 @@ def get_and_validate_data(request, action, target_name):
     
     return doer, target
 
-
 def check_blocking(requestee_id, requester_id):
     # Check if the requestee has blocked the requester
     requestee_blocked = NoCoolWith.objects.filter(blocker_id=requestee_id, blocked_id=requester_id)
@@ -35,3 +38,14 @@ def check_blocking(requestee_id, requester_id):
     requester_blocked = NoCoolWith.objects.filter(blocker_id=requester_id, blocked_id=requestee_id)
     if requester_blocked.exists():
         raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
+
+def change_avatar(user, file_path):
+    # Check if there's an existing avatar and delete it if it's not the default
+    if user.avatar_path and user.avatar_path != "default_avatar.png":
+        old_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars/', user.avatar_path)
+        if default_storage.exists(old_avatar_path):
+            default_storage.delete(old_avatar_path)
+    
+    # Update user's avatar_path field and save the user model
+    user.avatar_path = file_path
+    user.save()

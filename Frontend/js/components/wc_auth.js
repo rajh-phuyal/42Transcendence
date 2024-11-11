@@ -2,6 +2,9 @@ import $auth from '../auth/authentication.js';
 import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
+
 // TODO put the css styling in a css file (for all web components)
 
 const eventListenersConfig = [
@@ -38,11 +41,14 @@ const eventListenersConfig = [
 ];
 
 class AuthCard extends HTMLElement {
-	
+
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
 		this.displayMode = "home";
+        this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
+        this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
+        this.passwordConfirmationPlaceholder = "confirm password";
     }
 
     static get observedAttributes() {
@@ -155,6 +161,7 @@ class AuthCard extends HTMLElement {
         .then((response) => {
             console.log("auth response:", response);
 
+			// Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
             $store.commit('setJWTTokens', {
                 access: response.access,
@@ -164,6 +171,9 @@ class AuthCard extends HTMLElement {
                 id: response.userId,
                 username: response.username
             });
+
+			// Connect to WebSocket with the new token
+			WebSocketManager.connect(response.access);
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
@@ -251,6 +261,26 @@ class AuthCard extends HTMLElement {
 		registerButton.classList.remove("fade");
 		this.displayMode = "home";
 	}
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "login") {
+            if (newValue === "true" || newValue === "True")
+            {
+                this.login = true;
+                this.primaryButton = translate("auth", "loginButton")
+                this.secundaryButton = translate("auth", "registerButton")
+				this.backButton = "Back";
+            }
+            else
+            {
+				this.login = false;
+                this.primaryButton = translate("auth", "registerButton")
+                this.secundaryButton = translate("auth", "loginButton")
+				this.backButton = "Back";
+            }
+        }
+        this.render();
+    }
 
     render() {
         this.hideNav();
@@ -373,20 +403,20 @@ class AuthCard extends HTMLElement {
 				<button id="login-button">LOGIN</button>
 				<button id="register-button">REGISTER</button>
 				<section id="login-section" style="display:none;" class="fade">
-					<input id="username-login-input" class="usernameInput" placeholder="username" required/>
-					<input id="password-login-input" class="passwordInput" placeholder="password" type="Password" requiredj>
+					<input id="username-login-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
+					<input id="password-login-input" class="passwordInput" placeholder="${this.passwordPlaceholder}" type="Password">
 					<div class="buttons-container">
-						<button id="submit-login" class="submit-button">Submit</button>
-						<button class="back-to-main-button">Back</button>
+						<button id="submit-login" class="submit-button">${this.primaryButton}</button>
+						<button class="back-to-main-button">${this.backButton}</button>
 					</div>
 				</section>
 				<section id="register-section" style="display:none;" class="fade">
-					<input id="username-register-input" class="usernameInput" placeholder="username"/>
-					<input id="password-register-input" class="passwordInput password-register" placeholder="password" type="Password">
-					<input class="password-confirmation-input passwordInput password-register" placeholder="confirm password" type="Password">
+					<input id="username-register-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
+					<input id="password-register-input" class="passwordInput password-register" placeholder="${this.passwordPlaceholder}" type="Password">
+					<input class="password-confirmation-input passwordInput password-register" placeholder="${this.passwordConfirmationPlaceholder}" type="Password">
 					<div class="buttons-container">
-						<button id="submit-register" class="submit-button">Submit</button>
-						<button class="back-to-main-button">Back</button>
+						<button id="submit-register" class="submit-button">${this.primaryButton}</button>
+						<button class="back-to-main-button">${this.backButton}</button>
 					</div>
 				</section>
 			</div>

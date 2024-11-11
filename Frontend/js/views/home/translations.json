@@ -1,0 +1,50 @@
+{
+    "gamePlay": {
+        "en-US": "GAME PLAY",
+        "pt-PT": "JOGO",
+        "pt-BR": "JOGAR",
+        "de-DE": "SPIELVERLAUF",
+        "ne-NP": "खेल",
+        "uk-UA": "ГРА"
+    },
+    "A.I.": {
+        "en-US": "A.I.",
+        "pt-PT": "I.A.",
+        "pt-BR": "I.A.",
+        "de-DE": "K.I.",
+        "ne-NP": "ए.आई.",
+        "uk-UA": "Ш.І."
+    },
+    "inviteFriends": {
+        "en-US": "INVITE A FRIEND",
+        "pt-PT": "CONVIDAR UM AMIGO",
+        "pt-BR": "CONVIDE UM AMIGO",
+        "de-DE": "FREUND EINLADEN",
+        "ne-NP": "मित्रलाई निमन्त्रणा गर्नुहोस्",
+        "uk-UA": "ЗАПРОСИТИ ДРУГА"
+    },
+    "tournament": {
+        "en-US": "TOURNAMENT",
+        "pt-PT": "TORNEIO",
+        "pt-BR": "TORNEIO",
+        "de-DE": "TURNIER",
+        "ne-NP": "प्रतियोगिता",
+        "uk-UA": "ТУРНІР"
+    },
+    "chatRoom": {
+        "en-US": "CHAT ROOM",
+        "pt-PT": "SALA DE CHAT",
+        "pt-BR": "SALA DE CHAT",
+        "de-DE": "CHATRAUM",
+        "ne-NP": "च्याट कोठा",
+        "uk-UA": "ЧАТ-КІМНАТА"
+    },
+    "leaderboard": {
+        "en-US": "LEADERBOARD",
+        "pt-PT": "PLACAR",
+        "pt-BR": "PLACAR",
+        "de-DE": "BESTENLISTE",
+        "ne-NP": "नेतृत्व तालिका",
+        "uk-UA": "ТУРНІРНА ТАБЛИЦЯ"
+    }
+}

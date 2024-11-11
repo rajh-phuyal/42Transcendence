@@ -5,8 +5,13 @@ import { $id } from '../abstracts/dollars.js';
 // bind store and auth singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
+import call from '../abstracts/call.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
+//import loading from '../abstracts/loading.js'; TODO this should be added later
+import dollars from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
 
-const objectToBind = (config) => {
+const objectToBind = (config, params = null) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
 
@@ -21,6 +26,12 @@ const objectToBind = (config) => {
     binder.router = router;
     binder.$store = $store;
     binder.$auth = $auth;
+    binder.routeParams = params;
+    binder.translate = translate;
+    binder.call = call;
+	binder.webSocketManager = WebSocketManager;
+   // binder.loading = loading;
+    binder.domManip = dollars;
 
     return binder;
 }
@@ -37,16 +48,28 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null) {
-    setViewLoading(true); // later this responsibility will the that of the view
+    setViewLoading(true); // TODO: later this responsibility will the that of the view
 
-    if ($auth.isUserAuthenticated() && path === '/auth') {
+    const userAuthenticated = await $auth.isUserAuthenticated();
+
+    if (userAuthenticated && path === '/auth') {
         path = '/home';
     }
 
-    if (!$auth.isUserAuthenticated() && path !== '/auth') {
+    if (!userAuthenticated && path !== '/auth') {
         path = '/auth';
-        params = { login: true };
+        params = { login: true }; // TODO: maybe we can remove this with issue #73
     }
+    // if (!params) {
+    //     const paramsString = window.location.href;
+    //     console.log(paramsString);
+    //     const searchParams = new URLSearchParams(paramsString);
+    //     params = {};
+    //     for (const [key, value] of searchParams) {
+    //         params[key] = value;
+    //         console.log(key, value)
+    //     }
+    // }
 
     const viewContainer = $id('router-view');
 
@@ -59,7 +82,7 @@ async function router(path, params = null) {
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
-    const viewConfigWithoutHooks = objectToBind(viewHooks);
+    const viewConfigWithoutHooks = objectToBind(viewHooks, params);
 
     // get the hooks of the last view and call the beforeRouteLeave hook
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);

@@ -38,17 +38,24 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # [astein:] DO WE NEED ALL OF THEM? THEY CREATE A LOT OF TABLES IN THE DATABASE
 # @RAJH: please review :)
 INSTALLED_APPS = [
+	# Core Django Apps
     'django.contrib.admin', 			# [astein:] needed for migrations
     'django.contrib.auth',
     'django.contrib.contenttypes',		# [astein:] required for the auth app
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	
+	# Third-party Apps
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+	'channels',
+
+	# Custom Apps
     'authentication',
     'user',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -62,9 +69,12 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+# TODO instead of using this:
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost"
+    "https://localhost:443",
+    "http://127.0.0.1:8000"
 ]
+
 
 ROOT_URLCONF = 'app.urls'
 
@@ -84,8 +94,18 @@ TEMPLATES = [
     },
 ]
 
+# This is for HTTP requests
 WSGI_APPLICATION = 'app.wsgi.application'
 
+# We need this for DJANGO CHANNELS!
+ASGI_APPLICATION = 'app.asgi.application'
+
+# This is the default channel layer configuration #TODO change it to redis later
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -104,6 +124,9 @@ DATABASES = {
     }
 }
 
+# Media for the user profile pictures aka avatars
+MEDIA_ROOT = '/media'  # Path in the Docker container
+MEDIA_URL = '/media/'  # URL prefix for media files
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -170,4 +193,5 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
+    
 }
