@@ -5,6 +5,7 @@ import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
 import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
+import $auth from '../../auth/authentication.js';
 
 export default {
     attributes: {
@@ -216,55 +217,37 @@ export default {
                 height: 208
             });
             
+            croppedCanvas.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append('avatar', blob, 'avatar.png');  // 'avatar' should match the key expected by the API
             
-
-            // croppedCanvas.toBlob(async (blob) => {
-            //     const formData = new FormData();
-            //     formData.append('avatar', blob, 'avatar.png'); // Append file to FormData
-        
-            //     try {
-            //         console.log(formData);
-            //         const response = await fetch('user/update-avatar/', {
-            //             method: 'POST',
-            //             body: formData
-            //         });
-                
-            //         if (!response.ok) {
-            //             throw new Error(`HTTP error! Status: ${response.status}`);
-            //         }
-                
-            //         const responseData = await response.json();
-            //         console.log('Upload successful:', responseData);
-            //     } catch (error) {
-            //         console.error('Upload failed:', error);
-            //     }
-                
-            // }, 'image/png');
-            // croppedCanvas.toBlob(async (blob) => {
-            //     // Create a FormData object
-            //     const formData = new FormData();
-            //     formData.append('avatar', blob, 'avatar.png'); // Add file with key 'avatar'
-        
-            //     // Call API with FormData
-            //     try {
-            //         const response = await call('user/update-avatar/', 'POST', formData);
-            //         console.log('Upload successful:', response);
-            //     } catch (error) {
-            //         console.error('Upload failed:', error);
-            //     }
-            // }, 'image/png'); // Specify image type as 'image/png' or 'image/jpeg'
-
-            // let croppedImageUrl = croppedCanvas.toDataUrl('image/png');
-            // console.log(croppedImageUrl);
-            // call('user/update-avatar/', 'POST', { avatar: croppedImageUrl});
-            // console.log("element:", croppedImageElement);
-            // this.showElement(croppedImageElement);
-
-
-            let uploadedImageElement = $id("edit-profile-modal-avatar-change-uploaded-image");
-            let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
-            let imageSrc = uploadedImageElement.src;
-            croppedImageElement.src = croppedCanvas.toDataURL(imageSrc);
+                // Send the form data with fetch
+                fetch('https://localhost/api/user/update-avatar/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        // You may need to include authorization headers if required by your API
+                        'Authorization': $auth.getAuthHeader(),
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }, 'image/png');
+            
+            // let uploadedImageElement = $id("edit-profile-modal-avatar-change-uploaded-image");
+            // let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
+            // let imageSrc = uploadedImageElement.src;
+            // croppedImageElement.src = croppedCanvas.toDataURL(imageSrc);
 
             
         },
