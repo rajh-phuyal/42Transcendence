@@ -23,6 +23,7 @@ export default {
         },
         result: undefined,
         frendshipStateIndex: undefined,
+        // TODO: delete the blocker state, the this.result already has this info
         blockerState: false,
         cropper: undefined,
 
@@ -319,7 +320,29 @@ export default {
         
         logoutMethod() {
             router("/logout");
-        }
+        },
+
+        changeFrendshipPrimaryMethod() {
+            // TODO refactor the code in a way that the object is saved as a atrubute and used in the other funtion that uses the objects array
+            const object = buttonObjects[frendshipStateIndex];
+            call(object.Url, object.method, { action: object.action, target_id: this.result.id })
+
+        },
+
+        changeFrendshipSecundaryMethod() {
+            call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id })
+        },
+
+        changeBlockMethod() {
+            let object;
+
+            if (this.result.relationship.isBlocking)
+                object = buttonObjects[5];
+            else
+                object = buttonObjects[4];
+
+            call(object.Url, object.method, { action: object.action, target_id: this.result.id })
+        },
 
     },
 

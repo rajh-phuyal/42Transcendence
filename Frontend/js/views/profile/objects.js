@@ -5,6 +5,9 @@ export const buttonObjects = [
         secundaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
+        method: "DELETE",
+        Url: "user/relationship/",
+        action: "remove",
     },
     // users are not friends
     {
@@ -12,6 +15,9 @@ export const buttonObjects = [
         secundaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
+        method: "POST",
+        Url: "user/relationship/",
+        action: "send",
     },
     // friend request received
     {
@@ -19,22 +25,35 @@ export const buttonObjects = [
         secundaryButton: true,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
+        method: "PUT",
+        Url: "user/relationship/",
+        action: "accept",
+        // DELETE reject
     },
     // friend request sent
     {
-        text: "Do you want to remove your friend request?",
+        text: "Do you want to cancel your friend request?",
         secundaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
+        method: "DELETE",
+        Url: "user/relationship/",
+        action: "cancel",
     },
     // block user
     {
         text: "Do you want to block this user?",
         leftButtonMethod: undefined,
+        method: "POST",
+        Url: "user/relationship/",
+        action: "block",
     },
     // unblock user
     {
         text: "Do you want to unblock this user?",
         leftButtonMethod: undefined,
+        method: "DELETE",
+        Url: "user/relationship/",
+        action: "unblock",
     }
 ]
