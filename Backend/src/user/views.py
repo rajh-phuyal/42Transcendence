@@ -298,3 +298,44 @@ class UpdateAvatarView(APIView):
 
         # Return the success response with the avatar URL
         return Response(result, status=status.HTTP_200_OK)
+    
+class UpdateUserInfoView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        # Get the user object
+        user = request.user
+
+        # Get the new user info from the request data
+        new_username = request.data.get('username')
+        new_first_name = request.data.get('firstName')
+        new_last_name = request.data.get('lastName')
+        new_language = request.data.get('language')
+
+        # Check if all fields are not empty
+        if not new_username or not new_first_name or not new_last_name or not new_language:
+            return Response({'error': 'All fields must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        # Check if the new username is valid
+        # TODO: Wait for issue #108
+
+        # Check if the language is valid
+        valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
+        if new_language not in valid_languages:
+            return Response({'error': 'Invalid language'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Update the user info
+        user.username = new_username
+        user.first_name = new_first_name
+        user.last_name = new_last_name
+        user.language = new_language
+
+        # Save the user object
+        try:
+            user.save()
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return the success response
+        return Response({'success': 'User info updated'}, status=status.HTTP_200_OK)
