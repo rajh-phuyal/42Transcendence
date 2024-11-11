@@ -131,10 +131,14 @@ export default {
         },
 
         profileEditMethod() {
-            this.hideElement("edit-profile-modal-form");   
             this.hideElement("edit-profile-modal-avatar-change");   
             this.hideElement("edit-profile-modal-password-change");
-            this.showElement("edit-profile-modal-autentication");
+            this.showElement("edit-profile-modal-form");
+
+            $id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
+            $id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
+            $id("edit-profile-modal-form-input-username").value = this.result.username;
+            $id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
             
 
             let modalElement = $id("edit-profile-modal");
@@ -142,28 +146,11 @@ export default {
             modal.show();
         },
 
-        editProfileFormAuthentication() {
-            // to show error message
-            // let element = $id("edit-profile-modal-autentication-error");
-            // element.style.display = "block";
-
-            const password = $id("edit-profile-modal-autentication-input").value;
-            console.log(password);
-
-            // TODO call password entrypoint
-
-            $id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
-            $id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
-            $id("edit-profile-modal-form-input-username").value = this.result.username;
-            $id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
-            this.hideElement("edit-profile-modal-autentication");   
-            this.showElement("edit-profile-modal-form");
-        },
-
         changePasswordMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-password-change");
         },
+
         changeAvatarMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-avatar-change");
@@ -283,9 +270,11 @@ export default {
         },
 
         submitNewPassword() {
+            const oldPassword = $id("edit-profile-modal-password-change-input-old-password").value;
             const newPassword = $id("edit-profile-modal-password-change-input-new-password").value;
             const repeatPassword = $id("edit-profile-modal-password-change-input-repeat-password").value;
             
+            console.log("new password:", oldPassword);
             console.log("new password:", newPassword);
             console.log("rep password:", repeatPassword);
 
@@ -346,8 +335,6 @@ export default {
             $off(element, "click", this.buttonTopMiddle.method);
             element = $id("button-top-right");
             $off(element, "click", this.buttonTopRight.method);
-            element = $id("edit-profile-modal-autentication-submit-button");
-            $off(element, "click", this.editProfileFormAuthentication);
             element = $id("edit-profile-modal-form-change-password-button");
             $off(element, "click", this.changePasswordMethod);
             element = $id("edit-profile-modal-form-change-avatar-button");
@@ -399,9 +386,7 @@ export default {
                     $on(element, "click", this.buttonTopRight.method);
                 }
 
-                let element = $id("edit-profile-modal-autentication-submit-button");
-                $on(element, "click", this.editProfileFormAuthentication);
-                element = $id("edit-profile-modal-form-change-password-button");
+                let element = $id("edit-profile-modal-form-change-password-button");
                 $on(element, "click", this.changePasswordMethod);
                 element = $id("edit-profile-modal-form-change-avatar-button");
                 $on(element, "click", this.changeAvatarMethod);
