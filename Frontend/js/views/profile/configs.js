@@ -209,45 +209,47 @@ export default {
             let element = $id("edit-profile-modal-avatar-change-file-input");
             element.click();
         },
-        
-        cropImage() {
+
+        callFormData(blob) {
+            const formData = new FormData();
+            formData.append('avatar', blob, 'avatar.png');
             
+            fetch('https://localhost/api/user/update-avatar/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Authorization': $auth.getAuthHeader(),
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                console.log('Success:', data);
+                let modalElement = $id("edit-profile-modal");
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+                router('/profile', { id: $store.fromState("user").id});
+
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        },
+
+        submitAvatar() {
+            
+            // Extract the cropped portion of the selected image
             const croppedCanvas = this.cropper.getCroppedCanvas({
                 width: 186,
                 height: 208
             });
-            
-            croppedCanvas.toBlob((blob) => {
-                const formData = new FormData();
-                formData.append('avatar', blob, 'avatar.png');  // 'avatar' should match the key expected by the API
-            
-                // Send the form data with fetch
-                fetch('https://localhost/api/user/update-avatar/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        // You may need to include authorization headers if required by your API
-                        'Authorization': $auth.getAuthHeader(),
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Success:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            }, 'image/png');
-            
-            // let uploadedImageElement = $id("edit-profile-modal-avatar-change-uploaded-image");
-            // let croppedImageElement = $id("edit-profile-modal-avatar-change-cropped-image");
-            // let imageSrc = uploadedImageElement.src;
-            // croppedImageElement.src = croppedCanvas.toDataURL(imageSrc);
+
+
+            // prepare image to send to backend
+            croppedCanvas.toBlob(this.callFormData, 'image/png');
+
+
 
             
         },
@@ -343,7 +345,7 @@ export default {
             element = $id("edit-profile-modal-avatar-change-file-input");
             $off(element, "change", this.extractFile);
             element = $id("edit-profile-modal-avatar-change-crop-image");
-            $off(element, "click", this.cropImage);
+            $off(element, "click", this.submitAvatar);
             element = $id("edit-profile-modal-form-submit-button");
             $off(element, "click", this.submitForm);
             element = $id("edit-profile-modal-password-change-submit-button");
@@ -396,7 +398,7 @@ export default {
                 element = $id("edit-profile-modal-avatar-change-file-input");
                 $on(element, "change", this.extractFile);
                 element = $id("edit-profile-modal-avatar-change-crop-image");
-                $on(element, "click", this.cropImage);
+                $on(element, "click", this.submitAvatar);
                 element = $id("edit-profile-modal-form-submit-button");
                 $on(element, "click", this.submitForm);
                 element = $id("edit-profile-modal-password-change-submit-button");
