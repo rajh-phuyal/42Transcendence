@@ -4,12 +4,45 @@ import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 // TODO put the css styling in a css file (for all web components)
 
+const eventListenersConfig = [
+	{
+		id: "login-button",
+		event: "click",
+		callback: "loginButtonClick",
+	},
+	{
+		id: "register-button",
+		event: "click",
+		callback: "registerButtonClick"
+	},
+	{
+		class: ".submit-button",
+		event: "click",
+		callback: "submitClick"
+	},
+	{
+		class: ".back-to-main-button",
+		event: "click",
+		callback: "backButtonClick"
+	},
+	{
+		class: ".usernameInput",
+		event: "keypress",
+		callback: "handleKeyPress"
+	},
+	{
+		class: ".passwordInput",
+		event: "keypress",
+		callback: "handleKeyPress"
+	}
+];
 
 class AuthCard extends HTMLElement {
 	
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+		this.displayMode = "home";
     }
 
     static get observedAttributes() {
@@ -28,26 +61,96 @@ class AuthCard extends HTMLElement {
 
     connectedCallback() {
         this.render();
-        const primaryButtonElement = this.shadow.getElementById("primaryButton");
-        primaryButtonElement.addEventListener('click', this.primaryButtonclick.bind(this));
-        const secondaryButtonElement = this.shadow.getElementById("secundaryButton");
-        secondaryButtonElement.addEventListener('click', this.secondaryButtonclick.bind(this));
-        const inputElement1 = this.shadow.getElementById("usernameInput");
-        inputElement1.addEventListener('keypress', this.handleKeyPress.bind(this));
-        const inputElement2 = this.shadow.getElementById("passwordInput");
-        inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
+
+		for (let config of eventListenersConfig) {
+			if (config.id) {
+				const element = this.shadow.getElementById(config.id);
+				element.addEventListener(config.event, this[config.callback].bind(this));
+			} else {
+				const elements = this.shadow.querySelectorAll(config.class);
+				elements.forEach((element) => {
+					element.addEventListener(config.event, this[config.callback].bind(this));
+				});
+			}
+		}
     }
 
-    primaryButtonclick(){
-        const usernameField = this.shadow.getElementById("usernameInput");
-        const passwordField = this.shadow.getElementById("passwordInput");
+	loginErrorMessages(username, password) {
+		let errorMsg = "";
+		if (username.value === "" || username.value === null) {
+			username.style.border = "2px solid red";
+			errorMsg += "username field";
+		}
+		if (password.value === "" || password.value === null) {
+			password.style.border = "2px solid red";
+			if (errorMsg.length != 0)
+				errorMsg += " and ";
+			errorMsg += "password field"
+		}
+		if (errorMsg.length != 0) {
+			errorMsg += " must be filled";
+			window.alert(errorMsg);
+		}
+		return (errorMsg.length != 0);
+	}
+
+	regiterErrorMessages(username, password, passwordConfirmation) {
+		let errorMsg = "";
+		switch (true) {
+			case username.value === "" || username.value === null:
+				username.style.border = "2px solid red";
+				errorMsg += "username field";
+			case password.value === "" || password.value === null:
+				password.style.border = "2px solid red";
+				if (errorMsg.length != 0)
+					errorMsg += " and ";
+				errorMsg += "password field";
+			case passwordConfirmation.value === "" || passwordConfirmation.value === null:
+				passwordConfirmation.style.border = "2px solid red";
+				if (errorMsg.length != 0)
+					errorMsg += " and ";
+				errorMsg += "password confirmation field";
+				break ;
+			case password.value != passwordConfirmation.value:
+				password.style.border = "2px solid red";
+				passwordConfirmation.style.border = "2px solid red";
+				if (errorMsg.length != 0)
+					errorMsg += " and ";
+				errorMsg += "passwords do not match";
+				break ;
+			default:
+				break ;
+		}
+		if (errorMsg.length != 0) {
+			errorMsg += " must be filled";
+			window.alert(errorMsg);
+		}
+		return (errorMsg.length != 0);
+	}
+
+    submitClick() {
+		let usernameField;
+		let passwordField;
+
+		if (this.displayMode === "login") {
+			usernameField = this.shadow.getElementById("username-login-input");
+			passwordField = this.shadow.getElementById("password-login-input");
+			if (this.loginErrorMessages(usernameField, passwordField))
+					return ;
+		} else if (this.displayMode === "register") {
+			usernameField = this.shadow.getElementById("username-register-input");
+			passwordField = this.shadow.querySelectorAll(".password-register");
+			if (this.regiterErrorMessages(usernameField, passwordField[0], passwordField[1]))
+				return ;
+			passwordField = passwordField[0];
+		}
 
         // todo: block if empty and other validations
 
-        usernameField.blur();
-        passwordField.blur();
+        // usernameField.blur();
+        // passwordField.blur();
 
-        const authAction = this.login ? "authenticate" : "createUser";
+        const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
             console.log("auth response:", response);
@@ -72,42 +175,82 @@ class AuthCard extends HTMLElement {
             console.error(error);
         })
         .finally(() => {
-            usernameField.value = "";
-            passwordField.value = "";
+            // usernameField.value = "";
+            // passwordField.value = "";
         });
     }
 
-    secondaryButtonclick(){
-        let temp = this.primaryButton;
-        this.primaryButton = this.secundaryButton;
-        this.secundaryButton = temp;
-        this.login = !this.login;
-        this.connectedCallback();
+    handleKeyPress(event) {
+		if (event.key === 'Enter')
+			this.submitClick();
+		if (event.target.classList.contains("usernameInput")
+			|| event.target.classList.contains("passwordInput"))
+			event.target.style.border = "3px solid #FFF6D4";
     }
 
-    handleKeyPress(event){
+	delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-        if (event.key !== 'Enter')
-            return ;
-        this.primaryButtonclick();
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "login") {
-            if (newValue === "true" || newValue === "True")
-            {
-                this.login = true;
-                this.primaryButton = "LOGIN";
-                this.secundaryButton = "REGISTER";
-            }
-            else
-            {
-                this.login = false;
-                this.primaryButton = "REGISTER";
-                this.secundaryButton = "LOGIN";
-            }
-        }
-        this.render();
-    }
+	async loginButtonClick() {
+		const loginButton = this.shadow.getElementById("login-button");
+		const registerButton = this.shadow.getElementById("register-button");
+		const loginSection = this.shadow.getElementById("login-section");
+
+		loginButton.classList.add("fade");
+		registerButton.classList.add("fade");
+
+		await this.delay(1000);
+
+		loginButton.style.display = "none";
+		registerButton.style.display = "none";
+		loginSection.style.display = "flex";
+
+		await this.delay(100);
+		loginSection.classList.remove("fade");
+		this.displayMode = "login";
+	}
+
+	async registerButtonClick() {
+		const loginButton = this.shadow.getElementById("login-button");
+		const registerButton = this.shadow.getElementById("register-button");
+		const registerSection = this.shadow.getElementById("register-section");
+
+		loginButton.classList.add("fade");
+		registerButton.classList.add("fade");
+
+		await this.delay(1000);
+		loginButton.style.display = "none";
+		registerButton.style.display = "none";
+		registerSection.style.display = "flex";
+
+		await this.delay(100);
+		registerSection.classList.remove("fade");
+		this.displayMode = "register";
+	}
+
+
+	async backButtonClick() {
+		const loginButton = this.shadow.getElementById("login-button");
+		const registerButton = this.shadow.getElementById("register-button");
+		const loginSection = this.shadow.getElementById("login-section");
+		const registerSection = this.shadow.getElementById("register-section");
+
+		loginSection.classList.add("fade");
+		registerSection.classList.add("fade");
+
+		await this.delay(1000);
+
+		loginSection.style.display = "none";
+		registerSection.style.display = "none";
+		loginButton.style.display = "block";
+		registerButton.style.display = "block";
+
+		await this.delay(100);
+		loginButton.classList.remove("fade");
+		registerButton.classList.remove("fade");
+		this.displayMode = "home";
+	}
 
     render() {
         this.hideNav();
