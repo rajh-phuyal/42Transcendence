@@ -51,3 +51,4 @@ class NoCoolWith(models.Model):
 
     class Meta:
         db_table = '"barelyaschema"."no_cool_with"'
+        unique_together = ('blocker', 'blocked')
