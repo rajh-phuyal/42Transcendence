@@ -215,7 +215,7 @@ export default {
             formData.append('avatar', blob, 'avatar.png');
             
             fetch('https://localhost/api/user/update-avatar/', {
-                method: 'POST',
+                method: 'PUT',
                 body: formData,
                 headers: {
                     'Authorization': $auth.getAuthHeader(),
@@ -309,7 +309,12 @@ export default {
             console.log("Username:", username);
             console.log("Language:", language);
 
-            // call("http://127.0.0.1:8000/user/update-user-info/", "PUT", {username: username, firstName: firstName, lastName: lastName, language: language});
+            call("user/update-user-info/", "PUT", {
+                username: username,
+                firstName: firstName, 
+                lastName: lastName, 
+                language: language
+            });
         },
 
         messageMethod() {

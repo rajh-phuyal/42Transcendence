@@ -290,7 +290,7 @@ class UpdateAvatarView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated] #TODO CHANGE THIS LATER
 
-    def post(self, request):
+    def put(self, request):
         # Check if 'avatar' is in request.FILES
         if 'avatar' not in request.FILES:
             return Response({'error': 'Avatar must be provided'}, status=status.HTTP_400_BAD_REQUEST)
