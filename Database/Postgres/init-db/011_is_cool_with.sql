@@ -18,7 +18,10 @@ CREATE TABLE IF NOT EXISTS barelyaschema.is_cool_with
 	status barelyaschema.cool_status NOT NULL DEFAULT 'pending',
 	FOREIGN KEY (requester_id) REFERENCES barelyaschema.user(id),
 	FOREIGN KEY (requestee_id) REFERENCES barelyaschema.user(id),
-	CONSTRAINT unique_relationship UNIQUE (requester_id, requestee_id)
+	CONSTRAINT unique_relationship_pair EXCLUDE USING GIST (
+        LEAST(requester_id, requestee_id) WITH =,
+        GREATEST(requester_id, requestee_id) WITH =
+    )
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

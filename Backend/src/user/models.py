@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from .exceptions import ValidationError
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -27,7 +28,20 @@ class IsCoolWith(models.Model):
 
     class Meta:
         db_table = '"barelyaschema"."is_cool_with"'
-        unique_together = ('requester', 'requestee')  # Enforce the unique constraint in Django
+        unique_together = ('requester', 'requestee')
+        
+    def clean(self):
+        # Check for the existence of a reversed duplicate relationship
+        if IsCoolWith.objects.filter(
+            models.Q(requester=self.requester, requestee=self.requestee) |
+            models.Q(requester=self.requestee, requestee=self.requester)
+        ).exists():
+            raise ValidationError('A relationship between these two users already exists.')
+
+    def save(self, *args, **kwargs):
+        # Validate before saving
+        self.clean()
+        super().save(*args, **kwargs)
 
 # Table: barelyaschema.no_cool_with
 class NoCoolWith(models.Model):
