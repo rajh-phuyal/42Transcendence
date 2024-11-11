@@ -119,95 +119,135 @@ class AuthCard extends HTMLElement {
 				left: 50%;
 				transform: translate(-50%, -31.5%);
 				z-index: 1;
-                display: flex;
-                flex-direction: column;
-                height: 46%;
+                height: 400px;
                 width: 65%;
-				gap: 0.8rem;
+				display: flex;
+				gap: 0.5rem;
+				justify-content: center;
 				align-items: center;
-				justify-content: space-around;
             }
 
-			.main-container > input {
-				position: relative;
-				width: 90%;
-				height: 2rem;
+			#login-button, #register-button {
+				width: 45%;
+				height: 50%;
 				font-size: 1.5rem;
-                font-family: 'Courier';
-                color: #FFF6D4;
-				padding: 1.2rem 0;
-                border: 3px solid #FFF6D4;
-                border-radius: 0.2rem;
-                background-color: #100C09;
-                resize: none;
-                overflow: auto;
-				text-align: center;
+				font-family: 'Courier';
+				font-weight: 700;
+				border-radius: 0.2rem;
+				cursor: pointer;
+				transition: background-color 0.8s ease-out, opacity 1s ease-in-out;
 			}
 
-            .buttons-container{
-                display: flex;
-                flex-direction: row;
-				justify-content: space-around;
-                width: 100%;
-            }
-
-            input:hover{
-                background-color: #201C19;
-            }
-
-            input:focus{
-                background-color: #201C19;
-            }
-            
-            .buttons-container > button {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: 'Courier';
-                font-size: 35px;
-                font-weight: 700;
-                padding: 0.5rem;
-                border-radius: 0.2rem;
-                cursor: pointer;
-                width: 40%;
-                height: 100%;
-                border: 8px double #100C09;
+			#login-button {
+				border: 8px double #100C09;
                 color: #3D3D3D;
                 background-color: #FFFCE6;
-            }
+			}
 
-            .buttons-container > .secundary-button{
-                border: 2px solid #FFFCE6;
+			#login-button:hover {
+				background-color: #dbd8c1;
+			}
+
+			#login-button.fade, #register-button.fade {
+				opacity: 0;
+			}
+
+			#register-button {
+				color: #FFF6D4;
+				background-color: #100C09;
+				border: 3px solid #FFF6D4;
+			}
+
+			#register-button:hover {
+				background-color: #201C19;
+			}
+
+			#login-section, #register-section {
+				width: 90%;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: center;
+				height: 300px;
+				transition: opacity 1s ease-in-out;
+			}
+
+			#login-section.fade, #register-section.fade {
+				opacity: 0;
+			}
+
+			#register-section > input {
+				height: 3.5rem;
+			}
+
+			.usernameInput, .passwordInput, .password-confirmation-input {
+				width: 100%;
+				height: 5rem;
+				font-size: 1.5rem;
+                font-family: 'Courier';
+				font-weight: 700;
+				border-radius: 0.2rem;
+				color: #FFF6D4;
+				border: 3px solid #FFF6D4;
+				background-color: #100C09;
+			}
+
+			.buttons-container {
+				display: flex;
+				gap: 0.5rem;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+			}
+
+			.submit-button, .back-to-main-button {
+				width: 50%;
+				padding: 2rem;
+				font-size: 1rem;
+				font-family: 'Courier';
+				font-weight: 700;
+				border-radius: 0.2rem;
+				cursor: pointer;
+			}
+
+			.submit-button {
+				background-color: #FFFCE6;
+			}
+
+			.back-to-main-button {
+				border: 2px solid #FFFCE6;
                 color: #FFFCE6;
                 background-color: #100C09;
-            }
+				transition: background-color 0.8s ease-out;
+			}
 
-            button:hover{
-                background-color: #EFECD6;
-            }
-
-            button:active{
-                background-color: #DFDCC6;
-            }
-
-            .secundary-button:hover{
-                background-color: #201C19;
-            }
-
-            .secundary-button:active{
-                background-color: #302C29;
-            }
+			.back-to-main-buton:hover {
+				background-color: red;
+			}
             </style>
 
             <div class="main-container">
-				<input id="usernameInput" placeholder="username"/>
-				<input id="passwordInput" placeholder="password" type="Password">
-				<div class="buttons-container">
-					<button id="primaryButton">${this.primaryButton}</button>
-					<button class="secundary-button" id="secundaryButton">${this.secundaryButton}</button>
-				</div>
+				<button id="login-button">LOGIN</button>
+				<button id="register-button">REGISTER</button>
+				<section id="login-section" style="display:none;" class="fade">
+					<input id="username-login-input" class="usernameInput" placeholder="username" required/>
+					<input id="password-login-input" class="passwordInput" placeholder="password" type="Password" requiredj>
+					<div class="buttons-container">
+						<button id="submit-login" class="submit-button">Submit</button>
+						<button class="back-to-main-button">Back</button>
+					</div>
+				</section>
+				<section id="register-section" style="display:none;" class="fade">
+					<input id="username-register-input" class="usernameInput" placeholder="username"/>
+					<input id="password-register-input" class="passwordInput password-register" placeholder="password" type="Password">
+					<input class="password-confirmation-input passwordInput password-register" placeholder="confirm password" type="Password">
+					<div class="buttons-container">
+						<button id="submit-register" class="submit-button">Submit</button>
+						<button class="back-to-main-button">Back</button>
+					</div>
+				</section>
 			</div>
-				`;
+			`;
 		}
 	}
 
