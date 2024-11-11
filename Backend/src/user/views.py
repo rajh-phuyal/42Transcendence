@@ -9,11 +9,12 @@ from django.core.files.base import ContentFile
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
 from .serializers import ProfileSerializer
-from .utils import get_and_validate_data, check_blocking
-from .exceptions import ValidationException, BlockingException
+from .utils import get_and_validate_data
+from .exceptions import ValidationException, BlockingException, RelationshipException
 from django.conf import settings
 import os
 from .utils_img import process_avatar
+from .utils_relationship import check_blocking, is_blocking, is_blocked, are_friends, is_request_sent, is_request_received
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
@@ -23,12 +24,125 @@ class ProfileView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'id'
+
+# ModifyFriendshipView for changing the relationship status between two users
+class RelationshipView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     
+    # 'send' a friend request
+    # 'block' a user
+    def post(self, request):
+        allowed_actions = {'send', 'block'}
+        try:
+            user, target, action = self.validate_data(request, allowed_actions)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            if action == 'send':
+                self.send_request(user, target)
+            elif action == 'block':
+                self.block_user(user, target)
+            else:
+                return Response({'error': 'POST error on endpoint /api/user/relationship/'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 'accept' a friend request
+    def put(self, request):
+        ...
+
+    def delete(self, request):
+        ...
+
+    def validate_data(request, allowed_actions):
+        user = request.user
+        action = request.data.get('action')
+        target = request.data.get('target_id')
+        if not action:
+            raise ValidationException('`action` must be provided')
+        if action not in allowed_actions:
+            raise ValidationException('Invalid action! for method: ' + request.method + '. only the following actions are allowed: ' + ', '.join(allowed_actions))
+        if not target:
+            raise ValidationException('`target_id` must be provided')
+        if not User.objects.filter(id=target).exists():
+            raise ValidationException('user with `target_id` not found')
+        if user.id == target:
+            raise ValidationException('cannot perform action on yourself')
+        return user, target, action
+    
+    def send_request(user, target):
+        if are_friends(user, target):
+            raise RelationshipException('You are already friends with this user')
+        if is_request_sent(user, target) or is_request_received(user, target):
+            raise RelationshipException('Friend request is already pending')
+        if is_blocking(user, target):
+            raise BlockingException('You have blocked this user, you need to unblock them first')
+        if is_blocked(user, target):
+            raise BlockingException('You have been blocked by this user')
+        new_cool = IsCoolWith(requester=user, requestee=target)
+        new_cool.save()
+
+    def block_user(user, target):
+        if is_blocking(user, target):
+            raise BlockingException('You have already blocked this user')
+        new_no_cool = NoCoolWith(blocker=user, blocked=target)
+        new_no_cool.save()
+    
+    def accept_request(user, target):
+        ...
+
+    def cancel_request(user, target):
+        ...
+
+    def reject_request(user, target):
+        ...
+
+    def remove_friend(user, target):
+        ...
+    
+    def unblock_user(user, target):
+        ...
+
 class FriendRequestView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # functionality: accept and reject friend requests
+    # functionality: SEND friend request
+    def post(self, request):
+        action = request.data.get('action')
+
+        if not action or action not in ['send']:
+            return Response({'error': 'Invalid action. POST valid action is "send"'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
+            
+            # Check blocking status
+            check_blocking(requestee_id, requester.id)
+
+            return self.send_friend_request(request, requester, requestee_id)
+        
+        except (BlockingException, ValidationException) as e:
+            return Response({'error': getattr(e, 'detail', str(e))}, status=getattr(e, 'status_code', status.HTTP_400_BAD_REQUEST))
+
+    # functionality: CANCEL friend request
+    def delete(self, request):
+        action = request.data.get('action')
+
+        try:
+            if not action or action not in ['cancel']:
+                return Response({'error': 'Invalid action. DELETE valid action is "cancel"'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            requester_id, requestee_id = get_and_validate_data(request, action, 'requestee_id')
+            
+            return self.cancel_friend_request(request, requester_id, requestee_id)
+
+        except ValidationException as e:
+            return Response(e.detail, status=e.status_code)
+        
+    # functionality: ACCEPT and REJECT friend requests
     def put(self, request):
         action = request.data.get('action')
 
@@ -49,38 +163,9 @@ class FriendRequestView(APIView):
             return Response({'error': getattr(e, 'detail', str(e))}, status=getattr(e, 'status_code', status.HTTP_400_BAD_REQUEST))
         
 
-    # functionality: send friend request
-    def post(self, request):
-        action = request.data.get('action')
+   
 
-        if not action or action not in ['send']:
-            return Response({'error': 'Invalid action. POST valid action is "send"'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            requester, requestee_id = get_and_validate_data(request, action, 'requestee_id')
-            
-            # Check blocking status
-            check_blocking(requestee_id, requester.id)
-
-            return self.send_friend_request(request, requester, requestee_id)
-        
-        except (BlockingException, ValidationException) as e:
-            return Response({'error': getattr(e, 'detail', str(e))}, status=getattr(e, 'status_code', status.HTTP_400_BAD_REQUEST))
-
-    # functionality: cancel friend request
-    def delete(self, request):
-        action = request.data.get('action')
-
-        try:
-            if not action or action not in ['cancel']:
-                return Response({'error': 'Invalid action. DELETE valid action is "cancel"'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            requester_id, requestee_id = get_and_validate_data(request, action, 'requestee_id')
-            
-            return self.cancel_friend_request(request, requester_id, requestee_id)
-
-        except ValidationException as e:
-            return Response(e.detail, status=e.status_code)
+    
 
 
     def send_friend_request(self, request, requester, requestee_id):

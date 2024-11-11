@@ -1,12 +1,6 @@
 from rest_framework import serializers
 from .models import User
-from .utils import get_relationship_status
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username']
-# 
+from .utils_relationship import get_relationship_status
 
 # This will prepare the data to be sent to the frontend as JSON
 class ProfileSerializer(serializers.ModelSerializer):
