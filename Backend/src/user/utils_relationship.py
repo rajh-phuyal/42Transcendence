@@ -3,14 +3,20 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
 from rest_framework.response import Response
-from .models import User, IsCoolWith, NoCoolWith, CoolStatus
-from .exceptions import ValidationException, BlockingException
+from .models import IsCoolWith, NoCoolWith, CoolStatus
+from .exceptions import BlockingException
 
 def is_blocking(doer, target):
     return NoCoolWith.objects.filter(blocker=doer, blocked=target).exists()
     
 def is_blocked(doer, target):
     return NoCoolWith.objects.filter(blocker=target, blocked=doer).exists()
+    
+def check_blocking(requestee_id, requester_id):
+    if is_blocked(requester_id, requestee_id):
+        raise BlockingException(detail='You have been blocked by this user.')
+    if is_blocking(requester_id, requestee_id):
+        raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
     
 def are_friends(doer, target):
     relation_1_2 = IsCoolWith.objects.filter(requester=doer, requestee=target, status=CoolStatus.ACCEPTED).exists()
@@ -25,13 +31,6 @@ def is_request_sent(doer, target):
 def is_request_received(doer, target):
     return IsCoolWith.objects.filter(requester=target, requestee=doer, status=CoolStatus.PENDING).exists()
 
-def check_blocking(requestee_id, requester_id):
-    if is_blocked(requester_id, requestee_id):
-        raise BlockingException(detail='You have been blocked by this user.')
-
-    # Check if the requester has blocked the requestee
-    if is_blocking(requester_id, requestee_id):
-        raise BlockingException(detail='You have blocked this user, you need to unblock them first.')
     
 # This checks the relationship status between two users
 # from the perspective of requester towards requested

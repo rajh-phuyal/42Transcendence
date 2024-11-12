@@ -17,11 +17,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.is_cool_with
 	requestee_id INT NOT NULL,
 	status barelyaschema.cool_status NOT NULL DEFAULT 'pending',
 	FOREIGN KEY (requester_id) REFERENCES barelyaschema.user(id),
-	FOREIGN KEY (requestee_id) REFERENCES barelyaschema.user(id),
-	CONSTRAINT unique_relationship_pair EXCLUDE USING GIST (
-        LEAST(requester_id, requestee_id) WITH =,
-        GREATEST(requester_id, requestee_id) WITH =
-    )
+	FOREIGN KEY (requestee_id) REFERENCES barelyaschema.user(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
@@ -30,6 +26,9 @@ ALTER TABLE IF EXISTS barelyaschema.is_cool_with OWNER to "${POSTGRES_USER}";
 -- Index: idx_is_cool_with
 DROP INDEX IF EXISTS idx_is_cool_with;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_is_cool_with 
-ON barelyaschema.is_cool_with USING btree(requester_id, requestee_id);
+ON barelyaschema.is_cool_with (
+    LEAST(requester_id, requestee_id),
+    GREATEST(requester_id, requestee_id)
+);
 
 \! echo -e "\e[1m END of 011_is_cool_with.sql \e[0m"

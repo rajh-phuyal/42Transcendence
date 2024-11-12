@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from .exceptions import ValidationError
+from django.core.exceptions import ValidationError
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -31,7 +31,9 @@ class IsCoolWith(models.Model):
         unique_together = ('requester', 'requestee')
         
     def clean(self):
-        # Check for the existence of a reversed duplicate relationship
+        if self.pk:
+            return
+        # Check for the existence of a reversed duplicate relationship (if new entry)
         if IsCoolWith.objects.filter(
             models.Q(requester=self.requester, requestee=self.requestee) |
             models.Q(requester=self.requestee, requestee=self.requester)
