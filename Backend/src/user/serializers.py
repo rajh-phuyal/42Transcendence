@@ -1,5 +1,6 @@
+from django.db.models import Q
+from .models import User, IsCoolWith
 from rest_framework import serializers
-from .models import User
 from .utils_relationship import get_relationship_status
 
 # This will prepare the data to be sent to the frontend as JSON
@@ -21,7 +22,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-				# id and username are the same key than in the model.py, thats why i dont need them in the above section
+                # id and username are the same key than in the model.py, thats why i dont need them in the above section
         fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
     
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
@@ -54,3 +55,26 @@ class ProfileSerializer(serializers.ModelSerializer):
                 "total": 0.50
             }
         }
+
+class FriendListSerializer(serializers.ModelSerializer):
+    avatarUrl = serializers.CharField(source='avatar_path', default='default_avatar.png')
+    online = serializers.BooleanField(source='is_active', default=False)
+    status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'avatarUrl', 'online', 'status']
+    
+    def get_status(self, obj):
+        # Retrieve the user from the URL (passed to serializer context by the view)
+        url_user = self.context['request'].user
+        WROGN USER HERE!
+
+        # Check the relationship status where the URL user is either requester or requestee
+        try:
+            relationship = IsCoolWith.objects.get(
+                (Q(requester=url_user, requestee=obj) | Q(requester=obj, requestee=url_user))
+            )
+            return relationship.status
+        except IsCoolWith.DoesNotExist:
+            return None  # No relationship found

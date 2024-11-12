@@ -4,12 +4,13 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, FriendListSerializer
 from .exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -212,34 +213,33 @@ class RelationshipView(APIView):
                 raise BlockingException('You have not blocked this user')
             no_cool.delete()
 
-class ListFriendsView(APIView):
+class ListFriendsView(generics.ListAPIView):  # Change to ListAPIView to return a list of friends
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = FriendListSerializer
 
-    def get(self, request,id):
-        user_id = id
+    def get_queryset(self):
+        # Retrieve the user from the URL parameter
+        user_id = self.kwargs.get("id")
+        user = get_object_or_404(User, id=user_id)
 
-        if not user_id:
-            return Response({'error': 'User ID must be provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        friendships = IsCoolWith.objects.filter(
-           (Q(requester_id=user_id) | Q(requestee_id=user_id)) & Q(status=CoolStatus.ACCEPTED)
-        )
+        # Query for relationships where the user is either requester or requestee
+        cool_relationships = IsCoolWith.objects.filter(
+            Q(requester=user) | Q(requestee=user)
+        ).select_related('requester', 'requestee')
 
-        friends_list = []
+        # Extract the friends (other user in each relationship)
+        friend_users = [
+            relationship.requestee if relationship.requester == user else relationship.requester
+            for relationship in cool_relationships
+        ]
 
-        for friendship in friendships:
-            if friendship.requester_id == int(user_id):
-                friend = friendship.requestee
-            else:
-                friend = friendship.requester
-        
-            friends_list.append({
-                'id': friend.id,
-                'username': friend.username,
-            })
+        return friend_users
 
-        return Response({'friends': friends_list}, status=status.HTTP_200_OK)
+    def list(self, request, *args, **kwargs):
+        friend_users = self.get_queryset()
+        serializer = FriendListSerializer(friend_users, many=True, context={'request': request})
+        return Response(serializer.data)
    
 class UpdateAvatarView(APIView):
     authentication_classes = [JWTAuthentication]
