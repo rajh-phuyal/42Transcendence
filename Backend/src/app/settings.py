@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 
 	# Custom Apps
     'authentication',
-    'user',
+    'user.apps.UserConfig',
     'chat',
 ]
 
