@@ -1,21 +1,28 @@
 from asgiref.sync import sync_to_async  # Needed to run ORM queries in async functions
 import json
+from django.utils import timezone
 from chat.models import Message, Conversation
 from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import AnonymousUser #TODO: delete later!
 import logging
+from django.core.cache import cache
+from user.models import User
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
     # TODO: review the logic below
     async def connect(self):
         logging.info("Opening WebSocket connection...")
-		# Ensure user is authenticated
+        # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():
             logging.error("User is not authenticated.")
             await self.close()
         else:
+            user_id = self.scope['user'].id
+            # Set the user's online status in cache
+            cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes
+
             # TODO: move to chat logic
             # Get the conversations the user is part of asynchronously
 #            user_conversations = await self.get_user_conversations(self.scope['user'])
@@ -43,7 +50,23 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 #            'global_notifications',
 #            self.channel_name
 #        )
-        ...
+
+        # Get user
+        if self.scope['user'] == AnonymousUser():
+            logging.error("User is not authenticated.")
+            await self.close()
+        else:
+            user = self.scope['user']
+            # Set the last login time for the user
+            await sync_to_async(user.update_last_seen)()
+            # Remove the user's online status from cache
+            cache.delete(f'user_online_{user.id}')
+            logging.info(f"User {user.id} marked as offline.")
+            ...
+
+    def update_user_last_seen(self, user):
+        user.last_seen = timezone.now()
+        user.save(update_fields=['last_seen'])
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
