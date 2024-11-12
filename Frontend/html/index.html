@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/cropper/cropper.css">
     <link rel="icon" href="./assets/barelyALogo.png" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 </head>
@@ -53,6 +54,17 @@
                 </div>
                 <div class="toast-body">
                     <span class="mystic-symbol">Δ</span> Welcome back, Seeker. The gates are open.
+                </div>
+            </div>
+            <div id="error-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="toast-symbol">👁️</span>
+                    <strong class="me-auto">Message from the Overseers</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <span class="mystic-symbol" >Δ</span> 
+                    <span id="error-toast-message" >Δ</span> 
                 </div>
             </div>
         </div>

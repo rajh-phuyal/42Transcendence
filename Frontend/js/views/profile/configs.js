@@ -3,6 +3,9 @@ import { $id, $on, $queryAll, $off } from '../../abstracts/dollars.js';
 import { populateInfoAndStats } from './script.js';
 import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
+import Cropper from '../../libraries/cropperjs/cropper.esm.js'
+import $store from '../../store/store.js';
+import $auth from '../../auth/authentication.js';
 
 export default {
     attributes: {
@@ -20,7 +23,9 @@ export default {
         },
         result: undefined,
         frendshipStateIndex: undefined,
+        // TODO: delete the blocker state, the this.result already has this info
         blockerState: false,
+        cropper: undefined,
 
         buttonSettings: {
             friend: {
@@ -63,6 +68,7 @@ export default {
         },
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
+                this.buttonTopMiddle.method = this.profileEditMethod;
                 this.buttonTopMiddle.image = "../../../../assets/profileView/penIcon.png";
             }
             else {
@@ -120,6 +126,37 @@ export default {
             let element = $id(elementId)
             element.style.display = "none";
         },
+        showElement(elementId){
+            let element = $id(elementId)
+            element.style.display = "block";
+        },
+
+        profileEditMethod() {
+            this.hideElement("edit-profile-modal-avatar-change");   
+            this.hideElement("edit-profile-modal-password-change");
+            this.showElement("edit-profile-modal-form");
+
+            $id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
+            $id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
+            $id("edit-profile-modal-form-input-username").value = this.result.username;
+            $id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
+            
+
+            let modalElement = $id("edit-profile-modal");
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        },
+
+        changePasswordMethod() {
+            this.hideElement("edit-profile-modal-form");
+            this.showElement("edit-profile-modal-password-change");
+        },
+
+        changeAvatarMethod() {
+            this.hideElement("edit-profile-modal-form");
+            this.showElement("edit-profile-modal-avatar-change");
+            this.hideElement("edit-profile-modal-avatar-change-crop-image");
+        },
 
         friendshipMethod() {
 
@@ -156,13 +193,156 @@ export default {
             modal.show();
         },
 
+        openFileExplorer() {
+            let element = $id("edit-profile-modal-avatar-change-file-input");
+            element.click();
+        },
+
+        callFormData(blob) {
+            const formData = new FormData();
+            formData.append('avatar', blob, 'avatar.png');
+            
+            fetch('https://localhost/api/user/update-avatar/', {
+                method: 'PUT',
+                body: formData,
+                headers: {
+                    'Authorization': $auth.getAuthHeader(),
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                console.log('Success:', data);
+                let modalElement = $id("edit-profile-modal");
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+                router('/profile', { id: $store.fromState("user").id});
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        },
+
+        submitAvatar() {
+            
+            // Extract the cropped portion of the selected image
+            const croppedCanvas = this.cropper.getCroppedCanvas({
+                width: 186,
+                height: 208
+            });
+
+
+            // prepare image to send to backend
+            croppedCanvas.toBlob(this.callFormData, 'image/png');
+
+
+
+            
+        },
+
+        extractFile(event) {
+            const file = event.target.files[0]; // Get the selected file
+            if (file) {
+                const reader = new FileReader(); // Create a FileReader to read the file
+
+                reader.onload = e => {
+                    let uploadedImage = $id("edit-profile-modal-avatar-change-uploaded-image");
+                    uploadedImage.src = e.target.result; // Set the src to the image data
+                    uploadedImage.style.display = 'block'; // Make the img tag visible
+
+                    // Initialize Cropper after the image has fully loaded
+                    uploadedImage.onload = () => {
+                        // Destroy any previous Cropper instance before creating a new one
+                        if (this.cropper) {
+                            this.cropper.destroy();
+                        }
+                
+                        this.cropper = new Cropper(uploadedImage, {
+                            aspectRatio: 0.894, // Adjust aspect ratio as needed
+                            viewMode: 1,
+                        });
+                        this.showElement("edit-profile-modal-avatar-change-crop-image");
+                    };
+                };
+
+                reader.readAsDataURL(file); // Read the file as a data URL
+            }
+        },
+
+        submitNewPassword() {
+            const oldPassword = $id("edit-profile-modal-password-change-input-old-password").value;
+            const newPassword = $id("edit-profile-modal-password-change-input-new-password").value;
+            const repeatPassword = $id("edit-profile-modal-password-change-input-repeat-password").value;
+            
+            console.log("new password:", oldPassword);
+            console.log("new password:", newPassword);
+            console.log("rep password:", repeatPassword);
+
+            if (newPassword !== repeatPassword)
+                console.log("Error: Passwords dont match");
+            else
+                console.log("Success! Password changed!!");
+        },
+
+        submitForm() {
+            
+
+            const firstName = $id("edit-profile-modal-form-input-first-name").value;
+            const lastName = $id("edit-profile-modal-form-input-last-name").value;
+            const username = $id("edit-profile-modal-form-input-username").value;
+            const language = $id("edit-profile-modal-form-language-selector").value;
+
+            console.log("First name:", firstName);
+            console.log("Last name:", lastName);
+            console.log("Username:", username);
+            console.log("Language:", language);
+
+            call("user/update-user-info/", "PUT", {
+                username: username,
+                firstName: firstName, 
+                lastName: lastName, 
+                language: language
+            }).then(data => {
+                console.log('Success:', data);
+                let modalElement = $id("edit-profile-modal");
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+                router('/profile', { id: $store.fromState("user").id});
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        },
+
         messageMethod() {
             router("/chat");
         },
         
         logoutMethod() {
             router("/logout");
-        }
+        },
+
+        changeFrendshipPrimaryMethod() {
+            // TODO refactor the code in a way that the object is saved as a atrubute and used in the other funtion that uses the objects array
+            const object = buttonObjects[frendshipStateIndex];
+            call(object.Url, object.method, { action: object.action, target_id: this.result.id })
+
+        },
+
+        changeFrendshipSecundaryMethod() {
+            call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id })
+        },
+
+        changeBlockMethod() {
+            let object;
+
+            if (this.result.relationship.isBlocking)
+                object = buttonObjects[5];
+            else
+                object = buttonObjects[4];
+
+            call(object.Url, object.method, { action: object.action, target_id: this.result.id })
+        },
 
     },
 
@@ -172,9 +352,27 @@ export default {
         },
 
         beforeRouteLeave() {
+            let element = $id("button-top-left");
             $off(element, "click", this.buttonTopLeft.method);
+            element = $id("button-top-middle");
             $off(element, "click", this.buttonTopMiddle.method);
+            element = $id("button-top-right");
             $off(element, "click", this.buttonTopRight.method);
+            element = $id("edit-profile-modal-form-change-password-button");
+            $off(element, "click", this.changePasswordMethod);
+            element = $id("edit-profile-modal-form-change-avatar-button");
+            $off(element, "click", this.changeAvatarMethod);
+            element = $id("edit-profile-modal-avatar-change-upload-button");
+            $off(element, "click", this.openFileExplorer);
+            element = $id("edit-profile-modal-avatar-change-file-input");
+            $off(element, "change", this.extractFile);
+            element = $id("edit-profile-modal-avatar-change-crop-image");
+            $off(element, "click", this.submitAvatar);
+            element = $id("edit-profile-modal-form-submit-button");
+            $off(element, "click", this.submitForm);
+            element = $id("edit-profile-modal-password-change-submit-button");
+            $off(element, "click", this.submitNewPassword);
+
         },
 
         beforeDomInsertion() {
@@ -210,6 +408,23 @@ export default {
                     let element = $id("button-top-right");
                     $on(element, "click", this.buttonTopRight.method);
                 }
+
+                let element = $id("edit-profile-modal-form-change-password-button");
+                $on(element, "click", this.changePasswordMethod);
+                element = $id("edit-profile-modal-form-change-avatar-button");
+                $on(element, "click", this.changeAvatarMethod);
+                element = $id("edit-profile-modal-avatar-change-upload-button");
+                $on(element, "click", this.openFileExplorer);
+                element = $id("edit-profile-modal-avatar-change-file-input");
+                $on(element, "change", this.extractFile);
+                element = $id("edit-profile-modal-avatar-change-crop-image");
+                $on(element, "click", this.submitAvatar);
+                element = $id("edit-profile-modal-form-submit-button");
+                $on(element, "click", this.submitForm);
+                element = $id("edit-profile-modal-password-change-submit-button");
+                $on(element, "click", this.submitNewPassword);
+                
+                
             })
             // on error?
         },
