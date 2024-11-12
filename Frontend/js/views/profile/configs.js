@@ -172,8 +172,11 @@ export default {
         },
 
         beforeRouteLeave() {
+			let element = $id("button-top-left");
             $off(element, "click", this.buttonTopLeft.method);
+			element = $id("button-top-middle");
             $off(element, "click", this.buttonTopMiddle.method);
+			element = $id("button-top-right");
             $off(element, "click", this.buttonTopRight.method);
         },
 
