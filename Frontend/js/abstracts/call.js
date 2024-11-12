@@ -17,7 +17,8 @@ async function call(url, method, data) {
     let payload = {
         method: method,
         headers: headers,
-        ...(method !== 'GET' && method !== 'DELETE') ? {
+        // TODO why (method !== 'GET' && method !== 'DELETE')?? @rajh
+        ...(url == "user/relationship/" || (method !== 'GET' && method !== 'DELETE')) ? {
             body: JSON.stringify(data),
         } : {},
     };
@@ -30,7 +31,13 @@ async function call(url, method, data) {
 
         try {
             const errorData = await response.json();
-            errorMessage = "Error: " + errorData.detail || 'Request failed';
+            
+            if (errorData.error)
+                errorMessage = "Error: " + errorData.error;
+            else if (errorData.detail)
+                errorMessage = "Error: " + errorData.detail;
+            else
+                errorMessage = 'Request failed';
         } catch (e) {
             // If parsing the JSON fails, fall back to a generic message
             errorMessage = 'Request failed';

@@ -9,11 +9,11 @@ function populateUserInfo(res) {
     let lastSeenImg =$id("last-seen-image");
 
     if (res.online) {
-        lastSeenText.textContent = "Last seen: " + res.lastLogin;
+        lastSeenText.textContent = "Last seen: Under surveillance";
         lastSeenImg.src = "../../../../assets/onlineIcon.png";
     }
     else {
-        lastSeenText.textContent = "Last seen: Under surveillance";
+        lastSeenText.textContent = "Last seen: " + res.lastLogin;
         lastSeenImg.src = "../../../../assets/offlineIcon.png";
     }
     let language =$id("language");

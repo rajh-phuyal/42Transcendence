@@ -22,7 +22,7 @@ export default {
             method: undefined,
         },
         result: undefined,
-        frendshipStateIndex: undefined,
+        friendshipStateIndex: undefined,
         // TODO: delete the blocker state, the this.result already has this info
         blockerState: false,
         cropper: undefined,
@@ -59,7 +59,7 @@ export default {
                 {
                     this.buttonTopLeft.method = this.friendshipMethod;
                     this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
-                    this.frendshipStateIndex = this.buttonSettings[this.result.relationship.state].index;
+                    this.friendshipStateIndex = this.buttonSettings[this.result.relationship.state].index;
                     if (this.result.relationship.isBlocking) {
                         this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
                         this.blockerState = true;
@@ -126,6 +126,13 @@ export default {
             let element = $id(elementId)
             element.style.display = "none";
         },
+
+        hideModal(modalToHide) {
+            let modalElement = $id(modalToHide);
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+        },
+
         showElement(elementId){
             let element = $id(elementId)
             element.style.display = "block";
@@ -166,17 +173,16 @@ export default {
             else
                 blockIndex = 4;
 
-
             // friendship portion of the modal
             let element = $id("friendshp-modal-friendship-text")
-            element.textContent = buttonObjects[this.frendshipStateIndex].text;
+            element.textContent = buttonObjects[this.friendshipStateIndex].text;
             if (this.result.relationship.state == "noFriend" && this.result.relationship.isBlocked)
             {
                 element.style.display = "none";
                 this.hideElement("friendship-modal-friendship-primary-button");
             }
 
-            if (!buttonObjects[this.frendshipStateIndex].secundaryButton)
+            if (!buttonObjects[this.friendshipStateIndex].secundaryButton)
                 this.hideElement("friendship-modal-friendship-secundary-button");
 
             // blocking portion of the friendshop modal
@@ -215,9 +221,8 @@ export default {
                 return response.json();
             }).then(data => {
                 console.log('Success:', data);
-                let modalElement = $id("edit-profile-modal");
-                const modal = bootstrap.Modal.getInstance(modalElement);
-                modal.hide();
+                this.hideModal("edit-profile-modal");
+                this.callToat(data.success);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -232,13 +237,8 @@ export default {
                 height: 208
             });
 
-
             // prepare image to send to backend
             croppedCanvas.toBlob(this.callFormData, 'image/png');
-
-
-
-            
         },
 
         extractFile(event) {
@@ -322,15 +322,34 @@ export default {
             router("/logout");
         },
 
+        callToat(SuccessMessage) {
+            const errorToast = $id('error-toast');
+            const errorToastMsg = $id('error-toast-message');
+            
+            if (!SuccessMessage)
+                SuccessMessage = 'Sucess!!';
+            errorToastMsg.textContent = SuccessMessage;
+            new bootstrap.Toast(errorToast, { autohide: true, delay: 10000 }).show();
+        },
+
         changeFrendshipPrimaryMethod() {
             // TODO refactor the code in a way that the object is saved as a atrubute and used in the other funtion that uses the objects array
-            const object = buttonObjects[frendshipStateIndex];
-            call(object.Url, object.method, { action: object.action, target_id: this.result.id })
+            const object = buttonObjects[this.friendshipStateIndex];
 
+            call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
+                this.hideModal("friendship-modal");
+                this.callToat(data.success);
+                router('/profile', { id: this.result.id});
+            })
         },
 
         changeFrendshipSecundaryMethod() {
-            call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id })
+            call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
+                this.hideModal("friendship-modal");
+                this.callToat(data.success);
+                router('/profile', { id: this.result.id});
+            })
+            
         },
 
         changeBlockMethod() {
@@ -341,7 +360,11 @@ export default {
             else
                 object = buttonObjects[4];
 
-            call(object.Url, object.method, { action: object.action, target_id: this.result.id })
+            call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
+                this.hideModal("friendship-modal");
+                this.callToat(data.success);
+                router('/profile', { id: this.result.id});
+            })
         },
 
     },
@@ -372,6 +395,12 @@ export default {
             $off(element, "click", this.submitForm);
             element = $id("edit-profile-modal-password-change-submit-button");
             $off(element, "click", this.submitNewPassword);
+            element = $id("friendship-modal-friendship-primary-button");
+            $on(element, "click", this.changeFrendshipPrimaryMethod);
+            element = $id("friendship-modal-friendship-secundary-button");
+            $on(element, "click", this.changeFrendshipSecundaryMethod);
+            element = $id("friendship-modal-block-button");
+            $on(element, "click", this.changeBlockMethod);
 
         },
 
@@ -423,8 +452,12 @@ export default {
                 $on(element, "click", this.submitForm);
                 element = $id("edit-profile-modal-password-change-submit-button");
                 $on(element, "click", this.submitNewPassword);
-                
-                
+                element = $id("friendship-modal-friendship-primary-button");
+                $on(element, "click", this.changeFrendshipPrimaryMethod);
+                element = $id("friendship-modal-friendship-secundary-button");
+                $on(element, "click", this.changeFrendshipSecundaryMethod);
+                element = $id("friendship-modal-block-button");
+                $on(element, "click", this.changeBlockMethod);
             })
             // on error?
         },
