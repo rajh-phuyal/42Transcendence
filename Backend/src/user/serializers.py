@@ -1,8 +1,6 @@
 from django.db.models import Q
 from .models import User, IsCoolWith, CoolStatus
 from rest_framework import serializers
-from .models import User
-from .utils import get_relationship_status
 from django.core.cache import cache
 from .utils_relationship import get_relationship_status
 

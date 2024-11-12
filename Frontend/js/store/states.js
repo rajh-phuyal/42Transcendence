@@ -9,5 +9,6 @@ export const state = {
         refresh: undefined,
     },
     locale: 'en-US',
-    translations: {}
+    translations: {},
+    webSocketIsAlive: false,
 };

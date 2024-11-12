@@ -6,6 +6,7 @@ import router from '../../navigation/router.js';
 import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
+import $callToast from '../../abstracts/callToast.js';
 
 export default {
     attributes: {
@@ -222,7 +223,7 @@ export default {
             }).then(data => {
                 console.log('Success:', data);
                 this.hideModal("edit-profile-modal");
-                this.callToat(data.success);
+                $callToast("success", data.success);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -305,7 +306,7 @@ export default {
                 language: language
             }).then(data => {
                 this.hideModal("edit-profile-modal");
-                this.callToat(data.success);
+                $callToast("success", data.success);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -320,23 +321,13 @@ export default {
             router("/logout");
         },
 
-        callToat(SuccessMessage) {
-            const errorToast = $id('error-toast');
-            const errorToastMsg = $id('error-toast-message');
-            
-            if (!SuccessMessage)
-                SuccessMessage = 'Sucess!!';
-            errorToastMsg.textContent = SuccessMessage;
-            new bootstrap.Toast(errorToast, { autohide: true, delay: 10000 }).show();
-        },
-
         changeFrendshipPrimaryMethod() {
             // TODO refactor the code in a way that the object is saved as a atrubute and used in the other funtion that uses the objects array
             const object = buttonObjects[this.friendshipStateIndex];
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                this.callToat(data.success);
+                $callToast("success", data.success);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -346,7 +337,7 @@ export default {
         changeFrendshipSecundaryMethod() {
             call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                this.callToat(data.success);
+                $callToast("success", data.success);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -364,7 +355,7 @@ export default {
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                this.callToat(data.success);
+                $callToast("success", data.success);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);

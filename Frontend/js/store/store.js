@@ -5,16 +5,21 @@ import { $getLocal, $setLocal } from '../abstracts/dollars.js';
 
 class Store {
     constructor(initialState, mutations, actions) {
-        this.state = { ...initialState };
+        this.initialState = initialState;
+        this.mutations = mutations;
+        this.actions = actions;
+        this.mutationListeners = [];
+        this.initializer();
+    }
 
+    initializer() {
+        this.state = { ...this.initialState };
+        
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
-
-        this.actions = actions;
-        this.mutations = mutations;
-
-        this.mutationListeners = [];
+        
+        console.log("putas", this.state);
     }
 
     fromState(key) {
@@ -28,16 +33,16 @@ class Store {
         });
     }
 
-    notifyListeners(mutationName) {
+    notifyListeners(mutationName, newState) {
         this.mutationListeners
             .filter(listener => listener.mutationName === mutationName)
-            .forEach(listener => listener.action(this.state));
+            .forEach(listener => listener.action(newState));
     }
 
     commit(mutationName, value) {
         this.mutations[mutationName]?.onUpdate(this.state, value);
 
-        this.notifyListeners(mutationName);
+        this.notifyListeners(mutationName, value);
 
         if (!this.mutations[mutationName]?.presistence) return;
 

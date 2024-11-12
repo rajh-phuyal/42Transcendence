@@ -1,6 +1,7 @@
 // abstract out the fetch api to make it easier to call the api
 import $auth from '../auth/authentication.js';
 import { $id } from './dollars.js'
+import $callToast from './callToast.js';
 
 async function call(url, method, data) {
     // TODO: WHY IS THERE API IN THE URL? [astein is asking :D]
@@ -10,7 +11,10 @@ async function call(url, method, data) {
         'Content-Type': 'application/json'
     };
 
-    if ($auth.getAuthHeader() && $auth.isUserAuthenticated()) {
+    console.log("is authenticated: ", await $auth.isUserAuthenticated());
+    console.log("get user auth header: ", $auth.getAuthHeader());
+
+    if ($auth.getAuthHeader() && await $auth.isUserAuthenticated()) {
         headers['Authorization'] = $auth.getAuthHeader();
     }
 
@@ -42,17 +46,13 @@ async function call(url, method, data) {
             // If parsing the JSON fails, fall back to a generic message
             errorMessage = 'Request failed';
         }
-
-        const errorToast = $id('error-toast');
-        const errorToastMsg = $id('error-toast-message');
         
         console.log("Error message:", errorMessage);
         if (!errorMessage)
             errorMessage = 'Request failed';
-        errorToastMsg.textContent = errorMessage;
 
+        $callToast("error", errorMessage)
 
-        new bootstrap.Toast(errorToast, { autohide: true, delay: 10000 }).show();
         throw new Error(errorMessage);
     }
 
