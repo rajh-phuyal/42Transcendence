@@ -304,10 +304,8 @@ export default {
                 lastName: lastName, 
                 language: language
             }).then(data => {
-                console.log('Success:', data);
-                let modalElement = $id("edit-profile-modal");
-                const modal = bootstrap.Modal.getInstance(modalElement);
-                modal.hide();
+                this.hideModal("edit-profile-modal");
+                this.callToat(data.success);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -340,7 +338,9 @@ export default {
                 this.hideModal("friendship-modal");
                 this.callToat(data.success);
                 router('/profile', { id: this.result.id});
-            })
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
         },
 
         changeFrendshipSecundaryMethod() {
@@ -348,7 +348,9 @@ export default {
                 this.hideModal("friendship-modal");
                 this.callToat(data.success);
                 router('/profile', { id: this.result.id});
-            })
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
             
         },
 
@@ -364,7 +366,9 @@ export default {
                 this.hideModal("friendship-modal");
                 this.callToat(data.success);
                 router('/profile', { id: this.result.id});
-            })
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
         },
 
     },
