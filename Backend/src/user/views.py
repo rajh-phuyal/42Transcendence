@@ -152,6 +152,10 @@ class RelationshipView(APIView):
 
     # Logic for blocking a user:
     def block_user(self, user, target):
+        if target.id == 1:
+            raise BlockingException('Try harder...LOL')
+        if target.id == 2:
+            raise BlockingException('Computer says no')
         if is_blocking(user, target):
             raise BlockingException('You have already blocked this user')
         new_no_cool = NoCoolWith(blocker=user, blocked=target)
@@ -193,6 +197,8 @@ class RelationshipView(APIView):
 
     # Logic for removing a friend:
     def remove_friend(self, user, target):
+        if target.id == 2:
+            raise RelationshipException('Computer says no')
         with transaction.atomic():
             cool_status = IsCoolWith.objects.select_for_update().filter(
                 (Q(requester=user) & Q(requestee=target)) |
