@@ -33,17 +33,17 @@ class ProfileView(generics.RetrieveAPIView):
 # Endpoint: /api/user/relationship/
 #
 # The possible actions are:
-#  | METHOD    | ACTION    | ARGUMENTS   | USE CASE                 |
-#  |-----------|-----------|-------------|--------------------------|
-#  | POST      | 'send'    | 'target_id' | Send a friend request    |
-#  | POST      | 'block'   | 'target_id' | Block a user             |    
-#  |           |           |             |                          |
-#  | PUT       | 'accept'  | 'target_id' | Accept a friend request  |
-#  |           |           |             |                          |
-#  | DELETE    | 'cancel'  | 'target_id' | Cancel a friend request  |
-#  | DELETE    | 'reject'  | 'target_id' | Reject a friend request  |
-#  | DELETE    | 'remove'  | 'target_id' | Remove a friend          |
-#  | DELETE    | 'unblock' | 'target_id' | Unblock a user           |
+#  | METHOD    | ACTION    | ARGUMENTS             | USE CASE                 |
+#  |-----------|-----------|-----------------------|--------------------------|
+#  | POST      | 'send'    | 'action', 'target_id' | Send a friend request    |
+#  | POST      | 'block'   | 'action', 'target_id' | Block a user             |
+#  |           |           |                       |                          |
+#  | PUT       | 'accept'  | 'action', 'target_id' | Accept a friend request  |
+#  |           |           |                       |                          |
+#  | DELETE    | 'cancel'  | 'action', 'target_id' | Cancel a friend request  |
+#  | DELETE    | 'reject'  | 'action', 'target_id' | Reject a friend request  |
+#  | DELETE    | 'remove'  | 'action', 'target_id' | Remove a friend          |
+#  | DELETE    | 'unblock' | 'action', 'target_id' | Unblock a user           |
 #
 # =============================================================================
 class RelationshipView(APIView):
