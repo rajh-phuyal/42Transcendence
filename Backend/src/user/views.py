@@ -4,13 +4,12 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
-from .serializers import ProfileSerializer, FriendListSerializer
+from .serializers import ProfileSerializer, ListFriendsSerializer
 from .exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -213,33 +212,19 @@ class RelationshipView(APIView):
                 raise BlockingException('You have not blocked this user')
             no_cool.delete()
 
-class ListFriendsView(generics.ListAPIView):  # Change to ListAPIView to return a list of friends
+class ListFriendsView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = FriendListSerializer
 
-    def get_queryset(self):
-        # Retrieve the user from the URL parameter
-        user_id = self.kwargs.get("id")
-        user = get_object_or_404(User, id=user_id)
+    def get(self, request, id):
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Query for relationships where the user is either requester or requestee
-        cool_relationships = IsCoolWith.objects.filter(
-            Q(requester=user) | Q(requestee=user)
-        ).select_related('requester', 'requestee')
-
-        # Extract the friends (other user in each relationship)
-        friend_users = [
-            relationship.requestee if relationship.requester == user else relationship.requester
-            for relationship in cool_relationships
-        ]
-
-        return friend_users
-
-    def list(self, request, *args, **kwargs):
-        friend_users = self.get_queryset()
-        serializer = FriendListSerializer(friend_users, many=True, context={'request': request})
-        return Response(serializer.data)
+        cool_with_entries = IsCoolWith.objects.filter(Q(requester=user) | Q(requestee=user))
+        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'user_id': user.id})
+        return Response(serializer.data, status=status.HTTP_200_OK)
    
 class UpdateAvatarView(APIView):
     authentication_classes = [JWTAuthentication]
