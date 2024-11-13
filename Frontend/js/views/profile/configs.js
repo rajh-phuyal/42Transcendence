@@ -25,7 +25,6 @@ export default {
         result: undefined,
         friendshipStateIndex: undefined,
         // TODO: delete the blocker state, the this.result already has this info
-        blockerState: false,
         cropper: undefined,
 
         buttonSettings: {
@@ -63,7 +62,6 @@ export default {
                     this.friendshipStateIndex = this.buttonSettings[this.result.relationship.state].index;
                     if (this.result.relationship.isBlocking) {
                         this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
-                        this.blockerState = true;
                     }
                 }
         },
@@ -169,7 +167,7 @@ export default {
         friendshipMethod() {
 
             let blockIndex;
-            if (this.blockerState)
+            if (this.result.relationship.isBlocking)
                 blockIndex = 5;
             else
                 blockIndex = 4;
@@ -177,7 +175,7 @@ export default {
             // friendship portion of the modal
             let element = $id("friendshp-modal-friendship-text")
             element.textContent = buttonObjects[this.friendshipStateIndex].text;
-            if (this.result.relationship.state == "noFriend" && this.result.relationship.isBlocked)
+            if (this.result.relationship.state == "noFriend" && (this.result.relationship.isBlocked || this.result.relationship.isBlocking))
             {
                 element.style.display = "none";
                 this.hideElement("friendship-modal-friendship-primary-button");
