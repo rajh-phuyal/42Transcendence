@@ -4,6 +4,7 @@ class BarelyAButton extends HTMLElement
     {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        this.height = 4
     }
 
     static get observedAttributes()
@@ -23,6 +24,10 @@ class BarelyAButton extends HTMLElement
             this.name = newValue;
         else if (name === "route")
             this.route = newValue;
+        else if (name === "pixa")
+        {
+            this.height = newValue;
+        }
         else if (name === "method")
             this.method = newValue;
         else if (name === "datapayload")
@@ -66,13 +71,11 @@ class BarelyAButton extends HTMLElement
                     align-items: justify;
                     font-weight: 700;
                     color: #FFFCE6;
-                    height: 30px;
+                    height: ${this.height}vh;
                     width: 150px;
                     margin: 15px;
                     padding: 3px;
-                    border: 2px solid  #595959;
-                    border-radius: 8px;
-                    background-color: #3D3D3D;
+                    background-color: #000000;
                     cursor: pointer;
                 }
 

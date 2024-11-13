@@ -80,7 +80,6 @@
           </div>
         </div>
       </div>
-
     </div>
     <!-- Edit Profile Modal -->
     <div class="modal fade" id="edit-profile-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -168,12 +167,118 @@
         </div>
       </div>
     </div>
+    <!-- Invite for game Modal -->
+    <div class="modal fade" id="invite-for-game-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="invite-for-game-modal-content">
+          <div class="modal-body" id="invite-for-game-modal-body">
+            <div id="invite-for-game-modal-title-container">
+              <h1 id="invite-for-game-modal-title">Friendly Match</h1>
+            </div>
+            <div id="invite-for-game-modal-maps-powerups-container">
+              <div id="invite-for-game-modal-powerups-container">
+                <span>Powerups</span>
+                <input type="checkbox">
+              </div>
+              <div id="invite-for-game-modal-maps-container">
+                <h3>Maps</h3>
+                <img id="invite-for-game-modal-map-ufo" class="maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lizard-people" class="maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-snowman" class="maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lochness" class="maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
+              </div>
+            </div>
+            <h3 id="invite-for-game-modal-opponent-title-container">Your Opponent</h3>
+            <div id="invite-for-game-modal-opponent-start-container">
+              <img id="invite-for-game-modal-opponent-photo" alt="error loading the image">
+              <barely-a-button id="invite-for-game-modal-start-button"  buttonclass="rect-button" name="START" pixa="10"></barely-a-button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 <style>
     #profie-view {
         height: 100%;
         background-color: #ff00ff6c;
         color: black;
     }
+
+
+    /* Invite for Game  */
+    
+    #invite-for-game-modal-start-button {
+      margin: 0vh 0vw 0vh 5vw;
+    }
+
+    #invite-for-game-modal-title-container {
+      margin: 19vh 0vw 0vh 0vw;
+      
+    }
+    
+    #invite-for-game-modal-maps-powerups-container {
+      display: flex;
+      flex-direction: row;
+    }
+
+    #invite-for-game-modal-powerups-container {
+      margin: 30vh 0vw 0vh 2vw;
+    }
+
+    #invite-for-game-modal-maps-container {
+      display: flex;
+      flex-direction: column;
+      margin: 0vh 0vw 0vh 12.5vw;
+      padding: 0vh 0vw 0vh 0.3vw;
+    }
+    
+    #invite-for-game-modal-title {
+      text-align: center;
+    }
+
+    .maps-button {
+      margin: 0vh 0vw 1vh 0.3vw;
+      height: 7vh;
+      width: 7vh;
+    }
+
+    #invite-for-game-modal-content {
+      background-color: transparent; 
+      border: none;
+      background-image: url('../assets/homeView/lizardPeopleModal.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #invite-for-game-modal-body {
+      display: flex;
+      flex-direction: column;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 90vh;
+      width: 30vw;
+    }
+    
+    #invite-for-game-modal-opponent-title-container {
+      margin: 1vh 0vw 0vh 1.5vw;
+    }
+
+    #invite-for-game-modal-opponent-start-container {
+      display: flex;
+      flex-direction: row;
+      margin: 1vh 0vw 0vh 1.5vw;
+    }
+
+    #invite-for-game-modal-opponent-photo {
+      height: 12vh;
+      margin: 0vh 0vw 0vh 2vw;
+    }
+
+
 
     /* Edit Profile */
 

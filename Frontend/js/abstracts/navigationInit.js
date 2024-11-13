@@ -10,7 +10,7 @@ export default function $nav() {
         { id: 'tournament-nav', path: '/tournament' },
         { id: 'chat-nav', path: '/chat' },
         { id: 'logout-nav', path: '/logout' },
-        { id: 'profile-nav', path: '/profile', params: { id: $store.fromState("user").id } },
+        { id: 'profile-nav', path: '/profile', params: { id: 2 } },
         { id: 'login-nav', path: '/auth', params: { login: true } },
         { id: 'register-nav', path: '/auth', params: { login: false } }
     ];

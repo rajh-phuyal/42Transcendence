@@ -82,6 +82,7 @@ export default {
             }
             else if (this.result.relationship.state == "friend" && !this.result.relationship.isBlocking && !this.result.relationship.isBlocked) {
                 this.buttonTopRight.image = "../../../../assets/profileView/invitePongIcon.png";
+                this.buttonTopRight.method = this.openInviteForGameModal;
             }
         },
         putImagesInButtons() {
@@ -352,6 +353,16 @@ export default {
             });
         },
 
+        openInviteForGameModal() {
+
+            $id("invite-for-game-modal-opponent-photo").src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
+
+            console.log("yooo");
+            let modalElement = $id("invite-for-game-modal");
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            
+        },
     },
 
     hooks: {
@@ -417,6 +428,8 @@ export default {
                     let element = $id("button-top-right");
                     $on(element, "click", this.buttonTopRight.method);
                 }
+
+                this.openInviteForGameModal(); // Just for building the modal
 
                 let element = $id("edit-profile-modal-form-change-password-button");
                 $on(element, "click", this.changePasswordMethod);
