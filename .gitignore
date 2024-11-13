@@ -1,7 +1,7 @@
 #TODO: Do we need all those sections?
 
 # SSL KEY!
-.key
+*.key
 
 # Environment-specific files and directories
 Environments/*
