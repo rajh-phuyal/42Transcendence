@@ -11,9 +11,6 @@ async function call(url, method, data) {
         'Content-Type': 'application/json'
     };
 
-    console.log("is authenticated: ", await $auth.isUserAuthenticated());
-    console.log("get user auth header: ", $auth.getAuthHeader());
-
     if ($auth.getAuthHeader() && await $auth.isUserAuthenticated()) {
         headers['Authorization'] = $auth.getAuthHeader();
     }
@@ -26,7 +23,6 @@ async function call(url, method, data) {
             body: JSON.stringify(data),
         } : {},
     };
-	console.log("Full URL: ", fullUrl);
     const response = await fetch(fullUrl, payload);
     
     if (!response.ok) {
@@ -47,7 +43,6 @@ async function call(url, method, data) {
             errorMessage = 'Request failed';
         }
         
-        console.log("Error message:", errorMessage);
         if (!errorMessage)
             errorMessage = 'Request failed';
 

@@ -43,21 +43,6 @@ function populateProgress(res, identity) {
     percentage.textContent = percentageValue + "%";
 }
 
-// function populateButtons(object) {
-//     console.log("object");
-//     console.log(object);
-//     let element = $id("button-top-left");
-//     element.src = object.buttonTopLeftImagePath;
-//     element = $id("button-top-middle");
-//     element.src = object.buttonTopMiddleImagePath;
-//     element = $id("button-top-right");
-//     element.src = object.buttonTopRightImagePath;
-//     element = $id("button-bottom-left");
-//     element.src = "../../../../assets/profileView/gamingHistoryIcon.png";
-//     element = $id("button-bottom-right");
-//     element.src = "../../../../assets/profileView/FriendsListIcon.png";
-// }
-
 function populateInfoAndStats(res) {
     populateUserInfo(res);
     populateStats(res);

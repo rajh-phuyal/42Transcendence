@@ -41,10 +41,9 @@ $store.addMutationListener('setTranslations', (state) => {
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     
-    console.log("state in mutation:", state);
     if (state)
     {
-        console.log("xico is here Web socket is connected!");
+        console.log("Web socket is connected!");
         if (setInervalId){
             $callToast("success", "Connection re-established. What ever...")
             clearInterval(setInervalId);
@@ -52,7 +51,7 @@ $store.addMutationListener('setWebSocketIsAlive', (state) => {
     }
     else
     {
-        console.log("xico is here Web socket is disconnected!");
+        console.log("Web socket is disconnected!");
         if (!setInervalId) {
             if (!$store.fromState('jwtTokens').access)
             {

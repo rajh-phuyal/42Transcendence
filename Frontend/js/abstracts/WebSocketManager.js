@@ -7,7 +7,6 @@ class WebSocketManager {
 
     // Connect to WebSocket with the provided token
     connect(token) {
-		console.log("WebSocketManager.connect() called with token:", token);
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log("WebSocket already connected.");
             return;

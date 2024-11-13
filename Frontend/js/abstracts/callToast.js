@@ -1,8 +1,6 @@
 import { $id } from '../abstracts/dollars.js';
 
 export default function $callToast(type, message) {
-    console.log("type", type);
-    console.log("message", message);
     const toast = $id(`${type}-toast`);
     const toastMsg = $id(`${type}-toast-message`);
     

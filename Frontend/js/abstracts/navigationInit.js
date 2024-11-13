@@ -16,7 +16,6 @@ export default function $nav() {
     ];
     
     for (const route of navigationBarMap) {
-        console.log("yoooo", route.id, route.params, route.path);
         $id(route.id)?.addEventListener('click', () => router(route.path, route.params));
     }
 }

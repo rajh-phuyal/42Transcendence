@@ -57,7 +57,6 @@ class AuthCard extends HTMLElement {
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
             $store.initializer();
-            console.log("auth response:", response);
 
 			// Update the store with the new user data
             $store.commit('setIsAuthenticated', true);

@@ -23,8 +23,6 @@ export default {
             method: undefined,
         },
         result: undefined,
-        friendshipStateIndex: undefined,
-        // TODO: delete the blocker state, the this.result already has this info
         cropper: undefined,
 
         buttonSettings: {
@@ -59,7 +57,6 @@ export default {
                 {
                     this.buttonTopLeft.method = this.friendshipMethod;
                     this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
-                    this.friendshipStateIndex = this.buttonSettings[this.result.relationship.state].index;
                     if (this.result.relationship.isBlocking) {
                         this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
                     }
@@ -168,20 +165,20 @@ export default {
 
             let blockIndex;
             if (this.result.relationship.isBlocking)
-                blockIndex = 5;
+                blockIndex = "unblocked";
             else
-                blockIndex = 4;
+                blockIndex = "blocked";
 
             // friendship portion of the modal
             let element = $id("friendshp-modal-friendship-text")
-            element.textContent = buttonObjects[this.friendshipStateIndex].text;
+            element.textContent = buttonObjects[this.result.relationship.state].text;
             if (this.result.relationship.state == "noFriend" && (this.result.relationship.isBlocked || this.result.relationship.isBlocking))
             {
                 element.style.display = "none";
                 this.hideElement("friendship-modal-friendship-primary-button");
             }
 
-            if (!buttonObjects[this.friendshipStateIndex].secundaryButton)
+            if (!buttonObjects[this.result.relationship.state].secundaryButton)
                 this.hideElement("friendship-modal-friendship-secundary-button");
 
             // blocking portion of the friendshop modal
@@ -292,11 +289,6 @@ export default {
             const username = $id("edit-profile-modal-form-input-username").value;
             const language = $id("edit-profile-modal-form-language-selector").value;
 
-            console.log("First name:", firstName);
-            console.log("Last name:", lastName);
-            console.log("Username:", username);
-            console.log("Language:", language);
-
             call("user/update-user-info/", "PUT", {
                 username: username,
                 firstName: firstName, 
@@ -321,7 +313,7 @@ export default {
 
         changeFrendshipPrimaryMethod() {
             // TODO refactor the code in a way that the object is saved as a atrubute and used in the other funtion that uses the objects array
-            const object = buttonObjects[this.friendshipStateIndex];
+            const object = buttonObjects[this.result.relationship.state];
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
@@ -347,9 +339,9 @@ export default {
             let object;
 
             if (this.result.relationship.isBlocking)
-                object = buttonObjects[5];
+                object = buttonObjects["blocked"];
             else
-                object = buttonObjects[4];
+                object = buttonObjects["unblocked"];
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
@@ -410,12 +402,7 @@ export default {
                 populateInfoAndStats(res);
                 this.populateButtons();
                 if (res.relationship.isBlocked)
-                {
-                    console.log("is blocked");
                     this.blackout();
-                }
-
-                
                 
                 // callback functions
                 if (this.buttonTopLeft.method) {

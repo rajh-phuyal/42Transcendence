@@ -18,8 +18,6 @@ class Store {
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
-        
-        console.log("putas", this.state);
     }
 
     fromState(key) {
