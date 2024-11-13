@@ -1,6 +1,7 @@
 #TODO: Do we need all those sections?
 
 # SSL KEY!
+*.cer
 *.key
 
 # Environment-specific files and directories
