@@ -8,14 +8,11 @@ function populateUserInfo(res) {
     let lastSeenText =$id("last-seen-text");
     let lastSeenImg =$id("last-seen-image");
 
-    if (res.online) {
-        lastSeenText.textContent = "Last seen: Under surveillance";
-        lastSeenImg.src = "../../../../assets/onlineIcon.png";
-    }
-    else {
-        lastSeenText.textContent = "Last seen: " + res.lastLogin;
+    if (res.online)
+        lastSeenImg.src = "../../../../assets/onlineIcon.png"; 
+    else 
         lastSeenImg.src = "../../../../assets/offlineIcon.png";
-    }
+    lastSeenText.textContent = "Last seen: " + res.lastLogin;
     let language =$id("language");
     language.textContent = "language: " + res.language;
 }
