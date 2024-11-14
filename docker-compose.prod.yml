@@ -1,8 +1,7 @@
 # This is the ADDITIONAL configuration settings for all docker services we use for PRODUCTION
 services:
   fe:
-    enviroment:
+    environment:
       - DOMAIN_NAME=$DOMAIN_NAME
     volumes:
       - ./Frontend/ssl:/etc/ssl/privatessl:ro
-      - ./Frontend/nginx/nginx_production.conf:/tmp/nginx:ro

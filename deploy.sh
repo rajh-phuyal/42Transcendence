@@ -22,7 +22,7 @@
 COMPOSE_FILE="docker-compose.main.yml"
 COMPOSE_FILE_PRODUCTION="docker-compose.prod.yml"
 # this will be updated to "-f $COMPOSE_FILE_PRODUCTION" if -p flag is set
-SECOND_COPOSE_FLAG=""
+SECOND_COMPOSE_FLAG=""
 #
 #
 # PARSING THE ARGUMENTS:
@@ -253,10 +253,12 @@ parse_args()
 	for arg in "$@"
 	do
 		if [ "$arg" == "-e" ]; then
+			echo "found flag 'e'"
 			NEW_ENV_PATH=$MSG_MISSING_PATH	# So the call ./deploy.sh start -e will fail (the path is missing)
 			ENV_FLAG_FOUND=true
 		elif [ "$arg" == "-p" ]; then
-			SECOND_COPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
+			echo "found flag 'p'"
+			SECOND_COMPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
 		elif [ "$ENV_FLAG_FOUND" == true ]; then
 			NEW_ENV_PATH=$arg
 			ENV_FLAG_FOUND=false
@@ -322,7 +324,7 @@ check_setup() {
 	check_os
 	check_env_link
 	check_volume_folders
-	if [ -n "$SECOND_COPOSE_FLAG" ]; then
+	if [ -n "$SECOND_COMPOSE_FLAG" ]; then
 		echo ""
 		print_header "${RD}" "!!! DEPLOYING FOR PRODUCTION !!!"${NC}
 		echo -e "${RD}" "\tWebsite reachable at: "${BL}$(url "https://$DOMAIN_NAME" "$DOMAIN_NAME")${NC}
@@ -527,13 +529,13 @@ check_volume_folders()
 # ------------------------------------------------------------------------------
 docker_stop() {
 	print_header "${BL}" "Stopping containers: $CONTAINERS..."
-	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" stop $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" stop $CONTAINERS
 	print_header "${BL}" "Stopping containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_build() {
 	print_header "${BL}" "Building containers: $CONTAINERS"
-	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" build $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" build $CONTAINERS
 	print_header "${BL}" "Building containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -541,7 +543,7 @@ docker_start() {
 	docker_stop
 	docker_build
 	print_header "${BL}" "Starting containers: $CONTAINERS"
-	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" up -d $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" up -d $CONTAINERS
 	print_header "${BL}" "Starting containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -570,7 +572,7 @@ docker_fclean() {
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
 
-	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" down --rmi all --remove-orphans
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" down --rmi all --remove-orphans
 
 	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
 

@@ -1,13 +1,10 @@
 #!/bin/sh
-
-# Set certificate and configuration paths
-FILE_KEY=""
-FILE_CRT=""
+set -e
 
 # Check if environment is production or local
-if [ "$LOCAL_DEPLOY" == TRUE]; then
+if [ "$LOCAL_DEPLOY" == TRUE ]; then
 	echo "Starting in local mode..."
-	FILE_CRT_DIR="/etc/openssl/"
+	LOCAL_CRT_DIR="/etc/openssl/"
 	LOCAL_CSR="$LOCAL_CRT_DIR""localhost.csr"
 	FILE_KEY="$LOCAL_CRT_DIR""localhost.key"
 	FILE_CRT="$LOCAL_CRT_DIR""localhost.crt"
@@ -39,7 +36,6 @@ else
 	  echo "Error: Required .cer or .key file not found in $SSL_DIR"
   		exit 1
 	fi
-
 	# Use PRODUCTION configuration
     cp "/tmp/nginx/nginx_production.conf" /etc/nginx/nginx.conf
 
@@ -47,11 +43,13 @@ fi
 
 export FILE_CRT FILE_KEY DOMAIN_NAME
 echo "Update the configuration by expanding..."
-echo '\t"FILE_CRT"='"$FILE_CRT"
-echo '\t"FILE_KEY"='"$FILE_KEY"
-echo '\t"DOMAIN_NAME"='"$DOMAIN_NAME"
-envsubst < "/etc/nginx/nginx.conf" > "/etc/nginx/nginx.conf"
+echo -e '\t"FILE_CRT"='"$FILE_CRT"
+echo -e '\t"FILE_KEY"='"$FILE_KEY"
+echo -e '\t"DOMAIN_NAME"='"$DOMAIN_NAME"
+envsubst '${FILE_CRT} ${FILE_KEY} ${DOMAIN_NAME}' < "/etc/nginx/nginx.conf" > "/etc/nginx/nginx.temp.conf"
+mv "/etc/nginx/nginx.temp.conf" "/etc/nginx/nginx.conf"
 echo "Substituted environment variables in /etc/nginx/nginx.conf"
+cat "/etc/nginx/nginx.conf"
 
 # Start NGINX
 nginx -g 'daemon off;'

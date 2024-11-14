@@ -96,7 +96,7 @@ services:
       # TODO: Uncomment the line below as soon as the backend healthcheck is implemented!
       #be:
         #condition: service_healthy
-    enviroment:
+    environment:
       - LOCAL_DEPLOY=$LOCAL_DEPLOY
     ports:
       - "443:443" #Maybe need to change later 443
@@ -117,7 +117,7 @@ services:
       - ./Frontend/js:/usr/share/nginx/js
       - ./Frontend/assets:/usr/share/nginx/assets
       # DONT CHANGE BELOW!
-      - ./Frontend/nginx/nginx_local.conf:/tmp/nginx:ro
+      - ./Frontend/nginx:/tmp/nginx:ro
       # DONT CHANGE ABOVE!
     restart: unless-stopped
     # TODO: revise it the healthceck is good enough...

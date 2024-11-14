@@ -4,8 +4,10 @@ FROM nginx:1.27.0-alpine
 # Install necessary packages and OpenSSL
 RUN apk update && apk add --no-cache nginx openssl gettext
 
-# Create directories for media files and copy them
-RUN mkdir -p  /media/avatars
+# Create directories for media files and nginc.config files
+RUN mkdir -p  /media/avatars /tmp/nginx/
+
+# Copy the media files
 COPY ./assets/avatars/* /media/avatars/
 
 # Copy the entrypoint.sh, make it excutable and run it
