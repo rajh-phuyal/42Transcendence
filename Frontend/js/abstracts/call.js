@@ -24,7 +24,7 @@ async function call(url, method, data) {
         } : {},
     };
     const response = await fetch(fullUrl, payload);
-    
+
     if (!response.ok) {
         // TODO maybe remove this toast I added it for debbuging
         let errorMessage;
