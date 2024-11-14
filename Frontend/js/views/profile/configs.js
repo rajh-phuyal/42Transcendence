@@ -161,6 +161,7 @@ export default {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-avatar-change");
             this.hideElement("edit-profile-modal-avatar-change-crop-image");
+            $id("edit-profile-modal").focus();
         },
 
         friendshipMethod() {
