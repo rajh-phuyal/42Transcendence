@@ -46,7 +46,8 @@ export default {
     methods: {
         insertAvatar() {
             const element = $id("avatar");
-            element.src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
+            element.src = 'https://ahok.cool/media/avatars/' + this.result.avatarUrl;
+            //element.src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
         },
 
         setupTopLeftButton() {
