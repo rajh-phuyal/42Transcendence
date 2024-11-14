@@ -22,8 +22,10 @@ RUN rm -rf /tempReqBuild/
 
 EXPOSE 8000
 
-# make migrations on the entrypoint
-ENTRYPOINT ["./entrypoint.sh"]
+# Copy the entrypoint.sh, make it excutable and run it
+COPY ./tools/entrypoint.sh /tools/entrypoint.sh
+RUN chmod +x /tools/entrypoint.sh
+ENTRYPOINT ["/tools/entrypoint.sh"]
 
 # Run the application
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

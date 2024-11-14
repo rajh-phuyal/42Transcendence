@@ -14,8 +14,16 @@
 #	| Flag  | Description                                                                                                            |
 #	|-------|------------------------------------------------------------------------------------------------------------------------|
 #	| `-e`  | Path to the .env file. If not set the script will look for the file in the current directory.                          |
+#	| `-p`  | This will deploy the app for production!
 #
 # e.g.:	./deploy.sh -e ./path/to/.env
+#
+# DOCKER COMPOSE FILES:
+COMPOSE_FILE="docker-compose.main.yml"
+COMPOSE_FILE_PRODUCTION="docker-compose.prod.yml"
+# this will be updated to "-f $COMPOSE_FILE_PRODUCTION" if -p flag is set
+SECOND_COPOSE_FLAG=""
+#
 #
 # PARSING THE ARGUMENTS:
 #   This will populate the global variables:
@@ -222,6 +230,7 @@ perform_task_with_spinner() {
 # - NEW_ENV_PATH
 # - COMMAND
 # - CONTAINERS
+# - COMPOSE_FLAG
 #
 # The main function check_setup is called by the main script to check if the
 # environment is set up correctly. It checks:
@@ -246,6 +255,8 @@ parse_args()
 		if [ "$arg" == "-e" ]; then
 			NEW_ENV_PATH=$MSG_MISSING_PATH	# So the call ./deploy.sh start -e will fail (the path is missing)
 			ENV_FLAG_FOUND=true
+		elif [ "$arg" == "-p" ]; then
+			SECOND_COPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
 		elif [ "$ENV_FLAG_FOUND" == true ]; then
 			NEW_ENV_PATH=$arg
 			ENV_FLAG_FOUND=false
@@ -311,6 +322,12 @@ check_setup() {
 	check_os
 	check_env_link
 	check_volume_folders
+	if [ -n "$SECOND_COPOSE_FLAG" ]; then
+		echo ""
+		print_header "${RD}" "!!! DEPLOYING FOR PRODUCTION !!!"${NC}
+		echo -e "${RD}" "\tWebsite reachable at: "${BL}$(url "https://$DOMAIN_NAME" "$DOMAIN_NAME")${NC}
+		print_header "${RD}" "!!! DEPLOYING FOR PRODUCTION !!!\n"${NC}
+	fi
 }
 
 # To set the volume location we need to differ between linux and mac
@@ -463,21 +480,21 @@ check_path_and_permission()
         # On Linux, perform ownership and permission changes
         perform_task_with_spinner \
             " ...changing ownership of the folder" \
-            'sudo chown -R ":1024" "$path"' \
+            'chown -R "$USER:docker" "$path"' \
             "" \
             "couldn't change ownership of folder: $path_formated!" \
             false
 
-        perform_task_with_spinner \
-            " ...changing permission of the folder" \
-            'sudo chmod -R 775 "$path"' \
-            "" \
-            "couldn't change permission of folder: $path_formated!" \
-            false
+        #perform_task_with_spinner \
+        #    " ...changing permission of the folder" \
+        #    'sudo chmod -R 775 "$path"' \
+        #    "" \
+        #    "couldn't change permission of folder: $path_formated!" \
+        #    false
 
         perform_task_with_spinner \
             " ...ensure all future content in the folder will inherit group ownership" \
-            'sudo chmod g+s "$path"' \
+            'chmod g+s "$path"' \
             "" \
             'could not run sudo chmod g+s "$path"' \
             false
@@ -510,13 +527,13 @@ check_volume_folders()
 # ------------------------------------------------------------------------------
 docker_stop() {
 	print_header "${BL}" "Stopping containers: $CONTAINERS..."
-	docker-compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
+	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" stop $CONTAINERS
 	print_header "${BL}" "Stopping containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_build() {
 	print_header "${BL}" "Building containers: $CONTAINERS"
-	docker-compose --env-file "$STORED_ENV_PATH" build $CONTAINERS
+	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" build $CONTAINERS
 	print_header "${BL}" "Building containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -524,7 +541,7 @@ docker_start() {
 	docker_stop
 	docker_build
 	print_header "${BL}" "Starting containers: $CONTAINERS"
-	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINERS
+	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" up -d $CONTAINERS
 	print_header "${BL}" "Starting containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -553,7 +570,8 @@ docker_fclean() {
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
 
-	docker-compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
+	docker compose -f "$COMPOSE_FILE" $SECOND_COPOSE_FLAG --env-file="$STORED_ENV_PATH" down --rmi all --remove-orphans
+
 	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting docker volumes..."
