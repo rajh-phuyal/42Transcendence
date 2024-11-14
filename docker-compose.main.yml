@@ -5,6 +5,7 @@ services:
   db:
     container_name: db
     image: db:latest
+    #user: "${UID}:${GID}"
     build:
       context: ./Database/Postgres
       dockerfile: postgres.dockerfile
@@ -26,6 +27,7 @@ services:
   pa:
     container_name: pa
     image: pa:latest
+    #user: "${UID}:${GID}"
     build:
       context: ./Database/PgAdmin
       dockerfile: pgadmin.dockerfile
@@ -55,6 +57,7 @@ services:
   be:
     container_name: be
     image: be:latest
+    #user: "${UID}:${GID}"
     build:
       context: ./Backend
       dockerfile: django.dockerfile
@@ -88,6 +91,7 @@ services:
   fe:
     container_name: fe
     image: fe:latest
+    #user: "${UID}:${GID}"
     build:
       context: ./Frontend
       dockerfile: nginx.dockerfile

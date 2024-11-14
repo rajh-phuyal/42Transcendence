@@ -317,6 +317,10 @@ parse_args()
 		NEW_ENV_PATH=""
 	fi
 	echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+
+	# Exporting the user and the group so that docker compse can use this
+	export UID=$(id -u)
+	export GID=$(id -g)
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
 }
 
@@ -482,21 +486,21 @@ check_path_and_permission()
         # On Linux, perform ownership and permission changes
         perform_task_with_spinner \
             " ...changing ownership of the folder" \
-            'chown -R "$USER:docker" "$path"' \
+            'sudo chown -R ":1024" "$path"' \
             "" \
             "couldn't change ownership of folder: $path_formated!" \
             false
 
-        #perform_task_with_spinner \
-        #    " ...changing permission of the folder" \
-        #    'sudo chmod -R 775 "$path"' \
-        #    "" \
-        #    "couldn't change permission of folder: $path_formated!" \
-        #    false
+        perform_task_with_spinner \
+            " ...changing permission of the folder" \
+            'sudo chmod -R 775 "$path"' \
+            "" \
+            "couldn't change permission of folder: $path_formated!" \
+            false
 
         perform_task_with_spinner \
             " ...ensure all future content in the folder will inherit group ownership" \
-            'chmod g+s "$path"' \
+            'sudo chmod g+s "$path"' \
             "" \
             'could not run sudo chmod g+s "$path"' \
             false
@@ -583,7 +587,7 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folder of docker volumes...($OS_HOME_PATH$VOLUME_FOLDER_NAME/)"
-	sudo rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
+	rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
 	print_header "${OR}" "Deleting folder of docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Delete the link to the environment file..."
