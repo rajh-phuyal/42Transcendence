@@ -177,21 +177,25 @@
             </div>
             <div id="invite-for-game-modal-maps-powerups-container">
               <div id="invite-for-game-modal-powerups-container">
-                <span>Powerups</span>
-                <input type="checkbox">
+                <h4>Powerups</h4>
+                <input id="invite-for-game-modal-powerups-checkbox" type="checkbox">
               </div>
               <div id="invite-for-game-modal-maps-container">
                 <h3>Maps</h3>
-                <img id="invite-for-game-modal-map-ufo" class="maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
-                <img id="invite-for-game-modal-map-lizard-people" class="maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
-                <img id="invite-for-game-modal-map-snowman" class="maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
-                <img id="invite-for-game-modal-map-lochness" class="maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-ufo" name="ufo" class="invite-for-game-modal-maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lizard-people" name="lizard-people" class="invite-for-game-modal-maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-snowman" name="snowman" class="invite-for-game-modal-maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lochness" name="lochness" class="invite-for-game-modal-maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
               </div>
             </div>
-            <h3 id="invite-for-game-modal-opponent-title-container">Your Opponent</h3>
+            <div id="invite-for-game-modal-opponent-title-container">
+              <h4 id="invite-for-game-modal-opponent-title">Your Opponent:</h3>
+              <h4 id="invite-for-game-modal-opponent-name" style="margin-left: 1vw;"></h3>
+            </div>
             <div id="invite-for-game-modal-opponent-start-container">
               <img id="invite-for-game-modal-opponent-photo" alt="error loading the image">
-              <barely-a-button id="invite-for-game-modal-start-button"  buttonclass="rect-button" name="START" pixa="10"></barely-a-button>
+              
+              <barely-a-button id="invite-for-game-modal-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
             </div>
         </div>
       </div>
@@ -210,7 +214,7 @@
     /* Invite for Game  */
     
     #invite-for-game-modal-start-button {
-      margin: 0vh 0vw 0vh 5vw;
+      margin: 2vh 0vw 0vh 4vw;
     }
 
     #invite-for-game-modal-title-container {
@@ -223,14 +227,21 @@
       flex-direction: row;
     }
 
+    #invite-for-game-modal-powerups-checkbox {
+      margin: 0vh 0vw 0vh 0.6vw;
+    }
+
     #invite-for-game-modal-powerups-container {
-      margin: 30vh 0vw 0vh 2vw;
+      display: flex;
+      flex-direction: row;
+      margin: 30vh 0vw 0vh 1.5vw;
+      align-items: center;
     }
 
     #invite-for-game-modal-maps-container {
       display: flex;
       flex-direction: column;
-      margin: 0vh 0vw 0vh 12.5vw;
+      margin: 0vh 0vw 0vh 10.7vw;
       padding: 0vh 0vw 0vh 0.3vw;
     }
     
@@ -238,10 +249,16 @@
       text-align: center;
     }
 
-    .maps-button {
+    .invite-for-game-modal-maps-button {
       margin: 0vh 0vw 1vh 0.3vw;
       height: 7vh;
       width: 7vh;
+      opacity: 0.7;
+    }
+    .invite-for-game-modal-maps-button:hover {
+      margin: 0vh 0vw 0.6vh 0.1vw;
+      height: 7.4vh;
+      width: 7.4vh;
     }
 
     #invite-for-game-modal-content {
@@ -264,6 +281,8 @@
     }
     
     #invite-for-game-modal-opponent-title-container {
+      display: flex;
+      flex-direction: row;
       margin: 1vh 0vw 0vh 1.5vw;
     }
 

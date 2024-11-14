@@ -1,5 +1,5 @@
 import call from '../../abstracts/call.js'
-import { $id, $on, $queryAll, $off } from '../../abstracts/dollars.js';
+import { $id, $on, $queryAll, $off, $class } from '../../abstracts/dollars.js';
 import { populateInfoAndStats } from './script.js';
 import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
@@ -22,6 +22,12 @@ export default {
             image: undefined,
             method: undefined,
         },
+
+        gameSettings: {
+            map: "random",
+            powerups: false,
+        },
+
         result: undefined,
         cropper: undefined,
 
@@ -356,12 +362,27 @@ export default {
         openInviteForGameModal() {
 
             $id("invite-for-game-modal-opponent-photo").src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
+            console.log("username:", this.result.username);
+            $id("invite-for-game-modal-opponent-name").textContent = this.result.username;
 
             console.log("yooo");
             let modalElement = $id("invite-for-game-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
             
+        },
+        selectMap(chosenMap) {
+            const maps = $class("invite-for-game-modal-maps-button");
+            this.gameSettings.map = chosenMap.srcElement.name
+            for (let element of maps){
+                if (element.name != this.gameSettings.map)
+                    element.style.opacity = 0.7;
+                else
+                    element.style.opacity = 1;
+            }
+        },
+        submitInvitation() {
+            console.log(this.gameSettings);
         },
     },
 
@@ -392,11 +413,18 @@ export default {
             element = $id("edit-profile-modal-password-change-submit-button");
             $off(element, "click", this.submitNewPassword);
             element = $id("friendship-modal-friendship-primary-button");
-            $on(element, "click", this.changeFrendshipPrimaryMethod);
+            $off(element, "click", this.changeFrendshipPrimaryMethod);
             element = $id("friendship-modal-friendship-secundary-button");
-            $on(element, "click", this.changeFrendshipSecundaryMethod);
+            $off(element, "click", this.changeFrendshipSecundaryMethod);
             element = $id("friendship-modal-block-button");
-            $on(element, "click", this.changeBlockMethod);
+            $off(element, "click", this.changeBlockMethod);
+            element = $class("invite-for-game-modal-maps-button");
+            for (let HTMLelement of element)
+                $off(HTMLelement, "click", this.selectMap);
+            element = $id("invite-for-game-modal-powerups-checkbox");
+            $off(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
+            element = $id("invite-for-game-modal-start-button");
+            $on(element, "click", this.submitInvitation);
 
         },
 
@@ -451,6 +479,15 @@ export default {
                 $on(element, "click", this.changeFrendshipSecundaryMethod);
                 element = $id("friendship-modal-block-button");
                 $on(element, "click", this.changeBlockMethod);
+                
+                element = $class("invite-for-game-modal-maps-button");
+                for (let HTMLelement of element)
+                    $on(HTMLelement, "click", this.selectMap);
+                element = $id("invite-for-game-modal-powerups-checkbox");
+                $on(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
+                element = $id("invite-for-game-modal-start-button");
+                $on(element, "click", this.submitInvitation);
+                
             })
             // on error?
         },

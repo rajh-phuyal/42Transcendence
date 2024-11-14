@@ -4,12 +4,14 @@ class BarelyAButton extends HTMLElement
     {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
-        this.height = 4
+        this.height = 4;
+        this.width = 8;
+        this.fontSize = 2;
     }
 
     static get observedAttributes()
     {
-        return["name", "route", "method", "datapayload", "onresolve", "buttonclass", "onerror"];
+        return["name", "route", "method", "height", "width", "datapayload", "fontsize", "onresolve", "buttonclass", "onerror"];
     }
 
     connectedCallback()
@@ -24,10 +26,12 @@ class BarelyAButton extends HTMLElement
             this.name = newValue;
         else if (name === "route")
             this.route = newValue;
-        else if (name === "pixa")
-        {
+        else if (name === "height")
             this.height = newValue;
-        }
+        else if (name === "width")
+            this.height = newValue;
+        else if (name === "fontsize")
+            this.fontSize = newValue;
         else if (name === "method")
             this.method = newValue;
         else if (name === "datapayload")
@@ -65,16 +69,14 @@ class BarelyAButton extends HTMLElement
 
                 .rect-button{
                     font-family: 'Courier';
-                    font-size: 20px;
+                    font-size: ${this.fontSize}vh;
                     vertical-align: middle;
                     text-align: center;
                     align-items: justify;
                     font-weight: 700;
                     color: #FFFCE6;
                     height: ${this.height}vh;
-                    width: 150px;
-                    margin: 15px;
-                    padding: 3px;
+                    width: ${this.width}vw;
                     background-color: #000000;
                     cursor: pointer;
                 }
