@@ -128,10 +128,11 @@ export default {
             const modal = bootstrap.Modal.getInstance(modalElement);
             modal.hide();
         },
-
+        
         showElement(elementId){
             let element = $id(elementId)
             element.style.display = "block";
+            element.style.zIndex = '1000'; 
         },
 
         profileEditMethod() {
@@ -153,6 +154,7 @@ export default {
         changePasswordMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-password-change");
+            $id("edit-profile-modal").focus();
         },
 
         changeAvatarMethod() {
@@ -165,9 +167,9 @@ export default {
 
             let blockIndex;
             if (this.result.relationship.isBlocking)
-                blockIndex = "unblocked";
-            else
                 blockIndex = "blocked";
+            else
+                blockIndex = "unblocked";
 
             // friendship portion of the modal
             let element = $id("friendshp-modal-friendship-text")
@@ -352,7 +354,11 @@ export default {
             });
         },
 
+        cancelButton() {
+            this.hideModal("friendship-modal");
+        },
     },
+
 
     hooks: {
         beforeRouteEnter() {
@@ -381,16 +387,18 @@ export default {
             element = $id("edit-profile-modal-password-change-submit-button");
             $off(element, "click", this.submitNewPassword);
             element = $id("friendship-modal-friendship-primary-button");
-            $on(element, "click", this.changeFrendshipPrimaryMethod);
+            $off(element, "click", this.changeFrendshipPrimaryMethod);
             element = $id("friendship-modal-friendship-secundary-button");
-            $on(element, "click", this.changeFrendshipSecundaryMethod);
+            $off(element, "click", this.changeFrendshipSecundaryMethod);
             element = $id("friendship-modal-block-button");
-            $on(element, "click", this.changeBlockMethod);
+            $off(element, "click", this.changeBlockMethod);
+            element = $id("friendship-modal-cancel-button");
+            $on(element, "click", this.cancelButton);
 
         },
 
         beforeDomInsertion() {
-
+            
         },
 
         afterDomInsertion() {
@@ -438,6 +446,8 @@ export default {
                 $on(element, "click", this.changeFrendshipSecundaryMethod);
                 element = $id("friendship-modal-block-button");
                 $on(element, "click", this.changeBlockMethod);
+                element = $id("friendship-modal-cancel-button");
+                $on(element, "click", this.cancelButton);
             })
             // on error?
         },
