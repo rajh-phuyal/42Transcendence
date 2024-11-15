@@ -12,7 +12,6 @@ class ValidationException(APIException):
         if status_code is not None:
             self.status_code = status_code
 
-
 class BlockingException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = 'A blocking condition has been detected.'
@@ -22,3 +21,13 @@ class BlockingException(APIException):
         if detail is None:
             detail = self.default_detail
         super().__init__(detail, code)
+
+class RelationshipException(APIException):
+	status_code = status.HTTP_400_BAD_REQUEST
+	default_detail = 'A relationship error has been detected.'
+	default_code = 'relationship_error'
+
+	def __init__(self, detail=None, code=None):
+		if detail is None:
+			detail = self.default_detail
+		super().__init__(detail, code)
