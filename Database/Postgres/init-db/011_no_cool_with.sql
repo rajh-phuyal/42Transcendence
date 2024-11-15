@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS barelyaschema.no_cool_with
 	blocker_id INT NOT NULL,
 	blocked_id INT NOT NULL,
 	FOREIGN KEY (blocker_id) REFERENCES barelyaschema.user(id),
-	FOREIGN KEY (blocked_id) REFERENCES barelyaschema.user(id)
+	FOREIGN KEY (blocked_id) REFERENCES barelyaschema.user(id),
+	CONSTRAINT unique_block UNIQUE (blocker_id, blocked_id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

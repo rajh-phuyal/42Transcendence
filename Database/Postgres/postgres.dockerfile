@@ -23,15 +23,19 @@ COPY ./init-db /docker-entrypoint-initdb.d/
 COPY ./tools/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Copy the root user accoints script and make it executable
+COPY ./tools/root_accounts.sh /usr/local/bin/root_accounts.sh
+RUN chmod +x /usr/local/bin/root_accounts.sh
+
 # Copy the dummy data script and make it executable
 COPY ./tools/create_dummy.sh /usr/local/bin/create_dummy.sh
 RUN chmod +x /usr/local/bin/create_dummy.sh
 
-# Set the custom entrypoint script as the default entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
 # Expose the default PostgreSQL port
 EXPOSE 5432
+
+# Set the custom entrypoint script as the default entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Start the PostgreSQL server
 CMD ["postgres"]
