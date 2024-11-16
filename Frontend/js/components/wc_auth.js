@@ -29,6 +29,11 @@ const eventListenersConfig = [
 		callback: "backButtonClick"
 	},
 	{
+		class: ".show-password-button",
+		event: "click",
+		callback: "togglePasswordVisibility"
+	},
+	{
 		class: ".usernameInput",
 		event: "keypress",
 		callback: "handleKeyPress"
@@ -53,6 +58,7 @@ class AuthCard extends HTMLElement {
 		this.registerButton = translate("auth", "registerButton")
 		this.submitButton = translate("auth", "submitButton");
 		this.backButton = translate("auth", "backButton");
+		this.passwordVisibilityButton = translate("auth", "displayPassword");
 		this.transitionTime = 300;
     }
 
@@ -264,6 +270,12 @@ class AuthCard extends HTMLElement {
 		this.displayMode = "home";
 	}
 
+	togglePasswordVisibility(event) {
+		event.target.previousElementSibling.type = event.target.previousElementSibling.type === "password" ? "text" : "password";
+		event.target.textContent = event.target.textContent === translate('auth', 'displayPassword') ?
+			translate("auth", "hidePassword") : translate("auth", "displayPassword");
+	}
+
     render() {
         this.hideNav();
         this.shadow.innerHTML = `
@@ -379,6 +391,32 @@ class AuthCard extends HTMLElement {
 			.back-to-main-buton:hover {
 				background-color: red;
 			}
+
+			.show-password-button {
+				position: absolute;
+				right: calc(10% - 1.5rem);
+				top: calc(50% - 1.5rem);
+				width: auto;
+				height: 3rem;
+				font-size: 1.5rem;
+				font-family: 'Courier';
+				font-weight: 700;
+				cursor: pointer;
+				border: 1px solid #FFF6D4;
+				background-color: #100C09;
+				border-radius: 0.2rem;
+				color: #FFF6D4;
+			}
+
+			#password-register-visibility-toogle-button {
+				right: calc(10% - 1.5rem);
+				top: calc(40% - 2rem);
+			}
+
+			#password-confirmation-visibility-toogle-button {
+				right: calc(10% - 1.5rem);
+				top: calc(54% - 1rem);
+			}
             </style>
 
             <div class="main-container">
@@ -389,6 +427,7 @@ class AuthCard extends HTMLElement {
 				<section id="login-section" style="display:none;" class="fade">
 					<input id="username-login-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
 					<input id="password-login-input" class="passwordInput" placeholder="${this.passwordPlaceholder}" type="Password">
+					<button class="show-password-button">${this.passwordVisibilityButton}</button>
 					<div class="buttons-container">
 						<button id="submit-login" class="submit-button">${this.submitButton}</button>
 						<button class="back-to-main-button">${this.backButton}</button>
@@ -398,7 +437,9 @@ class AuthCard extends HTMLElement {
 				<section id="register-section" style="display:none;" class="fade">
 					<input id="username-register-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
 					<input id="password-register-input" class="passwordInput password-register" placeholder="${this.passwordPlaceholder}" type="Password">
+					<button id="password-register-visibility-toogle-button" class="show-password-button">${this.passwordVisibilityButton}</button>
 					<input class="password-confirmation-input passwordInput password-register" placeholder="${this.passwordConfirmationPlaceholder}" type="Password">
+					<button id="password-confirmation-visibility-toogle-button" class="show-password-button">${this.passwordVisibilityButton}</button>
 					<div class="buttons-container">
 						<button id="submit-register" class="submit-button">${this.submitButton}</button>
 						<button class="back-to-main-button">${this.backButton}</button>

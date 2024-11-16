@@ -31,6 +31,22 @@
 		"uk-UA": "НАЗАД",
 		"ne-NP": "फर्किनुहोस्"
 	},
+	"displayPassword": {
+		"en-US": "SHOW",
+		"pt-PT": "MOSTRAR",
+		"pt-BR": "MOSTRAR",
+		"de-DE": "ZEIGEN",
+		"uk-UA": "ПОКАЗАТИ",
+		"ne-NP": "देखाउनुहोस्"
+	},
+	"hidePassword": {
+		"en-US": "HIDE",
+		"pt-PT": "ESCONDER",
+		"pt-BR": "ESCONDER",
+		"de-DE": "VERSTECKEN",
+		"uk-UA": "ПРИХОВАТИ",
+		"ne-NP": "लुकाउनुहोस्"
+	},
     "usernamePlaceholder": {
         "en-US": "username",
         "pt-PT": "nome de utilizador",
