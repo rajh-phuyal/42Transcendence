@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.utils.translation import gettext as _
 
 User = get_user_model()
 
@@ -33,28 +34,28 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         if not value:
-            raise serializers.ValidationError("Username cannot be empty")
+            raise serializers.ValidationError(_("Username cannot be empty"))
 
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("A user with that username already exists")
+            raise serializers.ValidationError((_("Username {username} already exists").format(username=value)))
 
         return value
 
     def validate_password(self, value):
         if not value:
-            raise serializers.ValidationError("Password cannot be empty")
+            raise serializers.ValidationError(_("Password cannot be empty"))
 
         if len(value) < 6:
-            raise serializers.ValidationError("Password must be at least 6 characters long")
+            raise serializers.ValidationError(_("Password must be at least 6 characters long"))
 
         if not any(char.islower() for char in value):
-            raise serializers.ValidationError("Password must contain at least one lowercase character")
+            raise serializers.ValidationError(_("Password must contain at least one lowercase character"))
 
         if not any(char.isupper() for char in value):
-            raise serializers.ValidationError("Password must contain at least one uppercase character")
+            raise serializers.ValidationError(_("Password must contain at least one uppercase character"))
 
         if not any(char.isdigit() for char in value):
-            raise serializers.ValidationError("Password must contain at least one digit")
+            raise serializers.ValidationError(_("Password must contain at least one digit"))
 
         return value
 

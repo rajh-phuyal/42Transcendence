@@ -10,6 +10,9 @@ from user.models import User
 from .models import Conversation, ConversationMember, Message
 from .serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.shortcuts import render #TODO: remove - this is for the test chat page
+from django.utils.translation import gettext as _, activate
+import logging
+
 
 class LoadUnreadMessagesView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -25,10 +28,18 @@ class LoadConversationsView(APIView):
     def get(self, request):
         # Get the user from the request
         user = request.user
+        preferred_language = user.language # CHECK I AUTH, USER, LANGUAGE COULD BE PUT IN A DECORATER
+        logger.info(f'User {user.username} requested conversations in {preferred_language}')
+        activate(preferred_language)  # Set the active language
 
         # Get all conversations where the user is a member
         conversation_memberships = ConversationMember.objects.filter(user=user)
         conversations = [membership.conversation for membership in conversation_memberships]
+
+		# If there are no conversations,
+        if not conversations:
+            return Response({'detail': _('No conversations found')}, status=status.HTTP_404_NOT_FOUND)
+
 
         # Serialize only the conversation id and name
         serializer = ConversationSerializer(conversations, many=True)
@@ -49,7 +60,7 @@ class LoadConversationView(APIView):
         try:
             conversation = Conversation.objects.get(id=conversation_id)
         except Conversation.DoesNotExist:
-            return Response({'error': 'Chat not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Chat not found')}, status=status.HTTP_404_NOT_FOUND)
 
         # Check if the sender is a member of the conversation
         if not conversation.members.filter(user=user).exists():
