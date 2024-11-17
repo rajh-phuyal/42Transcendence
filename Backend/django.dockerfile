@@ -26,8 +26,7 @@ RUN rm -rf /tempReqBuild/
 WORKDIR /
 RUN mkdir -p /tools
 COPY ./tools/entrypoint.sh /tools/entrypoint.sh
-COPY ./tools/makemessages.sh /tools/makemessages.sh
-RUN chmod +x /tools/entrypoint.sh /tools/makemessages.sh
+RUN chmod +x /tools/entrypoint.sh
 
 # make migrations and generate language files on the entrypoint
 ENTRYPOINT ["/tools/entrypoint.sh"]
