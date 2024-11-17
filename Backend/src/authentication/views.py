@@ -9,6 +9,8 @@ from rest_framework import exceptions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import InternalTokenObtainPairSerializer
 from .models import DevUserData
+from services.response import success_response
+
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -52,9 +54,8 @@ class RegisterView(generics.CreateAPIView):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
-
-        return Response(response_data, status=status.HTTP_201_CREATED)
-
+        return success_response("Registration successful", response_data, status_code=status.HTTP_201_CREATED)
+        #return Response(response_data, status=status.HTTP_201_CREATED)
 
     def handle_exception(self, exc):
         response = exception_handler(exc, self.get_exception_handler_context())

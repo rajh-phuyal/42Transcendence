@@ -1,10 +1,8 @@
+from services.base_views import BaseAuthenticatedView
 from django.db import transaction
 from rest_framework.permissions import AllowAny  # Import AllowAny #TODO: remove line
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import HttpResponse #For basic ShowChatView test
 from user.models import User
 from .models import Conversation, ConversationMember, Message
@@ -14,24 +12,19 @@ from django.utils.translation import gettext as _, activate
 import logging
 
 
-class LoadUnreadMessagesView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    
+class LoadUnreadMessagesView(BaseAuthenticatedView):
+    ...
 	# TODO: return the unread messages as a single int like:
     #			{"unread":4}
 
-class LoadConversationsView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class LoadConversationsView(BaseAuthenticatedView):
     def get(self, request):
         # Get the user from the request
         user = request.user
         preferred_language = user.language # CHECK I AUTH, USER, LANGUAGE COULD BE PUT IN A DECORATER
-        logger.info(f'User {user.username} requested conversations in {preferred_language}')
         activate(preferred_language)  # Set the active language
 
+        logger.info(f'User {user.username} requested conversations in {preferred_language}')
         # Get all conversations where the user is a member
         conversation_memberships = ConversationMember.objects.filter(user=user)
         conversations = [membership.conversation for membership in conversation_memberships]
@@ -45,10 +38,7 @@ class LoadConversationsView(APIView):
         serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data)
 
-class LoadConversationView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class LoadConversationView(BaseAuthenticatedView):
     def put(self, request, conversation_id=None):
         # Get the user from the request
         user = request.user
@@ -85,7 +75,7 @@ class LoadConversationView(APIView):
 def test_chat(request):
     return render(request, 'chat/test-chat.html')
 
-class ListConversationsView(APIView):
+class ListConversationsView(BaseAuthenticatedView):
     #authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
     #permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
@@ -103,7 +93,7 @@ class ListConversationsView(APIView):
 
 # Create a conversation and add members
 # If conversation already exists, return the conversation_id
-class CreateConversationView(APIView):
+class CreateConversationView(BaseAuthenticatedView):
     permission_classes = [AllowAny] #TODO: implement the token-based authentication!
 
     def post(self, request):
@@ -171,7 +161,7 @@ class CreateConversationView(APIView):
             # If any error occurs during the transaction, rollback and return an error
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class RenameConversationView(APIView):
+class RenameConversationView(BaseAuthenticatedView):
     permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
 
     def post(self, request):
@@ -197,7 +187,7 @@ class RenameConversationView(APIView):
         return Response({'conversation_id': conversation.id, 'new_name': conversation.name}, status=status.HTTP_200_OK)
 
 # Send a message
-class SendMessageView(APIView):
+class SendMessageView(BaseAuthenticatedView):
     permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
     
     def post(self, request):
@@ -237,7 +227,7 @@ class SendMessageView(APIView):
 
         return Response({'message_id': message.id, 'content': message.content}, status=status.HTTP_201_CREATED)
 
-class ShowConversationView(APIView):
+class ShowConversationView(BaseAuthenticatedView):
     permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
 
     def post(self, request):

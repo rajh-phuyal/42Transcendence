@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-17 21:24+0000\n"
+"POT-Creation-Date: 2024-11-17 22:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,10 +46,14 @@ msgstr ""
 msgid "Password must contain at least one digit"
 msgstr ""
 
-#: chat/views.py:41
+#: chat/views.py:34
 msgid "No conversations found"
 msgstr ""
 
-#: chat/views.py:63
+#: chat/views.py:53
 msgid "Chat not found"
+msgstr ""
+
+#: services/base_views.py:19
+msgid "User not authenticated"
 msgstr ""
