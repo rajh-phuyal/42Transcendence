@@ -3,6 +3,7 @@ from django.db import transaction
 from rest_framework.permissions import AllowAny  # Import AllowAny #TODO: remove line
 from rest_framework import status
 from rest_framework.response import Response
+from services.response import error_response
 from django.http import HttpResponse #For basic ShowChatView test
 from user.models import User
 from .models import Conversation, ConversationMember, Message
@@ -31,7 +32,8 @@ class LoadConversationsView(BaseAuthenticatedView):
 
 		# If there are no conversations,
         if not conversations:
-            return Response({'detail': _('No conversations found')}, status=status.HTTP_404_NOT_FOUND)
+            return error_response('No0000 conversations found', status_code=404)
+            #return Response({'detail': _('No conversations found')}, status=status.HTTP_404_NOT_FOUND)
 
 
         # Serialize only the conversation id and name

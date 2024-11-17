@@ -37,7 +37,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(_("Username cannot be empty"))
 
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError((_("Username {username} already exists").format(username=value)))
+            raise serializers.ValidationError((_("Username '{username}' already exists").format(username=value)))
 
         return value
 
