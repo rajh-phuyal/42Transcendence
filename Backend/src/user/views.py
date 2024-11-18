@@ -1,17 +1,19 @@
-from services.base_views import BaseAuthenticatedView
-from services.response import success_response, error_response
-import gettext as _
+from core.base_views import BaseAuthenticatedView
+from core.response import success_response, error_response
+from django.utils.translation import gettext as _
 from django.db import transaction
 from rest_framework import status
 from django.db.models import Q
-from .models import User, CoolStatus, IsCoolWith, NoCoolWith
-from .serializers import ProfileSerializer, ListFriendsSerializer
-from app.exceptions import BarelyAnException
-from .exceptions import ValidationException, BlockingException, RelationshipException
+from user.models import User, CoolStatus, IsCoolWith, NoCoolWith
+from user.serializers import ProfileSerializer, ListFriendsSerializer
+from core.exceptions import BarelyAnException
+from user.exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from .utils_img import process_avatar
-from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
+from user.utils_img import process_avatar
+from user.utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
+from core.decorators import barely_handle_exceptions
+
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
@@ -40,66 +42,47 @@ class ProfileView(BaseAuthenticatedView):
 #
 # =============================================================================
 class RelationshipView(BaseAuthenticatedView):
-    # 'send' a friend request
-    # 'block' a user
+    @barely_handle_exceptions
     def post(self, request):
         allowed_actions = {'send', 'block'}
-        try:
-            user, target, action = self.validate_data(request, allowed_actions)
-            if action == 'send':
-                self.send_request(user, target)
-                return success_response(_("Friend request sent"), status.HTTP_201_CREATED)
-            elif action == 'block':
-                self.block_user(user, target)
-                return success_response(_("User blocked"), status.HTTP_201_CREATED)
-            else:
-                return error_response(self.return_unvalid_action_msg(request, allowed_actions))
-        except BarelyAnException as e:
-            return error_response(str(e.detail), e.status_code)
-        except Exception as e:
-            return error_response(str(e))
+        user, target, action = self.validate_data(request, allowed_actions)
+        if action == 'send':
+            self.send_request(user, target)
+            return success_response(_("Friend request sent"), status.HTTP_201_CREATED)
+        elif action == 'block':
+            self.block_user(user, target)
+            return success_response(_("User blocked"), status.HTTP_201_CREATED)
+        else:
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions))
 
-    # 'accept' a friend request
+    @barely_handle_exceptions
     def put(self, request):
         allowed_actions = {'accept'}
-        try:
-            user, target, action = self.validate_data(request, allowed_actions)
-            if action == 'accept':
-                self.accept_request(user, target)
-                return success_response(_("Friend request accepted"))    
-            else:
-                return error_response(self.return_unvalid_action_msg(request, allowed_actions))
-        except BarelyAnException as e:
-            return error_response(str(e.detail), e.status_code)
-        except Exception as e:
-            return error_response(str(e))
-        
-    # 'cancel'  a friend request
-    # 'reject'  a friend request
-    # 'remove'  a friend
-    # 'unblock' a user
+        user, target, action = self.validate_data(request, allowed_actions)
+        if action == 'accept':
+            self.accept_request(user, target)
+            return success_response(_("Friend request accepted"))    
+        else:
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+
+    @barely_handle_exceptions
     def delete(self, request):
         allowed_actions = {'cancel', 'reject', 'remove', 'unblock'}
-        try:
-            user, target, action = self.validate_data(request, allowed_actions)
-            if action == 'cancel':
-                self.cancel_request(user, target)
-                return success_response(_("Friend request cancelled"))
-            elif action == 'reject':
-                self.reject_request(user, target)
-                return success_response(_("Friend request rejected"))
-            elif action == 'remove':
-                self.remove_friend(user, target)
-                return success_response(_("Friend removed"))
-            elif action == 'unblock':
-                self.unblock_user(user, target)
-                return success_response(_("User unblocked"))
-            else:
-                return error_response(self.return_unvalid_action_msg(request, allowed_actions))
-        except BarelyAnException as e:
-            return error_response(str(e.detail), e.status_code)
-        except Exception as e:
-            return error_response(str(e))
+        user, target, action = self.validate_data(request, allowed_actions)
+        if action == 'cancel':
+            self.cancel_request(user, target)
+            return success_response(_("Friend request cancelled"))
+        elif action == 'reject':
+            self.reject_request(user, target)
+            return success_response(_("Friend request rejected"))
+        elif action == 'remove':
+            self.remove_friend(user, target)
+            return success_response(_("Friend removed"))
+        elif action == 'unblock':
+            self.unblock_user(user, target)
+            return success_response(_("User unblocked"))
+        else:
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions))
 
     # Utility function to validate that:
     # - the request data contains the required fields
@@ -212,36 +195,24 @@ class RelationshipView(BaseAuthenticatedView):
             no_cool.delete()
 
 class ListFriendsView(BaseAuthenticatedView):
+    @barely_handle_exceptions
     def get(self, request, id):
-        try:
-            user = User.objects.get(id=id)
-        except User.DoesNotExist:
-            error_response(_("User not found"), status.HTTP_404_NOT_FOUND)
+        user = User.objects.get(id=id)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=user) | Q(requestee=user))
         serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'user_id': user.id})
         return success_response(_("Friends list of user"), friends=serializer.data)
    
 class UpdateAvatarView(BaseAuthenticatedView):
+    @barely_handle_exceptions
     def post(self, request):
-        # Check if 'avatar' is in request.FILES
         if 'avatar' not in request.FILES:
             return error_response(_("key 'avatar' must be provided!"))
-
-        # Get the avatar file from request.FILES
         avatar = request.FILES['avatar']
-
-        # Call the utility function to process the avatar
-        try:
-            result = process_avatar(request.user, avatar)
-        except BarelyAnException as e:
-            return error_response(str(e.detail), e.status_code)
-        except Exception as e:
-            return error_response(str(e))
-
-        # Return the success response with the avatar URL
+        result = process_avatar(request.user, avatar)
         return success_response(_("Avatar updated"), avatar_url=result)
     
 class UpdateUserInfoView(BaseAuthenticatedView):
+    @barely_handle_exceptions
     def put(self, request):
         # Get the user object
         user = request.user
@@ -271,10 +242,7 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         user.language = new_language
 
         # Save the user object
-        try:
-            user.save()
-        except Exception as e:
-            return error_response(str(e))
+        user.save()
 
         # Return the success response
         return success_response(_("User info updated"))

@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
-from .models import User, NoCoolWith, IsCoolWith, CoolStatus
+from user.models import User, NoCoolWith, IsCoolWith, CoolStatus
 
 @receiver(post_save, sender=User)
 def set_default_relationships(sender, instance, created, **kwargs):

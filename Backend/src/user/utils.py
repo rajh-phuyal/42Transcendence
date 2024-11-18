@@ -1,10 +1,6 @@
 import os
-from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
-from rest_framework.response import Response
-from .models import User, IsCoolWith, NoCoolWith, CoolStatus
-from .exceptions import ValidationException, BlockingException
 
 def change_avatar(user, file_path):
     # Check if there's an existing avatar and delete it if it's not the default

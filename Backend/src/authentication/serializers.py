@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.utils.translation import gettext as _
-from app.exceptions import BarelyAnException
+from core.exceptions import BarelyAnException
 
 User = get_user_model()
 
@@ -27,7 +27,9 @@ class InternalTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True) # We will validate it later
+    username = serializers.CharField(required=False, allow_blank=True)
+
 
     class Meta:
         model = User

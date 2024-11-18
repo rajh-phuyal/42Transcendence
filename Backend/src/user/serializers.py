@@ -1,7 +1,7 @@
 from django.db.models import Q
-from .models import User, IsCoolWith, CoolStatus
+from user.models import User, IsCoolWith, CoolStatus
 from rest_framework import serializers
-from .utils_relationship import get_relationship_status
+from user.utils_relationship import get_relationship_status
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):

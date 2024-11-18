@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.utils.translation import gettext as _, activate
-from .response import error_response
+from core.response import error_response
 
 # Base view class for all authenticated views we wann create
 class BaseAuthenticatedView(APIView):

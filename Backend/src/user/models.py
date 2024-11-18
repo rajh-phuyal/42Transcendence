@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from app.exceptions import BarelyAnException
+from core.exceptions import BarelyAnException
 
 # Table: barelyaschema.user
 class User(AbstractUser):

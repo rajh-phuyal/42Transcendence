@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 12:59+0000\n"
+"POT-Creation-Date: 2024-11-18 17:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,43 +18,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentication/serializers.py:38
+#: authentication/serializers.py:40
 msgid "Username cannot be empty"
 msgstr ""
 
-#: authentication/serializers.py:41
+#: authentication/serializers.py:43
 #, python-brace-format
 msgid "Username '{username}' already exists"
 msgstr ""
 
-#: authentication/serializers.py:47
+#: authentication/serializers.py:49
 msgid "Password cannot be empty"
 msgstr ""
 
-#: authentication/serializers.py:50
+#: authentication/serializers.py:52
 msgid "Password must be at least 6 characters long"
 msgstr ""
 
-#: authentication/serializers.py:53
+#: authentication/serializers.py:55
 msgid "Password must contain at least one lowercase character"
 msgstr ""
 
-#: authentication/serializers.py:56
+#: authentication/serializers.py:58
 msgid "Password must contain at least one uppercase character"
 msgstr ""
 
-#: authentication/serializers.py:59
+#: authentication/serializers.py:61
 msgid "Password must contain at least one digit"
-msgstr ""
-
-#: authentication/views.py:48 authentication/views.py:68
-#, python-brace-format
-msgid "Error during user registration: {error}"
 msgstr ""
 
 #: authentication/views.py:60
 #, python-brace-format
 msgid "Welcome on board {username}!"
+msgstr ""
+
+#: authentication/views.py:68
+#, python-brace-format
+msgid "Error during user registration: {error}"
 msgstr ""
 
 #: chat/views.py:26
@@ -77,8 +77,22 @@ msgstr ""
 msgid "Messages loaded successfully"
 msgstr ""
 
-#: services/base_views.py:19
+#: core/base_views.py:19
 msgid "User not authenticated"
+msgstr ""
+
+#: core/decorators.py:17
+msgid "Object"
+msgstr ""
+
+#: core/decorators.py:18
+#, python-brace-format
+msgid "{model_name} entry not found"
+msgstr ""
+
+#: core/decorators.py:21
+#, python-brace-format
+msgid "An unexpected error occurred: {error}"
 msgstr ""
 
 #: user/exceptions.py:8
@@ -97,27 +111,27 @@ msgstr ""
 msgid "A relationship between these two users already exists."
 msgstr ""
 
-#: user/utils_img.py:97
+#: user/utils_img.py:96
 msgid "File type not supported"
 msgstr ""
 
-#: user/utils_img.py:103
+#: user/utils_img.py:102
 msgid "Error opening image"
 msgstr ""
 
-#: user/utils_img.py:109
+#: user/utils_img.py:108
 msgid "Error resizing image"
 msgstr ""
 
-#: user/utils_img.py:115
+#: user/utils_img.py:114
 msgid "Error applying vintage filter"
 msgstr ""
 
-#: user/utils_img.py:121
+#: user/utils_img.py:120
 msgid "Error adding frame to image"
 msgstr ""
 
-#: user/utils_img.py:132
+#: user/utils_img.py:131
 msgid "Error saving image"
 msgstr ""
 
@@ -129,116 +143,112 @@ msgstr ""
 msgid "User blocked"
 msgstr ""
 
-#: user/views.py:69
+#: user/views.py:64
 msgid "Friend request accepted"
 msgstr ""
 
-#: user/views.py:87
+#: user/views.py:74
 msgid "Friend request cancelled"
 msgstr ""
 
-#: user/views.py:90
+#: user/views.py:77
 msgid "Friend request rejected"
 msgstr ""
 
-#: user/views.py:93
+#: user/views.py:80
 msgid "Friend removed"
 msgstr ""
 
-#: user/views.py:96
+#: user/views.py:83
 msgid "User unblocked"
 msgstr ""
 
-#: user/views.py:114
+#: user/views.py:97
 msgid "key 'action' must be provided!"
 msgstr ""
 
-#: user/views.py:118
+#: user/views.py:101
 msgid "key 'target_id' must be provided!"
 msgstr ""
 
-#: user/views.py:121
+#: user/views.py:104
 msgid "user with 'target_id' not found"
 msgstr ""
 
-#: user/views.py:123
+#: user/views.py:106
 msgid "cannot perform action on yourself"
 msgstr ""
 
-#: user/views.py:128
+#: user/views.py:111
 #, python-brace-format
 msgid ""
 "Invalid action! For method: {request_method}. Only the following actions are "
 "allowed: {allowed_actions}"
 msgstr ""
 
-#: user/views.py:138
+#: user/views.py:121
 msgid "You have been blocked by this user"
 msgstr ""
 
-#: user/views.py:140 user/views.py:160
+#: user/views.py:123 user/views.py:143
 msgid "You are already friends with this user"
 msgstr ""
 
-#: user/views.py:142
+#: user/views.py:125
 msgid "Friend request is already pending"
 msgstr ""
 
-#: user/views.py:149
+#: user/views.py:132
 msgid "Try harder...LOL"
 msgstr ""
 
-#: user/views.py:151 user/views.py:194
+#: user/views.py:134 user/views.py:177
 msgid "Computer says no"
 msgstr ""
 
-#: user/views.py:153
+#: user/views.py:136
 msgid "You have already blocked this user"
 msgstr ""
 
-#: user/views.py:165 user/views.py:177 user/views.py:188
+#: user/views.py:148 user/views.py:160 user/views.py:171
 msgid "Friend request not found"
 msgstr ""
 
-#: user/views.py:172 user/views.py:183
+#: user/views.py:155 user/views.py:166
 msgid ""
 "You are already friends with this user. Need to remove them as a friend "
 "instead."
 msgstr ""
 
-#: user/views.py:202
+#: user/views.py:185
 msgid "You are not friends with this user"
 msgstr ""
 
-#: user/views.py:211
+#: user/views.py:194
 msgid "You have not blocked this user"
 msgstr ""
 
-#: user/views.py:219
-msgid "User not found"
-msgstr ""
-
-#: user/views.py:222
+#: user/views.py:203
 msgid "Friends list of user"
 msgstr ""
 
-#: user/views.py:228
+#: user/views.py:209
 msgid "key 'avatar' must be provided!"
 msgstr ""
 
-#: user/views.py:242
+#: user/views.py:212
 msgid "Avatar updated"
 msgstr ""
 
-#: user/views.py:257
+#: user/views.py:228
 msgid ""
 "All key ('username', 'firstName', 'lastName', 'language') must be provided!"
 msgstr ""
 
-#: user/views.py:265
+#: user/views.py:236
 msgid "Invalid / unsupported language code"
 msgstr ""
 
-#: user/views.py:280
+#: user/views.py:248
 msgid "User info updated"
 msgstr ""

@@ -1,10 +1,10 @@
-from services.base_views import BaseAuthenticatedView
+from core.base_views import BaseAuthenticatedView
 from django.db import transaction
 from rest_framework import status
-from services.response import success_response, error_response
+from core.response import success_response, error_response
 from user.models import User
-from .models import Conversation, ConversationMember, Message
-from .serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
+from chat.models import Conversation, ConversationMember, Message
+from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.utils.translation import gettext as _, activate
 import logging
 

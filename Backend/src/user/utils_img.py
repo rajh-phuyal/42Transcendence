@@ -5,10 +5,9 @@ import numpy as np
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
-from .utils import change_avatar
-from rest_framework.response import Response
-from app.exceptions import BarelyAnException
-import gettext as _
+from user.utils import change_avatar
+from core.exceptions import BarelyAnException
+from django.utils.translation import gettext as _
 
 # This function opens an image file and returns a PIL Image object
 def open_image(img):

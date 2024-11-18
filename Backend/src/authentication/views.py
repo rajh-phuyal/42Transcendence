@@ -1,15 +1,16 @@
 from rest_framework import generics, status
 from rest_framework import exceptions
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer
+from authentication.serializers import RegisterSerializer, InternalTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.views import exception_handler
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import InternalTokenObtainPairSerializer
-from .models import DevUserData
-from services.response import success_response, error_response
+from authentication.models import DevUserData
+from core.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
-from app.exceptions import BarelyAnException
+from core.exceptions import BarelyAnException
+from core.decorators import barely_handle_exceptions
+
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -33,6 +34,7 @@ class RegisterView(generics.CreateAPIView):
     #     except Exception as e:
     #         raise exceptions.APIException(f"Error during user registration: {str(e)}")
 
+    @barely_handle_exceptions
     def create(self, request, *args, **kwargs):
         # Activate language from query params or fallback to default
         # use like: /register/?language=en-us
@@ -42,10 +44,7 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        try:
-            self.perform_create(serializer)
-        except exceptions.APIException as e:
-            error_response(_("Error during user registration: {error}").format(error=str(e), status_code=status.HTTP_400_BAD_REQUEST))
+        self.perform_create(serializer)
 
         user = serializer.instance
         user.language = preferred_language
@@ -56,6 +55,7 @@ class RegisterView(generics.CreateAPIView):
             "username": user.username,
             "refresh": str(refresh),
             "access": str(refresh.access_token),
+            "language": user.language,
         }
         return success_response(_("Welcome on board {username}!").format(username=user.username), status_code=status.HTTP_201_CREATED, **response_data)
 
@@ -65,7 +65,8 @@ class RegisterView(generics.CreateAPIView):
     
         # Fall back to the default exception handler
         response = exception_handler(exc, self.get_exception_handler_context())
-        err_msg = _("Error during user registration: {error}").format(str(exc))
+        err_msg = _("Error during user registration: {error}").format(error=str(exc))
+
         if response is not None:
             if isinstance(exc, exceptions.ValidationError):
                 return error_response(err_msg, status_code=status.HTTP_400_BAD_REQUEST)
