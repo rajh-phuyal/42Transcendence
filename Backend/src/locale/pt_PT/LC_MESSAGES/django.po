@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 18:29+0000\n"
+"POT-Creation-Date: 2024-11-18 19:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Messages loaded successfully"
 msgstr ""
 
-#: core/base_views.py:19
+#: core/base_views.py:21
 msgid "User not authenticated"
 msgstr ""
 
@@ -245,7 +245,7 @@ msgstr ""
 
 #: user/views.py:231
 msgid ""
-"All key ('username', 'firstName', 'lastName', 'language') must be provided!"
+"All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
 msgstr ""
 
 #: user/views.py:239

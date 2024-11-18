@@ -31,13 +31,7 @@ async function call(url, method, data) {
 
         try {
             const errorData = await response.json();
-            
-            if (errorData.error)
-                errorMessage = "Error: " + errorData.error;
-            else if (errorData.detail)
-                errorMessage = "Error: " + errorData.detail;
-            else
-                errorMessage = 'Request failed';
+            errorMessage = errorData.message;
         } catch (e) {
             // If parsing the JSON fails, fall back to a generic message
             errorMessage = 'Request failed';

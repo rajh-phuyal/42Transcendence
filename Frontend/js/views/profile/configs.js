@@ -222,7 +222,7 @@ export default {
             }).then(data => {
                 console.log('Success:', data);
                 this.hideModal("edit-profile-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: $store.fromState("user").id});
             });
         },
@@ -298,7 +298,7 @@ export default {
                 language: language
             }).then(data => {
                 this.hideModal("edit-profile-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -318,7 +318,7 @@ export default {
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -328,7 +328,7 @@ export default {
         changeFrendshipSecondaryMethod() {
             call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -346,7 +346,7 @@ export default {
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);

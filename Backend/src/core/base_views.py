@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.utils.translation import gettext as _, activate
 from core.response import error_response
+import logging
 
 # Base view class for all authenticated views we wann create
 class BaseAuthenticatedView(APIView):
@@ -12,8 +13,9 @@ class BaseAuthenticatedView(APIView):
     def dispatch(self, request, *args, **kwargs):
         # Set the preferred language based on the authenticated user
         if request.user:
-            preferred_language = getattr(request.user, 'language', 'en-us')
+            preferred_language = request.user.language
             activate(preferred_language)
+            logging.info(f"User {request.user} has preferred language {preferred_language}")
         else:
             # Should never happen due to JWTAuthentication:
             return error_response(_("User not authenticated"), status_code=401)

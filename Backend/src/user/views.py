@@ -228,7 +228,7 @@ class UpdateUserInfoView(BaseAuthenticatedView):
 
         # Check if all fields are not empty
         if not new_username or not new_first_name or not new_last_name or not new_language:
-            error_response(_("All key ('username', 'firstName', 'lastName', 'language') must be provided!"))
+            return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
             
         # Check if the new username is valid
         # TODO: Wait for issue #108
