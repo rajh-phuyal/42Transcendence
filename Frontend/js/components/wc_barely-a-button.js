@@ -59,17 +59,15 @@ class BarelyAButton extends HTMLElement
                 }
 
                 .rect-button{
-                    display: flex;
                     font-family: 'Courier';
-                    font-size: 25px;
+                    font-size: 20px;
                     vertical-align: middle;
                     text-align: center;
-                    line-height: 50px;
+                    align-items: justify;
                     font-weight: 700;
                     color: #FFFCE6;
                     height: 30px;
                     width: 150px;
-                    flex-direction: row;
                     margin: 15px;
                     padding: 3px;
                     border: 2px solid  #595959;

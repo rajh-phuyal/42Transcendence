@@ -8,14 +8,11 @@ function populateUserInfo(res) {
     let lastSeenText =$id("last-seen-text");
     let lastSeenImg =$id("last-seen-image");
 
-    if (res.online) {
-        lastSeenText.textContent = "Last seen: " + res.lastLogin;
-        lastSeenImg.src = "../../../../assets/onlineIcon.png";
-    }
-    else {
-        lastSeenText.textContent = "Last seen: Under surveillance";
+    if (res.online)
+        lastSeenImg.src = "../../../../assets/onlineIcon.png"; 
+    else 
         lastSeenImg.src = "../../../../assets/offlineIcon.png";
-    }
+    lastSeenText.textContent = "Last seen: " + res.lastLogin;
     let language =$id("language");
     language.textContent = "language: " + res.language;
 }
@@ -42,21 +39,6 @@ function populateProgress(res, identity) {
     let percentage =$id(id);
     percentage.textContent = percentageValue + "%";
 }
-
-// function populateButtons(object) {
-//     console.log("object");
-//     console.log(object);
-//     let element = $id("button-top-left");
-//     element.src = object.buttonTopLeftImagePath;
-//     element = $id("button-top-middle");
-//     element.src = object.buttonTopMiddleImagePath;
-//     element = $id("button-top-right");
-//     element.src = object.buttonTopRightImagePath;
-//     element = $id("button-bottom-left");
-//     element.src = "../../../../assets/profileView/gamingHistoryIcon.png";
-//     element = $id("button-bottom-right");
-//     element.src = "../../../../assets/profileView/FriendsListIcon.png";
-// }
 
 function populateInfoAndStats(res) {
     populateUserInfo(res);

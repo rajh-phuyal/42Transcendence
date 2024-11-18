@@ -20,7 +20,6 @@ class RegisterView(generics.CreateAPIView):
     #     try:
     #         user = serializer.save()
     #         refresh = RefreshToken.for_user(user)
-
     #         DevUserData.objects.update_or_create(
     #             user=user,
     #             defaults={
@@ -95,7 +94,6 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             # Get the tokens from the response data
             refresh_token = response.data.get('refresh')
             access_token = response.data.get('access')
-            
             # Store the tokens in the DevUserData table
             # TODO: Main branch was fucked so i commented this...
             # DevUserData.objects.update_or_create(
