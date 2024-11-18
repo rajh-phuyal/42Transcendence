@@ -1,7 +1,7 @@
 -- [astein]:
 -- This is an essential part of the db configuration process!
 
-\! echo -e "\e[1m START of 011_no_cool_with.sql \e[0m"
+\! echo -e "\e[1m START of 013_no_cool_with.sql \e[0m"
 
 -- Switching to our DB
 \c ${DB_NAME}
@@ -25,4 +25,4 @@ DROP INDEX IF EXISTS idx_no_cool_with;
 CREATE INDEX IF NOT EXISTS idx_no_cool_with 
 ON barelyaschema.no_cool_with (blocker_id, blocked_id);
 
-\! echo -e "\e[1m END of 011_no_cool_with.sql \e[0m"
+\! echo -e "\e[1m END of 013_no_cool_with.sql \e[0m"

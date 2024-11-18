@@ -21,8 +21,10 @@ CREATE TABLE IF NOT EXISTS barelyaschema.game_member
 	powerup_big BOOLEAN NOT NULL DEFAULT FALSE,
 	powerup_fast BOOLEAN NOT NULL DEFAULT FALSE,
 	powerup_slow BOOLEAN NOT NULL DEFAULT FALSE,
+    notification_id INT,
 	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
-	FOREIGN KEY (game_id) REFERENCES barelyaschema.game(id)
+	FOREIGN KEY (game_id) REFERENCES barelyaschema.game(id),
+    FOREIGN KEY (notification_id) REFERENCES barelyaschema.notification(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"

@@ -15,8 +15,10 @@ CREATE TABLE IF NOT EXISTS barelyaschema.tournament_member
 	tournament_alias VARCHAR(150),
 	accepted BOOLEAN NOT NULL DEFAULT FALSE,
 	finish_place INT,
+    notification_id INT,
 	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
-	FOREIGN KEY (tournament_id) REFERENCES barelyaschema.tournament(id)
+	FOREIGN KEY (tournament_id) REFERENCES barelyaschema.tournament(id),
+    FOREIGN KEY (notification_id) REFERENCES barelyaschema.notification(id)
 );
 
 \! echo -e "changing the ownership of the table to user '${POSTGRES_USER}'"
