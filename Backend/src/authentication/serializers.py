@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.utils.translation import gettext as _
+from app.exceptions import BarelyAnException
 
 User = get_user_model()
 
@@ -34,28 +35,28 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         if not value:
-            raise serializers.ValidationError(_("Username cannot be empty"))
+            raise BarelyAnException(_("Username cannot be empty"))
 
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError((_("Username '{username}' already exists").format(username=value)))
+            raise BarelyAnException((_("Username '{username}' already exists").format(username=value)))
 
         return value
 
     def validate_password(self, value):
         if not value:
-            raise serializers.ValidationError(_("Password cannot be empty"))
+            raise BarelyAnException(_("Password cannot be empty"))
 
         if len(value) < 6:
-            raise serializers.ValidationError(_("Password must be at least 6 characters long"))
+            raise BarelyAnException(_("Password must be at least 6 characters long"))
 
         if not any(char.islower() for char in value):
-            raise serializers.ValidationError(_("Password must contain at least one lowercase character"))
+            raise BarelyAnException(_("Password must contain at least one lowercase character"))
 
         if not any(char.isupper() for char in value):
-            raise serializers.ValidationError(_("Password must contain at least one uppercase character"))
+            raise BarelyAnException(_("Password must contain at least one uppercase character"))
 
         if not any(char.isdigit() for char in value):
-            raise serializers.ValidationError(_("Password must contain at least one digit"))
+            raise BarelyAnException(_("Password must contain at least one digit"))
 
         return value
 

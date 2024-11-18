@@ -4,12 +4,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.views import exception_handler
-from rest_framework import exceptions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import InternalTokenObtainPairSerializer
 from .models import DevUserData
 from services.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
+from app.exceptions import BarelyAnException
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -45,9 +45,10 @@ class RegisterView(generics.CreateAPIView):
         try:
             self.perform_create(serializer)
         except exceptions.APIException as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            error_response(_("Error during user registration: {error}").format(error=str(e), status_code=status.HTTP_400_BAD_REQUEST))
 
         user = serializer.instance
+        user.language = preferred_language
         refresh = RefreshToken.for_user(user)
 
         response_data = {
@@ -59,32 +60,25 @@ class RegisterView(generics.CreateAPIView):
         return success_response(_("Welcome on board {username}!").format(username=user.username), status_code=status.HTTP_201_CREATED, **response_data)
 
     def handle_exception(self, exc):
+        if isinstance(exc, BarelyAnException):
+            return error_response(exc.detail, status_code=exc.status_code)
+    
+        # Fall back to the default exception handler
         response = exception_handler(exc, self.get_exception_handler_context())
-
+        err_msg = _("Error during user registration: {error}").format(str(exc))
         if response is not None:
             if isinstance(exc, exceptions.ValidationError):
-                response.data = {'errors': response.data}
-                response.status_code = status.HTTP_400_BAD_REQUEST
+                return error_response(err_msg, status_code=status.HTTP_400_BAD_REQUEST)
             elif isinstance(exc, exceptions.AuthenticationFailed):
-                response.data = {'detail': 'Authentication failed'}
-                response.status_code = status.HTTP_401_UNAUTHORIZED
+                return error_response(err_msg, status_code=status.HTTP_401_UNAUTHORIZED)
             elif isinstance(exc, exceptions.NotAuthenticated):
-                response.data = {'detail': 'Not authenticated'}
-                response.status_code = status.HTTP_401_UNAUTHORIZED
+                return error_response(err_msg, status_code=status.HTTP_401_UNAUTHORIZED)
             elif isinstance(exc, exceptions.PermissionDenied):
-                response.data = {'detail': 'Permission denied'}
-                response.status_code = status.HTTP_403_FORBIDDEN
+                return error_response(err_msg, status_code=status.HTTP_403_FORBIDDEN)
             elif isinstance(exc, exceptions.NotFound):
-                response.data = {'detail': 'Not found'}
-                response.status_code = status.HTTP_404_NOT_FOUND
-            else:
-                response.data = {'detail': str(exc)}
-                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-
-            return response
-
-        return response
-
+                return error_response(err_msg, status_code=status.HTTP_404_NOT_FOUND)
+            return error_response(err_msg, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)   
+        return error_response(err_msg, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)   
 
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer
@@ -97,6 +91,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
         
         response = super().post(request, *args, **kwargs)
         user = self.get_user_from_request(request)
+        user.language = preferred_language
         
         if user:
             # Get the tokens from the response data
