@@ -143,7 +143,7 @@ export default {
             $id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
             $id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
             $id("edit-profile-modal-form-input-username").value = this.result.username;
-            $id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
+            $id("edit-profile-modal-form-language-selector").value = this.result.language;
             
 
             let modalElement = $id("edit-profile-modal");
