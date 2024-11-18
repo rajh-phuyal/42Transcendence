@@ -202,9 +202,25 @@
     </div>
 
   </div>
+  <!-- Invite for game Modal -->
+  <div class="modal fade" id="friends-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" id="friends-list-modal-content">
+        <div class="modal-body" id="friends-list-modal-body">
+          <h1>Friends List</h1>
+          <input type="text" id="friends-list-modal-search-bar">
+          <div >
+            <ul id="friends-list-modal-list" class="list-group">
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-    
+
 <style>
     #profie-view {
         height: 100%;
@@ -212,6 +228,39 @@
         color: black;
     }
 
+    /* Friends list */
+
+    .friends-list-modal-list-element{
+      display: flex;
+      flex-direction: row;
+      height: 8vh;
+      background-color: #FFF6D4;
+      border-color: black;
+      border-width: 7px;
+      align-items: center;
+    }
+
+    .friends-list-modal-list-element-image {
+      height: 7vh;
+      margin: 0vh 1vw;
+
+    }
+    .friends-list-modal-list-element-username {
+      margin: 0vh 6vw 0vh 2vw;
+      width: 4vw;
+    }
+
+    #friends-list-modal-list {
+      display: flex;
+      flex-direction: column;
+      height: 40vh;
+      overflow-y: auto;
+    }
+
+    #friends-list-modal-body {
+      display: flex;
+      flex-direction: column;
+    }
 
     /* Invite for Game  */
     

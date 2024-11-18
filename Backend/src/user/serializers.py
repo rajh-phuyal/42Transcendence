@@ -75,7 +75,7 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'avatarUrl', 'status']
 
     def get_other_user(self, obj):
-        user_id = self.context.get('user_id')
+        user_id = self.context.get('target_user_id')
         return obj.requestee if obj.requester.id == user_id else obj.requester
 
     def get_id(self, obj):
@@ -91,7 +91,10 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         return other_user.avatar_path
 
     def get_status(self, obj):
-        user_id = self.context.get('user_id')
+        # TODO: Friendship status should from the perspective of the requester
+        # 'requester_user_id'
+        # 'target_user_id'
+        user_id = self.context.get('requester_user_id')
         if obj.status == CoolStatus.PENDING:
-            return 'requestSend' if obj.requester.id == user_id else 'requestReceived'
-        return 'accepted'
+            return 'requestSent' if obj.requester.id == user_id else 'requestReceived'
+        return 'friend'

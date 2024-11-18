@@ -224,12 +224,12 @@ class ListFriendsView(APIView):
 
     def get(self, request, id):
         try:
-            user = User.objects.get(id=id)
+            target_user = User.objects.get(id=id)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        cool_with_entries = IsCoolWith.objects.filter(Q(requester=user) | Q(requestee=user))
-        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'user_id': user.id})
+        cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
+        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'requester_user_id': request.user.id, 'target_user_id': target_user.id})
         return Response(serializer.data, status=status.HTTP_200_OK)
    
 class UpdateAvatarView(APIView):

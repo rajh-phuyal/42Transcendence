@@ -30,6 +30,7 @@ export default {
 
         result: undefined,
         cropper: undefined,
+        friendList: undefined,
 
         buttonSettings: {
             friend: {
@@ -386,6 +387,61 @@ export default {
         cancelButton() {
             this.hideModal("friendship-modal");
         },
+
+        populateFriendList() {
+            const mainDiv = $id("friends-list-modal-list");
+            for (let element of this.friendList){
+                // Element
+                const elementDiv = document.createElement('div')
+                elementDiv.className = "friends-list-modal-list-element";
+                elementDiv.setAttribute("id", element.id);
+
+                // Avatar
+                const avatar = document.createElement('img')
+                avatar.className = "friends-list-modal-list-element-image";
+                avatar.src = 'https://localhost/media/avatars/' + element.avatarUrl;
+                elementDiv.appendChild(avatar);
+                // Username
+                const username = document.createElement('h3')
+                username.className = "friends-list-modal-list-element-username";
+                username.textContent = element.username;
+                elementDiv.appendChild(username);
+                // Friendship status
+                const frienshipStatusAvatar = document.createElement('img')
+                frienshipStatusAvatar.className = "friends-list-modal-list-element-image";
+                frienshipStatusAvatar.src = this.buttonSettings[element.status].path;
+                // frienshipStatusAvatar.src = "../../../../assets/profileView/firendRequestIcon.png";
+                elementDiv.appendChild(frienshipStatusAvatar);
+
+                mainDiv.appendChild(elementDiv)
+
+                $on(elementDiv, "click", () => {
+
+                    const params = { id: elementDiv.getAttribute("id") };
+                    this.hideModal("friends-list-modal");
+                    router(('/profile'),  params);
+                
+                })
+               
+                
+            }
+        },
+
+        openFriendList() {
+            
+            call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
+                this.friendList = res;
+                
+                
+                this.populateFriendList();
+                let modalElement = $id("friends-list-modal");
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+
+        }
     },
 
 
@@ -430,6 +486,8 @@ export default {
             $off(element, "click", this.changeBlockMethod);
             element = $id("friendship-modal-cancel-button");
             $on(element, "click", this.cancelButton);
+            element = $id("button-bottom-right");
+            $on(element, "click", this.openFriendList);
 
         },
 
@@ -447,6 +505,8 @@ export default {
                 this.populateButtons();
                 if (res.relationship.isBlocked)
                     this.blackout();
+
+                // this.openFriendList(); // For developing porpouses
                 
                 // callback functions
                 if (this.buttonTopLeft.method) {
@@ -491,6 +551,21 @@ export default {
                 $on(element, "click", this.changeBlockMethod);
                 element = $id("friendship-modal-cancel-button");
                 $on(element, "click", this.cancelButton);
+                element = $id("button-bottom-right");
+                $on(element, "click", this.openFriendList);
+
+                // let elementOnList = $queryAll(".friends-list-modal-list-element");
+                // console.log("elementOnList", elementOnList);
+                // for (let element of elementOnList) {
+                //     console.log("Im on a loooooooooooooop");
+                //     const params = { id: 5 };
+                //     console.log("element.id:", element.id);
+                //     console.log("params:", params);
+                //     $on(element, "click", (params) => {
+                //         console.log("yoooooo");
+                //         router(('/profile'),  params);
+                //     }) 
+                // }
             })
             // on error?
         },
