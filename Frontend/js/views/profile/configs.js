@@ -362,10 +362,8 @@ export default {
         openInviteForGameModal() {
 
             $id("invite-for-game-modal-opponent-photo").src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
-            console.log("username:", this.result.username);
             $id("invite-for-game-modal-opponent-name").textContent = this.result.username;
 
-            console.log("yooo");
             let modalElement = $id("invite-for-game-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
