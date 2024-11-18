@@ -5,7 +5,7 @@ class TextField extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "clear"];
+        return ["placeholder", "width", "height", "clear"];
     }
 
     connectedCallback() {
@@ -48,6 +48,9 @@ class TextField extends HTMLElement {
         else if (name === "clear") {
             this.clear = true;
         }
+        else if (name === "height") {
+            this.height = newValue;
+        }
         this.render();
     }
 
@@ -57,8 +60,8 @@ class TextField extends HTMLElement {
                 div {
                     color: black;
                     font-weight: 600;
-                    width: ${this.width || '150'}px;
-                    hight: 50;
+                    width: ${this.width || '20'}%;
+                    height: ${this.height || '20'}%;
                     align-items: center;
                     flex: 1;
                     padding: 5px;
@@ -68,11 +71,12 @@ class TextField extends HTMLElement {
                     background-color: #FFF6D4;
                 }
 
-                textarea {
+                #text-field {
                     font-size: 16px;
                     font-family: 'Courier';
                     color: black;
-                    width: ${this.width - 100 || '50'}px;
+                    width: ${this.width - 5 || '20'}%;
+                    height: ${this.height || '20'}%;
                     font-weight: 600;
                     flex: 1;
                     padding: 5px;
@@ -111,8 +115,12 @@ class TextField extends HTMLElement {
                 button:active{
                     background-color: #333333;
                 }
+                #main-container {
+                    display: flex;
+                    flex-direction: row;
+                }
             </style>
-            <div>
+            <div id="main-container">
                 <textarea id="text-field" type="search" placeholder="${this.placeholder || 'Search...'}"></textarea>
                 <button id="textFieldButton">Send</button>
             </div>

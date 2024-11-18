@@ -13,8 +13,9 @@ html, body {
 #navigator {
 	display: flex;
 	justify-content: space-between;
+	height: 10vh;
 	align-items: center;
-	padding: 10px;
+	padding: 0.5em;
 	background-color: #00ccff;
 	cursor: pointer;
 }
@@ -35,8 +36,12 @@ html, body {
 }
 
 #router-view {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	margin-top: 0px;
-	height: 100vh;
+	height: 90vh;
+	width: 100vw;
 	background-color: rgb(255, 247, 230);
 }
 
