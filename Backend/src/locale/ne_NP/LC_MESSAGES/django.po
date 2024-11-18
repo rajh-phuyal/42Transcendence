@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 19:49+0000\n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr "प्रयोगकर्ताको नाम खाली हुन सक्दैन"
 
-#: authentication/serializers.py:43
+#: authentication/serializers.py:43 user/views.py:237
 #, python-brace-format
 msgid "Username '{username}' already exists"
 msgstr "प्रयोगकर्ताको नाम '{username}' पहिले नै अवस्थित छ"
@@ -46,15 +46,10 @@ msgstr "पासवर्डमा कम्तीमा एउटा ठूल
 msgid "Password must contain at least one digit"
 msgstr "पासवर्डमा कम्तीमा एउटा अंक हुनुपर्छ"
 
-#: authentication/views.py:59
+#: authentication/views.py:57
 #, python-brace-format
 msgid "Welcome on board {username}!"
 msgstr "स्वागतम्, {username}!"
-
-#: authentication/views.py:67
-#, python-brace-format
-msgid "Error during user registration: {error}"
-msgstr "प्रयोगकर्ता दर्ता गर्दा त्रुटि: {error}"
 
 #: chat/views.py:26
 msgid "No conversations found"
@@ -187,7 +182,9 @@ msgstr "आफैँमा कार्य गर्न सकिँदैन"
 msgid ""
 "Invalid action! For method: {request_method}. Only the following actions are "
 "allowed: {allowed_actions}"
-msgstr "अवैध कार्य! विधिका लागि: {request_method}. यी मात्र कार्यहरू अनुमति छन्: {allowed_actions}"
+msgstr ""
+"अवैध कार्य! विधिका लागि: {request_method}. यी मात्र कार्यहरू अनुमति छन्: "
+"{allowed_actions}"
 
 #: user/views.py:124
 msgid "You have been blocked by this user"
@@ -221,7 +218,9 @@ msgstr "साथी अनुरोध फेला परेन"
 msgid ""
 "You are already friends with this user. Need to remove them as a friend "
 "instead."
-msgstr "तपाईं यस प्रयोगकर्ताका साथी पहिले नै हुनुहुन्छ। सट्टामा उनीहरूलाई साथीको रूपमा हटाउन आवश्यक छ।"
+msgstr ""
+"तपाईं यस प्रयोगकर्ताका साथी पहिले नै हुनुहुन्छ। सट्टामा उनीहरूलाई साथीको रूपमा हटाउन "
+"आवश्यक छ।"
 
 #: user/views.py:188
 msgid "You are not friends with this user"
@@ -246,12 +245,17 @@ msgstr "अवतार अद्यावधिक गरियो"
 #: user/views.py:231
 msgid ""
 "All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
-msgstr "सबै कुञ्जीहरू ('username', 'firstName', 'lastName', 'language') उपलब्ध गराउनुपर्छ!"
+msgstr ""
+"सबै कुञ्जीहरू ('username', 'firstName', 'lastName', 'language') उपलब्ध गराउनुपर्छ!"
 
-#: user/views.py:239
+#: user/views.py:242
 msgid "Invalid / unsupported language code"
 msgstr "अवैध / असमर्थित भाषा कोड"
 
-#: user/views.py:251
+#: user/views.py:254
 msgid "User info updated"
 msgstr "प्रयोगकर्ता जानकारी अद्यावधिक गरियो"
+
+#, python-brace-format
+#~ msgid "Error during user registration: {error}"
+#~ msgstr "प्रयोगकर्ता दर्ता गर्दा त्रुटि: {error}"

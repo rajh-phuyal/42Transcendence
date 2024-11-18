@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 19:49+0000\n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr ""
 
-#: authentication/serializers.py:43
+#: authentication/serializers.py:43 user/views.py:237
 #, python-brace-format
 msgid "Username '{username}' already exists"
 msgstr ""
@@ -46,14 +46,9 @@ msgstr ""
 msgid "Password must contain at least one digit"
 msgstr ""
 
-#: authentication/views.py:59
+#: authentication/views.py:57
 #, python-brace-format
 msgid "Welcome on board {username}!"
-msgstr ""
-
-#: authentication/views.py:67
-#, python-brace-format
-msgid "Error during user registration: {error}"
 msgstr ""
 
 #: chat/views.py:26
@@ -248,10 +243,10 @@ msgid ""
 "All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
 msgstr ""
 
-#: user/views.py:239
+#: user/views.py:242
 msgid "Invalid / unsupported language code"
 msgstr ""
 
-#: user/views.py:251
+#: user/views.py:254
 msgid "User info updated"
 msgstr ""

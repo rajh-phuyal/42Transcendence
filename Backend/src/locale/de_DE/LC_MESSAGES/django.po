@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 19:49+0000\n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr "Benutzername darf nicht leer sein"
 
-#: authentication/serializers.py:43
+#: authentication/serializers.py:43 user/views.py:237
 #, python-brace-format
 msgid "Username '{username}' already exists"
 msgstr "Benutzername '{username}' existiert bereits"
@@ -46,15 +46,10 @@ msgstr "Das Passwort muss mindestens einen Großbuchstaben enthalten"
 msgid "Password must contain at least one digit"
 msgstr "Das Passwort muss mindestens eine Zahl enthalten"
 
-#: authentication/views.py:59
+#: authentication/views.py:57
 #, python-brace-format
 msgid "Welcome on board {username}!"
 msgstr "Wilkommen an Bord {username}!"
-
-#: authentication/views.py:67
-#, python-brace-format
-msgid "Error during user registration: {error}"
-msgstr "Fehler bei der Benutzerregistrierung: {error}"
 
 #: chat/views.py:26
 msgid "No conversations found"
@@ -189,7 +184,9 @@ msgstr "Aktion gegen sich selbst ist nicht möglich"
 msgid ""
 "Invalid action! For method: {request_method}. Only the following actions are "
 "allowed: {allowed_actions}"
-msgstr "Ungültige Aktion! Für Methode: {request_method}. Nur die folgenden Aktionen sind erlaubt: {allowed_actions}"
+msgstr ""
+"Ungültige Aktion! Für Methode: {request_method}. Nur die folgenden Aktionen "
+"sind erlaubt: {allowed_actions}"
 
 #: user/views.py:124
 msgid "You have been blocked by this user"
@@ -223,7 +220,9 @@ msgstr "Freundschaftsanfrage nicht gefunden"
 msgid ""
 "You are already friends with this user. Need to remove them as a friend "
 "instead."
-msgstr "Sie sind bereits mit diesem Benutzer befreundet. Entfernen Sie ihn stattdessen als Freund."
+msgstr ""
+"Sie sind bereits mit diesem Benutzer befreundet. Entfernen Sie ihn "
+"stattdessen als Freund."
 
 #: user/views.py:188
 msgid "You are not friends with this user"
@@ -248,12 +247,18 @@ msgstr "Avatar aktualisiert"
 #: user/views.py:231
 msgid ""
 "All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
-msgstr "Alle Schlüssel ('username', 'firstName', 'lastName', 'language') müssen angegeben werden!"
+msgstr ""
+"Alle Schlüssel ('username', 'firstName', 'lastName', 'language') müssen "
+"angegeben werden!"
 
-#: user/views.py:239
+#: user/views.py:242
 msgid "Invalid / unsupported language code"
 msgstr "Ungültiger / nicht unterstützter Sprachcode"
 
-#: user/views.py:251
+#: user/views.py:254
 msgid "User info updated"
 msgstr "Benutzereinstellungen gespeichert"
+
+#, python-brace-format
+#~ msgid "Error during user registration: {error}"
+#~ msgstr "Fehler bei der Benutzerregistrierung: {error}"

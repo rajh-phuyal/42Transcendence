@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 19:49+0000\n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr "O nome de usuário não pode estar vazio"
 
-#: authentication/serializers.py:43
+#: authentication/serializers.py:43 user/views.py:237
 #, python-brace-format
 msgid "Username '{username}' already exists"
 msgstr "O nome de usuário '{username}' já existe"
@@ -47,15 +47,10 @@ msgstr "A senha deve conter pelo menos uma letra maiúscula"
 msgid "Password must contain at least one digit"
 msgstr "A senha deve conter pelo menos um dígito"
 
-#: authentication/views.py:59
+#: authentication/views.py:57
 #, python-brace-format
 msgid "Welcome on board {username}!"
 msgstr "Bem-vindo(a) a bordo, {username}!"
-
-#: authentication/views.py:67
-#, python-brace-format
-msgid "Error during user registration: {error}"
-msgstr "Erro durante o registro do usuário: {error}"
 
 #: chat/views.py:26
 msgid "No conversations found"
@@ -188,7 +183,9 @@ msgstr "Não é possível executar esta ação em si mesmo"
 msgid ""
 "Invalid action! For method: {request_method}. Only the following actions are "
 "allowed: {allowed_actions}"
-msgstr "Ação inválida! Para o método: {request_method}. Somente as seguintes ações são permitidas: {allowed_actions}"
+msgstr ""
+"Ação inválida! Para o método: {request_method}. Somente as seguintes ações "
+"são permitidas: {allowed_actions}"
 
 #: user/views.py:124
 msgid "You have been blocked by this user"
@@ -247,12 +244,18 @@ msgstr "Avatar atualizado"
 #: user/views.py:231
 msgid ""
 "All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
-msgstr "Todas as chaves ('username', 'firstName', 'lastName', 'language') devem ser fornecidas!"
+msgstr ""
+"Todas as chaves ('username', 'firstName', 'lastName', 'language') devem ser "
+"fornecidas!"
 
-#: user/views.py:239
+#: user/views.py:242
 msgid "Invalid / unsupported language code"
 msgstr "Código de idioma inválido / não suportado"
 
-#: user/views.py:251
+#: user/views.py:254
 msgid "User info updated"
 msgstr "Informações do usuário atualizadas"
+
+#, python-brace-format
+#~ msgid "Error during user registration: {error}"
+#~ msgstr "Erro durante o registro do usuário: {error}"

@@ -232,6 +232,9 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             
         # Check if the new username is valid
         # TODO: Wait for issue #108
+        if new_username != user.username:
+            if User.objects.filter(username=new_username).exists():
+                raise BarelyAnException((_("Username '{username}' already exists").format(username=new_username)))
 
         # Check if the language is valid
         valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']

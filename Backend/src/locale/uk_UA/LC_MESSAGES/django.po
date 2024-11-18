@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 19:49+0000\n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Username cannot be empty"
 msgstr "Ім'я користувача не може бути порожнім"
 
-#: authentication/serializers.py:43
+#: authentication/serializers.py:43 user/views.py:237
 #, python-brace-format
 msgid "Username '{username}' already exists"
 msgstr "Ім'я користувача '{username}' вже існує"
@@ -46,15 +46,10 @@ msgstr "Пароль повинен містити принаймні одну �
 msgid "Password must contain at least one digit"
 msgstr "Пароль повинен містити принаймні одну цифру"
 
-#: authentication/views.py:59
+#: authentication/views.py:57
 #, python-brace-format
 msgid "Welcome on board {username}!"
 msgstr "Ласкаво просимо на борт, {username}!"
-
-#: authentication/views.py:67
-#, python-brace-format
-msgid "Error during user registration: {error}"
-msgstr "Помилка під час реєстрації користувача: {error}"
 
 #: chat/views.py:26
 msgid "No conversations found"
@@ -187,7 +182,9 @@ msgstr "Не можна виконати дію на собі"
 msgid ""
 "Invalid action! For method: {request_method}. Only the following actions are "
 "allowed: {allowed_actions}"
-msgstr "Недійсна дія! Для методу: {request_method}. Дозволені лише такі дії: {allowed_actions}"
+msgstr ""
+"Недійсна дія! Для методу: {request_method}. Дозволені лише такі дії: "
+"{allowed_actions}"
 
 #: user/views.py:124
 msgid "You have been blocked by this user"
@@ -221,7 +218,8 @@ msgstr "Запит на дружбу не знайдено"
 msgid ""
 "You are already friends with this user. Need to remove them as a friend "
 "instead."
-msgstr "Ви вже друзі з цим користувачем. Натомість потрібно видалити його як друга."
+msgstr ""
+"Ви вже друзі з цим користувачем. Натомість потрібно видалити його як друга."
 
 #: user/views.py:188
 msgid "You are not friends with this user"
@@ -246,12 +244,18 @@ msgstr "Аватар оновлено"
 #: user/views.py:231
 msgid ""
 "All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
-msgstr "Усі ключі ('username', 'firstName', 'lastName', 'language') мають бути вказані!"
+msgstr ""
+"Усі ключі ('username', 'firstName', 'lastName', 'language') мають бути "
+"вказані!"
 
-#: user/views.py:239
+#: user/views.py:242
 msgid "Invalid / unsupported language code"
 msgstr "Недійсний / непідтримуваний код мови"
 
-#: user/views.py:251
+#: user/views.py:254
 msgid "User info updated"
 msgstr "Інформація про користувача оновлена"
+
+#, python-brace-format
+#~ msgid "Error during user registration: {error}"
+#~ msgstr "Помилка під час реєстрації користувача: {error}"
