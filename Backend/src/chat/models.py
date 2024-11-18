@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 # Conversation Model
 class Conversation(models.Model):
@@ -37,8 +38,13 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     seen_at = models.DateTimeField(null=True, blank=True)
 
-    def __str__(self):
-        return f'Message from {self.user.username} in {self.conversation.name}'
-    
     class Meta:
         db_table = '"barelyaschema"."message"'
+
+    def mark_as_seen(self):
+        """Mark the notification as seen."""
+        self.seen_at = now()
+        self.save()
+    
+    def __str__(self):
+        return f'Message from {self.user.username} in {self.conversation.name}'

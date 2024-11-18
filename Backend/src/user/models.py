@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from asgiref.sync import sync_to_async
 from django.core.exceptions import ValidationError
+from .models import Notification
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -31,6 +32,7 @@ class IsCoolWith(models.Model):
     requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requester_cool')
     requestee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requestee_cool')
     status = models.CharField(max_length=10, choices=CoolStatus.choices, default=CoolStatus.PENDING)
+    notification = models.ForeignKey(Notification, on_delete=models.CASCADE, null=True, blank=True, related_name='cool_requests')
 
     class Meta:
         db_table = '"barelyaschema"."is_cool_with"'
