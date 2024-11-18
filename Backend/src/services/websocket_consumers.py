@@ -20,7 +20,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             await self.close()
         else:
             user_id = self.scope['user'].id
-            # Set the user's online status in cache
+            #TODO:  Set the user's online status in cache
             cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes
 
             # TODO: move to chat logic

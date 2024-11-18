@@ -160,21 +160,23 @@ export default {
         changePasswordMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-password-change");
+            $id("edit-profile-modal").focus();
         },
 
         changeAvatarMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-avatar-change");
             this.hideElement("edit-profile-modal-avatar-change-crop-image");
+            $id("edit-profile-modal").focus();
         },
 
         friendshipMethod() {
 
             let blockIndex;
             if (this.result.relationship.isBlocking)
-                blockIndex = "unblocked";
-            else
                 blockIndex = "blocked";
+            else
+                blockIndex = "unblocked";
 
             // friendship portion of the modal
             let element = $id("friendshp-modal-friendship-text")
@@ -185,8 +187,8 @@ export default {
                 this.hideElement("friendship-modal-friendship-primary-button");
             }
 
-            if (!buttonObjects[this.result.relationship.state].secundaryButton)
-                this.hideElement("friendship-modal-friendship-secundary-button");
+            if (!buttonObjects[this.result.relationship.state].secondaryButton)
+                this.hideElement("friendship-modal-friendship-secondary-button");
 
             // blocking portion of the friendshop modal
             if (this.result.relationship.state == "requestReceived" || this.result.relationship.state == "requestSent")
@@ -219,7 +221,8 @@ export default {
                 }
             }).then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    console.log('Error uploading the image');
+                    $callToast("error", "Error on uploading the image.")
                 }
                 return response.json();
             }).then(data => {
@@ -227,8 +230,6 @@ export default {
                 this.hideModal("edit-profile-modal");
                 $callToast("success", data.success);
                 router('/profile', { id: $store.fromState("user").id});
-            }).catch((error) => {
-                console.error('Error:', error);
             });
         },
 
@@ -319,7 +320,6 @@ export default {
         },
 
         changeFrendshipPrimaryMethod() {
-            // TODO refactor the code in a way that the object is saved as a atrubute and used in the other funtion that uses the objects array
             const object = buttonObjects[this.result.relationship.state];
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
@@ -331,7 +331,7 @@ export default {
             });
         },
 
-        changeFrendshipSecundaryMethod() {
+        changeFrendshipSecondaryMethod() {
             call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.success);
@@ -384,7 +384,12 @@ export default {
         submitInvitation() {
             console.log(this.gameSettings);
         },
+
+        cancelButton() {
+            this.hideModal("friendship-modal");
+        },
     },
+
 
     hooks: {
         beforeRouteEnter() {
@@ -414,10 +419,6 @@ export default {
             $off(element, "click", this.submitNewPassword);
             element = $id("friendship-modal-friendship-primary-button");
             $off(element, "click", this.changeFrendshipPrimaryMethod);
-            element = $id("friendship-modal-friendship-secundary-button");
-            $off(element, "click", this.changeFrendshipSecundaryMethod);
-            element = $id("friendship-modal-block-button");
-            $off(element, "click", this.changeBlockMethod);
             element = $class("invite-for-game-modal-maps-button");
             for (let HTMLelement of element)
                 $off(HTMLelement, "click", this.selectMap);
@@ -425,11 +426,17 @@ export default {
             $off(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
             element = $id("invite-for-game-modal-start-button");
             $on(element, "click", this.submitInvitation);
+            element = $id("friendship-modal-friendship-secondary-button");
+            $off(element, "click", this.changeFrendshipSecondaryMethod);
+            element = $id("friendship-modal-block-button");
+            $off(element, "click", this.changeBlockMethod);
+            element = $id("friendship-modal-cancel-button");
+            $on(element, "click", this.cancelButton);
 
         },
 
         beforeDomInsertion() {
-
+            
         },
 
         afterDomInsertion() {
@@ -475,11 +482,6 @@ export default {
                 $on(element, "click", this.submitNewPassword);
                 element = $id("friendship-modal-friendship-primary-button");
                 $on(element, "click", this.changeFrendshipPrimaryMethod);
-                element = $id("friendship-modal-friendship-secundary-button");
-                $on(element, "click", this.changeFrendshipSecundaryMethod);
-                element = $id("friendship-modal-block-button");
-                $on(element, "click", this.changeBlockMethod);
-                
                 element = $class("invite-for-game-modal-maps-button");
                 for (let HTMLelement of element)
                     $on(HTMLelement, "click", this.selectMap);
@@ -487,7 +489,12 @@ export default {
                 $on(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
                 element = $id("invite-for-game-modal-start-button");
                 $on(element, "click", this.submitInvitation);
-                
+                element = $id("friendship-modal-friendship-secondary-button");
+                $on(element, "click", this.changeFrendshipSecondaryMethod);
+                element = $id("friendship-modal-block-button");
+                $on(element, "click", this.changeBlockMethod);
+                element = $id("friendship-modal-cancel-button");
+                $on(element, "click", this.cancelButton);
             })
             // on error?
         },

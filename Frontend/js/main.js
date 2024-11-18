@@ -59,6 +59,7 @@ $store.addMutationListener('setWebSocketIsAlive', (state) => {
                 return ;
             }
             $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
+            // TODO:  we need to change it to exponentially increase instead of fixed 2000
             setInervalId = setInterval(() => {
                 WebSocketManager.connect($store.fromState('jwtTokens').access);
             }, 2000);
