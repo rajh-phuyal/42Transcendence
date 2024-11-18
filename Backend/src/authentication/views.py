@@ -59,6 +59,7 @@ class RegisterView(generics.CreateAPIView):
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer
 
+    @barely_handle_exceptions
     def post(self, request, *args, **kwargs):
         # Activate language from query params or fallback to default
         # use like: /login/?language=en-us

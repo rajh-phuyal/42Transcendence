@@ -7,7 +7,7 @@ from core.response import error_response
 from core.exceptions import NotAuthenticated
 import logging
 
-# Base view class for all authenticated views we wann create
+# Base view class for all authenticated views we wanna create
 class BaseAuthenticatedView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

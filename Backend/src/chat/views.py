@@ -1,12 +1,12 @@
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
-from rest_framework import status
 from core.response import success_response, error_response
 from user.models import User
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.utils.translation import gettext as _, activate
 import logging
+from core.decorators import barely_handle_exceptions
 
 class LoadUnreadMessagesView(BaseAuthenticatedView):
     ...
@@ -14,6 +14,7 @@ class LoadUnreadMessagesView(BaseAuthenticatedView):
     #			{"unread":4}
 
 class LoadConversationsView(BaseAuthenticatedView):
+    @barely_handle_exceptions
     def get(self, request):
         # Get the user from the request
         user = request.user
@@ -30,6 +31,7 @@ class LoadConversationsView(BaseAuthenticatedView):
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
 class LoadConversationView(BaseAuthenticatedView):
+    @barely_handle_exceptions
     def put(self, request, conversation_id=None):
         # Get the user from the request
         user = request.user
@@ -38,11 +40,8 @@ class LoadConversationView(BaseAuthenticatedView):
         offset = request.GET.get('offset', 0)
         
         # Validate that the conversation exists
-        try:
-            conversation = Conversation.objects.get(id=conversation_id)
-        except Conversation.DoesNotExist:
-            return error_response(_('Conversation not found'), status_code=404)
-
+        conversation = Conversation.objects.get(id=conversation_id)
+        
         # Check if the sender is a member of the conversation
         if not conversation.members.filter(user=user).exists():
             return error_response(_('You are not a member of this conversation'), status_code=403)
@@ -56,7 +55,6 @@ class LoadConversationView(BaseAuthenticatedView):
 		# Serialize the messages
         serializer = MessageSerializer(messages, many=True)
         return success_response(_('Messages loaded successfully'), data=serializer.data)
-
 
 ################################################################################
 # BELOW IS OLD CODE!!!
@@ -86,7 +84,7 @@ class LoadConversationView(BaseAuthenticatedView):
 ## If conversation already exists, return the conversation_id
 #class CreateConversationView(BaseAuthenticatedView):
 #    permission_classes = [AllowAny] #TODO: implement the token-based authentication!
-#
+#    @barely_handle_exceptions
 #    def post(self, request):
 #        from user.models import User
 #        sender_id = request.data.get('sender_id')
@@ -154,7 +152,7 @@ class LoadConversationView(BaseAuthenticatedView):
 #
 #class RenameConversationView(BaseAuthenticatedView):
 #    permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
-#
+#    @barely_handle_exceptions
 #    def post(self, request):
 #
 #        conversation_id = request.data.get('conversation_id')
@@ -180,7 +178,7 @@ class LoadConversationView(BaseAuthenticatedView):
 ## Send a message
 #class SendMessageView(BaseAuthenticatedView):
 #    permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
-#    
+#    @barely_handle_exceptions    
 #    def post(self, request):
 #        from user.models import User
 #        sender_id = request.data.get('sender_id')
@@ -220,7 +218,7 @@ class LoadConversationView(BaseAuthenticatedView):
 #
 #class ShowConversationView(BaseAuthenticatedView):
 #    permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
-#
+#    @barely_handle_exceptions
 #    def post(self, request):
 #        
 #

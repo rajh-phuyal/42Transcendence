@@ -5,6 +5,8 @@ from core.exceptions import BarelyAnException
 from core.response import error_response
 from django.utils.translation import gettext as _
 
+# This decorator is used to catch exceptions and return a generic error response
+# we should use it for all http requests like post, get, put, delete
 def barely_handle_exceptions(view_func):
     @wraps(view_func)
     def wrapper(self, request, *args, **kwargs):
