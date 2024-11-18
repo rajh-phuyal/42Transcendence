@@ -462,8 +462,6 @@ export default {
                     $on(element, "click", this.buttonTopRight.method);
                 }
 
-                this.openInviteForGameModal(); // Just for building the modal
-
                 let element = $id("edit-profile-modal-form-change-password-button");
                 $on(element, "click", this.changePasswordMethod);
                 element = $id("edit-profile-modal-form-change-avatar-button");
