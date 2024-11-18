@@ -4,7 +4,7 @@ from django.conf import settings
 
 def change_avatar(user, file_path):
     # Check if there's an existing avatar and delete it if it's not the default
-    if user.avatar_path and user.avatar_path != "default_avatar.png":
+    if user.avatar_path and user.avatar_path != "54c455d5-761b-46a2-80a2-7a557d9ec618.png":
         old_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars/', user.avatar_path)
         if default_storage.exists(old_avatar_path):
             default_storage.delete(old_avatar_path)

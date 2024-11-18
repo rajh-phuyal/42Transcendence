@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from core.exceptions import BarelyAnException
+from django.utils import timezone
+from asgiref.sync import sync_to_async
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -13,6 +15,10 @@ class User(AbstractUser):
 
     class Meta:
         db_table = '"barelyaschema"."user"'
+
+    def update_last_seen(self):
+        self.last_login = timezone.now()
+        self.save(update_fields=['last_login'])
 
 # Enum for friend request status (cool_status)
 class CoolStatus(models.TextChoices):
