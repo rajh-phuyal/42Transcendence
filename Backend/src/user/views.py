@@ -17,9 +17,12 @@ from core.decorators import barely_handle_exceptions
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
-    queryset = User.objects.all()
-    serializer_class = ProfileSerializer
-    lookup_field = 'id'
+    @barely_handle_exceptions
+    def get(self, request, id):
+        user = User.objects.get(id=id)
+        serializer = ProfileSerializer(user, context={'request': request})  # Pass context with request
+        return success_response(_("User profile loaded"), **serializer.data)
+
 
 # =============================================================================
 # ModifyFriendshipView for changing the relationship status between the

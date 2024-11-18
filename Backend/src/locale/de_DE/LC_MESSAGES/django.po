@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 17:00+0000\n"
+"POT-Creation-Date: 2024-11-18 18:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,12 +46,12 @@ msgstr ""
 msgid "Password must contain at least one digit"
 msgstr ""
 
-#: authentication/views.py:60
+#: authentication/views.py:59
 #, python-brace-format
 msgid "Welcome on board {username}!"
 msgstr "Wilkommen an Bord {username}!"
 
-#: authentication/views.py:68
+#: authentication/views.py:67
 #, python-brace-format
 msgid "Error during user registration: {error}"
 msgstr ""
@@ -94,19 +94,19 @@ msgstr ""
 msgid "An unexpected error occurred: {error}"
 msgstr ""
 
-#: user/exceptions.py:8
+#: user/exceptions.py:7
 msgid "Validation failed"
 msgstr ""
 
-#: user/exceptions.py:17
+#: user/exceptions.py:16
 msgid "A blocking condition has been detected."
 msgstr ""
 
-#: user/exceptions.py:26
+#: user/exceptions.py:25
 msgid "A relationship error has been detected."
 msgstr ""
 
-#: user/models.py:41
+#: user/models.py:47
 msgid "A relationship between these two users already exists."
 msgstr ""
 
@@ -134,120 +134,124 @@ msgstr ""
 msgid "Error saving image"
 msgstr ""
 
-#: user/views.py:51
-msgid "Friend request sent"
+#: user/views.py:24
+msgid "User profile loaded"
 msgstr ""
 
 #: user/views.py:54
+msgid "Friend request sent"
+msgstr ""
+
+#: user/views.py:57
 msgid "User blocked"
 msgstr ""
 
-#: user/views.py:64
+#: user/views.py:67
 msgid "Friend request accepted"
 msgstr ""
 
-#: user/views.py:74
+#: user/views.py:77
 msgid "Friend request cancelled"
 msgstr ""
 
-#: user/views.py:77
+#: user/views.py:80
 msgid "Friend request rejected"
 msgstr ""
 
-#: user/views.py:80
+#: user/views.py:83
 msgid "Friend removed"
 msgstr ""
 
-#: user/views.py:83
+#: user/views.py:86
 msgid "User unblocked"
 msgstr ""
 
-#: user/views.py:97
+#: user/views.py:100
 msgid "key 'action' must be provided!"
 msgstr ""
 
-#: user/views.py:101
+#: user/views.py:104
 msgid "key 'target_id' must be provided!"
 msgstr ""
 
-#: user/views.py:104
+#: user/views.py:107
 msgid "user with 'target_id' not found"
 msgstr ""
 
-#: user/views.py:106
+#: user/views.py:109
 msgid "cannot perform action on yourself"
 msgstr ""
 
-#: user/views.py:111
+#: user/views.py:114
 #, python-brace-format
 msgid ""
 "Invalid action! For method: {request_method}. Only the following actions are "
 "allowed: {allowed_actions}"
 msgstr ""
 
-#: user/views.py:121
+#: user/views.py:124
 msgid "You have been blocked by this user"
 msgstr ""
 
-#: user/views.py:123 user/views.py:143
+#: user/views.py:126 user/views.py:146
 msgid "You are already friends with this user"
 msgstr ""
 
-#: user/views.py:125
+#: user/views.py:128
 msgid "Friend request is already pending"
 msgstr ""
 
-#: user/views.py:132
+#: user/views.py:135
 msgid "Try harder...LOL"
 msgstr ""
 
-#: user/views.py:134 user/views.py:177
+#: user/views.py:137 user/views.py:180
 msgid "Computer says no"
 msgstr ""
 
-#: user/views.py:136
+#: user/views.py:139
 msgid "You have already blocked this user"
 msgstr ""
 
-#: user/views.py:148 user/views.py:160 user/views.py:171
+#: user/views.py:151 user/views.py:163 user/views.py:174
 msgid "Friend request not found"
 msgstr ""
 
-#: user/views.py:155 user/views.py:166
+#: user/views.py:158 user/views.py:169
 msgid ""
 "You are already friends with this user. Need to remove them as a friend "
 "instead."
 msgstr ""
 
-#: user/views.py:185
+#: user/views.py:188
 msgid "You are not friends with this user"
 msgstr ""
 
-#: user/views.py:194
+#: user/views.py:197
 msgid "You have not blocked this user"
 msgstr ""
 
-#: user/views.py:203
+#: user/views.py:206
 msgid "Friends list of user"
 msgstr ""
 
-#: user/views.py:209
+#: user/views.py:212
 msgid "key 'avatar' must be provided!"
 msgstr ""
 
-#: user/views.py:212
+#: user/views.py:215
 msgid "Avatar updated"
 msgstr ""
 
-#: user/views.py:228
+#: user/views.py:231
 msgid ""
 "All key ('username', 'firstName', 'lastName', 'language') must be provided!"
 msgstr ""
 
-#: user/views.py:236
+#: user/views.py:239
 msgid "Invalid / unsupported language code"
 msgstr ""
 
-#: user/views.py:248
+#: user/views.py:251
 msgid "User info updated"
 msgstr ""
