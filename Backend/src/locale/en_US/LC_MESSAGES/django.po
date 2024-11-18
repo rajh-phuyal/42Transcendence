@@ -1,7 +1,7 @@
 # BARELY A TRANSLATION
 # Copyright (C) barelyatranscendence gang
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR theoverloard@ahok.cool, YEAR.
+# FIRST AUTHOR theoverloard@ahok.cool, 2024.
 #
 #, fuzzy
 msgid ""
