@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.exceptions import ValidationError
+from app.exceptions import BarelyAnException
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -38,7 +38,7 @@ class IsCoolWith(models.Model):
             models.Q(requester=self.requester, requestee=self.requestee) |
             models.Q(requester=self.requestee, requestee=self.requester)
         ).exists():
-            raise ValidationError('A relationship between these two users already exists.')
+            raise BarelyAnException(_('A relationship between these two users already exists.'))
 
     def save(self, *args, **kwargs):
         # Validate before saving

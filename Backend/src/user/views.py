@@ -1,27 +1,20 @@
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from services.base_views import BaseAuthenticatedView
+from services.response import success_response, error_response
+import gettext as _
 from django.db import transaction
 from rest_framework import status
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from django.db.models import Q
 from .models import User, CoolStatus, IsCoolWith, NoCoolWith
 from .serializers import ProfileSerializer, ListFriendsSerializer
+from app.exceptions import BarelyAnException
 from .exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-import os
 from .utils_img import process_avatar
 from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
 
 # ProfileView for retrieving a single user's profile by ID
-class ProfileView(generics.RetrieveAPIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class ProfileView(BaseAuthenticatedView):
     queryset = User.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'id'
@@ -46,48 +39,41 @@ class ProfileView(generics.RetrieveAPIView):
 #  | DELETE    | 'unblock' | 'action', 'target_id' | Unblock a user           |
 #
 # =============================================================================
-class RelationshipView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    
+class RelationshipView(BaseAuthenticatedView):
     # 'send' a friend request
     # 'block' a user
     def post(self, request):
         allowed_actions = {'send', 'block'}
         try:
             user, target, action = self.validate_data(request, allowed_actions)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
             if action == 'send':
                 self.send_request(user, target)
-                return Response({'success': 'Friend request sent'}, status=status.HTTP_201_CREATED)
+                return success_response(_("Friend request sent"), status.HTTP_201_CREATED)
             elif action == 'block':
                 self.block_user(user, target)
-                return Response({'success': 'User blocked'}, status=status.HTTP_201_CREATED)
+                return success_response(_("User blocked"), status.HTTP_201_CREATED)
             else:
-                return Response({'error': request.method + ' error on endpoint /api/user/relationship/'}, status=status.HTTP_400_BAD_REQUEST)
+                return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return error_response(str(e))
 
     # 'accept' a friend request
     def put(self, request):
         allowed_actions = {'accept'}
         try:
             user, target, action = self.validate_data(request, allowed_actions)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
             if action == 'accept':
                 self.accept_request(user, target)
-                return Response({'success': 'Friend request accepted'}, status=status.HTTP_200_OK)
+                return success_response(_("Friend request accepted"))    
             else:
-                return Response({'error': request.method + ' error on endpoint /api/user/relationship/'}, status=status.HTTP_400_BAD_REQUEST)
+                return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+            return error_response(str(e))
+        
     # 'cancel'  a friend request
     # 'reject'  a friend request
     # 'remove'  a friend
@@ -96,26 +82,24 @@ class RelationshipView(APIView):
         allowed_actions = {'cancel', 'reject', 'remove', 'unblock'}
         try:
             user, target, action = self.validate_data(request, allowed_actions)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
             if action == 'cancel':
                 self.cancel_request(user, target)
-                return Response({'success': 'Friend request cancelled'}, status=status.HTTP_200_OK)
+                return success_response(_("Friend request cancelled"))
             elif action == 'reject':
                 self.reject_request(user, target)
-                return Response({'success': 'Friend request rejected'}, status=status.HTTP_200_OK)
+                return success_response(_("Friend request rejected"))
             elif action == 'remove':
                 self.remove_friend(user, target)
-                return Response({'success': 'Friend removed'}, status=status.HTTP_200_OK)
+                return success_response(_("Friend removed"))
             elif action == 'unblock':
                 self.unblock_user(user, target)
-                return Response({'success': 'User unblocked'}, status=status.HTTP_200_OK)
+                return success_response(_("User unblocked"))
             else:
-                return Response({'error': request.method + ' error on endpoint /api/user/relationship/'}, status=status.HTTP_400_BAD_REQUEST)
+                return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return error_response(str(e))
 
     # Utility function to validate that:
     # - the request data contains the required fields
@@ -127,78 +111,87 @@ class RelationshipView(APIView):
         action = request.data.get('action')
         target_id = request.data.get('target_id')
         if not action:
-            raise ValidationException('`action` must be provided')
+            raise ValidationException(_("key 'action' must be provided!"))
         if action not in allowed_actions:
-            raise ValidationException('Invalid action! for method: ' + request.method + '. only the following actions are allowed: ' + ', '.join(allowed_actions))
+            raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions))
         if not target_id:
-            raise ValidationException('`target_id` must be provided')
+            raise ValidationException(_("key 'target_id' must be provided!"))
         target = User.objects.get(id=target_id)
         if not target:
-            raise ValidationException('user with `target_id` not found')
+            raise ValidationException(_("user with 'target_id' not found"))
         if user.id == target.id:
-            raise ValidationException('cannot perform action on yourself')
+            raise ValidationException(_("cannot perform action on yourself"))
         return user, target, action
-    
+
+    def return_unvalid_action_msg(self, request, allowed_actions):
+        return _(
+                "Invalid action! For method: {request_method}. "
+                "Only the following actions are allowed: {allowed_actions}"
+            ).format(
+                request_method=request.method,
+                allowed_actions=', '.join(allowed_actions)
+            )
+
     # Logic for sending a friend request:
     def send_request(self, user, target):
         if is_blocked(user, target):
-            raise BlockingException('You have been blocked by this user')
+            raise BlockingException(_('You have been blocked by this user'))
         if are_friends(user, target):
-            raise RelationshipException('You are already friends with this user')
+            raise RelationshipException(_('You are already friends with this user'))
         if is_request_sent(user, target) or is_request_received(user, target):
-            raise RelationshipException('Friend request is already pending')
+            raise RelationshipException(_('Friend request is already pending'))
         cool_status = IsCoolWith(requester=user, requestee=target)
         cool_status.save()
 
     # Logic for blocking a user:
     def block_user(self, user, target):
         if target.id == 1:
-            raise BlockingException('Try harder...LOL')
+            raise BlockingException(_('Try harder...LOL'))
         if target.id == 2:
-            raise BlockingException('Computer says no')
+            raise BlockingException(_('Computer says no'))
         if is_blocking(user, target):
-            raise BlockingException('You have already blocked this user')
+            raise BlockingException(_('You have already blocked this user'))
         new_no_cool = NoCoolWith(blocker=user, blocked=target)
         new_no_cool.save()
     
     # Logic for accepting a friend request:
     def accept_request(self, user, target):
         if are_friends(user, target):
-            raise RelationshipException('You are already friends with this user')
+            raise RelationshipException(_('You are already friends with this user'))
         with transaction.atomic():
             try:
                 cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=CoolStatus.PENDING)
             except ObjectDoesNotExist:
-                raise RelationshipException('Friend request not found')
+                raise RelationshipException(_('Friend request not found'))
             cool_status.status = CoolStatus.ACCEPTED
             cool_status.save()
     
     # Logic for cancelling a friend request:
     def cancel_request(self, user, target):
         if are_friends(user, target):
-            raise RelationshipException('You are already friends with this user. Need to remove them as a friend instead.')
+            raise RelationshipException(_('You are already friends with this user. Need to remove them as a friend instead.'))
         with transaction.atomic():
             try:
                 cool_status = IsCoolWith.objects.select_for_update().get(requester=user, requestee=target, status=CoolStatus.PENDING)
             except ObjectDoesNotExist:
-                raise RelationshipException('Friend request not found')
+                raise RelationshipException(_('Friend request not found'))
             cool_status.delete()
 
     # Logic for rejecting a friend request:
     def reject_request(self, user, target):
         if are_friends(user, target):
-            raise RelationshipException('You are already friends with this user. Need to remove them as a friend instead.')
+            raise RelationshipException(_('You are already friends with this user. Need to remove them as a friend instead.'))
         with transaction.atomic():
             try:
                 cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=CoolStatus.PENDING)
             except ObjectDoesNotExist:
-                raise RelationshipException('Friend request not found')
+                raise RelationshipException(_('Friend request not found'))
             cool_status.delete()
 
     # Logic for removing a friend:
     def remove_friend(self, user, target):
         if target.id == 2:
-            raise RelationshipException('Computer says no')
+            raise RelationshipException(_('Computer says no'))
         with transaction.atomic():
             cool_status = IsCoolWith.objects.select_for_update().filter(
                 (Q(requester=user) & Q(requestee=target)) |
@@ -206,7 +199,7 @@ class RelationshipView(APIView):
                 status=CoolStatus.ACCEPTED
             )
             if not cool_status:
-                raise RelationshipException('You are not friends with this user')
+                raise RelationshipException(_('You are not friends with this user'))
             cool_status.delete()
     
     # Logic for unblocking a user:
@@ -215,49 +208,40 @@ class RelationshipView(APIView):
             try:
                 no_cool = NoCoolWith.objects.select_for_update().get(blocker=user, blocked=target)
             except ObjectDoesNotExist:
-                raise BlockingException('You have not blocked this user')
+                raise BlockingException(_('You have not blocked this user'))
             no_cool.delete()
 
-class ListFriendsView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class ListFriendsView(BaseAuthenticatedView):
     def get(self, request, id):
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
+            error_response(_("User not found"), status.HTTP_404_NOT_FOUND)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=user) | Q(requestee=user))
         serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'user_id': user.id})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return success_response(_("Friends list of user"), friends=serializer.data)
    
-class UpdateAvatarView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated] #TODO CHANGE THIS LATER
-
+class UpdateAvatarView(BaseAuthenticatedView):
     def post(self, request):
         # Check if 'avatar' is in request.FILES
         if 'avatar' not in request.FILES:
-            return Response({'error': 'Avatar must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return error_response(_("key 'avatar' must be provided!"))
 
         # Get the avatar file from request.FILES
         avatar = request.FILES['avatar']
 
         # Call the utility function to process the avatar
-        result = process_avatar(request.user, avatar)
-
-        # Check if there was an error during processing
-        if result.get('error'):
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            result = process_avatar(request.user, avatar)
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
+        except Exception as e:
+            return error_response(str(e))
 
         # Return the success response with the avatar URL
-        return Response(result, status=status.HTTP_200_OK)
+        return success_response(_("Avatar updated"), avatar_url=result)
     
-class UpdateUserInfoView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class UpdateUserInfoView(BaseAuthenticatedView):
     def put(self, request):
         # Get the user object
         user = request.user
@@ -270,7 +254,7 @@ class UpdateUserInfoView(APIView):
 
         # Check if all fields are not empty
         if not new_username or not new_first_name or not new_last_name or not new_language:
-            return Response({'error': 'All fields must be provided'}, status=status.HTTP_400_BAD_REQUEST)
+            error_response(_("All key ('username', 'firstName', 'lastName', 'language') must be provided!"))
             
         # Check if the new username is valid
         # TODO: Wait for issue #108
@@ -278,7 +262,7 @@ class UpdateUserInfoView(APIView):
         # Check if the language is valid
         valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
         if new_language not in valid_languages:
-            return Response({'error': 'Invalid language'}, status=status.HTTP_400_BAD_REQUEST)
+            error_response(_("Invalid / unsupported language code"))
         
         # Update the user info
         user.username = new_username
@@ -290,7 +274,7 @@ class UpdateUserInfoView(APIView):
         try:
             user.save()
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return error_response(str(e))
 
         # Return the success response
-        return Response({'success': 'User info updated'}, status=status.HTTP_200_OK)
+        return success_response(_("User info updated"))

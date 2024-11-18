@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 12:09+0000\n"
+"POT-Creation-Date: 2024-11-18 12:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,4 +78,166 @@ msgstr ""
 
 #: services/base_views.py:19
 msgid "User not authenticated"
+msgstr ""
+
+#: user/exceptions.py:8
+msgid "Validation failed"
+msgstr ""
+
+#: user/exceptions.py:17
+msgid "A blocking condition has been detected."
+msgstr ""
+
+#: user/exceptions.py:26
+msgid "A relationship error has been detected."
+msgstr ""
+
+#: user/models.py:41
+msgid "A relationship between these two users already exists."
+msgstr ""
+
+#: user/utils_img.py:97
+msgid "File type not supported"
+msgstr ""
+
+#: user/utils_img.py:103
+msgid "Error opening image"
+msgstr ""
+
+#: user/utils_img.py:109
+msgid "Error resizing image"
+msgstr ""
+
+#: user/utils_img.py:115
+msgid "Error applying vintage filter"
+msgstr ""
+
+#: user/utils_img.py:121
+msgid "Error adding frame to image"
+msgstr ""
+
+#: user/utils_img.py:132
+msgid "Error saving image"
+msgstr ""
+
+#: user/views.py:51
+msgid "Friend request sent"
+msgstr ""
+
+#: user/views.py:54
+msgid "User blocked"
+msgstr ""
+
+#: user/views.py:69
+msgid "Friend request accepted"
+msgstr ""
+
+#: user/views.py:87
+msgid "Friend request cancelled"
+msgstr ""
+
+#: user/views.py:90
+msgid "Friend request rejected"
+msgstr ""
+
+#: user/views.py:93
+msgid "Friend removed"
+msgstr ""
+
+#: user/views.py:96
+msgid "User unblocked"
+msgstr ""
+
+#: user/views.py:114
+msgid "key 'action' must be provided!"
+msgstr ""
+
+#: user/views.py:118
+msgid "key 'target_id' must be provided!"
+msgstr ""
+
+#: user/views.py:121
+msgid "user with 'target_id' not found"
+msgstr ""
+
+#: user/views.py:123
+msgid "cannot perform action on yourself"
+msgstr ""
+
+#: user/views.py:128
+#, python-brace-format
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+
+#: user/views.py:138
+msgid "You have been blocked by this user"
+msgstr ""
+
+#: user/views.py:140 user/views.py:160
+msgid "You are already friends with this user"
+msgstr ""
+
+#: user/views.py:142
+msgid "Friend request is already pending"
+msgstr ""
+
+#: user/views.py:149
+msgid "Try harder...LOL"
+msgstr ""
+
+#: user/views.py:151 user/views.py:194
+msgid "Computer says no"
+msgstr ""
+
+#: user/views.py:153
+msgid "You have already blocked this user"
+msgstr ""
+
+#: user/views.py:165 user/views.py:177 user/views.py:188
+msgid "Friend request not found"
+msgstr ""
+
+#: user/views.py:172 user/views.py:183
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+
+#: user/views.py:202
+msgid "You are not friends with this user"
+msgstr ""
+
+#: user/views.py:211
+msgid "You have not blocked this user"
+msgstr ""
+
+#: user/views.py:219
+msgid "User not found"
+msgstr ""
+
+#: user/views.py:222
+msgid "Friends list of user"
+msgstr ""
+
+#: user/views.py:228
+msgid "key 'avatar' must be provided!"
+msgstr ""
+
+#: user/views.py:242
+msgid "Avatar updated"
+msgstr ""
+
+#: user/views.py:257
+msgid ""
+"All key ('username', 'firstName', 'lastName', 'language') must be provided!"
+msgstr ""
+
+#: user/views.py:265
+msgid "Invalid / unsupported language code"
+msgstr ""
+
+#: user/views.py:280
+msgid "User info updated"
 msgstr ""

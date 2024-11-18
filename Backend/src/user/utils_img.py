@@ -7,6 +7,8 @@ from django.core.files.storage import default_storage
 from django.conf import settings
 from .utils import change_avatar
 from rest_framework.response import Response
+from app.exceptions import BarelyAnException
+import gettext as _
 
 # This function opens an image file and returns a PIL Image object
 def open_image(img):
@@ -92,31 +94,31 @@ def add_frame(image):
 # This function processes an avatar image file and returns a response    
 def process_avatar(user, avatar_file):
     if not avatar_file.content_type.startswith('image'):
-        return {'error': 'File type not supported'}
+        raise BarelyAnException(_('File type not supported'))
 
     # Try to open the image
     try:
         image = open_image(avatar_file)
     except Exception as e:
-        return {'error': 'Error opening image', 'details': str(e)}
+        raise BarelyAnException(_('Error opening image'), details=str(e))
 
     # Resize the image to fit the avatar frame
     try:
         image = resize_image(image)
     except Exception as e:
-        return {'error': 'Error resizing image', 'details': str(e)}
+        raise BarelyAnException(_('Error resizing image'), details=str(e))
 
     # Apply a sepia filter and some noise for an old-fashioned look
     try:
         image = apply_filter(image)
     except Exception as e:
-        return {'error': 'Error applying vintage filter', 'details': str(e)}
+        raise BarelyAnException(_('Error applying vintage filter'), details=str(e))
     
     # Add the frame to the image
     try:
         image = add_frame(image)
     except Exception as e:
-        return {'error': 'Error adding frame to image', 'details': str(e)}
+        raise BarelyAnException(_('Error adding frame to image'), details=str(e))
 
     # Try gerneating unique filename and to save the image with compression
     try:
@@ -127,7 +129,7 @@ def process_avatar(user, avatar_file):
         temp_file.seek(0)  # Move to the beginning of the file so it can be read
         default_storage.save(file_path, temp_file)
     except Exception as e:
-        return {'error': 'Saving image with unique filename', 'details': str(e)}
+        raise BarelyAnException(_('Error saving image'), details=str(e))
 
     # Update the user's avatar in the database
     change_avatar(user, file_name)
