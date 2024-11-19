@@ -387,9 +387,13 @@ export default {
             this.hideModal("friendship-modal");
         },
 
-        clickFriendCard(elementDiv) {
+        clickFriendCard(event) {
 
-            const params = { id: elementDiv.getAttribute("id") };
+            const element = event.srcElement.parentElement.getAttribute("id");
+
+            console.log("element id:", element);
+
+            const params = { id: element };
             this.hideModal("friends-list-modal");
             router(('/profile'),  params);
         },
@@ -418,21 +422,23 @@ export default {
                 const frienshipStatusAvatar = document.createElement('img')
                 frienshipStatusAvatar.className = "friends-list-modal-list-element-image";
                 frienshipStatusAvatar.src = this.buttonSettings[element.status].path;
-                // frienshipStatusAvatar.src = "../../../../assets/profileView/firendRequestIcon.png";
                 elementDiv.appendChild(frienshipStatusAvatar);
 
                 mainDiv.appendChild(elementDiv)
 
-                this.domManip.$on(elementDiv, "click", this.clickFriendCard)
+                this.domManip.$on(elementDiv, "click", this.clickFriendCard);
                
                 
             }
+            
         },
 
         openFriendList() {
             
             call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
+                this.removeFriendsList();
                 this.friendList = res;
+                console.log("friends list:", this.friendList);
                 
                 
                 this.populateFriendList();
@@ -443,8 +449,15 @@ export default {
                 console.error('Error:', error);
             });
 
-        }
+        },
+        removeFriendsList() {
+            if (!this.friendList)
+                return ;
+            for (let element of this.friendList)
+                this.domManip.$off(element, "click", this.clickFriendCard);
+        },
     },
+
 
 
     hooks: {
@@ -490,7 +503,7 @@ export default {
             this.domManip.$off(element, "click", this.cancelButton);
             element = this.domManip.$id("button-bottom-right");
             this.domManip.$off(element, "click", this.openFriendList);
-
+            this.removeFriendsList();
         },
 
         beforeDomInsertion() {
@@ -556,18 +569,7 @@ export default {
                 element = this.domManip.$id("button-bottom-right");
                 this.domManip.$on(element, "click", this.openFriendList);
 
-                // let elementOnList = this.domManip.$queryAll(".friends-list-modal-list-element");
-                // console.log("elementOnList", elementOnList);
-                // for (let element of elementOnList) {
-                //     console.log("Im on a loooooooooooooop");
-                //     const params = { id: 5 };
-                //     console.log("element.id:", element.id);
-                //     console.log("params:", params);
-                //     this.domManip.$on(element, "click", (params) => {
-                //         console.log("yoooooo");
-                //         router(('/profile'),  params);
-                //     }) 
-                // }
+                
             })
             // on error?
         },
