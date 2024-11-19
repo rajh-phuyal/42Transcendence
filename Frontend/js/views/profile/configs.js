@@ -389,10 +389,10 @@ export default {
 
         clickFriendCard(event) {
 
-            const element = event.srcElement.parentElement.getAttribute("id");
-
-            console.log("element id:", element);
-
+            let element = event.srcElement.getAttribute("user-id");
+            
+            if (element == null)
+                element = event.srcElement.parentElement.getAttribute("user-id");
             const params = { id: element };
             this.hideModal("friends-list-modal");
             router(('/profile'),  params);
@@ -404,7 +404,7 @@ export default {
                 // Element
                 const elementDiv = document.createElement('div')
                 elementDiv.className = "friends-list-modal-list-element";
-                elementDiv.setAttribute("id", element.id);
+                elementDiv.setAttribute("user-id", element.id);
 
                 // Avatar
                 const avatar = document.createElement('img')
