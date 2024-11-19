@@ -7,6 +7,8 @@ Environments/*
 Logs/*
 **/*.log
 
+*.mo
+
 # Database files
 Database/postgres-data
 db.sqlite3
