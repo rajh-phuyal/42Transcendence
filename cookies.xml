@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.8.6">
+  <diagram id="authentication-architecture" name="Authentication Architecture">
+    <mxGraphModel dx="1349" dy="986" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="userBrowser" value="User Browser" style="shape=rectangle;whiteSpace=wrap;fillColor=#d9e8fb;" parent="1" vertex="1">
+          <mxGeometry x="300" y="240" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend" value="Frontend (Vanilla JS)" style="shape=rectangle;whiteSpace=wrap;fillColor=#d9e8fb;" parent="1" vertex="1">
+          <mxGeometry x="460" y="240" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="backend" value="Backend (Django REST Framework)" style="shape=rectangle;whiteSpace=wrap;fillColor=#f8cecc;" parent="1" vertex="1">
+          <mxGeometry x="920" y="240" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="authMiddleware" value="Authentication Middleware" style="shape=rectangle;whiteSpace=wrap;fillColor=#f8cecc;" parent="1" vertex="1">
+          <mxGeometry x="920" y="350" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tokenEndpoint" value="Token Issuance/Refresh Endpoint" style="shape=rectangle;whiteSpace=wrap;fillColor=#f8cecc;" parent="1" vertex="1">
+          <mxGeometry x="920" y="450" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="websocketServer" value="WebSocket Server (Django Channels)" style="shape=rectangle;whiteSpace=wrap;fillColor=#f8cecc;" parent="1" vertex="1">
+          <mxGeometry x="920" y="560" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" style="endArrow=none;strokeWidth=2;" parent="1" source="userBrowser" target="frontend" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" value="API Calls with Cookies (credentials: &#39;include&#39;)" style="endArrow=block;strokeWidth=2;" parent="1" source="frontend" target="backend" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" style="endArrow=none;dashed=1;strokeWidth=2;" parent="1" source="backend" target="authMiddleware" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" style="endArrow=none;dashed=1;strokeWidth=2;" parent="1" source="authMiddleware" target="tokenEndpoint" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" value="WebSocket Connection (Same-Origin)" style="endArrow=block;strokeWidth=2;" parent="1" source="frontend" target="websocketServer" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="590" />
+              <mxPoint x="700" y="590" />
+              <mxPoint x="840" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cookies" value="Access &amp; Refresh Tokens stored in Secure, HttpOnly Cookies" style="shape=note;whiteSpace=wrap;fillColor=#fff2cc;" parent="1" vertex="1">
+          <mxGeometry x="370" y="100" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="csrfProtection" value="CSRF Protection (SameSite Cookies, CSRF Tokens)" style="shape=note;whiteSpace=wrap;fillColor=#d5e8d4;" parent="1" vertex="1">
+          <mxGeometry x="650" y="100" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="csp" value="Content Security Policy (CSP)" style="shape=note;whiteSpace=wrap;fillColor=#d5e8d4;" parent="1" vertex="1">
+          <mxGeometry x="920" y="100" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tokenFlow" value="1. User authenticates and receives tokens in cookies.&#xa;2. Frontend makes API calls with &#39;credentials: include&#39;.&#xa;3. Backend reads tokens from cookies via middleware.&#xa;4. WebSocket connections authenticate via cookies." style="shape=rectangle;whiteSpace=wrap;fillColor=#e1d5e7;" parent="1" vertex="1">
+          <mxGeometry x="1220" y="230" width="250" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="securityMeasures" value="Security Measures:&#xa;Tokens stored in HttpOnly, Secure cookies.&#xa;- CSRF protection with SameSite attributes and CSRF tokens.&#xa;- CSP headers to mitigate XSS.&#xa;- Input sanitization and validation." style="shape=rectangle;whiteSpace=wrap;fillColor=#e1d5e7;" parent="1" vertex="1">
+          <mxGeometry x="1190" y="470" width="250" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

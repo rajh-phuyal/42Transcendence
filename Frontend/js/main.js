@@ -40,29 +40,24 @@ $store.addMutationListener('setTranslations', (state) => {
 
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
-    
-    if (state)
-    {
+    if (state) {
         console.log("Web socket is connected!");
         if (setInervalId){
             $callToast("success", "Connection re-established. What ever...")
             clearInterval(setInervalId);
         }
-    }
-    else
-    {
+    } else {
         console.log("Web socket is disconnected!");
         if (!setInervalId) {
-            if (!$store.fromState('jwtTokens').access)
-            {
+            if (!$store.fromState('isAuthenticated')) {
                 clearInterval(setInervalId);
-                return ;
+                return;
             }
+
             $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
-            // TODO:  we need to change it to exponentially increase instead of fixed 2000
             setInervalId = setInterval(() => {
-                WebSocketManager.connect($store.fromState('jwtTokens').access);
-            }, 2000);
+                WebSocketManager.connect();
+            }, nextInterval);
         }
     }
 });

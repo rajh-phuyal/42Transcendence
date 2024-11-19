@@ -4,53 +4,65 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class Auth {
     constructor() {
-        // Initialize the state from localStorage if available
-        this.jwtToken = $store.fromState('jwtTokens').access;
-
-        // Check if the user is authenticated
-        this.isAuthenticated = this.isUserAuthenticated();
-
+        this.isAuthenticated = false;
+        this._authCheckPromise = null;
+        this._lastCheckTimestamp = 0;
+        this._cacheTimeout = 30000; // Cache auth status for 30 seconds, optimal time
         return this;
     }
 
     async isUserAuthenticated() {
-        const isAuthenticated = await this.verifyJWTToken();
+        const now = Date.now();
 
-        if (isAuthenticated && !$store.fromState('webSocketIsAlive'))
-            WebSocketManager.connect($store.fromState('jwtTokens').access);
+        // Return cached result if within timeout window
+        if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
+            return this.isAuthenticated;
+        }
 
-        return isAuthenticated;
-    }
+        // If there's already a check in progress, return that promise
+        if (this._authCheckPromise) {
+            return this._authCheckPromise;
+        }
 
-    authenticate(username, password) {
-        return call('auth/login/', 'POST', { username: username, password: password });
-    }
+        // Create new auth check promise
+        this._authCheckPromise = (async () => {
+            try {
+                await call('auth/verify/', 'GET');
+                this.isAuthenticated = true;
 
-    createUser(username, password) {
-        return call('auth/register/', 'POST', { username: username, password: password });
+                if (!$store.fromState('webSocketIsAlive')) {
+                    WebSocketManager.connect();
+                }
+            } catch (error) {
+                this.isAuthenticated = false;
+            } finally {
+                this._lastCheckTimestamp = now;
+                this._authCheckPromise = null;
+            }
+            return this.isAuthenticated;
+        })();
+
+        return this._authCheckPromise;
     }
 
     async refreshToken() {
         try {
-            return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh });
-        } catch (e) {
-            console.error("Refresh token error:", e);
+            const response = await fetch('/api/auth/token/refresh/', {
+                method: 'POST',
+                credentials: 'include', // Important for sending/receiving cookies
+            });
+
+            if (!response.ok) {
+                throw new Error('Token refresh failed');
+            }
+
+            // No need to store tokens as they're now in HttpOnly cookies
+            return true;
+        } catch (error) {
+            console.error('Error refreshing token:', error);
             this.logout();
             return false;
         }
-    }
-
-    logout() {
-        $store.clear();
-		WebSocketManager.disconnect();
-    }
-
-    getAuthHeader() {
-        return $store.fromState('jwtTokens').access ? `Bearer ${$store.fromState('jwtTokens').access}` : undefined;
-    }
-
-    timeExpired(exp) {
-        return Date.now() >= exp * 1000;
     }
 
     /**
@@ -58,38 +70,55 @@ class Auth {
      * @returns {boolean} True if the token is valid, false otherwise
      */
     async verifyJWTToken() {
-        const token = $store.fromState('jwtTokens').access;
-        if (!token) return false;
-
-        const [header, payload, signature] = token.split('.');
-        if (!header || !payload || !signature) return false;
-
         try {
-            const { exp } = JSON.parse(atob(payload));
-            if (this.timeExpired(exp)) {
+            const response = await fetch('/api/auth/verify/', {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.status === 401) {
+                // Token is expired, try to refresh
                 const refreshed = await this.refreshToken();
-
-                // update the jwt tokens in the store
-                $store.commit('setJwtTokens', {
-                    ...$store.fromState('jwtTokens'),
-                    access: refreshed.access,
-                });
-
-                // reload WebSocket connection with the new token
-                WebSocketManager.refreshToken(refreshed.access);
-
-                return true;
+                if (refreshed) {
+                    // Refresh WebSocket connection after token refresh
+                    WebSocketManager.refreshToken();
+                    return true;
+                }
+                return false;
             }
+
+            return response.ok;
         } catch (e) {
             console.error('Error verifying token:', e);
             this.logout();
+            return false;
         }
+    }
 
-        return true;
+    authenticate(username, password) {
+        return call('auth/login/', 'POST',
+            { username: username, password: password },
+            { credentials: 'include' }
+        );
+    }
+
+    createUser(username, password) {
+        return call('auth/register/', 'POST',
+            { username: username, password: password },
+            { credentials: 'include' }
+        );
+    }
+
+    async logout() {
+        try {
+            await call('auth/logout/', 'POST', null, { credentials: 'include' });
+            $store.clear();
+            WebSocketManager.disconnect();
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
     }
 }
 
-// Create a single global instance of the Auth class
 const $auth = new Auth();
-
 export default $auth;

@@ -58,12 +58,8 @@ class AuthCard extends HTMLElement {
         .then((response) => {
             $store.initializer();
 
-			// Update the store with the new user data
+            // Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
-            $store.commit('setJWTTokens', {
-                access: response.access,
-                refresh: response.refresh
-            });
             $store.commit('setUser', {
                 id: response.userId,
                 username: response.username
@@ -72,8 +68,8 @@ class AuthCard extends HTMLElement {
             // reinitializes the nav bar
             $nav();
 
-			// Connect to WebSocket with the new token
-			WebSocketManager.connect(response.access);
+            // Connect to WebSocket
+            WebSocketManager.connect();
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();

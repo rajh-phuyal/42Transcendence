@@ -6,14 +6,14 @@ class WebSocketManager {
     }
 
     // Connect to WebSocket with the provided token
-    connect(token) {
+    connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log("WebSocket already connected.");
             return;
         }
 
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
+        const socketUrl = `${protocol}127.0.0.1:8000/ws/app/main/`;
 
         this.socket = new WebSocket(socketUrl);
 
@@ -51,9 +51,9 @@ class WebSocketManager {
         }
     }
 
-    refreshToken(token) {
+    refreshToken() {
         this.disconnect();
-        this.connect(token);
+        this.connect();
     }
 }
 
