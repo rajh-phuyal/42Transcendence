@@ -4,6 +4,7 @@
 # (start from weak entity too not to break FK constraints)
 # ------------------------------------------------------------------------------
 ALL_TABLES=("barelyaschema.dev_user_data" 
+            "barelyaschema.notification"
 			"barelyaschema.is_cool_with" 
 			"barelyaschema.no_cool_with" 
 			"barelyaschema.message" 
@@ -82,21 +83,32 @@ insert_dummy "$TABLE_NAME" \
         (6, 'hashed_password_4', '2024-04-01 13:42:03+00', FALSE, 'fda-estr', 'Francisco', 'Inácio', 'we dont use email', FALSE, FALSE, '2004-09-01 10:15:30+00', 'fe468ade-12ed-4045-80a7-7d3e45be997e.png'), \
         (7, 'hashed_password_5', '2024-05-01 14:42:04+00', FALSE, 'rphuyal', 'Rajh', 'Phuyal', 'we dont use email', FALSE, FALSE, '2005-09-01 10:15:30+00', 'dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png');"
 
+TABLE_NAME="barelyaschema.notification"
+insert_dummy "$TABLE_NAME" \
+	"INSERT INTO $TABLE_NAME (id, user_id, title, content, created_at, seen_at, img_path, redir_path, type) VALUES \
+        (1, 3, 'U are now friends!', 'astein accepted ur friend request and u are now friends!', '2024-01-01 10:42:00+00', NULL, 'tba.', 'tba.', 'friend'), \
+        (2, 3, 'U are now friends!', 'anshovah accepted ur friend request and u are now friends!', '2024-01-02 10:42:00+00', NULL, 'tba.', 'tba.', 'friend'), \
+        (3, 3, 'U are now friends!', 'fda-estr accepted ur friend request and u are now friends!', '2024-01-03 10:42:00+00', NULL, 'tba.', 'tba.', 'friend'), \
+        (4, 3, 'U are now friends!', 'rphuyal accepted ur friend request and u are now friends!', '2024-01-04 10:42:00+00', NULL, 'tba.', 'tba.', 'friend'), \
+        (5, 4, 'U are now friends!', 'anshovah accepted ur friend request and u are now friends!', '2024-01-04 10:42:00+00', NULL, 'tba.', 'tba.', 'friend'), \
+        (6, 6, 'Recived Friend Request', 'astein send u a friend request.', '2024-01-04 10:42:00+00', NULL, 'tba.', 'tba.', 'friend'), \
+        (7, 6, 'Recived Friend Request', 'rphuyal send u a friend request.', '2024-01-04 10:42:00+00', NULL, 'tba.', 'tba.', 'friend');"
+
 TABLE_NAME="barelyaschema.is_cool_with"
 insert_dummy "$TABLE_NAME" \
-	"INSERT INTO $TABLE_NAME (id, requester_id, requestee_id, status) VALUES \
-		(1, 2, 3, 'accepted'), \
-		(2, 2, 4, 'accepted'), \
-		(3, 2, 5, 'accepted'), \
-		(4, 2, 6, 'accepted'), \
-		(5, 2, 7, 'accepted'), \
-		(6, 3, 4, 'accepted'), \
-		(7, 3, 5, 'accepted'), \
-		(8, 3, 6, 'accepted'), \
-		(9, 3, 7, 'accepted'), \
-		(10, 4, 5, 'accepted'), \
-		(11, 4, 6, 'pending'), \
-		(12, 7, 6, 'pending');"
+	"INSERT INTO $TABLE_NAME (id, requester_id, requestee_id, status, notification_id) VALUES \
+		(1, 2, 3, 'accepted', NULL), \
+		(2, 2, 4, 'accepted', NULL), \
+		(3, 2, 5, 'accepted', NULL), \
+		(4, 2, 6, 'accepted', NULL), \
+		(5, 2, 7, 'accepted', NULL), \
+		(6, 3, 4, 'accepted', 1), \
+		(7, 3, 5, 'accepted', 2), \
+		(8, 3, 6, 'accepted', 3), \
+		(9, 3, 7, 'accepted', 4), \
+		(10, 4, 5, 'accepted', 5), \
+		(11, 4, 6, 'pending', 6), \
+		(12, 7, 6, 'pending', 7);"
 
 TABLE_NAME="barelyaschema.no_cool_with"
 insert_dummy "$TABLE_NAME" \
