@@ -1,9 +1,11 @@
-import { $id } from './abstracts/dollars.js';
+import $nav from './abstracts/navigationInit.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
 import { routes } from './navigation/routes.js';
 import $store from './store/store.js';
+import WebSocketManager from './abstracts/WebSocketManager.js';
+import $callToast from './abstracts/callToast.js';
 
 setViewLoading(true);
 
@@ -16,21 +18,9 @@ try {
     console.error('Error importing web components:', error);
 }
 
-// initilize the nav bar
-const navigationBarMap = [
-    { id: 'home-nav', path: '/home' },
-    { id: 'game-nav', path: '/game' },
-    { id: 'tournament-nav', path: '/tournament' },
-    { id: 'chat-nav', path: '/chat' },
-    { id: 'logout-nav', path: '/logout' },
-    { id: 'profile-nav', path: '/profile', params: { id: $store.fromState("user").id } },
-    { id: 'login-nav', path: '/auth', params: { login: true } },
-    { id: 'register-nav', path: '/auth', params: { login: false } }
-];
+// Initializes the nav bar
+$nav();
 
-for (const route of navigationBarMap) {
-    $id(route.id)?.addEventListener('click', () => router(route.path, route.params));
-}
 
 window.addEventListener('popstate', () => {
     router(window.location.pathname)
@@ -48,6 +38,34 @@ $store.addMutationListener('setTranslations', (state) => {
     setViewLoading(false);
 });
 
+let setInervalId = undefined;
+$store.addMutationListener('setWebSocketIsAlive', (state) => {
+    
+    if (state)
+    {
+        console.log("Web socket is connected!");
+        if (setInervalId){
+            $callToast("success", "Connection re-established. What ever...")
+            clearInterval(setInervalId);
+        }
+    }
+    else
+    {
+        console.log("Web socket is disconnected!");
+        if (!setInervalId) {
+            if (!$store.fromState('jwtTokens').access)
+            {
+                clearInterval(setInervalId);
+                return ;
+            }
+            $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
+            // TODO:  we need to change it to exponentially increase instead of fixed 2000
+            setInervalId = setInterval(() => {
+                WebSocketManager.connect($store.fromState('jwtTokens').access);
+            }, 2000);
+        }
+    }
+});
 
 /* DESABLE ZOOM*/
 

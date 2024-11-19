@@ -14,7 +14,9 @@ class Auth {
     }
 
     async isUserAuthenticated() {
-        this.verifyJWTToken();
+        if (await this.verifyJWTToken() && !$store.fromState('webSocketIsAlive'))
+            WebSocketManager.connect($store.fromState('jwtTokens').access);
+
         return await this.verifyJWTToken();
     }
 
@@ -37,7 +39,7 @@ class Auth {
     }
 
     getAuthHeader() {
-        return this.jwtToken ? `Bearer ${this.jwtToken}` : undefined;
+        return $store.fromState('jwtTokens').access ? `Bearer ${$store.fromState('jwtTokens').access}` : undefined;
     }
 
     async verifyJWTToken() {

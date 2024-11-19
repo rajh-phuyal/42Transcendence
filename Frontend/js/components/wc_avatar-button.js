@@ -34,7 +34,6 @@ class AvatarButton extends HTMLElement
 
     render()
     {
-        console.log(this.image);
         this.shadow.innerHTML = `
             <style>
                 img{
