@@ -1,5 +1,4 @@
 import call from '../../abstracts/call.js'
-import { $id, $on, $queryAll, $off, $class } from '../../abstracts/dollars.js';
 import { populateInfoAndStats } from './script.js';
 import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
@@ -54,8 +53,8 @@ export default {
 
     methods: {
         insertAvatar() {
-            const element = $id("avatar");
-            element.src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
+            const element = this.domManip.$id("avatar");
+            element.src = window.origin + '/media/avatars/' + this.result.avatarUrl;
         },
 
         setupTopLeftButton() {
@@ -92,21 +91,21 @@ export default {
             }
         },
         putImagesInButtons() {
-            let element = $id("button-top-left");
+            let element = this.domManip.$id("button-top-left");
             if (this.buttonTopLeft.image)
                 element.src = this.buttonTopLeft.image;
             else
                 element.style.display = "none";
-            element = $id("button-top-middle");
+            element = this.domManip.$id("button-top-middle");
             element.src = this.buttonTopMiddle.image;
-            element = $id("button-top-right");
+            element = this.domManip.$id("button-top-right");
             if (this.buttonTopRight.image)
                 element.src = this.buttonTopRight.image;
             else
                 element.style.display = "none";
-            element = $id("button-bottom-left");
+            element = this.domManip.$id("button-bottom-left");
             element.src = "../../../../assets/profileView/gamingHistoryIcon.png";
-            element = $id("button-bottom-right");
+            element = this.domManip.$id("button-bottom-right");
             element.src = "../../../../assets/profileView/FriendsListIcon.png";
         },
         
@@ -119,25 +118,25 @@ export default {
 
         blackout() {
 
-            let elements = $queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right")
+            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right")
             for (let element of elements) {
                 element.style.backgroundColor = "black";
             }
         },
 
         hideElement(elementId){
-            let element = $id(elementId)
+            let element = this.domManip.$id(elementId)
             element.style.display = "none";
         },
 
         hideModal(modalToHide) {
-            let modalElement = $id(modalToHide);
+            let modalElement = this.domManip.$id(modalToHide);
             const modal = bootstrap.Modal.getInstance(modalElement);
             modal.hide();
         },
 
         showElement(elementId){
-            let element = $id(elementId)
+            let element = this.domManip.$id(elementId)
             element.style.display = "block";
         },
 
@@ -146,13 +145,13 @@ export default {
             this.hideElement("edit-profile-modal-password-change");
             this.showElement("edit-profile-modal-form");
 
-            $id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
-            $id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
-            $id("edit-profile-modal-form-input-username").value = this.result.username;
-            $id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
+            this.domManip.$id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
+            this.domManip.$id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
+            this.domManip.$id("edit-profile-modal-form-input-username").value = this.result.username;
+            this.domManip.$id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
             
 
-            let modalElement = $id("edit-profile-modal");
+            let modalElement = this.domManip.$id("edit-profile-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
         },
@@ -160,14 +159,14 @@ export default {
         changePasswordMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-password-change");
-            $id("edit-profile-modal").focus();
+            this.domManip.$id("edit-profile-modal").focus();
         },
 
         changeAvatarMethod() {
             this.hideElement("edit-profile-modal-form");
             this.showElement("edit-profile-modal-avatar-change");
             this.hideElement("edit-profile-modal-avatar-change-crop-image");
-            $id("edit-profile-modal").focus();
+            this.domManip.$id("edit-profile-modal").focus();
         },
 
         friendshipMethod() {
@@ -179,7 +178,7 @@ export default {
                 blockIndex = "unblocked";
 
             // friendship portion of the modal
-            let element = $id("friendshp-modal-friendship-text")
+            let element = this.domManip.$id("friendshp-modal-friendship-text")
             element.textContent = buttonObjects[this.result.relationship.state].text;
             if (this.result.relationship.state == "noFriend" && (this.result.relationship.isBlocked || this.result.relationship.isBlocking))
             {
@@ -195,17 +194,17 @@ export default {
                 this.hideElement("friendship-modal-block");
 
             else {
-                element = $id("friendshp-modal-block-text")
+                element = this.domManip.$id("friendshp-modal-block-text")
                 element.textContent = buttonObjects[blockIndex].text;
             }
 
-            let modalElement = $id("friendship-modal");
+            let modalElement = this.domManip.$id("friendship-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
         },
 
         openFileExplorer() {
-            let element = $id("edit-profile-modal-avatar-change-file-input");
+            let element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
             element.click();
         },
 
@@ -213,7 +212,7 @@ export default {
             const formData = new FormData();
             formData.append('avatar', blob, 'avatar.png');
             
-            fetch('https://localhost/api/user/update-avatar/', {
+            fetch(window.origin + '/api/user/update-avatar/', {
                 method: 'PUT',
                 body: formData,
                 headers: {
@@ -251,7 +250,7 @@ export default {
                 const reader = new FileReader(); // Create a FileReader to read the file
 
                 reader.onload = e => {
-                    let uploadedImage = $id("edit-profile-modal-avatar-change-uploaded-image");
+                    let uploadedImage = this.domManip.$id("edit-profile-modal-avatar-change-uploaded-image");
                     uploadedImage.src = e.target.result; // Set the src to the image data
                     uploadedImage.style.display = 'block'; // Make the img tag visible
 
@@ -275,9 +274,9 @@ export default {
         },
 
         submitNewPassword() {
-            const oldPassword = $id("edit-profile-modal-password-change-input-old-password").value;
-            const newPassword = $id("edit-profile-modal-password-change-input-new-password").value;
-            const repeatPassword = $id("edit-profile-modal-password-change-input-repeat-password").value;
+            const oldPassword = this.domManip.$id("edit-profile-modal-password-change-input-old-password").value;
+            const newPassword = this.domManip.$id("edit-profile-modal-password-change-input-new-password").value;
+            const repeatPassword = this.domManip.$id("edit-profile-modal-password-change-input-repeat-password").value;
             
             console.log("new password:", oldPassword);
             console.log("new password:", newPassword);
@@ -292,10 +291,10 @@ export default {
         submitForm() {
             
 
-            const firstName = $id("edit-profile-modal-form-input-first-name").value;
-            const lastName = $id("edit-profile-modal-form-input-last-name").value;
-            const username = $id("edit-profile-modal-form-input-username").value;
-            const language = $id("edit-profile-modal-form-language-selector").value;
+            const firstName = this.domManip.$id("edit-profile-modal-form-input-first-name").value;
+            const lastName = this.domManip.$id("edit-profile-modal-form-input-last-name").value;
+            const username = this.domManip.$id("edit-profile-modal-form-input-username").value;
+            const language = this.domManip.$id("edit-profile-modal-form-language-selector").value;
 
             call("user/update-user-info/", "PUT", {
                 username: username,
@@ -361,16 +360,16 @@ export default {
 
         openInviteForGameModal() {
 
-            $id("invite-for-game-modal-opponent-photo").src = 'https://localhost/media/avatars/' + this.result.avatarUrl;
-            $id("invite-for-game-modal-opponent-name").textContent = this.result.username;
+            this.domManip.$id("invite-for-game-modal-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
+            this.domManip.$id("invite-for-game-modal-opponent-name").textContent = this.result.username;
 
-            let modalElement = $id("invite-for-game-modal");
+            let modalElement = this.domManip.$id("invite-for-game-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
             
         },
         selectMap(chosenMap) {
-            const maps = $class("invite-for-game-modal-maps-button");
+            const maps = this.domManip.$class("invite-for-game-modal-maps-button");
             this.gameSettings.map = chosenMap.srcElement.name
             for (let element of maps){
                 if (element.name != this.gameSettings.map)
@@ -386,6 +385,10 @@ export default {
         cancelButton() {
             this.hideModal("friendship-modal");
         },
+
+        powerupsAction() {
+            this.gameSettings.powerups = !this.gameSettings.powerups;
+        },
     },
 
 
@@ -395,41 +398,41 @@ export default {
         },
 
         beforeRouteLeave() {
-            let element = $id("button-top-left");
-            $off(element, "click", this.buttonTopLeft.method);
-            element = $id("button-top-middle");
-            $off(element, "click", this.buttonTopMiddle.method);
-            element = $id("button-top-right");
-            $off(element, "click", this.buttonTopRight.method);
-            element = $id("edit-profile-modal-form-change-password-button");
-            $off(element, "click", this.changePasswordMethod);
-            element = $id("edit-profile-modal-form-change-avatar-button");
-            $off(element, "click", this.changeAvatarMethod);
-            element = $id("edit-profile-modal-avatar-change-upload-button");
-            $off(element, "click", this.openFileExplorer);
-            element = $id("edit-profile-modal-avatar-change-file-input");
-            $off(element, "change", this.extractFile);
-            element = $id("edit-profile-modal-avatar-change-crop-image");
-            $off(element, "click", this.submitAvatar);
-            element = $id("edit-profile-modal-form-submit-button");
-            $off(element, "click", this.submitForm);
-            element = $id("edit-profile-modal-password-change-submit-button");
-            $off(element, "click", this.submitNewPassword);
-            element = $id("friendship-modal-friendship-primary-button");
-            $off(element, "click", this.changeFrendshipPrimaryMethod);
-            element = $class("invite-for-game-modal-maps-button");
-            for (let HTMLelement of element)
-                $off(HTMLelement, "click", this.selectMap);
-            element = $id("invite-for-game-modal-powerups-checkbox");
-            $off(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
-            element = $id("invite-for-game-modal-start-button");
-            $on(element, "click", this.submitInvitation);
-            element = $id("friendship-modal-friendship-secondary-button");
-            $off(element, "click", this.changeFrendshipSecondaryMethod);
-            element = $id("friendship-modal-block-button");
-            $off(element, "click", this.changeBlockMethod);
-            element = $id("friendship-modal-cancel-button");
-            $on(element, "click", this.cancelButton);
+            let element = this.domManip.$id("button-top-left");
+            this.domManip.$off(element, "click", this.buttonTopLeft.method);
+            element = this.domManip.$id("button-top-middle");
+            this.domManip.$off(element, "click", this.buttonTopMiddle.method);
+            element = this.domManip.$id("button-top-right");
+            this.domManip.$off(element, "click", this.buttonTopRight.method);
+            element = this.domManip.$id("edit-profile-modal-form-change-password-button");
+            this.domManip.$off(element, "click", this.changePasswordMethod);
+            element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
+            this.domManip.$off(element, "click", this.changeAvatarMethod);
+            element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
+            this.domManip.$off(element, "click", this.openFileExplorer);
+            element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
+            this.domManip.$off(element, "change", this.extractFile);
+            element = this.domManip.$id("edit-profile-modal-avatar-change-crop-image");
+            this.domManip.$off(element, "click", this.submitAvatar);
+            element = this.domManip.$id("edit-profile-modal-form-submit-button");
+            this.domManip.$off(element, "click", this.submitForm);
+            element = this.domManip.$id("edit-profile-modal-password-change-submit-button");
+            this.domManip.$off(element, "click", this.submitNewPassword);
+            element = this.domManip.$id("friendship-modal-friendship-primary-button");
+            this.domManip.$off(element, "click", this.changeFrendshipPrimaryMethod);
+            element = this.domManip.$class("invite-for-game-modal-maps-button");
+            for (let individualElement of element)
+                this.domManip.$off(individualElement, "click", this.selectMap);
+            element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
+            this.domManip.$off(element, "change", this.powerupsAction);
+            element = this.domManip.$id("invite-for-game-modal-start-button");
+            this.domManip.$off(element, "click", this.submitInvitation);
+            element = this.domManip.$id("friendship-modal-friendship-secondary-button");
+            this.domManip.$off(element, "click", this.changeFrendshipSecondaryMethod);
+            element = this.domManip.$id("friendship-modal-block-button");
+            this.domManip.$off(element, "click", this.changeBlockMethod);
+            element = this.domManip.$id("friendship-modal-cancel-button");
+            this.domManip.$off(element, "click", this.cancelButton);
 
         },
 
@@ -450,47 +453,47 @@ export default {
                 
                 // callback functions
                 if (this.buttonTopLeft.method) {
-                    let element = $id("button-top-left");
-                    $on(element, "click", this.buttonTopLeft.method);
+                    let element = this.domManip.$id("button-top-left");
+                    this.domManip.$on(element, "click", this.buttonTopLeft.method);
                 }
                 if (this.buttonTopMiddle.method) {
-                    let element = $id("button-top-middle");
-                    $on(element, "click", this.buttonTopMiddle.method);
+                    let element = this.domManip.$id("button-top-middle");
+                    this.domManip.$on(element, "click", this.buttonTopMiddle.method);
                 }
                 if (this.buttonTopRight.method) {
-                    let element = $id("button-top-right");
-                    $on(element, "click", this.buttonTopRight.method);
+                    let element = this.domManip.$id("button-top-right");
+                    this.domManip.$on(element, "click", this.buttonTopRight.method);
                 }
 
-                let element = $id("edit-profile-modal-form-change-password-button");
-                $on(element, "click", this.changePasswordMethod);
-                element = $id("edit-profile-modal-form-change-avatar-button");
-                $on(element, "click", this.changeAvatarMethod);
-                element = $id("edit-profile-modal-avatar-change-upload-button");
-                $on(element, "click", this.openFileExplorer);
-                element = $id("edit-profile-modal-avatar-change-file-input");
-                $on(element, "change", this.extractFile);
-                element = $id("edit-profile-modal-avatar-change-crop-image");
-                $on(element, "click", this.submitAvatar);
-                element = $id("edit-profile-modal-form-submit-button");
-                $on(element, "click", this.submitForm);
-                element = $id("edit-profile-modal-password-change-submit-button");
-                $on(element, "click", this.submitNewPassword);
-                element = $id("friendship-modal-friendship-primary-button");
-                $on(element, "click", this.changeFrendshipPrimaryMethod);
-                element = $class("invite-for-game-modal-maps-button");
-                for (let HTMLelement of element)
-                    $on(HTMLelement, "click", this.selectMap);
-                element = $id("invite-for-game-modal-powerups-checkbox");
-                $on(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
-                element = $id("invite-for-game-modal-start-button");
-                $on(element, "click", this.submitInvitation);
-                element = $id("friendship-modal-friendship-secondary-button");
-                $on(element, "click", this.changeFrendshipSecondaryMethod);
-                element = $id("friendship-modal-block-button");
-                $on(element, "click", this.changeBlockMethod);
-                element = $id("friendship-modal-cancel-button");
-                $on(element, "click", this.cancelButton);
+                let element = this.domManip.$id("edit-profile-modal-form-change-password-button");
+                this.domManip.$on(element, "click", this.changePasswordMethod);
+                element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
+                this.domManip.$on(element, "click", this.changeAvatarMethod);
+                element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
+                this.domManip.$on(element, "click", this.openFileExplorer);
+                element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
+                this.domManip.$on(element, "change", this.extractFile);
+                element = this.domManip.$id("edit-profile-modal-avatar-change-crop-image");
+                this.domManip.$on(element, "click", this.submitAvatar);
+                element = this.domManip.$id("edit-profile-modal-form-submit-button");
+                this.domManip.$on(element, "click", this.submitForm);
+                element = this.domManip.$id("edit-profile-modal-password-change-submit-button");
+                this.domManip.$on(element, "click", this.submitNewPassword);
+                element = this.domManip.$id("friendship-modal-friendship-primary-button");
+                this.domManip.$on(element, "click", this.changeFrendshipPrimaryMethod);
+                element = this.domManip.$class("invite-for-game-modal-maps-button");
+                for (let individualElement of element)
+                    this.domManip.$on(individualElement, "click", this.selectMap);
+                element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
+                this.domManip.$on(element, "change", this.powerupsAction);
+                element = this.domManip.$id("invite-for-game-modal-start-button");
+                this.domManip.$on(element, "click", this.submitInvitation);
+                element = this.domManip.$id("friendship-modal-friendship-secondary-button");
+                this.domManip.$on(element, "click", this.changeFrendshipSecondaryMethod);
+                element = this.domManip.$id("friendship-modal-block-button");
+                this.domManip.$on(element, "click", this.changeBlockMethod);
+                element = this.domManip.$id("friendship-modal-cancel-button");
+                this.domManip.$on(element, "click", this.cancelButton);
             })
             // on error?
         },
