@@ -80,12 +80,11 @@
           </div>
         </div>
       </div>
-
     </div>
     <!-- Edit Profile Modal -->
     <div class="modal fade" id="edit-profile-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" id="edit-profile-modal-content" style="width: 32vw;">
+        <div class="modal-content" style="width: 32vw;">
           <div class="modal-body" id="edit-profile-modal-body">
             <!-- Form Body -->
             <div id="edit-profile-modal-form">
@@ -126,6 +125,7 @@
                     <div class="form-group">
                       <label for="exampleFormControlSelect1">Language</label>
                       <select class="form-control" id="edit-profile-modal-form-language-selector">
+                        <option value="none">Chose a Language</option>
                         <option value="de-DE">Deutsch(DE)</option>
                         <option value="en-US">English(US)</option>
                         <option value="ne-NP">Nepalese (NP)</option>
@@ -167,12 +167,139 @@
         </div>
       </div>
     </div>
+    <!-- Invite for game Modal -->
+    <div class="modal fade" id="invite-for-game-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="invite-for-game-modal-content">
+          <div class="modal-body" id="invite-for-game-modal-body">
+            <div id="invite-for-game-modal-title-container">
+              <h1 id="invite-for-game-modal-title">Friendly Match</h1>
+            </div>
+            <div id="invite-for-game-modal-maps-powerups-container">
+              <div id="invite-for-game-modal-powerups-container">
+                <h4>Powerups</h4>
+                <input id="invite-for-game-modal-powerups-checkbox" type="checkbox">
+              </div>
+              <div id="invite-for-game-modal-maps-container">
+                <h3>Maps</h3>
+                <img id="invite-for-game-modal-map-ufo" name="ufo" class="invite-for-game-modal-maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lizard-people" name="lizard-people" class="invite-for-game-modal-maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-snowman" name="snowman" class="invite-for-game-modal-maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lochness" name="lochness" class="invite-for-game-modal-maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
+              </div>
+            </div>
+            <div id="invite-for-game-modal-opponent-title-container">
+              <h4 id="invite-for-game-modal-opponent-title">Your Opponent:</h3>
+              <h4 id="invite-for-game-modal-opponent-name" style="margin-left: 1vw;"></h3>
+            </div>
+            <div id="invite-for-game-modal-opponent-start-container">
+              <img id="invite-for-game-modal-opponent-photo" alt="error loading the image">
+              
+              <barely-a-button id="invite-for-game-modal-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    
 <style>
     #profie-view {
         height: 100%;
         background-color: #ff00ff6c;
         color: black;
     }
+
+
+    /* Invite for Game  */
+    
+    #invite-for-game-modal-start-button {
+      margin: 2vh 0vw 0vh 4vw;
+    }
+
+    #invite-for-game-modal-title-container {
+      margin: 19vh 0vw 0vh 0vw;
+      
+    }
+    
+    #invite-for-game-modal-maps-powerups-container {
+      display: flex;
+      flex-direction: row;
+    }
+
+    #invite-for-game-modal-powerups-checkbox {
+      margin: 0vh 0vw 0vh 0.6vw;
+    }
+
+    #invite-for-game-modal-powerups-container {
+      display: flex;
+      flex-direction: row;
+      margin: 30vh 0vw 0vh 1.5vw;
+      align-items: center;
+    }
+
+    #invite-for-game-modal-maps-container {
+      display: flex;
+      flex-direction: column;
+      margin: 0vh 0vw 0vh 10.7vw;
+      padding: 0vh 0vw 0vh 0.3vw;
+    }
+    
+    #invite-for-game-modal-title {
+      text-align: center;
+    }
+
+    .invite-for-game-modal-maps-button {
+      margin: 0vh 0vw 1vh 0.3vw;
+      height: 7vh;
+      width: 7vh;
+      opacity: 0.7;
+    }
+    .invite-for-game-modal-maps-button:hover {
+      margin: 0vh 0vw 0.6vh 0.1vw;
+      height: 7.4vh;
+      width: 7.4vh;
+    }
+
+    #invite-for-game-modal-content {
+      background-color: transparent; 
+      border: none;
+      background-image: url('../assets/homeView/lizardPeopleModal.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #invite-for-game-modal-body {
+      display: flex;
+      flex-direction: column;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 90vh;
+      width: 30vw;
+    }
+    
+    #invite-for-game-modal-opponent-title-container {
+      display: flex;
+      flex-direction: row;
+      margin: 1vh 0vw 0vh 1.5vw;
+    }
+
+    #invite-for-game-modal-opponent-start-container {
+      display: flex;
+      flex-direction: row;
+      margin: 1vh 0vw 0vh 1.5vw;
+    }
+
+    #invite-for-game-modal-opponent-photo {
+      height: 12vh;
+      margin: 0vh 0vw 0vh 2vw;
+    }
+
+
 
     /* Edit Profile */
 
