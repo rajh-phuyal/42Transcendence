@@ -65,55 +65,55 @@ class TextField extends HTMLElement {
                     align-items: center;
                     flex: 1;
                     padding: 5px;
-                    border:  2px solid  #595959;
-                    border-radius: 3px;
+                    border:  3px solid  black;
                     outline: none;
-                    background-color: #FFF6D4;
+                    background-color: #FFF7E3;
                 }
 
-                #text-field {
+                textarea {
                     font-size: 16px;
                     font-family: 'Courier';
                     color: black;
-                    width: ${this.width - 5 || '20'}%;
-                    height: ${this.height || '20'}%;
+                    width: 50%;
+                    height: 100%;
                     font-weight: 600;
                     flex: 1;
                     padding: 5px;
                     border:  none;
                     border-radius: 3px;
                     outline: none;
-                    background-color: #FFF6D4;
+                    background-color: #FFF7E3;
                     resize: none;
                     overflow: auto; 
                 }
 
                 textarea:hover{
-                    background-color: #EFE6C4;
+                    background-color: #EFE7D3;
                 }
                 
                 textarea:focus{
-                    background-color: #EFE6C4;
+                    background-color: #EFE7D3;
                 }
 
                 button {
                     font-family: 'Courier';
                     font-size: 16px;
-                    padding: 5px 10px;
-                    border: none;
-                    border-radius: 8px;
+                    font-weight: 700;
+                    margin: 5% 0% 0% 0%;
+                    width: 12%;
+                    height: 40%;
+                    border: 3px solid  black;
                     cursor: pointer;
-                    background-color: #595959;
-                    color: #FFFCE6;
-                    margin-left: 5px;
+                    background-color: black;
+                    color: white;
                 }
 
                 button:hover {
-                    background-color: #4a4a4a;
+                    background-color: #303030;
                 }
                 
                 button:active{
-                    background-color: #333333;
+                    background-color: #505050;
                 }
                 #main-container {
                     display: flex;
