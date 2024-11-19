@@ -482,6 +482,9 @@ export default {
                 this.hideElement("friends-list-modal-list-element-user-" + element.username);
             }
         },
+        powerupsAction() {
+            this.gameSettings.powerups = !this.gameSettings.powerups;
+        },
     },
 
 
@@ -519,7 +522,7 @@ export default {
             for (let individualElement of element)
                 this.domManip.$off(individualElement, "click", this.selectMap);
             element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
-            this.domManip.$off(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
+            this.domManip.$off(element, "change", this.powerupsAction);
             element = this.domManip.$id("invite-for-game-modal-start-button");
             this.domManip.$off(element, "click", this.submitInvitation);
             element = this.domManip.$id("friendship-modal-friendship-secondary-button");
@@ -587,7 +590,7 @@ export default {
                 for (let individualElement of element)
                     this.domManip.$on(individualElement, "click", this.selectMap);
                 element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
-                this.domManip.$on(element, "change", () => {this.gameSettings.powerups = !this.gameSettings.powerups;});
+                this.domManip.$on(element, "change", this.powerupsAction);
                 element = this.domManip.$id("invite-for-game-modal-start-button");
                 this.domManip.$on(element, "click", this.submitInvitation);
                 element = this.domManip.$id("friendship-modal-friendship-secondary-button");
@@ -600,8 +603,6 @@ export default {
                 this.domManip.$on(element, "click", this.openFriendList);
                 element = this.domManip.$id("friends-list-modal-search-bar-button");
                 this.domManip.$on(element, "click", this.searchFriend);
-                
-                
             })
             // on error?
         },

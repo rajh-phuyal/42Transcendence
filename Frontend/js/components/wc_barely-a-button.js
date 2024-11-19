@@ -7,6 +7,14 @@ class BarelyAButton extends HTMLElement
         this.height = 4;
         this.width = 8;
         this.fontSize = 2;
+        this.name = undefined;
+        this.route = undefined;
+        this.height = undefined;
+        this.height = undefined;
+        this.fontSize = undefined;
+        this.method = undefined;
+        this.datapayload = undefined;
+        this.onresolve = undefined;
     }
 
     static get observedAttributes()
@@ -22,26 +30,7 @@ class BarelyAButton extends HTMLElement
 
     attributeChangedCallback(name, oldValue, newValue)
     {
-        if (name === "name")
-            this.name = newValue;
-        else if (name === "route")
-            this.route = newValue;
-        else if (name === "height")
-            this.height = newValue;
-        else if (name === "width")
-            this.height = newValue;
-        else if (name === "fontsize")
-            this.fontSize = newValue;
-        else if (name === "method")
-            this.method = newValue;
-        else if (name === "datapayload")
-            this.datapayload = newValue;
-        else if (name === "onresolve")
-            this.onresolve = newValue;
-        else if (name === "buttonclass")
-            this.buttonclass = newValue;
-        else if (name === "onerror")
-            console.log("Error");
+        this[name] = newValue;
         this.render();
     }
 
