@@ -50,6 +50,11 @@ class WebSocketManager {
             console.log("WebSocket is not connected.");
         }
     }
+
+    refreshToken(token) {
+        this.disconnect();
+        this.connect(token);
+    }
 }
 
 // Export a single instance to be used across the app

@@ -9,13 +9,14 @@ from rest_framework import exceptions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import InternalTokenObtainPairSerializer
 from .models import DevUserData
+from .utils import set_jwt_cookies, unset_jwt_cookies
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
     # TODO: main branch was fucked, so I commented this...
-    # 
+    #
     # def perform_create(self, serializer):
     #     try:
     #         user = serializer.save()
@@ -88,22 +89,18 @@ class InternalTokenObtainPairView(TokenObtainPairView):
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        user = self.get_user_from_request(request)
-        
-        if user:
-            # Get the tokens from the response data
-            refresh_token = response.data.get('refresh')
-            access_token = response.data.get('access')
-            # Store the tokens in the DevUserData table
-            # TODO: Main branch was fucked so i commented this...
-            # DevUserData.objects.update_or_create(
-            #     user=user,
-            #     defaults={
-            #         'access_token': access_token,
-            #         'refresh_token': refresh_token,
-            #     }
-            #)
-        
+
+        if response.status_code == 200:
+            set_jwt_cookies(
+                response=response,
+                access_token=response.data['access'],
+                refresh_token=response.data['refresh']
+            )
+
+            # Remove tokens from response data since they're now in cookies
+            response.data.pop('access', None)
+            response.data.pop('refresh', None)
+
         return response
 
     def get_user_from_request(self, request):
@@ -113,3 +110,10 @@ class InternalTokenObtainPairView(TokenObtainPairView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return serializer.user
+
+
+class LogoutView(APIView):
+    def post(self, request):
+        response = Response({'detail': 'Successfully logged out.'})
+        unset_jwt_cookies(response)
+        return response

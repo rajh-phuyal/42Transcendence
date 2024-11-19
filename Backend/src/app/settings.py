@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	
+
 	# Third-party Apps
     'corsheaders',
     'rest_framework',
@@ -193,5 +193,22 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
-    
+
 }
+
+SIMPLE_JWT_COOKIE = {
+    'ACCESS_COOKIE_NAME': 'access_token',
+    'REFRESH_COOKIE_NAME': 'refresh_token',
+    'ACCESS_COOKIE_PATH': '/',
+    'REFRESH_COOKIE_PATH': '/api/auth/token/refresh/',
+    'ACCESS_COOKIE_SECURE': True,
+    'REFRESH_COOKIE_SECURE': True,
+    'ACCESS_COOKIE_HTTPONLY': True,
+    'REFRESH_COOKIE_HTTPONLY': True,
+    'ACCESS_COOKIE_SAMESITE': 'Lax',
+    'REFRESH_COOKIE_SAMESITE': 'Lax',
+}
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True

@@ -14,10 +14,12 @@ class Auth {
     }
 
     async isUserAuthenticated() {
-        if (await this.verifyJWTToken() && !$store.fromState('webSocketIsAlive'))
+        const isAuthenticated = await this.verifyJWTToken();
+
+        if (isAuthenticated && !$store.fromState('webSocketIsAlive'))
             WebSocketManager.connect($store.fromState('jwtTokens').access);
 
-        return await this.verifyJWTToken();
+        return isAuthenticated;
     }
 
     authenticate(username, password) {
@@ -29,8 +31,13 @@ class Auth {
     }
 
     async refreshToken() {
-        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh });
-        //TODO: Refresh the WebSocket connection with the new token
+        try {
+            return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh });
+        } catch (e) {
+            console.error("Refresh token error:", e);
+            this.logout();
+            return false;
+        }
     }
 
     logout() {
@@ -42,31 +49,40 @@ class Auth {
         return $store.fromState('jwtTokens').access ? `Bearer ${$store.fromState('jwtTokens').access}` : undefined;
     }
 
+    timeExpired(exp) {
+        return Date.now() >= exp * 1000;
+    }
+
+    /**
+     * Verify the JWT token
+     * @returns {boolean} True if the token is valid, false otherwise
+     */
     async verifyJWTToken() {
         const token = $store.fromState('jwtTokens').access;
         if (!token) return false;
 
         const [header, payload, signature] = token.split('.');
-        console.log("header", header);
-        console.log("payload", payload);
-        console.log("signature", signature);
         if (!header || !payload || !signature) return false;
 
         try {
             const { exp } = JSON.parse(atob(payload));
-            console.log("exp", exp);
-            if (Date.now() >= exp * 1000) {
-                this.logout(); //? Token has expired, for now just log out the user
-                // TODO: fix the refresh issue here
-                // const refreshed = await this.refreshToken();
-                // return refreshed;
+            if (this.timeExpired(exp)) {
+                const refreshed = await this.refreshToken();
+
+                // update the jwt tokens in the store
+                $store.commit('setJwtTokens', {
+                    ...$store.fromState('jwtTokens'),
+                    access: refreshed.access,
+                });
+
+                // reload WebSocket connection with the new token
+                WebSocketManager.refreshToken(refreshed.access);
+
+                return true;
             }
         } catch (e) {
             console.error('Error verifying token:', e);
-            this.logout(); //? Token is invalid, for now just log out the user
-            // TODO: fix the refresh issue here
-            // const refreshed = await this.refreshToken();
-            // return refreshed;
+            this.logout();
         }
 
         return true;
