@@ -6,6 +6,7 @@ import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
+// import _ from 'lodash'
 
 export default {
     attributes: {
@@ -59,14 +60,14 @@ export default {
         },
 
         setupTopLeftButton() {
-            if (this.result.relationship.state != "yourself")
-                {
-                    this.buttonTopLeft.method = this.friendshipMethod;
-                    this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
-                    if (this.result.relationship.isBlocking) {
-                        this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
-                    }
+            if (this.result.relationship.state != "yourself"){
+                this.buttonTopLeft.method = this.friendshipMethod;
+                this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
+                if (this.result.relationship.isBlocking) {
+                    this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
                 }
+            }
+            
         },
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
@@ -136,9 +137,9 @@ export default {
             modal.hide();
         },
 
-        showElement(elementId){
+        showElement(elementId, flex = null){
             let element = this.domManip.$id(elementId)
-            element.style.display = "block";
+            element.style.display = flex || "block";
         },
 
         profileEditMethod() {
@@ -405,6 +406,7 @@ export default {
                 const elementDiv = document.createElement('div')
                 elementDiv.className = "friends-list-modal-list-element";
                 elementDiv.setAttribute("user-id", element.id);
+                elementDiv.setAttribute("id", "friends-list-modal-list-element-user-" + element.username);
 
                 // Avatar
                 const avatar = document.createElement('img')
@@ -425,23 +427,19 @@ export default {
                 elementDiv.appendChild(frienshipStatusAvatar);
 
                 mainDiv.appendChild(elementDiv)
-
                 this.domManip.$on(elementDiv, "click", this.clickFriendCard);
-               
-                
             }
-            
         },
 
         openFriendList() {
             
             call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
+
                 this.removeFriendsList();
                 this.friendList = res;
-                console.log("friends list:", this.friendList);
-                
-                
                 this.populateFriendList();
+                this.domManip.$id("friends-list-modal-search-bar").value = "";
+                this.hideElement("friends-list-modal-list-result-not-found-message");
                 let modalElement = this.domManip.$id("friends-list-modal");
                 const modal = new bootstrap.Modal(modalElement);
                 modal.show();
@@ -450,13 +448,42 @@ export default {
             });
 
         },
+
         removeFriendsList() {
             if (!this.friendList)
                 return ;
-            for (let element of this.friendList)
+            for (let user of this.friendList)
+            {
+                const elementId = "friends-list-modal-list-element-user-" + user.username;
+                const element =  this.domManip.$id(elementId);
                 this.domManip.$off(element, "click", this.clickFriendCard);
+                element.remove();
+            }
+            this.friendList = undefined;
+        },
+
+        searchFriend() {
+            const searchBarElement = this.domManip.$id("friends-list-modal-search-bar")
+            let inputValue = searchBarElement.value.trim();
+
+            for (let element of this.friendList) {
+                this.showElement("friends-list-modal-list-element-user-" + element.username, "flex");
+            }
+            this.hideElement("friends-list-modal-list-result-not-found-message");
+
+            const filteredObj = Object.fromEntries(
+                Object.entries(this.friendList).filter(([key, value]) => !value.username.startsWith(inputValue))
+            );
+
+            if (Object.values(filteredObj).length === this.friendList.length) 
+                this.showElement("friends-list-modal-list-result-not-found-message");
+
+            for (let [key, element] of Object.entries(filteredObj)) {
+                this.hideElement("friends-list-modal-list-element-user-" + element.username);
+            }
         },
     },
+
 
 
 
@@ -503,11 +530,14 @@ export default {
             this.domManip.$off(element, "click", this.cancelButton);
             element = this.domManip.$id("button-bottom-right");
             this.domManip.$off(element, "click", this.openFriendList);
+            element = this.domManip.$id("friends-list-modal-search-bar-button");
+            this.domManip.$off(element, "click", this.searchFriend);
             this.removeFriendsList();
         },
 
         beforeDomInsertion() {
-            
+            this.buttonTopLeft.image = undefined;
+            this.buttonTopLeft.method = undefined;
         },
 
         afterDomInsertion() {
@@ -568,7 +598,9 @@ export default {
                 this.domManip.$on(element, "click", this.cancelButton);
                 element = this.domManip.$id("button-bottom-right");
                 this.domManip.$on(element, "click", this.openFriendList);
-
+                element = this.domManip.$id("friends-list-modal-search-bar-button");
+                this.domManip.$on(element, "click", this.searchFriend);
+                
                 
             })
             // on error?
