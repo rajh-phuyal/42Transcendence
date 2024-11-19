@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils.timezone import now
 
 # Enum for notification types
@@ -11,10 +10,10 @@ class NotificationType(models.TextChoices):
 # Table: barelyaschema.notification
 class Notification(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='notifications')
     title = models.CharField(max_length=255)
     content = models.TextField()
-    created_at = models.DateTimeField(default=now, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     seen_at = models.DateTimeField(null=True, blank=True)
     img_path = models.CharField(max_length=255)
     redir_path = models.CharField(max_length=255)
@@ -22,7 +21,6 @@ class Notification(models.Model):
 
     class Meta:
         db_table = '"barelyaschema"."notification"'
-        ordering = ['-created_at']
 
     def mark_as_seen(self):
         """Mark the notification as seen."""
