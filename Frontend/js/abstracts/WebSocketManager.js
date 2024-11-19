@@ -18,7 +18,8 @@ class WebSocketManager {
             return;
         }
 
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const protocol = 'ws://';
         const host = window.location.host;
         const socketUrl = `${protocol}${host}/ws/app/main/`;
 

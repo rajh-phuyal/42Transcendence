@@ -32,5 +32,11 @@ def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: st
 
 def unset_jwt_cookies(response: HttpResponse) -> None:
     """Remove JWT cookies"""
-    response.delete_cookie(settings.SIMPLE_JWT_COOKIE['ACCESS_COOKIE_NAME'])
-    response.delete_cookie(settings.SIMPLE_JWT_COOKIE['REFRESH_COOKIE_NAME'])
+    response.delete_cookie(
+        settings.SIMPLE_JWT_COOKIE['ACCESS_COOKIE_NAME'],
+        path=settings.SIMPLE_JWT_COOKIE['ACCESS_COOKIE_PATH']
+    )
+    response.delete_cookie(
+        settings.SIMPLE_JWT_COOKIE['REFRESH_COOKIE_NAME'],
+        path=settings.SIMPLE_JWT_COOKIE['REFRESH_COOKIE_PATH']
+    )

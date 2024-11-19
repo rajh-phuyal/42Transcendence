@@ -120,6 +120,8 @@ class Auth {
     async logout() {
         try {
             await call('auth/logout/', 'POST', null);
+            this.clearAuthCache();
+            this.isAuthenticated = false;
             $store.clear();
             WebSocketManager.disconnect();
         } catch (error) {

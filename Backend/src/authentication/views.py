@@ -124,7 +124,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
 
 class LogoutView(APIView):
     def post(self, request):
-        response = Response({'detail': 'Successfully logged out.'})
+        response = Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
         unset_jwt_cookies(response)
         return response
 
