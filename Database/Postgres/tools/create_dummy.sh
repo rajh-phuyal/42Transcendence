@@ -3,13 +3,19 @@
 # ADD ALL TABLES INTO THIS ARRAY!
 # (start from weak entity too not to break FK constraints)
 # ------------------------------------------------------------------------------
-ALL_TABLES=("barelyaschema.dev_user_data" 
-            "barelyaschema.notification"
-			"barelyaschema.is_cool_with" 
-			"barelyaschema.no_cool_with" 
+ALL_TABLES=(
 			"barelyaschema.message" 
 			"barelyaschema.conversation_member" 
 			"barelyaschema.conversation" 
+            "barelyaschema.tournament_member"
+            "barelyaschema.tournament"
+            "barelyaschema.game_member"
+            "barelyaschema.game"
+            "barelyaschema.map"
+            "barelyaschema.dev_user_data" 
+			"barelyaschema.no_cool_with" 
+			"barelyaschema.is_cool_with" 
+            "barelyaschema.notification"
 			"barelyaschema.user")
 
 # Exit immediately if a command exits with a non-zero status
