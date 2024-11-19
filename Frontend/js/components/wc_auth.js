@@ -48,15 +48,24 @@ class AuthCard extends HTMLElement {
         const usernameField = this.shadow.getElementById("usernameInput");
         const passwordField = this.shadow.getElementById("passwordInput");
 
-        // todo: block if empty and other validations
-
         usernameField.blur();
         passwordField.blur();
 
         const authAction = this.login ? "authenticate" : "createUser";
+        console.log("Starting auth action:", authAction);
+
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
+            console.log("Auth response:", response);
+
+            // Initialize the store
             $store.initializer();
+
+            // Clear the auth cache from before the authentication
+            $auth.clearAuthCache();
+
+            // Set this directly to avoid race condition
+            $auth.isAuthenticated = true;
 
             // Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
@@ -68,17 +77,19 @@ class AuthCard extends HTMLElement {
             // reinitializes the nav bar
             $nav();
 
-            // Connect to WebSocket
-            WebSocketManager.connect();
-
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
 
+            console.log("About to route to home");
             this.showNav();
-            router("/home");
+
+            // Add small delay to ensure store updates are processed
+            setTimeout(() => {
+                router("/home");
+            }, 100);
         })
         .catch(error => {
-            console.error(error);
+            console.error("Auth error:", error);
         })
         .finally(() => {
             usernameField.value = "";

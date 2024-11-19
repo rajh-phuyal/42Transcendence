@@ -12,32 +12,44 @@ class WebSocketManager {
             return;
         }
 
+        // Don't try to connect if not authenticated
+        if (!$store.fromState('isAuthenticated')) {
+            console.log("Not connecting WebSocket - user not authenticated");
+            return;
+        }
+
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        const socketUrl = `${protocol}127.0.0.1:8000/ws/app/main/`;
+        const host = window.location.host;
+        const socketUrl = `${protocol}${host}/ws/app/main/`;
 
-        this.socket = new WebSocket(socketUrl);
+        console.log("Connecting to WebSocket:", socketUrl);
 
-        // Log connection events
-        this.socket.onopen = () => {
-            console.log("WebSocket connected.");
-            $store.commit("setWebSocketIsAlive", true);
-        };
+        try {
+            this.socket = new WebSocket(socketUrl);
 
-		this.socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("Message received from server:", data);
-            // Dispatch data to appropriate handlers based on message type
-        };
+            this.socket.onopen = () => {
+                console.log("WebSocket connected successfully");
+                $store.commit("setWebSocketIsAlive", true);
+            };
 
-        this.socket.onclose = () => {
-            console.log("WebSocket disconnected.");
+            this.socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                $store.commit("setWebSocketIsAlive", false);
+            };
+
+            this.socket.onclose = () => {
+                console.log("WebSocket disconnected.");
+                $store.commit("setWebSocketIsAlive", false);
+
+                // Only attempt reconnect if authenticated
+                if ($store.fromState('isAuthenticated')) {
+                    setTimeout(() => this.connect(), 2000);
+                }
+            };
+        } catch (error) {
+            console.error("WebSocket connection error:", error);
             $store.commit("setWebSocketIsAlive", false);
-        };
-
-        this.socket.onerror = (error) => {
-            console.error("WebSocket error:", error);
-            $store.commit("setWebSocketIsAlive", false);
-        };
+        }
     }
 
     // Disconnect from WebSocket TODO: we need to be able to specify which connection to close

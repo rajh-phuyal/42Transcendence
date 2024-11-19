@@ -4,34 +4,29 @@ import { $id } from './dollars.js'
 import $callToast from './callToast.js';
 
 async function call(url, method, data) {
-    // TODO: WHY IS THERE API IN THE URL? [astein is asking :D]
-	const fullUrl = `${window.location.origin}/api/${url}`;
+    const fullUrl = `${window.location.origin}/api/${url}`;
 
     const headers = {
         'Content-Type': 'application/json'
     };
 
-    if ($auth.getAuthHeader() && await $auth.isUserAuthenticated()) {
-        headers['Authorization'] = $auth.getAuthHeader();
-    }
-
     let payload = {
         method: method,
         headers: headers,
-        // TODO why (method !== 'GET' && method !== 'DELETE')?? @rajh
+        credentials: 'include',
         ...(url == "user/relationship/" || (method !== 'GET' && method !== 'DELETE')) ? {
             body: JSON.stringify(data),
         } : {},
     };
+
     const response = await fetch(fullUrl, payload);
 
     if (!response.ok) {
-        // TODO maybe remove this toast I added it for debbuging
         let errorMessage;
 
         try {
             const errorData = await response.json();
-            
+
             if (errorData.error)
                 errorMessage = "Error: " + errorData.error;
             else if (errorData.detail)
@@ -42,7 +37,7 @@ async function call(url, method, data) {
             // If parsing the JSON fails, fall back to a generic message
             errorMessage = 'Request failed';
         }
-        
+
         if (!errorMessage)
             errorMessage = 'Request failed';
 
@@ -51,8 +46,6 @@ async function call(url, method, data) {
         throw new Error(errorMessage);
     }
 
-
-    
     return await response.json();
 }
 

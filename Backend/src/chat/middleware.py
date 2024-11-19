@@ -5,10 +5,11 @@ from asgiref.sync import sync_to_async
 from django.db import close_old_connections
 import logging
 from django.conf import settings
+from authentication.authentication import CookieJWTAuthentication
 
 class JWTAuthMiddleware(BaseMiddleware):
     """
-    Custom middleware that takes JWT from the query string and authenticates the user. <url>?token=<token>
+    Custom middleware that authenticates the user using JWT cookies
     """
 
     async def __call__(self, scope, receive, send):
@@ -25,28 +26,32 @@ class JWTAuthMiddleware(BaseMiddleware):
             }
 
         logging.info(f"Cookies: {cookies}")
-        access_token = cookies.get(settings.SIMPLE_JWT_COOKIE['ACCESS_COOKIE_NAME'])
 
-        if access_token:
-            try:
-                # Decode token
-                access_token = AccessToken(access_token)
-                user_id = access_token['user_id']
-                logging.info(f"User ID: {user_id}")
+        # Create mock request object for the authentication class
+        class MockRequest:
+            def __init__(self, cookies):
+                self.COOKIES = cookies
 
-                # Get user
-                User = get_user_model()
-                user = await sync_to_async(User.objects.get)(id=user_id)
-                scope['user'] = user
+        request = MockRequest(cookies)
+
+        try:
+            auth = CookieJWTAuthentication()
+            user_auth = await sync_to_async(auth.authenticate)(request)
+
+            if user_auth:
+                user, _ = user_auth
+                logging.info(f"User ID: {user.id}")
                 logging.info(f"User: {user}")
+                scope['user'] = user
+            else:
+                logging.info("No valid authentication found")
+                scope['user'] = AnonymousUser()
+                raise Exception("No valid authentication")
 
-            except Exception as e:
-                logging.info(f"Anonymous user")
-                raise e
-
-        else:
-            logging.info(f"No access token found")
-            raise Exception("No access token found")
+        except Exception as e:
+            logging.info(f"Anonymous user due to: {str(e)}")
+            scope['user'] = AnonymousUser()
+            raise e
 
         close_old_connections()
 

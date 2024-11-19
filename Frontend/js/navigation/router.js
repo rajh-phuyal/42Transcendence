@@ -48,65 +48,63 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null) {
-    setViewLoading(true); // TODO: later this responsibility will the that of the view
+    console.log("Router called with path:", path);
+    setViewLoading(true);
 
-    const userAuthenticated = await $auth.isUserAuthenticated();
+    try {
+        const userAuthenticated = await $auth.isUserAuthenticated();
+        console.log("User authenticated:", userAuthenticated);
 
-    if (userAuthenticated && path === '/auth') {
-        path = '/home';
+        if (userAuthenticated && path === '/auth') {
+            console.log("Redirecting to home");
+            path = '/home';
+        }
+
+        if (!userAuthenticated && path !== '/auth') {
+            console.log("Redirecting to auth");
+            path = '/auth';
+            params = { login: true };
+        }
+
+        const viewContainer = $id('router-view');
+
+        // find the route that matches the path
+        const route = routes.find(route => route.path === path) || {
+            path: path,
+            view: "404",
+            requireAuth: false,
+        };
+
+        const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
+        const viewHooks = await getViewHooks(route.view);
+        const viewConfigWithoutHooks = objectToBind(viewHooks, params);
+
+        // get the hooks of the last view and call the beforeRouteLeave hook
+        const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
+
+        // bind everything except the hooks to the object
+        lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
+
+        // about to change route
+        viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
+
+        // reduce the params to a query string
+        params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
+        const pathWithParams = params ? `${path}?${params}` : path;
+        history.pushState({}, 'newUrl', pathWithParams);
+
+        // DOM manipulation
+        viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
+        viewContainer.innerHTML = htmlContent;
+        viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
+
+        // set the view name to the container
+        viewContainer.dataset.view = route.view;
+    } catch (error) {
+        console.error("Router error:", error);
+    } finally {
+        setViewLoading(false);
     }
-
-    if (!userAuthenticated && path !== '/auth') {
-        path = '/auth';
-        params = { login: true }; // TODO: maybe we can remove this with issue #73
-    }
-    // if (!params) {
-    //     const paramsString = window.location.href;
-    //     console.log(paramsString);
-    //     const searchParams = new URLSearchParams(paramsString);
-    //     params = {};
-    //     for (const [key, value] of searchParams) {
-    //         params[key] = value;
-    //         console.log(key, value)
-    //     }
-    // }
-
-    const viewContainer = $id('router-view');
-
-    // find the route that matches the path
-    const route = routes.find(route => route.path === path) || {
-        path: path,
-        view: "404",
-        requireAuth: false,
-    };
-
-    const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
-    const viewHooks = await getViewHooks(route.view);
-    const viewConfigWithoutHooks = objectToBind(viewHooks, params);
-
-    // get the hooks of the last view and call the beforeRouteLeave hook
-    const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
-
-    // bind everything except the hooks to the object
-    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
-
-    // about to change route
-    viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
-
-    // reduce the params to a query string
-    params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
-    const pathWithParams = params ? `${path}?${params}` : path;
-    history.pushState({}, 'newUrl', pathWithParams);
-
-    // DOM manipulation
-    viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
-    viewContainer.innerHTML = htmlContent;
-    viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
-
-    setViewLoading(false);
-
-    // set the view name to the container
-    viewContainer.dataset.view = route.view;
 }
 
 export default router;

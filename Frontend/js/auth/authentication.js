@@ -11,16 +11,24 @@ class Auth {
         return this;
     }
 
+    clearAuthCache() {
+        this._lastCheckTimestamp = 0;
+        this._authCheckPromise = null;
+    }
+
     async isUserAuthenticated() {
         const now = Date.now();
+        console.log("Checking authentication"); // Debug log
 
         // Return cached result if within timeout window
         if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
+            console.log("Using cached auth result:", this.isAuthenticated); // Debug log
             return this.isAuthenticated;
         }
 
         // If there's already a check in progress, return that promise
         if (this._authCheckPromise) {
+            console.log("Using existing auth check promise"); // Debug log
             return this._authCheckPromise;
         }
 
@@ -29,11 +37,13 @@ class Auth {
             try {
                 await call('auth/verify/', 'GET');
                 this.isAuthenticated = true;
+                console.log("Auth check successful"); // Debug log
 
                 if (!$store.fromState('webSocketIsAlive')) {
                     WebSocketManager.connect();
                 }
             } catch (error) {
+                console.log("Auth check failed:", error); // Debug log
                 this.isAuthenticated = false;
             } finally {
                 this._lastCheckTimestamp = now;
@@ -97,21 +107,19 @@ class Auth {
 
     authenticate(username, password) {
         return call('auth/login/', 'POST',
-            { username: username, password: password },
-            { credentials: 'include' }
+            { username: username, password: password }
         );
     }
 
     createUser(username, password) {
         return call('auth/register/', 'POST',
-            { username: username, password: password },
-            { credentials: 'include' }
+            { username: username, password: password }
         );
     }
 
     async logout() {
         try {
-            await call('auth/logout/', 'POST', null, { credentials: 'include' });
+            await call('auth/logout/', 'POST', null);
             $store.clear();
             WebSocketManager.disconnect();
         } catch (error) {

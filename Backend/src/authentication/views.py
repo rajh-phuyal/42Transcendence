@@ -12,7 +12,7 @@ from .models import DevUserData
 from .utils import set_jwt_cookies, unset_jwt_cookies
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from .authentication import CookieJWTAuthentication
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -56,7 +56,7 @@ class RegisterView(generics.CreateAPIView):
             "username": user.username,
         }, status=status.HTTP_201_CREATED)
 
-        # Set cookies for the new user
+        # Set the cookies
         set_jwt_cookies(
             response=response,
             access_token=access_token,
@@ -128,13 +128,13 @@ class LogoutView(APIView):
         unset_jwt_cookies(response)
         return response
 
-
 class TokenVerifyView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         return Response({
             'userId': request.user.id,
-            'username': request.user.username
+            'username': request.user.username,
+            'isAuthenticated': True
         })

@@ -1,9 +1,12 @@
 from django.conf import settings
 from datetime import datetime
 from django.http import HttpResponse
+import logging
 
 def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: str = None) -> None:
     """Set JWT tokens as HttpOnly cookies"""
+
+    logging.info(f"Setting access token cookie: {access_token[:10]}...")
 
     response.set_cookie(
         settings.SIMPLE_JWT_COOKIE['ACCESS_COOKIE_NAME'],
@@ -16,6 +19,7 @@ def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: st
     )
 
     if refresh_token:
+        logging.info(f"Setting refresh token cookie: {refresh_token[:10]}...")
         response.set_cookie(
             settings.SIMPLE_JWT_COOKIE['REFRESH_COOKIE_NAME'],
             refresh_token,
