@@ -207,7 +207,7 @@ class ListFriendsView(BaseAuthenticatedView):
    
 class UpdateAvatarView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def post(self, request):
+    def put(self, request):
         if 'avatar' not in request.FILES:
             return error_response(_("key 'avatar' must be provided!"))
         avatar = request.FILES['avatar']
