@@ -1,6 +1,6 @@
 from core.base_views import BaseAuthenticatedView
 from core.response import success_response, error_response
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, activate
 from django.db import transaction
 from rest_framework import status
 from django.db.models import Q
@@ -13,7 +13,6 @@ from django.conf import settings
 from user.utils_img import process_avatar
 from user.utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
 from core.decorators import barely_handle_exceptions
-
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
@@ -241,6 +240,9 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         if new_language not in valid_languages:
             error_response(_("Invalid / unsupported language code"))
         
+        # Activate the new language
+        activate(new_language)
+
         # Update the user info
         user.username = new_username
         user.first_name = new_first_name
