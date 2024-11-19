@@ -14,6 +14,7 @@ class Auth {
     }
 
     async isUserAuthenticated() {
+        this.verifyJWTToken();
         return await this.verifyJWTToken();
     }
 
@@ -44,10 +45,14 @@ class Auth {
         if (!token) return false;
 
         const [header, payload, signature] = token.split('.');
+        console.log("header", header);
+        console.log("payload", payload);
+        console.log("signature", signature);
         if (!header || !payload || !signature) return false;
 
         try {
             const { exp } = JSON.parse(atob(payload));
+            console.log("exp", exp);
             if (Date.now() >= exp * 1000) {
                 this.logout(); //? Token has expired, for now just log out the user
                 // TODO: fix the refresh issue here
