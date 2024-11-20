@@ -121,7 +121,7 @@ class TextField extends HTMLElement {
                 }
             </style>
             <div id="main-container">
-                <textarea id="text-field" type="search" placeholder="${this.placeholder || 'Search...'}"></textarea>
+                <textarea id="text-field" type="search" maxlength="250" placeholder="${this.placeholder || 'Search...'}"></textarea>
                 <button id="textFieldButton">Send</button>
             </div>
         `;
