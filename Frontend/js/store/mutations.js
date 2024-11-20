@@ -34,4 +34,11 @@ export const mutations = {
         },
         presistence: false,
     },
+    setWebsocketIsAlive: {
+        stateName: 'webSocketIsAlive',
+        onUpdate: (state, value) => {
+            state.websocketIsAlive = value; 
+        },   
+        presistence: false,
+    }
 };
