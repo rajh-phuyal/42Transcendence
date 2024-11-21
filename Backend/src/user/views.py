@@ -16,6 +16,8 @@ from django.conf import settings
 import os
 from .utils_img import process_avatar
 from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
+from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
+
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(generics.RetrieveAPIView):
@@ -152,9 +154,9 @@ class RelationshipView(APIView):
 
     # Logic for blocking a user:
     def block_user(self, user, target):
-        if target.id == 1:
+        if target.id == USER_ID_OVERLOARDS:
             raise BlockingException('Try harder...LOL')
-        if target.id == 2:
+        if target.id == USER_ID_AI:
             raise BlockingException('Computer says no')
         if is_blocking(user, target):
             raise BlockingException('You have already blocked this user')
@@ -197,7 +199,7 @@ class RelationshipView(APIView):
 
     # Logic for removing a friend:
     def remove_friend(self, user, target):
-        if target.id == 2:
+        if target.id == USER_ID_AI:
             raise RelationshipException('Computer says no')
         with transaction.atomic():
             cool_status = IsCoolWith.objects.select_for_update().filter(

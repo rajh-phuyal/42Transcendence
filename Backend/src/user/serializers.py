@@ -3,6 +3,7 @@ from .models import User, IsCoolWith, CoolStatus
 from rest_framework import serializers
 from django.core.cache import cache
 from .utils_relationship import get_relationship_status
+from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
@@ -30,7 +31,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_online(self, obj):
         # AI Opponent and Overlords are always online
-        if obj.id == 1 or obj.id == 2:
+        if obj.id == USER_ID_OVERLOARDS or obj.id == USER_ID_AI:
             return True
         # Check if the user's online status is in the cache
         return cache.get(f'user_online_{obj.id}', False)
