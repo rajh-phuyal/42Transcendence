@@ -9,10 +9,10 @@ from user.serializers import ProfileSerializer, ListFriendsSerializer
 from core.exceptions import BarelyAnException
 from user.exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-from user.utils_img import process_avatar
-from user.utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
-from core.decorators import barely_handle_exceptions
+from .utils_img import process_avatar
+from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
+from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
+
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
@@ -63,7 +63,7 @@ class RelationshipView(BaseAuthenticatedView):
         user, target, action = self.validate_data(request, allowed_actions)
         if action == 'accept':
             self.accept_request(user, target)
-            return success_response(_("Friend request accepted"))    
+            return success_response(_("Friend request accepted"))
         else:
             return error_response(self.return_unvalid_action_msg(request, allowed_actions))
 
@@ -130,15 +130,15 @@ class RelationshipView(BaseAuthenticatedView):
 
     # Logic for blocking a user:
     def block_user(self, user, target):
-        if target.id == 1:
+        if target.id == USER_ID_OVERLOARDS:
             raise BlockingException(_('Try harder...LOL'))
-        if target.id == 2:
+        if target.id == USER_ID_AI:
             raise BlockingException(_('Computer says no'))
         if is_blocking(user, target):
             raise BlockingException(_('You have already blocked this user'))
         new_no_cool = NoCoolWith(blocker=user, blocked=target)
         new_no_cool.save()
-    
+
     # Logic for accepting a friend request:
     def accept_request(self, user, target):
         if are_friends(user, target):
@@ -150,7 +150,7 @@ class RelationshipView(BaseAuthenticatedView):
                 raise RelationshipException(_('Friend request not found'))
             cool_status.status = CoolStatus.ACCEPTED
             cool_status.save()
-    
+
     # Logic for cancelling a friend request:
     def cancel_request(self, user, target):
         if are_friends(user, target):
@@ -175,7 +175,7 @@ class RelationshipView(BaseAuthenticatedView):
 
     # Logic for removing a friend:
     def remove_friend(self, user, target):
-        if target.id == 2:
+        if target.id == USER_ID_AI:
             raise RelationshipException(_('Computer says no'))
         with transaction.atomic():
             cool_status = IsCoolWith.objects.select_for_update().filter(
@@ -186,7 +186,7 @@ class RelationshipView(BaseAuthenticatedView):
             if not cool_status:
                 raise RelationshipException(_('You are not friends with this user'))
             cool_status.delete()
-    
+
     # Logic for unblocking a user:
     def unblock_user(self, user, target):
         with transaction.atomic():
@@ -203,7 +203,7 @@ class ListFriendsView(BaseAuthenticatedView):
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=user) | Q(requestee=user))
         serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'user_id': user.id})
         return success_response(_("Friends list of user"), friends=serializer.data)
-   
+
 class UpdateAvatarView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request):
@@ -212,7 +212,7 @@ class UpdateAvatarView(BaseAuthenticatedView):
         avatar = request.FILES['avatar']
         result = process_avatar(request.user, avatar)
         return success_response(_("Avatar updated"), avatar_url=result)
-    
+
 class UpdateUserInfoView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request):
@@ -228,7 +228,7 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         # Check if all fields are not empty
         if not new_username or not new_first_name or not new_last_name or not new_language:
             return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
-            
+
         # Check if the new username is valid
         # TODO: Wait for issue #108
         if new_username != user.username:
@@ -239,7 +239,7 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
         if new_language not in valid_languages:
             error_response(_("Invalid / unsupported language code"))
-        
+
         # Activate the new language
         activate(new_language)
 
