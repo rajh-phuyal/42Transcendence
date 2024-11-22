@@ -1,4 +1,4 @@
-
+import call from '../../abstracts/call.js'
 
 export default {
     attributes: {
@@ -6,70 +6,79 @@ export default {
         conversations: [], // All conversations for the user
         selectedConversation: null, // The active conversation
         messages: [], // Messages of the active conversation
+
+        conversationsContainer: undefined,
     },
 
     methods: {
-        // Load all conversations via API request (GET /chat/load/conversations)
-        async loadConversations() {
-            try {
-                console.log('Bearer ' + this.$store.fromState('jwtTokens').access);
-                // Use the abstracted call method instead of fetch
-                const conversations_respond = await this.call('chat/load/conversations/', 'GET');
 
-                console.log("Conversations loaded:", conversations_respond);
+        alexCode() {
+        // UNCOMENT FROM HERE++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        // // Load all conversations via API request (GET /chat/load/conversations)
+        // async loadConversations() {
+        //     try {
+        //         console.log('Bearer ' + this.$store.fromState('jwtTokens').access);
+        //         // Use the abstracted call method instead of fetch
+        //         const conversations_respond = await this.call('chat/load/conversations/', 'GET');
+
+        //         console.log("Conversations loaded:", conversations_respond);
                 
-            // Populate the conversation list UI
-            const conversationListElement = document.getElementById("conversation-items");
-            conversationListElement.innerHTML = ''; // Clear any existing items
+        //     // Populate the conversation list UI
+        //     const conversationListElement = document.getElementById("conversation-items");
+        //     conversationListElement.innerHTML = ''; // Clear any existing items
                         
-            conversations_respond.forEach(conversation => {
-                const listItem = document.createElement('li');
-                listItem.textContent = conversation.name || `Conversation ${conversation.id}`;
-                listItem.setAttribute('data-id', conversation.id);
-                listItem.style.cursor = 'pointer';
-                listItem.addEventListener('click', () => {
-                    this.selectConversation(conversation); // Use the selectConversation method
-                });
-                conversationListElement.appendChild(listItem);
-            });
+        //     conversations_respond.forEach(conversation => {
+        //         const listItem = document.createElement('li');
+        //         listItem.textContent = conversation.name || `Conversation ${conversation.id}`;
+        //         listItem.setAttribute('data-id', conversation.id);
+        //         listItem.style.cursor = 'pointer';
+        //         listItem.addEventListener('click', () => {
+        //             this.selectConversation(conversation); // Use the selectConversation method
+        //         });
+        //         conversationListElement.appendChild(listItem);
+        //     });
                 
-            } catch (error) {
-                console.error('Failed to load conversations:', error);
-            }
-        },
+        //     } catch (error) {
+        //         console.error('Failed to load conversations:', error);
+        //     }
+        // },
 
-		// Load messages for the selected conversation
-		async selectConversation(conversation) {
-            console.log('Selected conversation:', conversation, 'ID:', conversation.id);
-            this.selectedConversation = conversation.id
+		// // Load messages for the selected conversation
+		// async selectConversation(conversation) {
+        //     console.log('Selected conversation:', conversation, 'ID:', conversation.id);
+        //     this.selectedConversation = conversation.id
         
-			try {
-				// Use the abstracted call method instead of fetch
-				//TODO: add offsett for pagination (change 0 in the next line)
-				const messages_respond = await this.call(`chat/load/conversation/${conversation.id}/messages/?offset=0/`, 'PUT');
-				console.log("Messages loaded:", messages_respond);
+		// 	try {
+		// 		// Use the abstracted call method instead of fetch
+		// 		//TODO: add offsett for pagination (change 0 in the next line)
+		// 		const messages_respond = await this.call(`chat/load/conversation/${conversation.id}/messages/?offset=0/`, 'PUT');
+		// 		console.log("Messages loaded:", messages_respond);
 
-            // Populate the chat log with the messages
-			this.messages = messages_respond;
-			this.displayMessages();
-			} catch (error) {
-				console.error('Failed to load messages:', error);
-			}
-        },
+        //     // Populate the chat log with the messages
+		// 	this.messages = messages_respond;
+		// 	this.displayMessages();
+		// 	} catch (error) {
+		// 		console.error('Failed to load messages:', error);
+		// 	}
+        // },
 
-		// Display messages in the chat log
-        displayMessages() {
-            const chatLog = document.getElementById("chat-log");
-            chatLog.value = '';  // Clear previous content
-			console.log(this.$store.fromState('user').id);
-            this.messages.forEach(msg => {
-				if (msg.user === this.$store.fromState('user').id) {
-                	chatLog.value += `                                                        ${msg.content}\n`;
-				}
-				else
-                	chatLog.value += `${msg.user}: ${msg.content}\n`;
-            });
-        },
+		// // Display messages in the chat log
+        // displayMessages() {
+        //     const chatLog = document.getElementById("chat-log");
+        //     chatLog.value = '';  // Clear previous content
+		// 	console.log(this.$store.fromState('user').id);
+        //     this.messages.forEach(msg => {
+		// 		if (msg.user === this.$store.fromState('user').id) {
+        //         	chatLog.value += `                                                        ${msg.content}\n`;
+		// 		}
+		// 		else
+        //         	chatLog.value += `${msg.user}: ${msg.content}\n`;
+        //     });
+        // },
+
+        // TO HERE ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 // THIS IS OUTDATED SINCE WE ARE USING THE WebSocketManager
         // Open WebSocket connection
@@ -124,29 +133,81 @@ export default {
         // Method to load messages when a conversation is selected
 
 		
-
+        // UNCOMENT THIS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Send a chat message
-        sendMessage(message) {
-            if (this.chatSocket && message.trim() !== '') {
-                // Prepare the message payload
-                const payload = JSON.stringify({
-                    type: 'chat_message',
-                    message: message,
-					conversation_id: this.selectedConversation,
-                });
+        // sendMessage(message) {
+        //     if (this.chatSocket && message.trim() !== '') {
+        //         // Prepare the message payload
+        //         const payload = JSON.stringify({
+        //             type: 'chat_message',
+        //             message: message,
+		// 			conversation_id: this.selectedConversation,
+        //         });
 
-                // Send the message through WebSocket
-                this.chatSocket.send(payload);
-                console.log("Message sent:", message + 'to conversation: ' + this.selectedConversation);
-            }
+        //         // Send the message through WebSocket
+        //         this.chatSocket.send(payload);
+        //         console.log("Message sent:", message + 'to conversation: ' + this.selectedConversation);
+        //     }
+        // },
+        },
+        
+        createConversationCard(element) {
+            const conversation = document.createElement("div");
+            conversation.className = "chat-view-conversation-card";
+            conversation.setAttribute("user_id", element.id);
+            conversation.setAttribute("last-message-time", element.lastMessageTime);
+            
+            // Avatar
+            const avatar = document.createElement("img");
+            avatar.className = "chat-view-conversation-card-avatar";
+            avatar.src = window.origin + '/media/avatars/' + element.avatarUrl;
+            conversation.appendChild(avatar);
+
+            // User
+            const user = document.createElement("h5");
+            user.className = "chat-view-conversation-card-username";
+            user.textContent = element.username;
+            conversation.appendChild(user);
+
+            this.conversationsContainer.appendChild(conversation);
         },
 
+        async populateConversations() {
+            let result;
+            const fetched = await fetch(`../js/views/chat/test.json`)
+            
+            result = await fetched.json();
+
+            console.log("result:", result);
+
+            for (let element of result)
+                this.createConversationCard(element);
+        },
+
+        sortMessagesByTimestamp() {
+            // Get the child elements as an array
+            console.log("before removing children:", this.conversationsContainer.children)
+            const conversation = Array.from(this.conversationsContainer.children);
+            console.log("after removing children:", this.conversationsContainer.children)
+            
+            // Sort the elements by their timestamp
+            conversation.sort((a, b) => {
+                const timestampA = new Date(a.getAttribute('last-message-time'));
+                const timestampB = new Date(b.getAttribute('last-message-time'));
+                return timestampB - timestampA; // Ascending order
+            });
         
+            // Re-append the elements in the sorted order
+            for (const element of conversation) {
+                this.conversationsContainer.appendChild(element); // Moves each element to the end in sorted order
+            }
+        }
+
     },
 
     hooks: {
         async beforeRouteEnter() {
-            await this.loadConversations();
+            // await this.loadConversations();
         },
 
         beforeRouteLeave() {
@@ -162,8 +223,12 @@ export default {
         },
 
         // Open WebSocket after the DOM is inserted
-        afterDomInsertion() {
+        async afterDomInsertion() {
             console.log("After DOM Insertion...");
+            this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
+
+            await this.populateConversations();
+            this.sortMessagesByTimestamp();
             
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");

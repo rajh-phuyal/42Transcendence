@@ -1,0 +1,38 @@
+[
+
+    {
+        "id": 3,
+        "username": "arabelo-",
+        "avatarUrl": "4d39f530-68c8-42eb-ad28-45445424da5b.png",
+        "lastMessageTime": "2024-11-04 09:16:46.988745+00",
+        "unseenMessages": "3"
+    },
+    {
+        "id": 4,
+        "username": "astein",
+        "avatarUrl": "73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png",
+        "lastMessageTime": "2024-11-22 09:16:46.988745+00",
+        "unseenMessages": "1"
+    },
+    {
+        "id": 5,
+        "username": "anshova",
+        "avatarUrl": "1e3751c5-5e47-45f2-9967-111fd26a6be8.png",
+        "lastMessageTime": "2024-10-21 09:16:46.988745+00",
+        "unseenMessages": "0"
+    },
+    {
+        "id": 6,
+        "username": "fda-estr",
+        "avatarUrl": "fe468ade-12ed-4045-80a7-7d3e45be997e.png",
+        "lastMessageTime": "2024-11-21 09:10:46.988745+00",
+        "unseenMessages": "1"
+    },
+    {
+        "id": 7,
+        "username": "rphuyal",
+        "avatarUrl": "dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png",
+        "lastMessageTime": "2024-11-21 09:16:46.988745+00",
+        "unseenMessages": "0"
+    }
+]
