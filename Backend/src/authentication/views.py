@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from rest_framework import exceptions
+from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.serializers import RegisterSerializer, InternalTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny
@@ -7,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import set_jwt_cookies, unset_jwt_cookies
 from rest_framework.permissions import IsAuthenticated
-from .authentication import CookieJWTAuthentication
+from core.authentication import CookieJWTAuthentication
 from authentication.models import DevUserData
 from core.response import success_response
 from django.utils.translation import gettext as _, activate
@@ -59,13 +60,13 @@ class RegisterView(generics.CreateAPIView):
         }
 
         # Set the cookies
-        set_jwt_cookies(
-            response=response_data,
+        response = set_jwt_cookies(
+            response=Response(response_data),
             access_token=access_token,
             refresh_token=refresh_token
         )
 
-        return success_response(_("Welcome on board {username}!").format(username=user.username), status_code=status.HTTP_201_CREATED, **response_data)
+        return response
 
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer

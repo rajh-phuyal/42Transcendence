@@ -53,7 +53,7 @@ $store.addMutationListener('setWebSocketIsAlive', (state) => {
             $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
             setInervalId = setInterval(() => {
                 WebSocketManager.connect();
-            }, 2000);
+            }, 100000);
         }
     }
 });

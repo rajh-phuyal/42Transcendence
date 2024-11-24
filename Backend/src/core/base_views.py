@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from core.authentication import CookieJWTAuthentication
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext as _, activate
 from core.response import error_response
@@ -9,9 +9,9 @@ import logging
 
 # Base view class for all authenticated views we wanna create
 class BaseAuthenticatedView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
-    
+
     def initialize_request(self, request, *args, **kwargs):
         request = super().initialize_request(request, *args, **kwargs)
 

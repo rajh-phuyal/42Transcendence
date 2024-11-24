@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async
 from django.db import close_old_connections
 import logging
 from django.conf import settings
-from authentication.authentication import CookieJWTAuthentication
+from core.authentication import CookieJWTAuthentication
 
 class JWTAuthMiddleware(BaseMiddleware):
     """
