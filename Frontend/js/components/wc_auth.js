@@ -41,7 +41,8 @@ const eventListenersConfig = [
 	{
 		class: ".passwordInput",
 		event: "keypress",
-		callback: "handleKeyPress"
+		callback: "handleKeyPress",
+		keyUp: "passwordMathcCheck"
 	}
 ];
 
@@ -87,6 +88,8 @@ class AuthCard extends HTMLElement {
 				const elements = this.shadow.querySelectorAll(config.class);
 				elements.forEach((element) => {
 					element.addEventListener(config.event, this[config.callback].bind(this));
+					if (config.keyUp)
+						element.addEventListener("keyup", this[config.keyUp].bind(this));
 				});
 			}
 		}
@@ -118,6 +121,7 @@ class AuthCard extends HTMLElement {
 
 	regiterErrorMessages(username, password, passwordConfirmation) {
 		let errorMsg = "";
+		const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\W)(?!.* ).{8,}$/;
 		switch (true) {
 			case username.value === "" || username.value === null:
 				username.style.border = "2px solid red";
@@ -133,6 +137,12 @@ class AuthCard extends HTMLElement {
 					errorMsg += " and "; // TODO Translate
 				errorMsg += "passwords do not match"; // TODO Translate
 				break ;
+			case !passwordRegex.test(password.value):
+				password.style.border = "2px solid red";
+				passwordConfirmation.style.border = "2px solid red";
+				if (errorMsg.length != 0)
+					errorMsg += " and "; // TODO Translate
+				errorMsg += "password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number and one special character"; // TODO Translate
 			default:
 				break ;
 		}
@@ -201,8 +211,7 @@ class AuthCard extends HTMLElement {
     handleKeyPress(event) {
 		if (event.key === 'Enter')
 			this.submitClick();
-		if (event.target.classList.contains("usernameInput")
-			|| event.target.classList.contains("passwordInput"))
+		if (event.target.classList.contains("usernameInput"))
 			event.target.style.border = "3px solid #FFF6D4";
     }
 
@@ -274,6 +283,19 @@ class AuthCard extends HTMLElement {
 		event.target.previousElementSibling.type = event.target.previousElementSibling.type === "password" ? "text" : "password";
 		event.target.textContent = event.target.textContent === translate('auth', 'displayPassword') ?
 			translate("auth", "hidePassword") : translate("auth", "displayPassword");
+	}
+
+	passwordMathcCheck() {
+		const passwordField = this.shadow.querySelectorAll(".password-register");
+		if (passwordField[0].value === passwordField[1].value) {
+			passwordField[0].style.border = "3px solid #FFF6D4";
+			passwordField[1].style.border = "3px solid #FFF6D4";
+			console.log("passwords match");
+		} else {
+			passwordField[0].style.border = "3px solid red";
+			passwordField[1].style.border = "3px solid red";
+			console.log("passwords do not match");
+		}
 	}
 
     render() {
