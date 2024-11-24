@@ -1,0 +1,261 @@
+# BARELY A TRANSLATION
+# Copyright (C) barelyatranscendence gang
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR theoverloard@ahok.cool, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ne-NP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: authentication/serializers.py:40
+msgid "Username cannot be empty"
+msgstr "प्रयोगकर्ताको नाम खाली हुन सक्दैन"
+
+#: authentication/serializers.py:43 user/views.py:237
+#, python-brace-format
+msgid "Username '{username}' already exists"
+msgstr "प्रयोगकर्ताको नाम '{username}' पहिले नै अवस्थित छ"
+
+#: authentication/serializers.py:49
+msgid "Password cannot be empty"
+msgstr "पासवर्ड खाली हुन सक्दैन"
+
+#: authentication/serializers.py:52
+msgid "Password must be at least 6 characters long"
+msgstr "पासवर्ड कम्तीमा ६ अक्षर लामो हुनुपर्छ"
+
+#: authentication/serializers.py:55
+msgid "Password must contain at least one lowercase character"
+msgstr "पासवर्डमा कम्तीमा एउटा सानो अक्षर हुनुपर्छ"
+
+#: authentication/serializers.py:58
+msgid "Password must contain at least one uppercase character"
+msgstr "पासवर्डमा कम्तीमा एउटा ठूला अक्षर हुनुपर्छ"
+
+#: authentication/serializers.py:61
+msgid "Password must contain at least one digit"
+msgstr "पासवर्डमा कम्तीमा एउटा अंक हुनुपर्छ"
+
+#: authentication/views.py:57
+#, python-brace-format
+msgid "Welcome on board {username}!"
+msgstr "स्वागतम्, {username}!"
+
+#: chat/views.py:26
+msgid "No conversations found"
+msgstr "कुनै कुराकानी फेला परेन"
+
+#: chat/views.py:30
+msgid "Conversations loaded successfully"
+msgstr "कुराकानी सफलतापूर्वक लोड गरियो"
+
+#: chat/views.py:44
+msgid "Conversation not found"
+msgstr "कुराकानी फेला परेन"
+
+#: chat/views.py:48
+msgid "You are not a member of this conversation"
+msgstr "तपाईं यस कुराकानीको सदस्य होइन"
+
+#: chat/views.py:58
+msgid "Messages loaded successfully"
+msgstr "सन्देशहरू सफलतापूर्वक लोड गरियो"
+
+#: core/base_views.py:24
+msgid "User is not authenticated"
+msgstr "प्रयोगकर्ता प्रमाणित गरिएको छैन"
+
+#: core/decorators.py:17
+msgid "Object"
+msgstr "वस्तु"
+
+#: core/decorators.py:18
+#, python-brace-format
+msgid "{model_name} entry not found"
+msgstr "{model_name} प्रविष्टि फेला परेन"
+
+#: core/decorators.py:21
+#, python-brace-format
+msgid "An unexpected error occurred: {error}"
+msgstr "अप्रत्याशित त्रुटि आयो: {error}"
+
+#: user/exceptions.py:7
+msgid "Validation failed"
+msgstr "प्रमाणीकरण असफल भयो"
+
+#: user/exceptions.py:16
+msgid "A blocking condition has been detected."
+msgstr "अवरोध स्थिति पत्ता लाग्यो।"
+
+#: user/exceptions.py:25
+msgid "A relationship error has been detected."
+msgstr "सम्बन्ध त्रुटि पत्ता लाग्यो।"
+
+#: user/models.py:47
+msgid "A relationship between these two users already exists."
+msgstr "यी दुई प्रयोगकर्ताहरूबीचको सम्बन्ध पहिले नै अवस्थित छ।"
+
+#: user/utils_img.py:96
+msgid "File type not supported"
+msgstr "फाइल प्रकार समर्थित छैन"
+
+#: user/utils_img.py:102
+msgid "Error opening image"
+msgstr "तस्बिर खोल्दा त्रुटि"
+
+#: user/utils_img.py:108
+msgid "Error resizing image"
+msgstr "तस्बिरको आकार परिवर्तन गर्दा त्रुटि"
+
+#: user/utils_img.py:114
+msgid "Error applying vintage filter"
+msgstr "विन्टेज फिल्टर लागू गर्दा त्रुटि"
+
+#: user/utils_img.py:120
+msgid "Error adding frame to image"
+msgstr "तस्बिरमा फ्रेम थप्दा त्रुटि"
+
+#: user/utils_img.py:131
+msgid "Error saving image"
+msgstr "तस्बिर सुरक्षित गर्दा त्रुटि"
+
+#: user/views.py:24
+msgid "User profile loaded"
+msgstr "प्रयोगकर्ता प्रोफाइल लोड गरियो"
+
+#: user/views.py:54
+msgid "Friend request sent"
+msgstr "साथी अनुरोध पठाइयो"
+
+#: user/views.py:57
+msgid "User blocked"
+msgstr "प्रयोगकर्ता ब्लक गरियो"
+
+#: user/views.py:67
+msgid "Friend request accepted"
+msgstr "साथी अनुरोध स्वीकार गरियो"
+
+#: user/views.py:77
+msgid "Friend request cancelled"
+msgstr "साथी अनुरोध रद्द गरियो"
+
+#: user/views.py:80
+msgid "Friend request rejected"
+msgstr "साथी अनुरोध अस्वीकार गरियो"
+
+#: user/views.py:83
+msgid "Friend removed"
+msgstr "साथी हटाइयो"
+
+#: user/views.py:86
+msgid "User unblocked"
+msgstr "प्रयोगकर्ता अनब्लक गरियो"
+
+#: user/views.py:100
+msgid "key 'action' must be provided!"
+msgstr "कुञ्जी 'action' उपलब्ध गराउनुपर्छ!"
+
+#: user/views.py:104
+msgid "key 'target_id' must be provided!"
+msgstr "कुञ्जी 'target_id' उपलब्ध गराउनुपर्छ!"
+
+#: user/views.py:107
+msgid "user with 'target_id' not found"
+msgstr "'target_id' भएको प्रयोगकर्ता फेला परेन"
+
+#: user/views.py:109
+msgid "cannot perform action on yourself"
+msgstr "आफैँमा कार्य गर्न सकिँदैन"
+
+#: user/views.py:114
+#, python-brace-format
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+"अवैध कार्य! विधिका लागि: {request_method}. यी मात्र कार्यहरू अनुमति छन्: "
+"{allowed_actions}"
+
+#: user/views.py:124
+msgid "You have been blocked by this user"
+msgstr "तपाईंलाई यस प्रयोगकर्ताले ब्लक गरेका छन्"
+
+#: user/views.py:126 user/views.py:146
+msgid "You are already friends with this user"
+msgstr "तपाईं यस प्रयोगकर्ताका साथी पहिले नै हुनुहुन्छ"
+
+#: user/views.py:128
+msgid "Friend request is already pending"
+msgstr "साथी अनुरोध पहिले नै प्रक्रियामा छ"
+
+#: user/views.py:135
+msgid "Try harder...LOL"
+msgstr "अझ प्रयास गर्नुहोस्...LOL"
+
+#: user/views.py:137 user/views.py:180
+msgid "Computer says no"
+msgstr "कम्प्युटरले भन्यो 'होइन'"
+
+#: user/views.py:139
+msgid "You have already blocked this user"
+msgstr "तपाईंले यस प्रयोगकर्तालाई पहिले नै ब्लक गर्नुभएको छ"
+
+#: user/views.py:151 user/views.py:163 user/views.py:174
+msgid "Friend request not found"
+msgstr "साथी अनुरोध फेला परेन"
+
+#: user/views.py:158 user/views.py:169
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+"तपाईं यस प्रयोगकर्ताका साथी पहिले नै हुनुहुन्छ। सट्टामा उनीहरूलाई साथीको रूपमा हटाउन "
+"आवश्यक छ।"
+
+#: user/views.py:188
+msgid "You are not friends with this user"
+msgstr "तपाईं यस प्रयोगकर्ताका साथी हुनुहुन्न"
+
+#: user/views.py:197
+msgid "You have not blocked this user"
+msgstr "तपाईंले यस प्रयोगकर्तालाई ब्लक गर्नुभएको छैन"
+
+#: user/views.py:206
+msgid "Friends list of user"
+msgstr "प्रयोगकर्ताको साथीहरूको सूची"
+
+#: user/views.py:212
+msgid "key 'avatar' must be provided!"
+msgstr "कुञ्जी 'avatar' उपलब्ध गराउनुपर्छ!"
+
+#: user/views.py:215
+msgid "Avatar updated"
+msgstr "अवतार अद्यावधिक गरियो"
+
+#: user/views.py:231
+msgid ""
+"All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
+msgstr ""
+"सबै कुञ्जीहरू ('username', 'firstName', 'lastName', 'language') उपलब्ध गराउनुपर्छ!"
+
+#: user/views.py:242
+msgid "Invalid / unsupported language code"
+msgstr "अवैध / असमर्थित भाषा कोड"
+
+#: user/views.py:254
+msgid "User info updated"
+msgstr "प्रयोगकर्ता जानकारी अद्यावधिक गरियो"
+
+#, python-brace-format
+#~ msgid "Error during user registration: {error}"
+#~ msgstr "प्रयोगकर्ता दर्ता गर्दा त्रुटि: {error}"
