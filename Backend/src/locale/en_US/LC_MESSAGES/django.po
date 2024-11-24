@@ -1,0 +1,252 @@
+# BARELY A TRANSLATION
+# Copyright (C) barelyatranscendence gang
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR theoverloard@ahok.cool, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-11-18 20:40+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: authentication/serializers.py:40
+msgid "Username cannot be empty"
+msgstr ""
+
+#: authentication/serializers.py:43 user/views.py:237
+#, python-brace-format
+msgid "Username '{username}' already exists"
+msgstr ""
+
+#: authentication/serializers.py:49
+msgid "Password cannot be empty"
+msgstr ""
+
+#: authentication/serializers.py:52
+msgid "Password must be at least 6 characters long"
+msgstr ""
+
+#: authentication/serializers.py:55
+msgid "Password must contain at least one lowercase character"
+msgstr ""
+
+#: authentication/serializers.py:58
+msgid "Password must contain at least one uppercase character"
+msgstr ""
+
+#: authentication/serializers.py:61
+msgid "Password must contain at least one digit"
+msgstr ""
+
+#: authentication/views.py:57
+#, python-brace-format
+msgid "Welcome on board {username}!"
+msgstr ""
+
+#: chat/views.py:26
+msgid "No conversations found"
+msgstr ""
+
+#: chat/views.py:30
+msgid "Conversations loaded successfully"
+msgstr ""
+
+#: chat/views.py:44
+msgid "Conversation not found"
+msgstr ""
+
+#: chat/views.py:48
+msgid "You are not a member of this conversation"
+msgstr ""
+
+#: chat/views.py:58
+msgid "Messages loaded successfully"
+msgstr ""
+
+#: core/base_views.py:24
+msgid "User is not authenticated"
+msgstr ""
+
+#: core/decorators.py:17
+msgid "Object"
+msgstr ""
+
+#: core/decorators.py:18
+#, python-brace-format
+msgid "{model_name} entry not found"
+msgstr ""
+
+#: core/decorators.py:21
+#, python-brace-format
+msgid "An unexpected error occurred: {error}"
+msgstr ""
+
+#: user/exceptions.py:7
+msgid "Validation failed"
+msgstr ""
+
+#: user/exceptions.py:16
+msgid "A blocking condition has been detected."
+msgstr ""
+
+#: user/exceptions.py:25
+msgid "A relationship error has been detected."
+msgstr ""
+
+#: user/models.py:47
+msgid "A relationship between these two users already exists."
+msgstr ""
+
+#: user/utils_img.py:96
+msgid "File type not supported"
+msgstr ""
+
+#: user/utils_img.py:102
+msgid "Error opening image"
+msgstr ""
+
+#: user/utils_img.py:108
+msgid "Error resizing image"
+msgstr ""
+
+#: user/utils_img.py:114
+msgid "Error applying vintage filter"
+msgstr ""
+
+#: user/utils_img.py:120
+msgid "Error adding frame to image"
+msgstr ""
+
+#: user/utils_img.py:131
+msgid "Error saving image"
+msgstr ""
+
+#: user/views.py:24
+msgid "User profile loaded"
+msgstr ""
+
+#: user/views.py:54
+msgid "Friend request sent"
+msgstr ""
+
+#: user/views.py:57
+msgid "User blocked"
+msgstr ""
+
+#: user/views.py:67
+msgid "Friend request accepted"
+msgstr ""
+
+#: user/views.py:77
+msgid "Friend request cancelled"
+msgstr ""
+
+#: user/views.py:80
+msgid "Friend request rejected"
+msgstr ""
+
+#: user/views.py:83
+msgid "Friend removed"
+msgstr ""
+
+#: user/views.py:86
+msgid "User unblocked"
+msgstr ""
+
+#: user/views.py:100
+msgid "key 'action' must be provided!"
+msgstr ""
+
+#: user/views.py:104
+msgid "key 'target_id' must be provided!"
+msgstr ""
+
+#: user/views.py:107
+msgid "user with 'target_id' not found"
+msgstr ""
+
+#: user/views.py:109
+msgid "cannot perform action on yourself"
+msgstr ""
+
+#: user/views.py:114
+#, python-brace-format
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+
+#: user/views.py:124
+msgid "You have been blocked by this user"
+msgstr ""
+
+#: user/views.py:126 user/views.py:146
+msgid "You are already friends with this user"
+msgstr ""
+
+#: user/views.py:128
+msgid "Friend request is already pending"
+msgstr ""
+
+#: user/views.py:135
+msgid "Try harder...LOL"
+msgstr ""
+
+#: user/views.py:137 user/views.py:180
+msgid "Computer says no"
+msgstr ""
+
+#: user/views.py:139
+msgid "You have already blocked this user"
+msgstr ""
+
+#: user/views.py:151 user/views.py:163 user/views.py:174
+msgid "Friend request not found"
+msgstr ""
+
+#: user/views.py:158 user/views.py:169
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+
+#: user/views.py:188
+msgid "You are not friends with this user"
+msgstr ""
+
+#: user/views.py:197
+msgid "You have not blocked this user"
+msgstr ""
+
+#: user/views.py:206
+msgid "Friends list of user"
+msgstr ""
+
+#: user/views.py:212
+msgid "key 'avatar' must be provided!"
+msgstr ""
+
+#: user/views.py:215
+msgid "Avatar updated"
+msgstr ""
+
+#: user/views.py:231
+msgid ""
+"All keys ('username', 'firstName', 'lastName', 'language') must be provided!"
+msgstr ""
+
+#: user/views.py:242
+msgid "Invalid / unsupported language code"
+msgstr ""
+
+#: user/views.py:254
+msgid "User info updated"
+msgstr ""

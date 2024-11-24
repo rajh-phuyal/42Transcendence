@@ -1,4 +1,5 @@
 import $auth from '../auth/authentication.js';
+import $nav from '../abstracts/navigationInit.js';
 import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
@@ -177,7 +178,7 @@ class AuthCard extends HTMLElement {
         const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
-            console.log("auth response:", response);
+            $store.initializer();
 
 			// Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
@@ -189,6 +190,9 @@ class AuthCard extends HTMLElement {
                 id: response.userId,
                 username: response.username
             });
+
+            // reinitializes the nav bar
+            $nav();
 
 			// Connect to WebSocket with the new token
 			WebSocketManager.connect(response.access);
