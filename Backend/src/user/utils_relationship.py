@@ -2,9 +2,8 @@ import os
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.conf import settings
-from rest_framework.response import Response
-from .models import IsCoolWith, NoCoolWith, CoolStatus
-from .exceptions import BlockingException
+from user.models import IsCoolWith, NoCoolWith, CoolStatus
+from user.exceptions import BlockingException
 
 def is_blocking(doer, target):
     return NoCoolWith.objects.filter(blocker=doer, blocked=target).exists()
