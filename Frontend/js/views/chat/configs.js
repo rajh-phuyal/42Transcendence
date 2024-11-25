@@ -151,10 +151,12 @@ export default {
         // },
         },
         
+        
+
         createConversationCard(element) {
             const conversation = document.createElement("div");
             conversation.className = "chat-view-conversation-card";
-            conversation.setAttribute("user_id", element.converationId);
+            conversation.setAttribute("conversation_id", element.converationId);
             conversation.setAttribute("last-message-time", element.lastUpdate);
             
             // Avatar
@@ -173,15 +175,19 @@ export default {
         },
 
         async populateConversations() {
-            let result;
-            const fetched = await fetch(`../js/views/chat/test.json`)
+            call('chat/load/conversations/', 'GET').then(data => {
+                console.log("data:", data);
+                if (!data.data)
+                {
+                    this.domManip.$id("chat-view-conversations-no-converations-found").textContent = data.message;
+                    return ;
+                }
+                console.log("result:", data);
+                
+                for (let element of data.data)
+                    this.createConversationCard(element);
+            })
             
-            result = await fetched.json();
-
-            console.log("result:", result);
-
-            for (let element of result)
-                this.createConversationCard(element);
         },
 
         sortMessagesByTimestamp() {

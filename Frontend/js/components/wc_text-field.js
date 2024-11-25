@@ -1,3 +1,6 @@
+import { createMessage } from '../views/chat/methods.js';
+import { $id } from '../abstracts/dollars.js'
+
 class TextField extends HTMLElement {
     constructor() {
         super();
@@ -24,6 +27,30 @@ class TextField extends HTMLElement {
         inputElement.value = '';
     }
 
+    createTimestamp() {
+        const date = new Date(); // Current date and time in local timezone
+    
+        // Extract date components
+        const year = date.getUTCFullYear();
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+        const day = date.getUTCDate().toString().padStart(2, '0');
+    
+        // Extract time components
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+    
+        // Extract milliseconds and pad to 6 digits (convert to microseconds)
+        const milliseconds = date.getUTCMilliseconds().toString().padStart(3, '0');
+        const microseconds = `${milliseconds}000`;
+    
+        // UTC offset
+        const utcOffset = "+00"; // Always UTC
+    
+        // Combine components into the desired format
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${microseconds}${utcOffset}`;
+    }
+
     handleKeyPress(event){
 
         if (event.key !== 'Enter' || event.shiftKey)
@@ -31,7 +58,10 @@ class TextField extends HTMLElement {
         event.preventDefault();
         const inputElement = event.target;
         const value = inputElement.value;
-        console.log("input value:", value);
+        console.log("input value:", value); // ...............................
+
+        const container = $id("chat-view-messages-container");
+        container.prepend(createMessage({"content": value, "createdAt": this.createTimestamp()}, true))
 
         if (this.clear){
             inputElement.value = '';
@@ -121,7 +151,7 @@ class TextField extends HTMLElement {
                 }
             </style>
             <div id="main-container">
-                <textarea id="text-field" type="search" maxlength="250" placeholder="${this.placeholder || 'Search...'}"></textarea>
+                <textarea id="text-field" type="search" maxlength="2000" placeholder="${this.placeholder || 'Search...'}"></textarea>
                 <button id="textFieldButton">Send</button>
             </div>
         `;

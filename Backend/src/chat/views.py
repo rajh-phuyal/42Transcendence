@@ -7,6 +7,7 @@ from chat.serializers import ConversationSerializer, ConversationMemberSerialize
 from django.utils.translation import gettext as _, activate
 import logging
 from core.decorators import barely_handle_exceptions
+from rest_framework import status
 
 class LoadUnreadMessagesView(BaseAuthenticatedView):
     ...
@@ -25,7 +26,7 @@ class LoadConversationsView(BaseAuthenticatedView):
         # Serialize only the conversation id and name
         serializer = ConversationSerializer(conversations, many=True, context={'request': request})
         if not serializer.data or len(serializer.data) == 0:
-            return success_response(_('No conversations found'))
+            return success_response(_('No conversations found'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
 class LoadConversationView(BaseAuthenticatedView):

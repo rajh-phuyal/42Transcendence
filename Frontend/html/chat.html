@@ -7,6 +7,7 @@
     <h2 style="color: white;">chat room</h2>
     <input id="chat-view-searchbar" placeholder="search..." type="text">
     <div id="chat-view-conversations-container">
+      <span id="chat-view-conversations-no-converations-found"></span>
 
       <!-- <div class="chat-view-conversation-card">
         <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
@@ -70,7 +71,7 @@
         <div class="chat-view-messages-message-box">
           Os Lusíadas é uma obra de poesia épica do escritor português Luís Vaz de Camões, a primeira epopeia portuguesa publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, foi publicada em Lisboa em 12 de março de 1572,[1][2] no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso do autor do Oriente, via Moçambique. 
         </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
+        <span class="chat-view-messages-message-time-stamp">5:03pm 12-07-1956</span>
       </div>
       <!-- . -->
       <div class="chat-view-sent-message-container">
@@ -140,7 +141,7 @@
     </div>
     <!-- Text field -->
     <div id="chat-view-text-field-container">
-      <text-field id="chat-view-text-field" width="96" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
+      <text-field id="chat-view-text-field" width="96" clear="true" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
     </div>
   </div>
     
@@ -173,6 +174,15 @@
     align-self: center;
     border:  3px solid  black;
     background-color: #EFE7D3;
+  }
+
+  .chat-view-conversation-card:hover {
+    background-color: #DFD7C3;
+    cursor: pointer;
+  }
+  .chat-view-conversation-card:active {
+    background-color: #CFC7B3;
+    cursor: pointer;
   }
   
   .chat-view-conversation-card-avatar {

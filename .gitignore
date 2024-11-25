@@ -5,6 +5,7 @@ Environments/*
 
 # Localizations / Translations
 *.mo
+*.po
 
 # Logs
 Logs/*

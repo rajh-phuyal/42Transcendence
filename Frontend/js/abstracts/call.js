@@ -45,7 +45,7 @@ async function call(url, method, data) {
         throw new Error(errorMessage);
     }
 
-
+    console.log("response:", response)
     
     return await response.json();
 }
