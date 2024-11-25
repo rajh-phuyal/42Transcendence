@@ -7,6 +7,7 @@ from chat.serializers import ConversationSerializer, ConversationMemberSerialize
 from django.utils.translation import gettext as _, activate
 import logging
 from core.decorators import barely_handle_exceptions
+from django.utils import timezone
 
 class LoadUnreadMessagesView(BaseAuthenticatedView):
     ...
@@ -46,8 +47,14 @@ class LoadConversationView(BaseAuthenticatedView):
         if not conversation.members.filter(user=user).exists():
             return error_response(_('You are not a member of this conversation'), status_code=403)
 
-        # Get the last 10 messages from the conversation, ordered by creation time
-        messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:10]
+        # Update the seen_at value for all messages of this chat
+        new_messages = Message.objects.filter(conversation=conversation, seen_at__isnull=True).exclude(sender__id=user.id)
+        for message in new_messages:
+            message.seen_at = timezone.now()
+            message.save()
+
+        # Get the last 20 messages from the conversation, ordered by creation time
+        messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:20]
 
         # TODO:
 		# change from get to put since we need to update the seen_at value here!
