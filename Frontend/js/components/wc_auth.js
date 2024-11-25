@@ -5,6 +5,7 @@ import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
+import $callToast from '../abstracts/callToast.js';
 
 // TODO put the css styling in a css file (for all web components)
 
@@ -148,7 +149,7 @@ class AuthCard extends HTMLElement {
 				break ;
 		}
 		if (errorMsg.length != 0) {
-			window.alert(errorMsg); // TODO Change to toast system
+			$callToast("error", errorMsg);
 		}
 		return (errorMsg.length != 0);
 	}
