@@ -14,7 +14,7 @@ function formatTimestamp(timestamp) {
     const year = date.getFullYear();
 
     // Return formatted string
-    return `${hours}:${minutes}${ampm} ${month}-${day}-${year}`;
+    return `${hours}:${minutes}${ampm} ${day}-${month}-${year}`;
 }
 
 export function createMessage(element, send) {
