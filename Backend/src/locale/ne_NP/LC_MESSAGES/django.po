@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 20:40+0000\n"
+"POT-Creation-Date: 2024-11-25 17:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,23 +51,19 @@ msgstr "पासवर्डमा कम्तीमा एउटा अंक
 msgid "Welcome on board {username}!"
 msgstr "स्वागतम्, {username}!"
 
-#: chat/views.py:26
+#: chat/views.py:27
 msgid "No conversations found"
 msgstr "कुनै कुराकानी फेला परेन"
 
-#: chat/views.py:30
+#: chat/views.py:31
 msgid "Conversations loaded successfully"
 msgstr "कुराकानी सफलतापूर्वक लोड गरियो"
 
-#: chat/views.py:44
-msgid "Conversation not found"
-msgstr "कुराकानी फेला परेन"
-
-#: chat/views.py:48
+#: chat/views.py:47
 msgid "You are not a member of this conversation"
 msgstr "तपाईं यस कुराकानीको सदस्य होइन"
 
-#: chat/views.py:58
+#: chat/views.py:57
 msgid "Messages loaded successfully"
 msgstr "सन्देशहरू सफलतापूर्वक लोड गरियो"
 
@@ -75,16 +71,16 @@ msgstr "सन्देशहरू सफलतापूर्वक लोड 
 msgid "User is not authenticated"
 msgstr "प्रयोगकर्ता प्रमाणित गरिएको छैन"
 
-#: core/decorators.py:17
+#: core/decorators.py:19
 msgid "Object"
 msgstr "वस्तु"
 
-#: core/decorators.py:18
+#: core/decorators.py:20
 #, python-brace-format
 msgid "{model_name} entry not found"
 msgstr "{model_name} प्रविष्टि फेला परेन"
 
-#: core/decorators.py:21
+#: core/decorators.py:23
 #, python-brace-format
 msgid "An unexpected error occurred: {error}"
 msgstr "अप्रत्याशित त्रुटि आयो: {error}"
@@ -252,9 +248,12 @@ msgstr ""
 msgid "Invalid / unsupported language code"
 msgstr "अवैध / असमर्थित भाषा कोड"
 
-#: user/views.py:254
+#: user/views.py:257
 msgid "User info updated"
 msgstr "प्रयोगकर्ता जानकारी अद्यावधिक गरियो"
+
+#~ msgid "Conversation not found"
+#~ msgstr "कुराकानी फेला परेन"
 
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
