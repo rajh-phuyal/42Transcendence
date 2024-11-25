@@ -1,3 +1,5 @@
+import { translate } from '../locale/locale.js'
+
 class TextField extends HTMLElement {
     constructor() {
         super();
@@ -121,7 +123,7 @@ class TextField extends HTMLElement {
                 }
             </style>
             <div id="main-container">
-                <textarea id="text-field" type="search" maxlength="250" placeholder="${this.placeholder || 'Search...'}"></textarea>
+                <textarea id="text-field" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
                 <button id="textFieldButton">Send</button>
             </div>
         `;
