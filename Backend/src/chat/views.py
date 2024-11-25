@@ -23,12 +23,10 @@ class LoadConversationsView(BaseAuthenticatedView):
         conversation_memberships = ConversationMember.objects.filter(user=user)
         conversations = [membership.conversation for membership in conversation_memberships]
 
-		# If there are no conversations,
-        if not conversations:
-            return error_response(_('No conversations found'), status_code=404)
-
         # Serialize only the conversation id and name
-        serializer = ConversationSerializer(conversations, many=True)
+        serializer = ConversationSerializer(conversations, many=True, context={'request': request})
+        if not serializer.data or len(serializer.data) == 0:
+            return success_response(_('No conversations found'))
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
 class LoadConversationView(BaseAuthenticatedView):

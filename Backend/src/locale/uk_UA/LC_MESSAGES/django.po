@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 20:40+0000\n"
+"POT-Creation-Date: 2024-11-25 12:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,23 +51,23 @@ msgstr "Пароль повинен містити принаймні одну �
 msgid "Welcome on board {username}!"
 msgstr "Ласкаво просимо на борт, {username}!"
 
-#: chat/views.py:26
+#: chat/serializers.py:48
+msgid "top secret"
+msgstr ""
+
+#: chat/views.py:28
 msgid "No conversations found"
 msgstr "Розмови не знайдено"
 
-#: chat/views.py:30
+#: chat/views.py:29
 msgid "Conversations loaded successfully"
 msgstr "Розмови успішно завантажені"
 
-#: chat/views.py:44
-msgid "Conversation not found"
-msgstr "Розмову не знайдено"
-
-#: chat/views.py:48
+#: chat/views.py:45
 msgid "You are not a member of this conversation"
 msgstr "Ви не є учасником цієї розмови"
 
-#: chat/views.py:58
+#: chat/views.py:55
 msgid "Messages loaded successfully"
 msgstr "Повідомлення успішно завантажені"
 
@@ -75,16 +75,16 @@ msgstr "Повідомлення успішно завантажені"
 msgid "User is not authenticated"
 msgstr "Користувач не автентифікований"
 
-#: core/decorators.py:17
+#: core/decorators.py:19
 msgid "Object"
 msgstr "Об'єкт"
 
-#: core/decorators.py:18
+#: core/decorators.py:20
 #, python-brace-format
 msgid "{model_name} entry not found"
 msgstr "Запис {model_name} не знайдено"
 
-#: core/decorators.py:21
+#: core/decorators.py:23
 #, python-brace-format
 msgid "An unexpected error occurred: {error}"
 msgstr "Виникла несподівана помилка: {error}"
@@ -101,7 +101,7 @@ msgstr "Виявлено блокуючу умову"
 msgid "A relationship error has been detected."
 msgstr "Виявлено помилку у відносинах"
 
-#: user/models.py:47
+#: user/models.py:48
 msgid "A relationship between these two users already exists."
 msgstr "Відносини між цими двома користувачами вже існують"
 
@@ -252,9 +252,12 @@ msgstr ""
 msgid "Invalid / unsupported language code"
 msgstr "Недійсний / непідтримуваний код мови"
 
-#: user/views.py:254
+#: user/views.py:257
 msgid "User info updated"
 msgstr "Інформація про користувача оновлена"
+
+#~ msgid "Conversation not found"
+#~ msgstr "Розмову не знайдено"
 
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
