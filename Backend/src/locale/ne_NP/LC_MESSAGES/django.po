@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 12:23+0000\n"
+"POT-Creation-Date: 2024-11-25 21:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,23 +51,23 @@ msgstr "पासवर्डमा कम्तीमा एउटा अंक
 msgid "Welcome on board {username}!"
 msgstr "स्वागतम्, {username}!"
 
-#: chat/serializers.py:48
+#: chat/serializers.py:44
 msgid "top secret"
 msgstr ""
 
-#: chat/views.py:28
+#: chat/views.py:29
 msgid "No conversations found"
 msgstr "कुनै कुराकानी फेला परेन"
 
-#: chat/views.py:29
+#: chat/views.py:30
 msgid "Conversations loaded successfully"
 msgstr "कुराकानी सफलतापूर्वक लोड गरियो"
 
-#: chat/views.py:45
+#: chat/views.py:46
 msgid "You are not a member of this conversation"
 msgstr "तपाईं यस कुराकानीको सदस्य होइन"
 
-#: chat/views.py:55
+#: chat/views.py:56
 msgid "Messages loaded successfully"
 msgstr "सन्देशहरू सफलतापूर्वक लोड गरियो"
 

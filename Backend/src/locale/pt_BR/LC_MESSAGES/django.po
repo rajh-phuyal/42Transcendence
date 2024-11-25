@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 12:23+0000\n"
+"POT-Creation-Date: 2024-11-25 21:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,23 +52,23 @@ msgstr "A senha deve conter pelo menos um dígito"
 msgid "Welcome on board {username}!"
 msgstr "Bem-vindo(a) a bordo, {username}!"
 
-#: chat/serializers.py:48
+#: chat/serializers.py:44
 msgid "top secret"
 msgstr ""
 
-#: chat/views.py:28
+#: chat/views.py:29
 msgid "No conversations found"
 msgstr "Nenhuma conversa encontrada"
 
-#: chat/views.py:29
+#: chat/views.py:30
 msgid "Conversations loaded successfully"
 msgstr "Conversas carregadas com sucesso"
 
-#: chat/views.py:45
+#: chat/views.py:46
 msgid "You are not a member of this conversation"
 msgstr "Você não é membro desta conversa"
 
-#: chat/views.py:55
+#: chat/views.py:56
 msgid "Messages loaded successfully"
 msgstr "Mensagens carregadas com sucesso"
 

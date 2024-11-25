@@ -11,7 +11,7 @@ Environments/*
 Logs/*
 **/*.log
 
-# Translations
+# Translation
 *.mo
 
 # Database files
