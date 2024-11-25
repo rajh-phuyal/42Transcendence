@@ -274,6 +274,9 @@ export default {
         },
 
         submitNewPassword() {
+
+            // TODO: Need to implement password change
+
             const oldPassword = this.domManip.$id("edit-profile-modal-password-change-input-old-password").value;
             const newPassword = this.domManip.$id("edit-profile-modal-password-change-input-new-password").value;
             const repeatPassword = this.domManip.$id("edit-profile-modal-password-change-input-repeat-password").value;

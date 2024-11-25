@@ -1,4 +1,5 @@
 import call from '../../abstracts/call.js'
+import { translate } from '../../locale/locale.js'
 
 export default {
     attributes: {
@@ -8,6 +9,16 @@ export default {
         messages: [], // Messages of the active conversation
 
         conversationsContainer: undefined,
+        conversations: [],
+        conversationParams: {
+            id: undefined,
+            name: undefined,
+            avatar: undefined,
+            lastMessageId: undefined,
+            online: false,
+            isTournament: false,
+            usersIds: [],
+        }
     },
 
     methods: {
@@ -150,13 +161,50 @@ export default {
         //     }
         // },
         },
+
+        populateConversationHeader() {
+            let title;
+
+            // 
+            if (this.conversationParams.isTournament)
+                title = translate("chat", "group");
+            else
+                title = translate("chat", "subject");
+            this.domManip.$id("chat-view-header-subject").textContent = title + this.conversationParams.name;
+
+            if (this.conversationParams.online)
+                this.domManip.id("chat-view-header-online-icon").src = "../assets/onlineIcon.png";
+            else
+                this.domManip.id("chat-view-header-online-icon").src = "../assets/offlineIcon.png";
+            this.domManip.id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + this.conversationParams.avatar;
+        },
+
+        populateConversationMessages(data) {
+            
+            const container = $id("chat-view-messages-container");
+            
+            for (element of data) 
+                container.appendChildrepend(createMessage(element, false));
+        },
         
-        
+        loadConversation(event) {
+            let element = event.srcElement.getAttribute("conversation_id");
+
+            if (!element)
+                event.srcElement.parentElement.getAttribute("conversation_id");
+
+            // Call the API here
+
+            this.populateConversationHeader();
+            this.populateConversationMessages();
+        },
 
         createConversationCard(element) {
             const conversation = document.createElement("div");
+            this.conversation.push(element.conversationId);
             conversation.className = "chat-view-conversation-card";
-            conversation.setAttribute("conversation_id", element.converationId);
+            conversation.id = "chat-view-conversation-card-" +  element.conversationId; 
+            conversation.setAttribute("conversation_id", element.conversationId);
             conversation.setAttribute("last-message-time", element.lastUpdate);
             
             // Avatar
@@ -172,6 +220,8 @@ export default {
             conversation.appendChild(user);
 
             this.conversationsContainer.appendChild(conversation);
+
+            this.domManip.$on(conversation, "click", this.loadConversation);
         },
 
         async populateConversations() {
@@ -179,7 +229,7 @@ export default {
                 console.log("data:", data);
                 if (!data.data)
                 {
-                    this.domManip.$id("chat-view-conversations-no-converations-found").textContent = data.message;
+                    this.domManip.$id("chat-view-conversations-no-conversations-found").textContent = data.message;
                     return ;
                 }
                 console.log("result:", data);
@@ -188,6 +238,11 @@ export default {
                     this.createConversationCard(element);
             })
             
+        },
+
+        removeConversationsEventListners() {
+            for (element of this.conversations)
+                this.domManip.$off("chat-view-conversation-card-" +  element, "click", this.loadConversation)
         },
 
         sortMessagesByTimestamp() {
@@ -221,6 +276,9 @@ export default {
             this.conversations = [];
             this.selectedConversation = null;
             //this.messages = [];
+
+
+            this.removeConversationsEventListners();
         },
 
         beforeDomInsertion() {

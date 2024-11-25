@@ -6,5 +6,21 @@
         "de-DE": "",
         "uk-UA": "",
         "ne-NP": ""
+    },
+    "group": {
+        "en-US": "group: ",
+        "pt-PT": "grupo: ",
+        "pt-BR": "grupo: ",
+        "de-DE": "Gruppe: ",
+        "uk-UA": "група: ",
+        "ne-NP": "समूह: "
+    },
+    "subject": {
+        "en-US": "Subject: ",
+        "pt-PT": "Sujeito: ",
+        "pt-BR": "Sujeito: ",
+        "de-DE": "Betreff: ",
+        "uk-UA": "Тема: ",
+        "ne-NP": "विषय: "
     }
 }

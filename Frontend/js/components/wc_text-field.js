@@ -61,7 +61,7 @@ class TextField extends HTMLElement {
         console.log("input value:", value); // ...............................
 
         const container = $id("chat-view-messages-container");
-        container.prepend(createMessage({"content": value, "createdAt": this.createTimestamp()}, true))
+        container.prepend(createMessage({"content": value, "createdAt": this.createTimestamp()}, true));
 
         if (this.clear){
             inputElement.value = '';
