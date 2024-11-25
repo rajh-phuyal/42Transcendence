@@ -8,6 +8,10 @@ from django.utils.translation import gettext as _, activate
 import logging
 from core.decorators import barely_handle_exceptions
 from django.utils import timezone
+from .utils import mark_all_messages_as_seen
+from core.exceptions import BarelyAnException
+from rest_framework import status
+from user.utils_relationships import is_blocked
 
 class LoadUnreadMessagesView(BaseAuthenticatedView):
     ...
@@ -32,6 +36,58 @@ class LoadConversationsView(BaseAuthenticatedView):
 class LoadConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request, conversation_id=None):
+        user = request.user
+        offset = int(request.GET.get('offset', 0))
+        limit = 20
+
+        try:
+            conversation = Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
+            raise BarelyAnException(_('Conversation not found'), status_code=status.HTTP_404_NOT_FOUND)
+        
+        # Ensure the user is part of the conversation
+        if not conversation.members.filter(user=user).exists():
+            raise BarelyAnException(_('You are not a member of this conversation'), status_code=status.HTTP_403_FORBIDDEN)
+
+        # Determine if the conversation is blocked
+        is_blocked = is_blocked(user, target=conversation_id)
+        serializer = None
+        if not is_blocked:
+            # Update seen status for messages
+            mark_all_messages_as_seen(user.id, conversation_id)
+
+            # Get the last messages with pagination
+            messages = Message.objects.filter(conversation=conversation).order_by('-created_at')[offset:offset + limit]
+
+            # Serialize the messages
+            serializer = MessageSerializer(messages, many=True)
+
+        # Fetch additional conversation details
+        members = conversation.members.all()
+        member_ids = members.values_list('userids', flat=True)
+
+        # Prepare the response
+        response = {
+            "conversationId": conversation.id,
+            "isBlocked": is_blocked,
+            "isGroupChat": conversation.is_group_conversation,
+            "isEditable": conversation.is_editable,
+            "conversationName": conversation.name or f'Chat {conversation.id}',
+            "conversationAvatar": f"https://example.com/avatar/conversations/{conversation.id}.png",
+            "unreadCounter": unread_counter,
+            "online": any(member.user.is_online for member in members),  # Adjust based on your user model
+            "userIDs": list(member_ids),
+            "data": serializer.data,
+        }
+
+        return success_response(_('Messages loaded successfully'), data=response)
+
+
+
+
+
+
+
         # Get the user from the request
         user = request.user
 
@@ -46,19 +102,15 @@ class LoadConversationView(BaseAuthenticatedView):
             return error_response(_('You are not a member of this conversation'), status_code=403)
 
         # Update the seen_at value for all messages of this chat
-        new_messages = Message.objects.filter(conversation=conversation, seen_at__isnull=True).exclude(sender__id=user.id)
-        for message in new_messages:
-            message.seen_at = timezone.now()
-            message.save()
+        mark_all_messages_as_seen(user.id, conversation_id)
 
         # Get the last 20 messages from the conversation, ordered by creation time
         messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:20]
 
-        # TODO:
-		# change from get to put since we need to update the seen_at value here!
-
 		# Serialize the messages
-        serializer = MessageSerializer(messages, many=True)
+        serializer = MessageSerializer(messages, many=True, context={'request': request})
+        if not serializer.data or len(serializer.data) == 0:
+            return success_response(_('No messages found'))
         return success_response(_('Messages loaded successfully'), data=serializer.data)
 
 ################################################################################

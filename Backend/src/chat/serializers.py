@@ -6,6 +6,7 @@ from .models import Conversation, Message, ConversationMember
 from .constants import CHAT_AVATAR_GROUP_DEFAULT
 from user.constants import DEFAULT_AVATAR
 from django.utils.translation import gettext as _
+from .utils import get_conversation_name
 class ConversationSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isGroupChat = serializers.BooleanField(source='is_group_conversation')
@@ -29,19 +30,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             'lastUpdate',
         ]
     def get_conversationName(self, obj):
-        if obj.name:
-            return obj.name
-
-        current_user = self.context['request'].user
-        try:
-            other_member = obj.members.exclude(user=current_user).first()
-            if other_member and other_member.user.username:
-                return other_member.user.username
-        except Exception:
-            pass  # If any error occurs, fall through to the fallback
-
-        # Fallback to "Top Secret"
-        return _("top secret")
+        return get_conversation_name(self.context['request'].user, obj)
 
     def get_conversationAvatar(self, obj):
         if obj.is_group_conversation:
@@ -89,6 +78,15 @@ class ConversationMemberSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class MessageSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['id', 'user_id', 'username', 'avatar', 'content', 'created_at', 'seen_at']
+
+    def get_avatar(self, obj):
+        if self.user_id.avatar_path:
+            return self.user_id.avatar_path
+        else:
+            return DEFAULT_AVATAR
