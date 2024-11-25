@@ -205,7 +205,8 @@ class AuthCard extends HTMLElement {
             router("/home");
         })
         .catch(error => {
-            console.error(error);
+			$callToast("error", error.message);
+            // console.error(error);
         })
         .finally(() => {
             // usernameField.value = "";
