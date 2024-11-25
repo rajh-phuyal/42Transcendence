@@ -92,7 +92,7 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         return other_user.avatar_path
 
     def get_status(self, obj):
-        # TODO: Friendship status should from the perspective of the requester
+        # TODO: Friendship status should be from the perspective of the requester
         # 'requester_user_id'
         # 'target_user_id'
         user_id = self.context.get('requester_user_id')

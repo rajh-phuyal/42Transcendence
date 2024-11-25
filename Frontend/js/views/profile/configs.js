@@ -6,7 +6,6 @@ import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
-// import _ from 'lodash'
 
 export default {
     attributes: {
@@ -396,7 +395,7 @@ export default {
                 element = event.srcElement.parentElement.getAttribute("user-id");
             const params = { id: element };
             this.hideModal("friends-list-modal");
-            router(('/profile'),  params);
+            router('/profile',  params);
         },
 
         populateFriendList() {
