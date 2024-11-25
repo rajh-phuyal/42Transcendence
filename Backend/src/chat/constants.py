@@ -1,0 +1,1 @@
+CHAT_AVATAR_GROUP_DEFAULT = 'b1762b2c-3afb-4fd6-9590-53f6abdd2b0e.png'

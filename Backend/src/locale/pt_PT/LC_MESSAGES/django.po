@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 20:40+0000\n"
+"POT-Creation-Date: 2024-11-25 12:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,23 +51,23 @@ msgstr "A palavra-passe deve conter pelo menos um número"
 msgid "Welcome on board {username}!"
 msgstr "Bem-vindo(a) a bordo, {username}!"
 
-#: chat/views.py:26
+#: chat/serializers.py:48
+msgid "top secret"
+msgstr ""
+
+#: chat/views.py:28
 msgid "No conversations found"
 msgstr "Nenhuma conversa encontrada"
 
-#: chat/views.py:30
+#: chat/views.py:29
 msgid "Conversations loaded successfully"
 msgstr "Conversas carregadas com sucesso"
 
-#: chat/views.py:44
-msgid "Conversation not found"
-msgstr "Conversa não encontrada"
-
-#: chat/views.py:48
+#: chat/views.py:45
 msgid "You are not a member of this conversation"
 msgstr "Não é membro desta conversa"
 
-#: chat/views.py:58
+#: chat/views.py:55
 msgid "Messages loaded successfully"
 msgstr "Mensagens carregadas com sucesso"
 
@@ -75,16 +75,16 @@ msgstr "Mensagens carregadas com sucesso"
 msgid "User is not authenticated"
 msgstr "O utilizador não está autenticado"
 
-#: core/decorators.py:17
+#: core/decorators.py:19
 msgid "Object"
 msgstr "Objeto"
 
-#: core/decorators.py:18
+#: core/decorators.py:20
 #, python-brace-format
 msgid "{model_name} entry not found"
 msgstr "Entrada de {model_name} não encontrada"
 
-#: core/decorators.py:21
+#: core/decorators.py:23
 #, python-brace-format
 msgid "An unexpected error occurred: {error}"
 msgstr "Ocorreu um erro inesperado: {error}"
@@ -101,7 +101,7 @@ msgstr "Foi detetada uma condição de bloqueio"
 msgid "A relationship error has been detected."
 msgstr "Foi detetado um erro de relação"
 
-#: user/models.py:47
+#: user/models.py:48
 msgid "A relationship between these two users already exists."
 msgstr "Uma relação entre estes dois utilizadores já existe"
 
@@ -251,9 +251,12 @@ msgstr ""
 msgid "Invalid / unsupported language code"
 msgstr "Código de idioma inválido / não suportado"
 
-#: user/views.py:254
+#: user/views.py:257
 msgid "User info updated"
 msgstr "Informações do utilizador atualizadas"
+
+#~ msgid "Conversation not found"
+#~ msgstr "Conversa não encontrada"
 
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
