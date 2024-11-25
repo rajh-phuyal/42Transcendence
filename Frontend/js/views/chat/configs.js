@@ -154,19 +154,19 @@ export default {
         createConversationCard(element) {
             const conversation = document.createElement("div");
             conversation.className = "chat-view-conversation-card";
-            conversation.setAttribute("user_id", element.id);
-            conversation.setAttribute("last-message-time", element.lastMessageTime);
+            conversation.setAttribute("user_id", element.converationId);
+            conversation.setAttribute("last-message-time", element.lastUpdate);
             
             // Avatar
             const avatar = document.createElement("img");
             avatar.className = "chat-view-conversation-card-avatar";
-            avatar.src = window.origin + '/media/avatars/' + element.avatarUrl;
+            avatar.src = window.origin + '/media/avatars/' + element.conversationAvatar;
             conversation.appendChild(avatar);
 
             // User
             const user = document.createElement("h5");
             user.className = "chat-view-conversation-card-username";
-            user.textContent = element.username;
+            user.textContent = element.conversationName;
             conversation.appendChild(user);
 
             this.conversationsContainer.appendChild(conversation);
