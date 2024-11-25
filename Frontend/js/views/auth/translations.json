@@ -2,29 +2,73 @@
     "loginButton": {
         "en-US": "LOGIN",
         "pt-PT": "ENTRAR",
-        "np-NP": "लगइन गर्नुहोस्",
+        "pt-BR": "ENTRAR",
         "de-DE": "ANMELDEN",
-        "uk-UA": "ВХІД"
+        "uk-UA": "ВХІД",
+        "ne-NP": "लगइन गर्नुहोस्"
     },
     "registerButton": {
         "en-US": "REGISTER",
         "pt-PT": "REGISTAR",
-        "np-NP": "दर्ता गर्नुहोस्",
+        "pt-BR": "REGISTAR",
         "de-DE": "REGISTRIEREN",
-        "uk-UA": "РЕЄСТРАЦІЯ"
+        "uk-UA": "РЕЄСТРАЦІЯ",
+        "ne-NP": "दर्ता गर्नुहोस्"
     },
+	"submitButton": {
+		"en-US": "SUBMIT",
+		"pt-PT": "SUBMETER",
+		"pt-BR": "SUBMETER",
+		"de-DE": "EINREICHEN",
+		"uk-UA": "ПОДАТИ",
+		"ne-NP": "पेश गर्नुहोस्"
+	},
+	"backButton": {
+		"en-US": "BACK",
+		"pt-PT": "VOLTAR",
+		"pt-BR": "VOLTAR",
+		"de-DE": "ZURÜCK",
+		"uk-UA": "НАЗАД",
+		"ne-NP": "फर्किनुहोस्"
+	},
+	"displayPassword": {
+		"en-US": "SHOW",
+		"pt-PT": "MOSTRAR",
+		"pt-BR": "MOSTRAR",
+		"de-DE": "ZEIGEN",
+		"uk-UA": "ПОКАЗАТИ",
+		"ne-NP": "देखाउनुहोस्"
+	},
+	"hidePassword": {
+		"en-US": "HIDE",
+		"pt-PT": "ESCONDER",
+		"pt-BR": "ESCONDER",
+		"de-DE": "VERSTECKEN",
+		"uk-UA": "ПРИХОВАТИ",
+		"ne-NP": "लुकाउनुहोस्"
+	},
     "usernamePlaceholder": {
         "en-US": "username",
         "pt-PT": "nome de utilizador",
-        "np-NP": "प्रयोगकर्ता नाम",
+        "pt-BR": "nome de utilizador",
         "de-DE": "Benutzername",
-        "uk-UA": "ім'я користувача"
+        "uk-UA": "ім'я користувача",
+        "ne-NP": "प्रयोगकर्ता नाम"
     },
     "passwordPlaceholder": {
         "en-US": "password",
         "pt-PT": "senha",
-        "np-NP": "पासवर्ड",
+        "pt-BR": "senha",
         "de-DE": "Passwort",
-        "uk-UA": "пароль"
-    }
+        "uk-UA": "пароль",
+        "ne-NP": "पासवर्ड"
+    },
+	"passwordConfirmationPlaceholder": {
+		"en-US": "confirm password",
+		"pt-PT": "confirmar senha",
+		"pt-BR": "confirmar senha",
+		"de-DE": "Passwort bestätigen",
+		"uk-UA": "підтвердити пароль",
+		"ne-NP": "पासवर्ड पुष्टि गर्नुहोस्"
+	}
 }

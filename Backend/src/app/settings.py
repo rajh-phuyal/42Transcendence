@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 
 	# Custom Apps
     'authentication',
-    'user',
+    'user.apps.UserConfig',
     'chat',
 ]
 
@@ -147,6 +147,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Mulitlang section below:
+# ==============================================================================
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -154,10 +156,26 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = True # [astein:] for internationalization
+USE_L10N = True # [astein:] for localization (formats dates, numbers, etc., based on locale)
+USE_TZ = True	# [astein:] for timezone support
 
-USE_TZ = True
+# Supported languages | NOTE: Django works with lowercase language codes!
+LANGUAGES = [
+    ('en-us', ('English (US)')),            # English (United States)
+    ('pt-pt', ('Portuguese (Portugal)')),   # Portuguese (Portugal)
+    ('pt-br', ('Portuguese (Brazil)')),     # Portuguese (Brazil)
+    ('de-de', ('German (Germany)')),        # German (Germany)
+    ('uk-ua', ('Ukrainian (Ukraine)')),     # Ukrainian (Ukraine)
+    ('ne-np', ('Nepali (Nepal)'))           # Nepali (Nepal)
+]
 
+# Path for Locale Files
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Ensure this directory exists
+]
+
+# ==============================================================================
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

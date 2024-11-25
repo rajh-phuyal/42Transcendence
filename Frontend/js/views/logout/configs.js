@@ -1,4 +1,5 @@
 import { $id } from "../../abstracts/dollars.js"; //TODO: replace by binder.domManip
+import $callToast from "../../abstracts/callToast.js";
 
 export default {
     attributes: {
@@ -29,10 +30,12 @@ export default {
         afterDomInsertion() {
             this.$auth.logout();
 
+            $callToast("success", 'We would say "see you soon" but we are always watching...');
+            
             // do a countdown to redirect
             const countdown = $id('login-redirect-countdown');
 
-            countdown.textContent = `${5}s`;
+            countdown.textContent = `${2}s`;
 
             this.intervalId = setInterval(() => {
                 const current = _.parseInt(countdown.textContent);
