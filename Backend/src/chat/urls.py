@@ -1,10 +1,5 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from .views import CreateConversationView, RenameConversationView, ShowConversationView, SendMessageView, ListConversationsView, LoadConversationsView, LoadConversationView, LoadUnreadMessagesView
-from . import views
+from chat.views import LoadUnreadMessagesView, LoadConversationsView, LoadConversationView
 
 urlpatterns = [
 	path('count/unread/', LoadUnreadMessagesView.as_view(), name='load_unread_messages'),
@@ -15,14 +10,16 @@ urlpatterns = [
 	# Below is old code!
 ################################################################################
 
-	path('create-conversation/', CreateConversationView.as_view(), name='create_conversation'),
-	path('rename-conversation/', RenameConversationView.as_view(), name='rename_conversation'),
-    path('show-conversation/', ShowConversationView.as_view(), name='show_conversation'),
-    path('send-message/', SendMessageView.as_view(), name='send_message'),
-    path('test/', views.test_chat, name='test'),
-    path('conversations/', ListConversationsView.as_view(), name='list_conversations'),
-
 	# TODO: REVIEW THE NAMES OF THE ENDPOINTS CHAT -> CONVERSATION
+	# ISSUE#?? There are a lot of issues for chat. This will be solved with the implementation of the chat app!
+
+	#path('create-conversation/', CreateConversationView.as_view(), name='create_conversation'),
+	#path('rename-conversation/', RenameConversationView.as_view(), name='rename_conversation'),
+    #path('show-conversation/', ShowConversationView.as_view(), name='show_conversation'),
+    #path('send-message/', SendMessageView.as_view(), name='send_message'),
+    #path('test/', views.test_chat, name='test'),
+    #path('conversations/', ListConversationsView.as_view(), name='list_conversations'),
+
 	# Chat listing and deletion
     # path('chats/list/', ListChatsView.as_view(), name='list_chats'),
     # path('chat/delete/', DeleteChatView.as_view(), name='delete_chat'),

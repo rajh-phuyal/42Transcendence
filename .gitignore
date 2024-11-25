@@ -3,6 +3,9 @@
 # Environment-specific files and directories
 Environments/*
 
+# Localizations / Translations
+*.mo
+
 # Logs
 Logs/*
 **/*.log
