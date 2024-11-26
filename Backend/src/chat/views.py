@@ -65,10 +65,9 @@ class CreateConversationView(BaseAuthenticatedView):
         userIds = request.data.get('userIds', [])
         if not userIds:
            return error_response(_("No 'userIds' provided"), status_code=400)
-
-        if userIds.count() == 0:
+        if len(userIds) == 0:
             return error_response(_("No 'userIds' provided"), status_code=400)
-        elif userIds.count() > 1:
+        elif len(userIds) > 0:
             return error_response(_("Group chat is not yet supported"), status_code=400)
 
         other_user_id = userIds[0]
