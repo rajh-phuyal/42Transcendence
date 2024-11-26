@@ -256,9 +256,6 @@ msgstr "Недійсний / непідтримуваний код мови"
 msgid "User info updated"
 msgstr "Інформація про користувача оновлена"
 
-#~ msgid "Conversation not found"
-#~ msgstr "Розмову не знайдено"
-
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
 #~ msgstr "Помилка під час реєстрації користувача: {error}"

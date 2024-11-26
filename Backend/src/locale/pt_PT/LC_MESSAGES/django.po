@@ -255,9 +255,6 @@ msgstr "Código de idioma inválido / não suportado"
 msgid "User info updated"
 msgstr "Informações do utilizador atualizadas"
 
-#~ msgid "Conversation not found"
-#~ msgstr "Conversa não encontrada"
-
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
 #~ msgstr "Erro durante o registo do utilizador: {error}"

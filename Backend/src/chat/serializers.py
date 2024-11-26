@@ -6,6 +6,7 @@ from .models import Conversation, Message, ConversationMember
 from .constants import CHAT_AVATAR_GROUP_DEFAULT
 from user.constants import DEFAULT_AVATAR
 from django.utils.translation import gettext as _
+from .utils import get_conversation_name
 class ConversationSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isGroupChat = serializers.BooleanField(source='is_group_conversation')
@@ -31,19 +32,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             'isEmpty',
         ]
     def get_conversationName(self, obj):
-        if obj.name:
-            return obj.name
-
-        current_user = self.context['request'].user
-        try:
-            other_member = obj.members.exclude(user=current_user).first()
-            if other_member and other_member.user.username:
-                return other_member.user.username
-        except Exception:
-            pass  # If any error occurs, fall through to the fallback
-
-        # Fallback to "Top Secret"
-        return _("top secret")
+        return get_conversation_name(self.context['request'].user, obj)
 
     def get_conversationAvatar(self, obj):
         if obj.is_group_conversation:
@@ -94,6 +83,31 @@ class ConversationMemberSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class MessageSerializer(serializers.ModelSerializer):
+    userId = serializers.IntegerField(source='user.id', required=False)
+    username = serializers.CharField(source='user.username', required=False)
+    avatar = serializers.SerializerMethodField()
+    createdAt = serializers.DateTimeField(source='created_at', required=False)
+    seenAt = serializers.DateTimeField(source='seen_at', allow_null=True, required=False)
+    content = serializers.CharField()
+
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['id', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt']
+
+    def get_avatar(self, obj):
+        if isinstance(obj, dict):  # Custom separator message
+            return obj.get('user').avatar_path if obj.get('user') else DEFAULT_AVATAR
+        return obj.user.avatar_path if obj.user.avatar_path else DEFAULT_AVATAR
+
+    def to_representation(self, instance):
+        if isinstance(instance, dict):  # Handle custom dictionary data
+            return {
+                "id": instance.get("id"),
+                "userId": instance["user"].id if instance.get("user") else None,
+                "username": instance["user"].username if instance.get("user") else _("System"),
+                "avatar": self.get_avatar(instance),
+                "content": instance.get("content"),
+                "createdAt": instance.get("created_at"),
+                "seenAt": instance.get("seen_at"),
+            }
+        return super().to_representation(instance)

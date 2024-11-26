@@ -259,9 +259,6 @@ msgstr "Ungültiger / nicht unterstützter Sprachcode"
 msgid "User info updated"
 msgstr "Benutzereinstellungen gespeichert"
 
-#~ msgid "Conversation not found"
-#~ msgstr "Unterhaltung nicht gefunden"
-
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
 #~ msgstr "Fehler bei der Benutzerregistrierung: {error}"

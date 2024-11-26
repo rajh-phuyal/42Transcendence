@@ -256,9 +256,6 @@ msgstr "अवैध / असमर्थित भाषा कोड"
 msgid "User info updated"
 msgstr "प्रयोगकर्ता जानकारी अद्यावधिक गरियो"
 
-#~ msgid "Conversation not found"
-#~ msgstr "कुराकानी फेला परेन"
-
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
 #~ msgstr "प्रयोगकर्ता दर्ता गर्दा त्रुटि: {error}"

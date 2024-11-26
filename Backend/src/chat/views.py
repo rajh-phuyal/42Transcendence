@@ -1,13 +1,27 @@
+from django.db.models import Q
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
-from django.utils.translation import gettext as _, activate
-import logging
+from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from rest_framework import status
+from django.utils import timezone
+from .utils import mark_all_messages_as_seen
+from core.exceptions import BarelyAnException
+from rest_framework import status
+from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked  
+from user.constants import USER_ID_OVERLOARDS
+from .constants import NO_OF_MSG_TO_LOAD
+from django.core.cache import cache
+import logging
+
+class LoadUnreadMessagesView(BaseAuthenticatedView):
+    ...
+	# TODO: return the unread messages as a single int like:
+    #			{"unread":4}
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -27,28 +41,133 @@ class LoadConversationsView(BaseAuthenticatedView):
 class LoadConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request, conversation_id=None):
-        # Get the user from the request
         user = request.user
+        msgid = int(request.GET.get('msgid', 0))
 
-		# Get offset from the request for pagination
-        offset = request.GET.get('offset', 0)
-        
-        # Validate that the conversation exists
-        conversation = Conversation.objects.get(id=conversation_id)
-        
-        # Check if the sender is a member of the conversation
-        if not conversation.members.filter(user=user).exists():
-            return error_response(_('You are not a member of this conversation'), status_code=403)
+        conversation = self.get_conversation(conversation_id)
+        self.validate_conversation_membership(conversation, user)
+    
+        if conversation.is_group_conversation:
+            return error_response(_('Group chats are not supported yet'), status_code=status.HTTP_400_BAD_REQUEST)
 
-        # Get the last 10 messages from the conversation, ordered by creation time
-        messages = Message.objects.filter(conversation=conversation).order_by('created_at')[:10]
+        # Determine blocking status
+        theOverloards = User.objects.get(id=USER_ID_OVERLOARDS)
+        other_user = self.get_other_user(conversation, user, theOverloards)
+        other_user_online = cache.get(f'user_online_{other_user.id}', False)
+        is_blocking = user_is_blocking(user.id, other_user.id)
+        is_blocked = user_is_blocked(user.id, other_user.id)
 
-        # TODO:
-		# change from get to put since we need to update the seen_at value here!
+        # Fetch and process messages
+        messages_queryset = self.get_messages_queryset(conversation, msgid)
+        messages, last_seen_msg, unseen_messages = self.process_messages(messages_queryset)
 
-		# Serialize the messages
-        serializer = MessageSerializer(messages, many=True)
-        return success_response(_('Messages loaded successfully'), data=serializer.data)
+        # Blackout messages if blocking
+        if is_blocking:
+            for message in messages:
+                message.content = _('**This message is hidden because you are blocking the user**')
+
+        # Add separator messages if needed
+        messages_with_separator = self.add_separator_message(messages, last_seen_msg, unseen_messages)
+
+        # Mark as seen
+        if not is_blocking:
+            mark_all_messages_as_seen(user.id, conversation.id)
+
+        # Serialize messages
+        serialized_messages = MessageSerializer(messages_with_separator, many=True)
+
+        # Get the conversation avatar and name
+        conversation_avatar = self.get_conversation_avatar(conversation, other_user)
+        conversation_name = self.get_conversation_name(conversation, other_user)
+
+        # Prepare the response
+        response_data = self.prepare_response(conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name)
+
+        return success_response(_('Messages loaded successfully'), **response_data)
+
+    def get_conversation(self, conversation_id):
+        try:
+            return Conversation.objects.get(id=conversation_id)
+        except Conversation.DoesNotExist:
+            raise BarelyAnException(_('Conversation not found'), status_code=status.HTTP_404_NOT_FOUND)
+
+    def validate_conversation_membership(self, conversation, user):
+        try:
+            return ConversationMember.objects.get(conversation=conversation, user=user)
+        except ConversationMember.DoesNotExist:
+            raise BarelyAnException(_('You are not a member of this conversation'), status_code=status.HTTP_403_FORBIDDEN)
+
+    def get_other_user(self, conversation, user, theOverloards):
+        other_member = conversation.members.exclude(Q(user=user) | Q(user=theOverloards)).first()
+        if other_member:
+            return other_member.user
+        raise BarelyAnException(_('No other users found in the conversation'), status_code=status.HTTP_400_BAD_REQUEST)
+
+    def get_messages_queryset(self, conversation, msgid):
+        queryset = Message.objects.filter(conversation=conversation)
+        if msgid:
+            if not queryset.filter(id=msgid).exists():
+                raise BarelyAnException(_('Message not found'), status_code=status.HTTP_404_NOT_FOUND)
+            queryset = queryset.filter(id__lt=msgid)
+        queryset = queryset.order_by('-created_at')
+        return queryset
+    
+    def process_messages(self, messages_queryset):
+        last_seen_msg = messages_queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
+        unseen_messages = messages_queryset.filter(seen_at__isnull=True)
+        messages = messages_queryset[:NO_OF_MSG_TO_LOAD]
+        return messages, last_seen_msg, unseen_messages
+   
+    def add_separator_message(self, messages, last_seen_msg, unseen_messages):
+        if unseen_messages.exists():
+            messages_with_separator = []
+            for message in messages:
+                if last_seen_msg and message.id == last_seen_msg.id:
+                    # Add separator message
+                    overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+                    # Here we create a fake message wich is not stored in the db
+                    # It is really important to keep the structure of this
+                    # message the same as the Message Model so that the
+                    # MessageSerializer can serialize it correctly
+                    messages_with_separator.append({
+                        "id": None,
+                        "user": overlords,
+                        "created_at": last_seen_msg.created_at,
+                        "seen_at": None,
+                        "content": _("We know that you haven't seen the messages below...")
+                    })
+                messages_with_separator.append(message)
+            return messages_with_separator
+        return messages
+
+    def get_conversation_avatar(self, conversation, other_user):
+        if conversation.is_group_conversation:
+            return 'CHAT_AVATAR_GROUP_DEFAULT' 
+        if other_user.avatar_path:
+            return other_user.avatar_path
+        return 'DEFAULT_AVATAR'
+
+    def get_conversation_name(self, conversation, other_user):
+        if conversation.is_group_conversation:
+            return conversation.name
+        return other_user.username
+
+    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name):
+        members = conversation.members.all()
+        member_ids = members.values_list('id', flat=True)
+
+        return {
+            "conversationId": conversation.id,
+            "isBlocked": is_blocked,
+            "isBlocking": is_blocking,
+            "isGroupChat": conversation.is_group_conversation,
+            "isEditable": conversation.is_editable,
+            "conversationName": conversation_name,
+            "conversationAvatar": conversation_avatar,
+            "online": other_user_online,
+            "userIds": list(member_ids),
+            "data": serialized_messages.data,
+        }
 
 ################################################################################
 # BELOW IS OLD CODE!!!
