@@ -5,8 +5,11 @@ from rest_framework import serializers
 from .models import Conversation, Message, ConversationMember
 from .constants import CHAT_AVATAR_GROUP_DEFAULT
 from user.constants import DEFAULT_AVATAR
+from user.constants import USER_ID_OVERLOARDS
+from user.models import User
 from django.utils.translation import gettext as _
 from .utils import get_conversation_name
+from django.db.models import Q
 class ConversationSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isGroupChat = serializers.BooleanField(source='is_group_conversation')
@@ -39,7 +42,8 @@ class ConversationSerializer(serializers.ModelSerializer):
             return CHAT_AVATAR_GROUP_DEFAULT
         else:
             current_user = self.context.get('request').user
-            other_members = obj.members.exclude(user=current_user)
+            overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+            other_members = obj.members.exclude(Q(user=current_user) | Q(user=overlords))
 
         if other_members.exists():
             other_user = other_members.first().user

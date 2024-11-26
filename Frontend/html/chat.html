@@ -57,83 +57,83 @@
 
 
       <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-      <div class="chat-view-sent-message-container">
+      <!-- <div class="chat-view-sent-message-container">
         <div class="chat-view-messages-message-box">
           niceee
         </div>
         <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      </div> -->
       <!-- . -->
-      <div class="chat-view-incoming-message-container">
+      <!-- <div class="chat-view-incoming-message-container">
         <span class="chat-view-messages-message-sender">rajh</span>
         <div class="chat-view-messages-message-box">
           Os Lusíadas é uma obra de poesia épica do escritor português Luís Vaz de Camões, a primeira epopeia portuguesa publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, foi publicada em Lisboa em 12 de março de 1572,[1][2] no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso do autor do Oriente, via Moçambique. 
         </div>
         <span class="chat-view-messages-message-time-stamp">5:03pm 12-07-1956</span>
-      </div>
+      </div> -->
       <!-- . -->
-      <div class="chat-view-sent-message-container">
+      <!-- <div class="chat-view-sent-message-container">
         <div class="chat-view-messages-message-box">
           sure
         </div>
         <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      </div> -->
       <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">rajh</span>
-        <div class="chat-view-messages-message-box">
-          You guys wanna hear about the portuguese epic poem Lusíadas?
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      <!-- <div class="chat-view-incoming-message-container"> -->
+        <!-- <span class="chat-view-messages-message-sender">rajh</span> -->
+        <!-- <div class="chat-view-messages-message-box"> -->
+          <!-- You guys wanna hear about the portuguese epic poem Lusíadas? -->
+        <!-- </div> -->
+        <!-- <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span> -->
+      <!-- </div> -->
       <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">ale</span>
-        <div class="chat-view-messages-message-box">
-          how is it going guys?
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      <!-- <div class="chat-view-incoming-message-container"> -->
+        <!-- <span class="chat-view-messages-message-sender">ale</span> -->
+        <!-- <div class="chat-view-messages-message-box"> -->
+          <!-- how is it going guys? -->
+        <!-- </div> -->
+        <!-- <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span> -->
+      <!-- </div> -->
       <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">anatolii</span>
-        <div class="chat-view-messages-message-box">
-          gay
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      <!-- <div class="chat-view-incoming-message-container"> -->
+        <!-- <span class="chat-view-messages-message-sender">anatolii</span> -->
+        <!-- <div class="chat-view-messages-message-box"> -->
+          <!-- gay -->
+        <!-- </div> -->
+        <!-- <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span> -->
+      <!-- </div> -->
       <!-- . -->
-      <div class="chat-view-sent-message-container">
+      <!-- <div class="chat-view-sent-message-container">
         <div class="chat-view-messages-message-box">
           sup?
         </div>
         <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      </div> -->
       <!-- . -->
-      <div class="chat-view-incoming-message-container">
+      <!-- <div class="chat-view-incoming-message-container">
         <span class="chat-view-messages-message-sender">rajh</span>
         <div class="chat-view-messages-message-box">
           whatsup?
         </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span> -->
+      <!-- </div> -->
       <!-- . -->
-      <div class="chat-view-overlords-message-container">
+      <!-- <div class="chat-view-overlords-message-container">
         <div class="chat-view-messages-message-overlords-box">
           <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>@alex has started a tournament in this group
           <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button>
         </div>
 
         <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      </div> -->
       <!-- . -->
-      <div class="chat-view-incoming-message-container">
+      <!-- <div class="chat-view-incoming-message-container">
         <span class="chat-view-messages-message-sender">alex</span>
         <div class="chat-view-messages-message-box">
           whats up guys? :D<br>I created this chat for us to play!
         </div>
         <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
+      </div> -->
       <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
       
     </div>
@@ -180,6 +180,28 @@
   }
   .chat-view-conversation-card:active {
     background-color: #CFC7B3;
+    cursor: pointer;
+  }
+
+  .chat-view-conversation-card-highlighted {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 95%;
+    height: 17%;
+    margin: 1% 0%;
+    align-self: center;
+    border:  3px solid  black;
+    background-color: black;
+    color: white;
+  }
+
+  .chat-view-conversation-card-highlighted:hover {
+    background-color: #101010;
+    cursor: pointer;
+  }
+  .chat-view-conversation-card-highlighted:active {
+    background-color: #202020;
     cursor: pointer;
   }
   

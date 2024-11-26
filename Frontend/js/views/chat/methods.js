@@ -1,3 +1,5 @@
+import $store from '../../store/store.js'
+
 function formatTimestamp(timestamp) {
     // Parse the timestamp into a Date object
     const date = new Date(timestamp);
@@ -17,15 +19,18 @@ function formatTimestamp(timestamp) {
     return `${hours}:${minutes}${ampm} ${day}-${month}-${year}`;
 }
 
-export function createMessage(element, send) {
+export function createMessage(element) {
     const messageDiv = document.createElement('div');
-    messageDiv.className = "chat-view-sent-message-container";
-    if (!send) {
+
+    if (element.userId != $store.fromState("user").id) {
         const username = document.createElement('span');
         username.className = "chat-view-messages-message-sender";
         username.textContent = element.username;
         messageDiv.appendChild(username)
+        messageDiv.className = "chat-view-incoming-message-container";
     }
+    else
+        messageDiv.className = "chat-view-sent-message-container";
 
     const messageBox = document.createElement('div');
     messageBox.className = "chat-view-messages-message-box";

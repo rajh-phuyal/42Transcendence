@@ -2,6 +2,9 @@ from django.db import transaction
 from django.utils import timezone
 from django.db.models import F
 from django.utils.translation import gettext as _
+from user.constants import USER_ID_OVERLOARDS
+from user.models import User
+from django.db.models import Q
 from .models import Message, ConversationMember
 
 def mark_all_messages_as_seen(user_id, conversation_id):
@@ -27,7 +30,8 @@ def get_conversation_name(user, conversation):
         return conversation.name
 
     try:
-        other_member = conversation.members.exclude(user=user).first()
+        overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+        other_member = conversation.members.exclude(Q(user=user) | Q(user=overlords)).first()
         if other_member and other_member.user.username:
             return other_member.user.username
     except Exception:

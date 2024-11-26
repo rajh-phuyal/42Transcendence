@@ -1,5 +1,6 @@
 import { createMessage } from '../views/chat/methods.js';
 import { $id } from '../abstracts/dollars.js'
+import $store from '../store/store.js'
 
 class TextField extends HTMLElement {
     constructor() {
@@ -61,7 +62,7 @@ class TextField extends HTMLElement {
         console.log("input value:", value); // ...............................
 
         const container = $id("chat-view-messages-container");
-        container.prepend(createMessage({"content": value, "createdAt": this.createTimestamp()}, true));
+        container.prepend(createMessage({"content": value, "createdAt": this.createTimestamp(), "userId": $store.fromState("user").id}));
 
         if (this.clear){
             inputElement.value = '';

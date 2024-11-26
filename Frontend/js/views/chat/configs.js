@@ -1,5 +1,6 @@
 import call from '../../abstracts/call.js'
 import { translate } from '../../locale/locale.js'
+import { createMessage } from './methods.js';
 
 export default {
     attributes: {
@@ -165,33 +166,54 @@ export default {
             this.domManip.$id("chat-view-header-subject").textContent = title + this.conversationParams.conversationName;
 
             if (this.conversationParams.online)
-                this.domManip.id("chat-view-header-online-icon").src = "../assets/onlineIcon.png";
+                this.domManip.$id("chat-view-header-online-icon").src = "../assets/onlineIcon.png";
             else
-                this.domManip.id("chat-view-header-online-icon").src = "../assets/offlineIcon.png";
-            this.domManip.id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + this.conversationParams.conversationAvatar;
+                this.domManip.$id("chat-view-header-online-icon").src = "../assets/offlineIcon.png";
+            this.domManip.$id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + this.conversationParams.conversationAvatar;
         },
 
-        populateConversationMessages(element) {
+        populateConversationMessages(data) {
             
-            const container = $id("chat-view-messages-container");
+            const container = this.domManip.$id("chat-view-messages-container");
+            container.innerHTML = "";
 
-            for (element of data) 
-                container.appendChildrepend(createMessage(element, false));
-            
-            
+            for (let element of data) 
+                container.appendChild(createMessage(element));
         },
-        
-        loadConversation(event) {
-            let element = event.srcElement.getAttribute("conversation_id");
 
-            if (!element)
-                event.srcElement.parentElement.getAttribute("conversation_id");
+        removeConversationMessages() {
+            const container = this.domManip.$id("chat-view-messages-container");
+            container.innerHTML = "";
+        },
 
-            call(`chat/load/converation/${event.srcElement.conversationId}/messages/?msgid=0`, 'PUT').then(data => {
+        higlightCard(element) {
+            
+            let highlightedElement = this.domManip.$class("chat-view-conversation-card-highlighted");
+            console.log("highlightedElement", highlightedElement)
+            if (highlightedElement){
+                for (let individualElement of highlightedElement)
+                    individualElement.className = "chat-view-conversation-card";
+            }
+            element.className = "chat-view-conversation-card-highlighted";
+        },
+
+        conversationCallback(event) {
+            
+            let element = event.srcElement;
+
+            if (!element.getAttribute("conversation_id"))
+                element = event.srcElement.parentElement;
+
+            this.higlightCard(element);
+            this.loadConversation(element.getAttribute("conversation_id"));
+        }
+        ,
+        loadConversation(conversationId) {
+            call(`chat/load/conversation/${conversationId}/messages/?msgid=0`, 'PUT').then(data => {
                 const temp = data.data.pop();
                 this.lastMessageId= temp.messageId;
                 data.data.push(temp);
-                conversationParams = data;
+                this.conversationParams = data;
                 this.populateConversationHeader();
                 this.populateConversationMessages(data.data);
             });
@@ -199,7 +221,7 @@ export default {
 
         createConversationCard(element) {
             const conversation = document.createElement("div");
-            this.conversation.push(element.conversationId);
+            this.conversations.push(element.conversationId);
             conversation.className = "chat-view-conversation-card";
             conversation.id = "chat-view-conversation-card-" +  element.conversationId; 
             conversation.setAttribute("conversation_id", element.conversationId);
@@ -219,7 +241,7 @@ export default {
 
             this.conversationsContainer.appendChild(conversation);
 
-            this.domManip.$on(conversation, "click", this.loadConversation);
+            this.domManip.$on(conversation, "click", this.conversationCallback);
         },
 
         async populateConversations() {
@@ -227,7 +249,7 @@ export default {
                 console.log("data:", data);
                 if (!data.data)
                 {
-                    this.domManip.$id("chat-view-conversations-no-conversations-found").textContent = data.message;
+                    this.domManip.$id("chat-view-conversations-no-converations-found").textContent = data.message;
                     return ;
                 }
                 console.log("result:", data);
@@ -240,7 +262,7 @@ export default {
 
         removeConversationsEventListners() {
             for (element of this.conversations)
-                this.domManip.$off("chat-view-conversation-card-" +  element, "click", this.loadConversation)
+                this.domManip.$off("chat-view-conversation-card-" +  element, "click", this.conversationCallback)
         },
 
         sortMessagesByTimestamp() {
@@ -287,6 +309,11 @@ export default {
         // Open WebSocket after the DOM is inserted
         async afterDomInsertion() {
             console.log("After DOM Insertion...");
+
+            // TODO: when params are not defined the routeParam.id crashes
+            //          maybe the routeParam.id should be defined if no params are set.
+            if (this.routeParams.id)
+                this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
 
             await this.populateConversations();

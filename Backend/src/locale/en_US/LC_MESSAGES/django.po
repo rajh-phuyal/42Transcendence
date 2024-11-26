@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 21:45+0000\n"
+"POT-Creation-Date: 2024-11-26 18:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,24 +51,52 @@ msgstr ""
 msgid "Welcome on board {username}!"
 msgstr ""
 
-#: chat/serializers.py:44
+#: chat/serializers.py:111
+msgid "System"
+msgstr ""
+
+#: chat/utils.py:41
 msgid "top secret"
 msgstr ""
 
-#: chat/views.py:29
+#: chat/views.py:38
 msgid "No conversations found"
 msgstr ""
 
-#: chat/views.py:30
+#: chat/views.py:39
 msgid "Conversations loaded successfully"
 msgstr ""
 
-#: chat/views.py:46
+#: chat/views.py:51
+msgid "Group chats are not supported yet"
+msgstr ""
+
+#: chat/views.py:67
+msgid "**This message is hidden because you are blocking the user**"
+msgstr ""
+
+#: chat/views.py:86
+msgid "Messages loaded successfully"
+msgstr ""
+
+#: chat/views.py:92
+msgid "Conversation not found"
+msgstr ""
+
+#: chat/views.py:98
 msgid "You are not a member of this conversation"
 msgstr ""
 
-#: chat/views.py:56
-msgid "Messages loaded successfully"
+#: chat/views.py:104
+msgid "No other users found in the conversation"
+msgstr ""
+
+#: chat/views.py:110
+msgid "Message not found"
+msgstr ""
+
+#: chat/views.py:137
+msgid "We know that you haven't seen the messages below..."
 msgstr ""
 
 #: core/base_views.py:24
