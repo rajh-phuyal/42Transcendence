@@ -1,3 +1,4 @@
+from django.db.models import Q
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
@@ -12,6 +13,7 @@ class LoadUnreadMessagesView(BaseAuthenticatedView):
     ...
 	# TODO: return the unread messages as a single int like:
     #			{"unread":4}
+
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -55,6 +57,78 @@ class LoadConversationView(BaseAuthenticatedView):
 		# Serialize the messages
         serializer = MessageSerializer(messages, many=True)
         return success_response(_('Messages loaded successfully'), data=serializer.data)
+
+class CreateConversationView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def post(self, request):
+        user = request.user
+        userIds = request.data.get('userIds', [])
+        if not userIds:
+           return error_response(_("No 'userIds' provided"), status_code=400)
+
+        if userIds.count() == 0:
+            return error_response(_("No 'userIds' provided"), status_code=400)
+        elif userIds.count() > 1:
+            return error_response(_("Group chat is not yet supported"), status_code=400)
+
+        other_user_id = userIds[0]
+        other_user = User.objects.get(id=other_user_id)
+
+        # Check if the conversation already exists
+        conversation_member = ConversationMember.objects.filter(Q(user=user) | Q(user=other_user),conversation__is_group_conversation=False)
+        if conversation_member.exists():
+            conversation_id = conversation_member.first().conversation.id
+            return success_response(_('Conversation already exists'), data={'conversation_id': conversation_id})
+
+        # Start a transaction to make sure all database operations happen together
+        with transaction.atomic():
+            # Create the Conversation
+            new_conversation = Conversation.objects.create()
+            ConversationMember.create(user=user, conversation=new_conversation)
+            ConversationMember.create(user=other_user, conversation=new_conversation)
+
+        return success_response(_('Conversation created successfully'), data={'conversation_id': new_conversation.id})
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ################################################################################
 # BELOW IS OLD CODE!!!

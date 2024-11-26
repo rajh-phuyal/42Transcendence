@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 17:45+0000\n"
+"POT-Creation-Date: 2024-11-26 16:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,20 +51,36 @@ msgstr ""
 msgid "Welcome on board {username}!"
 msgstr ""
 
-#: chat/views.py:27
+#: chat/views.py:29
 msgid "No conversations found"
 msgstr ""
 
-#: chat/views.py:31
+#: chat/views.py:33
 msgid "Conversations loaded successfully"
 msgstr ""
 
-#: chat/views.py:47
+#: chat/views.py:49
 msgid "You are not a member of this conversation"
 msgstr ""
 
-#: chat/views.py:57
+#: chat/views.py:59
 msgid "Messages loaded successfully"
+msgstr ""
+
+#: chat/views.py:67 chat/views.py:70
+msgid "No 'userIds' provided"
+msgstr ""
+
+#: chat/views.py:72
+msgid "Group chat is not yet supported"
+msgstr ""
+
+#: chat/views.py:81
+msgid "Conversation already exists"
+msgstr ""
+
+#: chat/views.py:90
+msgid "Conversation created successfully"
 msgstr ""
 
 #: core/base_views.py:24
