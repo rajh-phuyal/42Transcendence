@@ -78,15 +78,31 @@ class ConversationMemberSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class MessageSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username')
+    userId = serializers.IntegerField(source='user.id', required=False)
+    username = serializers.CharField(source='user.username', required=False)
     avatar = serializers.SerializerMethodField()
+    createdAt = serializers.DateTimeField(source='created_at', required=False)
+    seenAt = serializers.DateTimeField(source='seen_at', allow_null=True, required=False)
+    content = serializers.CharField()
 
     class Meta:
         model = Message
-        fields = ['id', 'user_id', 'username', 'avatar', 'content', 'created_at', 'seen_at']
+        fields = ['id', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt']
 
     def get_avatar(self, obj):
-        if self.user_id.avatar_path:
-            return self.user_id.avatar_path
-        else:
-            return DEFAULT_AVATAR
+        if isinstance(obj, dict):  # Custom separator message
+            return obj.get('user').avatar_path if obj.get('user') else DEFAULT_AVATAR
+        return obj.user.avatar_path if obj.user.avatar_path else DEFAULT_AVATAR
+
+    def to_representation(self, instance):
+        if isinstance(instance, dict):  # Handle custom dictionary data
+            return {
+                "id": instance.get("id"),
+                "userId": instance["user"].id if instance.get("user") else None,
+                "username": instance["user"].username if instance.get("user") else _("System"),
+                "avatar": self.get_avatar(instance),
+                "content": instance.get("content"),
+                "createdAt": instance.get("created_at"),
+                "seenAt": instance.get("seen_at"),
+            }
+        return super().to_representation(instance)

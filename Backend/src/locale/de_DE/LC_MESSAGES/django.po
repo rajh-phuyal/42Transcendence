@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 13:46+0000\n"
+"POT-Creation-Date: 2024-11-26 15:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,31 +51,55 @@ msgstr "Das Passwort muss mindestens eine Zahl enthalten"
 msgid "Welcome on board {username}!"
 msgstr "Wilkommen an Bord {username}!"
 
-#: chat/serializers.py:44
+#: chat/serializers.py:102
+msgid "System"
+msgstr ""
+
+#: chat/utils.py:37
 msgid "top secret"
 msgstr ""
 
-#: chat/views.py:30
+#: chat/views.py:36
 msgid "No conversations found"
 msgstr "Keine Unterhaltungen gefunden"
 
-#: chat/views.py:31
+#: chat/views.py:37
 msgid "Conversations loaded successfully"
 msgstr "Unterhaltungen erfolgreich geladen"
 
-#: chat/views.py:47
+#: chat/views.py:49
+#, fuzzy
+#| msgid "File type not supported"
+msgid "Group chats are not supported yet"
+msgstr "Dateityp wird nicht unterstützt"
+
+#: chat/views.py:74
+msgid "Messages loaded successfully"
+msgstr "Nachrichten erfolgreich geladen"
+
+#: chat/views.py:80
+msgid "Conversation not found"
+msgstr "Unterhaltung nicht gefunden"
+
+#: chat/views.py:86
 msgid "You are not a member of this conversation"
 msgstr "Sie sind kein Mitglied dieser Unterhaltung"
 
-#: chat/views.py:58
+#: chat/views.py:92
+#, fuzzy
+#| msgid "You are not a member of this conversation"
+msgid "No other users found in the conversation"
+msgstr "Sie sind kein Mitglied dieser Unterhaltung"
+
+#: chat/views.py:98
 #, fuzzy
 #| msgid "No conversations found"
-msgid "No messages found"
+msgid "Message not found"
 msgstr "Keine Unterhaltungen gefunden"
 
-#: chat/views.py:59
-msgid "Messages loaded successfully"
-msgstr "Nachrichten erfolgreich geladen"
+#: chat/views.py:125
+msgid "We know that you haven't seen the messages below..."
+msgstr ""
 
 #: core/base_views.py:24
 #, fuzzy
@@ -264,9 +288,6 @@ msgstr "Ungültiger / nicht unterstützter Sprachcode"
 #: user/views.py:257
 msgid "User info updated"
 msgstr "Benutzereinstellungen gespeichert"
-
-#~ msgid "Conversation not found"
-#~ msgstr "Unterhaltung nicht gefunden"
 
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"

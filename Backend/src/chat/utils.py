@@ -4,20 +4,21 @@ from django.db.models import F
 from django.utils.translation import gettext as _
 from .models import Message, ConversationMember
 
-def mark_all_messages_as_seen(user_id, chat_id):
+def mark_all_messages_as_seen(user_id, conversation_id):
     with transaction.atomic():
         new_messages = (
             Message.objects
             .select_for_update()
-            .filter(conversation_id=chat_id, seen_at__isnull=True)
+            .filter(conversation_id=conversation_id, seen_at__isnull=True)
             .exclude(user=user_id)
         )
 
         # Update messages
-        updated_count = new_messages.update(seen_at=timezone.now())
+        new_messages.update(seen_at=timezone.now())
 
         # Update unread counter
-        conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=chat_id, user=user_id).firs()
+        conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
+
         if conversation_member.unread_counter > 0:
             conversation_member.save(update_fields=['unread_counter'])
 

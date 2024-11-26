@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-25 13:46+0000\n"
+"POT-Creation-Date: 2024-11-26 15:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,31 +51,55 @@ msgstr "Пароль повинен містити принаймні одну �
 msgid "Welcome on board {username}!"
 msgstr "Ласкаво просимо на борт, {username}!"
 
-#: chat/serializers.py:44
+#: chat/serializers.py:102
+msgid "System"
+msgstr ""
+
+#: chat/utils.py:37
 msgid "top secret"
 msgstr ""
 
-#: chat/views.py:30
+#: chat/views.py:36
 msgid "No conversations found"
 msgstr "Розмови не знайдено"
 
-#: chat/views.py:31
+#: chat/views.py:37
 msgid "Conversations loaded successfully"
 msgstr "Розмови успішно завантажені"
 
-#: chat/views.py:47
+#: chat/views.py:49
+#, fuzzy
+#| msgid "File type not supported"
+msgid "Group chats are not supported yet"
+msgstr "Тип файлу не підтримується"
+
+#: chat/views.py:74
+msgid "Messages loaded successfully"
+msgstr "Повідомлення успішно завантажені"
+
+#: chat/views.py:80
+msgid "Conversation not found"
+msgstr "Розмову не знайдено"
+
+#: chat/views.py:86
 msgid "You are not a member of this conversation"
 msgstr "Ви не є учасником цієї розмови"
 
-#: chat/views.py:58
+#: chat/views.py:92
+#, fuzzy
+#| msgid "You are not a member of this conversation"
+msgid "No other users found in the conversation"
+msgstr "Ви не є учасником цієї розмови"
+
+#: chat/views.py:98
 #, fuzzy
 #| msgid "No conversations found"
-msgid "No messages found"
+msgid "Message not found"
 msgstr "Розмови не знайдено"
 
-#: chat/views.py:59
-msgid "Messages loaded successfully"
-msgstr "Повідомлення успішно завантажені"
+#: chat/views.py:125
+msgid "We know that you haven't seen the messages below..."
+msgstr ""
 
 #: core/base_views.py:24
 msgid "User is not authenticated"
@@ -261,9 +285,6 @@ msgstr "Недійсний / непідтримуваний код мови"
 #: user/views.py:257
 msgid "User info updated"
 msgstr "Інформація про користувача оновлена"
-
-#~ msgid "Conversation not found"
-#~ msgstr "Розмову не знайдено"
 
 #, python-brace-format
 #~ msgid "Error during user registration: {error}"
