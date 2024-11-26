@@ -9,11 +9,6 @@ import logging
 from core.decorators import barely_handle_exceptions
 from rest_framework import status
 
-class LoadUnreadMessagesView(BaseAuthenticatedView):
-    ...
-	# TODO: return the unread messages as a single int like:
-    #			{"unread":4}
-
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):

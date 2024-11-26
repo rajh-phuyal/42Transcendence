@@ -1,8 +1,7 @@
 from django.urls import path
-from chat.views import LoadUnreadMessagesView, LoadConversationsView, LoadConversationView
+from chat.views import LoadConversationsView, LoadConversationView
 
 urlpatterns = [
-	path('count/unread/', LoadUnreadMessagesView.as_view(), name='load_unread_messages'),
 	path('load/conversations/', LoadConversationsView.as_view(), name='load_conversations'),
 	path('load/conversation/<int:conversation_id>/messages/', LoadConversationView.as_view(), name='load_conversation'),
 
