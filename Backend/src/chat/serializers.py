@@ -15,6 +15,7 @@ class ConversationSerializer(serializers.ModelSerializer):
     unreadCounter = serializers.SerializerMethodField()
     online = serializers.SerializerMethodField()
     lastUpdate = serializers.SerializerMethodField()
+    isEmpty = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
@@ -27,6 +28,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             'unreadCounter',
             'online',
             'lastUpdate',
+            'isEmpty',
         ]
     def get_conversationName(self, obj):
         if obj.name:
@@ -82,6 +84,9 @@ class ConversationSerializer(serializers.ModelSerializer):
         # Fetch the timestamp of the last message in the conversation
         last_message = obj.messages.order_by('-created_at').first()
         return last_message.created_at if last_message else None
+    
+    def get_isEmpty(self, obj):
+        return obj.messages.count() == 0
 
 class ConversationMemberSerializer(serializers.ModelSerializer):
     class Meta:
