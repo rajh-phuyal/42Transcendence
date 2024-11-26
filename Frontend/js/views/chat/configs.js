@@ -10,15 +10,8 @@ export default {
 
         conversationsContainer: undefined,
         conversations: [],
-        conversationParams: {
-            id: undefined,
-            name: undefined,
-            avatar: undefined,
-            lastMessageId: undefined,
-            online: false,
-            isTournament: false,
-            usersIds: [],
-        }
+        conversationParams: undefined,
+        lastMessageId: undefined,
     },
 
     methods: {
@@ -165,26 +158,27 @@ export default {
         populateConversationHeader() {
             let title;
 
-            // 
-            if (this.conversationParams.isTournament)
+            if (this.conversationParams.isGroupChat)
                 title = translate("chat", "group");
             else
                 title = translate("chat", "subject");
-            this.domManip.$id("chat-view-header-subject").textContent = title + this.conversationParams.name;
+            this.domManip.$id("chat-view-header-subject").textContent = title + this.conversationParams.conversationName;
 
             if (this.conversationParams.online)
                 this.domManip.id("chat-view-header-online-icon").src = "../assets/onlineIcon.png";
             else
                 this.domManip.id("chat-view-header-online-icon").src = "../assets/offlineIcon.png";
-            this.domManip.id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + this.conversationParams.avatar;
+            this.domManip.id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + this.conversationParams.conversationAvatar;
         },
 
-        populateConversationMessages(data) {
+        populateConversationMessages(element) {
             
             const container = $id("chat-view-messages-container");
-            
+
             for (element of data) 
                 container.appendChildrepend(createMessage(element, false));
+            
+            
         },
         
         loadConversation(event) {
@@ -193,10 +187,14 @@ export default {
             if (!element)
                 event.srcElement.parentElement.getAttribute("conversation_id");
 
-            // Call the API here
-
-            this.populateConversationHeader();
-            this.populateConversationMessages();
+            call(`chat/load/converation/${event.srcElement.conversationId}/messages/?msgid=0`, 'PUT').then(data => {
+                const temp = data.data.pop();
+                this.lastMessageId= temp.messageId;
+                data.data.push(temp);
+                conversationParams = data;
+                this.populateConversationHeader();
+                this.populateConversationMessages(data.data);
+            });
         },
 
         createConversationCard(element) {
@@ -313,3 +311,16 @@ export default {
         },
     },
 };
+
+
+/*
+    [...]
+
+    id 5000    hello
+
+
+    id 5005    hi
+
+
+    id 5006    whats up?
+*/
