@@ -1,3 +1,4 @@
+from django.db.models import Q
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
@@ -43,13 +44,14 @@ class LoadConversationView(BaseAuthenticatedView):
         msgid = int(request.GET.get('msgid', 0))
 
         conversation = self.get_conversation(conversation_id)
-        conversation_member = self.validate_conversation_membership(conversation, user)
+        self.validate_conversation_membership(conversation, user)
     
         if conversation.is_group_conversation:
             return error_response(_('Group chats are not supported yet'), status_code=status.HTTP_400_BAD_REQUEST)
 
         # Determine blocking status
-        other_user = self.get_other_user(conversation, user)
+        theOverloards = User.objects.get(id=USER_ID_OVERLOARDS)
+        other_user = self.get_other_user(conversation, user, theOverloards)
         other_user_online = cache.get(f'user_online_{other_user.id}', False)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
@@ -57,6 +59,11 @@ class LoadConversationView(BaseAuthenticatedView):
         # Fetch and process messages
         messages_queryset = self.get_messages_queryset(conversation, msgid)
         messages, last_seen_msg, unseen_messages = self.process_messages(messages_queryset)
+
+        # Blackout messages if blocking
+        if is_blocking:
+            for message in messages:
+                message.content = _('**This message is hidden because you are blocking the user**')
 
         # Add separator messages if needed
         messages_with_separator = self.add_separator_message(messages, last_seen_msg, unseen_messages)
@@ -68,8 +75,12 @@ class LoadConversationView(BaseAuthenticatedView):
         # Serialize messages
         serialized_messages = MessageSerializer(messages_with_separator, many=True)
 
+        # Get the conversation avatar and name
+        conversation_avatar = self.get_conversation_avatar(conversation, other_user)
+        conversation_name = self.get_conversation_name(conversation, other_user)
+
         # Prepare the response
-        response_data = self.prepare_response(conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked)
+        response_data = self.prepare_response(conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name)
 
         return success_response(_('Messages loaded successfully'), **response_data)
 
@@ -85,8 +96,8 @@ class LoadConversationView(BaseAuthenticatedView):
         except ConversationMember.DoesNotExist:
             raise BarelyAnException(_('You are not a member of this conversation'), status_code=status.HTTP_403_FORBIDDEN)
 
-    def get_other_user(self, conversation, user):
-        other_member = conversation.members.exclude(user=user).first()
+    def get_other_user(self, conversation, user, theOverloards):
+        other_member = conversation.members.exclude(Q(user=user) | Q(user=theOverloards)).first()
         if other_member:
             return other_member.user
         raise BarelyAnException(_('No other users found in the conversation'), status_code=status.HTTP_400_BAD_REQUEST)
@@ -128,7 +139,19 @@ class LoadConversationView(BaseAuthenticatedView):
             return messages_with_separator
         return messages
 
-    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked):
+    def get_conversation_avatar(self, conversation, other_user):
+        if conversation.is_group_conversation:
+            return 'CHAT_AVATAR_GROUP_DEFAULT' 
+        if other_user.avatar_path:
+            return other_user.avatar_path
+        return 'DEFAULT_AVATAR'
+
+    def get_conversation_name(self, conversation, other_user):
+        if conversation.is_group_conversation:
+            return conversation.name
+        return other_user.username
+
+    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name):
         members = conversation.members.all()
         member_ids = members.values_list('id', flat=True)
 
@@ -138,10 +161,10 @@ class LoadConversationView(BaseAuthenticatedView):
             "isBlocking": is_blocking,
             "isGroupChat": conversation.is_group_conversation,
             "isEditable": conversation.is_editable,
-            "conversationName": conversation.name or f'Chat {conversation.id}',
-            "conversationAvatar": f"https://example.com/avatar/conversations/{conversation.id}.png",
+            "conversationName": conversation_name,
+            "conversationAvatar": conversation_avatar,
             "online": other_user_online,
-            "userIDs": list(member_ids),
+            "userIds": list(member_ids),
             "data": serialized_messages.data,
         }
 
