@@ -18,13 +18,11 @@ class WebSocketManager {
             return;
         }
 
-        // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        const protocol = 'ws://';
         const host = window.location.host;
+        const protocol = 'wss://';
         const socketUrl = `${protocol}${host}/ws/app/main/`;
 
         console.log("Connecting to WebSocket:", socketUrl);
-
         try {
             this.socket = new WebSocket(socketUrl);
 
@@ -38,14 +36,19 @@ class WebSocketManager {
                 $store.commit("setWebSocketIsAlive", false);
             };
 
-            this.socket.onclose = () => {
-                console.log("WebSocket disconnected.");
+            this.socket.onclose = (event) => {
+                console.log("WebSocket disconnected.", event.reason);
                 $store.commit("setWebSocketIsAlive", false);
 
                 // Only attempt reconnect if authenticated
                 if ($store.fromState('isAuthenticated')) {
                     setTimeout(() => this.connect(), 2000);
                 }
+            };
+
+            this.socket.onmessage = (event) => {
+                console.log("WebSocket message received:", event.data);
+                // Handle incoming messages here
             };
         } catch (error) {
             console.error("WebSocket connection error:", error);

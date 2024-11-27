@@ -30,6 +30,7 @@ AUTH_USER_MODEL = 'user.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# TODO: add production host
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
@@ -104,7 +105,17 @@ ASGI_APPLICATION = 'app.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'CONFIG': {
+            'capacity': 2000,  # Maximum number of messages that can be in a channel layer
+        },
     },
+}
+
+# Security settings for WebSocket
+CHANNEL_SECURITY = {
+    'SECURE_ONLY': True,
+    'ALLOWED_HOSTS': ALLOWED_HOSTS,
+    'AUTH_TIMEOUT': 20,
 }
 
 # Database

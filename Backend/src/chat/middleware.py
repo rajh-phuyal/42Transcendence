@@ -1,58 +1,53 @@
-from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import AnonymousUser
 from channels.middleware import BaseMiddleware
 from asgiref.sync import sync_to_async
-from django.db import close_old_connections
-import logging
 from django.conf import settings
+import logging
 from core.authentication import CookieJWTAuthentication
+from django.core.exceptions import PermissionDenied
 
-class JWTAuthMiddleware(BaseMiddleware):
+class SocketAuthMiddleware(BaseMiddleware):
     """
     Custom middleware that authenticates the user using JWT cookies
     """
 
     async def __call__(self, scope, receive, send):
-        # Extract token from cookies
-        headers = dict(scope['headers'])
-        cookie_header = headers.get(b'cookie', b'').decode()
+        # Verify if using secure connection in production
+        if not settings.DEBUG and scope['type'] == 'websocket':
+            if scope.get('scheme') != 'wss':
+                logging.error("Rejecting non-WSS connection")
+                raise PermissionDenied("WSS required")
 
-        # Parse cookies
-        cookies = {}
-        if cookie_header:
-            cookies = {
-                cookie.split('=')[0].strip(): cookie.split('=')[1].strip()
-                for cookie in cookie_header.split(';')
-            }
-
-        logging.info(f"Cookies: {cookies}")
-
-        # Create mock request object for the authentication class
-        class MockRequest:
-            def __init__(self, cookies):
-                self.COOKIES = cookies
-
-        request = MockRequest(cookies)
-
+        # Extract and validate cookies
         try:
+            headers = dict(scope['headers'])
+            cookie_header = headers.get(b'cookie', b'').decode()
+
+            # Parse cookies securely
+            cookies = {}
+            if cookie_header:
+                for cookie in cookie_header.split(';'):
+                    if '=' in cookie:
+                        name, value = cookie.strip().split('=', 1)
+                        cookies[name.strip()] = value.strip()
+
+            # Create mock request for authentication
+            request = type('MockRequest', (), {'COOKIES': cookies})()
+
+            # Authenticate without timeout
             auth = CookieJWTAuthentication()
             user_auth = await sync_to_async(auth.authenticate)(request)
 
             if user_auth:
                 user, _ = user_auth
-                logging.info(f"User ID: {user.id}")
-                logging.info(f"User: {user}")
                 scope['user'] = user
             else:
-                logging.info("No valid authentication found")
                 scope['user'] = AnonymousUser()
-                raise Exception("No valid authentication")
+                raise PermissionDenied("Authentication required")
+
+            return await super().__call__(scope, receive, send)
 
         except Exception as e:
-            logging.info(f"Anonymous user due to: {str(e)}")
+            logging.error(f"WebSocket authentication failed: {str(e)}")
             scope['user'] = AnonymousUser()
-            raise e
-
-        close_old_connections()
-
-        return await super().__call__(scope, receive, send)
+            raise

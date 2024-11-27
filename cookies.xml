@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="24.8.6">
   <diagram id="authentication-architecture" name="Authentication Architecture">
-    <mxGraphModel dx="1349" dy="986" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+    <mxGraphModel dx="1428" dy="1044" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="userBrowser" value="User Browser" style="shape=rectangle;whiteSpace=wrap;fillColor=#d9e8fb;" parent="1" vertex="1">
-          <mxGeometry x="300" y="240" width="140" height="60" as="geometry" />
+          <mxGeometry x="220" y="240" width="140" height="60" as="geometry" />
         </mxCell>
         <mxCell id="frontend" value="Frontend (Vanilla JS)" style="shape=rectangle;whiteSpace=wrap;fillColor=#d9e8fb;" parent="1" vertex="1">
           <mxGeometry x="460" y="240" width="180" height="60" as="geometry" />
