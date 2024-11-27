@@ -13,17 +13,16 @@ class SocketAuthMiddleware(BaseMiddleware):
 
     async def __call__(self, scope, receive, send):
         # Verify if using secure connection in production
-        if not settings.DEBUG and scope['type'] == 'websocket':
-            if scope.get('scheme') != 'wss':
-                logging.error("Rejecting non-WSS connection")
-                raise PermissionDenied("WSS required")
+        if scope.get('scheme') != 'wss':
+            logging.error("Rejecting non-WSS connection")
+            raise PermissionDenied("WSS required")
 
         # Extract and validate cookies
         try:
             headers = dict(scope['headers'])
             cookie_header = headers.get(b'cookie', b'').decode()
 
-            # Parse cookies securely
+            # Parse cookies
             cookies = {}
             if cookie_header:
                 for cookie in cookie_header.split(';'):
@@ -34,7 +33,7 @@ class SocketAuthMiddleware(BaseMiddleware):
             # Create mock request for authentication
             request = type('MockRequest', (), {'COOKIES': cookies})()
 
-            # Authenticate without timeout
+            # Authenticate
             auth = CookieJWTAuthentication()
             user_auth = await sync_to_async(auth.authenticate)(request)
 
@@ -50,4 +49,4 @@ class SocketAuthMiddleware(BaseMiddleware):
         except Exception as e:
             logging.error(f"WebSocket authentication failed: {str(e)}")
             scope['user'] = AnonymousUser()
-            raise
+            raise PermissionDenied("Authentication required")

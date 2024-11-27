@@ -1,4 +1,4 @@
-from core.base_views import BaseAuthenticatedView
+from core.authentication import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
@@ -38,10 +38,10 @@ class LoadConversationView(BaseAuthenticatedView):
 
 		# Get offset from the request for pagination
         offset = request.GET.get('offset', 0)
-        
+
         # Validate that the conversation exists
         conversation = Conversation.objects.get(id=conversation_id)
-        
+
         # Check if the sender is a member of the conversation
         if not conversation.members.filter(user=user).exists():
             return error_response(_('You are not a member of this conversation'), status_code=403)
@@ -68,14 +68,14 @@ class LoadConversationView(BaseAuthenticatedView):
 #    #authentication_classes = [JWTAuthentication]  # This tells Django to use JWT authentication
 #    #permission_classes = [IsAuthenticated]  # This tells Django to require authentication to access this view
 #    permission_classes = [AllowAny] #TODO: implement the token-based authentication!
-#    
+#
 #    def get(self, request, *args, **kwargs):
 #        user = request.user
-#        
+#
 #        # Get all conversations where the user is a member
 #        conversation_memberships = ConversationMember.objects.filter(user=user)
 #        conversations = [membership.conversation for membership in conversation_memberships]
-#        
+#
 #        # Serialize only the conversation id and name
 #        serializer = ConversationSerializer(conversations, many=True)
 #        return Response(serializer.data)
@@ -104,7 +104,7 @@ class LoadConversationView(BaseAuthenticatedView):
 #        # Check if sender and receiver are the same
 #        if sender == receiver:
 #            return Response({'error': 'Sender and receiver cannot be the same'}, status=status.HTTP_400_BAD_REQUEST)
-#        
+#
 #        # Check if a conversation between these two users already exists
 #        # TODO: SHOULD BE FINE FOR NOW, BUT NEEDS TO BE FIXED IF WE INTRODUCE GROUP CHATS
 #        # Get the conversation IDs where the sender is a member
@@ -117,7 +117,7 @@ class LoadConversationView(BaseAuthenticatedView):
 #        if existing_conversation:
 #            conversation = existing_conversation.conversation  # Get the conversation object from the ConversationMember instance
 #            return Response({'conversation_id': conversation.id, 'name': conversation.name}, status=status.HTTP_200_OK)
-#        
+#
 #        # Start a transaction to make sure all database operations happen together
 #        try:
 #            with transaction.atomic():
@@ -178,7 +178,7 @@ class LoadConversationView(BaseAuthenticatedView):
 ## Send a message
 #class SendMessageView(BaseAuthenticatedView):
 #    permission_classes = [AllowAny]  # This allows anyone to access this view #TODO: implement the token-based authentication!
-#    @barely_handle_exceptions    
+#    @barely_handle_exceptions
 #    def post(self, request):
 #        from user.models import User
 #        sender_id = request.data.get('sender_id')
@@ -190,23 +190,23 @@ class LoadConversationView(BaseAuthenticatedView):
 #            sender = User.objects.get(id=sender_id)
 #        except User.DoesNotExist:
 #            return Response({'error': f'Invalid sender id: {sender_id}'}, status=status.HTTP_400_BAD_REQUEST)
-#        
+#
 #        # Check if the conversation exists
 #        try:
 #            conversation = Chat.objects.get(id=conversation_id)
 #        except Chat.DoesNotExist:
 #            return Response({'error': f'Invalid conversation id: {conversation_id}'}, status=status.HTTP_400_BAD_REQUEST)
-#        
+#
 #        # Check if the sender is a member of the conversation
 #        try:
 #            ConversationMember.objects.get(conversation=conversation, user=sender)
 #        except ConversationMember.DoesNotExist:
 #            return Response({'error': 'Sender is not a member of the conversation'}, status=status.HTTP_400_BAD_REQUEST)
-#        
+#
 #        # Check if the content is empty
 #        if not content or not content.strip():
 #            return Response({'error': 'Message content cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
-#                            
+#
 #        # Create the message
 #        message = MessageSerializer(data={'sender': sender.id, 'conversation': conversation.id, 'content': content})
 #        if message.is_valid():
@@ -220,7 +220,7 @@ class LoadConversationView(BaseAuthenticatedView):
 #    permission_classes = [AllowAny]  #TODO: implement the token-based authentication!
 #    @barely_handle_exceptions
 #    def post(self, request):
-#        
+#
 #
 #         # Create a simple HTML structure to return the messages
 #        html_content = f"""
