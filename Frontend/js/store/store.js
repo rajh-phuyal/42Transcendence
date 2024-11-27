@@ -14,7 +14,7 @@ class Store {
 
     initializer() {
         this.state = { ...this.initialState };
-        
+
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
@@ -62,7 +62,7 @@ class Store {
     }
 
     clear() {
-        this.state = { ...state };
+        this.state = { ...this.initialState };
         $setLocal("store", JSON.stringify(this.state));
     }
 }

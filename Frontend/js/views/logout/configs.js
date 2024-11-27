@@ -13,7 +13,7 @@ export default {
             navBar.style.display = 'block';
 
             clearInterval(this.intervalId);
-            this.router('/auth', { login: true });
+            this.router('/auth');
         }
     },
 
@@ -31,7 +31,7 @@ export default {
             this.$auth.logout();
 
             $callToast("success", 'We would say "see you soon" but we are always watching...');
-            
+
             // do a countdown to redirect
             const countdown = $id('login-redirect-countdown');
 
