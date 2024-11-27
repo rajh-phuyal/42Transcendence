@@ -148,9 +148,8 @@ class AuthCard extends HTMLElement {
 			default:
 				break ;
 		}
-		if (errorMsg.length != 0) {
+		if (errorMsg.length != 0)
 			$callToast("error", errorMsg);
-		}
 		return (errorMsg.length != 0);
 	}
 
