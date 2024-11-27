@@ -9,7 +9,7 @@ Logs/*
 
 # Translations
 *.mo
-*.pa
+*.po
 
 # Database files
 Database/postgres-data
