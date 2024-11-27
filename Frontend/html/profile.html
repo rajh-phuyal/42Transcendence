@@ -202,9 +202,29 @@
     </div>
 
   </div>
+  <!-- Friends List Modal -->
+  <div class="modal fade" id="friends-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" id="friends-list-modal-content">
+        <div class="modal-body" id="friends-list-modal-body">
+          <h1>Friends List</h1>
+          <div id="friends-list-modal-search-bar-container">
+            <input type="text" id="friends-list-modal-search-bar" placeholder="search">
+            <barely-a-button id="friends-list-modal-search-bar-button" name="search" buttonclass="rect-button"></barely-a-button>
+          </div>
+          <div >
+            <ul id="friends-list-modal-list" class="list-group">
+              
+            </ul>
+            <h3 id="friends-list-modal-list-result-not-found-message">No Results Found</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-    
+
 <style>
     #profie-view {
         height: 100%;
@@ -212,6 +232,57 @@
         color: black;
     }
 
+    /* Friends list */
+
+    #friends-list-modal-search-bar{
+      background-color: black;
+      color: white;
+      padding: 4%;
+      height: 90%;
+      width: 60%;
+      margin-right: 4%;
+    }
+    
+    #friends-list-modal-search-bar-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 3%;
+      height: 8%;
+      width: 90%;
+    }
+
+    .friends-list-modal-list-element{
+      display: flex;
+      flex-direction: row;
+      height: 8vh;
+      background-color: #FFF6D4;
+      border: black;
+      align-items: center;
+    }
+
+    .friends-list-modal-list-element-image {
+      height: 7vh;
+      margin: 0vh 1vw;
+
+    }
+    .friends-list-modal-list-element-username {
+      margin: 0vh 6vw 0vh 2vw;
+      width: 4vw;
+    }
+
+    #friends-list-modal-list {
+      display: flex;
+      flex-direction: column;
+      height: 40vh;
+      overflow-y: auto;
+    }
+
+    #friends-list-modal-body {
+      display: flex;
+      flex-direction: column;
+      height: 70vh;
+    }
 
     /* Invite for Game  */
     
@@ -342,20 +413,19 @@
 
     .button {
         height: 8vh;
-        width: 10vh;
         margin: 0vh 1vw;
         background-image: "";
     }
 
     .button:hover {
         height: 9vh;
-        width: 11vh;
         margin: 0vh 0.75vw;
 
         border-color: black;
         border-radius: 3px;
         border-width: 4px;
-    }
+        cursor: pointer;
+      }
 
     /* .game-stats-parameters{
         margin: 0vh 0vh 0vh 2vw;
