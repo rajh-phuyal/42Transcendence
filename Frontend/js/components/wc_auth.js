@@ -251,6 +251,7 @@ class AuthCard extends HTMLElement {
 	}
 
 	async registerButtonClick() {
+		console.log("registerButtonClick");
 		const loginButton = this.shadow.getElementById("login-button");
 		const registerButton = this.shadow.getElementById("register-button");
 		const registerSection = this.shadow.getElementById("register-section");

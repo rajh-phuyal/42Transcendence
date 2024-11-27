@@ -167,8 +167,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True # [astein:] for internationalization
-USE_L10N = True # [astein:] for localization (formats dates, numbers, etc., based on locale)
+# TODO: check how the pluralization is breaking on start up
+USE_I18N = False # [astein:] for internationalization
+USE_L10N = False # [astein:] for localization (formats dates, numbers, etc., based on locale)
 USE_TZ = True	# [astein:] for timezone support
 
 # Supported languages | NOTE: Django works with lowercase language codes!
