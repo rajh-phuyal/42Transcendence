@@ -182,6 +182,9 @@ LANGUAGES = [
     ('ne-np', ('Nepali (Nepal)'))           # Nepali (Nepal)
 ]
 
+# Ensure locale directory exists
+os.makedirs(BASE_DIR / 'locale', exist_ok=True)
+
 # Path for Locale Files
 LOCALE_PATHS = [
     BASE_DIR / 'locale',  # Ensure this directory exists

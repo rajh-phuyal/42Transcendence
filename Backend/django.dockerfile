@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y gettext && rm -rf /var/lib/apt/lists/*
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=app.settings
-ENV PYTHONPATH=/Backend/src 
+ENV PYTHONPATH=/Backend/src
 
 # Changing the working directory (cd)
 WORKDIR /app
