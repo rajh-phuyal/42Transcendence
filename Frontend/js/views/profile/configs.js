@@ -6,6 +6,7 @@ import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -313,10 +314,33 @@ export default {
             });
         },
 
+        createConversation() {
+            const message = this.domManip.$id("new-chat-modal-textarea").value;
+            console.log("id:", this.result.id);
+            console.log("message:", message);
+            console.log("username:", this.result.username);
+            this.hideModal("new-chat-modal");
+            call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message, "name": this.result.username}).then(data => {
+                $callToast("success", data.message);
+                router(`/profile`, {id: this.result.id});
+            })
+
+            
+        },
+
+        openChatModal() {
+            let modalElement = this.domManip.$id("new-chat-modal");
+            const modal = new bootstrap.Modal(modalElement);
+            this.domManip.$id("new-chat-modal-new-chat-text").textContent = translate('profile', "createNewConversation") + this.result.username;
+            modal.show();
+        },
+
         messageMethod() {
 
             if (this.result.chatId)
                 router(`/chat`, {id: this.result.chatId});
+            else
+                this.openChatModal();
         },
 
         logoutMethod() {
@@ -438,6 +462,8 @@ export default {
             this.domManip.$off(element, "click", this.changeBlockMethod);
             element = this.domManip.$id("friendship-modal-cancel-button");
             this.domManip.$off(element, "click", this.cancelButton);
+            element = this.domManip.$id("new-chat-modal-create-button");
+            this.domManip.$off(element, "click", this.createConversation);
 
         },
 
@@ -499,6 +525,9 @@ export default {
                 this.domManip.$on(element, "click", this.changeBlockMethod);
                 element = this.domManip.$id("friendship-modal-cancel-button");
                 this.domManip.$on(element, "click", this.cancelButton);
+                element = this.domManip.$id("new-chat-modal-create-button");
+                this.domManip.$on(element, "click", this.createConversation);
+                
             })
             // on error?
         },

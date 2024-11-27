@@ -10,7 +10,7 @@ export default function $nav() {
         { id: 'tournament-nav', path: '/tournament' },
         { id: 'chat-nav', path: '/chat', params: { id: undefined }},
         { id: 'logout-nav', path: '/logout' },
-        { id: 'profile-nav', path: '/profile', params: { id: 4 } },
+        { id: 'profile-nav', path: '/profile', params: { id: 7 } },
         { id: 'login-nav', path: '/auth', params: { login: true } },
         { id: 'register-nav', path: '/auth', params: { login: false } }
     ];

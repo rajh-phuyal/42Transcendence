@@ -216,13 +216,17 @@ export default {
                 this.conversationParams = data;
                 this.populateConversationHeader();
                 this.populateConversationMessages(data.data);
+                this.showChatElements();
             });
         },
 
         createConversationCard(element) {
             const conversation = document.createElement("div");
             this.conversations.push(element.conversationId);
-            conversation.className = "chat-view-conversation-card";
+            if (element.conversationId == this.routeParams.id)
+                this.higlightCard(conversation);
+            else
+                conversation.className = "chat-view-conversation-card";
             conversation.id = "chat-view-conversation-card-" +  element.conversationId; 
             conversation.setAttribute("conversation_id", element.conversationId);
             conversation.setAttribute("last-message-time", element.lastUpdate);
@@ -282,7 +286,21 @@ export default {
             for (const element of conversation) {
                 this.conversationsContainer.appendChild(element); // Moves each element to the end in sorted order
             }
-        }
+        },
+
+        hideChatElements() {
+            this.domManip.$id("chat-view-header-invite-for-game-image").style.display = "none";
+            this.domManip.$id("chat-view-header-subject-container").style.display = "none";
+            this.domManip.$id("chat-view-header-avatar").style.display = "none";
+            this.domManip.$id("chat-view-text-field-container").style.display = "none";
+        },
+
+        showChatElements() {
+            this.domManip.$id("chat-view-header-invite-for-game-image").style.display = "block";
+            this.domManip.$id("chat-view-header-subject-container").style.display = "flex";
+            this.domManip.$id("chat-view-header-avatar").style.display = "block";
+            this.domManip.$id("chat-view-text-field-container").style.display = "block";
+        },
 
     },
 
@@ -312,6 +330,7 @@ export default {
 
             // TODO: when params are not defined the routeParam.id crashes
             //          maybe the routeParam.id should be defined if no params are set.
+            this.hideChatElements();
             if (this.routeParams.id)
                 this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");

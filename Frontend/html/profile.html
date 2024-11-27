@@ -202,6 +202,19 @@
     </div>
 
   </div>
+  <!-- New Chat Modal -->
+  <div class="modal fade" id="new-chat-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body" id="new-chat-modal-body">
+          <h3 id="new-chat-modal-new-chat-text" class="new-chat-modal-text"></h3>
+          <textarea name="yooo" id="new-chat-modal-textarea"></textarea>
+          <barely-a-button id="new-chat-modal-create-button" class="new-chat-modal-buttons" name="Create" buttonclass="rect-button"></barely-a-button>
+        
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
     
@@ -212,6 +225,11 @@
         color: black;
     }
 
+    /* New Chat  */
+    #new-chat-modal-body {
+      display: flex;
+      flex-direction: column;
+    }
 
     /* Invite for Game  */
     

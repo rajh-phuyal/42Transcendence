@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-26 18:17+0000\n"
+"POT-Creation-Date: 2024-11-27 08:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,67 +59,71 @@ msgstr ""
 msgid "top secret"
 msgstr ""
 
-#: chat/views.py:38
+#: chat/views.py:33
 msgid "No conversations found"
 msgstr "Розмови не знайдено"
 
-#: chat/views.py:39
+#: chat/views.py:34
 msgid "Conversations loaded successfully"
 msgstr "Розмови успішно завантажені"
 
-#: chat/views.py:51
+#: chat/views.py:46
 #, fuzzy
 #| msgid "File type not supported"
 msgid "Group chats are not supported yet"
 msgstr "Тип файлу не підтримується"
 
-#: chat/views.py:67
+#: chat/views.py:62
 msgid "**This message is hidden because you are blocking the user**"
 msgstr ""
 
-#: chat/views.py:86
+#: chat/views.py:81
 msgid "Messages loaded successfully"
 msgstr "Повідомлення успішно завантажені"
 
-#: chat/views.py:92
+#: chat/views.py:87
 #, fuzzy
 #| msgid "No conversations found"
 msgid "Conversation not found"
 msgstr "Розмови не знайдено"
 
-#: chat/views.py:98
+#: chat/views.py:93
 msgid "You are not a member of this conversation"
 msgstr "Ви не є учасником цієї розмови"
 
-#: chat/views.py:104
+#: chat/views.py:99
 #, fuzzy
 #| msgid "You are not a member of this conversation"
 msgid "No other users found in the conversation"
 msgstr "Ви не є учасником цієї розмови"
 
-#: chat/views.py:110
+#: chat/views.py:105
 msgid "Message not found"
 msgstr ""
 
-#: chat/views.py:137
+#: chat/views.py:132
 msgid "We know that you haven't seen the messages below..."
 msgstr ""
 
-#: chat/views.py:67 chat/views.py:70
+#: chat/views.py:175 chat/views.py:179
 msgid "No 'userIds' provided"
 msgstr ""
 
-#: chat/views.py:72
-msgid "Group chat is not yet supported"
+#: chat/views.py:177
+msgid "No 'initialMessage' provided"
 msgstr ""
 
-#: chat/views.py:81
+#: chat/views.py:189
 #, fuzzy
 #| msgid "Conversations loaded successfully"
 msgid "Conversation already exists"
 msgstr "Розмови успішно завантажені"
 
-#: chat/views.py:90
+#: chat/views.py:193
+msgid "No 'name' provided"
+msgstr ""
+
+#: chat/views.py:209
 #, fuzzy
 #| msgid "Conversations loaded successfully"
 msgid "Conversation created successfully"
