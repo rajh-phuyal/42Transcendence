@@ -3,15 +3,13 @@
 # Environment-specific files and directories
 Environments/*
 
-# Localizations / Translations
-*.mo
-
 # Logs
 Logs/*
 **/*.log
 
 # Translations
 *.mo
+*.pa
 
 # Database files
 Database/postgres-data
