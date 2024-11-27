@@ -200,9 +200,9 @@ class RelationshipView(BaseAuthenticatedView):
 class ListFriendsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
-        user = User.objects.get(id=id)
-        cool_with_entries = IsCoolWith.objects.filter(Q(requester=user) | Q(requestee=user))
-        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'user_id': user.id})
+        target_user = User.objects.get(id=id)
+        cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
+        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'requester_user_id': request.user.id, 'target_user_id': target_user.id})
         return success_response(_("Friends list of user"), friends=serializer.data)
 
 class UpdateAvatarView(BaseAuthenticatedView):

@@ -1,14 +1,11 @@
 # Environment-specific files and directories
 Environments/*
 
-# Localizations / Translations
-*.mo
-
 # Logs
 Logs/*
 **/*.log
 
-# Translation
+# Translations
 *.mo
 *.po
 
@@ -34,3 +31,6 @@ example.enviroment
 Backend/src/authentication/migrations/*
 Backend/src/chat/migrations/*
 Backend/src/user/migrations/*
+
+# .po files
+Backend/src/authentication/locale/*/*/*.po
