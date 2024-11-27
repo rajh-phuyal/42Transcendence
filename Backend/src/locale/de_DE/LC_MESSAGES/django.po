@@ -105,6 +105,26 @@ msgstr ""
 msgid "We know that you haven't seen the messages below..."
 msgstr ""
 
+#: chat/views.py:67 chat/views.py:70
+msgid "No 'userIds' provided"
+msgstr ""
+
+#: chat/views.py:72
+msgid "Group chat is not yet supported"
+msgstr ""
+
+#: chat/views.py:81
+#, fuzzy
+#| msgid "Conversations loaded successfully"
+msgid "Conversation already exists"
+msgstr "Unterhaltungen erfolgreich geladen"
+
+#: chat/views.py:90
+#, fuzzy
+#| msgid "Conversations loaded successfully"
+msgid "Conversation created successfully"
+msgstr "Unterhaltungen erfolgreich geladen"
+
 #: core/base_views.py:24
 #, fuzzy
 #| msgid "User info updated"

@@ -18,11 +18,6 @@ from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
 import logging
 
-class LoadUnreadMessagesView(BaseAuthenticatedView):
-    ...
-	# TODO: return the unread messages as a single int like:
-    #			{"unread":4}
-
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):
@@ -168,6 +163,91 @@ class LoadConversationView(BaseAuthenticatedView):
             "userIds": list(member_ids),
             "data": serialized_messages.data,
         }
+
+class CreateConversationView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def post(self, request):
+        user = request.user
+        userIds = request.data.get('userIds', [])
+        initialMessage = request.data.get('initialMessage')
+        conversation_name = request.data.get('name', None)
+        if not userIds:
+           return error_response(_("No 'userIds' provided"), status_code=400)
+        if not initialMessage:
+           return error_response(_("No 'initialMessage' provided"), status_code=400)
+        if len(userIds) == 0:
+            return error_response(_("No 'userIds' provided"), status_code=400)
+        if len(userIds) == 1:
+            # A PM conversation
+            is_group_conversation = False
+            other_user_id = userIds[0]
+            other_user = User.objects.get(id=other_user_id)
+            # Check if the conversation already exists
+            conversation_member = ConversationMember.objects.filter(Q(user=user) | Q(user=other_user),conversation__is_group_conversation=False)
+            if conversation_member.exists():
+                conversation_id = conversation_member.first().conversation.id
+                return success_response(_('Conversation already exists'), data={'conversation_id': conversation_id})
+        elif len(userIds) > 1:
+            # A group conversation
+            if not conversation_name:
+                return error_response(_("No 'name' provided"), status_code=400)
+            is_group_conversation = True
+        
+        # Start a transaction to make sure all database operations happen together
+        with transaction.atomic():
+            # Create the Conversation
+            new_conversation = Conversation.objects.create(name=conversation_name, is_group_conversation=is_group_conversation, is_editable=True)
+            ConversationMember.objects.create(user=user, conversation=new_conversation)
+            if is_group_conversation:
+                for userId in userIds:
+                    other_user = User.objects.get(id=userId)
+                    ConversationMember.objects.create(user=other_user, conversation=new_conversation)
+            else:
+                ConversationMember.objects.create(user=other_user, conversation=new_conversation)
+            Message.objects.create(user=user, conversation=new_conversation, content=initialMessage)
+
+        return success_response(_('Conversation created successfully'), data={'conversation_id': new_conversation.id})
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ################################################################################
 # BELOW IS OLD CODE!!!
