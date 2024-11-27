@@ -18,55 +18,56 @@ class Auth {
 
     async isUserAuthenticated() {
         const now = Date.now();
-        console.log("Checking authentication"); // Debug log
+        console.log("Checking authentication");
 
         // Return cached result if within timeout window
         if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
-            console.log("Using cached auth result:", this.isAuthenticated); // Debug log
+            console.log("Using cached auth result:", this.isAuthenticated);
             return this.isAuthenticated;
         }
 
         // If there's already a check in progress, return that promise
         if (this._authCheckPromise) {
-            console.log("Using existing auth check promise"); // Debug log
+            console.log("Using existing auth check promise");
             return this._authCheckPromise;
         }
 
         // Create new auth check promise
-        this._authCheckPromise = (async () => {
+        return await (async () => {
             try {
-                await call('auth/verify/', 'GET');
-                this.isAuthenticated = true;
-                console.log("Auth check successful"); // Debug log
+                const response = await call('auth/verify/', 'GET');
+                if (!response.isAuthenticated) {
+                    return false;
+                }
+
+                this.isAuthenticated = response.isAuthenticated;
+                $store.commit('setIsAuthenticated', true);
+                console.log("Auth check successful");
 
                 if (!$store.fromState('webSocketIsAlive')) {
+                    console.log("Connecting WebSocket");
                     WebSocketManager.connect();
                 }
             } catch (error) {
-                console.log("Auth check failed:", error); // Debug log
+                console.log("Auth check failed:", error);
                 this.isAuthenticated = false;
             } finally {
                 this._lastCheckTimestamp = now;
                 this._authCheckPromise = null;
             }
+
             return this.isAuthenticated;
         })();
-
-        return this._authCheckPromise;
     }
 
     async refreshToken() {
         try {
-            const response = await fetch('/api/auth/token/refresh/', {
-                method: 'POST',
-                credentials: 'include', // Important for sending/receiving cookies
-            });
+            const response = await call('auth/token/refresh/', 'POST');
 
             if (!response.ok) {
                 throw new Error('Token refresh failed');
             }
 
-            // No need to store tokens as they're now in HttpOnly cookies
             return true;
         } catch (error) {
             console.error('Error refreshing token:', error);
@@ -81,19 +82,18 @@ class Auth {
      */
     async verifyJWTToken() {
         try {
-            const response = await fetch('/api/auth/verify/', {
-                method: 'GET',
-                credentials: 'include'
-            });
+            const response = await call('auth/verify/', 'GET');
 
             if (response.status === 401) {
                 // Token is expired, try to refresh
                 const refreshed = await this.refreshToken();
                 if (refreshed) {
-                    // Refresh WebSocket connection after token refresh
-                    WebSocketManager.refreshToken();
+                    $store.commit('setIsAuthenticated', true);
+                    console.log("Reconnecting WebSocket");
+                    WebSocketManager.reconnect();
                     return true;
                 }
+
                 return false;
             }
 

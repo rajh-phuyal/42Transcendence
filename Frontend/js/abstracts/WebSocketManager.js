@@ -5,6 +5,11 @@ class WebSocketManager {
         this.socket = null;
     }
 
+    retryConnectionPostAuth() {
+        console.log("Retrying WebSocket connection after authentication");
+        this.connect();
+    }
+
     // Connect to WebSocket with the provided token
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -15,12 +20,12 @@ class WebSocketManager {
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
             console.log("Not connecting WebSocket - user not authenticated");
+            $store.addMutationListener('setIsAuthenticated', this.retryConnectionPostAuth);
             return;
         }
 
         const host = window.location.host;
-        const protocol = 'wss://';
-        const socketUrl = `${protocol}${host}/ws/app/main/`;
+        const socketUrl = `wss://${host}/ws/app/main/`;
 
         console.log("Connecting to WebSocket:", socketUrl);
         try {
@@ -39,16 +44,10 @@ class WebSocketManager {
             this.socket.onclose = (event) => {
                 console.log("WebSocket disconnected.", event.reason);
                 $store.commit("setWebSocketIsAlive", false);
-
-                // Only attempt reconnect if authenticated
-                if ($store.fromState('isAuthenticated')) {
-                    setTimeout(() => this.connect(), 2000);
-                }
             };
 
             this.socket.onmessage = (event) => {
                 console.log("WebSocket message received:", event.data);
-                // Handle incoming messages here
             };
         } catch (error) {
             console.error("WebSocket connection error:", error);
@@ -67,7 +66,7 @@ class WebSocketManager {
         }
     }
 
-    refreshToken() {
+    reconnect() {
         this.disconnect();
         this.connect();
     }

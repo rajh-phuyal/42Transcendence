@@ -1,9 +1,7 @@
 // abstract out the fetch api to make it easier to call the api
-import $auth from '../auth/authentication.js';
-import { $id } from './dollars.js'
 import $callToast from './callToast.js';
 
-async function call(url, method, data) {
+async function call(url, method, data = null) {
     const fullUrl = `${window.location.origin}/api/${url}`;
 
     const headers = {
@@ -14,7 +12,7 @@ async function call(url, method, data) {
         method: method,
         headers: headers,
         credentials: 'include',
-        ...(url == "user/relationship/" || (method !== 'GET' && method !== 'DELETE')) ? {
+        ...(url == "user/relationship/" || (data && method !== 'GET' && method !== 'DELETE')) ? {
             body: JSON.stringify(data),
         } : {},
     };
