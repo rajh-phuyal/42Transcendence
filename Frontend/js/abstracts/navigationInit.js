@@ -8,9 +8,9 @@ export default function $nav() {
         { id: 'home-nav', path: '/home' },
         { id: 'game-nav', path: '/game' },
         { id: 'tournament-nav', path: '/tournament' },
-        { id: 'chat-nav', path: '/chat', params: { id: 1 }},
+        { id: 'chat-nav', path: '/chat', params: { id: undefined }},
         { id: 'logout-nav', path: '/logout' },
-        { id: 'profile-nav', path: '/profile', params: { id: $store.fromState("user").id } },
+        { id: 'profile-nav', path: '/profile', params: { id: 4 } },
         { id: 'login-nav', path: '/auth', params: { login: true } },
         { id: 'register-nav', path: '/auth', params: { login: false } }
     ];

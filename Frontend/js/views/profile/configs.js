@@ -314,7 +314,9 @@ export default {
         },
 
         messageMethod() {
-            router("/chat");
+
+            if (this.result.chatId)
+                router(`/chat`, {id: this.result.chatId});
         },
 
         logoutMethod() {
