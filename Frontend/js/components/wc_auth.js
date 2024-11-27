@@ -5,6 +5,7 @@ import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
+import $callToast from '../abstracts/callToast.js';
 
 // TODO put the css styling in a css file (for all web components)
 
@@ -30,6 +31,11 @@ const eventListenersConfig = [
 		callback: "backButtonClick"
 	},
 	{
+		class: ".show-password-button",
+		event: "click",
+		callback: "togglePasswordVisibility"
+	},
+	{
 		class: ".usernameInput",
 		event: "keypress",
 		callback: "handleKeyPress"
@@ -37,7 +43,8 @@ const eventListenersConfig = [
 	{
 		class: ".passwordInput",
 		event: "keypress",
-		callback: "handleKeyPress"
+		callback: "handleKeyPress",
+		keyUp: "passwordMathcCheck"
 	}
 ];
 
@@ -49,7 +56,13 @@ class AuthCard extends HTMLElement {
 		this.displayMode = "home";
         this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
         this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
-        this.passwordConfirmationPlaceholder = "confirm password";
+        this.passwordConfirmationPlaceholder = translate("auth", "passwordConfirmationPlaceholder")
+		this.loginButton = translate("auth", "loginButton");
+		this.registerButton = translate("auth", "registerButton")
+		this.submitButton = translate("auth", "submitButton");
+		this.backButton = translate("auth", "backButton");
+		this.passwordVisibilityButton = translate("auth", "displayPassword");
+		this.transitionTime = 300;
     }
 
     static get observedAttributes() {
@@ -77,61 +90,66 @@ class AuthCard extends HTMLElement {
 				const elements = this.shadow.querySelectorAll(config.class);
 				elements.forEach((element) => {
 					element.addEventListener(config.event, this[config.callback].bind(this));
+					if (config.keyUp)
+						element.addEventListener("keyup", this[config.keyUp].bind(this));
 				});
 			}
 		}
+		document.addEventListener('keydown', this.handleEscapePress.bind(this));
+    }
+
+	disconnectedCallback() {
+        document.removeEventListener('keydown', this.handleEscapePress);
+    }
+    
+    handleEscapePress(event) {
+        if (event.key === "Escape" && this.displayMode !== "home") {
+            this.backButtonClick();
+        }
     }
 
 	loginErrorMessages(username, password) {
-		let errorMsg = "";
+		let error = false;
 		if (username.value === "" || username.value === null) {
 			username.style.border = "2px solid red";
-			errorMsg += "username field";
+			error = true;
 		}
 		if (password.value === "" || password.value === null) {
 			password.style.border = "2px solid red";
-			if (errorMsg.length != 0)
-				errorMsg += " and ";
-			errorMsg += "password field"
+			error = true;
 		}
-		if (errorMsg.length != 0) {
-			errorMsg += " must be filled";
-			window.alert(errorMsg);
-		}
-		return (errorMsg.length != 0);
+		return (error);
 	}
 
 	regiterErrorMessages(username, password, passwordConfirmation) {
 		let errorMsg = "";
+		const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\W)(?!.* ).{8,}$/;
 		switch (true) {
 			case username.value === "" || username.value === null:
 				username.style.border = "2px solid red";
-				errorMsg += "username field";
 			case password.value === "" || password.value === null:
 				password.style.border = "2px solid red";
-				if (errorMsg.length != 0)
-					errorMsg += " and ";
-				errorMsg += "password field";
 			case passwordConfirmation.value === "" || passwordConfirmation.value === null:
 				passwordConfirmation.style.border = "2px solid red";
-				if (errorMsg.length != 0)
-					errorMsg += " and ";
-				errorMsg += "password confirmation field";
 				break ;
 			case password.value != passwordConfirmation.value:
 				password.style.border = "2px solid red";
 				passwordConfirmation.style.border = "2px solid red";
 				if (errorMsg.length != 0)
-					errorMsg += " and ";
-				errorMsg += "passwords do not match";
+					errorMsg += " and "; // TODO Translate
+				errorMsg += "passwords do not match"; // TODO Translate
 				break ;
+			case !passwordRegex.test(password.value):
+				password.style.border = "2px solid red";
+				passwordConfirmation.style.border = "2px solid red";
+				if (errorMsg.length != 0)
+					errorMsg += " and "; // TODO Translate
+				errorMsg += "password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number and one special character"; // TODO Translate
 			default:
 				break ;
 		}
-		if (errorMsg.length != 0) {
-			errorMsg += " must be filled";
-			window.alert(errorMsg);
-		}
+		if (errorMsg.length != 0)
+			$callToast("error", errorMsg);
 		return (errorMsg.length != 0);
 	}
 
@@ -197,8 +215,7 @@ class AuthCard extends HTMLElement {
     handleKeyPress(event) {
 		if (event.key === 'Enter')
 			this.submitClick();
-		if (event.target.classList.contains("usernameInput")
-			|| event.target.classList.contains("passwordInput"))
+		if (event.target.classList.contains("usernameInput"))
 			event.target.style.border = "3px solid #FFF6D4";
     }
 
@@ -214,13 +231,13 @@ class AuthCard extends HTMLElement {
 		loginButton.classList.add("fade");
 		registerButton.classList.add("fade");
 
-		await this.delay(1000);
+		await this.delay(this.transitionTime);
 
 		loginButton.style.display = "none";
 		registerButton.style.display = "none";
 		loginSection.style.display = "flex";
 
-		await this.delay(100);
+		await this.delay(this.transitionTime);
 		loginSection.classList.remove("fade");
 		this.displayMode = "login";
 	}
@@ -233,12 +250,12 @@ class AuthCard extends HTMLElement {
 		loginButton.classList.add("fade");
 		registerButton.classList.add("fade");
 
-		await this.delay(1000);
+		await this.delay(this.transitionTime);
 		loginButton.style.display = "none";
 		registerButton.style.display = "none";
 		registerSection.style.display = "flex";
 
-		await this.delay(100);
+		await this.delay(this.transitionTime);
 		registerSection.classList.remove("fade");
 		this.displayMode = "register";
 	}
@@ -253,38 +270,37 @@ class AuthCard extends HTMLElement {
 		loginSection.classList.add("fade");
 		registerSection.classList.add("fade");
 
-		await this.delay(1000);
+		await this.delay(this.transitionTime);
 
 		loginSection.style.display = "none";
 		registerSection.style.display = "none";
 		loginButton.style.display = "block";
 		registerButton.style.display = "block";
 
-		await this.delay(100);
+		await this.delay(this.transitionTime);
 		loginButton.classList.remove("fade");
 		registerButton.classList.remove("fade");
 		this.displayMode = "home";
 	}
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "login") {
-            if (newValue === "true" || newValue === "True")
-            {
-                this.login = true;
-                this.primaryButton = translate("auth", "loginButton")
-                this.secundaryButton = translate("auth", "registerButton")
-				this.backButton = "Back";
-            }
-            else
-            {
-				this.login = false;
-                this.primaryButton = translate("auth", "registerButton")
-                this.secundaryButton = translate("auth", "loginButton")
-				this.backButton = "Back";
-            }
-        }
-        this.render();
-    }
+	togglePasswordVisibility(event) {
+		event.target.previousElementSibling.type = event.target.previousElementSibling.type === "password" ? "text" : "password";
+		event.target.textContent = event.target.textContent === translate('auth', 'displayPassword') ?
+			translate("auth", "hidePassword") : translate("auth", "displayPassword");
+	}
+
+	passwordMathcCheck() {
+		const passwordField = this.shadow.querySelectorAll(".password-register");
+		if (passwordField[0].value === passwordField[1].value) {
+			passwordField[0].style.border = "3px solid #FFF6D4";
+			passwordField[1].style.border = "3px solid #FFF6D4";
+			console.log("passwords match");
+		} else {
+			passwordField[0].style.border = "3px solid red";
+			passwordField[1].style.border = "3px solid red";
+			console.log("passwords do not match");
+		}
+	}
 
     render() {
         this.hideNav();
@@ -401,28 +417,61 @@ class AuthCard extends HTMLElement {
 			.back-to-main-buton:hover {
 				background-color: red;
 			}
+
+			.show-password-button {
+				position: absolute;
+				right: calc(10% - 1.5rem);
+				top: calc(50% - 1.5rem);
+				width: auto;
+				height: 3rem;
+				font-size: 1.5rem;
+				font-family: 'Courier';
+				font-weight: 700;
+				cursor: pointer;
+				border: 1px solid #FFF6D4;
+				background-color: #100C09;
+				border-radius: 0.2rem;
+				color: #FFF6D4;
+			}
+
+			#password-register-visibility-toogle-button {
+				right: calc(10% - 1.5rem);
+				top: calc(40% - 2rem);
+			}
+
+			#password-confirmation-visibility-toogle-button {
+				right: calc(10% - 1.5rem);
+				top: calc(54% - 1rem);
+			}
             </style>
 
             <div class="main-container">
-				<button id="login-button">LOGIN</button>
-				<button id="register-button">REGISTER</button>
+
+				<button id="login-button">${this.loginButton}</button>
+				<button id="register-button">${this.registerButton}</button>
+
 				<section id="login-section" style="display:none;" class="fade">
 					<input id="username-login-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
 					<input id="password-login-input" class="passwordInput" placeholder="${this.passwordPlaceholder}" type="Password">
+					<button class="show-password-button">${this.passwordVisibilityButton}</button>
 					<div class="buttons-container">
-						<button id="submit-login" class="submit-button">${this.primaryButton}</button>
+						<button id="submit-login" class="submit-button">${this.submitButton}</button>
 						<button class="back-to-main-button">${this.backButton}</button>
 					</div>
 				</section>
+
 				<section id="register-section" style="display:none;" class="fade">
 					<input id="username-register-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
 					<input id="password-register-input" class="passwordInput password-register" placeholder="${this.passwordPlaceholder}" type="Password">
+					<button id="password-register-visibility-toogle-button" class="show-password-button">${this.passwordVisibilityButton}</button>
 					<input class="password-confirmation-input passwordInput password-register" placeholder="${this.passwordConfirmationPlaceholder}" type="Password">
+					<button id="password-confirmation-visibility-toogle-button" class="show-password-button">${this.passwordVisibilityButton}</button>
 					<div class="buttons-container">
-						<button id="submit-register" class="submit-button">${this.primaryButton}</button>
+						<button id="submit-register" class="submit-button">${this.submitButton}</button>
 						<button class="back-to-main-button">${this.backButton}</button>
 					</div>
 				</section>
+				
 			</div>
 			`;
 		}
