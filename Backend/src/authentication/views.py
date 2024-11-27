@@ -15,7 +15,7 @@ from django.utils.translation import gettext as _, activate
 from core.decorators import barely_handle_exceptions
 
 
-class RegisterView(generics.CreateAPIView):
+class RegisterView(APIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
@@ -48,25 +48,23 @@ class RegisterView(generics.CreateAPIView):
 
         user = serializer.instance
         user.language = preferred_language
-        refresh = RefreshToken.for_user(user)
 
+        refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
 
-        response_data = {
+        response = Response({
             "userId": user.id,
             "username": user.username,
             "language": user.language,
-        }
+        })
 
         # Set the cookies
-        response = set_jwt_cookies(
-            response=Response(response_data),
+        return set_jwt_cookies(
+            response=response,
             access_token=access_token,
             refresh_token=refresh_token
         )
-
-        return response
 
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer
@@ -101,7 +99,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
                 }
             )
 
-            # Remove tokens from response data since they're now in cookies
+            # Remove tokens from response data as they're now in cookies
             response.data.pop('access', None)
             response.data.pop('refresh', None)
 
@@ -118,16 +116,14 @@ class InternalTokenObtainPairView(TokenObtainPairView):
 
 class LogoutView(APIView):
     def post(self, request):
-        response = success_response(_("Successfully logged out"), status_code=status.HTTP_200_OK)
-        unset_jwt_cookies(response)
-        return response
+        return unset_jwt_cookies(success_response(_("Successfully logged out")))
 
 class TokenVerifyView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return success_response(_("Token is valid"), status_code=status.HTTP_200_OK, **{
+        return success_response(_("Token is valid"), **{
             'userId': request.user.id,
             'username': request.user.username,
             'isAuthenticated': True
