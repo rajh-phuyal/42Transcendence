@@ -4,6 +4,7 @@ from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
+from chat.models import Conversation
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
@@ -12,7 +13,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     lastName = serializers.CharField(source='last_name', default="Doe")
     online = serializers.SerializerMethodField()
     lastLogin = serializers.SerializerMethodField()
-    chatId = serializers.CharField(default=42)
+    chatId = serializers.SerializerMethodField()
     newMessage = serializers.BooleanField(default=True)
     relationship = serializers.SerializerMethodField()
     stats = serializers.SerializerMethodField()
@@ -63,6 +64,19 @@ class ProfileSerializer(serializers.ModelSerializer):
                 "total": 0.50
             }
         }
+    
+    def get_chatId(self, obj):
+        # `requester` is the current authenticated user
+        requester = self.context['request'].user
+        # `requested` is the user object being serialized (from the URL)
+        requested = obj
+        # Check if the requester and requested are in the same conversation
+        conversation_id = Conversation.objects.filter(
+            is_group_conversation=False,
+            members__user=requester
+        ).filter(members__user=requested
+        ).values_list('id', flat=True).first()
+        return conversation_id
 
 # This will prepare the data for endpoint '/user/friend/list/<int:id>/'
 class ListFriendsSerializer(serializers.ModelSerializer):
