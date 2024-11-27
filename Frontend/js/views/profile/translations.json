@@ -1,10 +1,114 @@
 {
-    "template": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+    "confirmRemoveFriend": {
+        "en-US": "Do you want to remove this user from your friends list?",
+        "pt-PT": "Deseja remover este utilizador da sua lista de amigos?",
+        "pt-BR": "Deseja remover este usuário da sua lista de amigos?",
+        "de-DE": "Möchten Sie diesen Benutzer aus Ihrer Freundesliste entfernen?",
+        "uk-UA": "Ви хочете видалити цього користувача зі свого списку друзів?",
+        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई आफ्नो साथी सूचीबाट हटाउन चाहनुहुन्छ?"
+    },
+    "sendRequest": {
+        "en-US": "Do you want to send this user a friend request?",
+        "pt-PT": "Deseja enviar um pedido de amizade a este utilizador?",
+        "pt-BR": "Deseja enviar um pedido de amizade para este usuário?",
+        "de-DE": "Möchten Sie diesem Benutzer eine Freundschaftsanfrage senden?",
+        "uk-UA": "Ви хочете надіслати цьому користувачу запит на дружбу?",
+        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई साथी अनुरोध पठाउन चाहनुहुन्छ?"
+    },
+    "acceptRequest": {
+        "en-US": "Do you want to accept this user's friend request?",
+        "pt-PT": "Deseja aceitar o pedido de amizade deste utilizador?",
+        "pt-BR": "Deseja aceitar o pedido de amizade deste usuário?",
+        "de-DE": "Möchten Sie die Freundschaftsanfrage dieses Benutzers annehmen?",
+        "uk-UA": "Ви хочете прийняти запит на дружбу від цього користувача?",
+        "ne-NP": "तपाईंले यो प्रयोगकर्ताको साथी अनुरोध स्वीकार गर्न चाहनुहुन्छ?"
+    },
+    "cancelRequest": {
+        "en-US": "Do you want to cancel your friend request?",
+        "pt-PT": "Deseja cancelar o seu pedido de amizade?",
+        "pt-BR": "Deseja cancelar o seu pedido de amizade?",
+        "de-DE": "Möchten Sie Ihre Freundschaftsanfrage abbrechen?",
+        "uk-UA": "Ви хочете скасувати свій запит на дружбу?",
+        "ne-NP": "तपाईंले आफ्नो साथी अनुरोध रद्द गर्न चाहनुहुन्छ?"
+    },
+    "blockUser": {
+        "en-US": "Do you want to block this user?",
+        "pt-PT": "Deseja bloquear este utilizador?",
+        "pt-BR": "Deseja bloquear este usuário?",
+        "de-DE": "Möchten Sie diesen Benutzer blockieren?",
+        "uk-UA": "Ви хочете заблокувати цього користувача?",
+        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई ब्लक गर्न चाहनुहुन्छ?"
+    },
+    "unblockUser": {
+        "en-US": "Do you want to unblock this user?",
+        "pt-PT": "Deseja desbloquear este utilizador?",
+        "pt-BR": "Deseja desbloquear este usuário?",
+        "de-DE": "Möchten Sie diesen Benutzer entsperren?",
+        "uk-UA": "Ви хочете розблокувати цього користувача?",
+        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई अनब्लक गर्न चाहनुहुन्छ?"
+    },
+    "subject": {
+        "en-US": "Subject: ",
+        "pt-PT": "Sujeito: ",
+        "pt-BR": "Sujeito: ",
+        "de-DE": "Betreff: ",
+        "uk-UA": "Тема: ",
+        "ne-NP": "विषय: "
+    },
+    "birthName": {
+        "en-US": "Birth name: ",
+        "pt-PT": "Nome de nascimento: ",
+        "pt-BR": "Nome de nascimento: ",
+        "de-DE": "Geburtsname: ",
+        "uk-UA": "Ім'я при народженні: ",
+        "ne-NP": "जन्मको नाम: "
+    },
+    "lastSeen": {
+        "en-US": "Last seen: ",
+        "pt-PT": "Última aparição: ",
+        "pt-BR": "Última aparição: ",
+        "de-DE": "Zuletzt gesehen: ",
+        "uk-UA": "Останній раз онлайн: ",
+        "ne-NP": "अन्तिम पटक देखिएको: "
+    },
+    "language": {
+        "en-US": "Language: ",
+        "pt-PT": "Língua: ",
+        "pt-BR": "Idioma: ",
+        "de-DE": "Sprache: ",
+        "uk-UA": "Мова: ",
+        "ne-NP": "भाषा: "
+    },
+    "gamesWon": {
+        "en-US": "Games won: ",
+        "pt-PT": "Jogos ganhos: ",
+        "pt-BR": "Jogos ganhos: ",
+        "de-DE": "Gewonnene Spiele: ",
+        "uk-UA": "Перемоги: ",
+        "ne-NP": "जितिएका खेलहरू: "
+    },
+    "firstPlace": {
+        "en-US": "1st place in tournament: ",
+        "pt-PT": "1º lugar no torneio: ",
+        "pt-BR": "1º lugar no torneio: ",
+        "de-DE": "1. Platz im Turnier: ",
+        "uk-UA": "1-е місце на турнірі: ",
+        "ne-NP": "प्रतियोगितामा पहिलो स्थान: "
+    },
+    "secondPlace": {
+        "en-US": "2nd place in tournament: ",
+        "pt-PT": "2º lugar no torneio: ",
+        "pt-BR": "2º lugar no torneio: ",
+        "de-DE": "2. Platz im Turnier: ",
+        "uk-UA": "2-е місце на турнірі: ",
+        "ne-NP": "प्रतियोगितामा दोस्रो स्थान: "
+    },
+    "thirdPlace": {
+        "en-US": "3rd place in tournament: ",
+        "pt-PT": "3º lugar no torneio: ",
+        "pt-BR": "3º lugar no torneio: ",
+        "de-DE": "3. Platz im Turnier: ",
+        "uk-UA": "3-е місце на турнірі: ",
+        "ne-NP": "प्रतियोगितामा तेस्रो स्थान: "
     }
 }

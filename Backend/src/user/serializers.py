@@ -1,8 +1,8 @@
 from django.db.models import Q
-from .models import User, IsCoolWith, CoolStatus
+from user.models import User, IsCoolWith, CoolStatus
 from rest_framework import serializers
+from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
-from .utils_relationship import get_relationship_status
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
@@ -39,11 +39,11 @@ class ProfileSerializer(serializers.ModelSerializer):
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
         # `requester` is the current authenticated user
-        requester = self.context['request'].user  
+        requester = self.context['request'].user
         # `requested` is the user object being serialized (from the URL)
         requested = obj
         return get_relationship_status(requester, requested)
-    
+
     def get_stats(self, obj):
         return {
             "game": {

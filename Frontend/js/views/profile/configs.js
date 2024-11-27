@@ -48,7 +48,7 @@ export default {
                 path: "../../../../assets/profileView/sentFriendRequest.png",
                 index: 3,
             },
-            
+
         }
     },
 
@@ -109,7 +109,7 @@ export default {
             element = this.domManip.$id("button-bottom-right");
             element.src = "../../../../assets/profileView/FriendsListIcon.png";
         },
-        
+
         populateButtons(){
             this.setupTopLeftButton();
             this.setupTopMiddleButton();
@@ -142,7 +142,7 @@ export default {
         },
 
         profileEditMethod() {
-            this.hideElement("edit-profile-modal-avatar-change");   
+            this.hideElement("edit-profile-modal-avatar-change");
             this.hideElement("edit-profile-modal-password-change");
             this.showElement("edit-profile-modal-form");
 
@@ -150,7 +150,7 @@ export default {
             this.domManip.$id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
             this.domManip.$id("edit-profile-modal-form-input-username").value = this.result.username;
             this.domManip.$id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
-            
+
 
             let modalElement = this.domManip.$id("edit-profile-modal");
             const modal = new bootstrap.Modal(modalElement);
@@ -212,7 +212,7 @@ export default {
         callFormData(blob) {
             const formData = new FormData();
             formData.append('avatar', blob, 'avatar.png');
-            
+
             fetch(window.origin + '/api/user/update-avatar/', {
                 method: 'PUT',
                 body: formData,
@@ -228,13 +228,13 @@ export default {
             }).then(data => {
                 console.log('Success:', data);
                 this.hideModal("edit-profile-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: $store.fromState("user").id});
             });
         },
 
         submitAvatar() {
-            
+
             // Extract the cropped portion of the selected image
             const croppedCanvas = this.cropper.getCroppedCanvas({
                 width: 186,
@@ -261,7 +261,7 @@ export default {
                         if (this.cropper) {
                             this.cropper.destroy();
                         }
-                
+
                         this.cropper = new Cropper(uploadedImage, {
                             aspectRatio: 0.894, // Adjust aspect ratio as needed
                             viewMode: 1,
@@ -278,7 +278,7 @@ export default {
             const oldPassword = this.domManip.$id("edit-profile-modal-password-change-input-old-password").value;
             const newPassword = this.domManip.$id("edit-profile-modal-password-change-input-new-password").value;
             const repeatPassword = this.domManip.$id("edit-profile-modal-password-change-input-repeat-password").value;
-            
+
             console.log("new password:", oldPassword);
             console.log("new password:", newPassword);
             console.log("rep password:", repeatPassword);
@@ -290,7 +290,7 @@ export default {
         },
 
         submitForm() {
-            
+
 
             const firstName = this.domManip.$id("edit-profile-modal-form-input-first-name").value;
             const lastName = this.domManip.$id("edit-profile-modal-form-input-last-name").value;
@@ -299,12 +299,12 @@ export default {
 
             call("user/update-user-info/", "PUT", {
                 username: username,
-                firstName: firstName, 
-                lastName: lastName, 
+                firstName: firstName,
+                lastName: lastName,
                 language: language
             }).then(data => {
                 this.hideModal("edit-profile-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -314,7 +314,7 @@ export default {
         messageMethod() {
             router("/chat");
         },
-        
+
         logoutMethod() {
             router("/logout");
         },
@@ -324,7 +324,7 @@ export default {
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -334,12 +334,12 @@ export default {
         changeFrendshipSecondaryMethod() {
             call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
             });
-            
+
         },
 
         changeBlockMethod() {
@@ -352,7 +352,7 @@ export default {
 
             call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
                 this.hideModal("friendship-modal");
-                $callToast("success", data.success);
+                $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -367,7 +367,7 @@ export default {
             let modalElement = this.domManip.$id("invite-for-game-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
-            
+
         },
         selectMap(chosenMap) {
             const maps = this.domManip.$class("invite-for-game-modal-maps-button");
@@ -435,7 +435,7 @@ export default {
             call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
 
                 this.removeFriendsList();
-                this.friendList = res;
+                this.friendList = res.friends;
                 this.populateFriendList();
                 this.domManip.$id("friends-list-modal-search-bar").value = "";
                 this.hideElement("friends-list-modal-list-result-not-found-message");
@@ -553,8 +553,6 @@ export default {
                 if (res.relationship.isBlocked)
                     this.blackout();
 
-                // this.openFriendList(); // For developing porpouses
-                
                 // callback functions
                 if (this.buttonTopLeft.method) {
                     let element = this.domManip.$id("button-top-left");

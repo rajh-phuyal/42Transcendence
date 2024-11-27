@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import (
+
+from user.views import (
     ProfileView,
 	RelationshipView,
     ListFriendsView,

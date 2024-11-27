@@ -1,7 +1,9 @@
+import { translate } from '../../locale/locale.js';
+
 export const buttonObjects = {
     // users are friends 0
     "friend": {
-        text: "Do you want to remove this user form your friends list?",
+        text: translate("profile", "confirmRemoveFriend"),
         secundaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -11,7 +13,7 @@ export const buttonObjects = {
     },
     // users are not friends 1
     "noFriend": {
-        text: "Do you want to send this user a friend request?",
+        text: translate("profile", "sendRequest"),
         secundaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -21,7 +23,7 @@ export const buttonObjects = {
     },
     // friend request received 2
     "requestReceived": {
-        text: "Do you want accept this user's friend request?",
+        text: translate("profile", "acceptRequest"),
         secundaryButton: true,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -32,7 +34,7 @@ export const buttonObjects = {
     },
     // friend request sent 3
     "requestSent": {
-        text: "Do you want to cancel your friend request?",
+        text: translate("profile", "cancelRequest"),
         secundaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -42,7 +44,7 @@ export const buttonObjects = {
     },
     // block user 4
     "unblocked": {
-        text: "Do you want to block this user?",
+        text: translate("profile", "blockUser"),
         leftButtonMethod: undefined,
         method: "POST",
         Url: "user/relationship/",
@@ -50,7 +52,7 @@ export const buttonObjects = {
     },
     // unblock user 5
     "blocked": {
-        text: "Do you want to unblock this user?",
+        text: translate("profile", "unblockUser"),
         leftButtonMethod: undefined,
         method: "DELETE",
         Url: "user/relationship/",
