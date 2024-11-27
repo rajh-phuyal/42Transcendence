@@ -1,7 +1,7 @@
 // abstract out the fetch api to make it easier to call the api
 import $callToast from './callToast.js';
 
-async function call(url, method, data = null) {
+async function call(url, method, data = null, showToast = true) {
     const fullUrl = `${window.location.origin}/api/${url}`;
 
     const headers = {
@@ -33,7 +33,9 @@ async function call(url, method, data = null) {
         if (!errorMessage)
             errorMessage = 'Request failed';
 
-        $callToast("error", errorMessage)
+        if (showToast) {
+            $callToast("error", errorMessage)
+        }
 
         throw new Error(errorMessage);
     }

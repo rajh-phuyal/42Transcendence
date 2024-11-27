@@ -20,8 +20,8 @@ echo -e $BL '================================================' $NC >> migration_
 cat migration_logs.log
 
 echo -e $BL 'Start setupTranslation.sh...' $NC
-python manage.py makemessages -l en_US -l pt_PT -l pt_BR -l de_DE -l uk_UA -l ne_NP
-python manage.py compilemessages
+# python manage.py makemessages -l en_US -l pt_PT -l pt_BR -l de_DE -l uk_UA -l ne_NP
+# python manage.py compilemessages
 echo -e $BL 'Start setupTranslation.sh...' $GR 'DONE' $NC
 echo -e $BL '================================================' $NC
 

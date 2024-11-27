@@ -1,9 +1,23 @@
+import logging
 from django.conf import settings
 from datetime import datetime
 from django.http import HttpResponse
-import logging
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 JAR = settings.SIMPLE_JWT_COOKIE
+
+
+class CookieJWTAuthentication(JWTAuthentication):
+    def authenticate(self, request):
+        raw_token = request.COOKIES.get(JAR['ACCESS_COOKIE_NAME'])
+
+        if not raw_token:
+            return None
+
+        validated_token = self.get_validated_token(raw_token)
+        return self.get_user(validated_token), validated_token
+
 
 def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: str = None) -> HttpResponse:
     """Set JWT tokens as HttpOnly cookies"""

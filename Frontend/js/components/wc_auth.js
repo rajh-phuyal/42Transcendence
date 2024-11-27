@@ -4,7 +4,6 @@ import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
-import WebSocketManager from '../abstracts/WebSocketManager.js';
 import $callToast from '../abstracts/callToast.js';
 
 // TODO put the css styling in a css file (for all web components)

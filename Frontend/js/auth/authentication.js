@@ -5,15 +5,13 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 class Auth {
     constructor() {
         this.isAuthenticated = false;
-        this._authCheckPromise = null;
         this._lastCheckTimestamp = 0;
-        this._cacheTimeout = 30000; // Cache auth status for 30 seconds, optimal time
+        this._cacheTimeout = 30000; // 30, sec, optimal for UX
         return this;
     }
 
     clearAuthCache() {
         this._lastCheckTimestamp = 0;
-        this._authCheckPromise = null;
     }
 
     async isUserAuthenticated() {
@@ -26,34 +24,28 @@ class Auth {
             return this.isAuthenticated;
         }
 
-        // If there's already a check in progress, return that promise
-        if (this._authCheckPromise) {
-            console.log("Using existing auth check promise");
-            return this._authCheckPromise;
-        }
-
         // Create new auth check promise
         return await (async () => {
             try {
-                const response = await call('auth/verify/', 'GET');
+                const response = await call('auth/verify/', 'GET', null, false);
                 if (!response.isAuthenticated) {
                     return false;
                 }
 
                 this.isAuthenticated = response.isAuthenticated;
-                $store.commit('setIsAuthenticated', true);
+                $store.commit('setIsAuthenticated', this.isAuthenticated);
                 console.log("Auth check successful");
 
-                if (!$store.fromState('webSocketIsAlive')) {
+                if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
                     console.log("Connecting WebSocket");
                     WebSocketManager.connect();
                 }
+
+                this._lastCheckTimestamp = now;
             } catch (error) {
                 console.log("Auth check failed:", error);
                 this.isAuthenticated = false;
-            } finally {
-                this._lastCheckTimestamp = now;
-                this._authCheckPromise = null;
+                this.clearAuthCache();
             }
 
             return this.isAuthenticated;
@@ -84,7 +76,7 @@ class Auth {
         try {
             const response = await call('auth/verify/', 'GET');
 
-            if (response.status === 401) {
+            if (!response.isAuthenticated) {
                 // Token is expired, try to refresh
                 const refreshed = await this.refreshToken();
                 if (refreshed) {
@@ -94,10 +86,10 @@ class Auth {
                     return true;
                 }
 
-                return false;
+                throw new Error("Token is expired and refresh failed");
             }
 
-            return response.ok;
+            return response.isAuthenticated;
         } catch (e) {
             console.error('Error verifying token:', e);
             this.logout();

@@ -6,9 +6,8 @@ from authentication.serializers import RegisterSerializer, InternalTokenObtainPa
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .utils import set_jwt_cookies, unset_jwt_cookies
-from rest_framework.permissions import IsAuthenticated
-from core.authentication import CookieJWTAuthentication
+from core.cookies import set_jwt_cookies, unset_jwt_cookies
+from core.authentication import BaseAuthenticatedView
 from authentication.models import DevUserData
 from core.response import success_response
 from django.utils.translation import gettext as _, activate
@@ -118,11 +117,10 @@ class LogoutView(APIView):
     def post(self, request):
         return unset_jwt_cookies(success_response(_("Successfully logged out")))
 
-class TokenVerifyView(APIView):
-    authentication_classes = [CookieJWTAuthentication]
-    permission_classes = [IsAuthenticated]
-
+class TokenVerifyView(BaseAuthenticatedView):
+    @barely_handle_exceptions
     def get(self, request):
+        # Just need to pass through the auth check with cookies
         return success_response(_("Token is valid"), **{
             'userId': request.user.id,
             'username': request.user.username,

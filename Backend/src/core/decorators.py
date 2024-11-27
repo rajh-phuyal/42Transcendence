@@ -13,6 +13,7 @@ def barely_handle_exceptions(view_func):
         try:
             return view_func(self, request, *args, **kwargs)
         except BarelyAnException as e:
+            print("am i here?", e)
             return error_response(str(e.detail), e.status_code)
         except ObjectDoesNotExist as e:
             model_name = getattr(e, 'model', None)
@@ -21,4 +22,5 @@ def barely_handle_exceptions(view_func):
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
             return error_response(_("An unexpected error occurred: {error}").format(error=str(e)))
+
     return wrapper

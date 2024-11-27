@@ -3,20 +3,15 @@ from channels.middleware import BaseMiddleware
 from asgiref.sync import sync_to_async
 from django.conf import settings
 import logging
-from core.authentication import CookieJWTAuthentication
+from core.cookies import CookieJWTAuthentication
 from django.core.exceptions import PermissionDenied
 
-class SocketAuthMiddleware(BaseMiddleware):
+class WebSocketAuthMiddleware(BaseMiddleware):
     """
     Custom middleware that authenticates the user using JWT cookies
     """
 
     async def __call__(self, scope, receive, send):
-        # Verify if using secure connection in production
-        if scope.get('scheme') != 'wss':
-            logging.error("Rejecting non-WSS connection")
-            raise PermissionDenied("WSS required")
-
         # Extract and validate cookies
         try:
             headers = dict(scope['headers'])

@@ -8,12 +8,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
 django.setup()
 
 from services import websocket_routing
-from chat.middleware import SocketAuthMiddleware
+from core.middleware import WebSocketAuthMiddleware
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
-        SocketAuthMiddleware(
+        WebSocketAuthMiddleware(
             URLRouter(
                 websocket_routing.websocket_urlpatterns
             )
