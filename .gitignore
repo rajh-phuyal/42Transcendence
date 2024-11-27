@@ -10,7 +10,7 @@ Environments/*
 Logs/*
 **/*.log
 
-# Translation
+# Translations
 *.mo
 
 # Database files

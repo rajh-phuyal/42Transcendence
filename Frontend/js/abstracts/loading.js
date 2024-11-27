@@ -5,7 +5,7 @@ function setViewLoading(isLoading) {
     const view = $id('router-view');
 
     const display = {
-        true: 'block',
+        true: 'flex',
         false: 'none'
     };
 
