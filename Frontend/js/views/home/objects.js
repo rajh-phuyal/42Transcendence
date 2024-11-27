@@ -1,4 +1,3 @@
-
 export const imageDir = '../../../assets/homeView/';
 import { AIModalCallback, battleModalCallback, 
     tournamentModalCallback, chatRoomModalCallback,
