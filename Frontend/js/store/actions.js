@@ -1,8 +1,10 @@
+import { routes } from "../navigation/routes.js";
+
 export const actions = {
-    loadTranslations: async ($store, views) => {
+    loadTranslations: async ($store) => {
         let translations = {};
 
-        for (const view of views) {
+        for (const view of routes.map(route => route.view)) {
             try {
                 const viewTranslation = await fetch(`../js/views/${view}/translations.json`);
 

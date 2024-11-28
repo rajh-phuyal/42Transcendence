@@ -12,16 +12,17 @@ export default {
         // Load all conversations via API request (GET /chat/load/conversations)
         async loadConversations() {
             try {
+                // TODO: this won't work since we have jwts in HTTP only cookies
                 console.log('Bearer ' + this.$store.fromState('jwtTokens').access);
                 // Use the abstracted call method instead of fetch
                 const conversations_respond = await this.call('chat/load/conversations/', 'GET');
 
                 console.log("Conversations loaded:", conversations_respond);
-                
+
             // Populate the conversation list UI
             const conversationListElement = document.getElementById("conversation-items");
             conversationListElement.innerHTML = ''; // Clear any existing items
-                        
+
             conversations_respond.forEach(conversation => {
                 const listItem = document.createElement('li');
                 listItem.textContent = conversation.name || `Conversation ${conversation.id}`;
@@ -32,7 +33,7 @@ export default {
                 });
                 conversationListElement.appendChild(listItem);
             });
-                
+
             } catch (error) {
                 console.error('Failed to load conversations:', error);
             }
@@ -42,7 +43,7 @@ export default {
 		async selectConversation(conversation) {
             console.log('Selected conversation:', conversation, 'ID:', conversation.id);
             this.selectedConversation = conversation.id
-        
+
 			try {
 				// Use the abstracted call method instead of fetch
 				//TODO: add offsett for pagination (change 0 in the next line)
@@ -123,7 +124,7 @@ export default {
 
         // Method to load messages when a conversation is selected
 
-		
+
 
         // Send a chat message
         sendMessage(message) {
@@ -141,7 +142,7 @@ export default {
             }
         },
 
-        
+
     },
 
     hooks: {
@@ -164,7 +165,7 @@ export default {
         // Open WebSocket after the DOM is inserted
         afterDomInsertion() {
             console.log("After DOM Insertion...");
-            
+
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");
             // const messageInput = document.getElementById("chat-message-input");

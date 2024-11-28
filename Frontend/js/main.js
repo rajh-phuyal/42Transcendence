@@ -26,10 +26,6 @@ window.addEventListener('popstate', () => {
     router(window.location.pathname)
 });
 
-// get the translations for all the registered views
-$store.dispatch('loadTranslations', routes.map(route => route.view));
-
-
 // go to path only after the translations are loaded
 $store.addMutationListener('setTranslations', (state) => {
     router(window.location.pathname);
@@ -40,6 +36,7 @@ $store.addMutationListener('setTranslations', (state) => {
 
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
+    console.log('setWebSocketIsAlive', state);
     if (state) {
         console.log("Web socket is connected!");
         if (setInervalId) {
@@ -52,6 +49,7 @@ $store.addMutationListener('setWebSocketIsAlive', (state) => {
         if (!setInervalId && $store.fromState('isAuthenticated')) {
             $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
             setInervalId = setInterval(() => {
+                console.log('retrying connection');
                 WebSocketManager.connect();
             }, 2000);
         }

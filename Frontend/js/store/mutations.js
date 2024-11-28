@@ -13,13 +13,6 @@ export const mutations = {
         },
         presistence: false,
     },
-    setJWTTokens: {
-        stateName: 'jwtTokens',
-        onUpdate: (state, value) => {
-            state.jwtTokens = value;
-        },
-        presistence: true,
-    },
     setLocale: {
         stateName: 'locale',
         onUpdate: (state, value) => {
@@ -37,8 +30,8 @@ export const mutations = {
     setWebsocketIsAlive: {
         stateName: 'webSocketIsAlive',
         onUpdate: (state, value) => {
-            state.websocketIsAlive = value; 
-        },   
+            state.websocketIsAlive = value;
+        },
         presistence: false,
     }
 };

@@ -74,7 +74,7 @@ class Auth {
      */
     async verifyJWTToken() {
         try {
-            const response = await call('auth/verify/', 'GET');
+            const response = await call('auth/verify/', 'GET', null, false);
 
             if (!response.isAuthenticated) {
                 // Token is expired, try to refresh
@@ -114,8 +114,10 @@ class Auth {
             await call('auth/logout/', 'POST', null);
             this.clearAuthCache();
             this.isAuthenticated = false;
-            $store.clear();
             WebSocketManager.disconnect();
+
+            // this should be done at the end
+            $store.clear();
         } catch (error) {
             console.error('Logout error:', error);
         }

@@ -18,6 +18,26 @@ class Store {
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
+
+        // dispatch actions
+        for (const value of _.values(this.actions)) {
+            value(this);
+        }
+
+        this.persist();
+    }
+
+    persist() {
+        let savedObject = {};
+        for (const value of _.values(this.mutations)) {
+            const stateKey = value.stateName;
+
+            if (value.presistence) {
+                savedObject[stateKey] = this.state[stateKey];
+            }
+        }
+
+        $setLocal("store", JSON.stringify(savedObject));
     }
 
     fromState(key) {
@@ -44,17 +64,7 @@ class Store {
 
         if (!this.mutations[mutationName]?.presistence) return;
 
-        // clear all the mutations, that have presistence set to false
-        let savedObject = {};
-        for (const value of _.values(this.mutations)) {
-            const stateKey = value.stateName;
-
-            if (value.presistence) {
-                savedObject[stateKey] = this.state[stateKey];
-            }
-        }
-
-        $setLocal("store", JSON.stringify(savedObject));
+        this.persist();
     }
 
     dispatch(actionName, payload) {
@@ -62,8 +72,7 @@ class Store {
     }
 
     clear() {
-        this.state = { ...this.initialState };
-        $setLocal("store", JSON.stringify(this.state));
+        $setLocal("store", JSON.stringify({}));
     }
 }
 

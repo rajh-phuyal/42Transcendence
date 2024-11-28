@@ -1,6 +1,7 @@
 import { routes } from './routes.js';
 import { setViewLoading } from '../abstracts/loading.js';
 import { $id } from '../abstracts/dollars.js';
+import { $getLocal } from '../abstracts/dollars.js';
 
 // bind store and auth singleton to 'this' in the hooks
 import $store from '../store/store.js';
@@ -51,6 +52,10 @@ async function router(path, params = null) {
     console.log("Router called with path:", path);
     setViewLoading(true);
 
+    if (_.isEmpty($getLocal("store"))) {
+        console.log("Initializing store");
+        $store.initializer();
+    }
     const userAuthenticated = await $auth.isUserAuthenticated();
     console.log("User authenticated:", userAuthenticated);
 
