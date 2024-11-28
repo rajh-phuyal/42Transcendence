@@ -48,7 +48,6 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null) {
-    console.log("Router called with path:", path);
     setViewLoading(true);
 
     const userAuthenticated = await $auth.isUserAuthenticated();

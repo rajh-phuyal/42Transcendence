@@ -177,8 +177,6 @@ class AuthCard extends HTMLElement {
         const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
-            console.log("Auth response:", response);
-
             // Initialize the store
             $store.initializer();
 
@@ -201,7 +199,6 @@ class AuthCard extends HTMLElement {
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
 
-            console.log("About to route to home");
             this.showNav();
 
             // Add small delay to ensure store updates are processed
