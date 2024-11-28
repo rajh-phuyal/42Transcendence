@@ -5,11 +5,6 @@ class WebSocketManager {
         this.socket = null;
     }
 
-    retryConnectionPostAuth() {
-        console.log("Retrying WebSocket connection after authentication");
-        this.connect();
-    }
-
     // Connect to WebSocket with the provided token
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -20,7 +15,10 @@ class WebSocketManager {
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
             console.log("Not connecting WebSocket - user not authenticated");
-            $store.addMutationListener('setIsAuthenticated', this.retryConnectionPostAuth);
+            $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
+                if (!isAuthenticated) return;
+                this.connect();
+            });
             return;
         }
 
