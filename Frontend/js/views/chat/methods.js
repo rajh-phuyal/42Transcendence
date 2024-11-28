@@ -1,4 +1,5 @@
-import $store from '../../store/store.js'
+import $store from '../../store/store.js';
+import { $id } from '../../abstracts/dollars.js'
 
 function formatTimestamp(timestamp) {
     // Parse the timestamp into a Date object
@@ -20,27 +21,46 @@ function formatTimestamp(timestamp) {
 }
 
 export function createMessage(element) {
-    const messageDiv = document.createElement('div');
+
+    let elementId = "chat-view-sent-message-template";
+    if (element.userId != $store.fromState("user").id)
+        elementId = "chat-view-incoming-message-template";
+
+    // let cenas = document.querySelector(elementId);
+    // console.log("cenas",cenas);
+    let template = $id(elementId).content.cloneNode(true);
+
+    // const messageDiv = document.createElement('div');   
 
     if (element.userId != $store.fromState("user").id) {
-        const username = document.createElement('span');
-        username.className = "chat-view-messages-message-sender";
-        username.textContent = element.username;
-        messageDiv.appendChild(username)
-        messageDiv.className = "chat-view-incoming-message-container";
+        template.querySelector(".chat-view-messages-message-sender").textContent = element.username;
+
+        // const username = document.createElement('span');
+        // username.className = "chat-view-messages-message-sender";
+        // username.textContent = element.username;
+        // messageDiv.appendChild(username)
+        // messageDiv.className = "chat-view-incoming-message-container";
     }
-    else
-        messageDiv.className = "chat-view-sent-message-container";
+    // else{
+    //     template = document.getElementById("chat-view-sent-message-template");//.content.cloneNode(true);
+    //     console.log("template", template);
+    //     return;
+    //     messageDiv = template.querySelector(".chat-view-sent-message-container");
+    //     // messageDiv.className = "chat-view-sent-message-container";
+    // }
 
-    const messageBox = document.createElement('div');
-    messageBox.className = "chat-view-messages-message-box";
-    messageBox.textContent = element.content;
-    messageDiv.appendChild(messageBox)
 
-    const timeStamp = document.createElement('span');
-    timeStamp.className = "chat-view-messages-message-time-stamp";
-    timeStamp.textContent = formatTimestamp(element.createdAt);
-    messageDiv.appendChild(timeStamp)
+    template.querySelector(".chat-view-messages-message-box").textContent = element.content;
+    // const messageBox = document.createElement('div');
+    // messageBox.className = "chat-view-messages-message-box";
+    // messageBox.textContent = element.content;
+    // messageDiv.appendChild(messageBox);
 
-    return (messageDiv);
+    template.querySelector(".chat-view-messages-message-time-stamp").textContent = formatTimestamp(element.createdAt);
+    // const timeStamp = document.createElement('span');
+    // timeStamp.className = "chat-view-messages-message-time-stamp";
+    // timeStamp.textContent = formatTimestamp(element.createdAt);
+    // messageDiv.appendChild(timeStamp)
+
+    return (template);
 }

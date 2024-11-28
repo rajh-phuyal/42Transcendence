@@ -175,8 +175,15 @@ export default {
         populateConversationMessages(data) {
             
             const container = this.domManip.$id("chat-view-messages-container");
-            container.innerHTML = "";
 
+
+            let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-incoming-message-container")
+
+            console.log("toDelete", toDelete);
+
+            for (let element of toDelete)
+                element.remove();
+            
             for (let element of data) 
                 container.appendChild(createMessage(element));
         },
@@ -221,31 +228,28 @@ export default {
         },
 
         createConversationCard(element) {
-            const conversation = document.createElement("div");
+
             this.conversations.push(element.conversationId);
+
+            const conversation = this.domManip.$id("chat-view-conversation-card-template").content.cloneNode(true);
+
+            let container = conversation.querySelector(".chat-view-conversation-card");
+            
             if (element.conversationId == this.routeParams.id)
-                this.higlightCard(conversation);
-            else
-                conversation.className = "chat-view-conversation-card";
-            conversation.id = "chat-view-conversation-card-" +  element.conversationId; 
-            conversation.setAttribute("conversation_id", element.conversationId);
-            conversation.setAttribute("last-message-time", element.lastUpdate);
+                this.higlightCard(container);
+
+            container.id = "chat-view-conversation-card-" +  element.conversationId; 
+            container.setAttribute("conversation_id", element.conversationId);
+            container.setAttribute("last-message-time", element.lastUpdate);
             
             // Avatar
-            const avatar = document.createElement("img");
-            avatar.className = "chat-view-conversation-card-avatar";
-            avatar.src = window.origin + '/media/avatars/' + element.conversationAvatar;
-            conversation.appendChild(avatar);
+            conversation.querySelector(".chat-view-conversation-card-avatar").src = window.origin + '/media/avatars/' + element.conversationAvatar;
 
             // User
-            const user = document.createElement("h5");
-            user.className = "chat-view-conversation-card-username";
-            user.textContent = element.conversationName;
-            conversation.appendChild(user);
+            conversation.querySelector(".chat-view-conversation-card-username").textContent = element.conversationName;
 
             this.conversationsContainer.appendChild(conversation);
-
-            this.domManip.$on(conversation, "click", this.conversationCallback);
+            this.domManip.$on(container, "click", this.conversationCallback);
         },
 
         async populateConversations() {
@@ -269,11 +273,9 @@ export default {
                 this.domManip.$off("chat-view-conversation-card-" +  element, "click", this.conversationCallback)
         },
 
-        sortMessagesByTimestamp() {
+        sortConversationsByTimestamp() {
             // Get the child elements as an array
-            console.log("before removing children:", this.conversationsContainer.children)
             const conversation = Array.from(this.conversationsContainer.children);
-            console.log("after removing children:", this.conversationsContainer.children)
             
             // Sort the elements by their timestamp
             conversation.sort((a, b) => {
@@ -336,7 +338,7 @@ export default {
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
 
             await this.populateConversations();
-            this.sortMessagesByTimestamp();
+            this.sortConversationsByTimestamp();
             
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");

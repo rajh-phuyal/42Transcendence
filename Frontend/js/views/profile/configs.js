@@ -120,7 +120,7 @@ export default {
 
         blackout() {
 
-            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right")
+            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right");
             for (let element of elements) {
                 element.style.backgroundColor = "black";
             }

@@ -9,36 +9,13 @@
     <div id="chat-view-conversations-container">
       <span id="chat-view-conversations-no-converations-found"></span>
 
-      <!-- <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div> -->
-      
+      <!-- Conversation Card Template -->
+      <template id="chat-view-conversation-card-template">
+        <div class="chat-view-conversation-card">
+          <img class="chat-view-conversation-card-avatar" alt="error loading image">
+          <h5 class="chat-view-conversation-card-username"></h5>
+        </div>
+      </template>
     </div>
   </div>
   <div id="chat-view-right-side-container">
@@ -55,22 +32,39 @@
     <!-- Messages -->
     <div id="chat-view-messages-container">
 
+      <!-- Sent message Template -->
+      <template id="chat-view-sent-message-template">
+        <div class="chat-view-sent-message-container">
+          <div class="chat-view-messages-message-box">
+          </div>
+          <span class="chat-view-messages-message-time-stamp"></span>
+        </div>
+      </template>
 
+      <!-- Incoming message Template -->
+      <template id="chat-view-incoming-message-template">
+        <div class="chat-view-incoming-message-container">
+          <span class="chat-view-messages-message-sender"></span>
+          <div class="chat-view-messages-message-box">
+          </div>
+          <span class="chat-view-messages-message-time-stamp"></span>
+        </div>
+      </template>
+      
+      <!-- Overlords message Template -->
+      <template id="chat-view-overlords-message-template">
+        <div class="chat-view-incoming-message-container">
+          <div class="chat-view-messages-message-overlords-box">
+            <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>
+            <span></span>
+            <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button>
+          </div>
+          <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
+        </div>
+      </template>
+      
       <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-      <!-- <div class="chat-view-sent-message-container">
-        <div class="chat-view-messages-message-box">
-          niceee
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div> -->
       <!-- . -->
-      <!-- <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">rajh</span>
-        <div class="chat-view-messages-message-box">
-          Os Lusíadas é uma obra de poesia épica do escritor português Luís Vaz de Camões, a primeira epopeia portuguesa publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, foi publicada em Lisboa em 12 de março de 1572,[1][2] no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso do autor do Oriente, via Moçambique. 
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5:03pm 12-07-1956</span>
-      </div> -->
       <!-- . -->
       <!-- <div class="chat-view-sent-message-container">
         <div class="chat-view-messages-message-box">
@@ -118,14 +112,6 @@
         <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span> -->
       <!-- </div> -->
       <!-- . -->
-      <!-- <div class="chat-view-overlords-message-container">
-        <div class="chat-view-messages-message-overlords-box">
-          <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>@alex has started a tournament in this group
-          <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button>
-        </div>
-
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div> -->
       <!-- . -->
       <!-- <div class="chat-view-incoming-message-container">
         <span class="chat-view-messages-message-sender">alex</span>
