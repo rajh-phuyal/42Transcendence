@@ -182,11 +182,27 @@ class CreateConversationView(BaseAuthenticatedView):
             is_group_conversation = False
             other_user_id = userIds[0]
             other_user = User.objects.get(id=other_user_id)
+
             # Check if the conversation already exists
-            conversation_member = ConversationMember.objects.filter(Q(user=user) | Q(user=other_user),conversation__is_group_conversation=False)
-            if conversation_member.exists():
-                conversation_id = conversation_member.first().conversation.id
-                return success_response(_('Conversation already exists'), data={'conversation_id': conversation_id})
+            matching_chat_ids = set(
+                ConversationMember.objects.filter(user=user, conversation__is_group_conversation=False).values_list('id', flat=True)
+            ).intersection(
+                ConversationMember.objects.filter(user=other_user, conversation__is_group_conversation=False).values_list('id', flat=True)
+            )
+
+             
+
+
+            # conversation_members = ConversationMember.objects.filter(Q(user=user) | Q(user=other_user),conversation__is_group_conversation=False)
+            # Get the conversation_id for user and other_user
+            # conversation_ids = conversation_members.values_list('id', flat=True)
+
+            # Filter again to ensure that only conversation_id appearing twice (one for user, one for other_user) are retained
+            # matching_conversation_ids = [
+            #     id for id in conversation_ids if conversation_ids.count(id) == 2
+            # ]
+            if matching_chat_ids:
+                return success_response(_('Conversation already exists'), data={'conversation_id': matching_chat_ids[0]})
         elif len(userIds) > 1:
             # A group conversation
             if not conversation_name:

@@ -321,7 +321,7 @@ export default {
             console.log("message:", message);
             console.log("username:", this.result.username);
             this.hideModal("new-chat-modal");
-            call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message, "name": this.result.username}).then(data => {
+            call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message}).then(data => {
                 $callToast("success", data.message);
                 router(`/profile`, {id: this.result.id});
             })
