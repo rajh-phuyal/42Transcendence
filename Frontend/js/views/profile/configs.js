@@ -66,7 +66,7 @@ export default {
                     this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
                 }
             }
-            
+
         },
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
@@ -216,9 +216,7 @@ export default {
             fetch(window.origin + '/api/user/update-avatar/', {
                 method: 'PUT',
                 body: formData,
-                headers: {
-                    'Authorization': $auth.getAuthHeader(),
-                }
+                credentials: 'include',
             }).then(response => {
                 if (!response.ok) {
                     console.log('Error uploading the image');
@@ -390,7 +388,7 @@ export default {
         clickFriendCard(event) {
 
             let element = event.srcElement.getAttribute("user-id");
-            
+
             if (element == null)
                 element = event.srcElement.parentElement.getAttribute("user-id");
             const params = { id: element };
@@ -431,7 +429,7 @@ export default {
         },
 
         openFriendList() {
-            
+
             call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
 
                 this.removeFriendsList();
@@ -474,7 +472,7 @@ export default {
                 Object.entries(this.friendList).filter(([key, value]) => !value.username.startsWith(inputValue))
             );
 
-            if (Object.values(filteredObj).length === this.friendList.length) 
+            if (Object.values(filteredObj).length === this.friendList.length)
                 this.showElement("friends-list-modal-list-result-not-found-message");
 
             for (let [key, element] of Object.entries(filteredObj)) {
