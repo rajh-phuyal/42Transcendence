@@ -14,7 +14,7 @@ from django.utils.translation import gettext as _, activate
 from core.decorators import barely_handle_exceptions
 
 
-class RegisterView(APIView):
+class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
