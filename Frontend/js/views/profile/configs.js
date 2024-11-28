@@ -430,31 +430,16 @@ export default {
         populateFriendList() {
             const mainDiv = this.domManip.$id("friends-list-modal-list");
             for (let element of this.friendList){
-                // Element
-                const elementDiv = document.createElement('div')
-                elementDiv.className = "friends-list-modal-list-element";
+                const container = this.domManip.$id("friends-list-modal-list-element-template").content.cloneNode(true);
+                const elementDiv = container.querySelector(".friends-list-modal-list-element");
+                
                 elementDiv.setAttribute("user-id", element.id);
                 elementDiv.setAttribute("id", "friends-list-modal-list-element-user-" + element.username);
 
-                // Avatar
-                const avatar = document.createElement('img')
-                avatar.className = "friends-list-modal-list-element-image";
-                avatar.src = window.origin + '/media/avatars/' + element.avatarUrl;
-                elementDiv.appendChild(avatar);
-
-                // Username
-                const username = document.createElement('h3')
-                username.className = "friends-list-modal-list-element-username";
-                username.textContent = element.username;
-                elementDiv.appendChild(username);
-
-                // Friendship status
-                const frienshipStatusAvatar = document.createElement('img')
-                frienshipStatusAvatar.className = "friends-list-modal-list-element-image";
-                frienshipStatusAvatar.src = this.buttonSettings[element.status].path;
-                elementDiv.appendChild(frienshipStatusAvatar);
-
-                mainDiv.appendChild(elementDiv)
+                container.querySelector("#friends-list-modal-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatarUrl;
+                container.querySelector(".friends-list-modal-list-element-username").textContent = element.username;
+                container.querySelector("#friends-list-modal-list-element-friendship-image").src = this.buttonSettings[element.status].path;
+                mainDiv.appendChild(container)
                 this.domManip.$on(elementDiv, "click", this.clickFriendCard);
             }
         },

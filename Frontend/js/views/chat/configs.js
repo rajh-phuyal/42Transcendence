@@ -254,7 +254,6 @@ export default {
 
         async populateConversations() {
             call('chat/load/conversations/', 'GET').then(data => {
-                console.log("data:", data);
                 if (!data.data)
                 {
                     this.domManip.$id("chat-view-conversations-no-converations-found").textContent = data.message;
