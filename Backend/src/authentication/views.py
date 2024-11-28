@@ -1,6 +1,4 @@
-from rest_framework import generics, status
-from rest_framework import exceptions
-from rest_framework.response import Response
+from rest_framework import generics, exceptions
 from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.serializers import RegisterSerializer, InternalTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny
@@ -9,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from core.cookies import set_jwt_cookies, unset_jwt_cookies
 from core.authentication import BaseAuthenticatedView
 from authentication.models import DevUserData
-from core.response import success_response
+from core.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
 from core.decorators import barely_handle_exceptions
 
@@ -52,7 +50,7 @@ class RegisterView(generics.CreateAPIView):
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
 
-        response = Response({
+        response = success_response({
             "userId": user.id,
             "username": user.username,
             "language": user.language,
@@ -82,7 +80,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             user.language = preferred_language
 
             if not user:
-                raise exceptions.AuthenticationFailed(_("User not found"))
+                return error_response(_("User not found"))
 
             set_jwt_cookies(
                 response=response,

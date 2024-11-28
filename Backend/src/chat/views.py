@@ -3,9 +3,8 @@ from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
 from chat.models import Conversation, ConversationMember, Message
-from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
-from django.utils.translation import gettext as _, activate
-import logging
+from chat.serializers import ConversationSerializer, MessageSerializer
+from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 
 class LoadUnreadMessagesView(BaseAuthenticatedView):

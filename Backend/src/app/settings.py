@@ -30,7 +30,7 @@ AUTH_USER_MODEL = 'user.User'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# TODO: add production host
+# TODO: add production host (issue: #157)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
@@ -115,7 +115,7 @@ CHANNEL_LAYERS = {
 CHANNEL_SECURITY = {
     'SECURE_ONLY': True,
     'ALLOWED_HOSTS': ALLOWED_HOSTS,
-    'AUTH_TIMEOUT': 20,
+    'AUTH_TIMEOUT': 20, # Seconds for authentication to complete
 }
 
 # Database

@@ -12,6 +12,7 @@ async function call(url, method, data = null, showToast = true) {
         method: method,
         headers: headers,
         credentials: 'include',
+        // TODO: fix with issue: #147
         ...(url == "user/relationship/" || (data && method !== 'GET' && method !== 'DELETE')) ? {
             body: JSON.stringify(data),
         } : {},

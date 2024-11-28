@@ -8,8 +8,6 @@ Logs/*
 # Translations
 *.mo
 *.po
-Backend/src/locale/*/*/*.mo
-Backend/src/locale/*/*/*.po
 
 # Database files
 Database/postgres-data

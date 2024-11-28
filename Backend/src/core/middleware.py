@@ -1,10 +1,21 @@
 from django.contrib.auth.models import AnonymousUser
 from channels.middleware import BaseMiddleware
 from asgiref.sync import sync_to_async
-from django.conf import settings
 import logging
 from core.cookies import CookieJWTAuthentication
 from django.core.exceptions import PermissionDenied
+from django.utils.translation import gettext as _
+from core.exceptions import BarelyAnException
+
+
+class FailedWebSocketAuthentication(BarelyAnException):
+    status_code = 403
+    default_detail = _("Failed to authenticate user via WebSocket")
+    def __init__(self, detail, status_code=403):
+        super().__init__(detail)
+        self.detail = detail
+        self.status_code = status_code
+
 
 class WebSocketAuthMiddleware(BaseMiddleware):
     """
@@ -37,11 +48,11 @@ class WebSocketAuthMiddleware(BaseMiddleware):
                 scope['user'] = user
             else:
                 scope['user'] = AnonymousUser()
-                raise PermissionDenied("Authentication required")
+                raise FailedWebSocketAuthentication(_("Authentication required"))
 
             return await super().__call__(scope, receive, send)
 
         except Exception as e:
             logging.error(f"WebSocket authentication failed: {str(e)}")
             scope['user'] = AnonymousUser()
-            raise PermissionDenied("Authentication required")
+            raise FailedWebSocketAuthentication(_("Authentication required"))

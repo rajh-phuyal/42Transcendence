@@ -1,10 +1,10 @@
 {
-    "template": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+    "logoutMessage": {
+        "en-US": "We would say \"see you soon\" but we are always watching...",
+        "pt-PT": "Adeus, mas estamos sempre a observar...",
+        "pt-BR": "Adeus, mas estamos sempre a observar...",
+        "de-DE": "Auf Wiedersehen, aber wir beobachten Sie immer noch...",
+        "uk-UA": "До побачення, але ми завжди спостерігаємо...",
+        "ne-NP": "हो जाओ, लेकिन हम हमेशा देखते हैं..."
     }
 }
