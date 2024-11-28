@@ -148,9 +148,8 @@ class AuthCard extends HTMLElement {
 			default:
 				break ;
 		}
-		if (errorMsg.length != 0) {
+		if (errorMsg.length != 0)
 			$callToast("error", errorMsg);
-		}
 		return (errorMsg.length != 0);
 	}
 
@@ -205,7 +204,8 @@ class AuthCard extends HTMLElement {
             router("/home");
         })
         .catch(error => {
-            console.error(error);
+			$callToast("error", error.message);
+            // console.error(error);
         })
         .finally(() => {
             // usernameField.value = "";

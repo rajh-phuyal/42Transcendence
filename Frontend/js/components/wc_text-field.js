@@ -1,6 +1,7 @@
 import { createMessage } from '../views/chat/methods.js';
 import { $id } from '../abstracts/dollars.js'
 import $store from '../store/store.js'
+import { translate } from '../locale/locale.js'
 
 class TextField extends HTMLElement {
     constructor() {
@@ -152,7 +153,7 @@ class TextField extends HTMLElement {
                 }
             </style>
             <div id="main-container">
-                <textarea id="text-field" type="search" maxlength="2000" placeholder="${this.placeholder || 'Search...'}"></textarea>
+                <textarea id="text-field" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
                 <button id="textFieldButton">Send</button>
             </div>
         `;
