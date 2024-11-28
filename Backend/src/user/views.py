@@ -6,21 +6,46 @@ from django.db import transaction
 from rest_framework import status
 from django.db.models import Q
 from user.models import User, CoolStatus, IsCoolWith, NoCoolWith
-from user.serializers import ProfileSerializer, ListFriendsSerializer
+from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
 from core.exceptions import BarelyAnException
 from user.exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
 from .utils_img import process_avatar
 from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
-from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
+from user.constants import USER_ID_OVERLOARDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
 
+# SearchView for searching users by username
+class SearchView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, search, friend):
+        if not search:
+            error_response(_("key 'search' must be provided!"))
+
+        if friend not in ['True', 'False']:
+            error_response(_("key 'friend' must be provided as 'True' or 'False'!"))
+
+        current_user = request.user
+        users = User.objects.filter(username__istartswith=search).exclude(id=current_user.id)
+        if friend == 'True':
+            # Filter to find users who have an ACCEPTED status in the 'IsCoolWith' table
+            users = users.filter(
+                Q(requester_cool__requestee=current_user, requester_cool__status=CoolStatus.ACCEPTED) |
+                Q(requestee_cool__requester=current_user, requestee_cool__status=CoolStatus.ACCEPTED)
+            )
+        # Limit the result
+        users = users[:NO_OF_USERS_TO_LOAD]
+
+        if not users:
+            return success_response(_("No users found"), users=[])
+        serializer = SearchSerializer(users, many=True)
+        return success_response(_("The following users were found"), users=serializer.data)
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
         user = User.objects.get(id=id)
-        serializer = ProfileSerializer(user, context={'request': request})  # Pass context with request
+        serializer = ProfileSerializer(user, context={'request': request})
         return success_response(_("User profile loaded"), **serializer.data)
 
 

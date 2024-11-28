@@ -1,6 +1,7 @@
 from django.urls import path
 
 from user.views import (
+    SearchView,
     ProfileView,
 	RelationshipView,
     ListFriendsView,
@@ -9,6 +10,7 @@ from user.views import (
 )
 
 urlpatterns = [
+    path('search/<str:search>/<str:friend>/', SearchView.as_view(), name='search'),
     path('profile/<int:id>/', ProfileView.as_view(), name='profile'),
     path('relationship/', RelationshipView.as_view(), name='relationship'),
     path('friend/list/<int:id>/', ListFriendsView.as_view(), name='list_friends'),
