@@ -62,8 +62,7 @@ class Store {
     }
 
     clear() {
-        this.state = { ...this.initialState };
-        $setLocal("store", JSON.stringify(this.state));
+        $setLocal("store", JSON.stringify({}));
     }
 }
 

@@ -12,7 +12,10 @@ export const translate = (namespace, key, params = null) => {
 
     let translation = $store.state.translations?.[namespace]?.[key]?.[locale];
 
-    if (!translation) return key;
+    if (!translation) {
+        console.warn(`Translation for ${namespace}.${key} not found for locale ${locale}`);
+        return key;
+    }
 
     if (!params) return translation;
 

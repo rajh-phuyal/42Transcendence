@@ -28,9 +28,9 @@ export default {
         },
 
         afterDomInsertion() {
+            $callToast("success", this.translate("logout", "logoutMessage"));
             this.$auth.logout();
 
-            $callToast("success", this.translate("logout", "logoutMessage"));
 
             // do a countdown to redirect
             const countdown = $id('login-redirect-countdown');
