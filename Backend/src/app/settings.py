@@ -68,13 +68,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# TODO instead of using this:
-CORS_ALLOWED_ORIGINS = [
-	"https://ahok.cool",
-    "https://localhost:443",
-    "http://127.0.0.1:8000"
-]
-
+CORS_ALLOWED_ORIGINS = [f'https://{domain}' for domain in ALLOWED_HOSTS]
 
 ROOT_URLCONF = 'app.urls'
 

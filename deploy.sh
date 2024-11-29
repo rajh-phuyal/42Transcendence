@@ -126,7 +126,7 @@ BOLD='\e[1m'
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
 # to this line number - 2
-HELP_ENDS_AT_LINE=125
+HELP_ENDS_AT_LINE=126
 # ------------------------------------------------------------------------------
 
 ################################################################################
@@ -267,7 +267,7 @@ parse_args()
 			ENV_FLAG_FOUND=true
 		elif [ "$arg" == "-p" ]; then
 		    print_header "${RD}" " ################################## "${NC}
-		    print_header "${RD}" " # found flag -p                  # "${NC}
+		    print_header "${RD}" " #        (found flag '-p')       # "${NC}
 		    print_header "${RD}" " # !! DEPLOYING FOR PRODUCTION !! # "${NC}
 		    print_header "${RD}" " ################################## "${NC}
 			SECOND_COMPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
@@ -432,27 +432,34 @@ check_env_link() {
 		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
 
-	# Step 4: Append or update the var VOLUME_ROOT_PATH in the .env file
-	if perform_task_with_spinner \
-		"Checking if env VOLUME_ROOT_PATH already exists" \
-		"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
-		"" \
-		"" \
-		true; then
-			perform_task_with_spinner \
-				"Updating var VOLUME_ROOT_PATH in env file" \
-				"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
-				"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
-				"failed to update var VOLUME_ROOT_PATH in env file" \
-				false
-		else
-			perform_task_with_spinner \
-			"Adding var VOLUME_ROOT_PATH to env file" \
-			"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
-			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
-			"failed to add var VOLUME_ROOT_PATH to env file" \
-			false
-	fi
+	# Step 4: Export the VOLUME_ROOT_PATH
+    perform_task_with_spinner \
+        "Exporting the VOLUME_ROOT_PATH: "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"" \
+        'export VOLUME_ROOT_PATH="$OS_HOME_PATH$VOLUME_FOLDER_NAME/"' \
+        "done" \
+        "failed to export VOLUME_ROOT_PATH" \
+        false
+
+	#if perform_task_with_spinner \
+	#	"Checking if env VOLUME_ROOT_PATH already exists" \
+	#	"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
+	#	"" \
+	#	"" \
+	#	true; then
+	#		perform_task_with_spinner \
+	#			"Updating var VOLUME_ROOT_PATH in env file" \
+	#			"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
+	#			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+	#			"failed to update var VOLUME_ROOT_PATH in env file" \
+	#			false
+	#	else
+	#		perform_task_with_spinner \
+	#		"Adding var VOLUME_ROOT_PATH to env file" \
+	#		"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
+	#		"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+	#		"failed to add var VOLUME_ROOT_PATH to env file" \
+	#		false
+	#fi
 
 	# Step 5: Source again
 	perform_task_with_spinner \
