@@ -74,11 +74,12 @@ services:
       - BE_SECRET_KEY=$BE_SECRET_KEY
       - DJANGO_SETTINGS_MODULE=app.settings
       - DJANGO_ALLOWED_HOSTS=$DOMAIN_NAMES
+      - MEDIA_VOLUME_NAME=$MEDIA_VOLUME_NAME
     ports:
       - "8000:8000" #need to be changed. remove it after
     volumes:
       - ./Backend/src:/app
-      - media:/media
+      - media-volume:/media
     restart: unless-stopped
     # [astein] CHAT GPT told me that this is a good way to check if the service is healthy
     # not sure what it means but u need to create a Health Check Endpoint
@@ -109,7 +110,7 @@ services:
     ports:
       - "443:443" #Maybe need to change later 443
     volumes:
-      - media:/media
+      - media-volume:/media
       # TODO
       # ----
       # All those mount points are usefull for development sincee we dont
@@ -145,17 +146,17 @@ volumes:
     name: db-volume
     driver_opts:
       type: none
-      device: ${VOLUME_ROOT_PATH}db-volume/ #This will be auto updated via deploy.sh!
+      device: ${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
       o: bind
   pa-volume:
     name: pa-volume
     driver_opts:
       type: none
-      device: ${VOLUME_ROOT_PATH}pa-volume/ #This will be auto updated via deploy.sh!
+      device: ${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
       o: bind
-  media:
-    name: media
+  media-volume:
+    name: media-volume
     driver_opts:
       type: none
-      device: ${VOLUME_ROOT_PATH}media/ #This will be auto updated via deploy.sh!
+      device: ${VOLUME_ROOT_PATH}${MEDIA_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
       o: bind

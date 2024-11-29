@@ -125,7 +125,7 @@ DATABASES = {
 }
 
 # Media for the user profile pictures aka avatars
-MEDIA_ROOT = '/media'  # Path in the Docker container
+MEDIA_ROOT = '/' + os.getenv('MEDIA_VOLUME_NAME', 'media-volume')
 MEDIA_URL = '/media/'  # URL prefix for media files
 
 # Password validation

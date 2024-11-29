@@ -65,12 +65,12 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #   If no container is specified ALL containers will be affected.
 #   The allowed containers are:
 #
-#	| Container  | Service  | Volumes   | Description                                  |
-#	|------------|----------|-----------|----------------------------------------------|
-#	| `fe`       | frontend | media     | The frontend service (nginx, html, css, Js)  |
-#	| `be`       | backend  | media     | The backend service (django)                 |
-#	| `db`       | database | db-volume | The database service (postgres)              |
-#	| `pa`       | pgadmin  | pa-volume | The pgadmin service (pgadmin)                |
+#	| Container  | Service  | Volumes          | Description                                  |
+#	|------------|----------|------------------|----------------------------------------------|
+#	| `fe`       | frontend | media-volume     | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  | media-volume     | The backend service (django)                 |
+#	| `db`       | database | db-volume        | The database service (postgres)              |
+#	| `pa`       | pgadmin  | pa-volume        | The pgadmin service (pgadmin)                |
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
@@ -81,7 +81,8 @@ OS_HOME_PATH=""
 VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
 PA_VOLUME_NAME=pa-volume
-MEDIA_VOLUME_NAME=media
+MEDIA_VOLUME_NAME=media-volume
+export DB_VOLUME_NAME PA_VOLUME_NAME MEDIA_VOLUME_NAME
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -670,7 +671,7 @@ insert_dummy_data() {
 	fi
 
 	print_header "${OR}" "Inserting dummy data into the database..."
-	docker exec -it db  bash /usr/local/bin/create_dummy.sh
+	docker exec -it db  bash /tools/create_dummy.sh
 	print_header "${OR}" "Inserting dummy data into the database...${GR}DONE${NC}"
 }
 
