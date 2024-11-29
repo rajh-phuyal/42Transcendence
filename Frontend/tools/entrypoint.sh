@@ -31,7 +31,7 @@ echo -e '\t"DOMAIN_NAMES_SPACED"='"$DOMAIN_NAMES_SPACED"
 envsubst '${FILE_CRT} ${FILE_KEY} ${DOMAIN_NAMES_SPACED}' < "/etc/nginx/nginx.conf" > "/etc/nginx/nginx.temp.conf"
 mv "/etc/nginx/nginx.temp.conf" "/etc/nginx/nginx.conf"
 echo "Substituted environment variables in /etc/nginx/nginx.conf"
-cat "/etc/nginx/nginx.conf"
 
 # Start NGINX
+echo "Starting NGINX..."
 nginx -g 'daemon off;'
