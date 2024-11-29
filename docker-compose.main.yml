@@ -108,6 +108,7 @@ services:
       - LOCAL_DEPLOY=$LOCAL_DEPLOY
       - DOMAIN_NAMES=$DOMAIN_NAMES
     ports:
+      - "80:80"   #For redirecting to https
       - "443:443" #Maybe need to change later 443
     volumes:
       - media-volume:/media
