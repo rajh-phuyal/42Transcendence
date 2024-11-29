@@ -17,16 +17,13 @@ from user.constants import USER_ID_OVERLOARDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def get(self, request, search, friend):
+    def get(self, request, search):
         if not search:
             error_response(_("key 'search' must be provided!"))
-
-        if friend not in ['True', 'False']:
-            error_response(_("key 'friend' must be provided as 'True' or 'False'!"))
-
+        onlyFriends = request.query_params.get('onlyFriends', 'false')
         current_user = request.user
         users = User.objects.filter(username__istartswith=search).exclude(id=current_user.id)
-        if friend == 'True':
+        if onlyFriends == 'true':
             # Filter to find users who have an ACCEPTED status in the 'IsCoolWith' table
             users = users.filter(
                 Q(requester_cool__requestee=current_user, requester_cool__status=CoolStatus.ACCEPTED) |
