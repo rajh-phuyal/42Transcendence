@@ -5,6 +5,7 @@ import { $id } from '../abstracts/dollars.js';
 // bind store and auth singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
+import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 //import loading from '../abstracts/loading.js'; TODO this should be added later
@@ -30,6 +31,7 @@ const objectToBind = (config, params = null) => {
     binder.translate = translate;
     binder.call = call;
 	binder.webSocketManager = WebSocketManager;
+    binder.$syncer = $syncer;
    // binder.loading = loading;
     binder.domManip = dollars;
 

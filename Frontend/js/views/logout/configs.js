@@ -30,6 +30,7 @@ export default {
         afterDomInsertion() {
             $callToast("success", this.translate("logout", "logoutMessage"));
             this.$auth.logout();
+            this.$syncer.broadcast("authentication-state", { logout: true });
 
 
             // do a countdown to redirect

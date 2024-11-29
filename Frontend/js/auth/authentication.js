@@ -116,6 +116,7 @@ class Auth {
             this.isAuthenticated = false;
             $store.clear();
             WebSocketManager.disconnect();
+            console.log("Logged out");
         } catch (error) {
             console.error('Logout error:', error);
         }
