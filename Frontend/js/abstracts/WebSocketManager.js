@@ -1,3 +1,5 @@
+import $store from '../store/store.js';
+
 class WebSocketManager {
     constructor() {
         this.socket = null;
@@ -5,7 +7,6 @@ class WebSocketManager {
 
     // Connect to WebSocket with the provided token
     connect(token) {
-		console.log("WebSocketManager.connect() called with token:", token);
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log("WebSocket already connected.");
             return;
@@ -19,6 +20,7 @@ class WebSocketManager {
         // Log connection events
         this.socket.onopen = () => {
             console.log("WebSocket connected.");
+            $store.commit("setWebSocketIsAlive", true);
         };
 
 		this.socket.onmessage = (event) => {
@@ -29,10 +31,12 @@ class WebSocketManager {
 
         this.socket.onclose = () => {
             console.log("WebSocket disconnected.");
+            $store.commit("setWebSocketIsAlive", false);
         };
 
         this.socket.onerror = (error) => {
             console.error("WebSocket error:", error);
+            $store.commit("setWebSocketIsAlive", false);
         };
     }
 

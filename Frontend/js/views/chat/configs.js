@@ -166,21 +166,21 @@ export default {
             console.log("After DOM Insertion...");
             
 			// Add event listener for the Send button
-            const sendButton = document.getElementById("chat-message-submit");
-            const messageInput = document.getElementById("chat-message-input");
+            // const sendButton = document.getElementById("chat-message-submit");
+            // const messageInput = document.getElementById("chat-message-input");
 
-            if (sendButton && messageInput) {
-                sendButton.onclick = () => {
-                    this.sendMessage(messageInput.value); // Send the message via WebSocket
-                    messageInput.value = ''; // Clear the input field
-                };
+            // if (sendButton && messageInput) {
+            //     sendButton.onclick = () => {
+            //         this.sendMessage(messageInput.value); // Send the message via WebSocket
+            //         messageInput.value = ''; // Clear the input field
+            //     };
 
-                messageInput.onkeyup = (e) => {
-                    if (e.keyCode === 13) { // If "Enter" is pressed, send the message
-                        sendButton.click();
-                    }
-                };
-            }
+            //     messageInput.onkeyup = (e) => {
+            //         if (e.keyCode === 13) { // If "Enter" is pressed, send the message
+            //             sendButton.click();
+            //         }
+            //     };
+            // }
         },
     },
 };

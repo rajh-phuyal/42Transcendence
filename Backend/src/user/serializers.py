@@ -1,16 +1,17 @@
 from django.db.models import Q
-from .models import User, IsCoolWith, CoolStatus
+from user.models import User, IsCoolWith, CoolStatus
 from rest_framework import serializers
-from .utils_relationship import get_relationship_status
+from user.utils_relationship import get_relationship_status
+from django.core.cache import cache
+from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
     avatarUrl = serializers.CharField(source='avatar_path', default='default_avatar.png')
     firstName = serializers.CharField(source='first_name', default="John")
     lastName = serializers.CharField(source='last_name', default="Doe")
-    online = serializers.BooleanField(default=False)
-    lastLogin = serializers.CharField(default="YYYY-MM-DD hh:mm")
-    language = serializers.CharField(default="en")
+    online = serializers.SerializerMethodField()
+    lastLogin = serializers.SerializerMethodField()
     chatId = serializers.CharField(default=42)
     newMessage = serializers.BooleanField(default=True)
     relationship = serializers.SerializerMethodField()
@@ -18,17 +19,31 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-                # id and username are the same key than in the model.py, thats why i dont need them in the above section
         fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
-    
+
+    def get_lastLogin(self, obj):
+        # Check if `last_login` is None or `online` is True
+        if obj.last_login is None or self.get_online(obj):
+            return "under surveillance"
+
+        # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
+        return obj.last_login.strftime("%Y-%m-%d %H:%M")
+
+    def get_online(self, obj):
+        # AI Opponent and Overlords are always online
+        if obj.id == USER_ID_OVERLOARDS or obj.id == USER_ID_AI:
+            return True
+        # Check if the user's online status is in the cache
+        return cache.get(f'user_online_{obj.id}', False)
+
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
         # `requester` is the current authenticated user
-        requester = self.context['request'].user  
+        requester = self.context['request'].user
         # `requested` is the user object being serialized (from the URL)
         requested = obj
         return get_relationship_status(requester, requested)
-    
+
     def get_stats(self, obj):
         return {
             "game": {
@@ -61,7 +76,7 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'avatarUrl', 'status']
 
     def get_other_user(self, obj):
-        user_id = self.context.get('user_id')
+        user_id = self.context.get('target_user_id')
         return obj.requestee if obj.requester.id == user_id else obj.requester
 
     def get_id(self, obj):
@@ -77,7 +92,10 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         return other_user.avatar_path
 
     def get_status(self, obj):
-        user_id = self.context.get('user_id')
+        # TODO: Friendship status should be from the perspective of the requester
+        # 'requester_user_id'
+        # 'target_user_id'
+        user_id = self.context.get('requester_user_id')
         if obj.status == CoolStatus.PENDING:
-            return 'requestSend' if obj.requester.id == user_id else 'requestReceived'
-        return 'accepted'
+            return 'requestSent' if obj.requester.id == user_id else 'requestReceived'
+        return 'friend'

@@ -1,15 +1,17 @@
 <div id="profie-view">
     <div id="background-image">
+        <!-- Left Block -->
         <div id="main-left-div">
             <h2 id="username">username</h2>
             <img id="avatar"></img>
-            <h3 id="birth-name" class="blackout"> actual name</h2>
+            <h4 id="birth-name" class="blackout"> actual name</h4>
             <div id="last-seen" class="blackout">
-                <h3 id="last-seen-text">last seen</h2>
+                <h4 id="last-seen-text">last seen</h4>
                 <img id="last-seen-image" src="" alt="img not found">
             </div>
-            <h3 id="language"  class="blackout"> language</h2>
+            <h4 id="language"  class="blackout"> language</h4>
         </div>
+        <!-- Right Block -->
         <div id="main-right-div">
             <div id="top-buttons">
                 <img class="button" id="button-top-left"></img>
@@ -67,7 +69,7 @@
               <h3 id="friendshp-modal-friendship-text" class="friendship-modal-text"></h3>
               <div id="friendship-modal-friendship-buttons">
                     <barely-a-button id="friendship-modal-friendship-primary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
-                    <barely-a-button id="friendship-modal-friendship-secundary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="No"></barely-a-button>
+                    <barely-a-button id="friendship-modal-friendship-secondary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="No"></barely-a-button>
               </div>
               <div id="friendship-modal-block">
                     <h3 id="friendshp-modal-block-text" class="friendship-modal-text"></h3>
@@ -79,6 +81,149 @@
         </div>
       </div>
     </div>
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="edit-profile-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="width: 32vw;">
+          <div class="modal-body" id="edit-profile-modal-body">
+            <!-- Form Body -->
+            <div id="edit-profile-modal-form">
+                <h2>Edit Profile</h2>
+                <barely-a-button id="edit-profile-modal-form-change-avatar-button" buttonclass="rect-button" name="avatar"></barely-a-button>
+                <barely-a-button id="edit-profile-modal-form-change-password-button" buttonclass="rect-button" name="password"></barely-a-button>
+                <!-- Bootstrap Form -->
+                <form class="needs-validation" novalidate>
+                  <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                      <label for="validationCustom01">First name</label>
+                      <input type="text" class="form-control" id="edit-profile-modal-form-input-first-name" placeholder="First name" value="John" required>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label for="validationCustom02">Last name</label>
+                      <input type="text" class="form-control" id="edit-profile-modal-form-input-last-name" placeholder="Last name" value="Doe" required>
+                      <div class="valid-feedback">
+                        Looks good!
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                      <label for="validationCustomUsername">Username</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        </div>
+                        <input type="text" class="form-control" id="edit-profile-modal-form-input-username" placeholder="Username" value="user" aria-describedby="inputGroupPrepend" required>
+                        <div class="invalid-feedback">
+                          Please choose a username.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlSelect1">Language</label>
+                      <select class="form-control" id="edit-profile-modal-form-language-selector">
+                        <option value="none">Chose a Language</option>
+                        <option value="de-DE">Deutsch(DE)</option>
+                        <option value="en-US">English(US)</option>
+                        <option value="ne-NP">Nepalese (NP)</option>
+                        <option value="pt-BR">Portugues(BR)</option>
+                        <option value="pt-PT">Portugues(PT)</option>
+                        <option value="uk-UA">Ukrainian (UK)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <barely-a-button id="edit-profile-modal-form-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
+                </form>
+            </div>
+            <!-- Password Change Body -->
+            <div id="edit-profile-modal-password-change">
+              <form>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Old Password</label>
+                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-old-password" aria-describedby="emailHelp" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">New Password</label>
+                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-new-password" aria-describedby="emailHelp" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Repeat Password</label>
+                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-repeat-password" placeholder="Password">
+                </div>
+                <barely-a-button id="edit-profile-modal-password-change-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
+              </form>
+            </div>
+            <!--  Avatar Change Body -->
+            <div id="edit-profile-modal-avatar-change">
+              <button id="edit-profile-modal-avatar-change-upload-button">Upload Image</button>
+              <input type="file" id="edit-profile-modal-avatar-change-file-input" accept="image/*" style="display: none;">
+              <img id="edit-profile-modal-avatar-change-uploaded-image" src="" alt="Uploaded Image" style="display: none; width: 30vw; margin-top: 20px;"></img>
+              <barely-a-button id="edit-profile-modal-avatar-change-crop-image" buttonclass="rect-button" name="Submit"></barely-a-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Invite for game Modal -->
+    <div class="modal fade" id="invite-for-game-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="invite-for-game-modal-content">
+          <div class="modal-body" id="invite-for-game-modal-body">
+            <div id="invite-for-game-modal-title-container">
+              <h1 id="invite-for-game-modal-title">Friendly Match</h1>
+            </div>
+            <div id="invite-for-game-modal-maps-powerups-container">
+              <div id="invite-for-game-modal-powerups-container">
+                <h4>Powerups</h4>
+                <input id="invite-for-game-modal-powerups-checkbox" type="checkbox">
+              </div>
+              <div id="invite-for-game-modal-maps-container">
+                <h3>Maps</h3>
+                <img id="invite-for-game-modal-map-ufo" name="ufo" class="invite-for-game-modal-maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lizard-people" name="lizard-people" class="invite-for-game-modal-maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-snowman" name="snowman" class="invite-for-game-modal-maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
+                <img id="invite-for-game-modal-map-lochness" name="lochness" class="invite-for-game-modal-maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
+              </div>
+            </div>
+            <div id="invite-for-game-modal-opponent-title-container">
+              <h4 id="invite-for-game-modal-opponent-title">Your Opponent:</h3>
+              <h4 id="invite-for-game-modal-opponent-name" style="margin-left: 1vw;"></h3>
+            </div>
+            <div id="invite-for-game-modal-opponent-start-container">
+              <img id="invite-for-game-modal-opponent-photo" alt="error loading the image">
+              
+              <barely-a-button id="invite-for-game-modal-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- Friends List Modal -->
+  <div class="modal fade" id="friends-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" id="friends-list-modal-content">
+        <div class="modal-body" id="friends-list-modal-body">
+          <h1>Friends List</h1>
+          <div id="friends-list-modal-search-bar-container">
+            <input type="text" id="friends-list-modal-search-bar" placeholder="search">
+            <barely-a-button id="friends-list-modal-search-bar-button" name="search" buttonclass="rect-button"></barely-a-button>
+          </div>
+          <div >
+            <ul id="friends-list-modal-list" class="list-group">
+              
+            </ul>
+            <h3 id="friends-list-modal-list-result-not-found-message">No Results Found</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <style>
     #profie-view {
@@ -86,6 +231,162 @@
         background-color: #ff00ff6c;
         color: black;
     }
+
+    /* Friends list */
+
+    #friends-list-modal-search-bar{
+      background-color: black;
+      color: white;
+      padding: 4%;
+      height: 90%;
+      width: 60%;
+      margin-right: 4%;
+    }
+    
+    #friends-list-modal-search-bar-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 3%;
+      height: 8%;
+      width: 90%;
+    }
+
+    .friends-list-modal-list-element{
+      display: flex;
+      flex-direction: row;
+      height: 8vh;
+      background-color: #FFF6D4;
+      border: black;
+      align-items: center;
+    }
+
+    .friends-list-modal-list-element-image {
+      height: 7vh;
+      margin: 0vh 1vw;
+
+    }
+    .friends-list-modal-list-element-username {
+      margin: 0vh 6vw 0vh 2vw;
+      width: 4vw;
+    }
+
+    #friends-list-modal-list {
+      display: flex;
+      flex-direction: column;
+      height: 40vh;
+      overflow-y: auto;
+    }
+
+    #friends-list-modal-body {
+      display: flex;
+      flex-direction: column;
+      height: 70vh;
+    }
+
+    /* Invite for Game  */
+    
+    #invite-for-game-modal-start-button {
+      margin: 2vh 0vw 0vh 4vw;
+    }
+
+    #invite-for-game-modal-title-container {
+      margin: 19vh 0vw 0vh 0vw;
+      
+    }
+    
+    #invite-for-game-modal-maps-powerups-container {
+      display: flex;
+      flex-direction: row;
+    }
+
+    #invite-for-game-modal-powerups-checkbox {
+      margin: 0vh 0vw 0vh 0.6vw;
+    }
+
+    #invite-for-game-modal-powerups-container {
+      display: flex;
+      flex-direction: row;
+      margin: 30vh 0vw 0vh 1.5vw;
+      align-items: center;
+    }
+
+    #invite-for-game-modal-maps-container {
+      display: flex;
+      flex-direction: column;
+      margin: 0vh 0vw 0vh 10.7vw;
+      padding: 0vh 0vw 0vh 0.3vw;
+    }
+    
+    #invite-for-game-modal-title {
+      text-align: center;
+    }
+
+    .invite-for-game-modal-maps-button {
+      margin: 0vh 0vw 1vh 0.3vw;
+      height: 7vh;
+      width: 7vh;
+      opacity: 0.7;
+    }
+    .invite-for-game-modal-maps-button:hover {
+      margin: 0vh 0vw 0.6vh 0.1vw;
+      height: 7.4vh;
+      width: 7.4vh;
+    }
+
+    #invite-for-game-modal-content {
+      background-color: transparent; 
+      border: none;
+      background-image: url('../assets/homeView/lizardPeopleModal.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #invite-for-game-modal-body {
+      display: flex;
+      flex-direction: column;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 90vh;
+      width: 30vw;
+    }
+    
+    #invite-for-game-modal-opponent-title-container {
+      display: flex;
+      flex-direction: row;
+      margin: 1vh 0vw 0vh 1.5vw;
+    }
+
+    #invite-for-game-modal-opponent-start-container {
+      display: flex;
+      flex-direction: row;
+      margin: 1vh 0vw 0vh 1.5vw;
+    }
+
+    #invite-for-game-modal-opponent-photo {
+      height: 12vh;
+      margin: 0vh 0vw 0vh 2vw;
+    }
+
+
+
+    /* Edit Profile */
+
+    #edit-profile-modal-avatar-change-cropped-image {
+      width: 30vw; margin-top: 20px;
+    }
+    .form-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #edit-profile-modal-autentication-error {
+      display: none;
+    }
+
+    /******************************/
 
     #friendship-modal-body {
         text-align: center;
@@ -112,20 +413,19 @@
 
     .button {
         height: 8vh;
-        width: 10vh;
         margin: 0vh 1vw;
         background-image: "";
     }
 
     .button:hover {
         height: 9vh;
-        width: 11vh;
         margin: 0vh 0.75vw;
 
         border-color: black;
         border-radius: 3px;
         border-width: 4px;
-    }
+        cursor: pointer;
+      }
 
     /* .game-stats-parameters{
         margin: 0vh 0vh 0vh 2vw;

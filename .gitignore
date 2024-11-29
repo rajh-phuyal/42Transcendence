@@ -11,6 +11,10 @@ Environments/*
 Logs/*
 **/*.log
 
+# Translations
+*.mo
+*.po
+
 # Database files
 Database/postgres-data
 db.sqlite3
@@ -33,3 +37,6 @@ example.enviroment
 Backend/src/authentication/migrations/*
 Backend/src/chat/migrations/*
 Backend/src/user/migrations/*
+
+# .po files
+Backend/src/authentication/locale/*/*/*.po
