@@ -14,7 +14,7 @@ chmod 600 /pgpassfile
 
 echo "STARTING MY ENTRYPOINT.SH...DONE"
 
-sleep 100000
+#sleep 100000
 # Pass control to the official pgAdmin entrypoint
-# exec /entrypoint.sh "$@"
+exec /entrypoint.sh "$@"
 

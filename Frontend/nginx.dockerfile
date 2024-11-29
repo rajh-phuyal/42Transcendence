@@ -5,15 +5,22 @@ FROM nginx:1.27.0-alpine
 RUN apk update && apk add --no-cache nginx openssl gettext
 
 # Create directories for media files and nginc.config files
-RUN mkdir -p  /media/avatars /tmp/nginx/
+RUN mkdir -p  /media/avatars /tmp/nginx/ /tools/
 
 # Copy the media files
 COPY ./assets/avatars/* /media/avatars/
+
+# Copy configuration files
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy the entrypoint.sh, make it excutable and run it
 COPY ./tools/entrypoint.sh /tools/entrypoint.sh
 RUN chmod +x /tools/entrypoint.sh
 ENTRYPOINT ["/tools/entrypoint.sh"]
+
+# Copy the healthcheck.sh, make it excutable and run it
+COPY ./tools/healthcheck.sh /tools/healthcheck.sh
+RUN chmod +x /tools/healthcheck.sh
 
 # Expose port 80
 EXPOSE 443

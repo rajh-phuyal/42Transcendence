@@ -21,6 +21,11 @@
 # DOCKER COMPOSE FILES:
 COMPOSE_FILE="docker-compose.main.yml"
 COMPOSE_FILE_PRODUCTION="docker-compose.prod.yml"
+# The domain name will be set according to the flag -p
+DOMAIN_NAMES=""
+DOMAIN_NAMES_LOCAL=localhost,127.0.0.1
+DOMAIN_NAMES_PRODUCTION=ahok.cool,217.160.125.56
+#
 # this will be updated to "-f $COMPOSE_FILE_PRODUCTION" if -p flag is set
 SECOND_COMPOSE_FLAG=""
 #
@@ -120,7 +125,7 @@ BOLD='\e[1m'
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
 # to this line number - 2
-HELP_ENDS_AT_LINE=112
+HELP_ENDS_AT_LINE=125
 # ------------------------------------------------------------------------------
 
 ################################################################################
@@ -250,6 +255,9 @@ parse_args()
 	CONTAINERS=""
 	ENV_FLAG_FOUND=false
 	MSG_MISSING_PATH="The -e flag is used but the path is missing. Flag will be ignored!"
+    # Default Domain is $DOMAIN_NAMES_LOCAL
+    DOMAIN_NAMES=$DOMAIN_NAMES_LOCAL
+    export LOCAL_DEPLOY=TRUE
 	for arg in "$@"
 	do
 		if [ "$arg" == "-e" ]; then
@@ -257,8 +265,16 @@ parse_args()
 			NEW_ENV_PATH=$MSG_MISSING_PATH	# So the call ./deploy.sh start -e will fail (the path is missing)
 			ENV_FLAG_FOUND=true
 		elif [ "$arg" == "-p" ]; then
-			echo "found flag 'p'"
+		    print_header "${RD}" " ################################## "${NC}
+		    print_header "${RD}" " # found flag -p                  # "${NC}
+		    print_header "${RD}" " # !! DEPLOYING FOR PRODUCTION !! # "${NC}
+		    print_header "${RD}" " ################################## "${NC}
 			SECOND_COMPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
+            echo -e "DEPLOY FOR PRODUCTION: set SECOND_COMPOSE_FLAG to:$RD$SECOND_COMPOSE_FLAG$NC"
+            DOMAIN_NAMES=$DOMAIN_NAMES_PRODUCTION
+            echo -e "DEPLOY FOR PRODUCTION: set DOMAIN_NAMES to:$RD$DOMAIN_NAMES$NC"
+            export LOCAL_DEPLOY=FALSE
+            echo -e "DEPLOY FOR PRODUCTION: set LOCAL_DEPLOY to:$RD$LOCAL_DEPLOY$NC"
 		elif [ "$ENV_FLAG_FOUND" == true ]; then
 			NEW_ENV_PATH=$arg
 			ENV_FLAG_FOUND=false
@@ -316,11 +332,16 @@ parse_args()
 		echo -e $OR $MSG_MISSING_PATH $NC
 		NEW_ENV_PATH=""
 	fi
-	echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+    if [ "$NEW_ENV_PATH" != "" ]; then
+        echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+    fi
 
+    # Export the DOMAIN_NAMES
+    export DOMAIN_NAMES
+    echo -e "DOMAIN_NAMES:\t$DOMAIN_NAMES"
 	# Exporting the user and the group so that docker compse can use this
-	export UID=$(id -u)
-	export GID=$(id -g)
+	#export UID=$(id -u)
+	#export GID=$(id -g)
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
 }
 
@@ -328,12 +349,6 @@ check_setup() {
 	check_os
 	check_env_link
 	check_volume_folders
-	if [ -n "$SECOND_COMPOSE_FLAG" ]; then
-		echo ""
-		print_header "${RD}" "!!! DEPLOYING FOR PRODUCTION !!!"${NC}
-		echo -e "${RD}" "\tWebsite reachable at: "${BL}$(url "https://$DOMAIN_NAME" "$DOMAIN_NAME")${NC}
-		print_header "${RD}" "!!! DEPLOYING FOR PRODUCTION !!!\n"${NC}
-	fi
 }
 
 # To set the volume location we need to differ between linux and mac
@@ -519,6 +534,14 @@ check_volume_folders()
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
+print_server_urls()
+{
+    IFS=','
+    for DOMAIN in $DOMAIN_NAMES_LOCAL; do
+        echo -e "${GR}" "\tWebsite reachable at: ${BL}$(url "https://$DOMAIN" "$DOMAIN")${NC}"
+    done
+}
+
 # ------------------------------------------------------------------------------
 # DOCKER BASIC FUNCTIONS
 #	stop [contaier]			| Stops the container(s)
@@ -675,6 +698,7 @@ case "$COMMAND" in
 	start)
 		check_setup
 		docker_start
+        print_server_urls
 		;;
 	stop)
 		check_setup
@@ -695,10 +719,12 @@ case "$COMMAND" in
 	reset)
 		check_setup
 		docker_reset
+        print_server_urls
 		;;
 	re)
 		check_setup
 		docker_re
+        print_server_urls
 		;;
 	dummy)
 		check_setup
@@ -708,3 +734,5 @@ case "$COMMAND" in
 		print_error "Invalid command: >${COMMAND}<, run >./deploy.sh help< to see the available commands."
 		;;
 esac
+
+print_header "${BL}" "DONE - Barely Alive"

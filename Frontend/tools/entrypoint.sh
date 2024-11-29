@@ -19,8 +19,6 @@ if [ "$LOCAL_DEPLOY" == TRUE ]; then
     else
         echo "Using existing self-signed SSL certificate..."
     fi
-    # Use LOCAL configuration
-    cp "/tmp/nginx/nginx_local.conf" /etc/nginx/nginx.conf
 else
 	echo "Starting in production mode..."
 	echo "Searching for ssl files..."
@@ -36,17 +34,15 @@ else
 	  echo "Error: Required .cer or .key file not found in $SSL_DIR"
   		exit 1
 	fi
-	# Use PRODUCTION configuration
-    cp "/tmp/nginx/nginx_production.conf" /etc/nginx/nginx.conf
-
 fi
 
-export FILE_CRT FILE_KEY DOMAIN_NAME
+export FILE_CRT FILE_KEY DOMAIN_NAMES
+export DOMAIN_NAMES_SPACED=$(echo $DOMAIN_NAMES | sed 's/,/ /g')
 echo "Update the configuration by expanding..."
 echo -e '\t"FILE_CRT"='"$FILE_CRT"
 echo -e '\t"FILE_KEY"='"$FILE_KEY"
-echo -e '\t"DOMAIN_NAME"='"$DOMAIN_NAME"
-envsubst '${FILE_CRT} ${FILE_KEY} ${DOMAIN_NAME}' < "/etc/nginx/nginx.conf" > "/etc/nginx/nginx.temp.conf"
+echo -e '\t"DOMAIN_NAMES_SPACED"='"$DOMAIN_NAMES_SPACED"
+envsubst '${FILE_CRT} ${FILE_KEY} ${DOMAIN_NAMES_SPACED}' < "/etc/nginx/nginx.conf" > "/etc/nginx/nginx.temp.conf"
 mv "/etc/nginx/nginx.temp.conf" "/etc/nginx/nginx.conf"
 echo "Substituted environment variables in /etc/nginx/nginx.conf"
 cat "/etc/nginx/nginx.conf"

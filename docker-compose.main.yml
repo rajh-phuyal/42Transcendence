@@ -42,17 +42,18 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL : $PA_MAIL
       PGADMIN_DEFAULT_PASSWORD : $PA_PSWD
+      DOMAIN_NAMES : $DOMAIN_NAMES
     ports:
       - "1234:80"
     volumes:
       - pa-volume:/var/lib/pgadmin
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"] #PORT 80 is correct since it is the port of the container not the exposed port
+      test: ["CMD", "sh", "-c", "/tools/healthcheck.sh"]
       interval: 30s
       timeout: 10s
-      retries: 5
-      start_period: 10s
+      retries: 20
+      start_period: 30s
 
   be:
     container_name: be
@@ -72,6 +73,7 @@ services:
       - BE_DB_PSWD=$BE_DB_PSWD
       - BE_SECRET_KEY=$BE_SECRET_KEY
       - DJANGO_SETTINGS_MODULE=app.settings
+      - DJANGO_ALLOWED_HOSTS=$DOMAIN_NAMES
     ports:
       - "8000:8000" #need to be changed. remove it after
     volumes:
@@ -83,10 +85,11 @@ services:
     # u think its a good idea?
     # test: ["CMD-SHELL", "curl --silent --fail http://localhost:8000/health/ || exit 1"]
     healthcheck:
-      test: ["CMD-SHELL", "python manage.py check"]
+      test: ["CMD-SHELL", "cd app && python manage.py check"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 10s
 
   fe:
     container_name: fe
@@ -102,6 +105,7 @@ services:
         #condition: service_healthy
     environment:
       - LOCAL_DEPLOY=$LOCAL_DEPLOY
+      - DOMAIN_NAMES=$DOMAIN_NAMES
     ports:
       - "443:443" #Maybe need to change later 443
     volumes:
@@ -120,16 +124,14 @@ services:
       - ./Frontend/css:/usr/share/nginx/css
       - ./Frontend/js:/usr/share/nginx/js
       - ./Frontend/assets:/usr/share/nginx/assets
-      # DONT CHANGE BELOW!
-      - ./Frontend/nginx:/tmp/nginx:ro
-      # DONT CHANGE ABOVE!
     restart: unless-stopped
     # TODO: revise it the healthceck is good enough...
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail http://localhost:80/ || exit 1"]
+      test: ["CMD", "sh", "-c", "/tools/healthcheck.sh"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 10s
 
 networks:
   default:
