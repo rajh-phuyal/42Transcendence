@@ -32,8 +32,8 @@ class GameMember(models.Model):
         WON = 'won', 'Won'
         LOST = 'lost', 'Lost'
 
-    user = models.ForeignKey('barelyaschema.User', on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='game_members')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_members')
     local_game = models.BooleanField()
     points = models.IntegerField(default=0)
     result = models.CharField(
