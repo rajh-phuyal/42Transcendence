@@ -1,16 +1,31 @@
 import { routes } from './routes.js';
+import { functionalRoutes } from './functionalRoutes.js';
 import { setViewLoading } from '../abstracts/loading.js';
 import { $id } from '../abstracts/dollars.js';
 
-// bind store and auth singleton to 'this' in the hooks
+// bind store, auth and other singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
 import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
-//import loading from '../abstracts/loading.js'; TODO this should be added later
+import loading from '../abstracts/loading.js';
 import dollars from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
+
+const simpleObjectToBind = () => {
+    return {
+        router: router,
+        $store: $store,
+        $auth: $auth,
+        $syncer: $syncer,
+        call: call,
+        loading: loading,
+        webSocketManager: WebSocketManager,
+        translate: translate,
+        domManip: dollars,
+    }
+}
 
 const objectToBind = (config, params = null) => {
     let binder = {};
@@ -24,18 +39,7 @@ const objectToBind = (config, params = null) => {
         binder[key] = value.bind(binder);
     }
 
-    binder.router = router;
-    binder.$store = $store;
-    binder.$auth = $auth;
-    binder.routeParams = params;
-    binder.translate = translate;
-    binder.call = call;
-	binder.webSocketManager = WebSocketManager;
-    binder.$syncer = $syncer;
-   // binder.loading = loading;
-    binder.domManip = dollars;
-
-    return binder;
+    return { ...simpleObjectToBind(), ...binder, routeParams: params };
 }
 
 async function getViewHooks(viewName) {
@@ -52,6 +56,14 @@ async function getViewHooks(viewName) {
 async function router(path, params = null) {
     setViewLoading(true);
 
+    // check for routes pre authentication check
+    const functionalRoute = functionalRoutes.find(route => route.path === path);
+    if (functionalRoute && !functionalRoute?.requireAuth) {
+        await functionalRoute.execute.bind(simpleObjectToBind())();
+        setViewLoading(false);
+        return;
+    }
+
     const userAuthenticated = await $auth.isUserAuthenticated();
     console.log("User authenticated:", userAuthenticated);
 
@@ -63,6 +75,13 @@ async function router(path, params = null) {
     if (!userAuthenticated && path !== '/auth') {
         console.log("Redirecting to auth");
         path = '/auth';
+    }
+
+    // execute the functional route which needs auth
+    if (functionalRoute) {
+        await functionalRoute.execute.bind(simpleObjectToBind())();
+        setViewLoading(false);
+        return;
     }
 
     const viewContainer = $id('router-view');
@@ -82,10 +101,10 @@ async function router(path, params = null) {
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
 
     // bind everything except the hooks to the object
-    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
+    lastViewHooks && await lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
     // about to change route
-    viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
+    await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
 
     // reduce the params to a query string
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
@@ -93,9 +112,9 @@ async function router(path, params = null) {
     history.pushState({}, 'newUrl', pathWithParams);
 
     // DOM manipulation
-    viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
+    await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
-    viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
+    await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
 
     // set the view name to the container
     viewContainer.dataset.view = route.view;

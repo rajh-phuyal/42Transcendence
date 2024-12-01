@@ -9,13 +9,13 @@ class Syncer {
         this._listen();
     }
 
-    _listen() {
-        this.broadcastChannel.onmessage = (event) => {
+    async _listen() {
+        this.broadcastChannel.onmessage = async (event) => {
             console.log("Syncer received message", event.data);
             const { type, payload, id } = event.data;
             if (id === this.id) return;
 
-            events[type](payload);
+            await events[type](payload);
         };
     }
 

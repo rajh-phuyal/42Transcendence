@@ -1,7 +1,7 @@
 import { state } from './states.js';
 import { mutations } from './mutations.js';
 import { actions } from './actions.js';
-import { $getLocal, $setLocal } from '../abstracts/dollars.js';
+import { $getLocal, $removeLocal, $setLocal } from '../abstracts/dollars.js';
 
 class Store {
     constructor(initialState, mutations, actions) {
@@ -62,7 +62,9 @@ class Store {
     }
 
     clear() {
-        $setLocal("store", JSON.stringify({}));
+        // Reset to initial state
+        this.state = { ...this.initialState };
+        $removeLocal("store");
     }
 }
 

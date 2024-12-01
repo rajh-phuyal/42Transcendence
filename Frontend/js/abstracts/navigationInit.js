@@ -14,8 +14,8 @@ export default function $nav() {
         { id: 'login-nav', path: '/auth', params: { login: true } },
         { id: 'register-nav', path: '/auth', params: { login: false } }
     ];
-    
+
     for (const route of navigationBarMap) {
-        $id(route.id)?.addEventListener('click', () => router(route.path, route.params));
+        $id(route.id)?.addEventListener('click', () => router(route.path, route?.params));
     }
 }

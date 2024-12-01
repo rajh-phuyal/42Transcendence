@@ -1,4 +1,6 @@
 import $store from '../store/store.js';
+import $syncer from '../sync/Syncer.js';
+import router from '../navigation/router.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
@@ -63,7 +65,6 @@ class Auth {
             return true;
         } catch (error) {
             console.error('Error refreshing token:', error);
-            this.logout();
             return false;
         }
     }
@@ -111,14 +112,29 @@ class Auth {
 
     async logout() {
         try {
-            await call('auth/logout/', 'POST', null);
+            console.log("Logging out...");
+            const response = await call('auth/logout/', 'POST', null, true);
+            console.log("Logout response", response);
+
+            if (response.statusCode !== 200) {
+                return false;
+            }
+
+            // Clear all auth-related state
             this.clearAuthCache();
             this.isAuthenticated = false;
-            $store.clear();
+            $store.commit('setIsAuthenticated', false);
             WebSocketManager.disconnect();
-            console.log("Logged out");
+            $store.clear();
+
+            // Broadcast logout to other tabs
+            $syncer.broadcast("authentication-state", { logout: true });
+
+            // Don't redirect here, let the functional route handle it
+            return true;
         } catch (error) {
             console.error('Logout error:', error);
+            return false;
         }
     }
 }
