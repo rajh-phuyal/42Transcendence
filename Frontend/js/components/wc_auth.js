@@ -1,7 +1,7 @@
 import $auth from '../auth/authentication.js';
 import $nav from '../abstracts/navigationInit.js';
 import $store from '../store/store.js';
-import $syncer from '../sync/syncer.js';
+import $syncer from '../sync/Syncer.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';

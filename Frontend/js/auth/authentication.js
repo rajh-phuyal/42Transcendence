@@ -1,6 +1,5 @@
 import $store from '../store/store.js';
-import $syncer from '../sync/syncer.js';
-import router from '../navigation/router.js';
+import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 

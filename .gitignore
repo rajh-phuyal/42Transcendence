@@ -31,6 +31,4 @@ example.enviroment
 Backend/src/authentication/migrations/*
 Backend/src/chat/migrations/*
 Backend/src/user/migrations/*
-
-# .po files
-Backend/src/authentication/locale/*/*/*.po
+Backend/src/game/migrations/*
