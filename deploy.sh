@@ -510,13 +510,13 @@ check_volume_folders()
 # ------------------------------------------------------------------------------
 docker_stop() {
 	print_header "${BL}" "Stopping containers: $CONTAINERS..."
-	docker-compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
+	docker compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
 	print_header "${BL}" "Stopping containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_build() {
 	print_header "${BL}" "Building containers: $CONTAINERS"
-	docker-compose --env-file "$STORED_ENV_PATH" build $CONTAINERS
+	docker compose --env-file "$STORED_ENV_PATH" build $CONTAINERS
 	print_header "${BL}" "Building containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -524,7 +524,7 @@ docker_start() {
 	docker_stop
 	docker_build
 	print_header "${BL}" "Starting containers: $CONTAINERS"
-	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINERS
+	docker compose --env-file "$STORED_ENV_PATH" up -d $CONTAINERS
 	print_header "${BL}" "Starting containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -553,7 +553,7 @@ docker_fclean() {
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
 
-	docker-compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
+	docker compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
 	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting docker volumes..."
