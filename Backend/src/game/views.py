@@ -1,4 +1,4 @@
-from core.base_views import BaseAuthenticatedView
+from core.authentication import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
