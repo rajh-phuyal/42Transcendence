@@ -6,10 +6,10 @@ import { $id } from '../abstracts/dollars.js';
 // bind store, auth and other singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
-import $syncer from '../sync/Syncer.js';
+import $syncer from '../sync/syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
-import loading from '../abstracts/loading.js';
+// import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 
@@ -20,7 +20,7 @@ const simpleObjectToBind = () => {
         $auth: $auth,
         $syncer: $syncer,
         call: call,
-        loading: loading,
+        // loading: loading,
         webSocketManager: WebSocketManager,
         translate: translate,
         domManip: dollars,

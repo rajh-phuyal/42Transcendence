@@ -1,6 +1,7 @@
 import $auth from '../auth/authentication.js';
 import $nav from '../abstracts/navigationInit.js';
 import $store from '../store/store.js';
+import $syncer from '../sync/syncer.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
@@ -200,6 +201,9 @@ class AuthCard extends HTMLElement {
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
 
             this.showNav();
+
+			// broadcast login to other tabs
+			$syncer.broadcast("authentication-state", { login: true });
 
             // Add small delay to ensure store updates are processed
             setTimeout(() => {

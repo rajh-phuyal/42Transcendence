@@ -1,5 +1,5 @@
 import $store from '../store/store.js';
-import $syncer from '../sync/Syncer.js';
+import $syncer from '../sync/syncer.js';
 import router from '../navigation/router.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
@@ -110,7 +110,7 @@ class Auth {
         );
     }
 
-    async logout() {
+    async logout(broadcast = true) {
         try {
             console.log("Logging out...");
             const response = await call('auth/logout/', 'POST', null, true);
@@ -127,8 +127,10 @@ class Auth {
             WebSocketManager.disconnect();
             $store.clear();
 
-            // Broadcast logout to other tabs
-            $syncer.broadcast("authentication-state", { logout: true });
+            if (broadcast) {
+                // Broadcast logout to other tabs
+                $syncer.broadcast("authentication-state", { logout: true });
+            }
 
             // Don't redirect here, let the functional route handle it
             return true;
