@@ -1,4 +1,5 @@
 import $store from '../store/store.js';
+const { protocol, hostname, port } = window.location;
 
 class WebSocketManager {
     constructor() {
@@ -13,7 +14,7 @@ class WebSocketManager {
         }
 
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
+        const socketUrl = `${protocol}//${hostname}:${port}/ws/app/main/?token=${token}`;
 
         this.socket = new WebSocket(socketUrl);
 
