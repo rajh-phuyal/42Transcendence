@@ -1,0 +1,39 @@
+# -------------------------------------------------------------------
+# BARELY ALIVE VARIABLES
+# This is our example of a .env file
+# -------------------------------------------------------------------
+
+# GENERAL VARIABLES
+# -------------------------------------------------------------------
+DOCKER_NETWORK=barely-a-network
+
+# CONTAINER DATABASE
+# -------------------------------------------------------------------
+# POSTGRES AKA DATABASE AKA DB
+# ---
+DB_NAME=barelyalivedb
+DB_PORT=5432
+DB_USER=admin
+DB_PSWD=admin
+#
+# PGADMIN AKA PA
+# ---
+PA_MAIL=admin@example.com
+PA_PSWD=admin_password
+PA_DB_NAME=$DB_NAME
+PA_DB_PORT=$DB_PORT
+PA_DB_USER=$DB_USER
+PA_DB_PSWD=$DB_PSWD
+
+
+# CONTAINER BACKEND AKA BE
+# -------------------------------------------------------------------
+BE_DB_NAME=$DB_NAME
+BE_DB_PORT=$DB_PORT
+BE_DB_USER=$DB_USER
+BE_DB_PSWD=$DB_PSWD
+BE_DB_HOST=host.docker.internal
+BE_SECRET_KEY=django-insecure-@ry+-mwb0wgdn0koep$_!a0^k^59+z!pa6pmdi2aq9z143lxy4
+
+# CONTAINER FRONTEND AKA FE
+# -------------------------------------------------------------------
