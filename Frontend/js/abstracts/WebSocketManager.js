@@ -14,7 +14,7 @@ class WebSocketManager {
         }
 
         // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        // TODO: i am not sure if this is the right way to do
+        // TODO: i am not sure if this is the right way to do issue #190
         const protocol = 'ws://';
         const resolvedHostname = hostname === 'localhost' ? '127.0.0.1' : hostname;
         const socketUrl = `${protocol}${resolvedHostname}:8000/ws/app/main/?token=${token}`;
