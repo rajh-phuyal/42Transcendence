@@ -25,7 +25,7 @@ class WebSocketManager {
             console.log("WebSocket already connected.");
             return;
         }
-        
+
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
         
@@ -36,24 +36,24 @@ class WebSocketManager {
             console.log("WebSocket connected.");
             $store.commit("setWebSocketIsAlive", true);
         };
-        
+
 		this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Message received from server:", data);
             // Dispatch data to appropriate handlers based on message type
         };
-        
+
         this.socket.onclose = () => {
             console.log("WebSocket disconnected.");
             $store.commit("setWebSocketIsAlive", false);
         };
-        
+
         this.socket.onerror = (error) => {
             console.error("WebSocket error:", error);
             $store.commit("setWebSocketIsAlive", false);
         };
 
-        this.socket.addEventListner("message", this.receiveMessage);
+        // this.socket.addEventListner("message", this.receiveMessage);
     }
     
     sendChatMessage(message) {

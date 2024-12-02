@@ -32,9 +32,9 @@ class TextField extends HTMLElement {
     }
 
     handleKeyPress(event){
-
-
-        if (event.key !== 'Enter' || event.shiftKey)
+        if (event.key !== 'Enter')
+            return ;
+        if (event.shiftKey)
             return ;
         event.preventDefault();
         const inputElement = event.target;
