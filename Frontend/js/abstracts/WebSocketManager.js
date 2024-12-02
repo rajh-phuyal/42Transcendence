@@ -9,11 +9,18 @@ class WebSocketManager {
         this.currentConversation = undefined;
         this.messageRecieved = undefined;
 
+
         this.routeMethods = {
-            "chat": () => {
+            "chat": function() {
                 if (!this.currentConversation || this.currentConversation != this.messageRecieved.conversationId) 
                     return;
-                $id("chat-view-messages-container").appendChild(createMessage(this.messageRecieved));
+                console.log("chat message received trying to add it to the chat view: ", this.messageRecieved);
+                //$id("chat-view-messages-container").appendChild(createMessage(this.messageRecieved));
+
+                const container = $id("chat-view-messages-container");
+                const newMessage = createMessage(this.messageRecieved);
+                container.insertBefore(newMessage, container.firstChild);
+
             }
         }
     }
@@ -40,6 +47,9 @@ class WebSocketManager {
 		this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Message received from server:", data);
+            console.log("data received:", event.data);
+            this.messageRecieved = data;
+            this.routeMethods[this.messageRecieved.messageType].bind(this)();
             // Dispatch data to appropriate handlers based on message type
         };
 
@@ -60,12 +70,6 @@ class WebSocketManager {
         this.socket.send(JSON.stringify(message));
     }
     
-    receiveMessage(event) {
-        console.log("data received:", event.data);
-        this.messageRecieved = event.data;
-    }
-
-
     // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {

@@ -41,8 +41,8 @@ class TextField extends HTMLElement {
         const value = inputElement.value;
         console.log("input value:", value); // ...............................
 
-        const container = $id("chat-view-messages-container");
-        container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
+        //const container = $id("chat-view-messages-container");
+        //container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
 
         const toSend = {messageType: "chat", conversationId: this.conversationId, content: value};
         console.log("message", toSend)
