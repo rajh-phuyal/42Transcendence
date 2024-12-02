@@ -13,7 +13,7 @@ from core.decorators import barely_handle_exceptions
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
-from services.chat_service import setup_all_conversations
+from services.chat_service import setup_all_conversations, broadcast_message
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -79,14 +79,15 @@ class MainConsumer(CustomWebSocketLogic):
         # ---------------------------
         await self.accept()
 
-    #@barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
         # Settign the user
         user = self.scope['user']
         if self.message_type == 'chat':
-            await recieve_message(self, user, text_data)
+            message = await recieve_message(self, user, text_data)
+            await broadcast_message(message)
         elif self.message_type == 'relationship':
             logging.info("Received relationship message - TODO: implement")
         # TODO: the lines below should go to: GameConsumer

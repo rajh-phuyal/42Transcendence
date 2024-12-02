@@ -31,6 +31,27 @@ def setup_all_conversations(user, channel_name):
         add_to_group(group_name, channel_name)
         logging.info(f"\tAdded user {user} to group {group_name}")
 
+
+async def broadcast_message(message):
+    """Broadcast a message to a conversation group"""
+    group_name = str(message.conversation.id)
+    logging.info(f"Broadcasting to group {group_name} from user {message.user}: {message.content}")
+    await channel_layer.group_send(
+        group_name,
+        {
+            "type:": "chat",
+            "messageType": "chat",
+            "conversationId": message.conversation.id,
+            "messageId": message.id,
+            "userId": message.user.id,
+            "username": message.user.username,
+            "avatar": message.user.avatar_path,
+            "content": message.content,
+            "createdAt": message.created_at,
+            "seenAt": message.seen_at
+        },
+    )
+
 #@sync_to_async
 #def save_message(conversation_id, sender_id, content):
 #    conversation = Conversation.objects.get(id=conversation_id)

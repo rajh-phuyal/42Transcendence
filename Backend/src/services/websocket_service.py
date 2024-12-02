@@ -1,6 +1,7 @@
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-import logging
+from chat.models import Message
+import logging, json
 
 channel_layer = get_channel_layer()
 
@@ -15,6 +16,27 @@ def close_connection(user, connection_id):
     logging.info(f"Closing WebSocket connection for user {user} with connection ID {connection_id}")
     # Any cleanup logic for when a WebSocket connection is closed goes here
     return True
+
+# type= "error"
+# message = "An unexpected error occurred"
+async def send_response_message(connection_id, type, message):
+    """Send a message to a WebSocket connection."""
+    logging.info(f"Sending message to connection {connection_id}: {message}")
+    message_dict = {
+        "message_type": type,  # 'error', 'chat', etc.
+        "message": message      # The actual message content
+    }
+    json_message = json.dumps(message_dict)
+
+    await channel_layer.send(connection_id, {
+        "type": "send",
+         "text": json_message
+    })
+# Should return a json to frontend like:
+# {
+#    "message_type": "error",
+#    "message": "An unexpected error occurred"
+# }
 
 def broadcast_message(group_name, event):
     """Send a message to a WebSocket group."""
