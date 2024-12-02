@@ -46,8 +46,8 @@ class LoadConversationView(BaseAuthenticatedView):
             return error_response(_('Group chats are not supported yet'), status_code=status.HTTP_400_BAD_REQUEST)
 
         # Determine blocking status
-        theOverloards = User.objects.get(id=USER_ID_OVERLOARDS)
-        other_user = self.get_other_user(conversation, user, theOverloards)
+        the_overloards = User.objects.get(id=USER_ID_OVERLOARDS)
+        other_user = self.get_other_user(conversation, user, the_overloards)
         other_user_online = cache.get(f'user_online_{other_user.id}', False)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
@@ -92,8 +92,8 @@ class LoadConversationView(BaseAuthenticatedView):
         except ConversationMember.DoesNotExist:
             raise BarelyAnException(_('You are not a member of this conversation'), status_code=status.HTTP_403_FORBIDDEN)
 
-    def get_other_user(self, conversation, user, theOverloards):
-        other_member = conversation.members.exclude(Q(user=user) | Q(user=theOverloards)).first()
+    def get_other_user(self, conversation, user, the_overloards):
+        other_member = conversation.members.exclude(Q(user=user) | Q(user=the_overloards)).first()
         if other_member:
             return other_member.user
         raise BarelyAnException(_('No other users found in the conversation'), status_code=status.HTTP_400_BAD_REQUEST)
@@ -189,9 +189,6 @@ class CreateConversationView(BaseAuthenticatedView):
             ).intersection(
                 ConversationMember.objects.filter(user=other_user, conversation__is_group_conversation=False).values_list('id', flat=True)
             )
-
-             
-
 
             # conversation_members = ConversationMember.objects.filter(Q(user=user) | Q(user=other_user),conversation__is_group_conversation=False)
             # Get the conversation_id for user and other_user

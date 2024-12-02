@@ -179,8 +179,6 @@ export default {
 
             let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-incoming-message-container")
 
-            console.log("toDelete", toDelete);
-
             for (let element of toDelete)
                 element.remove();
             
@@ -196,7 +194,6 @@ export default {
         higlightCard(element) {
             
             let highlightedElement = this.domManip.$class("chat-view-conversation-card-highlighted");
-            console.log("highlightedElement", highlightedElement)
             if (highlightedElement){
                 for (let individualElement of highlightedElement)
                     individualElement.className = "chat-view-conversation-card";
@@ -259,7 +256,6 @@ export default {
                     this.domManip.$id("chat-view-conversations-no-converations-found").textContent = data.message;
                     return ;
                 }
-                console.log("result:", data);
                 
                 for (let element of data.data)
                     this.createConversationCard(element);
@@ -321,13 +317,11 @@ export default {
         },
 
         beforeDomInsertion() {
-            console.log("Before DOM Insertion");
 			// TODO: Maybe check if the WebSocket is already open (which it should be from WebSocketManager)
         },
 
         // Open WebSocket after the DOM is inserted
         async afterDomInsertion() {
-            console.log("After DOM Insertion...");
 
             // TODO: when params are not defined the routeParam.id crashes
             //          maybe the routeParam.id should be defined if no params are set.
@@ -358,16 +352,3 @@ export default {
         },
     },
 };
-
-
-/*
-    [...]
-
-    id 5000    hello
-
-
-    id 5005    hi
-
-
-    id 5006    whats up?
-*/
