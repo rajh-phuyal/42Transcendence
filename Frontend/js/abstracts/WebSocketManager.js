@@ -1,9 +1,23 @@
 import $store from '../store/store.js';
+import { createMessage } from '../views/chat/methods.js';
+import { $id } from './dollars.js';
 
 class WebSocketManager {
     constructor() {
         this.socket = null;
+        this.currentRoute = undefined;
+        this.currentConversation = undefined;
+        this.messageRecieved = undefined;
+
+        this.routeMethods = {
+            "chat": () => {
+                if (!this.currentConversation || this.currentConversation != this.messageRecieved.conversationId) 
+                    return;
+                $id("chat-view-messages-container").appendChild(createMessage(this.messageRecieved));
+            }
+        }
     }
+
 
     // Connect to WebSocket with the provided token
     connect(token) {
@@ -11,38 +25,46 @@ class WebSocketManager {
             console.log("WebSocket already connected.");
             return;
         }
-
+        
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
 		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
-
+        
         this.socket = new WebSocket(socketUrl);
-
+        
         // Log connection events
         this.socket.onopen = () => {
             console.log("WebSocket connected.");
             $store.commit("setWebSocketIsAlive", true);
         };
-
+        
 		this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Message received from server:", data);
             // Dispatch data to appropriate handlers based on message type
         };
-
+        
         this.socket.onclose = () => {
             console.log("WebSocket disconnected.");
             $store.commit("setWebSocketIsAlive", false);
         };
-
+        
         this.socket.onerror = (error) => {
             console.error("WebSocket error:", error);
             $store.commit("setWebSocketIsAlive", false);
         };
-    }
 
+        this.socket.addEventListner("message", this.receiveMessage);
+    }
+    
     sendChatMessage(message) {
         this.socket.send(JSON.stringify(message));
     }
+    
+    receiveMessage(event) {
+        console.log("data received:", event.data);
+        this.messageRecieved = event.data;
+    }
+
 
     // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
     disconnect() {
@@ -53,6 +75,15 @@ class WebSocketManager {
         } else {
             console.log("WebSocket is not connected.");
         }
+        this.socket.removeEventListner("message", this.receiveMessage);
+    }
+
+    setCurrentRoute(route) {
+        this.currentRoute = route;
+    }
+
+    setCurrentConversation(conversationId) {
+        this.currentConversation = conversationId;
     }
 }
 

@@ -223,6 +223,7 @@ export default {
                 this.domManip.$id("chat-view-text-field").setAttribute("conversation-id", this.conversationParams.conversationId);
                 this.populateConversationHeader();
                 this.populateConversationMessages(data.data);
+                WebSocketManager.setCurrentConversation(this.conversationParams.conversationId);
                 this.showChatElements();
             });
         },
@@ -316,6 +317,11 @@ export default {
             //this.messages = [];
 
 
+
+
+            WebSocketManager.setCurrentRoute(undefined);
+            WebSocketManager.setCurrentConversation(undefined);
+
             this.removeConversationsEventListners();
         },
 
@@ -328,12 +334,11 @@ export default {
 
             // TODO: when params are not defined the routeParam.id crashes
             //          maybe the routeParam.id should be defined if no params are set.
+            WebSocketManager.setCurrentRoute("chat");
             this.hideChatElements();
             if (this.routeParams.id)
                 this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
-
-            WebSocketManager.sendChatMessage({"message": "helloooo"});
 
             await this.populateConversations();
             this.sortConversationsByTimestamp();
