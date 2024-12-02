@@ -44,7 +44,7 @@ class TextField extends HTMLElement {
         const container = $id("chat-view-messages-container");
         container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
 
-        WebSocketManager.sendChatMessage({message_type: "chat", conversationId: this.conversationId, content: value})
+        WebSocketManager.sendChatMessage({messageType: "chat", conversationId: this.conversationId, content: value})
 
         if (this.clear){
             inputElement.value = '';
