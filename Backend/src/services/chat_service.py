@@ -11,6 +11,8 @@ User = get_user_model()
 
 channel_layer = get_channel_layer()
 
+# channel_name is the WebSocket connection ID for a user
+# group_name is the conversation ID
 def add_to_group(group_name, channel_name):
     """Add a WebSocket connection to a group"""
     async_to_sync(channel_layer.group_add)(group_name, channel_name)
@@ -27,19 +29,19 @@ def setup_all_conversations(user, channel_name):
     conversation_memberships = ConversationMember.objects.filter(user=user)
     
     for membership in conversation_memberships:
-        group_name = str(membership.conversation.id)
+        group_name = f"conversation_{membership.conversation.id}"
         add_to_group(group_name, channel_name)
         logging.info(f"\tAdded user {user} to group {group_name}")
 
 
 async def broadcast_message(message):
     """Broadcast a message to a conversation group"""
-    group_name = str(message.conversation.id)
+    group_name = f"conversation_{message.conversation.id}"
     logging.info(f"Broadcasting to group {group_name} from user {message.user}: {message.content}")
     await channel_layer.group_send(
         group_name,
         {
-            "type:": "chat",
+            "type:": "chat_message",
             "messageType": "chat",
             "conversationId": message.conversation.id,
             "messageId": message.id,
@@ -49,7 +51,7 @@ async def broadcast_message(message):
             "content": message.content,
             "createdAt": message.created_at,
             "seenAt": message.seen_at
-        },
+        }
     )
 
 #@sync_to_async

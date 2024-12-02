@@ -52,13 +52,9 @@ def parse_message(text):
     return conversation_id, content
 
 # Websocket message
-async def recieve_message(self, user, text):
+async def process_incoming_chat_message(self, user, text):
     conversation_id, content = parse_message(text)
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
     
     # Do db operations
-    message = await create_message(user, conversation_id, content)
-
-    # Send message to the conversation group
-    
-    return message
+    return await create_message(user, conversation_id, content)

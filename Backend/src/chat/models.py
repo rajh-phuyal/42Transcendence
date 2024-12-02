@@ -8,7 +8,7 @@ class Conversation(models.Model):
     is_editable = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name or f'Chat {self.id}'
+        return f'id:{self.id} name: {self.name} is_group_conversation: {self.is_group_conversation} is_editable: {self.is_editable}'
     
     class Meta:
         db_table = '"barelyaschema"."conversation"'
@@ -39,7 +39,7 @@ class Message(models.Model):
     seen_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f'Message from {self.user.username} in {self.conversation.name}'
+        return f"id:{self.id} from {self.user} in {self.conversation} content: '{self.content}'"
     
     class Meta:
         db_table = '"barelyaschema"."message"'
