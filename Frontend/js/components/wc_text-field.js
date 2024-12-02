@@ -8,6 +8,7 @@ class TextField extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        this.conversationId = undefined;
     }
 
     static get observedAttributes() {
@@ -32,7 +33,6 @@ class TextField extends HTMLElement {
 
     handleKeyPress(event){
 
-        console.log("event:", event);
 
         if (event.key !== 'Enter' || event.shiftKey)
             return ;
@@ -44,7 +44,9 @@ class TextField extends HTMLElement {
         const container = $id("chat-view-messages-container");
         container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
 
-        WebSocketManager.sendChatMessage({messageType: "chat", conversationId: this.conversationId, content: value})
+        const toSend = {messageType: "chat", conversationId: this.conversationId, content: value};
+        console.log("message", toSend)
+        WebSocketManager.sendChatMessage(toSend);
 
         if (this.clear){
             inputElement.value = '';
@@ -69,7 +71,7 @@ class TextField extends HTMLElement {
             this.conversationId = newValue;
         }
         
-        this.render();
+        // this.render();
     }
 
     render() {
