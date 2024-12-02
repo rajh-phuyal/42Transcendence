@@ -199,12 +199,14 @@ class CreateConversationView(BaseAuthenticatedView):
             #     id for id in conversation_ids if conversation_ids.count(id) == 2
             # ]
             if matching_chat_ids:
-                return success_response(_('Conversation already exists'), data={'conversation_id': matching_chat_ids[0]})
+                return success_response(_('Conversation already exists'), **{'conversation_id': matching_chat_ids[0]})
         elif len(userIds) > 1:
             # A group conversation
             if not conversation_name:
                 return error_response(_("No 'name' provided"), status_code=400)
             is_group_conversation = True
+        
+        #TODO: issue 195
         
         # Start a transaction to make sure all database operations happen together
         with transaction.atomic():
@@ -219,7 +221,7 @@ class CreateConversationView(BaseAuthenticatedView):
                 ConversationMember.objects.create(user=other_user, conversation=new_conversation)
             Message.objects.create(user=user, conversation=new_conversation, content=initialMessage)
 
-        return success_response(_('Conversation created successfully'), data={'conversation_id': new_conversation.id})
+        return success_response(_('Conversation created successfully'), **{'conversation_id': new_conversation.id})
     
 
 

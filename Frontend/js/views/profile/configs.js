@@ -315,9 +315,6 @@ export default {
 
         createConversation() {
             const message = this.domManip.$id("new-chat-modal-textarea").value;
-            console.log("id:", this.result.id);
-            console.log("message:", message);
-            console.log("username:", this.result.username);
             this.hideModal("new-chat-modal");
             call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message}).then(data => {
                 $callToast("success", data.message);
