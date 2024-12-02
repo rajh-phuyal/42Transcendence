@@ -206,9 +206,7 @@ class AuthCard extends HTMLElement {
 			$syncer.broadcast("authentication-state", { login: true });
 
             // Add small delay to ensure store updates are processed
-            setTimeout(() => {
-                router("/home");
-            }, 100);
+            router("/home");
         })
         .catch(error => {
 			$callToast("error", error.message);

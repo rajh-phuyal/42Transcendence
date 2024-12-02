@@ -1,6 +1,8 @@
 import router from "../navigation/router.js";
 import $auth from "../auth/authentication.js";
 import { $id } from "../abstracts/dollars.js";
+import $store from "../store/store.js";
+import $nav from "../abstracts/navigationInit.js";
 
 export default {
     "authentication-state": async (payload) => {
@@ -17,6 +19,8 @@ export default {
         if (payload.login) {
             // if i am on the auth page, redirect to home
             if ($id('router-view').dataset.view === "auth") {
+                $store.initializer();
+                $nav();
                 $id('navigator').style.display = 'flex'; // show the nav
                 router("/home");
             }
