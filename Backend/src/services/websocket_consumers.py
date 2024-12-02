@@ -19,6 +19,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             logging.error("User is not authenticated.")
             await self.close()
         else:
+            logging.info("...for user: %s", self.scope['user'].username)
             user_id = self.scope['user'].id
             #TODO:  Set the user's online status in cache
             cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes
@@ -40,7 +41,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
     # TODO: review the logic below and move it to chat logic
     async def disconnect(self, close_code):
         logging.info("Closing WebSocket connection...")
-        logging.info(f"Disconnecting user: {self.scope['user']}")
+        logging.info(f"Disconnecting user: {self.scope['user'].username}")
 #        # Remove the user from all conversation groups they were part of
 #        user_conversations = await self.get_user_conversations(self.scope['user'])
 #        for conversation in user_conversations:
@@ -61,7 +62,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             await sync_to_async(user.update_last_seen)()
             # Remove the user's online status from cache
             cache.delete(f'user_online_{user.id}')
-            logging.info(f"User {user.id} marked as offline.")
+            logging.info(f"User {user.username} marked as offline.")
             ...
 
     def update_user_last_seen(self, user):
@@ -70,6 +71,12 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        event_type = text_data_json.get('type', '')
+        logging.info(f"Received event: {text_data_json}")
+
+
     # TODO: deal with all messages we send like friend_requests, chat_messages, tournament_updates, etc.
     # TODO: manage channel layers (adding/removing users from groups)
     ...
