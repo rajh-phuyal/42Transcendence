@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/', include('rest_framework.urls')),
 	path('user/', include('user.urls')),
 	path('chat/', include('chat.urls')),
+    path('game/', include('game.urls')),
 ]

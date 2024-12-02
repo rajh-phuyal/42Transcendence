@@ -6,6 +6,11 @@ from django.core.cache import cache
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
 from chat.models import Conversation
 
+class SearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'avatar_path']
+
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
     avatarUrl = serializers.CharField(source='avatar_path', default='default_avatar.png')
