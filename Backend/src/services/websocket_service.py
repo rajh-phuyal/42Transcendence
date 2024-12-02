@@ -17,26 +17,15 @@ def close_connection(user, connection_id):
     # Any cleanup logic for when a WebSocket connection is closed goes here
     return True
 
-# type= "error"
-# message = "An unexpected error occurred"
-async def send_response_message(connection_id, type, message):
+async def send_response_message(client_consumer, type, message):
     """Send a message to a WebSocket connection."""
-    logging.info(f"Sending message to connection {connection_id}: {message}")
+    logging.info(f"Sending message to connection {client_consumer}: {message}")
     message_dict = {
-        "message_type": type,  # 'error', 'chat', etc.
-        "message": message      # The actual message content
+        "messageType": type,
+        "message": message
     }
     json_message = json.dumps(message_dict)
-
-    await channel_layer.send(connection_id, {
-        "type": "send",
-         "text": json_message
-    })
-# Should return a json to frontend like:
-# {
-#    "message_type": "error",
-#    "message": "An unexpected error occurred"
-# }
+    await client_consumer.send(text_data=json_message)
 
 def broadcast_message(group_name, event):
     """Send a message to a WebSocket group."""

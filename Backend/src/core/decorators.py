@@ -31,16 +31,15 @@ def barely_handle_ws_exceptions(func):
         try:
             return await func(self, *args, **kwargs)
         except BarelyAnException as e:
-            logging.info(f"AHHHHHHHHHHHHHHHHHHHHHHHH: %s", self.channel_name) 
-            #await send_response_message(self.channel_name, "error", str(e.detail))
             logging.info(f"BarelyAnException occurred: {str(e.detail)} | Status code: {e.status_code}")
+            await send_response_message(self, "error", str(e.detail))
         except ObjectDoesNotExist as e:
             model_name = getattr(e, 'model', None)
             model_name = model_name.__name__ if model_name else _("Object")
-            #await send_response_message(self.channel_name, "error", f"{model_name} entry not found")
             logging.info(f"{model_name} entry not found: {str(e)}")
+            await send_response_message(self, "error", f"{model_name} entry not found")
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
-            #await send_response_message(self.channel_name, "error", "An unexpected error occurred")
             logging.info(f"Unexpected error occurred in WebSocket: {str(e)}")
+            await send_response_message(self, "error", "An unexpected error occurred")
     return wrapper

@@ -17,38 +17,33 @@ from services.chat_service import setup_all_conversations, broadcast_message
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
+
+    # Don't add a decorator here, it will be added in the child classes
     async def connect(self):
         logging.info("Opening WebSocket connection...")
         # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():
             logging.error("User is not authenticated.")
             await self.close()
+            raise BarelyAnException(_("User is not authenticated."))
         else:
             logging.info("...for user: %s", self.scope['user'])
-            user_id = self.scope['user'].id
-            #TODO:  Set the user's online status in cache
-            cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes        
+            return True
 
+    # Don't add a decorator here, it will be added in the child classes
     async def disconnect(self, close_code):
         logging.info("Closing WebSocket connection...")
-        logging.info(f"Disconnecting user: {self.scope['user'].username}")
-
-        # Get user
+        # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():
             logging.error("User is not authenticated.")
             await self.close()
+            raise BarelyAnException(_("User is not authenticated."))
         else:
-            user = self.scope['user']
-            # Set the last login time for the user
-            await sync_to_async(user.update_last_seen)()
-            # Remove the user's online status from cache
-            cache.delete(f'user_online_{user.id}')
-            logging.info(f"User {user.username} marked as offline.")
-            ...
+            logging.info("...for user: %s", self.scope['user'])
 
-    @barely_handle_ws_exceptions
+    # Don't add a decorator here, it will be added in the child classes
     async def receive(self, text_data):
-        # Check again if authenitcated
+        # Check again if authenticated
         if not self.scope['user'].is_authenticated:
             await self.close()
             raise BarelyAnException(_("User is not authenticated."))
@@ -64,32 +59,31 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
+    @barely_handle_ws_exceptions
     async def connect(self):
-        # Stuff from the parent class
-        # ---------------------------
         await super().connect()
-
-        # Stuff from the child class
-        # ---------------------------
+        # Setting the user's online status in cache
+        user = self.scope['user']
+        cache.set(f'user_online_{user.id}', True, timeout=3000) # 3000 seconds = 50 minutes        
         # Add the user to all their conversation groups
-        await setup_all_conversations(self.scope['user'], self.channel_name)
-
+        await setup_all_conversations(user, self.channel_name)
         # Accept the connection
-        # ---------------------------
         await self.accept()
+
+    @barely_handle_ws_exceptions
+    async def disconnect(self, close_code):
+        await super().disconnect(close_code)
+        user = self.scope['user']
+        # Set the last login time for the user
+        await sync_to_async(user.update_last_seen)()
+        # Remove the user's online status from cache
+        cache.delete(f'user_online_{user.id}')
+        logging.info(f"User {user.username} marked as offline.")
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-
-        # Between two consumers:
-        messageasdasd = json.loads(text_data)  # Parse the incoming message
-        if messageasdasd.get("type") == "chat":
-            await self.chat_message(messageasdasd)  # Call handler for chat
-            return
-        # ======================
-
         # Setting the user
         user = self.scope['user']
         if self.message_type == 'chat':
@@ -105,39 +99,31 @@ class MainConsumer(CustomWebSocketLogic):
             raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
     
     async def chat_message(self, event):
-        # Handle the chat message for each consumer (other users)
-        content = event["content"]
-        conversation_id = event["conversationId"]
         # Send the message back to the WebSocket of the user
-        await self.send(text_data=json.dumps({
-            "type": "chat",  # The message type
-            "content": content,
-            "conversationId": conversation_id
-    }))
+        await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game
 class GameConsumer(CustomWebSocketLogic):
+    @barely_handle_ws_exceptions
     async def connect(self):
-        # Stuff from the parent class
-        # ---------------------------
         await super().connect()
-
-        # Stuff from the child class
-        # ---------------------------
+        # Doing game stuff
         ...
-
         # Accept the connection
-        # ---------------------------
         await self.accept()
 
-    #@barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
+    async def disconnect(self, close_code):
+        await super().disconnect(close_code)
+        # Doing game stuff
+        ...
+
+    @barely_handle_ws_exceptions
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-        # Settign the user
-        user = self.scope['user']
         if self.message_type == 'game':
-            ...
+            logging.info("Received game message - TODO: implement")
         else:
             raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
 

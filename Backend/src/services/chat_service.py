@@ -49,8 +49,8 @@ async def broadcast_message(message):
             "username": message.user.username,
             "avatar": message.user.avatar_path,
             "content": message.content,
-            "createdAt": message.created_at,
-            "seenAt": message.seen_at
+            "createdAt": message.created_at.isoformat(),
+            "seenAt": message.seen_at.isoformat() if message.seen_at else None
         }
     )
 
