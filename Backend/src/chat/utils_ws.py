@@ -54,6 +54,7 @@ def parse_message(text):
 # Websocket message
 async def recieve_message(self, user, text):
     conversation_id, content = parse_message(text)
+    logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
     
     # Do db operations
     message = await create_message(user, conversation_id, content)

@@ -13,6 +13,7 @@ from core.decorators import barely_handle_exceptions
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
+from services.chat_service import setup_all_conversations
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -27,7 +28,6 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             user_id = self.scope['user'].id
             #TODO:  Set the user's online status in cache
             cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes        
-            await self.accept()
 
     async def disconnect(self, close_code):
         logging.info("Closing WebSocket connection...")
@@ -53,9 +53,9 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             await self.close()
             raise BarelyAnException(_("User is not authenticated."))
         text_data_json = json.loads(text_data)
-        self.message_type = text_data_json.get('message_type')
+        self.message_type = text_data_json.get('messageType')
         if not self.message_type:
-            raise BarelyAnException(_("Invalid websocket message format. The key 'message_type' is required."))
+            raise BarelyAnException(_("Invalid websocket message format. The key 'messageType' is required."))
         logging.info(f"Received Websocket Message type: {self.message_type}")
     
     def update_user_last_seen(self, user):
@@ -64,6 +64,21 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
+    async def connect(self):
+        # Stuff from the parent class
+        # ---------------------------
+        await super().connect()
+
+        # Stuff from the child class
+        # ---------------------------
+        
+        # Add the user to all their conversation groups
+        await setup_all_conversations(self.scope['user'], self.channel_name)
+
+        # Accept the connection
+        # ---------------------------
+        await self.accept()
+
     #@barely_handle_ws_exceptions
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
@@ -75,8 +90,6 @@ class MainConsumer(CustomWebSocketLogic):
         elif self.message_type == 'relationship':
             logging.info("Received relationship message - TODO: implement")
         # TODO: the lines below should go to: GameConsumer
-        #elif self.message_type == 'game':
-        #    logging.info("Received game message - TODO: implement")
         elif self.message_type == 'tournament':
             logging.info("Received tournament message - TODO: implement")
         else:
@@ -84,9 +97,29 @@ class MainConsumer(CustomWebSocketLogic):
 
 # Manages the temporary WebSocket connection for a single game
 class GameConsumer(CustomWebSocketLogic):
-    # TODO: deal with all game realted messages like key press etc.
-    # TODO: manage channel layers (adding/removing users from groups)
-    ...
+    async def connect(self):
+        # Stuff from the parent class
+        # ---------------------------
+        await super().connect()
+
+        # Stuff from the child class
+        # ---------------------------
+        ...
+
+        # Accept the connection
+        # ---------------------------
+        await self.accept()
+
+    #@barely_handle_ws_exceptions
+    async def receive(self, text_data):
+        # Calling the receive function of the parent class (CustomWebSocketLogic)
+        await super().receive(text_data)
+        # Settign the user
+        user = self.scope['user']
+        if self.message_type == 'game':
+            ...
+        else:
+            raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
 
 ############################################################################################################
 # TODO:

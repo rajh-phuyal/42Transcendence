@@ -6,13 +6,13 @@ channel_layer = get_channel_layer()
 
 def open_connection(user, connection_id):
     """Initialize WebSocket connection for a user."""
-    logging.info(f"Opening WebSocket connection for user {user.id} with connection ID {connection_id}")
+    logging.info(f"Opening WebSocket connection for user {user} with connection ID {connection_id}")
     # You can perform any initialization logic here, such as logging or tracking active connections
     return True
 
 def close_connection(user, connection_id):
     """Clean up when WebSocket connection is closed."""
-    logging.info(f"Closing WebSocket connection for user {user.id} with connection ID {connection_id}")
+    logging.info(f"Closing WebSocket connection for user {user} with connection ID {connection_id}")
     # Any cleanup logic for when a WebSocket connection is closed goes here
     return True
 
