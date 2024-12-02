@@ -2,6 +2,7 @@ import { createMessage } from '../views/chat/methods.js';
 import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class TextField extends HTMLElement {
     constructor() {
@@ -10,7 +11,7 @@ class TextField extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "height", "clear"];
+        return ["placeholder", "width", "height", "clear", "conversation-id"];
     }
 
     connectedCallback() {
@@ -31,6 +32,8 @@ class TextField extends HTMLElement {
 
     handleKeyPress(event){
 
+        console.log("event:", event);
+
         if (event.key !== 'Enter' || event.shiftKey)
             return ;
         event.preventDefault();
@@ -40,6 +43,8 @@ class TextField extends HTMLElement {
 
         const container = $id("chat-view-messages-container");
         container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
+
+        WebSocketManager.sendChatMessage({message_type: "chat", conversationId: this.conversationId, content: value})
 
         if (this.clear){
             inputElement.value = '';
@@ -59,6 +64,11 @@ class TextField extends HTMLElement {
         else if (name === "height") {
             this.height = newValue;
         }
+        else if (name === "conversation-id") {
+            console.log("convo id:", newValue)
+            this.conversationId = newValue;
+        }
+        
         this.render();
     }
 

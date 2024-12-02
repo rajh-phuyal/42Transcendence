@@ -1,6 +1,7 @@
-import call from '../../abstracts/call.js'
-import { translate } from '../../locale/locale.js'
+import call from '../../abstracts/call.js';
+import { translate } from '../../locale/locale.js';
 import { createMessage } from './methods.js';
+import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 export default {
     attributes: {
@@ -181,6 +182,7 @@ export default {
 
             for (let element of toDelete)
                 element.remove();
+
             
             for (let element of data) 
                 container.appendChild(createMessage(element));
@@ -218,6 +220,7 @@ export default {
                 this.lastMessageId= temp.messageId;
                 data.data.push(temp);
                 this.conversationParams = data;
+                this.domManip.$id("chat-view-text-field").setAttribute("conversation-id", this.conversationParams.conversationId);
                 this.populateConversationHeader();
                 this.populateConversationMessages(data.data);
                 this.showChatElements();
@@ -329,6 +332,8 @@ export default {
             if (this.routeParams.id)
                 this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
+
+            WebSocketManager.sendChatMessage({"message": "helloooo"});
 
             await this.populateConversations();
             this.sortConversationsByTimestamp();
