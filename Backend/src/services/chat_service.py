@@ -27,7 +27,7 @@ def setup_all_conversations(user, channel_name):
     logging.info("Setting up all conversations for user: %s with channel_name: %s", user, channel_name)
     # Get all conversation IDs where the user is a member
     conversation_memberships = ConversationMember.objects.filter(user=user)
-    
+
     for membership in conversation_memberships:
         group_name = f"conversation_{membership.conversation.id}"
         add_to_group(group_name, channel_name)
@@ -41,7 +41,7 @@ async def broadcast_message(message):
     await channel_layer.group_send(
         group_name,
         {
-            "type:": "chat_message",
+            "type": "chat_message",
             "messageType": "chat",
             "conversationId": message.conversation.id,
             "messageId": message.id,
