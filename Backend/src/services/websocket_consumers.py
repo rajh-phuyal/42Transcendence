@@ -8,10 +8,14 @@ from django.contrib.auth.models import AnonymousUser #TODO: delete later!
 import logging
 from django.core.cache import cache
 from user.models import User
+from chat.utils_ws import recieve_message
+from core.decorators import barely_handle_exceptions
+from django.utils.translation import gettext as _
+from core.exceptions import BarelyAnException
+from core.decorators import barely_handle_ws_exceptions
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
-    # TODO: review the logic below
     async def connect(self):
         logging.info("Opening WebSocket connection...")
         # Ensure user is authenticated
@@ -22,35 +26,12 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             logging.info("...for user: %s", self.scope['user'].username)
             user_id = self.scope['user'].id
             #TODO:  Set the user's online status in cache
-            cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes
-
-            # TODO: move to chat logic
-            # Get the conversations the user is part of asynchronously
-#            user_conversations = await self.get_user_conversations(self.scope['user'])
-#
-#            # Loop over the conversations asynchronously
-#            for conversation in await sync_to_async(list)(user_conversations):
-#                await self.channel_layer.group_add(
-#                    f'chat_{conversation.id}',  # Add the user to each conversation's WebSocket group
-#                    self.channel_name
-#                )
-#                print(f"User {self.scope['user'].username} added to chat_{conversation.id}")
-        
+            cache.set(f'user_online_{user_id}', True, timeout=3000) # 3000 seconds = 50 minutes        
             await self.accept()
 
-    # TODO: review the logic below and move it to chat logic
     async def disconnect(self, close_code):
         logging.info("Closing WebSocket connection...")
         logging.info(f"Disconnecting user: {self.scope['user'].username}")
-#        # Remove the user from all conversation groups they were part of
-#        user_conversations = await self.get_user_conversations(self.scope['user'])
-#        for conversation in user_conversations:
-#            await self.channel_layer.group_discard(f'chat_{conversation.id}', self.channel_name)
-#        
-#        await self.channel_layer.group_discard(
-#            'global_notifications',
-#            self.channel_name
-#        )
 
         # Get user
         if self.scope['user'] == AnonymousUser():
@@ -65,21 +46,41 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             logging.info(f"User {user.username} marked as offline.")
             ...
 
+    @barely_handle_ws_exceptions
+    async def receive(self, text_data):
+        # Check again if authenitcated
+        if not self.scope['user'].is_authenticated:
+            await self.close()
+            raise BarelyAnException(_("User is not authenticated."))
+        text_data_json = json.loads(text_data)
+        self.message_type = text_data_json.get('message_type')
+        if not self.message_type:
+            raise BarelyAnException(_("Invalid websocket message format. The key 'message_type' is required."))
+        logging.info(f"Received Websocket Message type: {self.message_type}")
+    
     def update_user_last_seen(self, user):
         user.last_seen = timezone.now()
         user.save(update_fields=['last_seen'])
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
+    #@barely_handle_ws_exceptions
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        event_type = text_data_json.get('type', '')
-        logging.info(f"Received event: {text_data_json}")
-
-
-    # TODO: deal with all messages we send like friend_requests, chat_messages, tournament_updates, etc.
-    # TODO: manage channel layers (adding/removing users from groups)
-    ...
+        # Calling the receive function of the parent class (CustomWebSocketLogic)
+        await super().receive(text_data)
+        # Settign the user
+        user = self.scope['user']
+        if self.message_type == 'chat':
+            await recieve_message(self, user, text_data)
+        elif self.message_type == 'relationship':
+            logging.info("Received relationship message - TODO: implement")
+        # TODO: the lines below should go to: GameConsumer
+        #elif self.message_type == 'game':
+        #    logging.info("Received game message - TODO: implement")
+        elif self.message_type == 'tournament':
+            logging.info("Received tournament message - TODO: implement")
+        else:
+            raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
 
 # Manages the temporary WebSocket connection for a single game
 class GameConsumer(CustomWebSocketLogic):
