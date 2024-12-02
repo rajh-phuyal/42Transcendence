@@ -40,6 +40,10 @@ class WebSocketManager {
         };
     }
 
+    sendChatMessage(message) {
+        this.socket.send(JSON.stringify(message));
+    }
+
     // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
