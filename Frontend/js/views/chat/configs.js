@@ -201,6 +201,7 @@ export default {
                     individualElement.className = "chat-view-conversation-card";
             }
             element.className = "chat-view-conversation-card-highlighted";
+            element.querySelector(".chat-view-conversation-card-unseen-container").style.display = "none";
         },
 
         conversationCallback(event) {
