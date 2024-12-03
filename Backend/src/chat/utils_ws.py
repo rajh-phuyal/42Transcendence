@@ -22,16 +22,16 @@ def create_message(user, conversation_id, content):
     if not conversation_member_entry:
         raise BarelyAnException(_("Conversation not found or user is not a member of the conversation"))
     conversation = conversation_member_entry.conversation
-    other_user = (
+    other_user_memeber = (
         ConversationMember.objects
             .filter(conversation=conversation)
             .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
             .first() #TODO: Groupchat remove the first() and return the list
-        ).user
+        )
     
     # Check if user is blocked by other member (if not group chat)
     if not conversation.is_group_conversation:
-        if is_blocked(user, other_user):
+        if is_blocked(user, other_user_memeber.user):
             raise BlockingException(detail='You have been blocked by this user.')
     
     # Create message
@@ -41,6 +41,10 @@ def create_message(user, conversation_id, content):
         content=content,
     )
     message.save()
+    # Update unread counter of other guy
+    other_user_memeber.unread_counter = other_user_memeber.unread_counter + 1
+    other_user_memeber.save()
+    logging.info("updated unreadcouter to {other_user_memeber.unread_counter}")
     return message
     
 def parse_message(text):

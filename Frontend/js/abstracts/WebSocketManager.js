@@ -1,6 +1,7 @@
 import $store from '../store/store.js';
 import { createMessage } from '../views/chat/methods.js';
 import { $id } from './dollars.js';
+import $callToast from './callToast.js';
 
 class WebSocketManager {
     constructor() {
@@ -9,23 +10,21 @@ class WebSocketManager {
         this.currentConversation = undefined;
         this.messageRecieved = undefined;
 
-
-        this.routeMethods = {
-            "chat": function() {
-                if (!this.currentConversation || this.currentConversation != this.messageRecieved.conversationId) 
-                    return;
-                console.log("chat message received trying to add it to the chat view: ", this.messageRecieved);
-                //$id("chat-view-messages-container").appendChild(createMessage(this.messageRecieved));
-
-                const container = $id("chat-view-messages-container");
-                const newMessage = createMessage(this.messageRecieved);
-                container.insertBefore(newMessage, container.firstChild);
-
-                // TODO: set the message as seen
-
-            }
-        }
+        // this.routeMethods = {
+        //     "chat": function() {
+                
+                
+        //         // const container = $id("chat-view-messages-container");
+        //         // const newMessage = createMessage(this.messageRecieved);
+        //         // container.insertBefore(newMessage, container.firstChild);
+                
+        //         // TODO: set the message as seen
+                
+        //     },
+        // }
     }
+
+    
 
 
     // Connect to WebSocket with the provided token
@@ -51,7 +50,8 @@ class WebSocketManager {
             console.log("Message received from server:", data);
             console.log("data received:", event.data);
             this.messageRecieved = data;
-            this.routeMethods[this.messageRecieved.messageType].bind(this)();
+            this.receiveMessage();
+            // this.routeMethods[this.messageRecieved.messageType].bind(this)();
             // Dispatch data to appropriate handlers based on message type
         };
 
@@ -81,8 +81,29 @@ class WebSocketManager {
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
     receiveMessage() {
-        if (this.currentRoute)
-            this.routeMethods[this.currentRoute];
+
+        console.log("message type:", this.messageRecieved.messageType);
+
+        switch (this.messageRecieved.messageType) {
+            case "chat":
+                if (this.currentRoute == "chat")
+                    this.processIncomingChatMessageChatView();
+                return ;
+
+            case "info":
+                $callToast("success", this.messageRecieved.message);
+                return ;
+            
+        }
+
+        if (!this.receiveMessage.toastMessage) {
+            console.log(this.messageRecieved);
+            $callToast("error", "no toast message delivered");
+        }
+        else
+            $callToast("success", this.receiveMessage.toastMessage);
+
+        // TODO: call toast for when the message is recieved in a different route
     }
     
     // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
@@ -97,6 +118,16 @@ class WebSocketManager {
         this.socket.removeEventListner("message", this.receiveMessage);
     }
 
+    processIncomingChatMessageChatView() {
+        if (this.currentConversation == this.messageRecieved.conversationId) {
+            $id("chat-view-messages-container").prepend(createMessage(this.messageRecieved));
+            // TODO: send seen message
+        }
+
+        // TODO: push the card to the top of the conversation list
+
+    }
+
     setCurrentRoute(route) {
         this.currentRoute = route;
     }
@@ -108,3 +139,4 @@ class WebSocketManager {
 
 // Export a single instance to be used across the app
 export default new WebSocketManager();
+

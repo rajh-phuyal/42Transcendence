@@ -3,15 +3,12 @@ import { $id } from '../../abstracts/dollars.js'
 
 export function createMessage(element) {
 
-    console.log("message json:", element);
-
     let elementId = "chat-view-sent-message-template";
     if (element.username == "overlords")
         elementId = "chat-view-overlords-message-template";
     else if (element.userId != $store.fromState("user").id)
         elementId = "chat-view-incoming-message-template";
 
-    console.log("element id:",elementId);
     let template = $id(elementId).content.cloneNode(true);
     
     if (element.userId != $store.fromState("user").id) 

@@ -213,8 +213,7 @@ export default {
 
             this.higlightCard(element);
             this.loadConversation(element.getAttribute("conversation_id"));
-        }
-        ,
+        },
         loadConversation(conversationId) {
             call(`chat/load/conversation/${conversationId}/messages/?msgid=0`, 'PUT').then(data => {
                 const temp = data.data.pop();
@@ -230,6 +229,8 @@ export default {
         },
 
         createConversationCard(element) {
+
+            console.log("element:", element);
 
             this.conversations.push(element.conversationId);
 
@@ -249,6 +250,16 @@ export default {
 
             // User
             conversation.querySelector(".chat-view-conversation-card-username").textContent = element.conversationName;
+
+            // Seen container
+            const unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
+            if (element.unreadCounter != "0")
+                unseenContainer.style = "none";
+            else {
+                unseenContainer.style = "flex";
+                unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = element.unreadCounter;
+            }
+
 
             this.conversationsContainer.appendChild(conversation);
             this.domManip.$on(container, "click", this.conversationCallback);
