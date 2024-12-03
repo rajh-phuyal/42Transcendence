@@ -23,11 +23,13 @@ class TextField extends HTMLElement {
         inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
     }
 
+
     buttonclick(){
         const inputElement = this.shadow.getElementById("text-field");
         const value = inputElement.value;
 
-        console.log("input value:", value);
+        WebSocketManager.sendChatMessage({messageType: "chat", conversationId: this.conversationId, content: value});
+        
         inputElement.value = '';
     }
 
@@ -39,14 +41,8 @@ class TextField extends HTMLElement {
         event.preventDefault();
         const inputElement = event.target;
         const value = inputElement.value;
-        console.log("input value:", value); // ...............................
 
-        //const container = $id("chat-view-messages-container");
-        //container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
-
-        const toSend = {messageType: "chat", conversationId: this.conversationId, content: value};
-        console.log("message", toSend)
-        WebSocketManager.sendChatMessage(toSend);
+        WebSocketManager.sendChatMessage({messageType: "chat", conversationId: this.conversationId, content: value});
 
         if (this.clear){
             inputElement.value = '';

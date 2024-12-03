@@ -21,6 +21,8 @@ class WebSocketManager {
                 const newMessage = createMessage(this.messageRecieved);
                 container.insertBefore(newMessage, container.firstChild);
 
+                // TODO: set the message as seen
+
             }
         }
     }
@@ -63,11 +65,16 @@ class WebSocketManager {
             $store.commit("setWebSocketIsAlive", false);
         };
 
-        // this.socket.addEventListner("message", this.receiveMessage);
+        this.socket.addEventListner("message", this.receiveMessage);
     }
     
     sendChatMessage(message) {
         this.socket.send(JSON.stringify(message));
+    }
+
+    receiveMessage() {
+        if (this.currentRoute)
+            this.routeMethods[this.currentRoute];
     }
     
     // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
