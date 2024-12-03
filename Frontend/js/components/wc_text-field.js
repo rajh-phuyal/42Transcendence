@@ -28,7 +28,7 @@ class TextField extends HTMLElement {
         const inputElement = this.shadow.getElementById("text-field");
         const value = inputElement.value;
 
-        WebSocketManager.sendChatMessage({messageType: "chat", conversationId: this.conversationId, content: value});
+        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
         
         inputElement.value = '';
     }
@@ -42,7 +42,7 @@ class TextField extends HTMLElement {
         const inputElement = event.target;
         const value = inputElement.value;
 
-        WebSocketManager.sendChatMessage({messageType: "chat", conversationId: this.conversationId, content: value});
+        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
 
         if (this.clear){
             inputElement.value = '';

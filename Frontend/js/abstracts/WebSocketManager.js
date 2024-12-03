@@ -68,10 +68,18 @@ class WebSocketManager {
         this.socket.addEventListner("message", this.receiveMessage);
     }
     
-    sendChatMessage(message) {
+    // Allowd types are:
+    // - chat (for sending chat messages)
+    // - seen (for marking conversation as seen) "id": <conversationid>
+    sendMessage(message) {
         this.socket.send(JSON.stringify(message));
     }
 
+    // The backend send:
+    // - chat (for receiving chat messages)
+    // - update 
+    //      - "what": "conversation","all"
+    //      - "id": <conversationid>
     receiveMessage() {
         if (this.currentRoute)
             this.routeMethods[this.currentRoute];
