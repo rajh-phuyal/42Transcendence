@@ -10,6 +10,8 @@ from user.utils_relationship import is_blocked
 import logging
 from core.decorators import barely_handle_ws_exceptions
 from channels.db import database_sync_to_async
+from chat.utils import mark_all_messages_as_seen
+from asgiref.sync import sync_to_async
 
 # Wrap the synchronous database operations with sync_to_async
 @database_sync_to_async
@@ -58,3 +60,18 @@ async def process_incoming_chat_message(self, user, text):
     
     # Do db operations
     return await create_message(user, conversation_id, content)
+
+@sync_to_async
+def validate_user_is_member_of_conversation(user, conversation_id):
+    # Validate conversation exists & user is a member of the conversation
+    conversation_member_entry =  ConversationMember.objects.filter(conversation_id=conversation_id, user=user).first()
+    if not conversation_member_entry:
+        raise BarelyAnException(_("Conversation not found or user is not a member of the conversation"))
+
+async def process_incoming_seen_message(self, user, text):
+    text_json = json.loads(text)
+    conversation_id = text_json.get('conversationId', '')
+    if not conversation_id:
+        raise BarelyAnException(_("key 'conversationId' is required for websocket message type 'seen'"))
+    await validate_user_is_member_of_conversation(user, conversation_id)
+    await mark_all_messages_as_seen(user.id, conversation_id)

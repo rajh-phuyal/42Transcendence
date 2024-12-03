@@ -6,11 +6,11 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import AnonymousUser #TODO: delete later!
 import logging
 from django.core.cache import cache
-from chat.utils_ws import process_incoming_chat_message
+from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
-from services.chat_service import setup_all_conversations, broadcast_message
+from services.chat_service import setup_all_conversations, broadcast_message, setup_all_badges
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -66,6 +66,8 @@ class MainConsumer(CustomWebSocketLogic):
         await setup_all_conversations(user, self.channel_name, intialize=True)
         # Accept the connection
         await self.accept()
+        # Send the inizial badge nummer
+        await setup_all_badges(self)
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
@@ -89,6 +91,10 @@ class MainConsumer(CustomWebSocketLogic):
             message = await process_incoming_chat_message(self, user, text_data)
             logging.info(f"Parsed backend object: {message}")
             await broadcast_message(message)
+        elif self.message_type == 'seen':
+            logging.info("Received seen message")
+            await process_incoming_seen_message(self, user, text_data)
+            await setup_all_badges(self)
         elif self.message_type == 'relationship':
             logging.info("Received relationship message - TODO: implement")
         # TODO: the lines below should go to: GameConsumer

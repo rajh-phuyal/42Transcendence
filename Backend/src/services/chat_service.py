@@ -6,6 +6,7 @@ from channels.layers import get_channel_layer
 from user.models import User
 from chat.models import ConversationMember
 import logging
+from services.websocket_utils import send_response_message
 User = get_user_model()
 channel_layer = get_channel_layer()
 
@@ -43,3 +44,40 @@ async def broadcast_message(message):
             "seenAt": message.seen_at.isoformat() if message.seen_at else None
         }
     )
+
+@sync_to_async
+def setup_all_badges_sync(client_consumer):
+    logging.info("Sending the initial badge count to the user: %s", client_consumer.scope['user'])
+    conversation_memberships = ConversationMember.objects.filter(user=client_consumer.scope['user'])
+    badges = []
+    total_unseen_messages = 0
+    for membership in conversation_memberships:
+        logging.info(f"\t\tConversation {membership.conversation.id} has {membership.unread_counter} unseen messages")
+        badges.append({
+            "id": membership.conversation.id,
+            "value": membership.unread_counter
+        })
+        total_unseen_messages += membership.unread_counter
+    return badges, total_unseen_messages
+
+async def send_badges_to_user(client_consumer, badges, total_unseen_messages):
+    # Send badges updates
+    for badge in badges:
+        await send_response_message(client_consumer, "update", {
+            "what": "badge_conversation",
+            "id": badge['id'],
+            "value": badge['value']
+        })
+    
+    # Send total unseen message count
+    await send_response_message(client_consumer, "update", {
+        "what": "badge_total",
+        "total": total_unseen_messages
+    })
+
+async def setup_all_badges(client_consumer):
+    # Step 1: Get badges and total unseen messages synchronously
+    badges, total_unseen_messages = await setup_all_badges_sync(client_consumer)
+    
+    # Step 2: Send the badges data asynchronously
+    await send_badges_to_user(client_consumer, badges, total_unseen_messages)

@@ -6,7 +6,9 @@ from user.constants import USER_ID_OVERLOARDS
 from user.models import User
 from django.db.models import Q
 from .models import Message, ConversationMember
+from asgiref.sync import sync_to_async
 
+@sync_to_async
 def mark_all_messages_as_seen(user_id, conversation_id):
     with transaction.atomic():
         new_messages = (
