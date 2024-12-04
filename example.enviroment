@@ -14,7 +14,7 @@ DOCKER_NETWORK=barely-a-network
 DB_NAME=barelyalivedb
 DB_PORT=5432
 DB_USER=admin
-DB_PSWD=admin
+DB_PSWD=admin_password
 #
 # PGADMIN AKA PA
 # ---

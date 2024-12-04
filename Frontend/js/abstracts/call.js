@@ -45,8 +45,6 @@ async function call(url, method, data) {
         throw new Error(errorMessage);
     }
 
-
-    
     return await response.json();
 }
 

@@ -8,13 +8,13 @@
 # Environment-specific files and directories
 Environments/*
 
+# Localizations / Translations
+*.mo
+*.po
+
 # Logs
 Logs/*
 **/*.log
-
-# Translations
-*.mo
-*.po
 
 # Database files
 Database/postgres-data

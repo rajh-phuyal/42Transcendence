@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.conversation_member
 	id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 	conversation_id INT NOT NULL,
+    unread_counter INT DEFAULT 0,
 	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
 	FOREIGN KEY (conversation_id) REFERENCES barelyaschema.conversation(id)
 );

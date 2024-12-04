@@ -8,7 +8,7 @@ export default function $nav() {
         { id: 'home-nav', path: '/home' },
         { id: 'game-nav', path: '/game' },
         { id: 'tournament-nav', path: '/tournament' },
-        { id: 'chat-nav', path: '/chat' },
+        { id: 'chat-nav', path: '/chat', params: { id: undefined }},
         { id: 'logout-nav', path: '/logout' },
         { id: 'profile-nav', path: '/profile', params: { id: $store.fromState("user").id } },
         { id: 'login-nav', path: '/auth', params: { login: true } },

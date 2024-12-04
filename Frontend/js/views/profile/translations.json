@@ -110,5 +110,13 @@
         "de-DE": "3. Platz im Turnier: ",
         "uk-UA": "3-е місце на турнірі: ",
         "ne-NP": "प्रतियोगितामा तेस्रो स्थान: "
+    },
+    "createNewConversation": {
+        "en-US": "Send a Message to open a new conversation with ",
+        "pt-PT": "Envie uma mensagem para iniciar uma nova conversa com ",
+        "pt-BR": "Envie uma mensagem para abrir uma nova conversa com ",
+        "de-DE": "Senden Sie eine Nachricht, um ein neues Gespräch mit zu beginnen ",
+        "uk-UA": "Надішліть повідомлення, щоб розпочати нову розмову з ",
+        "ne-NP": "सन्देश पठाउनुहोस् नयाँ कुराकानी सुरु गर्नको लागि "
     }
 }
