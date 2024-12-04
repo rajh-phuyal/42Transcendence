@@ -1,6 +1,4 @@
-from services.chat_service import setup_all_conversations, broadcast_message, setup_all_badges
 from django.core.cache import cache
-from services.websocket_utils import send_message_to_user
 from django.db import transaction
 from user.models import User
 from chat.models import Message, ConversationMember
@@ -79,7 +77,7 @@ def parse_message(text):
     return conversation_id, content
 
 # Websocket message
-async def process_incoming_chat_message(self, user, text):
+async def process_incoming_chat_message(consumer, user, text):
     conversation_id, content = parse_message(text)
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
     
@@ -87,11 +85,10 @@ async def process_incoming_chat_message(self, user, text):
     new_message, other_user_member_id = await create_message(user, conversation_id, content)
 
     # Update the badges
-    await setup_all_badges(other_user_member_id)
+    # TODO: 
 
     return new_message
 
-@sync_to_async
 def validate_user_is_member_of_conversation(user, conversation_id):
     # Validate conversation exists & user is a member of the conversation
     conversation_member_entry =  ConversationMember.objects.filter(conversation_id=conversation_id, user=user).first()
@@ -103,5 +100,6 @@ async def process_incoming_seen_message(self, user, text):
     conversation_id = text_json.get('conversationId', '')
     if not conversation_id:
         raise BarelyAnException(_("key 'conversationId' is required for websocket message type 'seen'"))
-    await validate_user_is_member_of_conversation(user, conversation_id)
+    validate_user_is_member_of_conversation(user, conversation_id)
     await mark_all_messages_as_seen(user.id, conversation_id)
+    await send_conversation_unread_counter(user.id, conversation_id)

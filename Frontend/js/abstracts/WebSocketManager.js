@@ -146,7 +146,10 @@ class WebSocketManager {
     }
 
     updateNavBarBadge(value) {
-        //TODO: update the navBar message badge
+        if (value != 0)
+            $id("chat-nav-badge").textContent = value;
+        else
+            $id("chat-nav-badge").textContent = "";
     }
 
     setCurrentRoute(route) {

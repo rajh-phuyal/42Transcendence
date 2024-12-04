@@ -1,6 +1,5 @@
 import asyncio
 from services.chat_service import send_message_to_user
-from services.chat_service import setup_all_badges
 from django.db.models import Q
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
