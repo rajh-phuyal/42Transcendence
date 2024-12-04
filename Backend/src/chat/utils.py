@@ -20,13 +20,13 @@ def mark_all_messages_as_seen(user_id, conversation_id):
                 .exclude(user=user_id)
             )
 
-        # Update messages
-        new_messages.update(seen_at=timezone.now())
+            # Update messages
+            new_messages.update(seen_at=timezone.now())
 
-        # Update unread counter
-        conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
-        conversation_member.update(unread_messages_count=0)
-        conversation_member.save()
+            # Update unread counter
+            conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
+            conversation_member.unread_counter = 0
+            conversation_member.save(update_fields=['unread_counter'])
     except Exception as e:
         logging.error(f"Error marking messages as seen: {e}")
 

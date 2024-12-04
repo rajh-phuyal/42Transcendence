@@ -53,13 +53,20 @@ def create_message(user, conversation_id, content):
                 user=user,
                 seen_at__isnull=True
             ).count()
-            other_user_member.select_for_update().update(unread_messages_count=unread_messages_count)
-            # Sent this updated value to the frontend:
-            setup_all_badges(user.id)
+            other_user_member = (
+                ConversationMember.objects
+                    .select_for_update()
+                    .filter(conversation=conversation)
+                    .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
+                    .first() #TODO: Groupchat remove the first() and return the list
+                )
+            other_user_member.unread_counter = unread_messages_count
+            other_user_member.save(update_fields=['unread_counter'])
+            logging.info("Setting unread messages count for user %s to %s", other_user_member.user, unread_messages_count)
 
     except Exception as e:
         logging.error(f"Error updating unread messages count for user {other_user_member.user}: {e}")
-    return message
+    return message, other_user_member.user.id
     
 def parse_message(text):
     text_json = json.loads(text)
@@ -77,7 +84,12 @@ async def process_incoming_chat_message(self, user, text):
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
     
     # Do db operations
-    return await create_message(user, conversation_id, content)
+    new_message, other_user_member_id = await create_message(user, conversation_id, content)
+
+    # Update the badges
+    await setup_all_badges(other_user_member_id)
+
+    return new_message
 
 @sync_to_async
 def validate_user_is_member_of_conversation(user, conversation_id):

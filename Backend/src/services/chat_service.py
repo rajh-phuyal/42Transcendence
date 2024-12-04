@@ -68,7 +68,7 @@ async def send_badges_to_user(user_id, badges, total_unseen_messages):
             "messageType": "updateBadge",
             "what": "conversation",
             "id": badge['id'],
-            "value": badge['id']
+            "value": badge['value']
         } 
         await send_message_to_user(user_id, **msg_data)
 

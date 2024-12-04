@@ -98,7 +98,7 @@ class MainConsumer(CustomWebSocketLogic):
         elif self.message_type == 'seen':
             logging.info("Received seen message")
             await process_incoming_seen_message(self, user, text_data)
-            await setup_all_badges(self)
+            await setup_all_badges(user.id)
         elif self.message_type == 'relationship':
             logging.info("Received relationship message - TODO: implement")
         # TODO: the lines below should go to: GameConsumer

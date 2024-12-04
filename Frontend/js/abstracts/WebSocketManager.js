@@ -46,8 +46,6 @@ class WebSocketManager {
 
 		this.socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("Message received from server:", data);
-            console.log("data received:", event.data);
             this.receiveMessage(data);
             // this.routeMethods[message.messageType].bind(this)();
             // Dispatch data to appropriate handlers based on message type
@@ -137,9 +135,13 @@ class WebSocketManager {
     }
 
     updateConversationBadge(message) {
-        element = $id("chat-view-conversation-card-" +  message.conversationId);
-        seenCouterContainer = element.getElementsByClassName("chat-view-conversation-card-unseen-container");
-        seenCouterContainer.getElementsByClassName("chat-view-conversation-card-unseen-counter").textContent = message.value;
+        const element = $id("chat-view-conversation-card-" +  message.id);
+        console.log("element", element);
+        const seenCouterContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
+        console.log("container", seenCouterContainer);
+        seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.value;
+        console.log("container", seenCouterContainer);
+        console.log("updating to ", message.value);
 
         if (message.value == "0")
             seenCouterContainer.style.display = "none";
