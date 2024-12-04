@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# ------------------------------------------------------------------------------
 # ADD ALL TABLES INTO THIS ARRAY!
 # (start from weak entity too not to break FK constraints)
 # ------------------------------------------------------------------------------
@@ -10,6 +10,9 @@ ALL_TABLES=("barelyaschema.dev_user_data"
 			"barelyaschema.conversation_member" 
 			"barelyaschema.conversation" 
 			"barelyaschema.user")
+# Fixed UserIDs:
+ID_OVERLOARDS=1
+ID_AI=2
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -85,11 +88,11 @@ insert_dummy "$TABLE_NAME" \
 TABLE_NAME="barelyaschema.is_cool_with"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME (id, requester_id, requestee_id, status) VALUES \
-		(1, 2, 3, 'accepted'), \
-		(2, 2, 4, 'accepted'), \
-		(3, 2, 5, 'accepted'), \
-		(4, 2, 6, 'accepted'), \
-		(5, 2, 7, 'accepted'), \
+		(1, $ID_AI, 3, 'accepted'), \
+		(2, $ID_AI, 4, 'accepted'), \
+		(3, $ID_AI, 5, 'accepted'), \
+		(4, $ID_AI, 6, 'accepted'), \
+		(5, $ID_AI, 7, 'accepted'), \
 		(6, 3, 4, 'accepted'), \
 		(7, 3, 5, 'accepted'), \
 		(8, 3, 6, 'accepted'), \
@@ -101,11 +104,11 @@ insert_dummy "$TABLE_NAME" \
 TABLE_NAME="barelyaschema.no_cool_with"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME (id, blocker_id, blocked_id) VALUES \
-		(1, 1, 3), \
-		(2, 1, 4), \
-		(3, 1, 5), \
-		(4, 1, 6), \
-		(5, 1, 7), \
+		(1, $ID_OVERLOARDS, 3), \
+		(2, $ID_OVERLOARDS, 4), \
+		(3, $ID_OVERLOARDS, 5), \
+		(4, $ID_OVERLOARDS, 6), \
+		(5, $ID_OVERLOARDS, 7), \
 		(6, 5, 3), \
 		(7, 5, 6), \
 		(8, 6, 5);"
@@ -125,10 +128,10 @@ insert_dummy "$TABLE_NAME" \
 TABLE_NAME="barelyaschema.conversation_member"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME (id, conversation_id, user_id) VALUES \
-		(1, 1, 1), \
-		(2, 1, 2), \
-		(3, 1, 3), \
-		(4, 1, 4), \
+		(1, 1, $ID_OVERLOARDS), \
+		(2, 2, $ID_OVERLOARDS), \
+		(3, 3, $ID_OVERLOARDS), \
+		(4, 4, $ID_OVERLOARDS), \
 		(5, 1, 3), \
 		(6, 1, 4), \
 		(7, 2, 3), \
