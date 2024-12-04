@@ -327,9 +327,6 @@ export default {
             this.selectedConversation = null;
             //this.messages = [];
 
-
-
-
             WebSocketManager.setCurrentRoute(undefined);
             WebSocketManager.setCurrentConversation(undefined);
 
