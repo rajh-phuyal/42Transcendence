@@ -8,14 +8,13 @@ class WebSocketManager {
         this.socket = null;
         this.currentRoute = undefined;
         this.currentConversation = undefined;
-        this.messageRecieved = undefined;
 
         // this.routeMethods = {
         //     "chat": function() {
                 
                 
         //         // const container = $id("chat-view-messages-container");
-        //         // const newMessage = createMessage(this.messageRecieved);
+        //         // const newMessage = createMessage(message);
         //         // container.insertBefore(newMessage, container.firstChild);
                 
         //         // TODO: set the message as seen
@@ -49,9 +48,8 @@ class WebSocketManager {
             const data = JSON.parse(event.data);
             console.log("Message received from server:", data);
             console.log("data received:", event.data);
-            this.messageRecieved = data;
-            this.receiveMessage();
-            // this.routeMethods[this.messageRecieved.messageType].bind(this)();
+            this.receiveMessage(data);
+            // this.routeMethods[message.messageType].bind(this)();
             // Dispatch data to appropriate handlers based on message type
         };
 
@@ -65,7 +63,7 @@ class WebSocketManager {
             $store.commit("setWebSocketIsAlive", false);
         };
 
-        this.socket.addEventListner("message", this.receiveMessage);
+        // this.socket.addEventListner("message", this.receiveMessage);
     }
     
     // Allowd types are:
@@ -73,6 +71,7 @@ class WebSocketManager {
     // - seen (for marking conversation as seen) "id": <conversationid>
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
+        console.log("FE -> BE:", message);
     }
 
     // The backend send:
@@ -80,28 +79,34 @@ class WebSocketManager {
     // - update 
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
-    receiveMessage() {
+    receiveMessage(message) {
 
-        console.log("message type:", this.messageRecieved.messageType);
+        console.log("BE -> FE:", message);
 
-        switch (this.messageRecieved.messageType) {
+        switch (message.messageType) {
             case "chat":
                 if (this.currentRoute == "chat")
-                    this.processIncomingChatMessageChatView();
+                    this.processIncomingChatMessageChatView(message);
                 return ;
 
+            case "updateBadge":
+                if (message.what == "all")
+                    this.updateNavBarBadge(message.value);
+                else if (message.what == "conversation")
+                    this.updateConversationBadge(message);
+                return ;
             case "info":
-                $callToast("success", this.messageRecieved.message);
+                $callToast("success", message.message);
                 return ;
             
         }
 
-        if (!this.receiveMessage.toastMessage) {
-            console.log(this.messageRecieved);
+        if (!message.toastMessage) {
+            console.log(message);
             $callToast("error", "no toast message delivered");
         }
         else
-            $callToast("success", this.receiveMessage.toastMessage);
+            $callToast("success", message.toastMessage);
 
         // TODO: call toast for when the message is recieved in a different route
     }
@@ -115,17 +120,35 @@ class WebSocketManager {
         } else {
             console.log("WebSocket is not connected.");
         }
-        this.socket.removeEventListner("message", this.receiveMessage);
+        // this.socket.removeEventListner("message", this.receiveMessage);
     }
 
-    processIncomingChatMessageChatView() {
-        if (this.currentConversation == this.messageRecieved.conversationId) {
-            $id("chat-view-messages-container").prepend(createMessage(this.messageRecieved));
-            // TODO: send seen message
+    processIncomingChatMessageChatView(message) {
+        if (this.currentConversation == message.conversationId) {
+            $id("chat-view-messages-container").prepend(createMessage(message));
+            
+            // send seen message
+            this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
         }
 
         // TODO: push the card to the top of the conversation list
+        $id("chat-view-conversations-container").prepend($id("chat-view-conversation-card-" +  message.conversationId));
 
+    }
+
+    updateConversationBadge(message) {
+        element = $id("chat-view-conversation-card-" +  message.conversationId);
+        seenCouterContainer = element.getElementsByClassName("chat-view-conversation-card-unseen-container");
+        seenCouterContainer.getElementsByClassName("chat-view-conversation-card-unseen-counter").textContent = message.value;
+
+        if (message.value == "0")
+            seenCouterContainer.style.display = "none";
+        else 
+            seenCouterContainer.style.display = "flex";
+    }
+
+    updateNavBarBadge(value) {
+        //TODO: update the navBar message badge
     }
 
     setCurrentRoute(route) {

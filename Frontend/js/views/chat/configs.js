@@ -177,20 +177,17 @@ export default {
             
             const container = this.domManip.$id("chat-view-messages-container");
 
-
-            let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-incoming-message-container")
-
-            for (let element of toDelete)
-                element.remove();
-
+            this.removeConversationMessages();
             
             for (let element of data) 
                 container.appendChild(createMessage(element));
         },
-
+        
         removeConversationMessages() {
-            const container = this.domManip.$id("chat-view-messages-container");
-            container.innerHTML = "";
+            let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-overlords-message-container")
+    
+            for (let element of toDelete)
+                element.remove();
         },
 
         higlightCard(element) {
@@ -201,7 +198,6 @@ export default {
                     individualElement.className = "chat-view-conversation-card";
             }
             element.className = "chat-view-conversation-card-highlighted";
-            element.querySelector(".chat-view-conversation-card-unseen-container").style.display = "none";
         },
 
         conversationCallback(event) {
@@ -253,8 +249,8 @@ export default {
 
             // Seen container
             const unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
-            if (element.unreadCounter != "0")
-                unseenContainer.style = "none";
+            if (element.unreadCounter == "0")
+                unseenContainer.style.display = "none";
             else {
                 unseenContainer.style = "flex";
                 unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = element.unreadCounter;
@@ -275,7 +271,11 @@ export default {
                 
                 for (let element of data.data)
                     this.createConversationCard(element);
+            }).then(date => {
+                
+                this.sortConversationsByTimestamp();
             })
+
             
         },
 
@@ -285,20 +285,19 @@ export default {
         },
 
         sortConversationsByTimestamp() {
-            // Get the child elements as an array
-            const conversation = Array.from(this.conversationsContainer.children);
+            const conversationsContainer = this.domManip.$id('chat-view-conversations-container');
             
-            // Sort the elements by their timestamp
-            conversation.sort((a, b) => {
+            const conversationCardsArray = Array.from(this.domManip.$queryAll(".chat-view-conversation-card, .chat-view-conversation-card-highlighted"));
+        
+            conversationCardsArray.sort((a, b) => {
                 const timestampA = new Date(a.getAttribute('last-message-time'));
                 const timestampB = new Date(b.getAttribute('last-message-time'));
-                return timestampB - timestampA; // Ascending order
+                return timestampB - timestampA; // Sort in descending order (latest first)
             });
         
-            // Re-append the elements in the sorted order
-            for (const element of conversation) {
-                this.conversationsContainer.appendChild(element); // Moves each element to the end in sorted order
-            }
+            conversationCardsArray.forEach(card => {
+                conversationsContainer.appendChild(card);
+            });
         },
 
         hideChatElements() {
@@ -353,8 +352,8 @@ export default {
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
 
             await this.populateConversations();
-            this.sortConversationsByTimestamp();
             
+
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");
             // const messageInput = document.getElementById("chat-message-input");
