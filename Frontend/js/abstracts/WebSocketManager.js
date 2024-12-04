@@ -93,10 +93,6 @@ class WebSocketManager {
                 else if (message.what == "conversation")
                     this.updateConversationBadge(message);
                 return ;
-            case "info":
-                $callToast("success", message.message);
-                return ;
-            
         }
 
         if (!message.toastMessage) {

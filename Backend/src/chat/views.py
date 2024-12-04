@@ -1,3 +1,6 @@
+import asyncio
+from services.chat_service import send_message_to_user
+from services.chat_service import setup_all_badges
 from django.db.models import Q
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
@@ -17,6 +20,7 @@ from user.constants import USER_ID_OVERLOARDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
 import logging
+from asgiref.sync import sync_to_async
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -67,6 +71,18 @@ class LoadConversationView(BaseAuthenticatedView):
         # Mark as seen
         if not is_blocking:
             mark_all_messages_as_seen(user.id, conversation.id)
+
+        # Send Websocket message to udpate the badge count
+        logging.info(f"Sending update badge message for conversation {conversation.id}")
+        msg_data = {
+            "type": "update_badge",
+            "messageType": "updateBadge",
+            "what": "conversation",
+            "id": conversation.id,
+            "value": 0
+        }
+        asyncio.run(send_message_to_user(user.id, **msg_data))
+        logging.info(f"Sending update badge message for conversation {conversation.id} done")
 
         # Serialize messages
         serialized_messages = MessageSerializer(messages_with_separator, many=True)

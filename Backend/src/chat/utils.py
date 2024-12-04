@@ -22,7 +22,7 @@ def mark_all_messages_as_seen(user_id, conversation_id):
 
             # Update messages
             new_messages.update(seen_at=timezone.now())
-
+            logging.infor(f"Marked {len(new_messages)} messages as seen by user {user_id} in conversation {conversation_id}")
             # Update unread counter
             conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
             conversation_member.unread_counter = 0
