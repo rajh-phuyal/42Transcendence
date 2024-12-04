@@ -7,25 +7,28 @@ from user.models import User
 from django.db.models import Q
 from .models import Message, ConversationMember
 from asgiref.sync import sync_to_async
+import logging
 
 @sync_to_async
 def mark_all_messages_as_seen(user_id, conversation_id):
-    with transaction.atomic():
-        new_messages = (
-            Message.objects
-            .select_for_update()
-            .filter(conversation_id=conversation_id, seen_at__isnull=True)
-            .exclude(user=user_id)
-        )
+    try:
+        with transaction.atomic():
+            new_messages = (
+                Message.objects
+                .select_for_update()
+                .filter(conversation_id=conversation_id, seen_at__isnull=True)
+                .exclude(user=user_id)
+            )
 
         # Update messages
         new_messages.update(seen_at=timezone.now())
 
         # Update unread counter
         conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
-
-        if conversation_member.unread_counter > 0:
-            conversation_member.save(update_fields=['unread_counter'])
+        conversation_member.update(unread_messages_count=0)
+        conversation_member.save()
+    except Exception as e:
+        logging.error(f"Error marking messages as seen: {e}")
 
 def get_conversation_name(user, conversation):
     if conversation.name:

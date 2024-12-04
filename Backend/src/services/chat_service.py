@@ -6,7 +6,7 @@ from channels.layers import get_channel_layer
 from user.models import User
 from chat.models import ConversationMember
 import logging
-from services.websocket_utils import send_response_message
+from services.websocket_utils import send_message_to_user
 User = get_user_model()
 channel_layer = get_channel_layer()
 
@@ -46,9 +46,9 @@ async def broadcast_message(message):
     )
 
 @sync_to_async
-def setup_all_badges_sync(client_consumer):
-    logging.info("Sending the initial badge count to the user: %s", client_consumer.scope['user'])
-    conversation_memberships = ConversationMember.objects.filter(user=client_consumer.scope['user'])
+def setup_all_badges_sync(user_id):
+    logging.info("Sending the initial badge count to the user: %s", user_id)
+    conversation_memberships = ConversationMember.objects.filter(user=user_id)
     badges = []
     total_unseen_messages = 0
     for membership in conversation_memberships:
@@ -60,24 +60,32 @@ def setup_all_badges_sync(client_consumer):
         total_unseen_messages += membership.unread_counter
     return badges, total_unseen_messages
 
-async def send_badges_to_user(client_consumer, badges, total_unseen_messages):
+async def send_badges_to_user(user_id, badges, total_unseen_messages):
     # Send badges updates
     for badge in badges:
-        await send_response_message(client_consumer, "update", {
-            "what": "badge_conversation",
+        msg_data = {
+            "type": "update_badge",
+            "messageType": "updateBadge",
+            "what": "conversation",
             "id": badge['id'],
-            "value": badge['value']
-        })
-    
-    # Send total unseen message count
-    await send_response_message(client_consumer, "update", {
-        "what": "badge_total",
-        "total": total_unseen_messages
-    })
+            "value": badge['id']
+        } 
+        await send_message_to_user(user_id, **msg_data)
 
-async def setup_all_badges(client_consumer):
+    # Send total unseen message count
+    msg_data = {
+        "type": "update_badge",
+        "messageType": "updateBadge",
+        "what": "all",
+        "value": total_unseen_messages
+    }
+    await send_message_to_user(user_id, **msg_data)
+    
+async def setup_all_badges(user_id):
+    logging.info("Setting up all badges for user: %s", user_id)
+
     # Step 1: Get badges and total unseen messages synchronously
-    badges, total_unseen_messages = await setup_all_badges_sync(client_consumer)
+    badges, total_unseen_messages = await setup_all_badges_sync(user_id)
     
     # Step 2: Send the badges data asynchronously
-    await send_badges_to_user(client_consumer, badges, total_unseen_messages)
+    await send_badges_to_user(user_id, badges, total_unseen_messages)

@@ -62,12 +62,14 @@ class MainConsumer(CustomWebSocketLogic):
         # Setting the user's online status in cache
         user = self.scope['user']
         cache.set(f'user_online_{user.id}', True, timeout=3000) # 3000 seconds = 50 minutes        
+        # Store the WebSocket channel to the cache with the user ID as the key
+        cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups
         await setup_all_conversations(user, self.channel_name, intialize=True)
         # Accept the connection
         await self.accept()
         # Send the inizial badge nummer
-        await setup_all_badges(self)
+        await setup_all_badges(user.id)
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
@@ -77,6 +79,8 @@ class MainConsumer(CustomWebSocketLogic):
         await sync_to_async(user.update_last_seen)()
         # Remove the user's online status from cache
         cache.delete(f'user_online_{user.id}')
+        # Remove the user's WebSocket channel from cache
+        cache.delete(f'user_channel_{user.id}')
         logging.info(f"User {user.username} marked as offline.")
         # Remove the user from all their conversation groups
         await setup_all_conversations(user, self.channel_name, intialize=False)
@@ -104,6 +108,10 @@ class MainConsumer(CustomWebSocketLogic):
             raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
     
     async def chat_message(self, event):
+        # Send the message back to the WebSocket of the user
+        await self.send(text_data=json.dumps({**event}))
+    
+    async def update_badge(self, event):
         # Send the message back to the WebSocket of the user
         await self.send(text_data=json.dumps({**event}))
 
