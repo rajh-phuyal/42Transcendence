@@ -185,6 +185,7 @@ class WebSocketManager {
         let conversationsContainer = $id('chat-view-conversations-container');
         console.log("conversationsContainer", conversationsContainer);
         conversationsContainer.prepend(conversation);
+        // TODO: This doens't work sinc the router is not getting the chaat it same bug than for profile
         $on(container, "click", () => router("chat", {id: message.conversationId}))
     }
 
