@@ -39,5 +39,5 @@ class CreateGameView(BaseAuthenticatedView):
         
         game_id, success = create_game(user.id, opponent_id, map_number, powerups, local_game)
         if success:
-            return success_response(_('Game created successfully'), **{'game_id': game_id})
-        return success_response(_('Game already exists'), **{'game_id': game_id})
+            return success_response(_('Game created successfully'), **{'gameId': game_id})
+        return success_response(_('Game already exists'), **{'gameId': game_id})
