@@ -33,9 +33,9 @@ class CreateGameView(BaseAuthenticatedView):
         if local_game:
             # TODO: issue #211
             return error_response(_("Local games are not supported yet"))
-        opponent_id = request.data.get('opponent')
+        opponent_id = request.data.get('opponentId')
         if not opponent_id:
-            return error_response(_("Missing key 'opponent'"))
+            return error_response(_("Missing key 'opponentId'"))
         
         game_id, success = create_game(user.id, opponent_id, map_number, powerups, local_game)
         if success:
