@@ -1,4 +1,7 @@
-import { translate } from '../locale/locale.js'
+import { createMessage } from '../views/chat/methods.js';
+import { $id } from '../abstracts/dollars.js';
+import $store from '../store/store.js';
+import { translate } from '../locale/locale.js';
 
 class TextField extends HTMLElement {
     constructor() {
@@ -33,7 +36,10 @@ class TextField extends HTMLElement {
         event.preventDefault();
         const inputElement = event.target;
         const value = inputElement.value;
-        console.log("input value:", value);
+        console.log("input value:", value); // ...............................
+
+        const container = $id("chat-view-messages-container");
+        container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
 
         if (this.clear){
             inputElement.value = '';

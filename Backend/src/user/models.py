@@ -4,6 +4,7 @@ from core.exceptions import BarelyAnException
 from django.utils import timezone
 from asgiref.sync import sync_to_async
 from django.utils.translation import gettext as _
+from .constants import DEFAULT_AVATAR
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -11,7 +12,7 @@ class User(AbstractUser):
     # funcitonality of a user model, and change the table name to
     # "barelyaschema.user" which will be created form our 010_user.sql file
     # during the database container build.
-    avatar_path = models.CharField(max_length=40, default='54c455d5-761b-46a2-80a2-7a557d9ec618.png', blank=True)
+    avatar_path = models.CharField(max_length=40, default=DEFAULT_AVATAR, blank=True)
     language = models.CharField(max_length=5, default='en-US', blank=True)
 
     class Meta:

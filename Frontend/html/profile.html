@@ -202,6 +202,18 @@
     </div>
 
   </div>
+  <!-- New Chat Modal -->
+  <div class="modal fade" id="new-chat-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body" id="new-chat-modal-body">
+          <h3 id="new-chat-modal-new-chat-text" class="new-chat-modal-text"></h3>
+          <textarea id="new-chat-modal-textarea"></textarea>
+          <barely-a-button id="new-chat-modal-create-button" class="new-chat-modal-buttons" name="Create" buttonclass="rect-button"></barely-a-button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Friends List Modal -->
   <div class="modal fade" id="friends-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -214,7 +226,13 @@
           </div>
           <div >
             <ul id="friends-list-modal-list" class="list-group">
-              
+              <template id="friends-list-modal-list-element-template">
+                <div class="friends-list-modal-list-element">
+                  <img id="friends-list-modal-list-element-avatar-image" class="friends-list-modal-list-element-image" alt="error loading image"></img>
+                  <h3 class="friends-list-modal-list-element-username"></h3>
+                  <img id="friends-list-modal-list-element-friendship-image" class="friends-list-modal-list-element-image" alt="error loading image"></img>
+                </div>
+              </template>
             </ul>
             <h3 id="friends-list-modal-list-result-not-found-message">No Results Found</h3>
           </div>
@@ -232,6 +250,12 @@
         color: black;
     }
 
+    /* New Chat  */
+    #new-chat-modal-body {
+      display: flex;
+      flex-direction: column;
+    }
+    
     /* Friends list */
 
     #friends-list-modal-search-bar{
@@ -255,17 +279,22 @@
     .friends-list-modal-list-element{
       display: flex;
       flex-direction: row;
+      margin: 1% 0%;
       height: 8vh;
-      background-color: #FFF6D4;
-      border: black;
+      border:  3px solid  black;
+      background-color: #EFE7D3;
       align-items: center;
     }
 
     .friends-list-modal-list-element-image {
       height: 7vh;
       margin: 0vh 1vw;
-
     }
+
+    #friends-list-modal-list-element-friendship-image {
+      height: 70%;
+    }
+
     .friends-list-modal-list-element-username {
       margin: 0vh 6vw 0vh 2vw;
       width: 4vw;

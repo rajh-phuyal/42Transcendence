@@ -7,6 +7,22 @@
         "uk-UA": "",
         "ne-NP": ""
     },
+    "group": {
+        "en-US": "group: ",
+        "pt-PT": "grupo: ",
+        "pt-BR": "grupo: ",
+        "de-DE": "Gruppe: ",
+        "uk-UA": "група: ",
+        "ne-NP": "समूह: "
+    },
+    "subject": {
+        "en-US": "Subject: ",
+        "pt-PT": "Sujeito: ",
+        "pt-BR": "Sujeito: ",
+        "de-DE": "Betreff: ",
+        "uk-UA": "Тема: ",
+        "ne-NP": "विषय: "
+    },
     "textAreaPlaceHolder": {
         "en-US": "write a message... Just don’t forget that they see everything",
         "pt-PT": "escreve uma mensagem... Apenas não te equeças de que eles vêm tudo",

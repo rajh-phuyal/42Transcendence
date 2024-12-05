@@ -7,35 +7,15 @@
     <h2 style="color: white;">chat room</h2>
     <input id="chat-view-searchbar" placeholder="search..." type="text">
     <div id="chat-view-conversations-container">
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-        <h5 class="chat-view-conversation-card-username">barely-a-group</h5>
-      </div>
-      
+      <span id="chat-view-conversations-no-converations-found"></span>
+
+      <!-- Conversation Card Template -->
+      <template id="chat-view-conversation-card-template">
+        <div class="chat-view-conversation-card">
+          <img class="chat-view-conversation-card-avatar" alt="error loading image">
+          <h5 class="chat-view-conversation-card-username"></h5>
+        </div>
+      </template>
     </div>
   </div>
   <div id="chat-view-right-side-container">
@@ -44,9 +24,7 @@
       <img id="chat-view-header-group-chat-image" class="chat-view-header-icons" src="../assets/chat/groupChatIcon.png" alt="Image loading error">
       <img id="chat-view-header-invite-for-game-image" class="chat-view-header-icons" src="../assets/profileView/invitePongIcon.png" alt="Image loading error">
       <div id="chat-view-header-subject-container">
-        <h5 id="chat-view-header-subject">group: barely-a-group
-          
-        </h5>
+        <h5 id="chat-view-header-subject"></h5>
         <img id="chat-view-header-online-icon" src="../assets/onlineIcon.png" alt="error loading image">
       </div>
       <img id="chat-view-header-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
@@ -54,91 +32,40 @@
     <!-- Messages -->
     <div id="chat-view-messages-container">
 
+      <!-- Sent message Template -->
+      <template id="chat-view-sent-message-template">
+        <div class="chat-view-sent-message-container">
+          <div class="chat-view-messages-message-box">
+          </div>
+          <span class="chat-view-messages-message-time-stamp"></span>
+        </div>
+      </template>
 
-      <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-      <div class="chat-view-sent-message-container">
-        <div class="chat-view-messages-message-box">
-          niceee
+      <!-- Incoming message Template -->
+      <template id="chat-view-incoming-message-template">
+        <div class="chat-view-incoming-message-container">
+          <span class="chat-view-messages-message-sender"></span>
+          <div class="chat-view-messages-message-box">
+          </div>
+          <span class="chat-view-messages-message-time-stamp"></span>
         </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">rajh</span>
-        <div class="chat-view-messages-message-box">
-          Os Lusíadas é uma obra de poesia épica do escritor português Luís Vaz de Camões, a primeira epopeia portuguesa publicada em versão impressa. Provavelmente iniciada em 1556 e concluída em 1571, foi publicada em Lisboa em 12 de março de 1572,[1][2] no período literário do Classicismo, ou Renascimento tardio, três anos após o regresso do autor do Oriente, via Moçambique. 
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-sent-message-container">
-        <div class="chat-view-messages-message-box">
-          sure
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">rajh</span>
-        <div class="chat-view-messages-message-box">
-          You guys wanna hear about the portuguese epic poem Lusíadas?
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">ale</span>
-        <div class="chat-view-messages-message-box">
-          how is it going guys?
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">anatolii</span>
-        <div class="chat-view-messages-message-box">
-          gay
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-sent-message-container">
-        <div class="chat-view-messages-message-box">
-          sup?
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">rajh</span>
-        <div class="chat-view-messages-message-box">
-          whatsup?
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-overlords-message-container">
-        <div class="chat-view-messages-message-overlords-box">
-          <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>@alex has started a tournament in this group
-          <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button>
-        </div>
-
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- . -->
-      <div class="chat-view-incoming-message-container">
-        <span class="chat-view-messages-message-sender">alex</span>
-        <div class="chat-view-messages-message-box">
-          whats up guys? :D<br>I created this chat for us to play!
-        </div>
-        <span class="chat-view-messages-message-time-stamp">5pm 12-07-1956</span>
-      </div>
-      <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+      </template>
       
+      <!-- Overlords message Template -->
+      <template id="chat-view-overlords-message-template">
+        <div class="chat-view-incoming-message-container">
+          <div class="chat-view-messages-message-overlords-box">
+            <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>
+            <span></span>
+            <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button>
+          </div>
+          <span class="chat-view-messages-message-time-stamp"></span>
+        </div>
+      </template>
     </div>
     <!-- Text field -->
     <div id="chat-view-text-field-container">
-      <text-field id="chat-view-text-field" width="96" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
+      <text-field id="chat-view-text-field" width="96" clear="true" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
     </div>
   </div>
     
@@ -171,6 +98,37 @@
     align-self: center;
     border:  3px solid  black;
     background-color: #EFE7D3;
+  }
+
+  .chat-view-conversation-card:hover {
+    background-color: #DFD7C3;
+    cursor: pointer;
+  }
+  .chat-view-conversation-card:active {
+    background-color: #CFC7B3;
+    cursor: pointer;
+  }
+
+  .chat-view-conversation-card-highlighted {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 95%;
+    height: 17%;
+    margin: 1% 0%;
+    align-self: center;
+    border:  3px solid  black;
+    background-color: black;
+    color: white;
+  }
+
+  .chat-view-conversation-card-highlighted:hover {
+    background-color: #101010;
+    cursor: pointer;
+  }
+  .chat-view-conversation-card-highlighted:active {
+    background-color: #202020;
+    cursor: pointer;
   }
   
   .chat-view-conversation-card-avatar {

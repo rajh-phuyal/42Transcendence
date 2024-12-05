@@ -6,6 +6,7 @@ import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -119,7 +120,7 @@ export default {
 
         blackout() {
 
-            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right")
+            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right");
             for (let element of elements) {
                 element.style.backgroundColor = "black";
             }
@@ -273,6 +274,7 @@ export default {
         },
 
         submitNewPassword() {
+
             const oldPassword = this.domManip.$id("edit-profile-modal-password-change-input-old-password").value;
             const newPassword = this.domManip.$id("edit-profile-modal-password-change-input-new-password").value;
             const repeatPassword = this.domManip.$id("edit-profile-modal-password-change-input-repeat-password").value;
@@ -310,8 +312,30 @@ export default {
             });
         },
 
+        createConversation() {
+            const message = this.domManip.$id("new-chat-modal-textarea").value;
+            this.hideModal("new-chat-modal");
+            call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message}).then(data => {
+                $callToast("success", data.message);
+                router(`/profile`, {id: this.result.id});
+            })
+
+            
+        },
+
+        openChatModal() {
+            let modalElement = this.domManip.$id("new-chat-modal");
+            const modal = new bootstrap.Modal(modalElement);
+            this.domManip.$id("new-chat-modal-new-chat-text").textContent = translate('profile', "createNewConversation") + this.result.username;
+            modal.show();
+        },
+
         messageMethod() {
-            router("/chat");
+
+            if (this.result.chatId)
+                router(`/chat`, {id: this.result.chatId});
+            else
+                this.openChatModal();
         },
 
         logoutMethod() {
@@ -400,31 +424,16 @@ export default {
         populateFriendList() {
             const mainDiv = this.domManip.$id("friends-list-modal-list");
             for (let element of this.friendList){
-                // Element
-                const elementDiv = document.createElement('div')
-                elementDiv.className = "friends-list-modal-list-element";
+                const container = this.domManip.$id("friends-list-modal-list-element-template").content.cloneNode(true);
+                const elementDiv = container.querySelector(".friends-list-modal-list-element");
+                
                 elementDiv.setAttribute("user-id", element.id);
                 elementDiv.setAttribute("id", "friends-list-modal-list-element-user-" + element.username);
 
-                // Avatar
-                const avatar = document.createElement('img')
-                avatar.className = "friends-list-modal-list-element-image";
-                avatar.src = window.origin + '/media/avatars/' + element.avatarUrl;
-                elementDiv.appendChild(avatar);
-
-                // Username
-                const username = document.createElement('h3')
-                username.className = "friends-list-modal-list-element-username";
-                username.textContent = element.username;
-                elementDiv.appendChild(username);
-
-                // Friendship status
-                const frienshipStatusAvatar = document.createElement('img')
-                frienshipStatusAvatar.className = "friends-list-modal-list-element-image";
-                frienshipStatusAvatar.src = this.buttonSettings[element.status].path;
-                elementDiv.appendChild(frienshipStatusAvatar);
-
-                mainDiv.appendChild(elementDiv)
+                container.querySelector("#friends-list-modal-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatarUrl;
+                container.querySelector(".friends-list-modal-list-element-username").textContent = element.username;
+                container.querySelector("#friends-list-modal-list-element-friendship-image").src = this.buttonSettings[element.status].path;
+                mainDiv.appendChild(container)
                 this.domManip.$on(elementDiv, "click", this.clickFriendCard);
             }
         },
@@ -529,6 +538,8 @@ export default {
             this.domManip.$off(element, "click", this.changeBlockMethod);
             element = this.domManip.$id("friendship-modal-cancel-button");
             this.domManip.$off(element, "click", this.cancelButton);
+            element = this.domManip.$id("new-chat-modal-create-button");
+            this.domManip.$off(element, "click", this.createConversation);
             element = this.domManip.$id("button-bottom-right");
             this.domManip.$off(element, "click", this.openFriendList);
             element = this.domManip.$id("friends-list-modal-search-bar-button");
@@ -594,6 +605,8 @@ export default {
                 this.domManip.$on(element, "click", this.changeBlockMethod);
                 element = this.domManip.$id("friendship-modal-cancel-button");
                 this.domManip.$on(element, "click", this.cancelButton);
+                element = this.domManip.$id("new-chat-modal-create-button");
+                this.domManip.$on(element, "click", this.createConversation);
                 element = this.domManip.$id("button-bottom-right");
                 this.domManip.$on(element, "click", this.openFriendList);
                 element = this.domManip.$id("friends-list-modal-search-bar-button");

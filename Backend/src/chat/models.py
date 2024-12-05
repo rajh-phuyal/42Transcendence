@@ -19,6 +19,7 @@ class ConversationMember(models.Model):
     # The ForeignKey of django adds a _id suffix to the field name so chat becomes chat_id
     user = models.ForeignKey('user.User', on_delete=models.CASCADE)
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='members')
+    unread_counter = models.IntegerField(default=0)
 
     #def __str__(self):
     #    return f'{self.user_id.username} in {self.chat_id.name}'
