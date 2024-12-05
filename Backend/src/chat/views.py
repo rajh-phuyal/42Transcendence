@@ -207,49 +207,51 @@ class CreateConversationView(BaseAuthenticatedView):
             other_user = User.objects.get(id=other_user_id)
 
             # Check if the conversation already exists
-            matching_chat_ids = set(
-                ConversationMember.objects.filter(user=user, conversation__is_group_conversation=False).values_list('id', flat=True)
-            ).intersection(
-                ConversationMember.objects.filter(user=other_user, conversation__is_group_conversation=False).values_list('id', flat=True)
-            )
+            user_conversations = ConversationMember.objects.filter(
+                user=user.id,
+                conversation__is_group_conversation=False,
+            ).values_list('conversation_id', flat=True)
 
-            # conversation_members = ConversationMember.objects.filter(Q(user=user) | Q(user=other_user),conversation__is_group_conversation=False)
-            # Get the conversation_id for user and other_user
-            # conversation_ids = conversation_members.values_list('id', flat=True)
+            other_user_conversations = ConversationMember.objects.filter(
+                user=other_user.id,
+                conversation__is_group_conversation=False
+            ).values_list('conversation_id', flat=True)
 
-            # Filter again to ensure that only conversation_id appearing twice (one for user, one for other_user) are retained
-            # matching_conversation_ids = [
-            #     id for id in conversation_ids if conversation_ids.count(id) == 2
-            # ]
-            if matching_chat_ids:
-                return success_response(_('Conversation already exists'), **{'conversation_id': matching_chat_ids[0]})
+            common_conversations = set(user_conversations).intersection(other_user_conversations)
+
+            if common_conversations:
+                conversation_id = common_conversations.pop()
+                return success_response(_('Conversation already exists'), **{'conversation_id': conversation_id})
         elif len(userIds) > 1:
+            # TODO: #204
+            error_response(_("Group chats are not supported yet"), status_code=400)
             # A group conversation
-            if not conversation_name:
-                return error_response(_("No 'name' provided"), status_code=400)
-            is_group_conversation = True
-        
-        #TODO: issue 195
+            #if not conversation_name:
+            #    return error_response(_("No 'name' provided"), status_code=400)
+            #is_group_conversation = True
         
         # Start a transaction to make sure all database operations happen together
         with transaction.atomic():
             # Create the Conversation
             new_conversation = Conversation.objects.create(name=conversation_name, is_group_conversation=is_group_conversation, is_editable=True)
             ConversationMember.objects.create(user=user, conversation=new_conversation)
-            if is_group_conversation:
-                for userId in userIds:
-                    other_user = User.objects.get(id=userId)
-                    ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
-            else:
-                ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
+            # TODO: #204
+            #if is_group_conversation:
+            #    for userId in userIds:
+            #        other_user = User.objects.get(id=userId)
+            #        ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
+            #else:
+            ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
             initialMessageObject = Message.objects.create(user=user, conversation=new_conversation, content=initialMessage)
 
-        # Adding the conversation to the user's WebSocket groups
-        channel_name_user =  cache.get(f'user_channel_{user.id}', None)
-        channel_name_other_user =  cache.get(f'user_channel_{other_user.id}', None)
+        # Adding the conversation to the user's WebSocket groups (if they are logged in)
         group_name = f"conversation_{new_conversation.id}"
-        async_to_sync(channel_layer.group_add)(group_name, channel_name_user)
-        async_to_sync(channel_layer.group_add)(group_name, channel_name_other_user)
+        channel_name_user =  cache.get(f'user_channel_{user.id}', None)
+        if channel_name_user:
+            async_to_sync(channel_layer.group_add)(group_name, channel_name_user)
+        channel_name_other_user =  cache.get(f'user_channel_{other_user.id}', None)
+        if channel_name_other_user:
+            async_to_sync(channel_layer.group_add)(group_name, channel_name_other_user)
         async_to_sync(channel_layer.group_send)(
             group_name,
             {
