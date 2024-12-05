@@ -1,4 +1,5 @@
 // abstract out the fetch api to make it easier to call the api
+import { translate } from '../locale/locale.js';
 import $callToast from './callToast.js';
 
 async function call(url, method, data = null, showToast = true) {
@@ -28,11 +29,11 @@ async function call(url, method, data = null, showToast = true) {
             errorMessage = errorData.message;
         } catch (e) {
             // If parsing the JSON fails, fall back to a generic message
-            errorMessage = 'Request failed';
+            errorMessage = translate("global:call", "requestFailed");
         }
 
         if (!errorMessage)
-            errorMessage = 'Request failed';
+            errorMessage = translate("global:call", "requestFailed");
 
         if (showToast) {
             $callToast("error", errorMessage)

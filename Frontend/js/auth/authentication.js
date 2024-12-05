@@ -68,35 +68,6 @@ class Auth {
         }
     }
 
-    /**
-     * Verify the JWT token
-     * @returns {boolean} True if the token is valid, false otherwise
-     */
-    async verifyJWTToken() {
-        try {
-            const response = await call('auth/verify/', 'GET');
-
-            if (!response.isAuthenticated) {
-                // Token is expired, try to refresh
-                const refreshed = await this.refreshToken();
-                if (refreshed) {
-                    $store.commit('setIsAuthenticated', true);
-                    console.log("Reconnecting WebSocket");
-                    WebSocketManager.reconnect();
-                    return true;
-                }
-
-                throw new Error("Token is expired and refresh failed");
-            }
-
-            return response.isAuthenticated;
-        } catch (e) {
-            console.error('Error verifying token:', e);
-            this.logout();
-            return false;
-        }
-    }
-
     authenticate(username, password) {
         return call('auth/login/', 'POST',
             { username: username, password: password }

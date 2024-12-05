@@ -16,5 +16,15 @@
             "uk-UA": "З'єднання не встановлено. Але пам'ятайте, що Overlords все ще спостерігають...",
             "ne-NP": "जोड़ी समाप्त भएको छ। के भन्न छ।"
         }
+    },
+    "call": {
+        "requestFailed": {
+            "en-US": "Request failed",
+            "pt-PT": "Pedido falhou",
+            "pt-BR": "Pedido falhou",
+            "de-DE": "Anfrage fehlgeschlagen",
+            "uk-UA": "Запит не вдався",
+            "ne-NP": "अनुरोध समाप्त भएको छ।"
+        }
     }
 }
