@@ -31,8 +31,15 @@ $store.dispatch('loadTranslations', routes.map(route => route.view));
 
 
 // go to path only after the translations are loaded
-$store.addMutationListener('setTranslations', (state) => {
-    router(window.location.pathname);
+$store.addMutationListener('setTranslations', () => {
+    // get the current route and its params
+    const currentRoute = window.location.pathname;
+    const currentParams = window.location.search;
+
+    // make the current params an object
+    const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
+
+    router(currentRoute, currentParamsObject);
 
     // set the loading to false
     setViewLoading(false);
