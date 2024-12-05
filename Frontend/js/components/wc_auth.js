@@ -1,5 +1,5 @@
 import $auth from '../auth/authentication.js';
-import $nav from '../abstracts/navigationInit.js';
+import $nav from '../abstracts/nav.js';
 import $store from '../store/store.js';
 import $syncer from '../sync/Syncer.js';
 import router from '../navigation/router.js';
@@ -194,8 +194,8 @@ class AuthCard extends HTMLElement {
                 username: response.username
             });
 
-            // reinitializes the nav bar
-            $nav();
+            // update the profile route params
+            $nav({ path: "/profile", params: { id: response.userId } });
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();

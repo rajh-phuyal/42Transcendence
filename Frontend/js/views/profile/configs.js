@@ -54,6 +54,7 @@ export default {
 
     methods: {
         insertAvatar() {
+            console.log("Inserting avatar", this);
             const element = this.domManip.$id("avatar");
             element.src = window.origin + '/media/avatars/' + this.result.avatarUrl;
         },
@@ -541,7 +542,6 @@ export default {
         },
 
         afterDomInsertion() {
-            console.log(this.routeParams);
             call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log(res);

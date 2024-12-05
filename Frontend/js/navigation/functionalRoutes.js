@@ -1,3 +1,5 @@
+import { routes } from "../navigation/routes.js";
+
 const functionalRoutes = [
     // template for adding a functional route
     // {
@@ -13,6 +15,12 @@ const functionalRoutes = [
         execute: async function () {
             const success = await this.$auth.logout();
             if (success) {
+                // remove this to load the translations again
+                this.$store.removeMutationListener("setTranslations");
+
+                // load the translations again
+                this.$store.dispatch('loadTranslations', routes.map(route => route.view));
+
                 this.router("/auth");
             }
         },

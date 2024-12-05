@@ -1,4 +1,4 @@
-import $nav from './abstracts/navigationInit.js';
+import $nav from './abstracts/nav.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';

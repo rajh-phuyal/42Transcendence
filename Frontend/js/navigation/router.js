@@ -35,11 +35,13 @@ const objectToBind = (config, params = null) => {
         binder[key] = value;
     }
 
+    binder = { ...simpleObjectToBind(), ...binder, routeParams: params };
+
     for (const [key, value] of Object.entries(methods || {})) {
         binder[key] = value.bind(binder);
     }
 
-    return { ...simpleObjectToBind(), ...binder, routeParams: params };
+    return binder;
 }
 
 async function getViewHooks(viewName) {

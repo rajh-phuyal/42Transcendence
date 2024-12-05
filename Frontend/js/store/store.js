@@ -9,10 +9,12 @@ class Store {
         this.mutations = mutations;
         this.actions = actions;
         this.mutationListeners = [];
+        this._sessionActions = {};
         this.initializer();
     }
 
     initializer() {
+        console.log("Initializing store: initializer");
         this.state = { ...this.initialState };
 
         // pull from local storage
@@ -29,6 +31,10 @@ class Store {
             mutationName: mutationName,
             action: action
         });
+    }
+
+    removeMutationListener(mutationName) {
+        this.mutationListeners = _.filter(this.mutationListeners, listener => listener.mutationName !== mutationName);
     }
 
     notifyListeners(mutationName, newState) {
@@ -57,8 +63,10 @@ class Store {
         $setLocal("store", JSON.stringify(savedObject));
     }
 
-    dispatch(actionName, payload) {
-        this.actions[actionName](this, payload);
+    async dispatch(actionName, payload) {
+        this._sessionActions[actionName] = payload;
+
+        await this.actions[actionName](this, payload);
     }
 
     clear() {
