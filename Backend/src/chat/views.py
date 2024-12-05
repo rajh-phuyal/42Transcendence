@@ -205,7 +205,10 @@ class CreateConversationView(BaseAuthenticatedView):
             # A PM conversation
             is_group_conversation = False
             other_user_id = userIds[0]
-            other_user = User.objects.get(id=other_user_id)
+            try:
+                other_user = User.objects.get(id=other_user_id)
+            except User.DoesNotExist:
+                return error_response(_("User not found"), status_code=404)
 
             # Check if the conversation already exists
             user_conversations = ConversationMember.objects.filter(
