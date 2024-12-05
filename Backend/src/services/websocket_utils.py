@@ -32,7 +32,7 @@ class WebSocketMessageHandlers:
 
     @staticmethod
     async def handle_relationship(consumer, user, message):
-        logging.info("Received relationship message - TODO: implement")
+        logging.info("Received relationship message - TODO: issue #206 implement")
 
 # To send by consumer
 async def send_response_message(client_consumer, type, message):
@@ -46,7 +46,6 @@ async def send_response_message(client_consumer, type, message):
     await client_consumer.send(text_data=json_message)
 
 # To send by user id
-# TODO: see if we can use consumer.send instead
 async def send_message_to_user(user_id, **message):
     channel_name =  cache.get(f'user_channel_{user_id}', None)
     if channel_name:

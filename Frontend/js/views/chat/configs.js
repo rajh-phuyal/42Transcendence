@@ -354,7 +354,7 @@ export default {
         // Open WebSocket after the DOM is inserted
         async afterDomInsertion() {
 
-            // TODO: when params are not defined the routeParam.id crashes
+            // TODO: issue #208 when params are not defined the routeParam.id crashes
             //          maybe the routeParam.id should be defined if no params are set.
             WebSocketManager.setCurrentRoute("chat");
             this.hideChatElements();

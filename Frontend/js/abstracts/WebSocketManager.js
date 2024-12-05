@@ -10,23 +10,7 @@ class WebSocketManager {
         this.socket = null;
         this.currentRoute = undefined;
         this.currentConversation = undefined;
-
-        // this.routeMethods = {
-        //     "chat": function() {
-                
-                
-        //         // const container = $id("chat-view-messages-container");
-        //         // const newMessage = createMessage(message);
-        //         // container.insertBefore(newMessage, container.firstChild);
-                
-        //         // TODO: set the message as seen
-                
-        //     },
-        // }
     }
-
-    
-
 
     // Connect to WebSocket with the provided token
     connect(token) {
@@ -101,17 +85,10 @@ class WebSocketManager {
                 return ;
         }
 
-        if (!message.toastMessage) {
-            console.log(message);
-            $callToast("error", "no toast message delivered");
-        }
-        else
-            $callToast("success", message.toastMessage);
-
-        // TODO: call toast for when the message is recieved in a different route
+        console.log("FE doen't know what to do with this type:", message);
     }
     
-    // Disconnect from WebSocket TODO: we need to be able to specify which connection to close
+    // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
             this.socket.close();
@@ -131,21 +108,13 @@ class WebSocketManager {
             if (message.userId != $store.fromState("user").id)
                 this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
         }
-
-        // TODO: push the card to the top of the conversation list
         $id("chat-view-conversations-container").prepend($id("chat-view-conversation-card-" +  message.conversationId));
-
     }
 
     updateConversationBadge(message) {
         const element = $id("chat-view-conversation-card-" +  message.id);
-        //console.log("element", element);
         const seenCouterContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
-        //console.log("container", seenCouterContainer);
         seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.value;
-        //console.log("container", seenCouterContainer);
-        //console.log("updating to ", message.value);
-
         if (message.value == "0")
             seenCouterContainer.style.display = "none";
         else 
@@ -185,7 +154,7 @@ class WebSocketManager {
         let conversationsContainer = $id('chat-view-conversations-container');
         console.log("conversationsContainer", conversationsContainer);
         conversationsContainer.prepend(conversation);
-        // TODO: This doens't work sinc the router is not getting the chat it same bug than for profile
+        // TODO: issue #121 This doens't work sinc the router is not getting the chat it same bug than for profile
         $on(container, "click", () => router("chat", {id: message.conversationId}))
     }
 

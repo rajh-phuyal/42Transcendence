@@ -124,6 +124,6 @@ class GameConsumer(CustomWebSocketLogic):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
         if self.message_type == 'game':
-            logging.info("Received game message - TODO: implement")
+            logging.info("Received game message - TODO: implement issue #205")
         else:
             raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
