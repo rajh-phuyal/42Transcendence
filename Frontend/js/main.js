@@ -6,7 +6,7 @@ import { routes } from './navigation/routes.js';
 import $store from './store/store.js';
 import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
-
+import { translate } from './locale/locale.js';
 setViewLoading(true);
 
 try {
@@ -43,14 +43,14 @@ $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
         console.log("Web socket is connected!");
         if (setInervalId) {
-            $callToast("success", "Connection re-established. What ever...")
+            $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
         console.log("Web socket is disconnected!");
         if (!setInervalId && $store.fromState('isAuthenticated')) {
-            $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
+            $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {
                 WebSocketManager.connect();
             }, 2000);

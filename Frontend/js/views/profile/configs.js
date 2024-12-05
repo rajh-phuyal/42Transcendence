@@ -303,6 +303,7 @@ export default {
             }).then(data => {
                 this.hideModal("edit-profile-modal");
                 $callToast("success", data.message);
+                this.$store.commit("setLocale", language);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
