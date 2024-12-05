@@ -1,15 +1,15 @@
-from asgiref.sync import sync_to_async  # Needed to run ORM queries in async functions
+from asgiref.sync import sync_to_async
 import json
 from django.utils import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.tokens import AccessToken
-from django.contrib.auth.models import AnonymousUser #TODO: delete later!
+from django.contrib.auth.models import AnonymousUser
 import logging
 from django.core.cache import cache
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
-from services.chat_service import setup_all_conversations, broadcast_message, send_total_unread_counter, send_conversation_unread_counter
+from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.websocket_utils import WebSocketMessageHandlers
 
 # Basic Connect an Disconnet functions for the WebSockets
@@ -92,16 +92,15 @@ class MainConsumer(CustomWebSocketLogic):
         # Setting the user
         user = self.scope['user']
         # Process the message
-        WebSocketMessageHandlers[f"handle_{self.message_type}"](self, user, text_data)
+        await WebSocketMessageHandlers()[f"{self.message_type}"](self, user, text_data)
 
-
-    
     async def chat_message(self, event):
-        # Send the message back to the WebSocket of the user
         await self.send(text_data=json.dumps({**event}))
     
     async def update_badge(self, event):
-        # Send the message back to the WebSocket of the user
+        await self.send(text_data=json.dumps({**event}))
+
+    async def new_conversation(self, event):
         await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game

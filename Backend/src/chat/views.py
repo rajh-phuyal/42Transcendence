@@ -1,6 +1,6 @@
-import asyncio
-from services.chat_service import send_message_to_user
+from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 from django.db.models import Q
+from django.db.models import Sum
 from core.base_views import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
@@ -11,15 +11,20 @@ from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from rest_framework import status
 from django.utils import timezone
-from .utils import mark_all_messages_as_seen
+from .utils import mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException
 from rest_framework import status
 from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked  
 from user.constants import USER_ID_OVERLOARDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
+from asgiref.sync import async_to_sync
+
 import logging
 from asgiref.sync import sync_to_async
+from channels.layers import get_channel_layer
+channel_layer = get_channel_layer()
+from services.websocket_utils import send_message_to_user_sync
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -39,6 +44,7 @@ class LoadConversationsView(BaseAuthenticatedView):
 class LoadConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request, conversation_id=None):
+        from services.websocket_utils import send_message_to_user
         user = request.user
         msgid = int(request.GET.get('msgid', 0))
 
@@ -69,19 +75,10 @@ class LoadConversationView(BaseAuthenticatedView):
 
         # Mark as seen
         if not is_blocking:
-            mark_all_messages_as_seen(user.id, conversation.id)
+            mark_all_messages_as_seen_sync(user.id, conversation.id)
 
-        # Send Websocket message to udpate the badge count
-        logging.info(f"Sending update badge message for conversation {conversation.id}")
-        msg_data = {
-            "type": "update_badge",
-            "messageType": "updateBadge",
-            "what": "conversation",
-            "id": conversation.id,
-            "value": 0
-        }
-        asyncio.run(send_message_to_user(user.id, **msg_data))
-        logging.info(f"Sending update badge message for conversation {conversation.id} done")
+        new_unread_counter = ConversationMember.objects.get(conversation=conversation, user=user).unread_counter
+        new_unread_counter_total = ConversationMember.objects.filter(user=user).aggregate(total_unread_counter=Sum('unread_counter'))['total_unread_counter']
 
         # Serialize messages
         serialized_messages = MessageSerializer(messages_with_separator, many=True)
@@ -91,7 +88,16 @@ class LoadConversationView(BaseAuthenticatedView):
         conversation_name = self.get_conversation_name(conversation, other_user)
 
         # Prepare the response
-        response_data = self.prepare_response(conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name)
+        response_data = self.prepare_response(conversation,
+                                              user, 
+                                              serialized_messages, 
+                                              other_user_online,
+                                              is_blocking,
+                                              is_blocked,
+                                              conversation_avatar,
+                                              conversation_name,
+                                              new_unread_counter,
+                                              new_unread_counter_total)
 
         return success_response(_('Messages loaded successfully'), **response_data)
 
@@ -162,7 +168,7 @@ class LoadConversationView(BaseAuthenticatedView):
             return conversation.name
         return other_user.username
 
-    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name):
+    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
         members = conversation.members.all()
         member_ids = members.values_list('id', flat=True)
 
@@ -176,6 +182,8 @@ class LoadConversationView(BaseAuthenticatedView):
             "conversationAvatar": conversation_avatar,
             "online": other_user_online,
             "userIds": list(member_ids),
+            "conversationUnreadCounter": new_unread_counter,
+            "totalUnreadCounter": new_unread_counter_total,
             "data": serialized_messages.data,
         }
 
@@ -231,9 +239,32 @@ class CreateConversationView(BaseAuthenticatedView):
             if is_group_conversation:
                 for userId in userIds:
                     other_user = User.objects.get(id=userId)
-                    ConversationMember.objects.create(user=other_user, conversation=new_conversation)
+                    ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
             else:
-                ConversationMember.objects.create(user=other_user, conversation=new_conversation)
-            Message.objects.create(user=user, conversation=new_conversation, content=initialMessage)
+                ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
+            initialMessageObject = Message.objects.create(user=user, conversation=new_conversation, content=initialMessage)
 
+        # Adding the conversation to the user's WebSocket groups
+        channel_name_user =  cache.get(f'user_channel_{user.id}', None)
+        channel_name_other_user =  cache.get(f'user_channel_{other_user.id}', None)
+        group_name = f"conversation_{new_conversation.id}"
+        async_to_sync(channel_layer.group_add)(group_name, channel_name_user)
+        async_to_sync(channel_layer.group_add)(group_name, channel_name_other_user)
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                "messageType": "newConversation",   
+                "type": "new_conversation",
+                "conversationId": new_conversation.id,
+                "isGroupChat": new_conversation.is_group_conversation,
+                "isEditable": new_conversation.is_editable,
+                "conversationName": user.username,
+                "conversationAvatar": user.avatar_path,
+                "unreadCounter": 1,
+                "online": True,
+                "lastUpdate": initialMessageObject.created_at.isoformat(),
+                "isEmpty": False
+            })
+        async_to_sync(send_total_unread_counter)(other_user.id)
+        async_to_sync(send_conversation_unread_counter)(other_user.id, new_conversation.id)
         return success_response(_('Conversation created successfully'), **{'conversation_id': new_conversation.id})

@@ -210,8 +210,22 @@ export default {
             this.higlightCard(element);
             this.loadConversation(element.getAttribute("conversation_id"));
         },
+        updateConversationUnreadCounter(conversationId, value) {
+            let element = this.domManip.$id("chat-view-conversation-card-" +  conversationId);
+            let unseenContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
+            if (value == 0)
+                unseenContainer.style.display = "none";
+            else {
+                unseenContainer.style = "flex";
+                unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = value;
+            }
+        },
         loadConversation(conversationId) {
             call(`chat/load/conversation/${conversationId}/messages/?msgid=0`, 'PUT').then(data => {
+                // Update badges
+                this.domManip.$id("chat-nav-badge").textContent = data.totalUnreadCounter || "";
+                this.updateConversationUnreadCounter(conversationId, data.conversationUnreadCounter);
+                this.domManip.$id("chat-view-conversation-card-" +  conversationId).querySelector(".chat-view-conversation-card-unseen-counter").textContent = data.unreadCounter || "";
                 const temp = data.data.pop();
                 this.lastMessageId= temp.messageId;
                 data.data.push(temp);

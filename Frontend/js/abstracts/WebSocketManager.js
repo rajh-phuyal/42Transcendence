@@ -1,7 +1,9 @@
 import $store from '../store/store.js';
 import { createMessage } from '../views/chat/methods.js';
-import { $id } from './dollars.js';
+import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
+import router from '../navigation/router.js';
+
 
 class WebSocketManager {
     constructor() {
@@ -93,6 +95,10 @@ class WebSocketManager {
                 else if (message.what == "conversation")
                     this.updateConversationBadge(message);
                 return ;
+
+            case "newConversation":
+                this.createConversationCard(message);
+                return ;
         }
 
         if (!message.toastMessage) {
@@ -121,8 +127,9 @@ class WebSocketManager {
         if (this.currentConversation == message.conversationId) {
             $id("chat-view-messages-container").prepend(createMessage(message));
             
-            // send seen message
-            this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
+            // send seen message if it is not ur own message
+            if (message.userId != $store.fromState("user").id)
+                this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
         }
 
         // TODO: push the card to the top of the conversation list
@@ -132,12 +139,12 @@ class WebSocketManager {
 
     updateConversationBadge(message) {
         const element = $id("chat-view-conversation-card-" +  message.id);
-        console.log("element", element);
+        //console.log("element", element);
         const seenCouterContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
-        console.log("container", seenCouterContainer);
+        //console.log("container", seenCouterContainer);
         seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.value;
-        console.log("container", seenCouterContainer);
-        console.log("updating to ", message.value);
+        //console.log("container", seenCouterContainer);
+        //console.log("updating to ", message.value);
 
         if (message.value == "0")
             seenCouterContainer.style.display = "none";
@@ -146,10 +153,39 @@ class WebSocketManager {
     }
 
     updateNavBarBadge(value) {
-        if (value != 0)
-            $id("chat-nav-badge").textContent = value;
-        else
-            $id("chat-nav-badge").textContent = "";
+        $id("chat-nav-badge").textContent = value || "";
+    }
+
+    createConversationCard(message) {
+        console.log("creating conversation card for message", message);
+        let conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
+        console.log("conversation", conversation);
+        let container = conversation.querySelector(".chat-view-conversation-card");
+        console.log("container", container);
+        container.id = "chat-view-conversation-card-" +  message.conversationId; 
+        console.log("container", container);
+        container.setAttribute("conversation_id", message.conversationId);
+        container.setAttribute("last-message-time", message.lastUpdate);
+        
+        // Avatar
+        conversation.querySelector(".chat-view-conversation-card-avatar").src = window.origin + '/media/avatars/' + message.conversationAvatar;
+
+        // User
+        conversation.querySelector(".chat-view-conversation-card-username").textContent = message.conversationName;
+
+        // Seen container
+        let unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
+        console.log("unseenContainer", unseenContainer);
+        if (message.unreadCounter == 0)
+            unseenContainer.style.display = "none";
+        else {
+            unseenContainer.style = "flex";
+            unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.unreadCounter;
+        }
+        let conversationsContainer = $id('chat-view-conversations-container');
+        console.log("conversationsContainer", conversationsContainer);
+        conversationsContainer.prepend(conversation);
+        $on(container, "click", () => router("chat", {id: message.conversationId}))
     }
 
     setCurrentRoute(route) {

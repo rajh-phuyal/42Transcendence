@@ -1,8 +1,9 @@
 import logging, json
 from django.core.cache import cache
 from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
-from services.chat_service import setup_all_conversations, broadcast_message, send_total_unread_counter, send_conversation_unread_counter
+from services.chat_service import broadcast_message
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class WebSocketMessageHandlers:
 
@@ -15,7 +16,7 @@ class WebSocketMessageHandlers:
 
         # If the method exists, return it, otherwise raise an error
         if callable(method):
-            return method()
+            return method
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
     
     @staticmethod
@@ -32,11 +33,6 @@ class WebSocketMessageHandlers:
     @staticmethod
     async def handle_relationship(consumer, user, message):
         logging.info("Received relationship message - TODO: implement")
-
-
-
-
-
 
 # To send by consumer
 async def send_response_message(client_consumer, type, message):
@@ -59,3 +55,7 @@ async def send_message_to_user(user_id, **message):
         await channel_layer.send(channel_name, message)
     else:
         logging.warning(f"No active WebSocket connection found for user ID {user_id}.")
+
+@async_to_sync
+async def send_message_to_user_sync(user_id, **message):
+    await send_message_to_user(user_id, **message)
