@@ -68,7 +68,8 @@ class LoadConversationView(BaseAuthenticatedView):
         # Blackout messages if blocking
         if is_blocking:
             for message in messages:
-                message.content = _('**This message is hidden because you are blocking the user**')
+                if message.user != user:
+                    message.content = _('**This message is hidden because you are blocking the user**')
 
         # Add separator messages if needed
         messages_with_separator = self.add_separator_message(messages, last_seen_msg, unseen_messages)

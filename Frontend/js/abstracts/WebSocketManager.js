@@ -83,6 +83,10 @@ class WebSocketManager {
             case "newConversation":
                 this.createConversationCard(message);
                 return ;
+
+            case "error":
+                $callToast("error", message.message);
+                return ;
         }
 
         console.log("FE doen't know what to do with this type:", message);
