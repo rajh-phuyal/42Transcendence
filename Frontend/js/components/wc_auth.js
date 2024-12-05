@@ -195,7 +195,7 @@ class AuthCard extends HTMLElement {
             });
 
             // update the profile route params
-            $nav({ path: "/profile", params: { id: response.userId } });
+            $nav({ "/profile": { id: response.userId } });
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();

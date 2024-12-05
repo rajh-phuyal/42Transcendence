@@ -5,7 +5,6 @@ import { $id } from './dollars.js';
 // navigation bar helpers
 function updateRouteParams(navigationPathParams, navigationBarMap) {
     for (const [path, params] of Object.entries(navigationPathParams)) {
-        // find the route
         let route = navigationBarMap.find(route => route.path === path);
         if (!route) continue;
 
@@ -18,7 +17,6 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
         // update the route params
         route.params = params;
 
-        console.log("Adding new handler to", route.path, params);
         // add the new handler
         navbarObject?.addEventListener('click', () => router(route.path, params));
     }
@@ -34,9 +32,7 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
  * }
  */
 export default function $nav(navigationPathParams = null) {
-    console.log("Initializing navigationnnnnnn", $store.state);
-
-    // initilize the nav bar
+    // nav bar route to Dom elements map
     const navigationBarMap = [
         { id: 'home-nav', path: '/home' },
         { id: 'game-nav', path: '/game' },

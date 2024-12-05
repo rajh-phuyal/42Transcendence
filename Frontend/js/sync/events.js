@@ -29,7 +29,7 @@ export default {
             if ($id('router-view').dataset.view === "auth") {
                 $store.initializer();
 
-                $nav({ path: "/profile", params: { id: $store.fromState("user").id } });
+                $nav({ "/profile": { id: $store.fromState("user").id } });
 
                 // show the nav
                 $id('navigator').style.display = 'flex';
