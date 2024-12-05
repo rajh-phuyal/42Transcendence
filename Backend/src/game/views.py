@@ -69,3 +69,8 @@ class CreateGameView(BaseAuthenticatedView):
             game_member_opponent.save()
 
         return success_response(_('Game created successfully'), **{'game_id': game.id})
+
+class DeleteGameView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def delete(self, request):
+        error_response('Not implemented yet')
