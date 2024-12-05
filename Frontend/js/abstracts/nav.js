@@ -51,7 +51,10 @@ export default function $nav(navigationPathParams = null) {
     }
 
     // routes with params
-    navigationBarMap.find(route => route.path === '/profile').params = { id: $store.fromState("user").id };
+    const routeFinder = (path) => navigationBarMap.find(route => route.path === path);
+
+    routeFinder('/profile').params = { id: $store.fromState("user").id };
+    routeFinder('/chat').params = { id: undefined };
 
     // add the handlers to the navbar objects
     for (const route of navigationBarMap) {
