@@ -1,6 +1,7 @@
-import call from '../../abstracts/call.js'
-import { translate } from '../../locale/locale.js'
+import call from '../../abstracts/call.js';
+import { translate } from '../../locale/locale.js';
 import { createMessage } from './methods.js';
+import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 export default {
     attributes: {
@@ -176,19 +177,17 @@ export default {
             
             const container = this.domManip.$id("chat-view-messages-container");
 
-
-            let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-incoming-message-container")
-
-            for (let element of toDelete)
-                element.remove();
+            this.removeConversationMessages();
             
             for (let element of data) 
                 container.appendChild(createMessage(element));
         },
-
+        
         removeConversationMessages() {
-            const container = this.domManip.$id("chat-view-messages-container");
-            container.innerHTML = "";
+            let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-overlords-message-container")
+    
+            for (let element of toDelete)
+                element.remove();
         },
 
         higlightCard(element) {
@@ -210,21 +209,38 @@ export default {
 
             this.higlightCard(element);
             this.loadConversation(element.getAttribute("conversation_id"));
-        }
-        ,
+        },
+        updateConversationUnreadCounter(conversationId, value) {
+            let element = this.domManip.$id("chat-view-conversation-card-" +  conversationId);
+            let unseenContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
+            if (value == 0)
+                unseenContainer.style.display = "none";
+            else {
+                unseenContainer.style = "flex";
+                unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = value;
+            }
+        },
         loadConversation(conversationId) {
             call(`chat/load/conversation/${conversationId}/messages/?msgid=0`, 'PUT').then(data => {
+                // Update badges
+                this.domManip.$id("chat-nav-badge").textContent = data.totalUnreadCounter || "";
+                this.updateConversationUnreadCounter(conversationId, data.conversationUnreadCounter);
+                this.domManip.$id("chat-view-conversation-card-" +  conversationId).querySelector(".chat-view-conversation-card-unseen-counter").textContent = data.unreadCounter || "";
                 const temp = data.data.pop();
                 this.lastMessageId= temp.messageId;
                 data.data.push(temp);
                 this.conversationParams = data;
+                this.domManip.$id("chat-view-text-field").setAttribute("conversation-id", this.conversationParams.conversationId);
                 this.populateConversationHeader();
                 this.populateConversationMessages(data.data);
+                WebSocketManager.setCurrentConversation(this.conversationParams.conversationId);
                 this.showChatElements();
             });
         },
 
         createConversationCard(element) {
+
+            console.log("element:", element);
 
             this.conversations.push(element.conversationId);
 
@@ -245,6 +261,16 @@ export default {
             // User
             conversation.querySelector(".chat-view-conversation-card-username").textContent = element.conversationName;
 
+            // Seen container
+            const unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
+            if (element.unreadCounter == "0")
+                unseenContainer.style.display = "none";
+            else {
+                unseenContainer.style = "flex";
+                unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = element.unreadCounter;
+            }
+
+
             this.conversationsContainer.appendChild(conversation);
             this.domManip.$on(container, "click", this.conversationCallback);
         },
@@ -259,7 +285,11 @@ export default {
                 
                 for (let element of data.data)
                     this.createConversationCard(element);
+            }).then(date => {
+                
+                this.sortConversationsByTimestamp();
             })
+
             
         },
 
@@ -269,20 +299,19 @@ export default {
         },
 
         sortConversationsByTimestamp() {
-            // Get the child elements as an array
-            const conversation = Array.from(this.conversationsContainer.children);
+            const conversationsContainer = this.domManip.$id('chat-view-conversations-container');
             
-            // Sort the elements by their timestamp
-            conversation.sort((a, b) => {
+            const conversationCardsArray = Array.from(this.domManip.$queryAll(".chat-view-conversation-card, .chat-view-conversation-card-highlighted"));
+        
+            conversationCardsArray.sort((a, b) => {
                 const timestampA = new Date(a.getAttribute('last-message-time'));
                 const timestampB = new Date(b.getAttribute('last-message-time'));
-                return timestampB - timestampA; // Ascending order
+                return timestampB - timestampA; // Sort in descending order (latest first)
             });
         
-            // Re-append the elements in the sorted order
-            for (const element of conversation) {
-                this.conversationsContainer.appendChild(element); // Moves each element to the end in sorted order
-            }
+            conversationCardsArray.forEach(card => {
+                conversationsContainer.appendChild(card);
+            });
         },
 
         hideChatElements() {
@@ -312,6 +341,8 @@ export default {
             this.selectedConversation = null;
             //this.messages = [];
 
+            WebSocketManager.setCurrentRoute(undefined);
+            WebSocketManager.setCurrentConversation(undefined);
 
             this.removeConversationsEventListners();
         },
@@ -323,16 +354,17 @@ export default {
         // Open WebSocket after the DOM is inserted
         async afterDomInsertion() {
 
-            // TODO: when params are not defined the routeParam.id crashes
+            // TODO: issue #208 when params are not defined the routeParam.id crashes
             //          maybe the routeParam.id should be defined if no params are set.
+            WebSocketManager.setCurrentRoute("chat");
             this.hideChatElements();
             if (this.routeParams.id)
                 this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
 
             await this.populateConversations();
-            this.sortConversationsByTimestamp();
             
+
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");
             // const messageInput = document.getElementById("chat-message-input");
