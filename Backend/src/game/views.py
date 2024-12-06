@@ -52,4 +52,42 @@ class DeleteGameView(BaseAuthenticatedView):
         # exception in error cases
         return error_response(_('Could not delete game'))
 
-          
+class LobbyView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, id):
+        user = request.user
+        try:
+            game = Game.objects.get(id=id)
+        except Game.DoesNotExist:
+            return error_response(_("Game not found"))
+        user_member = GameMember.objects.filter(game=game, user=user).first()
+        if not user_member:
+            return error_response(_("You are not a member of this game"))
+        opponent_memeber = GameMember.objects.filter(game=game).exclude(user=user).first()
+        if not opponent_memeber:
+            return error_response(_("Opponent not found"))
+
+        response_message = {
+            'username': user_member.user.username,
+            'userAvatar': user_member.user.avatar,
+            'userPoints': user_member.points,
+            'opponentId': opponent_memeber.user.id,
+            'opponentUsername': opponent_memeber.user.username,
+            'opponentAvatar': opponent_memeber.user.avatar,
+            'opponentOnlineStatus': True,
+            'opponentScore': 0,
+            'map': 'mapName',
+            'powerups': True
+        }
+        {
+    "username": "username",
+    "userAvatar": "avatar.png",
+    "userScore": 0,
+    "opponentId": 42,
+    "opponentUsername": "username",
+    "opponentAvatar": "avatar.png",
+    "opponentOnlineStatus": true,
+    "opponentScore": 0,
+    "map":  "mapName",
+    "powerups":  true
+}
