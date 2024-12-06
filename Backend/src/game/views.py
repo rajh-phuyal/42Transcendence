@@ -66,28 +66,22 @@ class LobbyView(BaseAuthenticatedView):
         opponent_memeber = GameMember.objects.filter(game=game).exclude(user=user).first()
         if not opponent_memeber:
             return error_response(_("Opponent not found"))
-
+        if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
+            return error_response(_("Game can't be played since it's either finished or quited"))
         response_message = {
+            'gameState': game.state,
             'username': user_member.user.username,
-            'userAvatar': user_member.user.avatar,
+            'userAvatar': user_member.user.avatar_path,
             'userPoints': user_member.points,
             'opponentId': opponent_memeber.user.id,
             'opponentUsername': opponent_memeber.user.username,
-            'opponentAvatar': opponent_memeber.user.avatar,
-            'opponentOnlineStatus': True,
-            'opponentScore': 0,
-            'map': 'mapName',
-            'powerups': True
+            'opponentAvatar': opponent_memeber.user.avatar_path,
+            'opponentOnlineStatus': opponent_memeber.user.get_online_status(),
+            'opponentPoints': opponent_memeber.points,
+            'map': game.map_number,
+            'powerup_big': user_member.powerup_big,
+            'powerup_fast': user_member.powerup_fast,
+            'powerup_slow': user_member.powerup_slow
         }
-        {
-    "username": "username",
-    "userAvatar": "avatar.png",
-    "userScore": 0,
-    "opponentId": 42,
-    "opponentUsername": "username",
-    "opponentAvatar": "avatar.png",
-    "opponentOnlineStatus": true,
-    "opponentScore": 0,
-    "map":  "mapName",
-    "powerups":  true
-}
+        # TODO: open Websocket connection and send some data there
+        return success_response(_('Lobby details'), **response_message)
