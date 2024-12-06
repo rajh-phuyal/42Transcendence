@@ -1,6 +1,99 @@
+from django.db import transaction
 from django.utils import timezone
 from .models import Game, GameMember
 from django.db.models import Q
+from user.models import User
+from core.exceptions import BarelyAnException
+from user.exceptions import UserNotFound, RelationshipException, BlockingException
+from user.utils_relationship import is_blocking, are_friends
+from django.utils.translation import gettext as _
+from user.constants import USER_ID_AI
+
+def create_game(user_id, opponent_id, map_number, powerups, local_game):
+        # Check if opponent exist
+        try:
+            user = User.objects.get(id=user_id)
+            opponent = User.objects.get(id=opponent_id)
+        except User.DoesNotExist:
+            raise UserNotFound()
+        # Check if opponent isn't urself, is ur friend and not blocking you
+        if user_id == opponent_id:
+            raise BarelyAnException(_("You can't play against yourself"))
+        if not are_friends(user, opponent):
+            raise RelationshipException(_("You can only play against your friends"))
+        if is_blocking(opponent, user):
+            raise BlockingException(_("Opponent is blocking you"))
+        # Check if opponent is AI
+        if opponent.id == USER_ID_AI:
+            # TODO: issue #210
+            raise BarelyAnException(_("Playing against AI is not supported yet"))
+        # Check if there is already a direct game between the user and the opponent
+        user_games = GameMember.objects.filter(
+            user=user.id,
+            game__tournament_id=None,
+            game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+        ).values_list('game_id', flat=True)
+        opponent_games = GameMember.objects.filter(
+            user=opponent.id,
+            game__tournament_id=None,
+            game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+        ).values_list('game_id', flat=True)
+        if user_games or opponent_games:
+            common_games = set(user_games).intersection(opponent_games)
+            if common_games:
+                game_id = common_games.pop()
+                return game_id, False
+
+        # Create the game and the game members in a transaction
+        with transaction.atomic():
+            game = Game.objects.create(
+                map_number=map_number,
+                powerups=powerups,
+            )
+            game_member_user = GameMember.objects.create(
+                game=game,
+                user=user,
+                local_game=local_game,
+                powerup_big = powerups,
+                powerup_fast = powerups,
+                powerup_slow = powerups
+            )
+            game_member_opponent = GameMember.objects.create(
+                game=game,
+                user=opponent,
+                local_game=local_game,
+                powerup_big = powerups,
+                powerup_fast = powerups,
+                powerup_slow = powerups
+            )
+            game.save()
+            game_member_user.save()
+            game_member_opponent.save()
+        return game.id, True
+
+def delete_game(user_id, game_id):
+    # Check if the game exists
+    try:
+        game = Game.objects.get(id=game_id) 
+    except Game.DoesNotExist:
+        raise BarelyAnException(_("Game not found"))
+    # Check if the user is a member of the game
+    try:
+        GameMember.objects.get(game=game_id, user=user_id)
+    except GameMember.DoesNotExist:
+        raise BarelyAnException(_("You are not a member of this game"))
+    # Check for not being a tournament game
+    if game.tournament_id:
+        raise BarelyAnException(_("You can't delete a tournament game"))
+    # Check if the game is in a deletable state
+    if game.state != Game.GameState.PENDING:
+        raise BarelyAnException(_("You can only delete a pending game"))
+    # Delete the game and the game members in a transaction
+    with transaction.atomic():  
+        GameMember.objects.filter(game=game_id).delete()
+        game.delete()
+    return True
+
 
 # def start_game(map_number, powerups, tournament_id=None, deadline=None):
 #     """
