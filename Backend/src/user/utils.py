@@ -13,10 +13,3 @@ def change_avatar(user, file_path):
     # Update user's avatar_path field and save the user model
     user.avatar_path = file_path
     user.save()
-
-def set_online_status(user, status):
-    user.online = status
-    user.save()
-
-def get_online_status(user):
-    return user.online
