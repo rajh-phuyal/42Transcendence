@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'authentication',
     'user.apps.UserConfig',
     'chat',
-    'game'
+    'game',
+    'tournament'
 ]
 
 MIDDLEWARE = [
