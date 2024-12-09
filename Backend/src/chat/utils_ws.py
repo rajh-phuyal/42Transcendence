@@ -15,7 +15,6 @@ from chat.utils import mark_all_messages_as_seen_async
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 from asgiref.sync import sync_to_async
 
-
 @database_sync_to_async
 def validate_user_is_member_of_conversation(user, conversation_id):
     # Validate conversation exists & user is a member of the conversation
@@ -42,7 +41,7 @@ def create_message(user, conversation_id, content):
     # Check if user is blocked by other member (if not group chat)
     if not conversation.is_group_conversation:
         if is_blocked(user, other_user_member.user):
-            raise BlockingException(detail='You have been blocked by this user.')
+            raise BlockingException(_("You have been blocked by this user"))
     
     try:
         with transaction.atomic():
@@ -73,22 +72,13 @@ def create_message(user, conversation_id, content):
     except Exception as e:
         logging.error(f"Error updating unread messages count for user {other_user_member.user}: {e}")
     return message, other_user_member.user.id
-    
-def parse_message(text):
-    text_json = json.loads(text)
-    conversation_id = text_json.get('conversationId', '')
-    if not conversation_id:
-        raise BarelyAnException(_("key 'conversationId' is required for websocket message type 'chat'"))
-    content = text_json.get('content', '')
-    if not content:
-        raise BarelyAnException(_("key 'content' is required for websocket message type 'chat'"))
-    return conversation_id, content
-
-
 
 # Websocket message
 async def process_incoming_chat_message(consumer, user, text):
-    conversation_id, content = parse_message(text)
+    from services.websocket_utils import parse_message
+    message = parse_message(text, mandatory_keys=['conversationId', 'content'])
+    conversation_id = message.get('conversationId')
+    content = message.get('content')
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
     
     # Do db operations
@@ -102,13 +92,10 @@ async def process_incoming_chat_message(consumer, user, text):
 
 # FE tells backend that user has seen a conversation
 async def process_incoming_seen_message(self, user, text):
-    text_json = json.loads(text)
-    conversation_id = text_json.get('conversationId', '')
-    if not conversation_id:
-        raise BarelyAnException(_("key 'conversationId' is required for websocket message type 'seen'"))
+    from services.websocket_utils import parse_message
+    message = parse_message(text, mandatory_keys=['conversationId'])
+    conversation_id = message.get('conversationId')
     await validate_user_is_member_of_conversation(user, conversation_id)
     await mark_all_messages_as_seen_async(user.id, conversation_id)
     await send_conversation_unread_counter(user.id, conversation_id)
     await send_total_unread_counter(user.id)
-
-    

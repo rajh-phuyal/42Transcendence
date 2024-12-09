@@ -37,9 +37,9 @@ def barely_handle_ws_exceptions(func):
             model_name = getattr(e, 'model', None)
             model_name = model_name.__name__ if model_name else _("Object")
             logging.info(f"{model_name} entry not found: {str(e)}")
-            await send_response_message(self, "error", f"{model_name} entry not found")
+            await send_response_message(self, "error", _("{model_name} entry not found").format(model_name=model_name))
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
             logging.info(f"Unexpected error occurred in WebSocket: {str(e)}")
-            await send_response_message(self, "error", "An unexpected error occurred")
+            await send_response_message(self, "error", _("An unexpected error occurred"))
     return wrapper
