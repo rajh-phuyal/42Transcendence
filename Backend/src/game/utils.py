@@ -7,6 +7,7 @@ from core.exceptions import BarelyAnException
 from user.exceptions import UserNotFound, RelationshipException, BlockingException
 from user.utils_relationship import is_blocking, are_friends
 from user.constants import USER_ID_AI
+from django.utils.translation import gettext as _
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
