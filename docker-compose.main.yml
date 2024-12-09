@@ -66,20 +66,21 @@ services:
       db:
         condition: service_healthy
     environment:
-      - BE_DB_HOST=db
-      - BE_DB_PORT=$BE_DB_PORT
-      - BE_DB_NAME=$BE_DB_NAME
-      - BE_DB_USER=$BE_DB_USER
-      - BE_DB_PSWD=$BE_DB_PSWD
-      - BE_SECRET_KEY=$BE_SECRET_KEY
-      - DJANGO_SETTINGS_MODULE=app.settings
-      - DJANGO_ALLOWED_HOSTS=$DOMAIN_NAMES
-      - MEDIA_VOLUME_NAME=$MEDIA_VOLUME_NAME
+      LOCAL_DEPLOY            : $LOCAL_DEPLOY
+      BE_DB_HOST              : db
+      BE_DB_PORT              : $BE_DB_PORT
+      BE_DB_NAME              : $BE_DB_NAME
+      BE_DB_USER              : $BE_DB_USER
+      BE_DB_PSWD              : $BE_DB_PSWD
+      BE_SECRET_KEY           : $BE_SECRET_KEY
+      DJANGO_SETTINGS_MODULE  : app.settings
+      DJANGO_ALLOWED_HOSTS    : $DOMAIN_NAMES
+      MEDIA_VOLUME_NAME       : $MEDIA_VOLUME_NAME
     ports:
       - "8000:8000" #need to be changed. remove it after
     volumes:
       - ./Backend/src:/app
-      - media-volume:/media
+      - media-volume:/$MEDIA_VOLUME_NAME
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "./app/python manage.py check"]
@@ -101,8 +102,8 @@ services:
       #be:
         #condition: service_healthy
     environment:
-      - LOCAL_DEPLOY=$LOCAL_DEPLOY
-      - DOMAIN_NAMES=$DOMAIN_NAMES
+      LOCAL_DEPLOY : $LOCAL_DEPLOY
+      DOMAIN_NAMES : $DOMAIN_NAMES
     ports:
       - "80:80"   #For redirecting to https
       - "443:443" #Maybe need to change later 443
