@@ -41,7 +41,7 @@ class CreateGameView(BaseAuthenticatedView):
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game_id})
         return success_response(_('Game already exists'), **{'gameId': game_id})
-        
+
 class DeleteGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def delete(self, request, id):
@@ -51,5 +51,3 @@ class DeleteGameView(BaseAuthenticatedView):
         # Most likely this won't be reached since delete_game will raise an
         # exception in error cases
         return error_response(_('Could not delete game'))
-
-          
