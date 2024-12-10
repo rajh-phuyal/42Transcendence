@@ -83,5 +83,6 @@ class LobbyView(BaseAuthenticatedView):
             'powerup_fast': user_member.powerup_fast,
             'powerup_slow': user_member.powerup_slow
         }
-        # TODO: open Websocket connection and send some data there
         return success_response(_('Lobby details'), **response_message)
+        # The frontend will use this response to show the lobby details and
+        # establish the WebSocket connection for this specific game
