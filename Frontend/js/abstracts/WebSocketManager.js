@@ -1,4 +1,5 @@
 import $store from '../store/store.js';
+const { hostname } = window.location;
 
 class WebSocketManager {
     constructor() {
@@ -22,7 +23,7 @@ class WebSocketManager {
             return;
         }
 
-        const host = window.location.host;
+        const host = hostname;
         const socketUrl = `wss://${host}/ws/app/main/`;
 
         console.log("Connecting to WebSocket:", socketUrl);

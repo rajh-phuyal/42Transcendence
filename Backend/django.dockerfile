@@ -9,6 +9,9 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=app.settings
 ENV PYTHONPATH=/Backend/src
 
+# Make media directory
+RUN mkdir -p /$MEDIA_VOLUME_NAME/
+
 # Changing the working directory (cd)
 WORKDIR /app
 
@@ -16,12 +19,13 @@ WORKDIR /app
 
 # We need the requirements file during the buildng phase of the image,
 # so we copy it and remove it after the requirements are installed.
-# This is necessary because the volume is not moynted during the build time yet
+# This is necessary because the volume is not mounted during the build time yet
 RUN mkdir /tempReqBuild/
 COPY ./src/requirements.txt /tempReqBuild/requirements.txt
 RUN pip install -r /tempReqBuild/requirements.txt
 RUN rm -rf /tempReqBuild/
 
+# Copy the entrypoint.sh, make it excutable and run it
 WORKDIR /
 RUN mkdir -p /tools
 COPY ./tools/entrypoint.sh /tools/entrypoint.sh
@@ -31,10 +35,6 @@ RUN chmod +x /tools/entrypoint.sh
 ENTRYPOINT ["/tools/entrypoint.sh"]
 
 EXPOSE 8000
-
-
-# Run the application
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # Run with ASGI server
 CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "app.asgi:application"]

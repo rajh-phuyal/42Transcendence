@@ -29,7 +29,7 @@ done
 echo -e $GR "PostgreSQL is ready!" $NC
 
 # Run the test for the root accounts
-./usr/local/bin/root_accounts.sh
+/tools/root_accounts.sh
 status=$?
 
 if [ $status -ne 0 ]; then

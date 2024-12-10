@@ -1,3 +1,8 @@
+# SSL KEY!
+*.cer
+*.key
+*.crt
+
 # Environment-specific files and directories
 Environments/*
 
