@@ -44,6 +44,6 @@ class JWTAuthMiddleware(BaseMiddleware):
             scope['user'] = AnonymousUser()
 
         # Close old DB connections to avoid Django DB connection issues
-        close_old_connections()
+        #close_old_connections()
 
         return await super().__call__(scope, receive, send)

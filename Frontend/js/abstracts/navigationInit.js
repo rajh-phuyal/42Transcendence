@@ -18,4 +18,5 @@ export default function $nav() {
     for (const route of navigationBarMap) {
         $id(route.id)?.addEventListener('click', () => router(route.path, route.params));
     }
+    $id('profile-nav-username').textContent = $store.fromState("user").username;
 }
