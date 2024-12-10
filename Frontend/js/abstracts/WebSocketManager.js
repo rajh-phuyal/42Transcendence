@@ -1,4 +1,5 @@
 import $store from '../store/store.js';
+const { hostname } = window.location;
 
 class WebSocketManager {
     constructor() {
@@ -12,8 +13,12 @@ class WebSocketManager {
             return;
         }
 
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
+        // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        // TODO: i am not sure if this is the right way to do issue #190
+        const protocol = 'ws://';
+        const resolvedHostname = hostname === 'localhost' ? '127.0.0.1' : hostname;
+        const socketUrl = `${protocol}${resolvedHostname}:8000/ws/app/main/?token=${token}`;
+        console.log("Connecting to WebSocket:", socketUrl);
 
         this.socket = new WebSocket(socketUrl);
 
