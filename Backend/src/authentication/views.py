@@ -80,8 +80,14 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             if not user:
                 return error_response(_("User not found"))
 
+            custom_response = success_response({
+                "userId": user.id,
+                "username": user.username,
+                "language": user.language,
+            })
+
             set_jwt_cookies(
-                response=response,
+                response=custom_response,
                 access_token=response.data['access'],
                 refresh_token=response.data['refresh']
             )
@@ -93,12 +99,8 @@ class InternalTokenObtainPairView(TokenObtainPairView):
                     'refresh_token': response.data['refresh'],
                 }
             )
-
-            # Remove tokens from response data as they're now in cookies
-            response.data.pop('access', None)
-            response.data.pop('refresh', None)
-
-        return response
+            return custom_response
+        return error_response(_("Login failed"))
 
     def get_user_from_request(self, request):
         """
