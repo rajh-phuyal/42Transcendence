@@ -22,6 +22,10 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
     }
 }
 
+function setUpDataAndStyles() {
+    $id('profile-nav-username').textContent = $store.fromState("user").username;
+}
+
 /**
  * @param {Object} navigationPathParams - an object that contains the path and the new params
  * @example {
@@ -53,8 +57,12 @@ export default function $nav(navigationPathParams = null) {
     // routes with params
     const routeFinder = (path) => navigationBarMap.find(route => route.path === path);
 
+
     routeFinder('/profile').params = { id: $store.fromState("user").id };
     routeFinder('/chat').params = { id: undefined };
+
+    // additional data and styles
+    setUpDataAndStyles();
 
     // add the handlers to the navbar objects
     for (const route of navigationBarMap) {
