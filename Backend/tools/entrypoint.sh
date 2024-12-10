@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # COLORS
 BL='\033[0;36m'
 GR='\033[0;32m'

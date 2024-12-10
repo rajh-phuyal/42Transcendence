@@ -1,0 +1,5 @@
+# This is the ADDITIONAL configuration settings for all docker services we use for PRODUCTION
+services:
+  fe:
+    volumes:
+      - ./Frontend/ssl:/etc/ssl/privatessl:ro

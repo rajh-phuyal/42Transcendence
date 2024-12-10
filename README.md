@@ -19,6 +19,6 @@ from now on u can use the script without the `-e` flag
 
 Once the deployment is complete, open your web browser and navigate to the game:
 
-```http://localhost:8080/```
+```https://localhost```
 
 Enjoy the game!
