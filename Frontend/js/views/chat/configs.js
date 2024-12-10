@@ -358,7 +358,7 @@ export default {
             //          maybe the routeParam.id should be defined if no params are set.
             WebSocketManager.setCurrentRoute("chat");
             this.hideChatElements();
-            if (this.routeParams.id)
+            if (this.routeParams?.id)
                 this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
 

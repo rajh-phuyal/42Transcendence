@@ -3,7 +3,7 @@ import { createMessage } from '../views/chat/methods.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
-
+const { hostname } = window.location;
 
 class WebSocketManager {
     constructor() {
@@ -18,10 +18,14 @@ class WebSocketManager {
             console.log("WebSocket already connected.");
             return;
         }
-
+      
+        // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        // TODO: i am not sure if this is the right way to do issue #190
         const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const socketUrl = `ws://127.0.0.1:8000/ws/app/main/?token=${token}`;
-        
+        const resolvedHostname = hostname === 'localhost' ? '127.0.0.1' : hostname;
+        const socketUrl = `${protocol}${resolvedHostname}:8000/ws/app/main/?token=${token}`;
+        console.log("Connecting to WebSocket:", socketUrl);
+
         this.socket = new WebSocket(socketUrl);
         
         // Log connection events
@@ -71,6 +75,8 @@ class WebSocketManager {
             case "chat":
                 if (this.currentRoute == "chat")
                     this.processIncomingChatMessageChatView(message);
+                else
+                    $callToast("error", "Need to implement the notification for chat as toast! issue #217");
                 return ;
 
             case "updateBadge":
@@ -89,7 +95,7 @@ class WebSocketManager {
                 return ;
         }
 
-        console.log("FE doen't know what to do with this type:", message);
+        console.warn("FE doen't know what to do with this type:", message);
     }
     
     // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
@@ -130,13 +136,9 @@ class WebSocketManager {
     }
 
     createConversationCard(message) {
-        console.log("creating conversation card for message", message);
         let conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
-        console.log("conversation", conversation);
         let container = conversation.querySelector(".chat-view-conversation-card");
-        console.log("container", container);
         container.id = "chat-view-conversation-card-" +  message.conversationId; 
-        console.log("container", container);
         container.setAttribute("conversation_id", message.conversationId);
         container.setAttribute("last-message-time", message.lastUpdate);
         
@@ -148,7 +150,6 @@ class WebSocketManager {
 
         // Seen container
         let unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
-        console.log("unseenContainer", unseenContainer);
         if (message.unreadCounter == 0)
             unseenContainer.style.display = "none";
         else {
@@ -156,7 +157,6 @@ class WebSocketManager {
             unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.unreadCounter;
         }
         let conversationsContainer = $id('chat-view-conversations-container');
-        console.log("conversationsContainer", conversationsContainer);
         conversationsContainer.prepend(conversation);
         // TODO: issue #121 This doens't work sinc the router is not getting the chat it same bug than for profile
         $on(container, "click", () => router("chat", {id: message.conversationId}))

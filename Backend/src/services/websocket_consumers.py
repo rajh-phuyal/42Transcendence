@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 from services.chat_service import setup_all_conversations, send_total_unread_counter
-from services.websocket_utils import WebSocketMessageHandlers
+from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -44,10 +44,8 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         if not self.scope['user'].is_authenticated:
             await self.close()
             raise BarelyAnException(_("User is not authenticated."))
-        text_data_json = json.loads(text_data)
-        self.message_type = text_data_json.get('messageType')
-        if not self.message_type:
-            raise BarelyAnException(_("Invalid websocket message format. The key 'messageType' is required."))
+        # Parse the message (only the messageType is required at this point)
+        self.message_type = parse_message(text_data, mandatory_keys=['messageType']).get('messageType')
         logging.info(f"Received Websocket Message type: {self.message_type}")
     
     def update_user_last_seen(self, user):
@@ -92,7 +90,7 @@ class MainConsumer(CustomWebSocketLogic):
         # Setting the user
         user = self.scope['user']
         # Process the message
-        await WebSocketMessageHandlers()[f"{self.message_type}"](self, user, text_data)
+        await WebSocketMessageHandlersMain()[f"{self.message_type}"](self, user, text_data)
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({**event}))
@@ -123,7 +121,7 @@ class GameConsumer(CustomWebSocketLogic):
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-        if self.message_type == 'game':
-            logging.info("Received game message - TODO: implement issue #205")
-        else:
-            raise BarelyAnException(_("Invalid websocket message format. The value {message_type} is not a valid message type.").format(message_type=self.message_type))
+        # Setting the user
+        user = self.scope['user']
+        # Process the message
+        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)

@@ -62,6 +62,7 @@ reset_sequence()
   printf "\e[32mSequence for table '%s' reset to match the highest current ID...\e[0m\n" "$table_name"
 }
 
+#-------------------------------------------------------------------------------
 # MAIN
 #-------------------------------------------------------------------------------
 print_header "Running 'create_dummy.sh'..."
@@ -73,7 +74,7 @@ done
 
 # Important here we need to create the root users first!
 print_header "INSERTING ROOT USERS..."
-./usr/local/bin/root_accounts.sh
+/tools/root_accounts.sh
 
 print_header "INSERTING DUMMY DATA..."
 TABLE_NAME="barelyaschema.user"

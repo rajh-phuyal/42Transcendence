@@ -14,8 +14,21 @@
 #	| Flag  | Description                                                                                                            |
 #	|-------|------------------------------------------------------------------------------------------------------------------------|
 #	| `-e`  | Path to the .env file. If not set the script will look for the file in the current directory.                          |
+#	| `-p`  | This will deploy the app for production!
 #
 # e.g.:	./deploy.sh -e ./path/to/.env
+#
+# DOCKER COMPOSE FILES:
+COMPOSE_FILE="docker-compose.main.yml"
+COMPOSE_FILE_PRODUCTION="docker-compose.prod.yml"
+# The domain name will be set according to the flag -p
+DOMAIN_NAMES=""
+DOMAIN_NAMES_LOCAL=localhost,127.0.0.1
+DOMAIN_NAMES_PRODUCTION=ahok.cool,217.160.125.56
+#
+# this will be updated to "-f $COMPOSE_FILE_PRODUCTION" if -p flag is set
+SECOND_COMPOSE_FLAG=""
+#
 #
 # PARSING THE ARGUMENTS:
 #   This will populate the global variables:
@@ -52,12 +65,12 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #   If no container is specified ALL containers will be affected.
 #   The allowed containers are:
 #
-#	| Container  | Service  | Volumes   | Description                                  |
-#	|------------|----------|-----------|----------------------------------------------|
-#	| `fe`       | frontend | media     | The frontend service (nginx, html, css, Js)  |
-#	| `be`       | backend  | media     | The backend service (django)                 |
-#	| `db`       | database | db-volume | The database service (postgres)              |
-#	| `pa`       | pgadmin  | pa-volume | The pgadmin service (pgadmin)                |
+#	| Container  | Service  | Volumes          | Description                                  |
+#	|------------|----------|------------------|----------------------------------------------|
+#	| `fe`       | frontend | media-volume     | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  | media-volume     | The backend service (django)                 |
+#	| `db`       | database | db-volume        | The database service (postgres)              |
+#	| `pa`       | pgadmin  | pa-volume        | The pgadmin service (pgadmin)                |
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
@@ -68,7 +81,8 @@ OS_HOME_PATH=""
 VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
 PA_VOLUME_NAME=pa-volume
-MEDIA_VOLUME_NAME=media
+MEDIA_VOLUME_NAME=media-volume
+export DB_VOLUME_NAME PA_VOLUME_NAME MEDIA_VOLUME_NAME
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -112,7 +126,7 @@ BOLD='\e[1m'
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
 # to this line number - 2
-HELP_ENDS_AT_LINE=112
+HELP_ENDS_AT_LINE=126
 # ------------------------------------------------------------------------------
 
 ################################################################################
@@ -222,6 +236,7 @@ perform_task_with_spinner() {
 # - NEW_ENV_PATH
 # - COMMAND
 # - CONTAINERS
+# - COMPOSE_FLAG
 #
 # The main function check_setup is called by the main script to check if the
 # environment is set up correctly. It checks:
@@ -241,11 +256,26 @@ parse_args()
 	CONTAINERS=""
 	ENV_FLAG_FOUND=false
 	MSG_MISSING_PATH="The -e flag is used but the path is missing. Flag will be ignored!"
+    # Default Domain is $DOMAIN_NAMES_LOCAL
+    DOMAIN_NAMES=$DOMAIN_NAMES_LOCAL
+    export LOCAL_DEPLOY=TRUE
 	for arg in "$@"
 	do
 		if [ "$arg" == "-e" ]; then
+			echo "found flag 'e'"
 			NEW_ENV_PATH=$MSG_MISSING_PATH	# So the call ./deploy.sh start -e will fail (the path is missing)
 			ENV_FLAG_FOUND=true
+		elif [ "$arg" == "-p" ]; then
+		    print_header "${RD}" " ################################## "${NC}
+		    print_header "${RD}" " #        (found flag '-p')       # "${NC}
+		    print_header "${RD}" " # !! DEPLOYING FOR PRODUCTION !! # "${NC}
+		    print_header "${RD}" " ################################## "${NC}
+			SECOND_COMPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
+            echo -e "DEPLOY FOR PRODUCTION: set SECOND_COMPOSE_FLAG to:$RD$SECOND_COMPOSE_FLAG$NC"
+            DOMAIN_NAMES=$DOMAIN_NAMES_PRODUCTION
+            echo -e "DEPLOY FOR PRODUCTION: set DOMAIN_NAMES to:$RD$DOMAIN_NAMES$NC"
+            export LOCAL_DEPLOY=FALSE
+            echo -e "DEPLOY FOR PRODUCTION: set LOCAL_DEPLOY to:$RD$LOCAL_DEPLOY$NC"
 		elif [ "$ENV_FLAG_FOUND" == true ]; then
 			NEW_ENV_PATH=$arg
 			ENV_FLAG_FOUND=false
@@ -303,7 +333,16 @@ parse_args()
 		echo -e $OR $MSG_MISSING_PATH $NC
 		NEW_ENV_PATH=""
 	fi
-	echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+    if [ "$NEW_ENV_PATH" != "" ]; then
+        echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+    fi
+
+    # Export the DOMAIN_NAMES
+    export DOMAIN_NAMES
+    echo -e "DOMAIN_NAMES:\t$DOMAIN_NAMES"
+	# Exporting the user and the group so that docker compse can use this
+	#export UID=$(id -u)
+	#export GID=$(id -g)
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
 }
 
@@ -393,27 +432,34 @@ check_env_link() {
 		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
 
-	# Step 4: Append or update the var VOLUME_ROOT_PATH in the .env file
-	if perform_task_with_spinner \
-		"Checking if env VOLUME_ROOT_PATH already exists" \
-		"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
-		"" \
-		"" \
-		true; then
-			perform_task_with_spinner \
-				"Updating var VOLUME_ROOT_PATH in env file" \
-				"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
-				"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
-				"failed to update var VOLUME_ROOT_PATH in env file" \
-				false
-		else
-			perform_task_with_spinner \
-			"Adding var VOLUME_ROOT_PATH to env file" \
-			"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
-			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
-			"failed to add var VOLUME_ROOT_PATH to env file" \
-			false
-	fi
+	# Step 4: Export the VOLUME_ROOT_PATH
+    perform_task_with_spinner \
+        "Exporting the VOLUME_ROOT_PATH: "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"" \
+        'export VOLUME_ROOT_PATH="$OS_HOME_PATH$VOLUME_FOLDER_NAME/"' \
+        "done" \
+        "failed to export VOLUME_ROOT_PATH" \
+        false
+
+	#if perform_task_with_spinner \
+	#	"Checking if env VOLUME_ROOT_PATH already exists" \
+	#	"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
+	#	"" \
+	#	"" \
+	#	true; then
+	#		perform_task_with_spinner \
+	#			"Updating var VOLUME_ROOT_PATH in env file" \
+	#			"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
+	#			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+	#			"failed to update var VOLUME_ROOT_PATH in env file" \
+	#			false
+	#	else
+	#		perform_task_with_spinner \
+	#		"Adding var VOLUME_ROOT_PATH to env file" \
+	#		"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
+	#		"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+	#		"failed to add var VOLUME_ROOT_PATH to env file" \
+	#		false
+	#fi
 
 	# Step 5: Source again
 	perform_task_with_spinner \
@@ -496,6 +542,14 @@ check_volume_folders()
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
+print_server_urls()
+{
+    IFS=','
+    for DOMAIN in $DOMAIN_NAMES_LOCAL; do
+        echo -e "${GR}" "\tWebsite reachable at: ${BL}$(url "https://$DOMAIN" "$DOMAIN")${NC}"
+    done
+}
+
 # ------------------------------------------------------------------------------
 # DOCKER BASIC FUNCTIONS
 #	stop [contaier]			| Stops the container(s)
@@ -510,13 +564,13 @@ check_volume_folders()
 # ------------------------------------------------------------------------------
 docker_stop() {
 	print_header "${BL}" "Stopping containers: $CONTAINERS..."
-	docker compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" stop $CONTAINERS
 	print_header "${BL}" "Stopping containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_build() {
 	print_header "${BL}" "Building containers: $CONTAINERS"
-	docker compose --env-file "$STORED_ENV_PATH" build $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" build $CONTAINERS
 	print_header "${BL}" "Building containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -524,7 +578,7 @@ docker_start() {
 	docker_stop
 	docker_build
 	print_header "${BL}" "Starting containers: $CONTAINERS"
-	docker compose --env-file "$STORED_ENV_PATH" up -d $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" up -d $CONTAINERS
 	print_header "${BL}" "Starting containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -553,7 +607,8 @@ docker_fclean() {
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
 
-	docker compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" down --rmi all --remove-orphans
+
 	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting docker volumes..."
@@ -563,7 +618,7 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folder of docker volumes...($OS_HOME_PATH$VOLUME_FOLDER_NAME/)"
-	sudo rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
+	rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
 	print_header "${OR}" "Deleting folder of docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Delete the link to the environment file..."
@@ -623,7 +678,7 @@ insert_dummy_data() {
 	fi
 
 	print_header "${OR}" "Inserting dummy data into the database..."
-	docker exec -it db  bash /usr/local/bin/create_dummy.sh
+	docker exec -it db  bash /tools/create_dummy.sh
 	print_header "${OR}" "Inserting dummy data into the database...${GR}DONE${NC}"
 }
 
@@ -651,6 +706,7 @@ case "$COMMAND" in
 	start)
 		check_setup
 		docker_start
+        print_server_urls
 		;;
 	stop)
 		check_setup
@@ -671,10 +727,12 @@ case "$COMMAND" in
 	reset)
 		check_setup
 		docker_reset
+        print_server_urls
 		;;
 	re)
 		check_setup
 		docker_re
+        print_server_urls
 		;;
 	dummy)
 		check_setup
@@ -684,3 +742,5 @@ case "$COMMAND" in
 		print_error "Invalid command: >${COMMAND}<, run >./deploy.sh help< to see the available commands."
 		;;
 esac
+
+print_header "${BL}" "DONE - Barely Alive"

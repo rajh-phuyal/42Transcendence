@@ -94,7 +94,6 @@ def delete_game(user_id, game_id):
         game.delete()
     return True
 
-
 # def start_game(map_number, powerups, tournament_id=None, deadline=None):
 #     """
 #     Initializes a new game in the 'pending' state.
