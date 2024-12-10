@@ -4,7 +4,7 @@ from user.models import User
 from game.models import Game, GameMember
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from game.utils import create_game
+from game.utils import create_game, delete_game
 # from django.db.models import Q
 
 class CreateGameView(BaseAuthenticatedView):
@@ -36,8 +36,18 @@ class CreateGameView(BaseAuthenticatedView):
         opponent_id = request.data.get('opponentId')
         if not opponent_id:
             return error_response(_("Missing key 'opponentId'"))
-        
+                    
         game_id, success = create_game(user.id, opponent_id, map_number, powerups, local_game)
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game_id})
         return success_response(_('Game already exists'), **{'gameId': game_id})
+
+class DeleteGameView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def delete(self, request, id):
+        success = delete_game(request.user.id, id)
+        if success:
+            return success_response(_('Game deleted successfully'))
+        # Most likely this won't be reached since delete_game will raise an
+        # exception in error cases
+        return error_response(_('Could not delete game'))
