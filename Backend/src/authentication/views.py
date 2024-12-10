@@ -12,56 +12,54 @@ from django.utils.translation import gettext as _, activate
 from core.decorators import barely_handle_exceptions
 
 
-class RegisterView(generics.CreateAPIView):
+class RegisterView(APIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    authentication_classes = []  # No authentication required for registration
 
-    def perform_create(self, serializer):
+    @barely_handle_exceptions
+    def post(self, request, *args, **kwargs):
+        # Activate language from query params or fallback to default
+        preferred_language = request.query_params.get('language', 'en-us')
+        activate(preferred_language)
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         try:
             user = serializer.save()
+            user.language = preferred_language
+            user.save()
+
             refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
+            # Store dev user data if needed
             DevUserData.objects.update_or_create(
                 user=user,
                 defaults={
                     'username': user.username,
-                    'access_token': str(refresh.access_token),
-                    'refresh_token': str(refresh),
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
                 }
             )
+
+            response = success_response({
+                "userId": user.id,
+                "username": user.username,
+                "language": user.language,
+            })
+
+            # Set the cookies
+            return set_jwt_cookies(
+                response=response,
+                access_token=access_token,
+                refresh_token=refresh_token
+            )
+
         except Exception as e:
             raise exceptions.APIException(f"Error during user registration: {str(e)}")
-
-    @barely_handle_exceptions
-    def create(self, request, *args, **kwargs):
-        # Activate language from query params or fallback to default
-        # use like: /register/?language=en-us
-        preferred_language = request.query_params.get('language', 'en-us')
-        activate(preferred_language)
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        self.perform_create(serializer)
-
-        user = serializer.instance
-        user.language = preferred_language
-
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
-
-        response = success_response({
-            "userId": user.id,
-            "username": user.username,
-            "language": user.language,
-        })
-
-        # Set the cookies
-        return set_jwt_cookies(
-            response=response,
-            access_token=access_token,
-            refresh_token=refresh_token
-        )
 
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer

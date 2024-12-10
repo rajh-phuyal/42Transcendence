@@ -9,8 +9,7 @@ class Store {
         this.mutations = mutations;
         this.actions = actions;
         this.mutationListeners = [];
-        this._sessionActions = {};
-        this.initializer();
+        this.initializer()
     }
 
     initializer() {
@@ -64,8 +63,6 @@ class Store {
     }
 
     async dispatch(actionName, payload) {
-        this._sessionActions[actionName] = payload;
-
         await this.actions[actionName](this, payload);
     }
 

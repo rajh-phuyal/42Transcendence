@@ -34,7 +34,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 #                    self.channel_name
 #                )
 #                print(f"User {self.scope['user'].username} added to chat_{conversation.id}")
-        
+
             await self.accept()
 
     # TODO: review the logic below and move it to chat logic
@@ -45,7 +45,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 #        user_conversations = await self.get_user_conversations(self.scope['user'])
 #        for conversation in user_conversations:
 #            await self.channel_layer.group_discard(f'chat_{conversation.id}', self.channel_name)
-#        
+#
 #        await self.channel_layer.group_discard(
 #            'global_notifications',
 #            self.channel_name
@@ -123,15 +123,15 @@ class GameConsumer(CustomWebSocketLogic):
 #        logging.info(f"Received chat message: {event}")
 #        conversation_id = event['conversation_id']
 #        content = event['message']
-#        
+#
 #        # Access the authenticated user from scope
 #        sender = self.scope['user']
 #        logging.info(f'Params: {conversation_id}, {content}, {sender}')
-#        
+#
 #        if not conversation_id or not content:
 #            logging.error("Missing conversation_id or message content.")
 #            return  # TODO:  could also send an error back via WebSocket if desired
-#        
+#
 #
 #        logging.info('Params: %s, %s, %s', conversation_id, content, sender)
 #
@@ -150,13 +150,13 @@ class GameConsumer(CustomWebSocketLogic):
 #
 #    async def chat_message(self, event):
 #        message_id = event['message_id']
-#    
+#
 #        # Fetch the message from the DB to match the correct format
 #        message = await sync_to_async(Message.objects.get)(id=message_id)
-#    
+#
 #        # Fetch the user asynchronously
 #        sender_user = await sync_to_async(lambda: message.user.id)()
-#        
+#
 #        # Send the message to the WebSocket client in the same format as previous messages
 #        await self.send(text_data=json.dumps({
 #            'type': 'chat_message',
@@ -183,7 +183,7 @@ class GameConsumer(CustomWebSocketLogic):
 #    async def handle_notification(self, event):
 #        logging.info(f"Received notification: {event}")
 #        # TODO: Handle notifications as needed
-#    
+#
 #    # Get the conversations the user is part of
 #    @sync_to_async
 #    def get_user_conversations(self, user):

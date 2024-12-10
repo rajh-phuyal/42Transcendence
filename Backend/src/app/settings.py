@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('BE_SECRET_KEY')
 AUTH_USER_MODEL = 'user.User'
 
 # DEBUG MODE
-local_deploy = os.getenv('LOCAL_DEPLOY', 'False')
+local_deploy = os.getenv('LOCAL_DEPLOY', 'True')
 DEBUG = local_deploy.lower() == 'true'
 print(f"DEBUG is set to: {DEBUG}")
 

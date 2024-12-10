@@ -26,6 +26,7 @@ class WebSocketAuthMiddleware(BaseMiddleware):
         try:
             headers = dict(scope['headers'])
             cookie_header = headers.get(b'cookie', b'').decode()
+            logging.info(f"WebSocket connection attempt with cookies: {cookie_header}")
 
             # Parse cookies
             cookies = {}
@@ -34,24 +35,32 @@ class WebSocketAuthMiddleware(BaseMiddleware):
                     if '=' in cookie:
                         name, value = cookie.strip().split('=', 1)
                         cookies[name.strip()] = value.strip()
+            else:
+                logging.error("No cookies found in WebSocket request")
+                scope['user'] = AnonymousUser()
+                return await super().__call__(scope, receive, send)
 
             # Create mock request for authentication
             request = type('MockRequest', (), {'COOKIES': cookies})()
 
             # Authenticate
             auth = CookieJWTAuthentication()
-            user_auth = await sync_to_async(auth.authenticate)(request)
-
-            if user_auth:
-                user, _ = user_auth
-                scope['user'] = user
-            else:
+            try:
+                user_auth = await sync_to_async(auth.authenticate)(request)
+                if user_auth:
+                    user, _ = user_auth
+                    scope['user'] = user
+                    logging.info(f"WebSocket authenticated for user: {user.username}")
+                else:
+                    logging.error("WebSocket authentication failed: No user returned from authenticate")
+                    scope['user'] = AnonymousUser()
+            except Exception as auth_error:
+                logging.error(f"WebSocket authentication error: {str(auth_error)}")
                 scope['user'] = AnonymousUser()
-                raise FailedWebSocketAuthentication(_gt("Authentication required"))
 
             return await super().__call__(scope, receive, send)
 
         except Exception as e:
-            logging.error(f"WebSocket authentication failed: {str(e)}")
+            logging.error(f"WebSocket middleware error: {str(e)}")
             scope['user'] = AnonymousUser()
-            raise FailedWebSocketAuthentication(_gt("Authentication required"))
+            return await super().__call__(scope, receive, send)
