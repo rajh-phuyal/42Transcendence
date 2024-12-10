@@ -14,9 +14,11 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+print("Loading settings.py...")
+print("------------------------------------")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -27,11 +29,13 @@ SECRET_KEY = os.environ.get('BE_SECRET_KEY')
 # Enforce the use of the custom user model
 AUTH_USER_MODEL = 'user.User'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG MODE
+local_deploy = os.getenv('LOCAL_DEPLOY', 'False')
+DEBUG = local_deploy.lower() == 'true'
+print(f"DEBUG is set to: {DEBUG}")
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+print(f"ALLOWED_HOSTS is set to: {ALLOWED_HOSTS}")
 
 # Application definition
 
@@ -70,12 +74,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# TODO instead of using this:
-CORS_ALLOWED_ORIGINS = [
-    "https://localhost:443",
-    "http://127.0.0.1:8000"
-]
-
+CORS_ALLOWED_ORIGINS = [f'https://{domain}' for domain in ALLOWED_HOSTS]
 
 ROOT_URLCONF = 'app.urls'
 
@@ -126,8 +125,10 @@ DATABASES = {
 }
 
 # Media for the user profile pictures aka avatars
-MEDIA_ROOT = '/media'  # Path in the Docker container
-MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = '/' + os.getenv('MEDIA_VOLUME_NAME', 'media-volume') + '/'
+MEDIA_URL = '/media/'
+print(f"MEDIA_ROOT is set to: {MEDIA_ROOT}")
+print(f"MEDIA_URL is set to: {MEDIA_URL}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -175,6 +176,7 @@ LANGUAGES = [
 LOCALE_PATHS = [
     BASE_DIR / 'locale',  # Ensure this directory exists
 ]
+print(f"LOCALE_PATHS is set to: {LOCALE_PATHS}")
 
 # ==============================================================================
 
@@ -212,5 +214,7 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
-    
 }
+
+print("------------------------------------")
+print("Loading settings.py...DONE")

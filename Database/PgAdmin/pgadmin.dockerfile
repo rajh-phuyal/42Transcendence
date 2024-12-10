@@ -29,10 +29,20 @@ RUN echo "Port: ${PA_DB_PORT}, DB Name: ${PA_DB_NAME}, User: ${PA_DB_USER}" && \
 # Ensure the .pgpass file has the correct permissions
 RUN chmod 600 /root/.pgpass
 
-USER pgadmin
+# Create tools directory
+RUN mkdir -p /tools
+
+# Copy the entrypoint script
+COPY ./tools/entrypoint.sh /tools/entrypoint.sh
+RUN chmod +x /tools/entrypoint.sh
+
+# Copy healthcheck script
+COPY ./tools/healthcheck.sh /tools/healthcheck.sh
+RUN chmod +x /tools/healthcheck.sh
 
 # Expose the default pgAdmin port
 EXPOSE 80
+USER pgadmin
 
 # Start pgAdmin
-CMD ["/entrypoint.sh"]
+CMD ["/tools/entrypoint.sh"]
