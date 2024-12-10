@@ -18,9 +18,6 @@ try {
     console.error('Error importing web components:', error);
 }
 
-// Initializes the nav bar
-$nav();
-
 
 window.addEventListener('popstate', () => {
     router(window.location.pathname)
@@ -28,6 +25,9 @@ window.addEventListener('popstate', () => {
 
 // get the translations for all the registered views
 $store.dispatch('loadTranslations', routes.map(route => route.view));
+
+// Initializes the nav bar
+$nav();
 
 
 // go to path only after the translations are loaded

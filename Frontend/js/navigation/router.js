@@ -72,11 +72,13 @@ async function router(path, params = null) {
     if (userAuthenticated && path === '/auth') {
         console.log("Redirecting to home");
         path = '/home';
+        params = null;
     }
 
     if (!userAuthenticated && path !== '/auth') {
         console.log("Redirecting to auth");
         path = '/auth';
+        params = null;
     }
 
     // execute the functional route which needs auth

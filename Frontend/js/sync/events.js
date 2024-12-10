@@ -4,7 +4,6 @@ import { $id } from "../abstracts/dollars.js";
 import $store from "../store/store.js";
 import $nav from "../abstracts/nav.js";
 import { routes } from "../navigation/routes.js";
-import WebSocketManager from "../abstracts/WebSocketManager.js";
 
 export default {
     "authentication-state": async (payload) => {

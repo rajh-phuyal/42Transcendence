@@ -1,7 +1,7 @@
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 from django.db.models import Q
 from django.db.models import Sum
-from core.base_views import BaseAuthenticatedView
+from core.authentication import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User

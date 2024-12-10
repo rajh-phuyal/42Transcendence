@@ -23,7 +23,7 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
 }
 
 function setUpDataAndStyles() {
-    $id('profile-nav-username').textContent = $store.fromState("user").username;
+    $id('profile-nav-username').textContent = `ID ${$store.fromState("user").id} - ${$store.fromState("user").username}`;
 }
 
 /**
@@ -36,6 +36,7 @@ function setUpDataAndStyles() {
  * }
  */
 export default function $nav(navigationPathParams = null) {
+    console.log("Navigattion :", navigationPathParams, $store.fromState("user"));
     // nav bar route to Dom elements map
     const navigationBarMap = [
         { id: 'home-nav', path: '/home' },
@@ -56,7 +57,6 @@ export default function $nav(navigationPathParams = null) {
 
     // routes with params
     const routeFinder = (path) => navigationBarMap.find(route => route.path === path);
-
 
     routeFinder('/profile').params = { id: $store.fromState("user").id };
     routeFinder('/chat').params = { id: undefined };
