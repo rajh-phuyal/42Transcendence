@@ -20,6 +20,9 @@ class User(AbstractUser):
     def update_last_seen(self):
         self.last_login = timezone.now()
         self.save(update_fields=['last_login'])
+    
+    def __str__(self):
+        return f"id:{self.id}({self.username})"
 
 # Enum for friend request status (cool_status)
 class CoolStatus(models.TextChoices):
