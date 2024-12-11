@@ -1,0 +1,50 @@
+# My nice test file :tada:
+# 
+# When this file will be executed we will have the following dummy data ready:
+#
+# id: register_user "arabelo"
+# id: register_user "astein"
+# id: register_user "anshovah"
+# id: register_user "fdaestr"
+# id: register_user "rphuyal"
+# send_friend_request "arabelo" "astein"
+# send_friend_request "arabelo" "anshovah"
+# send_friend_request "arabelo" "fdaestr"
+# send_friend_request "arabelo" "rphuyal"
+# send_friend_request "astein" "anshovah"
+# send_friend_request "astein" "fdaestr"
+# send_friend_request "rphuyal" "fdaestr"
+# send_friend_request "rphuyal" "astein"
+# accept_friend_request "astein" "arabelo"
+# accept_friend_request "anshovah" "arabelo"
+# accept_friend_request "fdaestr" "arabelo"
+# accept_friend_request "rphuyal" "arabelo"
+# accept_friend_request "anshovah" "astein"
+# block_user "anshovah" "arabelo"
+# block_user "anshovah" "fdaestr"
+# block_user "fdaestr" "anshovah"
+# create_chat "arabelo" "astein" "Hi Alex, how are you?"
+# create_chat "arabelo" "anshovah" "Hi Anatolii, how are you?"
+# create_game "astein" "anshovah" 1 true false
+# 
+# Lines should be build like this with ";" as seperator
+# - 1: marked if should work or should fail (+/-)
+# - 2: quick description
+# - 3: user which performs request (NONE if no user is needed)
+# - 4: Method
+# - 5: endpoint
+# - 6: arguments for json body
+# - 7: expected response code
+#
+# user ids can be used like $astein_id
+#
+works=+
+description=register a fool
+user=NONE
+method=POST
+endpoint=/auth/register/
+args="username": "ahofaaaaaakcaaoaaaol42",      "password": "hello1d23HELLO!!!"
+expected_code=201
+#
+#+; send a friend request astein->rphuyal; astein; POST; /user/relationship/; "send":"accept" "target_id":$rphuyal_id; 200;
+#+; send a friend request rphuyal->astein; rphuyal; POST; /user/relationship/; "send":"accept" "target_id":$astein_id; 200;
