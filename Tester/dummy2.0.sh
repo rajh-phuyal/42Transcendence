@@ -2,9 +2,12 @@
 
 # Define the base URL for the API
 BASE_URL="http://127.0.0.1:8000"
+ENV_FILE="$(dirname "$(realpath "$0")")/dummy.env"
+RESPONSE_FILE="$(dirname "$(realpath "$0")")/response.json"
 
 # Define the endpoint for registration
 REGISTER_ENDPOINT="/auth/register/"
+USER_UPDATE_INFO="/user/update-user-info/"
 RELATIONSHIP_ENDPOINT="/user/relationship/"
 CREATE_CHAT_ENDPOINT="/chat/create/conversation/"
 CREATE_GAME_ENDPOINT="/game/create/"
@@ -14,6 +17,7 @@ PASSWORD="BarelyAPassword123!!!"
 
 # Array of usernames to register
 USERNAMES=(
+    "john"
     "arabelo"
     "astein"
     "anshovah"
@@ -35,7 +39,7 @@ register_user() {
     local output="Registering user: "
 
     while true; do
-        HTTP_CODE=$(curl -s -k -o response.json -w "%{http_code}" -X POST "$BASE_URL$REGISTER_ENDPOINT" \
+        HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$REGISTER_ENDPOINT" \
             -H "Content-Type: application/json" \
             -d "$payload")
 
@@ -43,32 +47,59 @@ register_user() {
             output+="${GREEN}$username${RESET}"
             echo -e "$output"
             # Parse JSON response and export variables
-            USER_ID=$(jq -r '.userId' response.json)
-            ACCESS_TOKEN=$(jq -r '.access' response.json)
-            REFRESH_TOKEN=$(jq -r '.refresh' response.json)
+            USER_ID=$(jq -r '.userId' ${RESPONSE_FILE})
+            ACCESS_TOKEN=$(jq -r '.access' ${RESPONSE_FILE})
+            REFRESH_TOKEN=$(jq -r '.refresh' ${RESPONSE_FILE})
+            USER_NAME=$(jq -r '.username' ${RESPONSE_FILE})
 
             # Export variables with the original base username prefix
             export ${base_username^^}_ID="$USER_ID"
             export ${base_username^^}_ACCESS="$ACCESS_TOKEN"
             export ${base_username^^}_REFRESH="$REFRESH_TOKEN"
-            echo ${base_username^^}_ID="$USER_ID" >> dummy.env
-            echo ${base_username^^}_ACCESS="$ACCESS_TOKEN" >> dummy.env
-            echo ${base_username^^}_REFRESH="$REFRESH_TOKEN" >> dummy.env
+            export ${base_username^^}_USERNAME="$USER_NAME"
+            echo ${base_username^^}_ID="$USER_ID" >> ${ENV_FILE}
+            echo ${base_username^^}_ACCESS="$ACCESS_TOKEN" >> ${ENV_FILE}
+            echo ${base_username^^}_REFRESH="$REFRESH_TOKEN" >> ${ENV_FILE}
+            echo ${base_username^^}_USERNAME="$USER_NAME" >> ${ENV_FILE}
             break
         else
             # Check if username already exists and try a new one
-            if grep -q "Username .* already exists" response.json; then
+            if grep -q "Username .* already exists" ${RESPONSE_FILE}; then
                 output+="${RED}$username${RESET} "
                 attempt=$((attempt + 1))
                 username="${base_username}${attempt}"
                 payload="{\"username\": \"$username\", \"password\": \"$PASSWORD\"}"
             else
                 echo "Failed to register user $username. HTTP Code: $HTTP_CODE"
-                cat response.json
+                cat ${RESPONSE_FILE}
                 break
             fi
         fi
     done
+}
+
+update_user_details(){
+    local sender=$1
+    local first_name=$2
+    local last_name=$3
+    local language=$4
+
+    local access_token_var="${sender^^}_ACCESS"
+    local access_token=${!access_token_var}
+    local username_var="${sender^^}_USERNAME"
+    local username=${!username_var}
+    local payload="{\"username\": \"$username\", \"firstName\": \"$first_name\", \"lastName\": \"$last_name\", \"language\": \"$language\"}"
+
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X PUT "$BASE_URL$USER_UPDATE_INFO" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $access_token" \
+        -d "$payload")
+
+    if [ "$HTTP_CODE" -eq 200 ]; then
+        echo -e "Updating user details for $sender: ${GREEN}ok${RESET}"
+    else
+        echo -e "Updating user details for $sender: ${RED}ko${RESET}"
+    fi
 }
 
 # Function to send a friend request
@@ -82,7 +113,7 @@ send_friend_request() {
     local target_id=${!target_id_var}
     local payload="{\"action\": \"send\", \"target_id\": $target_id}"
 
-    HTTP_CODE=$(curl -s -k -o response.json -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $access_token" \
         -d "$payload")
@@ -106,7 +137,7 @@ accept_friend_request() {
 
     local payload="{\"action\": \"accept\", \"target_id\": $sender_id}"
 
-    HTTP_CODE=$(curl -s -k -o response.json -w "%{http_code}" -X PUT "$BASE_URL$RELATIONSHIP_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X PUT "$BASE_URL$RELATIONSHIP_ENDPOINT" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $access_token" \
         -d "$payload")
@@ -130,7 +161,7 @@ block_user() {
 
     local payload="{\"action\": \"block\", \"target_id\": $target_id}"
 
-    HTTP_CODE=$(curl -s -k -o response.json -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $access_token" \
         -d "$payload")
@@ -155,7 +186,7 @@ create_chat() {
 
     local payload="{\"userIds\": [$target_id], \"initialMessage\": \"$message\"}"
 
-    HTTP_CODE=$(curl -s -k -o response.json -w "%{http_code}" -X POST "$BASE_URL$CREATE_CHAT_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$CREATE_CHAT_ENDPOINT" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $access_token" \
         -d "$payload")
@@ -182,7 +213,7 @@ create_game() {
 
     local payload="{\"mapNumber\": $map_number, \"powerups\": \"$powerups\", \"opponentId\": $opponent_id, \"localGame\": \"$local_game\"}"
 
-    HTTP_CODE=$(curl -s -k -o response.json -w "%{http_code}" -X POST "$BASE_URL$CREATE_GAME_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$CREATE_GAME_ENDPOINT" \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $access_token" \
         -d "$payload")
@@ -209,13 +240,20 @@ fi
 # Debug endpoint first
 check_endpoint
 
-# Creating empty dummy.env
-echo "" > dummy.env
+# Creating empty ${ENV_FILE}
+echo "" > ${ENV_FILE}
 
 # Register each user
 for username in "${USERNAMES[@]}"; do
     register_user "$username"
 done
+
+# Updating user details 
+update_user_details "john" "John" "Doe" "en-US"
+update_user_details "arabelo" "Alê" "Guedes" "pt-BR"
+update_user_details "astein" "Alex" "Stein" "de-DE"
+update_user_details "anshovah" "Anatolii" "Shovah" "uk-UA"
+update_user_details "fdaestr" "Francisco" "Inácio" "pt-Pt"
 
 # Sending example Friend Requests
 send_friend_request "arabelo" "astein"
