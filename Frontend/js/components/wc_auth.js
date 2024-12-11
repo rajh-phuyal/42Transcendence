@@ -178,7 +178,6 @@ class AuthCard extends HTMLElement {
         const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
-            console.warn("Auth response", response);
             // Initialize the store
             $store.initializer();
 
@@ -191,12 +190,12 @@ class AuthCard extends HTMLElement {
             // Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
             $store.commit('setUser', {
-                id: response.message.userId,
-                username: response.message.username
+                id: response.userId,
+                username: response.username
             });
 
             // update the profile route params
-            $nav({ "/profile": { id: response.message.userId } });
+            $nav({ "/profile": { id: response.userId } });
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
