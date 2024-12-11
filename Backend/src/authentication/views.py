@@ -3,13 +3,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.serializers import RegisterSerializer, InternalTokenObtainPairSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from core.cookies import set_jwt_cookies, unset_jwt_cookies
 from core.authentication import BaseAuthenticatedView
 from authentication.models import DevUserData
 from core.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
 from core.decorators import barely_handle_exceptions
+from rest_framework_simplejwt.exceptions import InvalidToken
+from django.conf import settings
 
 
 class RegisterView(APIView):
@@ -124,3 +126,31 @@ class TokenVerifyView(BaseAuthenticatedView):
             'username': request.user.username,
             'isAuthenticated': True
         })
+
+class InternalTokenRefreshView(TokenRefreshView):
+    @barely_handle_exceptions
+    def post(self, request, *args, **kwargs):
+        # Get refresh token from cookie instead of request body
+        refresh_token = request.COOKIES.get(settings.SIMPLE_JWT_COOKIE['REFRESH_COOKIE_NAME'])
+        if not refresh_token:
+            return error_response(_('No refresh token found in cookies'))
+
+        # Add refresh token to request data
+        request.data['refresh'] = refresh_token
+
+        # Call parent class post method
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            custom_response = success_response({
+                "message": _("Token refreshed successfully")
+            })
+
+            # Set new tokens in cookies
+            return set_jwt_cookies(
+                response=custom_response,
+                access_token=response.data['access'],
+                refresh_token=response.data['refresh']
+            )
+
+        return response
