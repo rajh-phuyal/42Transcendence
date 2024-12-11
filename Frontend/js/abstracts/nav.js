@@ -1,6 +1,6 @@
 import $store from '../store/store.js';
 import router from '../navigation/router.js';
-import { $id } from './dollars.js';
+import { $id, $on, $off } from './dollars.js';
 
 function updateUserInfo() {
     $id('profile-nav-username').textContent = `${$store.fromState("user").username}`;
@@ -21,14 +21,14 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
 
         styleUpdateMap?.[route.path]?.();
 
-        // remove old handeler
-        navbarObject?.removeEventListener('click', () => router(route.path, route?.params));
+        // Remove old handler if it exists
+        if (navbarObject._clickHandler) {
+            $off(navbarObject, 'click', navbarObject._clickHandler);
+        }
 
-        // update the route params
-        route.params = params;
-
-        // add the new handler
-        navbarObject?.addEventListener('click', () => router(route.path, params));
+        // Create and store new handler
+        navbarObject._clickHandler = () => router(route.path, params);
+        $on(navbarObject, 'click', navbarObject._clickHandler);
     }
 }
 
@@ -70,8 +70,12 @@ export default function $nav(navigationPathParams = null) {
     // additional data and styles
     styleUpdateMap?.[routeFinder('/profile').path]?.();
 
-    // add the handlers to the navbar objects
+    // Initial setup of handlers
     for (const route of navigationBarMap) {
-        $id(route.id)?.addEventListener('click', () => router(route.path, route?.params));
+        const navbarObject = $id(route.id);
+        if (!navbarObject) continue;
+
+        navbarObject._clickHandler = () => router(route.path, route?.params);
+        $on(navbarObject, 'click', navbarObject._clickHandler);
     }
 }
