@@ -47,7 +47,7 @@ class RegisterView(APIView):
                 }
             )
 
-            response = success_response({
+            response = success_response(_("User registered successfully"), **{
                 "userId": user.id,
                 "username": user.username,
                 "language": user.language,
@@ -82,7 +82,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             if not user:
                 return error_response(_("User not found"))
 
-            custom_response = success_response({
+            custom_response = success_response(_("User logged in successfully"), **{
                 "userId": user.id,
                 "username": user.username,
                 "language": user.language,
@@ -142,9 +142,7 @@ class InternalTokenRefreshView(TokenRefreshView):
         response = super().post(request, *args, **kwargs)
 
         if response.status_code == 200:
-            custom_response = success_response({
-                "message": _("Token refreshed successfully")
-            })
+            custom_response = success_response(_("Token refreshed successfully"))
 
             # Set new tokens in cookies
             return set_jwt_cookies(
