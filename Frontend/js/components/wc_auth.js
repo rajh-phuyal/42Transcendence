@@ -191,12 +191,12 @@ class AuthCard extends HTMLElement {
             // Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
             $store.commit('setUser', {
-                id: message.response.userId,
-                username: message.response.username
+                id: response.message.userId,
+                username: response.message.username
             });
 
             // update the profile route params
-            $nav({ "/profile": { id: message.response.userId } });
+            $nav({ "/profile": { id: response.message.userId } });
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();

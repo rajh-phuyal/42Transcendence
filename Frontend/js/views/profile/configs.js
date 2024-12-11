@@ -320,7 +320,7 @@ export default {
                 router(`/profile`, {id: this.result.id});
             })
 
-            
+
         },
 
         openChatModal() {
@@ -426,7 +426,7 @@ export default {
             for (let element of this.friendList){
                 const container = this.domManip.$id("friends-list-modal-list-element-template").content.cloneNode(true);
                 const elementDiv = container.querySelector(".friends-list-modal-list-element");
-                
+
                 elementDiv.setAttribute("user-id", element.id);
                 elementDiv.setAttribute("id", "friends-list-modal-list-element-user-" + element.username);
 

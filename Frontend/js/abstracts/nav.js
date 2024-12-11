@@ -2,6 +2,14 @@ import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id } from './dollars.js';
 
+function updateUserInfo() {
+    $id('profile-nav-username').textContent = `${$store.fromState("user").username}`;
+}
+
+const styleUpdateMap = {
+    '/profile': updateUserInfo
+}
+
 // navigation bar helpers
 function updateRouteParams(navigationPathParams, navigationBarMap) {
     for (const [path, params] of Object.entries(navigationPathParams)) {
@@ -10,6 +18,8 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
 
         let navbarObject = $id(route?.id);
         if (!navbarObject) continue;
+
+        styleUpdateMap?.[route.path]?.();
 
         // remove old handeler
         navbarObject?.removeEventListener('click', () => router(route.path, route?.params));
@@ -20,10 +30,6 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
         // add the new handler
         navbarObject?.addEventListener('click', () => router(route.path, params));
     }
-}
-
-function setUpDataAndStyles() {
-    $id('profile-nav-username').textContent = `ID ${$store.fromState("user").id} - ${$store.fromState("user").username}`;
 }
 
 /**
@@ -62,7 +68,7 @@ export default function $nav(navigationPathParams = null) {
     routeFinder('/chat').params = { id: undefined };
 
     // additional data and styles
-    setUpDataAndStyles();
+    styleUpdateMap?.[routeFinder('/profile').path]?.();
 
     // add the handlers to the navbar objects
     for (const route of navigationBarMap) {
