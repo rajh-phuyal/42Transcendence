@@ -67,7 +67,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         else:
             try:
                 other_member = obj.members.exclude(user=current_user).first()
-                if other_member and other_member.user.get_online_status():
+                if other_member and cache.get(f'user_online_{other_member.user.id}'):
                     return True
                 return False
             except Exception:
