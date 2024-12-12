@@ -50,9 +50,6 @@ class WebSocketManager {
                 // Dispatch data to appropriate handlers based on message type
             };
 
-            this.socket.onmessage = (event) => {
-                console.log("WebSocket message received:", event.data);
-            };
         } catch (error) {
             console.error("WebSocket connection error:", error);
             $store.commit("setWebSocketIsAlive", false);
