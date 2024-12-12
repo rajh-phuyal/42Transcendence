@@ -23,3 +23,17 @@ class BaseAuthenticatedView(APIView):
         else:
             raise NotAuthenticated(_("User is not authenticated"))
         return request
+    
+    # We don't want to allow any methods by default
+    # If a child class wants to allow a method it has to overwrite it
+    def post(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def put(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def get(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+    
+    def delete(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
