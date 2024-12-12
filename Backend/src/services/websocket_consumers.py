@@ -47,7 +47,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         # Parse the message (only the messageType is required at this point)
         self.message_type = parse_message(text_data, mandatory_keys=['messageType']).get('messageType')
         logging.info(f"Received Websocket Message type: {self.message_type}")
-    
+
     def update_user_last_seen(self, user):
         user.last_seen = timezone.now()
         user.save(update_fields=['last_seen'])
@@ -59,7 +59,7 @@ class MainConsumer(CustomWebSocketLogic):
         await super().connect()
         # Setting the user's online status in cache
         user = self.scope['user']
-        cache.set(f'user_online_{user.id}', True, timeout=3000) # 3000 seconds = 50 minutes        
+        cache.set(f'user_online_{user.id}', True, timeout=3000) # 3000 seconds = 50 minutes
         # Store the WebSocket channel to the cache with the user ID as the key
         cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups
@@ -94,7 +94,7 @@ class MainConsumer(CustomWebSocketLogic):
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({**event}))
-    
+
     async def update_badge(self, event):
         await self.send(text_data=json.dumps({**event}))
 

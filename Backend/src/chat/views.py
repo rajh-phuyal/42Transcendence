@@ -1,7 +1,7 @@
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 from django.db.models import Q
 from django.db.models import Sum
-from core.base_views import BaseAuthenticatedView
+from core.authentication import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
@@ -14,7 +14,7 @@ from django.utils import timezone
 from .utils import mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException
 from rest_framework import status
-from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked  
+from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
 from user.constants import USER_ID_OVERLOARDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
@@ -50,7 +50,7 @@ class LoadConversationView(BaseAuthenticatedView):
 
         conversation = self.get_conversation(conversation_id)
         self.validate_conversation_membership(conversation, user)
-    
+
         if conversation.is_group_conversation:
             return error_response(_('Group chats are not supported yet'), status_code=status.HTTP_400_BAD_REQUEST)
 
@@ -90,8 +90,8 @@ class LoadConversationView(BaseAuthenticatedView):
 
         # Prepare the response
         response_data = self.prepare_response(conversation,
-                                              user, 
-                                              serialized_messages, 
+                                              user,
+                                              serialized_messages,
                                               other_user_online,
                                               is_blocking,
                                               is_blocked,
@@ -128,13 +128,13 @@ class LoadConversationView(BaseAuthenticatedView):
             queryset = queryset.filter(id__lt=msgid)
         queryset = queryset.order_by('-created_at')
         return queryset
-    
+
     def process_messages(self, messages_queryset):
         last_seen_msg = messages_queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
         unseen_messages = messages_queryset.filter(seen_at__isnull=True)
         messages = messages_queryset[:NO_OF_MSG_TO_LOAD]
         return messages, last_seen_msg, unseen_messages
-   
+
     def add_separator_message(self, messages, last_seen_msg, unseen_messages):
         if unseen_messages.exists():
             messages_with_separator = []
@@ -159,7 +159,7 @@ class LoadConversationView(BaseAuthenticatedView):
 
     def get_conversation_avatar(self, conversation, other_user):
         if conversation.is_group_conversation:
-            return 'CHAT_AVATAR_GROUP_DEFAULT' 
+            return 'CHAT_AVATAR_GROUP_DEFAULT'
         if other_user.avatar_path:
             return other_user.avatar_path
         return 'DEFAULT_AVATAR'
@@ -233,7 +233,7 @@ class CreateConversationView(BaseAuthenticatedView):
             #if not conversation_name:
             #    return error_response(_("No 'name' provided"), status_code=400)
             #is_group_conversation = True
-        
+
         # Start a transaction to make sure all database operations happen together
         with transaction.atomic():
             # Create the Conversation
@@ -259,7 +259,7 @@ class CreateConversationView(BaseAuthenticatedView):
         async_to_sync(channel_layer.group_send)(
             group_name,
             {
-                "messageType": "newConversation",   
+                "messageType": "newConversation",
                 "type": "new_conversation",
                 "conversationId": new_conversation.id,
                 "isGroupChat": new_conversation.is_group_conversation,

@@ -23,6 +23,7 @@ def barely_handle_exceptions(view_func):
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
             return error_response(_("An unexpected error occurred: {error}").format(error=str(e)))
+
     return wrapper
 
 def barely_handle_ws_exceptions(func):

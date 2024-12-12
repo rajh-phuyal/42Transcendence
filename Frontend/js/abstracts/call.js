@@ -1,32 +1,27 @@
 // abstract out the fetch api to make it easier to call the api
-import $auth from '../auth/authentication.js';
-import { $id } from './dollars.js'
+import { translate } from '../locale/locale.js';
 import $callToast from './callToast.js';
 
-async function call(url, method, data) {
-    // TODO: WHY IS THERE API IN THE URL? [astein is asking :D]
-	const fullUrl = `${window.location.origin}/api/${url}`;
+async function call(url, method, data = null, showToast = true) {
+    const fullUrl = `${window.location.origin}/api/${url}`;
 
     const headers = {
         'Content-Type': 'application/json'
     };
 
-    if ($auth.getAuthHeader() && await $auth.isUserAuthenticated()) {
-        headers['Authorization'] = $auth.getAuthHeader();
-    }
-
     let payload = {
         method: method,
         headers: headers,
-        // TODO why (method !== 'GET' && method !== 'DELETE')?? @rajh
-        ...(url == "user/relationship/" || (method !== 'GET' && method !== 'DELETE')) ? {
+        credentials: 'include',
+        // TODO: fix with issue: #147
+        ...(url == "user/relationship/" || (data && method !== 'GET' && method !== 'DELETE')) ? {
             body: JSON.stringify(data),
         } : {},
     };
+
     const response = await fetch(fullUrl, payload);
 
     if (!response.ok) {
-        // TODO maybe remove this toast I added it for debbuging
         let errorMessage;
 
         try {
@@ -34,13 +29,15 @@ async function call(url, method, data) {
             errorMessage = errorData.message;
         } catch (e) {
             // If parsing the JSON fails, fall back to a generic message
-            errorMessage = 'Request failed';
+            errorMessage = translate("global:call", "requestFailed");
         }
-        
-        if (!errorMessage)
-            errorMessage = 'Request failed';
 
-        $callToast("error", errorMessage)
+        if (!errorMessage)
+            errorMessage = translate("global:call", "requestFailed");
+
+        if (showToast) {
+            $callToast("error", errorMessage)
+        }
 
         throw new Error(errorMessage);
     }

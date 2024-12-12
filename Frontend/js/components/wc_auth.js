@@ -1,10 +1,10 @@
 import $auth from '../auth/authentication.js';
-import $nav from '../abstracts/navigationInit.js';
+import $nav from '../abstracts/nav.js';
 import $store from '../store/store.js';
+import $syncer from '../sync/Syncer.js';
 import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
-import WebSocketManager from '../abstracts/WebSocketManager.js';
 import $callToast from '../abstracts/callToast.js';
 
 // TODO put the css styling in a css file (for all web components)
@@ -101,7 +101,7 @@ class AuthCard extends HTMLElement {
 	disconnectedCallback() {
         document.removeEventListener('keydown', this.handleEscapePress);
     }
-    
+
     handleEscapePress(event) {
         if (event.key === "Escape" && this.displayMode !== "home") {
             this.backButtonClick();
@@ -178,29 +178,34 @@ class AuthCard extends HTMLElement {
         const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
         $auth?.[authAction](usernameField?.value, passwordField?.value)
         .then((response) => {
+            // Initialize the store
             $store.initializer();
 
-			// Update the store with the new user data
+            // Clear the auth cache from before the authentication
+            $auth.clearAuthCache();
+
+            // Set this directly to avoid race condition
+            $auth.isAuthenticated = true;
+
+            // Update the store with the new user data
             $store.commit('setIsAuthenticated', true);
-            $store.commit('setJWTTokens', {
-                access: response.access,
-                refresh: response.refresh
-            });
             $store.commit('setUser', {
                 id: response.userId,
                 username: response.username
             });
 
-            // reinitializes the nav bar
-            $nav();
-
-			// Connect to WebSocket with the new token
-			WebSocketManager.connect(response.access);
+            // update the profile route params
+            $nav({ "/profile": { id: response.userId } });
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
 
             this.showNav();
+
+			// broadcast login to other tabs
+			$syncer.broadcast("authentication-state", { login: true });
+
+            // Add small delay to ensure store updates are processed
             router("/home");
         })
         .catch(error => {
@@ -244,6 +249,7 @@ class AuthCard extends HTMLElement {
 	}
 
 	async registerButtonClick() {
+		console.log("registerButtonClick");
 		const loginButton = this.shadow.getElementById("login-button");
 		const registerButton = this.shadow.getElementById("register-button");
 		const registerSection = this.shadow.getElementById("register-section");
@@ -472,7 +478,7 @@ class AuthCard extends HTMLElement {
 						<button class="back-to-main-button">${this.backButton}</button>
 					</div>
 				</section>
-				
+
 			</div>
 			`;
 		}

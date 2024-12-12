@@ -1,7 +1,7 @@
 import { state } from './states.js';
 import { mutations } from './mutations.js';
 import { actions } from './actions.js';
-import { $getLocal, $setLocal } from '../abstracts/dollars.js';
+import { $getLocal, $removeLocal, $setLocal } from '../abstracts/dollars.js';
 
 class Store {
     constructor(initialState, mutations, actions) {
@@ -9,12 +9,13 @@ class Store {
         this.mutations = mutations;
         this.actions = actions;
         this.mutationListeners = [];
-        this.initializer();
+        this.initializer()
     }
 
     initializer() {
+        console.log("Initializing store: initializer");
         this.state = { ...this.initialState };
-        
+
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
@@ -29,6 +30,10 @@ class Store {
             mutationName: mutationName,
             action: action
         });
+    }
+
+    removeMutationListener(mutationName) {
+        this.mutationListeners = _.filter(this.mutationListeners, listener => listener.mutationName !== mutationName);
     }
 
     notifyListeners(mutationName, newState) {
@@ -57,13 +62,14 @@ class Store {
         $setLocal("store", JSON.stringify(savedObject));
     }
 
-    dispatch(actionName, payload) {
-        this.actions[actionName](this, payload);
+    async dispatch(actionName, payload) {
+        await this.actions[actionName](this, payload);
     }
 
     clear() {
-        this.state = { ...state };
-        $setLocal("store", JSON.stringify(this.state));
+        // Reset to initial state
+        this.state = { ...this.initialState };
+        $removeLocal("store");
     }
 }
 
