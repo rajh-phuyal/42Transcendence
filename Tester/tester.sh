@@ -8,12 +8,14 @@ TESTS_URL="https://docs.google.com/spreadsheets/d/11uhG7xBOxUAyQIAAKTghT1Bh5gUYx
 BLUE="\033[0;36m"
 GREEN="\e[32m"
 RED="\e[31m"
+ORANGE="\e[33m"
+BOLD="\e[1m"
 RESET="\e[0m"
 
 # VARS
 TOTAL_TESTS=0
 TOTAL_TESTS_SUCCESS=0
-COLUMN_WIDTH=0
+TEST_TO_PERFORM=""
 
 # Files
 LOG_FILE="$(dirname "$(realpath "$0")")/results.log"
@@ -21,7 +23,48 @@ CSV_FILE="$(dirname "$(realpath "$0")")/testsFromSheets.csv"
 RESPONSE_FILE="$(dirname "$(realpath "$0")")/response.json"
 ENV_FILE="$(dirname "$(realpath "$0")")/dummy.env"
 
+# To be able to print in color to the terminal and in plain text to the log file
+print_and_log() {
+    local newline=true
+    local color=""
+    local text=""
+
+    # Parse options
+    while [[ "$1" =~ ^- ]]; do
+        case $1 in
+            -n) newline=false ;; # No newline
+            *) break ;;
+        esac
+        shift
+    done
+
+    # Extract color and text
+    color="$1"
+    text="$2"
+
+    # Print to terminal with color
+    if [[ $newline == true ]]; then
+        echo -e "${color}${text}${RESET}"
+    else
+        echo -en "${color}${text}${RESET}"
+    fi
+
+    # Write plain text to log file (without color)
+    if [[ $newline == true ]]; then
+        echo -e "${text}" >> "$LOG_FILE"
+    else
+        echo -en "${text}" >> "$LOG_FILE"
+    fi
+}
+
 create_dummy(){
+    # Ask to create dummy users
+    echo -e "${ORANGE}U need dummy data for the tests to work!${RESET}"
+    echo -e "${ORANGE}If u have created them with a previous run, just press enter${RESET}"
+    read -p "Wanna create dummy data? Input y: " input
+    if [[ -z "$input" ]]; then
+        return
+    fi
     # First create static dummys to also clean db
     echo -e "${BLUE}Running ./deploy.sh dummy...${RESET}"
     bash "$(dirname "$(realpath "$0")")/../deploy.sh" dummy
@@ -49,6 +92,19 @@ create_dummy(){
 }
 
 download_tests(){
+    TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
+    TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
+    if [[ $TOTAL_TESTS -ne 0 ]]; then
+        echo -e "${BLUE}Found ${TOTAL_TESTS} tests in csv file${RESET}"
+        # Ask to download tests
+        echo -e "${ORANGE}U need the tests as csv file!${RESET}"
+        echo -e "${ORANGE}If u have downloaded them with a previous run, just press enter${RESET}"
+        read -p "Wanna download/update tests? Input y: " input
+        if [[ -z "$input" ]]; then
+            return
+        fi
+    fi
+
     # DOWNLOAD
     echo -e "Downloading ${CSV_FILE} from google sheets...\n\t(${TESTS_URL})"
     curl -s -L -o ${CSV_FILE} "${TESTS_URL}export?exportFormat=csv"
@@ -65,13 +121,8 @@ download_tests(){
     fi
     echo -e "\n" >> ${CSV_FILE}
     TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
+    TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
     echo "Found ${TOTAL_TESTS} tests in csv file"
-    COLUMN_WIDTH=$(awk -F',' 'NR > 1 { if (length($3) > max) max = length($3) } END { print max }' "$CSV_FILE")
-    COLUMN_WIDTH=$((COLUMN_WIDTH + 3))
-    if [ $COLUMN_WIDTH -lt 20 ]; then
-        COLUMN_WIDTH=20
-    fi
-    echo "Column width for column description: $COLUMN_WIDTH"
 }
 
 expand_vars(){
@@ -91,31 +142,259 @@ expand_vars(){
     mv $output_file $CSV_FILE
 }
 
-print_logs(){
-    cmd=("$@")
-    {
-        echo -e "############################################################################################################################"
-        echo -e " ~~~ TEST ~~~"
-        echo -e " cmd:   ${cmd[*]}"
-        echo -e " ~~~ RESPONSE ~~~"
-        cat ${RESPONSE_FILE}
-        echo -e "\n############################################################################################################################\n"
-    } >> "$LOG_FILE"
+# ask for a specific test number; if empty runn all tests
+select_test(){
+    read -p "Enter test number (return for all tests): " TEST_TO_PERFORM
+
+    if [[ -n "$TEST_TO_PERFORM" ]]; then
+        TEST_TO_PERFORM=$(printf "%03d" "$TEST_TO_PERFORM")
+        if [[ $TEST_TO_PERFORM > $TOTAL_TESTS ]]; then
+            echo "Test number $TEST_TO_PERFORM does not exist"
+            exit 1
+        fi
+        echo "Running test $TEST_TO_PERFORM"
+    else
+        echo "Running all tests"
+    fi
 }
 
-print_padding(){
-    local text=$1
-    # echo COLUMN_WIDTH: $COLUMN_WIDTH
-    local padding_width=$COLUMN_WIDTH
-    # echo padding_width: $padding_width
-    padding_width=$((padding_width - ${#text}))
-    # echo padding_width: $padding_width
-    # echo "padding_width: $padding_width" and text: $text and text width: ${#text}
-    local padding=$(printf '%*s' "$padding_width" '')
-    echo -en "$text$padding"
+print_test_header(){
+    # Get the vars
+    if [ $# -lt 9 ]; then
+        echo "Error: Insufficient arguments for print_test_header. Expected at least 9 arguments."
+        exit 1
+    fi
+    local test_number=${1}
+    local should_work=${2}
+    local expected=${3}
+    local keys=${4}
+    local short_description=${5}
+    local user=${6}
+    local method=${7}
+    local endpoint=${8}
+    local args=${9}
+
+    if [[ -z "$endpoint" ]]; then
+        endpoint="none"
+    fi
+    if [[ -z "$keys" ]]; then
+        keys="none"
+    fi
+
+    # Print the test header to console and log file
+    print_and_log "" "\n========================================================================================================"
+    print_and_log "${BLUE}" "TEST NO: ${test_number}"
+    print_and_log "" "=================="
+    print_and_log "" "short description:\t${short_description}"
+    print_and_log "" "method:\t\t\t$method"
+    print_and_log "" "endpoint:\t\t$endpoint"
+    print_and_log "" "user:\t\t\t${user:0:20}$( [ ${#user} -gt 20 ] && echo '...' )"
+    print_and_log "" "args:\t\t\t$args"
+    print_and_log -n "" "should work?:\t\t"
+    if [[ $should_work == "+" ]]; then
+        print_and_log "${GREEN}" "+"
+    else
+        print_and_log "${RED}" "-"
+    fi
+    print_and_log "" "expected response code:\t$expected"
+    print_and_log "" "expected response keys:\t$keys"
+    print_and_log "" "========================================================================================================"
 }
 
+# Runs single test
+# - Prints the test to the console
+# - Runs the curl command
+# - Updates the console output
+# - Check the resonse
+# - Updates the log file
+# - Clears the console output
+run_test() {
+    ((TOTAL_TESTS++))
+    echo "TOTAL TESTS: ${TOTAL_TESTS}" >> temp.txt
+    # Get the vars
+    if [ $# -lt 9 ]; then
+        print_and_log "" "Error: Insufficient arguments for run_test. Expected at least 9 arguments."
+        exit 1
+    fi
+    local test_number=${1}
+    local should_work=${2}
+    local expected=${3}
+    local keys=${4}
+    local short_description=${5}
+    local user=${6}
+    local method=${7}
+    local endpoint=${8}
+    local args=${9}
+
+    echo -e "\n========================================================================================================" >> "$LOG_FILE"
+    print_and_log "-n" "${BOLD}" "   ${test_number}:\t"
+    print_and_log "-n" "${BLUE}" "expected:\t"
+    print_and_log "${expected} ${keys} "
+    echo -e "========================================================================================================" >> "$LOG_FILE"
+    echo -e "   ---" >> "$LOG_FILE"
+    if [[ "$user" == "NONE" ]]; then
+        # Curl with no token
+        cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
+          -H "Content-Type: application/json" \
+          -d "$args")
+    else
+        # Curl with token
+        cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $user" \
+            -d "$args")
+    fi
+    # Remove old response file
+    rm -f ${RESPONSE_FILE} | true
+    # Run the curl command
+    HTTP_CODE=$("${cmd[@]}")
+    echo -e "   cmd: ${cmd[@]}" >> "$LOG_FILE"
+    echo -e "   ---" >> "$LOG_FILE"
+
+    # Validate the response
+    local test_successfull=true
+    echo -n "      response code (expected/got): $expected/" >> "$LOG_FILE"
+    echo "$HTTP_CODE" >> "$LOG_FILE"
+    echo -en "${BLUE}\t\t\tresult:\t\t${RESET}"
+    if [[ "$HTTP_CODE" != "$expected" ]]; then
+        echo -en "${RED}${HTTP_CODE} ${RESET}"
+        test_successfull=false
+    else
+        echo -en "${GREEN}${HTTP_CODE} ${RESET}"
+    fi
+
+    echo "      expected keys:" >> "$LOG_FILE"
+    for key in $keys; do
+        echo -ne "         $key:\t" >> "$LOG_FILE"
+        value=$(jq -r ".$key // empty" ${RESPONSE_FILE} 2>/dev/null) || value=""
+        if [[ -n "$value" ]]; then
+            if [[ key == "status" ]]; then
+                if [[ "$should_work" == "+" ]]; then
+                    if [[ "$value" == "success" ]]; then
+                        echo -en " ${GREEN}$value ${RESET}"
+                        echo "$value"  >> "$LOG_FILE"
+                    else
+                        echo -en " ${RED}$value ${RESET}"
+                        echo "$value (expected 'success' !!!)" >> "$LOG_FILE"
+                        test_successfull=false
+                    fi
+                else
+                    if [[ "$value" == "error" ]]; then
+                        echo -en " ${GREEN}$value ${RESET}"
+                        echo "$value"  >> "$LOG_FILE"
+                    else
+                        echo -en " ${RED}$value ${RESET}"
+                        echo "$value (expected 'error' !!!)"  >> "$LOG_FILE"
+                        test_successfull=false
+                    fi
+                fi
+                continue
+            fi
+            echo "$value"  >> "$LOG_FILE"
+            echo -en "${GREEN}$key ${RESET}"
+        else
+            echo "<expected key '$key' is missing!>"  >> "$LOG_FILE"
+            echo -en "${RED}$key ${RESET}"
+            test_successfull=false
+        fi
+    done
+
+    echo "   ---"  >> "$LOG_FILE"
+    echo -n "   result: "  >> "$LOG_FILE"
+    if [[ $test_successfull == true ]]; then
+        echo "ok"  >> "$LOG_FILE"
+        echo -e " | ${GREEN}ok${RESET}"
+        ((TOTAL_TESTS_SUCCESS++))
+    else
+        echo "ko"  >> "$LOG_FILE"
+        echo -e " | ${RED}ko${RESET}"
+    fi
+
+    # Log the response file and delete it
+    echo -e " ---" >> "$LOG_FILE"
+    echo -e " response:" >> "$LOG_FILE"
+    echo -e " ---" >> "$LOG_FILE"
+    (cat "${RESPONSE_FILE}" 2>/dev/null || echo "<No response file found>") >> "$LOG_FILE"
+    rm -f ${RESPONSE_FILE} | true
+}
+
+# This creates multiple tests for one line
+# - The line itself
+# - The line with the other 3 request types
+# - If the line needs a token
+#     -> try without token
+#     -> try with wrong token
+# - If the line needs arguments
+#     -> try withouth arguments
 run_tests(){
+    # Get the vars
+    if [ $# -lt 9 ]; then
+        echo "Error: Insufficient arguments for run_tests. Expected at least 9 arguments."
+        exit 1
+    fi
+    local test_number="${1}"
+    local should_work="${2}"
+    local expected="${3}"
+    local keys="${4}"
+    local short_description="${5}"
+    local user="${6}"
+    local method="${7}"
+    local endpoint="${8}"
+    local args="${9}"
+
+    # Add status and message as a required key
+    if [[ -z "$keys" ]]; then
+        keys="status message"
+    else
+        keys="status message $keys"
+    fi
+
+    print_test_header "$test_number" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
+
+    # A: The line itself
+    test_number_new="${test_number} A  (original)"
+    run_test "$test_number_new" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
+
+    basic_keys="status message"
+
+    # B: The line with the other 3 request types
+    methods=("POST" "GET" "PUT" "DELETE")
+    test_sub_number=1
+    for other_method in "${methods[@]}"; do
+        if [[ "$other_method" == "$method" ]]; then
+            continue
+        fi
+        test_number_new="${test_number} B$test_sub_number ($other_method)"
+        run_test "$test_number_new" "-" "405" "$basic_keys" "$short_description" "$user" "$other_method" "$endpoint" "$args"
+        test_sub_number=$((test_sub_number + 1))
+    done
+
+    # C: If the line needs a token
+    if [[ "$user" != "NONE" ]]; then
+        # C1: try without token
+        test_number_new="${test_number} C1 (no token)"
+        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
+
+        # C2: try with wrong token
+        test_number_new="${test_number} C2 (wrong tok.)"
+        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
+    fi
+
+    # D: If the line needs arguments
+    if [[ "args" != "{}" ]]; then
+        # D1: try withouth arguments
+        test_number_new="${test_number} D1 (no args)"
+        run_test "$test_number_new" "-" "400" "$basic_keys" "$short_description" "$user" "$method" "$endpoint" "{}"
+    fi
+
+    print_and_log "" "========================================================================================================\n"
+}
+
+# This loops trough the CSV file and creates tests for each line
+parse_lines(){
+    # Reset total tests since we generate more tests than lines
+    TOTAL_TESTS=0
+
     echo "cleaning logs..."
     echo "" > $LOG_FILE
     echo "$(date '+%Y-%m-%dT%H:%M:%S')" > $LOG_FILE
@@ -123,21 +402,22 @@ run_tests(){
 
     echo "Running tests..."
     echo "========================================================================================================"
-    echo -en "${BLUE}TEST\t+/-  "
-    print_padding "DESCRIPTION"
-    echo -e "RESPONSE  TYPE    MESSAGE${RESET}"
-    echo "========================================================================================================"
 
     # Read the CSV file line by line
     skip_first_line=true
-    while IFS=',' read -r should_work expected short_description user method endpoint args; do
+    while IFS=',' read -r test_number should_work expected keys short_description user method endpoint args; do
         # Skip the first line
         if $skip_first_line; then
             skip_first_line=false
             continue
         fi
 
-        if [[ -z "$should_work" ]]; then
+        if [[ -z "$test_number" ]]; then
+            continue
+        fi
+
+        # Check if only one test should be run
+        if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_number" != "$TEST_TO_PERFORM" ]]; then
             continue
         fi
         
@@ -150,89 +430,8 @@ run_tests(){
             args=$(echo "$args" | sed -e 's/^"//' -e 's/"$//' -e 's/""/"/g')
         fi
 
-        if [[ "$user" == "NONE" ]]; then
-            # Curl with no token
-            cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
-              -H "Content-Type: application/json" \
-              -d "$args")
-        else
-            # Curl with token
-            cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
-                -H "Content-Type: application/json" \
-                -H "Authorization: Bearer $user" \
-                -d "$args")
-        fi
-
-        # Run the curl command
-        HTTP_CODE=$("${cmd[@]}")
-        print_logs "${cmd[@]}"
-
-        # Format the output
-        if [[ "$HTTP_CODE" == "$expected" ]]; then
-            echo -en "${GREEN} ok${RESET}\t"
-            ((TOTAL_TESTS_SUCCESS++))
-        else
-            echo -en "${RED} ko${RESET}\t"
-        fi
-        if [[ $should_work == "+" ]]; then
-            echo -en "${GREEN} +   ${RESET}"
-        else
-            echo -en "${RED} -   ${RESET}"
-        fi
-        print_padding "$short_description"
-        if [[ "$HTTP_CODE" == "$expected" ]]; then
-            echo -en "${GREEN}$HTTP_CODE${RESET}"
-        else
-            echo -en "${RED}$HTTP_CODE${RESET}"
-        fi
-        echo -en "/${GREEN}$expected${RESET}"
-        echo -en "   "
-        # Parse the response JSON for "message"
-        status=$(jq -r '.status // empty' ${RESPONSE_FILE} 2>/dev/null) || status=""
-        message=$(jq -r '.message // empty' ${RESPONSE_FILE} 2>/dev/null) || message=""
-        if [[ "$status" == "error" ]]; then
-            echo -en "${RED}error   ${RESET}"
-        elif [[ "$status" == "success" ]]; then
-            echo -en "${GREEN}success ${RESET}"
-        else
-            echo -en "${RED}???     ${RESET}"
-        fi
-        if [[ -n "$message" ]]; then
-            echo -en "$message\n"
-        else
-            echo -en "${RED}<message key is missing!>${RESET}\n"
-        fi
-
-#            printf "${GREEN}%s${RESET}" "$HTTP_CODE"
-#        else
-#            printf "${RED}expected/is %s/%s${RESET}" "$expected" "$HTTP_CODE"
-#            print_logs "${cmd[@]}"
-#        fi
-        # run_curl "${cmd[@]}"
+        run_tests "$test_number" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
     done < "$CSV_FILE"
-
-
-        # Print or process the test case
-        # echo "Running Test:"
-        # echo "Should Work: $should_work"
-        # echo "Expected: $expected"
-        # echo "Description: $short_description"
-        # echo "User: $user"
-        # echo "Method: $method"
-        # echo "Endpoint: $endpoint"
-        # echo "Args: $clean_args"
-
-        # Example: Mock a request using curl (if this were an HTTP API)
-        #if [[ $method == "POST" ]]; then
-        #    response=$(curl -s -o /dev/null -w "%{http_code}" -X POST -d "$clean_args" "http://localhost$endpoint")
-        #    echo "Received Response Code: $response"
-        #    if [[ $response -eq $expected ]]; then
-        #        echo "Test Passed!"
-        #    else
-        #        echo "Test Failed!"
-        #    fi
-        #fi
-        #echo "----------------------------"
 }
 
 print_summary(){
@@ -240,24 +439,25 @@ print_summary(){
     if [ $TOTAL_TESTS -eq 0 ]; then
         success_rate=0
     else
-        if [ "$TOTAL_TESTS_SUCCESS" -eq "$TOTAL_TESTS" ]; then
-            echo -e "\n========================================================================================================"
-            echo -e "${GREEN} All tests passed!${RESET}"
-            echo -e "========================================================================================================"
-        else
-            echo -e "\n========================================================================================================"
-            echo -e "${RED} Some tests failed. See '$LOG_FILE' for details.${RESET}"
-            echo -e "========================================================================================================"
-        fi
+        success_rate=$((${TOTAL_TESTS_SUCCESS} * 100 / ${TOTAL_TESTS}))
     fi
-    success_rate=$(($TOTAL_TESTS_SUCCESS * 100 / $TOTAL_TESTS))
-    echo " ${TOTAL_TESTS_SUCCESS}/${TOTAL_TESTS} (${success_rate} % success)"
-    echo -e "\n"
+    if [ "$TOTAL_TESTS_SUCCESS" -eq "$TOTAL_TESTS" ]; then
+        print_and_log "" "\n========================================================================================================"
+        print_and_log "${GREEN}" " All tests passed!"
+        print_and_log "" "========================================================================================================"
+    else
+        print_and_log "" "\n========================================================================================================"
+        print_and_log "${RED}" " Some tests failed. See '$LOG_FILE' for details."
+        print_and_log "" "========================================================================================================"
+    fi
+    print_and_log "" " ${TOTAL_TESTS_SUCCESS}/${TOTAL_TESTS} (${success_rate} % success)"
+    print_and_log "" "\n"
 }
 
 # MAIN SCRIPT LOGIC
 create_dummy
 download_tests
 expand_vars
-run_tests
+select_test
+parse_lines
 print_summary
