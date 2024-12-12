@@ -16,6 +16,7 @@ RESET="\e[0m"
 TOTAL_TESTS=0
 TOTAL_TESTS_SUCCESS=0
 TEST_TO_PERFORM=""
+UPPER_TEST_RANGE=""
 
 # Files
 LOG_FILE="$(dirname "$(realpath "$0")")/results.log"
@@ -144,17 +145,33 @@ expand_vars(){
 
 # ask for a specific test number; if empty runn all tests
 select_test(){
-    read -p "Enter test number (return for all tests): " TEST_TO_PERFORM
+    echo "cleaning logs..."
+    echo "" > $LOG_FILE
+    echo "$(date '+%Y-%m-%dT%H:%M:%S')" > $LOG_FILE
+    echo "--------------------------------------------" >> $LOG_FILE
 
-    if [[ -n "$TEST_TO_PERFORM" ]]; then
-        TEST_TO_PERFORM=$(printf "%03d" "$TEST_TO_PERFORM")
-        if [[ $TEST_TO_PERFORM > $TOTAL_TESTS ]]; then
+    echo -e "Enter test number\n\t${BOLD}return${RESET}\tfor all tests\n\t${BOLD}42${RESET}\tonly test with number: 42\n\t${BOLD}-42${RESET}\tfor range 1-42"
+    read -p "choose: " INPUT
+
+    if [[ -n "$INPUT" ]]; then
+        if [[ $INPUT == -* ]]; then
+            UPPER_TEST_RANGE=${INPUT:1}
+            UPPER_TEST_RANGE=$(printf "%03d" "$UPPER_TEST_RANGE")
+            if [[ $UPPER_TEST_RANGE -gt $TOTAL_TESTS ]]; then
+                print_and_log "" "Test number $UPPER_TEST_RANGE does not exist"
+                print_and_log "" "Ignoring range aka running all tests"
+            fi
+            print_and_log "" "Running tests 001-$UPPER_TEST_RANGE"
+            return
+        fi
+        TEST_TO_PERFORM=$(printf "%03d" "$INPUT")
+        if [[ $TEST_TO_PERFORM -gt $TOTAL_TESTS ]]; then
             echo "Test number $TEST_TO_PERFORM does not exist"
             exit 1
         fi
-        echo "Running test $TEST_TO_PERFORM"
+        print_and_log "" "Running test $TEST_TO_PERFORM"
     else
-        echo "Running all tests"
+        print_and_log "" "Running all tests"
     fi
 }
 
@@ -394,11 +411,6 @@ parse_lines(){
     # Reset total tests since we generate more tests than lines
     TOTAL_TESTS=0
 
-    echo "cleaning logs..."
-    echo "" > $LOG_FILE
-    echo "$(date '+%Y-%m-%dT%H:%M:%S')" > $LOG_FILE
-    echo "--------------------------------------------" >> $LOG_FILE
-
     echo "Running tests..."
     echo "========================================================================================================"
 
@@ -418,6 +430,11 @@ parse_lines(){
         # Check if only one test should be run
         if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_number" != "$TEST_TO_PERFORM" ]]; then
             continue
+        fi
+
+        # Check if only a range of tests should be run
+        if [[ -n "$UPPER_TEST_RANGE" ]] && [[ "$test_number" -gt "$UPPER_TEST_RANGE" ]]; then
+            break
         fi
 
         # Check if test is marekd as active
