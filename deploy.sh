@@ -719,7 +719,7 @@ run_test() {
 echo ""
 perform_task_with_spinner \
 	"Welcome to Barely Alive" \
-	'sleep 1' \
+	'sleep 0.1' \
 	"Let's go" \
 	"Failed to print welcome message." \
 	false

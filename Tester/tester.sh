@@ -210,7 +210,6 @@ print_test_header(){
 # - Clears the console output
 run_test() {
     ((TOTAL_TESTS++))
-    echo "TOTAL TESTS: ${TOTAL_TESTS}" >> temp.txt
     # Get the vars
     if [ $# -lt 9 ]; then
         print_and_log "" "Error: Insufficient arguments for run_test. Expected at least 9 arguments."
@@ -303,11 +302,11 @@ run_test() {
     echo -n "   result: "  >> "$LOG_FILE"
     if [[ $test_successfull == true ]]; then
         echo "ok"  >> "$LOG_FILE"
-        echo -e " | ${GREEN}ok${RESET}"
+        echo -e " | ${GREEN}ok\n${RESET}"
         ((TOTAL_TESTS_SUCCESS++))
     else
         echo "ko"  >> "$LOG_FILE"
-        echo -e " | ${RED}ko${RESET}"
+        echo -e " | ${RED}ko\n${RESET}"
     fi
 
     # Log the response file and delete it
@@ -405,7 +404,7 @@ parse_lines(){
 
     # Read the CSV file line by line
     skip_first_line=true
-    while IFS=',' read -r test_number should_work expected keys short_description user method endpoint args; do
+    while IFS=',' read -r test_number active should_work expected keys short_description user method endpoint args; do
         # Skip the first line
         if $skip_first_line; then
             skip_first_line=false
@@ -415,9 +414,15 @@ parse_lines(){
         if [[ -z "$test_number" ]]; then
             continue
         fi
-
+        
         # Check if only one test should be run
         if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_number" != "$TEST_TO_PERFORM" ]]; then
+            continue
+        fi
+
+        # Check if test is marekd as active
+        if [[ "$active" != "x" ]]; then
+            print_and_log "${RED}" "Skipping test $test_number because it is not marked as active in sheet!"
             continue
         fi
         
