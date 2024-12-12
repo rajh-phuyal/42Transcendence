@@ -95,11 +95,10 @@ create_dummy(){
 download_tests(){
     TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
     TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
-    if [[ $TOTAL_TESTS -ne 0 ]]; then
+    if [[ $TOTAL_TESTS -ne -2 ]]; then
         echo -e "${BLUE}Found ${TOTAL_TESTS} tests in csv file${RESET}"
         # Ask to download tests
-        echo -e "${ORANGE}U need the tests as csv file!${RESET}"
-        echo -e "${ORANGE}If u have downloaded them with a previous run, just press enter${RESET}"
+        echo -e "${ORANGE}If u don't wanna update/download them again, just press enter${RESET}"
         read -p "Wanna download/update tests? Input y: " input
         if [[ -z "$input" ]]; then
             return
