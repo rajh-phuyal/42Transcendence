@@ -5,6 +5,7 @@ from django.utils import timezone
 from asgiref.sync import sync_to_async
 from django.utils.translation import gettext as _
 from .constants import DEFAULT_AVATAR
+from django.core.cache import cache
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -22,6 +23,15 @@ class User(AbstractUser):
         self.last_login = timezone.now()
         self.save(update_fields=['last_login'])
     
+    def set_online_status(self, status):
+        if status:
+            cache.set(f'user_online_{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
+        else:
+            cache.delete(f'user_online_{self.id}')
+
+    def get_online_status(self):
+        return cache.get(f'user_online_{self.id}', default=False)
+
     def __str__(self):
         return f"id:{self.id}({self.username})"
 

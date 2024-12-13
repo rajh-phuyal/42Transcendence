@@ -116,3 +116,14 @@ def create_tournament(creator_id, name, local_tournament, public_tournament, map
                 tournament_member.save()
         return tournament
 
+def get_tournament_and_member(user, tournament_id, need_admin=False):
+    # Get the tournament
+    tournament = Tournament.objects.get(id=tournament_id).select_for_update()
+    try:
+        tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id).select_for_update()
+    except TournamentMember.DoesNotExist:
+        raise BarelyAnException(_("You are not a member of the tournament"))
+    # Check if the user is the admin of the tournament
+    if need_admin and not tournament_member.is_admin:
+        raise BarelyAnException(_("You are not the admin of the tournament"))
+    return tournament, tournament_member

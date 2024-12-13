@@ -3,9 +3,12 @@ from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
 from game.models import Game, GameMember
+from tournament.models import Tournament, TournamentMember, TournamentState
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from tournament.utils import create_tournament
+from tournament.utils import create_tournament, get_tournament_and_member
+from core.exceptions import BarelyAnException
+
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
@@ -21,3 +24,152 @@ class CreateTournamentView(BaseAuthenticatedView):
             opponent_ids=request.data.get('opponentIds')
         )
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})
+    
+class DeleteTournamentView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def delete(self, request, id):
+        user = request.user
+        try:
+            tournament, tournament_member = get_tournament_and_member(user, id, check_admin=True)
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
+
+        # Check if the tournament has already started
+        if not tournament.state == TournamentState.SETUP:
+            return error_response(_("Tournament can only be deleted if it is in setup state"))
+        # Delete the tournament
+        with transaction.atomic():
+            tournament_games = Game.objects.filter(tournament_id=tournament.id)
+            tournament_game_members = GameMember.objects.filter(game__in=tournament_games)
+            tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+            # Delete in reverse order to avoid foreign key constraint errors
+            tournament_game_members.delete()
+            tournament_games.delete()
+            tournament_members.delete()
+            tournament.delete()
+        return success_response(_("Tournament deleted successfully"))
+class JoinTournamentView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def put(self, request, id):
+        user = request.user
+        # Get the tournament
+        tournament = Tournament.objects.get(id=id).select_for_update()
+        # Check if already a member
+        try:
+            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
+            # Check if already accepted
+            if tournament_member.accepted:
+                return error_response(_("You have already accepted this tournament invitation"))
+            # Accept the invitation
+            with transaction.atomic():
+                if tournament.state != TournamentState.SETUP:
+                    return error_response(_("Tournament has already started"))
+                else:
+                    TournamentMember.objects.get(id=tournament_member.id).select_for_update().update(accepted=True)
+                    # TODO: send websocket update message to update the lobby
+                    return success_response(_("Tournament invitation accepted"))
+            # Error is caught by decorator
+        except TournamentMember.DoesNotExist:
+            if not tournament.public_tournament:
+                return error_response(_("You are not invited to this tournament"))
+            else:
+                # Join the public tournament
+                with transaction.atomic():
+                    if tournament.state != TournamentState.SETUP:
+                        return error_response(_("Tournament has already started"))
+                    else:
+                        tournament_member = TournamentMember.objects.create(
+                            user=user,
+                            tournament=tournament,
+                            tournament_alias=user.username,
+                            accepted=True
+                        )
+                        tournament_member.save()
+                        # TODO: send websocket update message to update the lobby
+                        return success_response(_("Tournament joined successfully"))
+                # Error is caught by decorator
+class LeaveTournamentView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def delete(self, request, id):
+        user = request.user
+        try:
+            tournament, tournament_member = get_tournament_and_member(user, id)
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
+        # Check if the tournament has already started
+        if not tournament.state == TournamentState.SETUP:
+            return error_response(_("Tournament can only be left if it is in setup state"))
+        # Check if the user is the admin of the tournament
+        if tournament_member.is_admin:
+            return error_response(_("Admin can't leave the tournament. Please delete the tournament instead"))
+        # Delete the tournament member
+        tournament_member.delete()
+        return success_response(_("Tournament left successfully"))
+        # TODO: check if there are enough players left and cancel the tournament
+        # TODO: send websocket update message to admin to update the lobby
+
+class StartTournamentView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def put(self, request, id):
+        user = request.user
+        try:
+            tournament, tournament_member = get_tournament_and_member(user, id, check_admin=True)
+        except BarelyAnException as e:
+            return error_response(str(e.detail), e.status_code)
+        # Check if the tournament has already started
+        if not tournament.state == TournamentState.SETUP:
+            return error_response(_("Tournament can only be started if it is in setup state"))
+        # Check if at least 3 members are there
+        tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id, accepted=True)
+        tournament_members_count = tournament_members.count()
+        # Check if all members are online
+        if not all([tournament_members.user.get_online_status() for tournament_members in tournament_members]):
+            return error_response(_("All members must be online to start the tournament"))
+        # Start the tournament
+        with transaction.atomic():
+            tournament.state = 'ongoing'
+            tournament.save()
+            # Remove all persons who have not accepted the invitation
+            TournamentMember.objects.filter(tournament_id=tournament.id, accepted=False).select_for_update().delete()
+            # Create the games
+            # TODO:
+        # TODO: Send websocket update message to all members to start the game
+        return success_response(_("Tournament started successfully"))
+class TournamentLobbyView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, id):
+        user = request.user
+        role = ""
+        tournament = Tournament.objects.get(id=id)
+        try:
+            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
+            if tournament_member.is_admin:
+                role = "admin"
+            else:
+                if tournament_member.accepted:
+                    role = "member"
+                else:
+                    role = "invited"
+        except TournamentMember.DoesNotExist:
+            role = "fan"
+        
+        # Get all members of the tournament
+        tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+
+        # Get all games of the tournament
+        games = Game.objects.filter(tournament_id=tournament.id)
+
+        # Get details of the tournament
+        response_json = {
+            'tournamentId': tournament.id,
+            'tournamentName': tournament.name,
+            'tournamentState': tournament.state,
+            'tournamentMapNumber': tournament.map_number,
+            'tournamentPowerups': tournament.powerups,
+            'tournamentPublic': tournament.public_tournament,
+            'tournamentLocal': tournament.local_tournament,
+            'clientRole': role,
+            'tournamentMembers': tournament_members,
+            'tournamentGames': games
+        }
+        return success_response(_("Tournament lobby fetched successfully"), **response_json)
