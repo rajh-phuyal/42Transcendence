@@ -364,7 +364,6 @@ run_tests(){
     local method="${7}"
     local endpoint="${8}"
     local args="${9}"
-
     # Add status and message as a required key
     if [[ -z "$keys" ]]; then
         keys="status message"
@@ -404,7 +403,7 @@ run_tests(){
     fi
 
     # D: If the line needs arguments
-    if [[ "args" != "{}" ]]; then
+    if [[ -n "$args" ]]; then
         # D1: try withouth arguments
         test_number_new="${test_number} D1 (no args)"
         run_test "$test_number_new" "-" "400" "$basic_keys" "$short_description" "$user" "$method" "$endpoint" "{}"
