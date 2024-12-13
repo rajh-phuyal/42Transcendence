@@ -3,6 +3,7 @@ from django.db import models
 from core.exceptions import BarelyAnException
 from django.utils import timezone
 from asgiref.sync import sync_to_async
+from django.utils.translation import gettext as _
 from .constants import DEFAULT_AVATAR
 
 # Table: barelyaschema.user
@@ -39,7 +40,7 @@ class IsCoolWith(models.Model):
     class Meta:
         db_table = '"barelyaschema"."is_cool_with"'
         unique_together = ('requester', 'requestee')
-        
+
     def clean(self):
         if self.pk:
             return

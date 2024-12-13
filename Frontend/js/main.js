@@ -1,4 +1,4 @@
-import $nav from './abstracts/navigationInit.js';
+import $nav from './abstracts/nav.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
@@ -6,7 +6,7 @@ import { routes } from './navigation/routes.js';
 import $store from './store/store.js';
 import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
-
+import { translate } from './locale/locale.js';
 setViewLoading(true);
 
 try {
@@ -18,9 +18,6 @@ try {
     console.error('Error importing web components:', error);
 }
 
-// Initializes the nav bar
-$nav();
-
 
 window.addEventListener('popstate', () => {
     router(window.location.pathname)
@@ -29,10 +26,20 @@ window.addEventListener('popstate', () => {
 // get the translations for all the registered views
 $store.dispatch('loadTranslations', routes.map(route => route.view));
 
+// Initializes the nav bar
+$nav();
+
 
 // go to path only after the translations are loaded
-$store.addMutationListener('setTranslations', (state) => {
-    router(window.location.pathname);
+$store.addMutationListener('setTranslations', () => {
+    // get the current route and its params
+    const currentRoute = window.location.pathname;
+    const currentParams = window.location.search;
+
+    // make the current params an object
+    const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
+
+    router(currentRoute, currentParamsObject);
 
     // set the loading to false
     setViewLoading(false);
@@ -40,28 +47,19 @@ $store.addMutationListener('setTranslations', (state) => {
 
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
-    
-    if (state)
-    {
+    if (state) {
         console.log("Web socket is connected!");
-        if (setInervalId){
-            $callToast("success", "Connection re-established. What ever...")
+        if (setInervalId) {
+            $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
+            setInervalId = undefined;
         }
-    }
-    else
-    {
+    } else {
         console.log("Web socket is disconnected!");
-        if (!setInervalId) {
-            if (!$store.fromState('jwtTokens').access)
-            {
-                clearInterval(setInervalId);
-                return ;
-            }
-            $callToast("error", "Connection error. But remember that the overlords are STILL watching...")
-            // TODO:  we need to change it to exponentially increase instead of fixed 2000
+        if (!setInervalId && $store.fromState('isAuthenticated')) {
+            $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {
-                WebSocketManager.connect($store.fromState('jwtTokens').access);
+                WebSocketManager.connect();
             }, 2000);
         }
     }

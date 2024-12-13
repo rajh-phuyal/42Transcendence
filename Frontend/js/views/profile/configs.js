@@ -67,7 +67,7 @@ export default {
                     this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
                 }
             }
-            
+
         },
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
@@ -217,9 +217,7 @@ export default {
             fetch(window.origin + '/api/user/update-avatar/', {
                 method: 'PUT',
                 body: formData,
-                headers: {
-                    'Authorization': $auth.getAuthHeader(),
-                }
+                credentials: 'include',
             }).then(response => {
                 if (!response.ok) {
                     console.log('Error uploading the image');
@@ -307,6 +305,7 @@ export default {
             }).then(data => {
                 this.hideModal("edit-profile-modal");
                 $callToast("success", data.message);
+                this.$store.commit("setLocale", language);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
@@ -321,7 +320,7 @@ export default {
                 router(`/profile`, {id: this.result.id});
             })
 
-            
+
         },
 
         openChatModal() {
@@ -414,7 +413,7 @@ export default {
         clickFriendCard(event) {
 
             let element = event.srcElement.getAttribute("user-id");
-            
+
             if (element == null)
                 element = event.srcElement.parentElement.getAttribute("user-id");
             const params = { id: element };
@@ -427,7 +426,7 @@ export default {
             for (let element of this.friendList){
                 const container = this.domManip.$id("friends-list-modal-list-element-template").content.cloneNode(true);
                 const elementDiv = container.querySelector(".friends-list-modal-list-element");
-                
+
                 elementDiv.setAttribute("user-id", element.id);
                 elementDiv.setAttribute("id", "friends-list-modal-list-element-user-" + element.username);
 
@@ -440,7 +439,7 @@ export default {
         },
 
         openFriendList() {
-            
+
             call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
 
                 this.removeFriendsList();
@@ -483,7 +482,7 @@ export default {
                 Object.entries(this.friendList).filter(([key, value]) => !value.username.startsWith(inputValue))
             );
 
-            if (Object.values(filteredObj).length === this.friendList.length) 
+            if (Object.values(filteredObj).length === this.friendList.length)
                 this.showElement("friends-list-modal-list-result-not-found-message");
 
             for (let [key, element] of Object.entries(filteredObj)) {
@@ -554,7 +553,6 @@ export default {
         },
 
         afterDomInsertion() {
-            console.log(this.routeParams);
             call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log(res);
