@@ -6,6 +6,8 @@
 ALL_TABLES=("barelyaschema.dev_user_data"
             "barelyaschema.game_member"
             "barelyaschema.game"
+            "barelyaschema.tournament_member"
+            "barelyaschema.tournament"
 			"barelyaschema.is_cool_with" 
 			"barelyaschema.no_cool_with" 
 			"barelyaschema.message" 
