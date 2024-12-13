@@ -26,9 +26,9 @@ USERNAMES=(
 )
 
 # Colors for output
-RED="\e[31m"
-GREEN="\e[32m"
-RESET="\e[0m"
+GREEN="\033[0;32m"
+RED="\033[0;31m"
+RESET="\033[0m"
 
 # Function to register a user and export tokens
 register_user() {

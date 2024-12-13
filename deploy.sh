@@ -120,7 +120,7 @@ GR='\033[0;32m'
 BL='\033[0;36m'
 NC='\033[0m'
 # BOLD
-BOLD='\e[1m'
+BOLD="\033[1m"
 #
 # MORE INFO AT:
 # https://github.com/rajh-phuyal/42Transcendence/wiki/

@@ -6,11 +6,11 @@ TESTS_URL="https://docs.google.com/spreadsheets/d/11uhG7xBOxUAyQIAAKTghT1Bh5gUYx
 
 # Colors for output
 BLUE="\033[0;36m"
-GREEN="\e[32m"
-RED="\e[31m"
-ORANGE="\e[33m"
-BOLD="\e[1m"
-RESET="\e[0m"
+GREEN="\033[0;32m"
+RED="\033[0;31m"
+ORANGE="\033[0;33m"
+BOLD="\033[1m"
+RESET="\033[0m"
 
 # VARS
 TOTAL_TESTS=0
