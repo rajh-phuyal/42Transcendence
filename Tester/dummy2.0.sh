@@ -41,17 +41,17 @@ register_user() {
     while true; do
         HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$REGISTER_ENDPOINT" \
             -H "Content-Type: application/json" \
-            -d "$payload")
+            -d "$payload" \
+            -c temp_cookie.txt)
 
-        if [ "$HTTP_CODE" -eq 201 ]; then
+        if [ "$HTTP_CODE" -eq 200 ]; then
             output+="${GREEN}$username${RESET}"
             echo -e "$output"
             # Parse JSON response and export variables
             USER_ID=$(jq -r '.userId' ${RESPONSE_FILE})
-            ACCESS_TOKEN=$(jq -r '.access' ${RESPONSE_FILE})
-            REFRESH_TOKEN=$(jq -r '.refresh' ${RESPONSE_FILE})
+            ACCESS_TOKEN=$(awk '/access_token/ {print $NF}' temp_cookie.txt)
+            REFRESH_TOKEN=$(awk '/refresh_token/ {print $NF}' temp_cookie.txt)
             USER_NAME=$(jq -r '.username' ${RESPONSE_FILE})
-
             # Export variables with the original base username prefix
             export ${base_username^^}_ID="$USER_ID"
             export ${base_username^^}_ACCESS="$ACCESS_TOKEN"
@@ -76,6 +76,7 @@ register_user() {
             fi
         fi
     done
+    rm temp_cookie.txt
 }
 
 update_user_details(){
@@ -92,7 +93,7 @@ update_user_details(){
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X PUT "$BASE_URL$USER_UPDATE_INFO" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $access_token" \
+        --cookie "access_token=$access_token" \
         -d "$payload")
 
     if [ "$HTTP_CODE" -eq 200 ]; then
@@ -115,7 +116,7 @@ send_friend_request() {
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $access_token" \
+        --cookie "access_token=$access_token" \
         -d "$payload")
 
     if [ "$HTTP_CODE" -eq 201 ]; then
@@ -139,7 +140,7 @@ accept_friend_request() {
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X PUT "$BASE_URL$RELATIONSHIP_ENDPOINT" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $access_token" \
+        --cookie "access_token=$access_token" \
         -d "$payload")
 
     if [ "$HTTP_CODE" -eq 200 ]; then
@@ -163,7 +164,7 @@ block_user() {
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $access_token" \
+        --cookie "access_token=$access_token" \
         -d "$payload")
 
     if [ "$HTTP_CODE" -eq 201 ]; then
@@ -188,7 +189,7 @@ create_chat() {
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$CREATE_CHAT_ENDPOINT" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $access_token" \
+        --cookie "access_token=$access_token" \
         -d "$payload")
 
     if [ "$HTTP_CODE" -eq 200 ]; then
@@ -215,7 +216,7 @@ create_game() {
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$CREATE_GAME_ENDPOINT" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $access_token" \
+        --cookie "access_token=$access_token" \
         -d "$payload")
 
     if [ "$HTTP_CODE" -eq 200 ]; then
