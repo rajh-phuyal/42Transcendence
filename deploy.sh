@@ -40,7 +40,7 @@ CONTAINERS=""
 ENV_PATH_FILE=".transcendence_env_path"
 #
 # COMMANDS:
-ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re" "dummy")
+ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re" "dummy" "test")
 # Join the array in a single string for error messages
 ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #
@@ -58,6 +58,7 @@ ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #	| `re`    | `fclean` + `start`                                                                                                     |
 #	|---------|------------------------------------------------------------------------------------------------------------------------|
 #	| `dummy` | Puts dummy data into the database                                                                                      |
+#	| `test`  | Starts as script to test the backend api                                                                               |
 #
 # CONTAINER:
 ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
@@ -119,14 +120,14 @@ GR='\033[0;32m'
 BL='\033[0;36m'
 NC='\033[0m'
 # BOLD
-BOLD='\e[1m'
+BOLD="\033[1m"
 #
 # MORE INFO AT:
 # https://github.com/rajh-phuyal/42Transcendence/wiki/
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
 # to this line number - 2
-HELP_ENDS_AT_LINE=126
+HELP_ENDS_AT_LINE=127
 # ------------------------------------------------------------------------------
 
 ################################################################################
@@ -662,13 +663,30 @@ docker_re() {
 	docker_start
 }
 
+check_healthy() {
+    if [[ " ${ALLOWED_CONTAINERS[*]} " =~ " $1 " ]]; then
+        if perform_task_with_spinner \
+            "Checking if the container $1 is healthy" \
+            "[ $(docker inspect --format='{{.State.Health.Status}}' $1 2>/dev/null) = "healthy" ]" \
+            "$1 container is up and healthy" \
+            "$1 container isn't running (or unhealthy)!" \
+            true; then
+            return 0 # Success
+        else
+            return 1 # Failure
+        fi
+    else
+        print_error "Invalid container: '$1' (only '${ALLOWED_CONTAINERS[*]}' are allowed!)"
+        return 1 # Failure
+    fi
+}
+
 insert_dummy_data() {
-	perform_task_with_spinner \
-		"Checking if the database is online" \
-		"[ $(docker ps --filter 'health=healthy' --filter 'name=db' | wc -l) -eq 2 ];" \
-		"db container is up and healthy" \
-		"db container isn't running (or unhealthy)!\nRun './deploy.sh start db' first!" \
-		false
+	check_healthy "db"
+    if [[ $? -eq 1 ]]; then
+        print_header "${RD}" "The database is not running (or unhealthy)!\nRun './deploy.sh start db' first!"
+        exit 1
+    fi
 
 	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL THE DATA FROM THE DATABASE AND INSERT DUMMY DATA INSTEAD (y/n): "
 	read -p "choose: " confirm
@@ -682,6 +700,17 @@ insert_dummy_data() {
 	print_header "${OR}" "Inserting dummy data into the database...${GR}DONE${NC}"
 }
 
+run_test() {
+    # TODO: When healthceck is implemented, check if the backend is healthy
+    # check_healthy "be"
+    if [[ $? -eq 1 ]]; then
+        print_header "${RD}" "The backend is not running (or unhealthy)!\nRun './deploy.sh start be' first!"
+        exit 1
+    fi
+    print_header "${BL}" "Starting the tester...${NC}"
+    bash "$(dirname "$(realpath "$0")")/Tester/tester.sh"
+}
+
 ################################################################################
 #       Main Script
 ################################################################################
@@ -690,7 +719,7 @@ insert_dummy_data() {
 echo ""
 perform_task_with_spinner \
 	"Welcome to Barely Alive" \
-	'sleep 1' \
+	'sleep 0.1' \
 	"Let's go" \
 	"Failed to print welcome message." \
 	false
@@ -735,9 +764,11 @@ case "$COMMAND" in
         print_server_urls
 		;;
 	dummy)
-		check_setup
 		insert_dummy_data
 		;;
+    test)
+        run_test
+        ;;
 	*)
 		print_error "Invalid command: >${COMMAND}<, run >./deploy.sh help< to see the available commands."
 		;;

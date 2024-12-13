@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext as _, activate
 from core.exceptions import BarelyAnException
+from core.response import error_response
 import logging
 
 
@@ -36,3 +37,29 @@ class BaseAuthenticatedView(APIView):
         logging.info(f"User {request.user} has preferred language {preferred_language}")
 
         return request
+
+    # We don't want to allow any methods by default
+    # If a child class wants to allow a method it has to overwrite it
+    def post(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def put(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def get(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def delete(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
