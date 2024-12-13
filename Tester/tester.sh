@@ -58,6 +58,29 @@ print_and_log() {
     fi
 }
 
+check_for_envs(){
+    source ${ENV_FILE}
+    # Check if all tokens are there
+    if [ -z "$JOHN_ACCESS" ] || [ -z "$ARABELO_ACCESS" ] || [ -z "$ASTEIN_ACCESS" ] || [ -z "$ANSHOVAH_ACCESS" ] || [ -z "$FDAESTR_ACCESS" ] || [ -z "$RPHUYAL_ACCESS" ]; then
+        echo -e "${RED}Not all USER_ACCESS vars are set!${RESET}"
+        echo -e "${ORANGE}Rerun this script and allow the dummy data to be created${RESET}"
+        exit 1
+    fi
+    # Check if all IDs are there
+    if [ -z "$JOHN_ID" ] || [ -z "$ARABELO_ID" ] || [ -z "$ASTEIN_ID" ] || [ -z "$ANSHOVAH_ID" ] || [ -z "$FDAESTR_ID" ] || [ -z "$RPHUYAL_ID" ]; then
+            echo -e "${RED}Not all USER_ID vars are set!${RESET}"
+            echo -e "${ORANGE}Rerun this script and allow the dummy data to be created${RESET}"
+        exit 1
+    fi
+    # Check if all usernames are there
+    if [ -z "$JOHN_USERNAME" ] || [ -z "$ARABELO_USERNAME" ] || [ -z "$ASTEIN_USERNAME" ] || [ -z "$ANSHOVAH_USERNAME" ] || [ -z "$FDAESTR_USERNAME" ] || [ -z "$RPHUYAL_USERNAME" ]; then
+        echo -e "${RED}Not all USER_USERNAME vars are set!${RESET}"
+        echo -e "${ORANGE}Rerun this script and allow the dummy data to be created${RESET}"
+        exit 1
+    fi
+}
+
+
 create_dummy(){
     # Ask to create dummy users
     echo -e "${ORANGE}U need dummy data for the tests to work!${RESET}"
@@ -75,21 +98,7 @@ create_dummy(){
     sleep 1
     source $ENV_FILE
     echo -e "${BLUE}Running dummy2.0.sh...${GREEN}done${RESET}"
-    # Check if all tokens are there
-    if [ -z "$JOHN_ACCESS" ] || [ -z "$ARABELO_ACCESS" ] || [ -z "$ASTEIN_ACCESS" ] || [ -z "$ANSHOVAH_ACCESS" ] || [ -z "$FDAESTR_ACCESS" ] || [ -z "$RPHUYAL_ACCESS" ]; then
-        echo -e "${RED}Not all USER_ACCESS vars are set!${RESET}"
-        exit 1
-    fi
-    # Check if all IDs are there
-    if [ -z "$JOHN_ID" ] || [ -z "$ARABELO_ID" ] || [ -z "$ASTEIN_ID" ] || [ -z "$ANSHOVAH_ID" ] || [ -z "$FDAESTR_ID" ] || [ -z "$RPHUYAL_ID" ]; then
-            echo -e "${RED}Not all USER_ID vars are set!${RESET}"
-        exit 1
-    fi
-    # Check if all usernames are there
-    if [ -z "$JOHN_USERNAME" ] || [ -z "$ARABELO_USERNAME" ] || [ -z "$ASTEIN_USERNAME" ] || [ -z "$ANSHOVAH_USERNAME" ] || [ -z "$FDAESTR_USERNAME" ] || [ -z "$RPHUYAL_USERNAME" ]; then
-        echo -e "${RED}Not all USER_USERNAME vars are set!${RESET}"
-        exit 1
-    fi
+    check_for_envs
 }
 
 download_tests(){
@@ -126,6 +135,7 @@ download_tests(){
 }
 
 expand_vars(){
+    check_for_envs
     output_file="/tmp/$(basename $CSV_FILE)"
     variables=("john" "arabelo" "astein" "anshovah" "fdaestr" "rphuyal")
     var_list_access=$(for var in "${variables[@]}"; do echo -n '$'${var^^}'_ACCESS '; done)
