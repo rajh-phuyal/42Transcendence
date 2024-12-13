@@ -2,15 +2,17 @@ import { createMessage } from '../views/chat/methods.js';
 import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class TextField extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        this.conversationId = undefined;
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "height", "clear"];
+        return ["placeholder", "width", "height", "clear", "conversation-id"];
     }
 
     connectedCallback() {
@@ -21,25 +23,26 @@ class TextField extends HTMLElement {
         inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
     }
 
+
     buttonclick(){
         const inputElement = this.shadow.getElementById("text-field");
         const value = inputElement.value;
 
-        console.log("input value:", value);
+        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
+        
         inputElement.value = '';
     }
 
     handleKeyPress(event){
-
-        if (event.key !== 'Enter' || event.shiftKey)
+        if (event.key !== 'Enter')
+            return ;
+        if (event.shiftKey)
             return ;
         event.preventDefault();
         const inputElement = event.target;
         const value = inputElement.value;
-        console.log("input value:", value); // ...............................
 
-        const container = $id("chat-view-messages-container");
-        container.prepend(createMessage({"content": value, "createdAt": moment.utc().toISOString(), "userId": $store.fromState("user").id}));
+        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
 
         if (this.clear){
             inputElement.value = '';
@@ -59,7 +62,12 @@ class TextField extends HTMLElement {
         else if (name === "height") {
             this.height = newValue;
         }
-        this.render();
+        else if (name === "conversation-id") {
+            console.log("convo id:", newValue)
+            this.conversationId = newValue;
+        }
+        
+        // this.render();
     }
 
     render() {
