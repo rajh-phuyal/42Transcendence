@@ -256,7 +256,7 @@ run_test() {
         # Curl with token
         cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $user" \
+            --cookie "access_token=$user" \
             -d "$args")
     fi
     # Remove old response file
