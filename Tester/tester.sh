@@ -8,7 +8,7 @@ TESTS_URL="https://docs.google.com/spreadsheets/d/11uhG7xBOxUAyQIAAKTghT1Bh5gUYx
 BLUE="\033[0;36m"
 GREEN="\033[0;32m"
 RED="\033[0;31m"
-ORANGE="\033[0;33m"
+ORANGE="\033[38;5;214m"
 BOLD="\033[1m"
 RESET="\033[0m"
 
@@ -204,7 +204,7 @@ print_test_header(){
     print_and_log "" "short description:\t${short_description}"
     print_and_log "" "method:\t\t\t$method"
     print_and_log "" "endpoint:\t\t$endpoint"
-    print_and_log "" "user:\t\t\t${user:0:20}$( [ ${#user} -gt 20 ] && echo '...' )"
+    print_and_log "" "user:\t\t\t${user:0:77}$( [ ${#user} -gt 77 ] && echo '...' )"
     print_and_log "" "args:\t\t\t$args"
     print_and_log -n "" "should work?:\t\t"
     if [[ $should_work == "+" ]]; then
@@ -278,27 +278,28 @@ run_test() {
         echo -en "${GREEN}${HTTP_CODE} ${RESET}"
     fi
 
+    local message=""
     echo "      expected keys:" >> "$LOG_FILE"
     for key in $keys; do
         echo -ne "         $key:\t" >> "$LOG_FILE"
         value=$(jq -r ".$key // empty" ${RESPONSE_FILE} 2>/dev/null) || value=""
         if [[ -n "$value" ]]; then
-            if [[ key == "status" ]]; then
+            if [[ $key == "status" ]]; then
                 if [[ "$should_work" == "+" ]]; then
                     if [[ "$value" == "success" ]]; then
-                        echo -en " ${GREEN}$value ${RESET}"
+                        echo -en "${GREEN}$key ${RESET}"
                         echo "$value"  >> "$LOG_FILE"
                     else
-                        echo -en " ${RED}$value ${RESET}"
+                        echo -en "${ORANGE}$key ${RESET}"
                         echo "$value (expected 'success' !!!)" >> "$LOG_FILE"
                         test_successfull=false
                     fi
                 else
                     if [[ "$value" == "error" ]]; then
-                        echo -en " ${GREEN}$value ${RESET}"
+                        echo -en "${GREEN}$key ${RESET}"
                         echo "$value"  >> "$LOG_FILE"
                     else
-                        echo -en " ${RED}$value ${RESET}"
+                        echo -en "${ORANGE}$key ${RESET}"
                         echo "$value (expected 'error' !!!)"  >> "$LOG_FILE"
                         test_successfull=false
                     fi
@@ -307,6 +308,9 @@ run_test() {
             fi
             echo "$value"  >> "$LOG_FILE"
             echo -en "${GREEN}$key ${RESET}"
+            if [[ $key == "message" ]]; then
+                message="($value)"
+            fi
         else
             echo "<expected key '$key' is missing!>"  >> "$LOG_FILE"
             echo -en "${RED}$key ${RESET}"
@@ -318,11 +322,15 @@ run_test() {
     echo -n "   result: "  >> "$LOG_FILE"
     if [[ $test_successfull == true ]]; then
         echo "ok"  >> "$LOG_FILE"
-        echo -e " | ${GREEN}ok\n${RESET}"
+        local message_short=$message 
+        if [[ ${#message_short} -gt 37 ]]; then
+            message_short="${message_short:0:$((34))}...)"
+        fi
+        echo -e " | ${GREEN}ok${RESET} $message_short\n"
         ((TOTAL_TESTS_SUCCESS++))
     else
         echo "ko"  >> "$LOG_FILE"
-        echo -e " | ${RED}ko\n${RESET}"
+        echo -e " | ${RED}ko${RESET} $message\n"
     fi
 
     # Log the response file and delete it
