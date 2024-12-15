@@ -1,6 +1,6 @@
 * {
-	margin: 0;
-	padding: 0;
+	margin: 0 !important;
+	padding: 0 !important;
 	box-sizing: border-box;
 }
 
@@ -20,11 +20,9 @@ html, body {
 	cursor: pointer;
 }
 
-.navbar-brand {
-	padding: 4px 8px;
-	margin: 0px;
-	margin-left: 10px;
-	border: 1px dashed grey;
+.navbar-brand-custom {
+	padding: 0.7rem !important;
+	border: 1px solid grey;
 	border-radius: 8px;
 	background-color: rgba(246, 255, 0, 0.603);
 }
@@ -102,3 +100,23 @@ h1 {
 	color: #f5c518;
 }
 
+#home-nav {
+	gap: 0.5rem;
+	padding: 0.2rem !important;
+	background-color: rgba(246, 255, 0, 0.603);
+	border: 1px solid black;
+	border-radius: 8px;
+}
+
+#main-nav-container {
+	width: 95vw !important;
+}
+
+.nav-username {
+	padding: 0.5rem !important;
+}
+
+#nav-left-side {
+	width: 33%;
+	max-width: 130px;
+}

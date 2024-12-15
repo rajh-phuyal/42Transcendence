@@ -77,6 +77,7 @@ class AuthCard extends HTMLElement {
     showNav(){
         let nav = document.getElementById('navigator');
         nav.style.display = 'flex';
+		nav.classList.add("d-flex", "flex-row", "justify-content-center");
     }
 
     connectedCallback() {
