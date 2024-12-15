@@ -18,11 +18,11 @@ def parse_bool(string):
 def validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups):
     if name is None or not isinstance(name, str):
         raise BarelyAnException(_("Can't create a tournament without a name"))
-    
+
     local_tournament_bool = parse_bool(local_tournament)
     public_tournament_bool = parse_bool(public_tournament)
-    powerups_bool = parse_bool(powerups)    
-    
+    powerups_bool = parse_bool(powerups)
+
     if map_number is None or not isinstance(map_number, int):
         raise BarelyAnException(_("Can't create a tournament without specifying a map number"))
     if map_number not in [1, 2, 3, 4]:
@@ -42,7 +42,7 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         tournament__state__in=[TournamentState.SETUP, TournamentState.ONGOING]
     ).exists():
         raise BarelyAnException(_("You can't create a new tournament while you are in another one"))
-                                  
+
     # Prepare the list of tournament users (creator is always included)
     tournament_user_objects = []
     tournament_user_objects.append(creator)
@@ -60,7 +60,7 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         raise BarelyAnException(_("Opponent ids must be a list"))
     if len(opponent_ids) < 2:
         raise BarelyAnException(_("You must invite at least two opponents to a tournament"))
-    
+
     # Validate all opponent ids
     for opponent_id in opponent_ids:
         if not isinstance(opponent_id, int):
@@ -86,7 +86,7 @@ def create_tournament(creator_id, name, local_tournament, public_tournament, map
         # Validate args
         local, public, powerups = validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups_string)
         tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local, public)
-        
+
         # Create the tournament and the tournament members in a single transaction
         with transaction.atomic():
             tournament = Tournament.objects.create(

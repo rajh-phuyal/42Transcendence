@@ -24,7 +24,7 @@ class CreateTournamentView(BaseAuthenticatedView):
             opponent_ids=request.data.get('opponentIds')
         )
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})
-    
+
 class DeleteTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def delete(self, request, id):
@@ -152,7 +152,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
                     role = "invited"
         except TournamentMember.DoesNotExist:
             role = "fan"
-        
+
         # Get all members of the tournament
         tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
 

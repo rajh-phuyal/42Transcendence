@@ -38,8 +38,8 @@ class TournamentMember(models.Model):
 
     def __str__(self):
         return f"{self.tournament_alias or self.user.username} in {self.tournament.name}"
-    
+
     class Meta:
         db_table = '"barelyaschema"."tournament_member"'
-        unique_together = ('user', 'tournament')    
+        unique_together = ('user', 'tournament')
 
