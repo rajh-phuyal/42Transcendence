@@ -3,7 +3,9 @@
 # ADD ALL TABLES INTO THIS ARRAY!
 # (start from weak entity too not to break FK constraints)
 # ------------------------------------------------------------------------------
-ALL_TABLES=("barelyaschema.dev_user_data" 
+ALL_TABLES=("barelyaschema.dev_user_data"
+            "barelyaschema.game_member"
+            "barelyaschema.game"
 			"barelyaschema.is_cool_with" 
 			"barelyaschema.no_cool_with" 
 			"barelyaschema.message" 
@@ -81,11 +83,11 @@ TABLE_NAME="barelyaschema.user"
 insert_dummy "$TABLE_NAME"                                                                                                                                                                                                                              \
 	"INSERT INTO $TABLE_NAME                                                                                                                                                                                                                            \
         (id,    password,               last_login,                 is_superuser,   username,   first_name,     last_name,  email,                  is_staff,   is_active,  date_joined,                avatar_path) VALUES                             \
-        (3,     'hashed_password_1',    '2024-01-01 10:42:00+00',   FALSE,          'arabelo-', 'Alê',          'Guedes',   'we dont use email',    FALSE,      FALSE,      '2001-09-01 10:15:30+00',   '4d39f530-68c8-42eb-ad28-45445424da5b.png'),    \
-        (4,     'hashed_password_2',    '2024-02-01 11:42:01+00',   FALSE,          'astein',   'Alex',         'Stein',    'we dont use email',    FALSE,      FALSE,      '2002-09-01 10:15:30+00',   '73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png'),    \
-        (5,     'hashed_password_3',    '2024-03-01 12:42:02+00',   FALSE,          'anshovah', 'Anatolii',     'Shovah',   'we dont use email',    FALSE,      FALSE,      '2003-09-01 10:15:30+00',   '1e3751c5-5e47-45f2-9967-111fd26a6be8.png'),    \
-        (6,     'hashed_password_4',    '2024-04-01 13:42:03+00',   FALSE,          'fda-estr', 'Francisco',    'Inácio',   'we dont use email',    FALSE,      FALSE,      '2004-09-01 10:15:30+00',   'fe468ade-12ed-4045-80a7-7d3e45be997e.png'),    \
-        (7,     'hashed_password_5',    '2024-05-01 14:42:04+00',   FALSE,          'rphuyal',  'Rajh',         'Phuyal',   'we dont use email',    FALSE,      FALSE,      '2005-09-01 10:15:30+00',   'dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png');"
+        (3,     'hashed_password_1',    '2024-01-01 10:42:00+00',   FALSE,          'static-arabelo-', 'Alê',          'Guedes',   'we dont use email',    FALSE,      FALSE,      '2001-09-01 10:15:30+00',   '4d39f530-68c8-42eb-ad28-45445424da5b.png'),    \
+        (4,     'hashed_password_2',    '2024-02-01 11:42:01+00',   FALSE,          'static-astein',   'Alex',         'Stein',    'we dont use email',    FALSE,      FALSE,      '2002-09-01 10:15:30+00',   '73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png'),    \
+        (5,     'hashed_password_3',    '2024-03-01 12:42:02+00',   FALSE,          'static-anshovah', 'Anatolii',     'Shovah',   'we dont use email',    FALSE,      FALSE,      '2003-09-01 10:15:30+00',   '1e3751c5-5e47-45f2-9967-111fd26a6be8.png'),    \
+        (6,     'hashed_password_4',    '2024-04-01 13:42:03+00',   FALSE,          'static-fda-estr', 'Francisco',    'Inácio',   'we dont use email',    FALSE,      FALSE,      '2004-09-01 10:15:30+00',   'fe468ade-12ed-4045-80a7-7d3e45be997e.png'),    \
+        (7,     'hashed_password_5',    '2024-05-01 14:42:04+00',   FALSE,          'static-rphuyal',  'Rajh',         'Phuyal',   'we dont use email',    FALSE,      FALSE,      '2005-09-01 10:15:30+00',   'dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png');"
 
 TABLE_NAME="barelyaschema.is_cool_with"
 insert_dummy "$TABLE_NAME"                                      \
