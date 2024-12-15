@@ -8,11 +8,11 @@ ALL_TABLES=("barelyaschema.dev_user_data"
             "barelyaschema.game"
             "barelyaschema.tournament_member"
             "barelyaschema.tournament"
-			"barelyaschema.is_cool_with" 
-			"barelyaschema.no_cool_with" 
-			"barelyaschema.message" 
-			"barelyaschema.conversation_member" 
-			"barelyaschema.conversation" 
+			"barelyaschema.is_cool_with"
+			"barelyaschema.no_cool_with"
+			"barelyaschema.message"
+			"barelyaschema.conversation_member"
+			"barelyaschema.conversation"
 			"barelyaschema.user")
 # Fixed UserIDs:
 ID_OVERLOARDS=1
