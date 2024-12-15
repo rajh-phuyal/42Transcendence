@@ -131,7 +131,7 @@ accept_friend_request() {
     local receiver=$1
     local sender_username=$2
 
-    local access_token_var="$(echo "${sender}_ACCESS" | tr '[:lower:]' '[:upper:]')"
+    local access_token_var="$(echo "${receiver}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
     local sender_id_var="$(echo "${sender_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local sender_id=${!sender_id_var}
