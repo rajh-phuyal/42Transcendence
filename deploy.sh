@@ -187,10 +187,10 @@ stop_spinner() {
 
     # Move to the beginning of the line and print the final status
 	if [ $exit_code -eq 0 ]; then
-	    printf "\r\u2705 "
+	    printf "\r✅ "
 	    echo -e "$message $GR ${success_message} $NC"
 	else
-	    printf "\r\u274C "
+	    printf "\r❌ "
 	    echo -e "$message $RD ${failure_message} $NC"
 	    if [ "$fail_continue" == "false" ]; then
 	        exit 1  # Exit the script with a failure

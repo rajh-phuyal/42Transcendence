@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the base URL for the API
-BASE_URL="http://127.0.0.1:8000"
+BASE_URL="https://localhost/api"
 ENV_FILE="$(dirname "$(realpath "$0")")/dummy.env"
 RESPONSE_FILE="$(dirname "$(realpath "$0")")/response.json"
 
@@ -53,14 +53,14 @@ register_user() {
             REFRESH_TOKEN=$(awk '/refresh_token/ {print $NF}' temp_cookie.txt)
             USER_NAME=$(jq -r '.username' ${RESPONSE_FILE})
             # Export variables with the original base username prefix
-            export ${base_username^^}_ID="$USER_ID"
-            export ${base_username^^}_ACCESS="$ACCESS_TOKEN"
-            export ${base_username^^}_REFRESH="$REFRESH_TOKEN"
-            export ${base_username^^}_USERNAME="$USER_NAME"
-            echo ${base_username^^}_ID="$USER_ID" >> ${ENV_FILE}
-            echo ${base_username^^}_ACCESS="$ACCESS_TOKEN" >> ${ENV_FILE}
-            echo ${base_username^^}_REFRESH="$REFRESH_TOKEN" >> ${ENV_FILE}
-            echo ${base_username^^}_USERNAME="$USER_NAME" >> ${ENV_FILE}
+            export $(echo "${base_username}_ID" | tr '[:lower:]' '[:upper:]')="$USER_ID"
+            export $(echo "${base_username}_ACCESS" | tr '[:lower:]' '[:upper:]')="$ACCESS_TOKEN"
+            export $(echo "${base_username}_REFRESH" | tr '[:lower:]' '[:upper:]')="$REFRESH_TOKEN"
+            export $(echo "${base_username}_USERNAME" | tr '[:lower:]' '[:upper:]')="$USER_NAME"
+            echo "$(echo "${base_username}_ID" | tr '[:lower:]' '[:upper:]')=$USER_ID" >> ${ENV_FILE}
+            echo "$(echo "${base_username}_ACCESS" | tr '[:lower:]' '[:upper:]')=$ACCESS_TOKEN" >> ${ENV_FILE}
+            echo "$(echo "${base_username}_REFRESH" | tr '[:lower:]' '[:upper:]')=$REFRESH_TOKEN" >> ${ENV_FILE}
+            echo "$(echo "${base_username}_USERNAME" | tr '[:lower:]' '[:upper:]')=$USER_NAME" >> ${ENV_FILE}
             break
         else
             # Check if username already exists and try a new one
@@ -85,9 +85,9 @@ update_user_details(){
     local last_name=$3
     local language=$4
 
-    local access_token_var="${sender^^}_ACCESS"
+    local access_token_var="$(echo "${sender}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
-    local username_var="${sender^^}_USERNAME"
+    local username_var="$(echo "${sender}_USERNAME" | tr '[:lower:]' '[:upper:]')"
     local username=${!username_var}
     local payload="{\"username\": \"$username\", \"firstName\": \"$first_name\", \"lastName\": \"$last_name\", \"language\": \"$language\"}"
 
@@ -108,9 +108,9 @@ send_friend_request() {
     local sender=$1
     local target_username=$2
 
-    local access_token_var="${sender^^}_ACCESS"
+    local access_token_var="$(echo "${sender}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
-    local target_id_var="${target_username^^}_ID"
+    local target_id_var="$(echo "${target_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local target_id=${!target_id_var}
     local payload="{\"action\": \"send\", \"target_id\": $target_id}"
 
@@ -131,9 +131,9 @@ accept_friend_request() {
     local receiver=$1
     local sender_username=$2
 
-    local access_token_var="${receiver^^}_ACCESS"
+    local access_token_var="$(echo "${receiver}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
-    local sender_id_var="${sender_username^^}_ID"
+    local sender_id_var="$(echo "${sender_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local sender_id=${!sender_id_var}
 
     local payload="{\"action\": \"accept\", \"target_id\": $sender_id}"
@@ -155,9 +155,9 @@ block_user() {
     local blocker=$1
     local target_username=$2
 
-    local access_token_var="${blocker^^}_ACCESS"
+    local access_token_var="$(echo "${blocker}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
-    local target_id_var="${target_username^^}_ID"
+    local target_id_var="$(echo "${target_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local target_id=${!target_id_var}
 
     local payload="{\"action\": \"block\", \"target_id\": $target_id}"
@@ -180,9 +180,9 @@ create_chat() {
     local target_username=$2
     local message=$3
 
-    local access_token_var="${sender^^}_ACCESS"
+    local access_token_var="$(echo "${sender}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
-    local target_id_var="${target_username^^}_ID"
+    local target_id_var="$(echo "${target_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local target_id=${!target_id_var}
 
     local payload="{\"userIds\": [$target_id], \"initialMessage\": \"$message\"}"
@@ -207,9 +207,9 @@ create_game() {
     local powerups=$4
     local local_game=$5
 
-    local access_token_var="${creator^^}_ACCESS"
+    local access_token_var="$(echo "${creator}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
-    local opponent_id_var="${opponent^^}_ID"
+    local opponent_id_var="$(echo "${opponent}_ID" | tr '[:lower:]' '[:upper:]')"
     local opponent_id=${!opponent_id_var}
 
     local payload="{\"mapNumber\": $map_number, \"powerups\": \"$powerups\", \"opponentId\": $opponent_id, \"localGame\": \"$local_game\"}"
@@ -249,7 +249,7 @@ for username in "${USERNAMES[@]}"; do
     register_user "$username"
 done
 
-# Updating user details 
+# Updating user details
 update_user_details "john" "John" "Doe" "en-US"
 update_user_details "arabelo" "Alê" "Guedes" "pt-BR"
 update_user_details "astein" "Alex" "Stein" "de-DE"

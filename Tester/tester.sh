@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Base URL for the API
-BASE_URL="http://127.0.0.1:8000"
+BASE_URL="https://localhost/api"
 TESTS_URL="https://docs.google.com/spreadsheets/d/11uhG7xBOxUAyQIAAKTghT1Bh5gUYxqQ2fPpRNr6fjds/"
 
 # Colors for output
@@ -117,7 +117,7 @@ download_tests(){
     # DOWNLOAD
     echo -e "Downloading ${CSV_FILE} from google sheets...\n\t(${TESTS_URL})"
     curl -s -L -o ${CSV_FILE} "${TESTS_URL}export?exportFormat=csv"
-    
+
     if [ $? -ne 0 ]; then
         echo -e "${RED}Failed to download ${CSV_FILE}${RESET}"
         exit 1
@@ -138,14 +138,17 @@ expand_vars(){
     check_for_envs
     output_file="/tmp/$(basename $CSV_FILE)"
     variables=("john" "arabelo" "astein" "anshovah" "fdaestr" "rphuyal")
-    var_list_access=$(for var in "${variables[@]}"; do echo -n '$'${var^^}'_ACCESS '; done)
-    var_list_id=$(for var in "${variables[@]}"; do echo -n '$'${var^^}'_ID '; done)
+    var_list_access=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_ACCESS '; done)
+    var_list_id=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_ID '; done)
+
     for var in "${variables[@]}"; do
-        varname="${var^^}_ACCESS"
-        export ${var^^}'_ACCESS='${!varname}
-        varname="${var^^}_ID"
-        export ${var^^}'_ID='${!varname}
+        var_upper=$(echo "$var" | tr '[:lower:]' '[:upper:]')
+        varname="${var_upper}_ACCESS"
+        export ${var_upper}_ACCESS="${!varname}"
+        varname="${var_upper}_ID"
+        export ${var_upper}_ID="${!varname}"
     done
+
     envsubst "$var_list_access" < "$CSV_FILE" > "$output_file"
     mv $output_file $CSV_FILE
     envsubst "$var_list_id" < "$CSV_FILE" > "$output_file"
@@ -332,7 +335,7 @@ run_test() {
     echo -n "   result: "  >> "$LOG_FILE"
     if [[ $test_successfull == true ]]; then
         echo "ok"  >> "$LOG_FILE"
-        local message_short=$message 
+        local message_short=$message
         if [[ ${#message_short} -gt 37 ]]; then
             message_short="${message_short:0:$((34))}...)"
         fi
@@ -442,7 +445,7 @@ parse_lines(){
         if [[ -z "$test_number" ]]; then
             continue
         fi
-        
+
         # Check if only one test should be run
         if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_number" != "$TEST_TO_PERFORM" ]]; then
             continue
@@ -458,7 +461,7 @@ parse_lines(){
             print_and_log "${RED}" "Skipping test $test_number because it is not marked as active in sheet!"
             continue
         fi
-        
+
         # If args are empty, set payload to empty JSON
         if [[ -z "$args" ]]; then
             args="{}"
