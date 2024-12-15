@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the base URL for the API
-BASE_URL="http://127.0.0.1:8000"
+BASE_URL="https://localhost/api"
 ENV_FILE="$(dirname "$(realpath "$0")")/dummy.env"
 RESPONSE_FILE="$(dirname "$(realpath "$0")")/response.json"
 
