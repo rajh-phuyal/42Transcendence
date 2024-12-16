@@ -170,19 +170,22 @@ select_test(){
     echo -e "Enter test number\n\t${BOLD}return${RESET}\tfor all tests\n\t${BOLD}42${RESET}\tonly test with number: 42\n\t${BOLD}-42${RESET}\tfor range 1-42"
     read -p "choose: " INPUT
 
+    local total_tests_num=$((10#$TOTAL_TESTS))
     if [[ -n "$INPUT" ]]; then
         if [[ $INPUT == -* ]]; then
             UPPER_TEST_RANGE=${INPUT:1}
-            UPPER_TEST_RANGE=$(printf "%03d" "$UPPER_TEST_RANGE")
-            if [[ $UPPER_TEST_RANGE -gt $TOTAL_TESTS ]]; then
+            # UPPER_TEST_RANGE=$(printf "%03d" "$UPPER_TEST_RANGE")
+            if [[ $UPPER_TEST_RANGE -gt $total_tests_num ]]; then
                 print_and_log "" "Test number $UPPER_TEST_RANGE does not exist"
                 print_and_log "" "Ignoring range aka running all tests"
+                UPPER_TEST_RANGE=""
+                return
             fi
             print_and_log "" "Running tests 001-$UPPER_TEST_RANGE"
             return
         fi
-        TEST_TO_PERFORM=$(printf "%03d" "$INPUT")
-        if [[ $TEST_TO_PERFORM -gt $TOTAL_TESTS ]]; then
+        TEST_TO_PERFORM=$INPUT
+        if [[ $TEST_TO_PERFORM -gt $total_tests_num ]]; then
             echo "Test number $TEST_TO_PERFORM does not exist"
             exit 1
         fi
@@ -451,13 +454,19 @@ parse_lines(){
             continue
         fi
 
+        echo "test_number: $test_number"
+        echo "UPPER_TEST_RANGE: $UPPER_TEST_RANGE"
+        echo "TEST_TO_PERFORM: $TEST_TO_PERFORM"
+        test_num=$((10#$test_number))
+        echo "test_num: $test_num"
+
         # Check if only one test should be run
         if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_number" != "$TEST_TO_PERFORM" ]]; then
             continue
         fi
 
         # Check if only a range of tests should be run
-        if [[ -n "$UPPER_TEST_RANGE" ]] && [[ "$test_number" -gt "$UPPER_TEST_RANGE" ]]; then
+        if [[ -n "$UPPER_TEST_RANGE" ]] && [[ "$test_num" -gt "$UPPER_TEST_RANGE" ]]; then
             break
         fi
 
