@@ -35,12 +35,11 @@ class ActiveView(BaseAuthenticatedView):
     def get(self, request):
         user = request.user
         # Get all tournaments where user is invited to
-        invited_tournaments = TournamentMember.objects.filter(user_id=user.id, accepted=False, tournament__state=TournamentState.SETUP).values('tournament_id', 'tournament__name', 'tournament__state')
-        public_tournaments = Tournament.objects.filter(public_tournament=True, state=TournamentState.SETUP).values('id', 'name', 'state')
+        invited_tournaments = TournamentMember.objects.filter(user_id=user.id, accepted=False, tournament__state=TournamentState.SETUP).values('tournament_id', 'tournament__name')
+        public_tournaments = Tournament.objects.filter(public_tournament=True, state=TournamentState.SETUP).values('id', 'name')
         # Merge the two querysets
         tournaments = list(invited_tournaments) + list(public_tournaments)
         return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
-
 
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
