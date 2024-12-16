@@ -281,7 +281,7 @@ block_user "fdaestr" "anshovah"
 
 # Creating chat conversations
 create_chat "arabelo" "astein" "Hi Alex, how are you?"
-create_chat "arabelo" "anshovah" "Hi Anatolii, how are you?"
-
+create_chat "arabelo" "fdaestr" "Hi Anatolii, how are you?"
+exit 1
 # Creating games
 create_game "astein" "anshovah" 1 true false

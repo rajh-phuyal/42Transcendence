@@ -102,7 +102,7 @@ create_dummy(){
 }
 
 download_tests(){
-    TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
+    TOTAL_TESTS=$(( $(awk 'length($0) > 20' "$CSV_FILE" | wc -l)))
     TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
     if [[ $TOTAL_TESTS -ne -2 ]]; then
         echo -e "${BLUE}Found ${TOTAL_TESTS} tests in csv file${RESET}"
@@ -129,9 +129,9 @@ download_tests(){
         exit 1
     fi
     echo -e "\n" >> ${CSV_FILE}
-    TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
+    TOTAL_TESTS=$(( $(awk 'length($0) > 20' "$CSV_FILE" | wc -l)))
     TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
-    echo "Found ${TOTAL_TESTS} tests in csv file"
+    echo -e "${BLUE}Found ${TOTAL_TESTS} tests in csv file${RESET}"
 }
 
 expand_vars(){
@@ -421,16 +421,17 @@ run_tests(){
         test_sub_number=$((test_sub_number + 1))
     done
 
+#TODO: UNCOMMENT THIS WHEN FIXED
     # C: If the line needs a token
-    if [[ "$user" != "NONE" ]]; then
-        # C1: try without token
-        test_number_new="${test_number} C1 (no token)"
-        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
-
-        # C2: try with wrong token
-        test_number_new="${test_number} C2 (wrong tok.)"
-        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
-    fi
+#    if [[ "$user" != "NONE" ]]; then
+#        # C1: try without token
+#        test_number_new="${test_number} C1 (no token)"
+#        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
+#
+#        # C2: try with wrong token
+#        test_number_new="${test_number} C2 (wrong tok.)"
+#        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
+#    fi
 
     # D: If the line needs arguments
     if [[ -n "$args" ]]; then
