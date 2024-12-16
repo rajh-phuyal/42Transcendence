@@ -72,6 +72,18 @@ class RegisterView(APIView):
     def delete(self, request):
         return error_response(_("Method not allowed"), status_code=405)
 
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer
 
@@ -120,6 +132,18 @@ class InternalTokenObtainPairView(TokenObtainPairView):
         return error_response(_("Method not allowed"), status_code=405)
 
     def delete(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=405)
 
     def get_user_from_request(self, request):
@@ -178,4 +202,16 @@ class InternalTokenRefreshView(TokenRefreshView):
         return error_response(_("Method not allowed"), status_code=405)
 
     def delete(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=405)
