@@ -303,8 +303,11 @@ run_test() {
     echo "      expected keys:" >> "$LOG_FILE"
     for key in $keys; do
         echo -ne "         $key:\t" >> "$LOG_FILE"
-        value=$(jq -r ".$key // empty" ${RESPONSE_FILE} 2>/dev/null) || value=""
-        if [[ -n "$value" ]]; then
+        keyExists=$(jq -e ".$key" ${RESPONSE_FILE} 2>/dev/null)
+        #value=$(jq -r ".$key // empty" ${RESPONSE_FILE} 2>/dev/null) || value=""
+        #value=$(jq -r ".$key // empty" ${RESPONSE_FILE} 2>/dev/null || echo "none")
+        if [[ -n "$keyExists" ]]; then
+            value=$(jq -r ".$key" ${RESPONSE_FILE})
             if [[ $key == "status" ]]; then
                 if [[ "$should_work" == "+" ]]; then
                     if [[ "$value" == "success" ]]; then

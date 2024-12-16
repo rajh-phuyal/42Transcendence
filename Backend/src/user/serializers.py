@@ -5,6 +5,7 @@ from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
 from chat.models import Conversation
+import logging
 
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,7 +70,7 @@ class ProfileSerializer(serializers.ModelSerializer):
                 "total": 0.50
             }
         }
-    
+
     def get_chatId(self, obj):
         # `requester` is the current authenticated user
         requester = self.context['request'].user
@@ -81,6 +82,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             members__user=requester
         ).filter(members__user=requested
         ).values_list('id', flat=True).first()
+        logging.info(f'conversation_id: {conversation_id}')
         return conversation_id
 
 # This will prepare the data for endpoint '/user/friend/list/<int:id>/'
