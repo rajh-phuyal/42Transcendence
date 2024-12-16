@@ -45,13 +45,13 @@ register_user() {
             -c temp_cookie.txt)
 
         if [ "$HTTP_CODE" -eq 200 ]; then
-            output+="${GREEN}$username${RESET}"
-            echo -e "$output"
             # Parse JSON response and export variables
             USER_ID=$(jq -r '.userId' ${RESPONSE_FILE})
             ACCESS_TOKEN=$(awk '/access_token/ {print $NF}' temp_cookie.txt)
             REFRESH_TOKEN=$(awk '/refresh_token/ {print $NF}' temp_cookie.txt)
             USER_NAME=$(jq -r '.username' ${RESPONSE_FILE})
+            output+="${GREEN}$username${RESET} ($PASSWORD)"
+            echo -e "$output"
             # Export variables with the original base username prefix
             export $(echo "${base_username}_ID" | tr '[:lower:]' '[:upper:]')="$USER_ID"
             export $(echo "${base_username}_ACCESS" | tr '[:lower:]' '[:upper:]')="$ACCESS_TOKEN"
@@ -254,7 +254,8 @@ update_user_details "john" "John" "Doe" "en-US"
 update_user_details "arabelo" "Alê" "Guedes" "pt-BR"
 update_user_details "astein" "Alex" "Stein" "de-DE"
 update_user_details "anshovah" "Anatolii" "Shovah" "uk-UA"
-update_user_details "fdaestr" "Francisco" "Inácio" "pt-Pt"
+update_user_details "fdaestr" "Francisco" "Inácio" "pt-PT"
+update_user_details "rphuyal" "Rajh" "Phuyal" "ne-NP"
 
 # Sending example Friend Requests
 send_friend_request "arabelo" "astein"

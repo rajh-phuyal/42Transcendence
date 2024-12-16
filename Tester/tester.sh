@@ -140,6 +140,7 @@ expand_vars(){
     variables=("john" "arabelo" "astein" "anshovah" "fdaestr" "rphuyal")
     var_list_access=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_ACCESS '; done)
     var_list_id=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_ID '; done)
+    var_list_username=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_USERNAME '; done)
 
     for var in "${variables[@]}"; do
         var_upper=$(echo "$var" | tr '[:lower:]' '[:upper:]')
@@ -147,11 +148,15 @@ expand_vars(){
         export ${var_upper}_ACCESS="${!varname}"
         varname="${var_upper}_ID"
         export ${var_upper}_ID="${!varname}"
+        varname="${var_upper}_USERNAME"
+        export ${var_upper}_USERNAME="${!varname}"
     done
 
     envsubst "$var_list_access" < "$CSV_FILE" > "$output_file"
     mv $output_file $CSV_FILE
     envsubst "$var_list_id" < "$CSV_FILE" > "$output_file"
+    mv $output_file $CSV_FILE
+    envsubst "$var_list_username" < "$CSV_FILE" > "$output_file"
     mv $output_file $CSV_FILE
 }
 
