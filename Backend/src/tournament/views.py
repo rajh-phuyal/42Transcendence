@@ -9,6 +9,39 @@ from core.decorators import barely_handle_exceptions
 from tournament.utils import create_tournament, get_tournament_and_member
 from core.exceptions import BarelyAnException
 
+# Checks if user has an active tournament
+class EnrolmentView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request):
+        user = request.user
+        try:
+            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.ONGOING).tournament
+            return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
+        except Tournament.DoesNotExist:
+            return success_response(_("User has no active tournament"), **{'tournamentId': None, 'tournamentName': None})
+
+# History of tournaments of user including all tournament states
+class HistoryView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request):
+        user = request.user
+        # Get all tournaments of the user
+        tournaments = TournamentMember.objects.filter(user_id=user.id).values('tournament_id', 'tournament__name', 'tournament__state')
+        return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
+
+# All tournaments where user is invited to and public tournaments
+class ActiveView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request):
+        user = request.user
+        # Get all tournaments where user is invited to
+        invited_tournaments = TournamentMember.objects.filter(user_id=user.id, accepted=False, tournament__state=TournamentState.SETUP).values('tournament_id', 'tournament__name', 'tournament__state')
+        public_tournaments = Tournament.objects.filter(public_tournament=True, state=TournamentState.SETUP).values('id', 'name', 'state')
+        # Merge the two querysets
+        tournaments = list(invited_tournaments) + list(public_tournaments)
+        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
+
+
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
@@ -23,6 +56,7 @@ class CreateTournamentView(BaseAuthenticatedView):
             powerups_string=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')
         )
+        # TODO: Send websocket messages to all members via chat
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})
 
 class DeleteTournamentView(BaseAuthenticatedView):
@@ -39,8 +73,10 @@ class DeleteTournamentView(BaseAuthenticatedView):
             return error_response(_("Tournament can only be deleted if it is in setup state"))
         # Delete the tournament
         with transaction.atomic():
+            # TODO: Not sure if we can have games and game members while still being in setup state
             tournament_games = Game.objects.filter(tournament_id=tournament.id)
             tournament_game_members = GameMember.objects.filter(game__in=tournament_games)
+            # This one needs to be deleted for sure
             tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
             # Delete in reverse order to avoid foreign key constraint errors
             tournament_game_members.delete()
@@ -97,7 +133,7 @@ class LeaveTournamentView(BaseAuthenticatedView):
         except BarelyAnException as e:
             return error_response(str(e.detail), e.status_code)
         # Check if the tournament has already started
-        if not tournament.state == TournamentState.SETUP:
+        if tournament.state != TournamentState.SETUP:
             return error_response(_("Tournament can only be left if it is in setup state"))
         # Check if the user is the admin of the tournament
         if tournament_member.is_admin:
@@ -105,7 +141,7 @@ class LeaveTournamentView(BaseAuthenticatedView):
         # Delete the tournament member
         tournament_member.delete()
         return success_response(_("Tournament left successfully"))
-        # TODO: check if there are enough players left and cancel the tournament
+        # TODO: check if there are enough players left and cancel the tournament if not (only for private tournaments)
         # TODO: send websocket update message to admin to update the lobby
 
 class StartTournamentView(BaseAuthenticatedView):
