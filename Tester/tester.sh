@@ -437,8 +437,8 @@ run_tests(){
 parse_lines(){
     # Reset total tests since we generate more tests than lines
     TOTAL_TESTS=0
-
-    echo "Running tests..."
+    SKIPPED_TESTS=""
+    echo "Let's go..."
     echo "========================================================================================================"
 
     # Read the CSV file line by line
@@ -467,7 +467,7 @@ parse_lines(){
 
         # Check if test is marekd as active
         if [[ "$active" != "x" ]]; then
-            print_and_log "${RED}" "Skipping test $test_number because it is not marked as active in sheet!"
+            SKIPPED_TESTS="$SKIPPED_TESTS $test_number"
             continue
         fi
 
@@ -482,6 +482,10 @@ parse_lines(){
 
         run_tests "$test_number" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
     done < "$CSV_FILE"
+    if [[ -n "$SKIPPED_TESTS" ]]; then
+        print_and_log "${RED}" "The following tests were skipped because they are not marked as active in the sheet:"
+        print_and_log "${RED}" "Skipped tests: $SKIPPED_TESTS"
+    fi
 }
 
 print_summary(){
