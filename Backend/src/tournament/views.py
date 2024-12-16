@@ -30,7 +30,7 @@ class HistoryView(BaseAuthenticatedView):
         return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
 
 # All tournaments where user is invited to and public tournaments
-class ActiveView(BaseAuthenticatedView):
+class ToJoinView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):
         user = request.user
