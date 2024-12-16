@@ -299,48 +299,54 @@ run_test() {
         echo -en "${GREEN}${HTTP_CODE} ${RESET}"
     fi
 
-    local message=""
-    echo "      expected keys:" >> "$LOG_FILE"
-    for key in $keys; do
-        echo -ne "         $key:\t" >> "$LOG_FILE"
-        key_exists=$((jq -e ".$key" ${RESPONSE_FILE} > /dev/null) && echo "true" || echo "false")
-        if [[ "$key_exists" == "true" ]]; then
-            # Key exists
-            value=$(jq -r ".$key" ${RESPONSE_FILE})
-            if [[ $key == "status" ]]; then
-                if [[ "$should_work" == "+" ]]; then
-                    if [[ "$value" == "success" ]]; then
-                        echo -en "${GREEN}$key ${RESET}"
-                        echo "$value"  >> "$LOG_FILE"
+    # Check if the response is an html
+    if [[ $(file -b --mime-type ${RESPONSE_FILE}) == "text/html" ]]; then
+        echo -en "${RED}(received an HTML response instead of JSON)${RESET}"
+        test_successfull=false
+    else
+        # Check if the response JSON is valid
+        local message=""
+        echo "      expected keys:" >> "$LOG_FILE"
+        for key in $keys; do
+            echo -ne "         $key:\t" >> "$LOG_FILE"
+            key_exists=$(jq -r "has(\"$key\")" ${RESPONSE_FILE})
+            if [[ "$key_exists" == "true" ]]; then
+                # Key exists
+                value=$(jq -r ".$key" ${RESPONSE_FILE})
+                if [[ $key == "status" ]]; then
+                    if [[ "$should_work" == "+" ]]; then
+                        if [[ "$value" == "success" ]]; then
+                            echo -en "${GREEN}$key ${RESET}"
+                            echo "$value"  >> "$LOG_FILE"
+                        else
+                            echo -en "${ORANGE}$key ${RESET}"
+                            echo "$value (expected 'success' !!!)" >> "$LOG_FILE"
+                            test_successfull=false
+                        fi
                     else
-                        echo -en "${ORANGE}$key ${RESET}"
-                        echo "$value (expected 'success' !!!)" >> "$LOG_FILE"
-                        test_successfull=false
+                        if [[ "$value" == "error" ]]; then
+                            echo -en "${GREEN}$key ${RESET}"
+                            echo "$value"  >> "$LOG_FILE"
+                        else
+                            echo -en "${ORANGE}$key ${RESET}"
+                            echo "$value (expected 'error' !!!)"  >> "$LOG_FILE"
+                            test_successfull=false
+                        fi
                     fi
-                else
-                    if [[ "$value" == "error" ]]; then
-                        echo -en "${GREEN}$key ${RESET}"
-                        echo "$value"  >> "$LOG_FILE"
-                    else
-                        echo -en "${ORANGE}$key ${RESET}"
-                        echo "$value (expected 'error' !!!)"  >> "$LOG_FILE"
-                        test_successfull=false
-                    fi
+                    continue
                 fi
-                continue
+                echo "$value"  >> "$LOG_FILE"
+                echo -en "${GREEN}$key ${RESET}"
+                if [[ $key == "message" ]]; then
+                    message="($value)"
+                fi
+            else
+                echo "<expected key '$key' is missing!>"  >> "$LOG_FILE"
+                echo -en "${RED}$key ${RESET}"
+                test_successfull=false
             fi
-            echo "$value"  >> "$LOG_FILE"
-            echo -en "${GREEN}$key ${RESET}"
-            if [[ $key == "message" ]]; then
-                message="($value)"
-            fi
-        else
-            echo "<expected key '$key' is missing!>"  >> "$LOG_FILE"
-            echo -en "${RED}$key ${RESET}"
-            test_successfull=false
-        fi
-    done
-
+        done
+    fi
     echo "   ---"  >> "$LOG_FILE"
     echo -n "   result: "  >> "$LOG_FILE"
     if [[ $test_successfull == true ]]; then
