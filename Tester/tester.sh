@@ -15,6 +15,7 @@ RESET="\033[0m"
 # VARS
 TOTAL_TESTS=0
 TOTAL_TESTS_SUCCESS=0
+FAILED_TESTS=""
 TEST_TO_PERFORM=""
 UPPER_TEST_RANGE=""
 
@@ -359,6 +360,7 @@ run_test() {
         echo -e " | ${GREEN}ok${RESET} $message_short\n"
         ((TOTAL_TESTS_SUCCESS++))
     else
+        FAILED_TESTS="$FAILED_TESTS\n$test_number"
         echo "ko"  >> "$LOG_FILE"
         echo -e " | ${RED}ko${RESET} $message\n"
     fi
@@ -421,7 +423,7 @@ run_tests(){
         test_sub_number=$((test_sub_number + 1))
     done
 
-#TODO: UNCOMMENT THIS WHEN FIXED
+#TODO: UNCOMMENT THIS WHEN CODE ON MAIN IS FIXED @rajh
     # C: If the line needs a token
 #    if [[ "$user" != "NONE" ]]; then
 #        # C1: try without token
@@ -460,7 +462,8 @@ parse_lines(){
             continue
         fi
 
-        if [[ -z "$test_number" ]]; then
+        # CHeck if test number is there and active (aka no empty line)
+        if [[ -z "$test_number" || -z "$active" ]]; then
             continue
         fi
 
@@ -494,7 +497,16 @@ parse_lines(){
     done < "$CSV_FILE"
     if [[ -n "$SKIPPED_TESTS" ]]; then
         print_and_log "${RED}" "The following tests were skipped because they are not marked as active in the sheet:"
+        print_and_log "${RED}" "======="
         print_and_log "${RED}" "Skipped tests: $SKIPPED_TESTS"
+        print_and_log "${RED}" "======="
+    fi
+    if [[ -n "$FAILED_TESTS" ]]; then
+        print_and_log "" "\n"
+        print_and_log "${RED}" "The following tests failed:"
+        print_and_log -n "${RED}" "======="
+        print_and_log "${RED}" "$FAILED_TESTS"
+        print_and_log "${RED}" "======="
     fi
 }
 
