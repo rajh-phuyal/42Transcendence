@@ -302,6 +302,7 @@ run_test() {
     # Check if the response is an html
     if [[ $(file -b --mime-type ${RESPONSE_FILE}) == "text/html" ]]; then
         echo -en "${RED}(received an HTML response instead of JSON)${RESET}"
+        echo ">>> html file: bla bla bla (to lazy to log the full file <<<)" > ${RESPONSE_FILE}
         test_successfull=false
     else
         # Check if the response JSON is valid
