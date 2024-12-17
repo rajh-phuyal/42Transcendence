@@ -54,6 +54,8 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         raise BarelyAnException(_("Local tournaments require opponent ids"))
     if public_tournament and opponent_ids is not None:
         raise BarelyAnException(_("Public tournaments can't have opponent ids"))
+    if not local_tournament and not public_tournament and opponent_ids is None:
+        raise BarelyAnException(_("You must invite opponents to a private tournament"))
     if opponent_ids is None:
         return tournament_user_objects
     if not isinstance(opponent_ids, list):
