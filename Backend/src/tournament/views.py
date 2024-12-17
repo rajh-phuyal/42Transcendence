@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from tournament.utils import create_tournament, get_tournament_and_member
 from core.exceptions import BarelyAnException
+from tournament.serializer import TournamentMemberSerializer
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -190,6 +191,8 @@ class TournamentLobbyView(BaseAuthenticatedView):
 
         # Get all members of the tournament
         tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+        # Serialize the members
+        tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
 
         # Get all games of the tournament
         games = Game.objects.filter(tournament_id=tournament.id)
@@ -198,13 +201,14 @@ class TournamentLobbyView(BaseAuthenticatedView):
         response_json = {
             'tournamentId': tournament.id,
             'tournamentName': tournament.name,
+            'createdBy': 'TODO',
             'tournamentState': tournament.state,
             'tournamentMapNumber': tournament.map_number,
             'tournamentPowerups': tournament.powerups,
             'tournamentPublic': tournament.public_tournament,
             'tournamentLocal': tournament.local_tournament,
             'clientRole': role,
-            'tournamentMembers': tournament_members,
-            'tournamentGames': games
+            'tournamentMembers': tournament_members_data,
+            #'tournamentGames': games
         }
         return success_response(_("Tournament lobby fetched successfully"), **response_json)

@@ -22,7 +22,7 @@ class User(AbstractUser):
     def update_last_seen(self):
         self.last_login = timezone.now()
         self.save(update_fields=['last_login'])
-    
+
     def set_online_status(self, status):
         if status:
             cache.set(f'user_online_{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
