@@ -24,6 +24,7 @@ LOG_FILE="$(dirname "$(realpath "$0")")/results.log"
 CSV_FILE="$(dirname "$(realpath "$0")")/testsFromSheets.csv"
 RESPONSE_FILE="$(dirname "$(realpath "$0")")/response.json"
 ENV_FILE="$(dirname "$(realpath "$0")")/dummy.env"
+LIVE_DUMMY_FILE="$(dirname "$(realpath "$0")")/live_dummy.sh"
 
 # To be able to print in color to the terminal and in plain text to the log file
 print_and_log() {
@@ -99,6 +100,7 @@ create_dummy(){
     sleep 1
     source $ENV_FILE
     echo -e "${BLUE}Running dummy2.0.sh...${GREEN}done${RESET}"
+    bash "$LIVE_DUMMY_FILE"
     check_for_envs
 }
 
