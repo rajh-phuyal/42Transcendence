@@ -74,7 +74,7 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         if creator_id == opponent_id:
             raise BarelyAnException(_("You can't invite yourself to a tournament"))
         if opponent.id == USER_ID_AI:
-            raise BarelyAnException(_("Playing against AI in a tournament is not supported yet"))
+            logging.error("TODO: Playing against AI is not supported yet")
         if is_blocking(creator, opponent):
             raise BlockingException(_("You can't invite a user whom you have blocked: {opponent.username}").format(opponent=opponent))
         if is_blocked(creator, opponent):
