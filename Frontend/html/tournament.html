@@ -2,11 +2,79 @@
     <h1>
         tournament view
     </h1>
+    <h3 id="tournament-name">tournament name</h3>
+    <div id="main-container">
+
+        <div id="Tournament-status">
+           <button id="start-button">Start</button> 
+           <button id="enter-button">Enter</button> 
+           <button id="quit-button">Quit</button> 
+           <div id="status">status</div>
+        </div>
+        <div id="tournament-list">
+            <h5>Participants List</h5>
+            <template id="tournament-list-card-template">
+                <div class="card">
+                    <span class="username">user</span>
+                </div>
+            </template>
+        </div>
+    </div>
 </div>
 
 <style>
-    #tournament-view {
+
+    button {
+        height: 10%;
+        width: 20%;
+        margin: 3% 10%;
+    }
+
+    .card {
+        height: 10%;
+        width: 40%;
+        background-color: antiquewhite;
+    }
+
+    #status {
+        background-color: red;
+        height: 10%;
+        width: 10%;
+        
+    }
+    
+    #main-container {
+        background-color: rgba(209, 13, 13, 0.5);
+        height: 60%;
+        width: 60%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    #Tournament-status {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(6, 67, 152, 0.576);
         height: 100%;
+        width: 50%;
+    }
+
+    #tournament-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 6%;
+        background-color: rgba(221, 232, 2, 0.632);
+        height: 100%;
+        width: 50%;
+    }
+
+    #tournament-view {
+        justify-items: center;
+        height: 100%;
+        width: 100%;
         background-color: #ff05ee6c;
     }
 </style>
