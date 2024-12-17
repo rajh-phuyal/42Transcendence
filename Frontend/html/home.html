@@ -34,6 +34,19 @@
               <button id="AIModalStartButton">start</button>
             </div>
           </div>
+
+          <!-- Tournament Modal -->
+           <div id="tournament-modal">
+              <h3 id="tournament-modal-title">JOIN TOURNAMENT</h3>
+              <div id="tournament-modal-tournament-list">
+                <template id="tournament-modal-tournament-template">
+                  <div class="tournament-modal-tournament-container">
+                    <span class="tournament-modal-tournament-name"></span>
+                  </div>
+                </template>
+              </div>
+           </div>
+
         </div>
       </div>
     </div>
@@ -41,6 +54,22 @@
 </div>
 
 <style>
+    #tournament-modal {
+      display: flex;
+      flex-direction: column;
+      height: 30%;
+      width: 100%;
+      background-color: rgba(10, 180, 0, 50%);
+    }
+
+    #join-tournament-list {
+      display: flex;
+      flex-direction: column;
+      height: 70%;
+      width: 100%;
+      background-color: rgba(242, 132, 35, 0.5);
+    }
+
     #home-canvas {
         width: 100%;
         height: 100%;
