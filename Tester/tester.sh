@@ -15,7 +15,6 @@ RESET="\033[0m"
 # VARS
 TOTAL_TESTS=0
 TOTAL_TESTS_SUCCESS=0
-FAILED_TESTS=""
 TEST_TO_PERFORM=""
 UPPER_TEST_RANGE=""
 
@@ -24,7 +23,6 @@ LOG_FILE="$(dirname "$(realpath "$0")")/results.log"
 CSV_FILE="$(dirname "$(realpath "$0")")/testsFromSheets.csv"
 RESPONSE_FILE="$(dirname "$(realpath "$0")")/response.json"
 ENV_FILE="$(dirname "$(realpath "$0")")/dummy.env"
-LIVE_DUMMY_FILE="$(dirname "$(realpath "$0")")/live_dummy.sh"
 
 # To be able to print in color to the terminal and in plain text to the log file
 print_and_log() {
@@ -100,12 +98,11 @@ create_dummy(){
     sleep 1
     source $ENV_FILE
     echo -e "${BLUE}Running dummy2.0.sh...${GREEN}done${RESET}"
-    bash "$LIVE_DUMMY_FILE"
     check_for_envs
 }
 
 download_tests(){
-    TOTAL_TESTS=$(( $(awk 'length($0) > 20' "$CSV_FILE" | wc -l)))
+    TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
     TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
     if [[ $TOTAL_TESTS -ne -2 ]]; then
         echo -e "${BLUE}Found ${TOTAL_TESTS} tests in csv file${RESET}"
@@ -132,9 +129,9 @@ download_tests(){
         exit 1
     fi
     echo -e "\n" >> ${CSV_FILE}
-    TOTAL_TESTS=$(( $(awk 'length($0) > 20' "$CSV_FILE" | wc -l)))
+    TOTAL_TESTS=$(( $(wc -l < "$CSV_FILE") - 2 ))
     TOTAL_TESTS=$(printf "%03d" "$TOTAL_TESTS")
-    echo -e "${BLUE}Found ${TOTAL_TESTS} tests in csv file${RESET}"
+    echo "Found ${TOTAL_TESTS} tests in csv file"
 }
 
 expand_vars(){
@@ -143,7 +140,6 @@ expand_vars(){
     variables=("john" "arabelo" "astein" "anshovah" "fdaestr" "rphuyal")
     var_list_access=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_ACCESS '; done)
     var_list_id=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_ID '; done)
-    var_list_username=$(for var in "${variables[@]}"; do echo -n '$'$(echo "$var" | tr '[:lower:]' '[:upper:]')'_USERNAME '; done)
 
     for var in "${variables[@]}"; do
         var_upper=$(echo "$var" | tr '[:lower:]' '[:upper:]')
@@ -151,15 +147,11 @@ expand_vars(){
         export ${var_upper}_ACCESS="${!varname}"
         varname="${var_upper}_ID"
         export ${var_upper}_ID="${!varname}"
-        varname="${var_upper}_USERNAME"
-        export ${var_upper}_USERNAME="${!varname}"
     done
 
     envsubst "$var_list_access" < "$CSV_FILE" > "$output_file"
     mv $output_file $CSV_FILE
     envsubst "$var_list_id" < "$CSV_FILE" > "$output_file"
-    mv $output_file $CSV_FILE
-    envsubst "$var_list_username" < "$CSV_FILE" > "$output_file"
     mv $output_file $CSV_FILE
 }
 
@@ -173,22 +165,19 @@ select_test(){
     echo -e "Enter test number\n\t${BOLD}return${RESET}\tfor all tests\n\t${BOLD}42${RESET}\tonly test with number: 42\n\t${BOLD}-42${RESET}\tfor range 1-42"
     read -p "choose: " INPUT
 
-    local total_tests_num=$((10#$TOTAL_TESTS))
     if [[ -n "$INPUT" ]]; then
         if [[ $INPUT == -* ]]; then
             UPPER_TEST_RANGE=${INPUT:1}
-            # UPPER_TEST_RANGE=$(printf "%03d" "$UPPER_TEST_RANGE")
-            if [[ $UPPER_TEST_RANGE -gt $total_tests_num ]]; then
+            UPPER_TEST_RANGE=$(printf "%03d" "$UPPER_TEST_RANGE")
+            if [[ $UPPER_TEST_RANGE -gt $TOTAL_TESTS ]]; then
                 print_and_log "" "Test number $UPPER_TEST_RANGE does not exist"
                 print_and_log "" "Ignoring range aka running all tests"
-                UPPER_TEST_RANGE=""
-                return
             fi
             print_and_log "" "Running tests 001-$UPPER_TEST_RANGE"
             return
         fi
-        TEST_TO_PERFORM=$INPUT
-        if [[ $TEST_TO_PERFORM -gt $total_tests_num ]]; then
+        TEST_TO_PERFORM=$(printf "%03d" "$INPUT")
+        if [[ $TEST_TO_PERFORM -gt $TOTAL_TESTS ]]; then
             echo "Test number $TEST_TO_PERFORM does not exist"
             exit 1
         fi
@@ -302,55 +291,46 @@ run_test() {
         echo -en "${GREEN}${HTTP_CODE} ${RESET}"
     fi
 
-    # Check if the response is an html
-    if [[ $(file -b --mime-type ${RESPONSE_FILE}) == "text/html" ]]; then
-        echo -en "${RED}(received an HTML response instead of JSON)${RESET}"
-        echo ">>> html file: bla bla bla (to lazy to log the full file <<<)" > ${RESPONSE_FILE}
-        test_successfull=false
-    else
-        # Check if the response JSON is valid
-        local message=""
-        echo "      expected keys:" >> "$LOG_FILE"
-        for key in $keys; do
-            echo -ne "         $key:\t" >> "$LOG_FILE"
-            key_exists=$(jq -r "has(\"$key\")" ${RESPONSE_FILE})
-            if [[ "$key_exists" == "true" ]]; then
-                # Key exists
-                value=$(jq -r ".$key" ${RESPONSE_FILE})
-                if [[ $key == "status" ]]; then
-                    if [[ "$should_work" == "+" ]]; then
-                        if [[ "$value" == "success" ]]; then
-                            echo -en "${GREEN}$key ${RESET}"
-                            echo "$value"  >> "$LOG_FILE"
-                        else
-                            echo -en "${ORANGE}$key ${RESET}"
-                            echo "$value (expected 'success' !!!)" >> "$LOG_FILE"
-                            test_successfull=false
-                        fi
+    local message=""
+    echo "      expected keys:" >> "$LOG_FILE"
+    for key in $keys; do
+        echo -ne "         $key:\t" >> "$LOG_FILE"
+        value=$(jq -r ".$key // empty" ${RESPONSE_FILE} 2>/dev/null) || value=""
+        if [[ -n "$value" ]]; then
+            if [[ $key == "status" ]]; then
+                if [[ "$should_work" == "+" ]]; then
+                    if [[ "$value" == "success" ]]; then
+                        echo -en "${GREEN}$key ${RESET}"
+                        echo "$value"  >> "$LOG_FILE"
                     else
-                        if [[ "$value" == "error" ]]; then
-                            echo -en "${GREEN}$key ${RESET}"
-                            echo "$value"  >> "$LOG_FILE"
-                        else
-                            echo -en "${ORANGE}$key ${RESET}"
-                            echo "$value (expected 'error' !!!)"  >> "$LOG_FILE"
-                            test_successfull=false
-                        fi
+                        echo -en "${ORANGE}$key ${RESET}"
+                        echo "$value (expected 'success' !!!)" >> "$LOG_FILE"
+                        test_successfull=false
                     fi
-                    continue
+                else
+                    if [[ "$value" == "error" ]]; then
+                        echo -en "${GREEN}$key ${RESET}"
+                        echo "$value"  >> "$LOG_FILE"
+                    else
+                        echo -en "${ORANGE}$key ${RESET}"
+                        echo "$value (expected 'error' !!!)"  >> "$LOG_FILE"
+                        test_successfull=false
+                    fi
                 fi
-                echo "$value"  >> "$LOG_FILE"
-                echo -en "${GREEN}$key ${RESET}"
-                if [[ $key == "message" ]]; then
-                    message="($value)"
-                fi
-            else
-                echo "<expected key '$key' is missing!>"  >> "$LOG_FILE"
-                echo -en "${RED}$key ${RESET}"
-                test_successfull=false
+                continue
             fi
-        done
-    fi
+            echo "$value"  >> "$LOG_FILE"
+            echo -en "${GREEN}$key ${RESET}"
+            if [[ $key == "message" ]]; then
+                message="($value)"
+            fi
+        else
+            echo "<expected key '$key' is missing!>"  >> "$LOG_FILE"
+            echo -en "${RED}$key ${RESET}"
+            test_successfull=false
+        fi
+    done
+
     echo "   ---"  >> "$LOG_FILE"
     echo -n "   result: "  >> "$LOG_FILE"
     if [[ $test_successfull == true ]]; then
@@ -362,7 +342,6 @@ run_test() {
         echo -e " | ${GREEN}ok${RESET} $message_short\n"
         ((TOTAL_TESTS_SUCCESS++))
     else
-        FAILED_TESTS="$FAILED_TESTS\n$test_number"
         echo "ko"  >> "$LOG_FILE"
         echo -e " | ${RED}ko${RESET} $message\n"
     fi
@@ -425,17 +404,16 @@ run_tests(){
         test_sub_number=$((test_sub_number + 1))
     done
 
-#TODO: UNCOMMENT THIS WHEN CODE ON MAIN IS FIXED @rajh
     # C: If the line needs a token
-#    if [[ "$user" != "NONE" ]]; then
-#        # C1: try without token
-#        test_number_new="${test_number} C1 (no token)"
-#        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
-#
-#        # C2: try with wrong token
-#        test_number_new="${test_number} C2 (wrong tok.)"
-#        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
-#    fi
+    if [[ "$user" != "NONE" ]]; then
+        # C1: try without token
+        test_number_new="${test_number} C1 (no token)"
+        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
+
+        # C2: try with wrong token
+        test_number_new="${test_number} C2 (wrong tok.)"
+        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
+    fi
 
     # D: If the line needs arguments
     if [[ -n "$args" ]]; then
@@ -451,8 +429,8 @@ run_tests(){
 parse_lines(){
     # Reset total tests since we generate more tests than lines
     TOTAL_TESTS=0
-    SKIPPED_TESTS=""
-    echo "Let's go..."
+
+    echo "Running tests..."
     echo "========================================================================================================"
 
     # Read the CSV file line by line
@@ -464,25 +442,23 @@ parse_lines(){
             continue
         fi
 
-        # CHeck if test number is there and active (aka no empty line)
-        if [[ -z "$test_number" || -z "$active" ]]; then
+        if [[ -z "$test_number" ]]; then
             continue
         fi
 
-        test_num=$((10#$test_number))
         # Check if only one test should be run
-        if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_num" != "$TEST_TO_PERFORM" ]]; then
+        if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_number" != "$TEST_TO_PERFORM" ]]; then
             continue
         fi
 
         # Check if only a range of tests should be run
-        if [[ -n "$UPPER_TEST_RANGE" ]] && [[ "$test_num" -gt "$UPPER_TEST_RANGE" ]]; then
+        if [[ -n "$UPPER_TEST_RANGE" ]] && [[ "$test_number" -gt "$UPPER_TEST_RANGE" ]]; then
             break
         fi
 
         # Check if test is marekd as active
         if [[ "$active" != "x" ]]; then
-            SKIPPED_TESTS="$SKIPPED_TESTS $test_number"
+            print_and_log "${RED}" "Skipping test $test_number because it is not marked as active in sheet!"
             continue
         fi
 
@@ -497,19 +473,6 @@ parse_lines(){
 
         run_tests "$test_number" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
     done < "$CSV_FILE"
-    if [[ -n "$SKIPPED_TESTS" ]]; then
-        print_and_log "${RED}" "The following tests were skipped because they are not marked as active in the sheet:"
-        print_and_log "${RED}" "======="
-        print_and_log "${RED}" "Skipped tests: $SKIPPED_TESTS"
-        print_and_log "${RED}" "======="
-    fi
-    if [[ -n "$FAILED_TESTS" ]]; then
-        print_and_log "" "\n"
-        print_and_log "${RED}" "The following tests failed:"
-        print_and_log -n "${RED}" "======="
-        print_and_log "${RED}" "$FAILED_TESTS"
-        print_and_log "${RED}" "======="
-    fi
 }
 
 print_summary(){
