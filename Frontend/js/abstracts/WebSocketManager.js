@@ -13,36 +13,44 @@ class WebSocketManager {
     }
 
     // Connect to WebSocket with the provided token
-    connect(token) {
+    connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             console.log("WebSocket already connected.");
             return;
         }
-      
-        // const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        // TODO: i am not sure if this is the right way to do issue #190
-        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-        const resolvedHostname = hostname === 'localhost' ? '127.0.0.1' : hostname;
-        const socketUrl = `${protocol}${resolvedHostname}:8000/ws/app/main/?token=${token}`;
+
+        // Don't try to connect if not authenticated
+        if (!$store.fromState('isAuthenticated')) {
+            console.log("Not connecting WebSocket - user not authenticated");
+            $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
+                if (!isAuthenticated) return;
+                this.connect();
+            });
+            return;
+        }
+
+        const host = hostname;
+        const socketUrl = `wss://${host}/ws/app/main/`;
+
         console.log("Connecting to WebSocket:", socketUrl);
+        try {
+            this.socket = new WebSocket(socketUrl);
 
-        this.socket = new WebSocket(socketUrl);
-        
-        // Log connection events
-        this.socket.onopen = () => {
-            console.log("WebSocket connected.");
-            $store.commit("setWebSocketIsAlive", true);
-        };
+            // Log connection events
+            this.socket.onopen = () => {
+                console.log("WebSocket connected.");
+                $store.commit("setWebSocketIsAlive", true);
+            };
 
-		this.socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            this.receiveMessage(data);
-            // this.routeMethods[message.messageType].bind(this)();
-            // Dispatch data to appropriate handlers based on message type
-        };
+            this.socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                this.receiveMessage(data);
+                // this.routeMethods[message.messageType].bind(this)();
+                // Dispatch data to appropriate handlers based on message type
+            };
 
-        this.socket.onclose = () => {
-            console.log("WebSocket disconnected.");
+        } catch (error) {
+            console.error("WebSocket connection error:", error);
             $store.commit("setWebSocketIsAlive", false);
         };
 
@@ -53,7 +61,7 @@ class WebSocketManager {
 
         // this.socket.addEventListner("message", this.receiveMessage);
     }
-    
+
     // Allowd types are:
     // - chat (for sending chat messages)
     // - seen (for marking conversation as seen) "id": <conversationid>
@@ -64,7 +72,7 @@ class WebSocketManager {
 
     // The backend send:
     // - chat (for receiving chat messages)
-    // - update 
+    // - update
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
     receiveMessage(message) {
@@ -97,7 +105,7 @@ class WebSocketManager {
 
         console.warn("FE doen't know what to do with this type:", message);
     }
-    
+
     // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
@@ -113,7 +121,7 @@ class WebSocketManager {
     processIncomingChatMessageChatView(message) {
         if (this.currentConversation == message.conversationId) {
             $id("chat-view-messages-container").prepend(createMessage(message));
-            
+
             // send seen message if it is not ur own message
             if (message.userId != $store.fromState("user").id)
                 this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
@@ -127,7 +135,7 @@ class WebSocketManager {
         seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.value;
         if (message.value == "0")
             seenCouterContainer.style.display = "none";
-        else 
+        else
             seenCouterContainer.style.display = "flex";
     }
 
@@ -138,10 +146,10 @@ class WebSocketManager {
     createConversationCard(message) {
         let conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
         let container = conversation.querySelector(".chat-view-conversation-card");
-        container.id = "chat-view-conversation-card-" +  message.conversationId; 
+        container.id = "chat-view-conversation-card-" +  message.conversationId;
         container.setAttribute("conversation_id", message.conversationId);
         container.setAttribute("last-message-time", message.lastUpdate);
-        
+
         // Avatar
         conversation.querySelector(".chat-view-conversation-card-avatar").src = window.origin + '/media/avatars/' + message.conversationAvatar;
 
@@ -168,6 +176,11 @@ class WebSocketManager {
 
     setCurrentConversation(conversationId) {
         this.currentConversation = conversationId;
+    }
+
+    reconnect() {
+        this.disconnect();
+        this.connect();
     }
 }
 

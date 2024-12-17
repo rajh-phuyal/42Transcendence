@@ -4,10 +4,6 @@ export const state = {
         username: undefined,
     },
     isAuthenticated: false,
-    jwtTokens: {
-        access: undefined,
-        refresh: undefined,
-    },
     locale: 'en-US',
     translations: {},
     webSocketIsAlive: false,

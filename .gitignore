@@ -1,9 +1,13 @@
-#TODO: Do we need all those sections?
-
 # SSL KEY!
 *.cer
 *.key
 *.crt
+
+# Tester files
+Tester/*.log
+Tester/*.env
+Tester/*.json
+Tester/*.csv
 
 # Environment-specific files and directories
 Environments/*

@@ -1,4 +1,4 @@
-from core.base_views import BaseAuthenticatedView
+from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
 from user.models import User
 from game.models import Game, GameMember
@@ -36,7 +36,7 @@ class CreateGameView(BaseAuthenticatedView):
         opponent_id = request.data.get('opponentId')
         if not opponent_id:
             return error_response(_("Missing key 'opponentId'"))
-                    
+
         game_id, success = create_game(user.id, opponent_id, map_number, powerups, local_game)
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game_id})

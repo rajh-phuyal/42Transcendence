@@ -1,75 +1,115 @@
 import $store from '../store/store.js';
+import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class Auth {
     constructor() {
-        // Initialize the state from localStorage if available
-        this.jwtToken = $store.fromState('jwtTokens').access;
-
-        // Check if the user is authenticated
-        this.isAuthenticated = this.isUserAuthenticated();
-
+        this.isAuthenticated = false;
+        this._lastCheckTimestamp = 0;
+        this._cacheTimeout = 30000; // 30, sec, optimal for UX
         return this;
     }
 
+    clearAuthCache() {
+        this._lastCheckTimestamp = 0;
+    }
+
     async isUserAuthenticated() {
-        if (await this.verifyJWTToken() && !$store.fromState('webSocketIsAlive'))
-            WebSocketManager.connect($store.fromState('jwtTokens').access);
-            
-        return await this.verifyJWTToken();
-    }
+        const now = Date.now();
+        console.log("Checking authentication");
 
-    authenticate(username, password) {
-        return call('auth/login/', 'POST', { username: username, password: password });
-    }
+        // Return cached result if within timeout window
+        if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
+            console.log("Using cached auth result:", this.isAuthenticated);
+            return this.isAuthenticated;
+        }
 
-    createUser(username, password) {
-        return call('auth/register/', 'POST', { username: username, password: password });
+        // Create new auth check promise
+        return await (async () => {
+            try {
+                const response = await call('auth/verify/', 'GET', null, false);
+                if (!response.isAuthenticated) {
+                    return false;
+                }
+
+                this.isAuthenticated = response.isAuthenticated;
+                $store.commit('setIsAuthenticated', this.isAuthenticated);
+                console.log("Auth check successful");
+
+                if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
+                    console.log("Connecting WebSocket");
+                    WebSocketManager.connect();
+                }
+
+                this._lastCheckTimestamp = now;
+            } catch (error) {
+                console.log("Auth check failed:", error);
+                this.isAuthenticated = false;
+                this.clearAuthCache();
+            }
+
+            return this.isAuthenticated;
+        })();
     }
 
     async refreshToken() {
-        return await call('auth/token/refresh/', 'POST', { refresh: $store.fromState('jwtTokens').refresh });
-        //TODO: Refresh the WebSocket connection with the new token
-    }
-
-    logout() {
-        $store.clear();
-		WebSocketManager.disconnect();
-    }
-
-    getAuthHeader() {
-        return $store.fromState('jwtTokens').access ? `Bearer ${$store.fromState('jwtTokens').access}` : undefined;
-    }
-
-    async verifyJWTToken() {
-        const token = $store.fromState('jwtTokens').access;
-        if (!token) return false;
-
-        const [header, payload, signature] = token.split('.');
-        if (!header || !payload || !signature) return false;
-
         try {
-            const { exp } = JSON.parse(atob(payload));
-            if (Date.now() >= exp * 1000) {
-                this.logout(); //? Token has expired, for now just log out the user
-                // TODO: fix the refresh issue here
-                // const refreshed = await this.refreshToken();
-                // return refreshed;
-            }
-        } catch (e) {
-            console.error('Error verifying token:', e);
-            this.logout(); //? Token is invalid, for now just log out the user
-            // TODO: fix the refresh issue here
-            // const refreshed = await this.refreshToken();
-            // return refreshed;
-        }
+            const response = await call('auth/token/refresh/', 'POST');
 
-        return true;
+            if (!response.ok) {
+                throw new Error('Token refresh failed');
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error refreshing token:', error);
+            return false;
+        }
+    }
+
+    authenticate(username, password) {
+        return call('auth/login/', 'POST',
+            { username: username, password: password }
+        );
+    }
+
+    createUser(username, password) {
+        return call('auth/register/', 'POST',
+            { username: username, password: password }
+        );
+    }
+
+    async logout(broadcast = true) {
+        try {
+            console.log("Logging out...");
+            const response = await call('auth/logout/', 'POST', null, true);
+            console.log("Logout response", response);
+
+            if (response.statusCode !== 200) {
+                return false;
+            }
+
+            // Clear all auth-related state
+            this.clearAuthCache();
+            this.isAuthenticated = false;
+            $store.commit('setIsAuthenticated', false);
+            WebSocketManager.disconnect();
+            $store.clear();
+
+            if (broadcast) {
+                // Broadcast logout to other tabs
+                $syncer.broadcast("authentication-state", { logout: true });
+            }
+
+            // Don't redirect here, let the functional route handle it
+            return true;
+        } catch (error) {
+            console.error('Logout error:', error);
+            return false;
+        }
     }
 }
 
-// Create a single global instance of the Auth class
 const $auth = new Auth();
-
 export default $auth;

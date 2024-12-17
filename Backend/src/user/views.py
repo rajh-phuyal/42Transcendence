@@ -1,5 +1,5 @@
 from core.decorators import barely_handle_exceptions
-from core.base_views import BaseAuthenticatedView
+from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
 from django.db import transaction

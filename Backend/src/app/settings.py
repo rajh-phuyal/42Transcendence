@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('BE_SECRET_KEY')
 AUTH_USER_MODEL = 'user.User'
 
 # DEBUG MODE
-local_deploy = os.getenv('LOCAL_DEPLOY', 'False')
+local_deploy = os.getenv('LOCAL_DEPLOY', 'True')
 DEBUG = local_deploy.lower() == 'true'
 print(f"DEBUG is set to: {DEBUG}")
 
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	
+
 	# Third-party Apps
     'corsheaders',
     'rest_framework',
@@ -104,7 +104,17 @@ ASGI_APPLICATION = 'app.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'CONFIG': {
+            'capacity': 2000,  # Maximum number of messages that can be in a channel layer
+        },
     },
+}
+
+# Security settings for WebSocket
+CHANNEL_SECURITY = {
+    'SECURE_ONLY': True,
+    'ALLOWED_HOSTS': ALLOWED_HOSTS,
+    'AUTH_TIMEOUT': 20, # Seconds for authentication to complete
 }
 
 # Database
@@ -158,6 +168,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+# TODO: check how the pluralization is breaking on start up
 USE_I18N = True # [astein:] for internationalization
 USE_L10N = True # [astein:] for localization (formats dates, numbers, etc., based on locale)
 USE_TZ = True	# [astein:] for timezone support
@@ -171,6 +182,9 @@ LANGUAGES = [
     ('uk-ua', ('Ukrainian (Ukraine)')),     # Ukrainian (Ukraine)
     ('ne-np', ('Nepali (Nepal)'))           # Nepali (Nepal)
 ]
+
+# Ensure locale directory exists
+os.makedirs(BASE_DIR / 'locale', exist_ok=True)
 
 # Path for Locale Files
 LOCALE_PATHS = [
@@ -191,30 +205,53 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'core.cookies.CookieJWTAuthentication',
+    ],
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=130), # temporary for development
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 }
+
+SIMPLE_JWT_COOKIE = {
+    'ACCESS_COOKIE_NAME': 'access_token',
+    'REFRESH_COOKIE_NAME': 'refresh_token',
+    'ACCESS_COOKIE_PATH': '/',
+    'REFRESH_COOKIE_PATH': '/api/auth/token/refresh/',
+    'ACCESS_COOKIE_SECURE': True,
+    'REFRESH_COOKIE_SECURE': True,
+    'ACCESS_COOKIE_HTTPONLY': True,
+    'REFRESH_COOKIE_HTTPONLY': True,
+    'ACCESS_COOKIE_SAMESITE': 'Strict',
+    'REFRESH_COOKIE_SAMESITE': 'Strict',
+}
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 print("------------------------------------")
 print("Loading settings.py...DONE")

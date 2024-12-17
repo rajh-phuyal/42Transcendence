@@ -23,6 +23,7 @@ def success_response(message: str, status_code=status.HTTP_200_OK, **json_detail
     return Response(
         {
             "status": "success",
+            "statusCode": status_code,
             "message": message,
             **json_details,
         },
@@ -33,6 +34,7 @@ def error_response(message: str, status_code=status.HTTP_400_BAD_REQUEST, **json
     return Response(
         {
             "status": "error",
+            "statusCode": status_code,
             "message": message,
             **json_details,
         },
