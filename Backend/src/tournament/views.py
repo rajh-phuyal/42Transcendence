@@ -99,7 +99,7 @@ class JoinTournamentView(BaseAuthenticatedView):
             # Accept the invitation
             with transaction.atomic():
                 if tournament.state != TournamentState.SETUP:
-                    return error_response(_("Tournament has already started"))
+                    return error_response(_("Tournament has already started or ended"))
                 else:
                     TournamentMember.objects.get(id=tournament_member.id).select_for_update().update(accepted=True)
                     # TODO: send websocket update message to update the lobby
@@ -112,7 +112,7 @@ class JoinTournamentView(BaseAuthenticatedView):
                 # Join the public tournament
                 with transaction.atomic():
                     if tournament.state != TournamentState.SETUP:
-                        return error_response(_("Tournament has already started"))
+                        return error_response(_("Tournament has already started or ended"))
                     else:
                         tournament_member = TournamentMember.objects.create(
                             user=user,

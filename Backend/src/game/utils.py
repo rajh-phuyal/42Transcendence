@@ -9,6 +9,7 @@ from user.exceptions import UserNotFound, RelationshipException, BlockingExcepti
 from user.utils_relationship import is_blocking, are_friends
 from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
+import logging
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
@@ -27,7 +28,7 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent is AI
         if opponent.id == USER_ID_AI:
             # TODO: issue #210
-            raise BarelyAnException(_("Playing against AI is not supported yet"))
+            logging.error("Playing against AI is not supported yet")
         # Check if there is already a direct game between the user and the opponent
         user_games = GameMember.objects.filter(
             user=user.id,

@@ -5,6 +5,7 @@ from game.models import Game, GameMember
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from game.utils import create_game, delete_game
+import logging
 # from django.db.models import Q
 
 class CreateGameView(BaseAuthenticatedView):
@@ -32,7 +33,7 @@ class CreateGameView(BaseAuthenticatedView):
             local_game = False
         if local_game:
             # TODO: issue #211
-            return error_response(_("Local games are not supported yet"))
+            logging.error("Local games are not supported yet")
         opponent_id = request.data.get('opponentId')
         if not opponent_id:
             return error_response(_("Missing key 'opponentId'"))
