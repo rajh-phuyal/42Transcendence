@@ -9,7 +9,6 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from rest_framework import status
 from django.utils import timezone
 from .utils import mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException

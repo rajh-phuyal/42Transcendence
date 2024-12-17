@@ -1,3 +1,4 @@
+from rest_framework import status
 from django.db import transaction
 from django.utils import timezone
 from .models import Game, GameMember
@@ -74,14 +75,14 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
 def delete_game(user_id, game_id):
     # Check if the game exists
     try:
-        game = Game.objects.get(id=game_id) 
+        game = Game.objects.get(id=game_id)
     except Game.DoesNotExist:
         raise BarelyAnException(_("Game not found"))
     # Check if the user is a member of the game
     try:
         GameMember.objects.get(game=game_id, user=user_id)
     except GameMember.DoesNotExist:
-        raise BarelyAnException(_("You are not a member of this game"))
+        raise BarelyAnException(_("You are not a member of this game"), status_code=status.HTTP_403_FORBIDDEN)
     # Check for not being a tournament game
     if game.tournament_id:
         raise BarelyAnException(_("You can't delete a tournament game"))
@@ -89,7 +90,7 @@ def delete_game(user_id, game_id):
     if game.state != Game.GameState.PENDING:
         raise BarelyAnException(_("You can only delete a pending game"))
     # Delete the game and the game members in a transaction
-    with transaction.atomic():  
+    with transaction.atomic():
         GameMember.objects.filter(game=game_id).delete()
         game.delete()
     return True

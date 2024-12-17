@@ -50,7 +50,7 @@ register_user() {
             ACCESS_TOKEN=$(awk '/access_token/ {print $NF}' temp_cookie.txt)
             REFRESH_TOKEN=$(awk '/refresh_token/ {print $NF}' temp_cookie.txt)
             USER_NAME=$(jq -r '.username' ${RESPONSE_FILE})
-            output+="${GREEN}$username${RESET} ($PASSWORD)"
+            output+="${GREEN}$username${RESET}\t($PASSWORD)\t(id: $USER_ID)"
             echo -e "$output"
             # Export variables with the original base username prefix
             export $(echo "${base_username}_ID" | tr '[:lower:]' '[:upper:]')="$USER_ID"
