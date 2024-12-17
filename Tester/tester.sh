@@ -456,20 +456,21 @@ parse_lines(){
     echo "========================================================================================================"
 
     # Read the CSV file line by line
-    skip_first_line=true
-    while IFS=',' read -r test_number active should_work expected keys short_description user method endpoint args; do
+    local test_no=0
+    while IFS=',' read -r active should_work expected keys short_description user method endpoint args; do
+        test_no=$((test_no + 1))
+        local test_number=$(printf "%03d" "$test_no")
+        test_num=$((10#$test_number))
         # Skip the first line
-        if $skip_first_line; then
-            skip_first_line=false
+        if [[ "$test_no" == "1" ]]; then
             continue
         fi
 
-        # CHeck if test number is there and active (aka no empty line)
+        # Check if test number is there and active (aka no empty line)
         if [[ -z "$test_number" || -z "$active" ]]; then
             continue
         fi
 
-        test_num=$((10#$test_number))
         # Check if only one test should be run
         if [[ -n "$TEST_TO_PERFORM" ]] && [[ "$test_num" != "$TEST_TO_PERFORM" ]]; then
             continue
