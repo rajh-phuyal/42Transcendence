@@ -77,7 +77,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         # Fetch the timestamp of the last message in the conversation
         last_message = obj.messages.order_by('-created_at').first()
         return last_message.created_at if last_message else None
-    
+
     def get_isEmpty(self, obj):
         return obj.messages.count() == 0
 

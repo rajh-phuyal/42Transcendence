@@ -21,7 +21,7 @@ class Game(models.Model):
 
     def __str__(self):
         return f"Game {self.id} - State: {self.state}"
-    
+
     class Meta:
         db_table = '"barelyaschema"."game"'
 
@@ -47,6 +47,6 @@ class GameMember(models.Model):
 
     def __str__(self):
         return f"GameMember {self.id} - User: {self.user_id} - Game: {self.game_id} - Result: {self.result}"
-    
+
     class Meta:
         db_table = '"barelyaschema"."game_member"'
