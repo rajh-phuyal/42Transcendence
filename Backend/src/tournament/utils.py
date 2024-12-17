@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 from user.utils_relationship import are_friends, is_blocking, is_blocked
 import logging
+from rest_framework import status
 
 def parse_bool(string):
     logging.info(f"parse_bool: {string}")
@@ -129,3 +130,45 @@ def get_tournament_and_member(user, tournament_id, need_admin=False):
     if need_admin and not tournament_member.is_admin:
         raise BarelyAnException(_("You are not the admin of the tournament"))
     return tournament, tournament_member
+
+def join_tournament(user, tournament_id):
+    with transaction.atomic():
+        tournament = Tournament.objects.select_for_update().get(id=tournament_id)
+        # Check if already a member
+        tournament_member = None
+        try:
+            tournament_member = TournamentMember.objects.select_for_update().get(user_id=user.id, tournament_id=tournament_id)
+        except TournamentMember.DoesNotExist:
+            ...
+            # Ignore the error
+
+        # In case we already have an entry:
+        if tournament_member:
+            # Check if already accepted
+            if tournament_member.accepted:
+                raise BarelyAnException(_("You have already accepted this tournament invitation"))
+            # Accept the invitation
+            if tournament.state != TournamentState.SETUP:
+                raise BarelyAnException(_("Tournament has already started or ended"))
+            else:
+                tournament_member.accepted = True
+                tournament_member.save()
+                # TODO: send websocket update message to update the lobby
+
+        # In case we don't have an entry:
+        else:
+            if not tournament.public_tournament:
+                raise BarelyAnException(_("You are not invited to this tournament"), status_code=status.HTTP_403_FORBIDDEN)
+            else:
+                if tournament.state != TournamentState.SETUP:
+                    raise BarelyAnException(_("Tournament has already started or ended"))
+                else:
+                    tournament_member = TournamentMember.objects.create(
+                        user=user,
+                        tournament=tournament,
+                        tournament_alias=user.username,
+                        accepted=True
+                    )
+                    tournament_member.save()
+                    # TODO: send websocket update message to update the lobby
+

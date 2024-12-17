@@ -6,7 +6,7 @@ from game.models import Game, GameMember
 from tournament.models import Tournament, TournamentMember, TournamentState
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from tournament.utils import create_tournament, get_tournament_and_member
+from tournament.utils import create_tournament, get_tournament_and_member, join_tournament
 from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer
 
@@ -64,7 +64,7 @@ class DeleteTournamentView(BaseAuthenticatedView):
     def delete(self, request, id):
         user = request.user
         try:
-            tournament, tournament_member = get_tournament_and_member(user, id, check_admin=True)
+            tournament, tournament_member = get_tournament_and_member(user, id, need_admin=True)
         except BarelyAnException as e:
             return error_response(str(e.detail), e.status_code)
 
@@ -88,42 +88,9 @@ class JoinTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request, id):
         user = request.user
-        # Get the tournament
-        tournament = Tournament.objects.get(id=id).select_for_update()
-        # Check if already a member
-        try:
-            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
-            # Check if already accepted
-            if tournament_member.accepted:
-                return error_response(_("You have already accepted this tournament invitation"))
-            # Accept the invitation
-            with transaction.atomic():
-                if tournament.state != TournamentState.SETUP:
-                    return error_response(_("Tournament has already started or ended"))
-                else:
-                    TournamentMember.objects.get(id=tournament_member.id).select_for_update().update(accepted=True)
-                    # TODO: send websocket update message to update the lobby
-                    return success_response(_("Tournament invitation accepted"))
-            # Error is caught by decorator
-        except TournamentMember.DoesNotExist:
-            if not tournament.public_tournament:
-                return error_response(_("You are not invited to this tournament"))
-            else:
-                # Join the public tournament
-                with transaction.atomic():
-                    if tournament.state != TournamentState.SETUP:
-                        return error_response(_("Tournament has already started or ended"))
-                    else:
-                        tournament_member = TournamentMember.objects.create(
-                            user=user,
-                            tournament=tournament,
-                            tournament_alias=user.username,
-                            accepted=True
-                        )
-                        tournament_member.save()
-                        # TODO: send websocket update message to update the lobby
-                        return success_response(_("Tournament joined successfully"))
-                # Error is caught by decorator
+        join_tournament(user, id)
+        return success_response(_("Tournament joined successfully"))
+
 class LeaveTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def delete(self, request, id):
@@ -149,7 +116,7 @@ class StartTournamentView(BaseAuthenticatedView):
     def put(self, request, id):
         user = request.user
         try:
-            tournament, tournament_member = get_tournament_and_member(user, id, check_admin=True)
+            tournament, tournament_member = get_tournament_and_member(user, id, need_admin=True)
         except BarelyAnException as e:
             return error_response(str(e.detail), e.status_code)
         # Check if the tournament has already started
