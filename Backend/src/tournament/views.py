@@ -9,6 +9,7 @@ from core.decorators import barely_handle_exceptions
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
 from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer
+import logging
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -16,9 +17,16 @@ class EnrolmentView(BaseAuthenticatedView):
     def get(self, request):
         user = request.user
         try:
+            # Check if user has an active tournament
             tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.ONGOING).tournament
             return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
-        except Tournament.DoesNotExist:
+        except Exception as e:
+            ...  # Continue to the next check
+        try:
+            # Check if user has an accepted tournament which is not ongoing
+            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.SETUP, accepted=True).tournament
+            return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
+        except Exception as e:
             return success_response(_("User has no active tournament"), **{'tournamentId': None, 'tournamentName': None})
 
 # History of tournaments of user including all tournament states
