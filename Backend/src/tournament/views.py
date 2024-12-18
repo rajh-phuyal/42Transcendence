@@ -10,6 +10,7 @@ from tournament.utils import create_tournament, delete_tournament, join_tourname
 from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer
 import logging
+from django.db import models
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -35,7 +36,17 @@ class HistoryView(BaseAuthenticatedView):
     def get(self, request):
         user = request.user
         # Get all tournaments of the user
-        tournaments = TournamentMember.objects.filter(user_id=user.id).values('tournament_id', 'tournament__name', 'tournament__state')
+        tournaments = TournamentMember.objects.filter(
+            user_id=user.id
+        ).annotate(
+            tournamentId=models.F('tournament_id'),
+            tournamentName=models.F('tournament__name'),
+            tournamentState=models.F('tournament__state')
+        ).values(
+            'tournamentId',
+            'tournamentName',
+            'tournamentState'
+        )
         return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
 
 # All tournaments where user is invited to and public tournaments
@@ -44,8 +55,27 @@ class ToJoinView(BaseAuthenticatedView):
     def get(self, request):
         user = request.user
         # Get all tournaments where user is invited to
-        invited_tournaments = TournamentMember.objects.filter(user_id=user.id, accepted=False, tournament__state=TournamentState.SETUP).values('tournament_id', 'tournament__name')
-        public_tournaments = Tournament.objects.filter(public_tournament=True, state=TournamentState.SETUP).values('id', 'name')
+        invited_tournaments = TournamentMember.objects.filter(
+            user_id=user.id,
+            accepted=False,
+            tournament__state=TournamentState.SETUP
+        ).annotate(
+            tournamentId=models.F('tournament_id'),
+            tournamentName=models.F('tournament__name')
+        ).values(
+            'tournamentId',
+            'tournamentName'
+        )
+        public_tournaments = Tournament.objects.filter(
+            public_tournament=True,
+            state=TournamentState.SETUP
+        ).annotate(
+            tournamentId=models.F('id'),
+            tournamentName=models.F('name')
+        ).values(
+            'tournamentId',
+            'tournamentName'
+        )
         # Merge the two querysets
         tournaments = list(invited_tournaments) + list(public_tournaments)
         return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
