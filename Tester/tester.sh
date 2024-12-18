@@ -147,12 +147,15 @@ expand_vars(){
 
     for var in "${variables[@]}"; do
         var_upper=$(echo "$var" | tr '[:lower:]' '[:upper:]')
-        varname="${var_upper}_ACCESS"
-        export ${var_upper}_ACCESS="${!varname}"
         varname="${var_upper}_ID"
+        local id="${!varname}"
         export ${var_upper}_ID="${!varname}"
         varname="${var_upper}_USERNAME"
+        local username="${!varname}"
         export ${var_upper}_USERNAME="${!varname}"
+        varname="${var_upper}_ACCESS"
+        # To be able to show the username and id we need to send all them as access
+        export ${var_upper}_ACCESS="$username | id:$id | token:;${!varname}"
     done
 
     envsubst "$var_list_access" < "$CSV_FILE" > "$output_file"
@@ -271,6 +274,7 @@ run_test() {
     print_and_log "${expected} ${keys} "
     echo -e "========================================================================================================" >> "$LOG_FILE"
     echo -e "   ---" >> "$LOG_FILE"
+    echo user: "<$user>"
     if [[ "$user" == "NONE" ]]; then
         # Curl with no token
         cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
@@ -280,7 +284,7 @@ run_test() {
         # Curl with token
         cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
             -H "Content-Type: application/json" \
-            --cookie "access_token=$user" \
+            --cookie "access_token=\"$user\"" \
             -d "$args")
     fi
     # Remove old response file
@@ -311,6 +315,7 @@ run_test() {
         # Check if the response JSON is valid
         local message=""
         echo "      expected keys:" >> "$LOG_FILE"
+        IFS=' '
         for key in $keys; do
             echo -ne "         $key:\t" >> "$LOG_FILE"
             key_exists=$(jq -r "has(\"$key\")" ${RESPONSE_FILE})
@@ -405,11 +410,23 @@ run_tests(){
         keys="status message $keys"
     fi
 
-    print_test_header "$test_number" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
+    # Seperate user info and token
+    if [[ "$user" != "NONE" ]]; then
+        IFS=';'
+        read -ra items <<< "$user"
+        user_info="${items[0]}"
+        user_access="${items[1]}"
+        user_string=$user_info$user_access
+    else
+        user_string="NONE"
+        user_access="NONE"
+    fi
+
+    print_test_header "$test_number" "$should_work" "$expected" "$keys" "$short_description" "$user_string" "$method" "$endpoint" "$args"
 
     # A: The line itself
     test_number_new="${test_number} A  (original)"
-    run_test "$test_number_new" "$should_work" "$expected" "$keys" "$short_description" "$user" "$method" "$endpoint" "$args"
+    run_test "$test_number_new" "$should_work" "$expected" "$keys" "$short_description" "$user_access" "$method" "$endpoint" "$args"
 
     basic_keys="status message"
 
@@ -421,27 +438,26 @@ run_tests(){
             continue
         fi
         test_number_new="${test_number} B$test_sub_number ($other_method)"
-        run_test "$test_number_new" "-" "405" "$basic_keys" "$short_description" "$user" "$other_method" "$endpoint" "$args"
+        run_test "$test_number_new" "-" "405" "$basic_keys" "$short_description" "$user_access" "$other_method" "$endpoint" "$args"
         test_sub_number=$((test_sub_number + 1))
     done
 
-#TODO: UNCOMMENT THIS WHEN CODE ON MAIN IS FIXED @rajh
     # C: If the line needs a token
-#    if [[ "$user" != "NONE" ]]; then
-#        # C1: try without token
-#        test_number_new="${test_number} C1 (no token)"
-#        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
-#
-#        # C2: try with wrong token
-#        test_number_new="${test_number} C2 (wrong tok.)"
-#        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
-#    fi
+    if [[ "$user_access" != "NONE" ]]; then
+        # C1: try without token
+        test_number_new="${test_number} C1 (no token)"
+        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "NONE" "$method" "$endpoint" "$args"
+
+        # C2: try with wrong token
+        test_number_new="${test_number} C2 (wrong tok.)"
+        run_test "$test_number_new" "-" "401" "$basic_keys" "$short_description" "thisIsAWrongToken" "$method" "$endpoint" "$args"
+    fi
 
     # D: If the line needs arguments
     if [[ -n "$args" ]]; then
         # D1: try withouth arguments
         test_number_new="${test_number} D1 (no args)"
-        run_test "$test_number_new" "-" "400" "$basic_keys" "$short_description" "$user" "$method" "$endpoint" "{}"
+        run_test "$test_number_new" "-" "400" "$basic_keys" "$short_description" "$user_access" "$method" "$endpoint" "{}"
     fi
 
     print_and_log "" "========================================================================================================\n"
