@@ -501,36 +501,6 @@ check_path_and_permission()
 			"couldn't create folder: $path_formated!" \
 			false
 	fi
-
-	# [astein]:
-	# Since i had a lot of trouble with the permissions i will set them here
-	# accoring to this guide:
-	# https://medium.com/@nielssj/docker-volumes-and-file-system-permissions-772c1aee23ca
-	if [ "$IS_MACOS" != true ]; then
-        # On Linux, perform ownership and permission changes
-        perform_task_with_spinner \
-            " ...changing ownership of the folder" \
-            'sudo chown -R ":1024" "$path"' \
-            "" \
-            "couldn't change ownership of folder: $path_formated!" \
-            false
-
-        perform_task_with_spinner \
-            " ...changing permission of the folder" \
-            'sudo chmod -R 775 "$path"' \
-            "" \
-            "couldn't change permission of folder: $path_formated!" \
-            false
-
-        perform_task_with_spinner \
-            " ...ensure all future content in the folder will inherit group ownership" \
-            'sudo chmod g+s "$path"' \
-            "" \
-            'could not run sudo chmod g+s "$path"' \
-            false
-    else
-        echo "Skipping ownership and permission changes on macOS"
-    fi
 }
 
 # Function to check if the folders for the volumes are there
