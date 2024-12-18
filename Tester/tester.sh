@@ -483,7 +483,9 @@ parse_lines(){
 
         # Check if test is marekd as active
         if [[ "$active" != "x" ]]; then
-            SKIPPED_TESTS="$SKIPPED_TESTS $test_number"
+            if [[ "$should_work" != "" ]]; then
+                SKIPPED_TESTS="$SKIPPED_TESTS $test_number"
+            fi
             continue
         fi
 
