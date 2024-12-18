@@ -274,7 +274,6 @@ run_test() {
     print_and_log "${expected} ${keys} "
     echo -e "========================================================================================================" >> "$LOG_FILE"
     echo -e "   ---" >> "$LOG_FILE"
-    echo user: "<$user>"
     if [[ "$user" == "NONE" ]]; then
         # Curl with no token
         cmd=(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X $method "$BASE_URL$endpoint" \
