@@ -20,13 +20,13 @@ class WebSocketMessageHandlersMain:
         if callable(method):
             return method
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
-    
+
     @staticmethod
     async def handle_chat(consumer, user, message):
         message = await process_incoming_chat_message(consumer, user, message)
         logging.info(f"Parsed backend object: {message}")
         await broadcast_message(message)
-    
+
     @staticmethod
     async def handle_seen(consumer, user, message):
         logging.info("Received seen message")
@@ -49,7 +49,7 @@ class WebSocketMessageHandlersGame:
         if callable(method):
             return method
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
-    
+
     @staticmethod
     async def handle_game(consumer, user, message):
         ...

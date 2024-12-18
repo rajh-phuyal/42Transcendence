@@ -11,6 +11,7 @@ from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer
 import logging
 from django.db import models
+from tournament.utils_ws import join_tournament_channel
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -163,4 +164,8 @@ class TournamentLobbyView(BaseAuthenticatedView):
             'tournamentMembers': tournament_members_data,
             'tournamentGames': games_data
         }
+
+        # Add client to websocket group if game is not finished
+        if tournament.state != TournamentState.FINISHED:
+            join_tournament_channel(user, tournament.id)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)

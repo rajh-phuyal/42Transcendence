@@ -64,6 +64,7 @@ class MainConsumer(CustomWebSocketLogic):
         cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups
         await setup_all_conversations(user, self.channel_name, intialize=True)
+        #TODO: Add the user to all their toruanemnt groups
         # Accept the connection
         await self.accept()
         # Send the inizial badge nummer
@@ -82,6 +83,7 @@ class MainConsumer(CustomWebSocketLogic):
         logging.info(f"User {user.username} marked as offline.")
         # Remove the user from all their conversation groups
         await setup_all_conversations(user, self.channel_name, intialize=False)
+        #TODO: Remove the user from all their toruanemnt groups
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
