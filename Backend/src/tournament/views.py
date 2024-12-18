@@ -145,6 +145,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
 
         # Get all members of the tournament and serialize them
         tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+        admin_name = tournament_members.get(is_admin=True).user.username
         tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
         # Get all games of the tournament and serialize them
         games = Game.objects.filter(tournament_id=tournament.id)
@@ -154,7 +155,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
         response_json = {
             'tournamentId': tournament.id,
             'tournamentName': tournament.name,
-            'createdBy': 'TODO',
+            'createdBy': admin_name,
             'tournamentState': tournament.state,
             'tournamentMapNumber': tournament.map_number,
             'tournamentPowerups': tournament.powerups,

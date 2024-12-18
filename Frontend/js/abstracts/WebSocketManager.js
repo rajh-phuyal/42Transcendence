@@ -99,12 +99,23 @@ class WebSocketManager {
                 this.createConversationCard(message);
                 return ;
 
+            case "tournamentSubscription":
+                if (this.currentRoute == "tournament")
+                    this.updateTournamentMemberCard(message);
+                return ;
+            case "tournamentState":
+                if (this.currentRoute == "tournament")
+                    $id("status").style.backgroundColor = "green";
+                else
+                    $callToast("success", message.message);
+                return ;
             case "error":
                 $callToast("error", message.message);
                 return ;
         }
 
         console.warn("FE doen't know what to do with this type:", message);
+        $callToast("error", "FE doen't know what to do with this type:" + message.message);
     }
 
     // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
@@ -169,6 +180,10 @@ class WebSocketManager {
         conversationsContainer.prepend(conversation);
         // TODO: issue #121 This doens't work sinc the router is not getting the chat it same bug than for profile
         $on(container, "click", () => router("chat", {id: message.conversationId}))
+    }
+
+    updateTournamentMemberCard(message) {
+        console.log("TODO: Implement updateTournamentMemberCard", message);
     }
 
     setCurrentRoute(route) {

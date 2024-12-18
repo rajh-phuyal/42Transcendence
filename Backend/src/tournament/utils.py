@@ -9,6 +9,7 @@ from user.constants import USER_ID_AI
 from user.utils_relationship import are_friends, is_blocking, is_blocked
 import logging
 from rest_framework import status
+from tournament.utils_ws import send_tournament_ws_msg
 
 def parse_bool(string):
     logging.info(f"parse_bool: {string}")
@@ -162,7 +163,17 @@ def join_tournament(user, tournament_id):
         if tournament_member:
             tournament_member.accepted = True
             tournament_member.save()
-            # TODO:utils ws send message via websocket
+            # Send message via websocket
+            send_tournament_ws_msg(
+                tournament_id,
+                "tournamentSubscription",
+                "tournament_subscription",
+                _("Tournament joined successfully"),
+                **{
+                    "userId": user.id,
+                    "state": "join"
+                }
+            )
             return
 
         # In case we don't have an entry:
@@ -177,7 +188,17 @@ def join_tournament(user, tournament_id):
             accepted=True
         )
         tournament_member.save()
-    # TODO:utils ws send message via websocket
+    # Send message via websocket
+    send_tournament_ws_msg(
+        tournament_id,
+        "tournamentSubscription",
+        "tournament_subscription",
+        _("Tournament joined successfully"),
+        **{
+            "userId": user.id,
+            "state": "join"
+        }
+    )
 
 def leave_tournament(user, tournament_id):
     with transaction.atomic():
@@ -196,7 +217,18 @@ def leave_tournament(user, tournament_id):
         # Delete the tournament member
         tournament_member.delete()
         # TODO: check if there are enough players left and cancel the tournament if not (only for private tournaments)
-    # TODO: send websocket update message to admin to update the lobby
+    # Send websocket update message to admin to update the lobby
+    send_tournament_ws_msg(
+        tournament_id,
+        "tournamentSubscription",
+        "tournament_subscription",
+        _("Tournament left successfully"),
+        **{
+            "userId": user.id,
+            "state": "leave"
+        }
+    )
+    return
 
 def start_tournament(user, tournament_id):
     with transaction.atomic():
@@ -226,5 +258,12 @@ def start_tournament(user, tournament_id):
         tournament.save()
         # Remove all persons who have not accepted the invitation
         tournament_members.filter(accepted=False).delete()
-    # TODO: send websocket update message to all members to start the game
-    # TOOO: create the games
+    # Send websocket update message to all members to start the game
+    send_tournament_ws_msg(
+        tournament_id,
+        "tournamentState",
+        "tournament_state",
+        _("Tournament {name} started!").format(name=tournament.name),
+        **{"state": "start"}
+    )
+    # TODO: create the games

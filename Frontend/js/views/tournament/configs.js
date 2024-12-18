@@ -1,4 +1,6 @@
 import call from '../../abstracts/call.js'
+import $callToast from '../../abstracts/callToast.js';
+import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 export default {
     attributes: {
@@ -27,6 +29,46 @@ export default {
                 //console.log("participant card:", particpantCard);
                 mainDiv.appendChild(this.createParticipantCard(element));
             }
+        },
+
+        joinTournament() {
+            console.log("Joining tournament");
+            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            call(`tournament/join/${id}/`, 'PUT').then(data => {
+                console.log(data);
+                $callToast("success", data.message);
+            })
+            this.domManip.$id("join-button").style.display = "none";
+            this.domManip.$id("leave-button").style.display = "block";
+        },
+
+        leaveTournament() {
+            console.log("Leaving tournament");
+            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            call(`tournament/leave/${id}/`, 'DELETE').then(data => {
+                console.log(data);
+                $callToast("success", data.message);
+            })
+            this.domManip.$id("leave-button").style.display = "none";
+            this.domManip.$id("join-button").style.display = "block";
+        },
+
+        startTournament() {
+            console.log("Starting tournament");
+            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            call(`tournament/start/${id}/`, 'PUT').then(data => {
+                console.log(data);
+                $callToast("success", data.message);
+            })
+        },
+
+        cancelTournament() {
+            console.log("Cancelling tournament");
+            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            call(`tournament/delete/${id}/`, 'DELETE').then(data => {
+                console.log(data);
+                $callToast("success", data.message);
+            })
         }
     },
 
@@ -36,7 +78,11 @@ export default {
         },
 
         beforeRouteLeave() {
-
+            this.domManip.$off(this.domManip.$id("join-button"), "click", this.joinTournament);
+            this.domManip.$off(this.domManip.$id("leave-button"), "click", this.leaveTournament);
+            this.domManip.$off(this.domManip.$id("start-button"), "click", this.startTournament);
+            this.domManip.$off(this.domManip.$id("cancel-button"), "click", this.cancelTournament);
+            WebSocketManager.setCurrentRoute(undefined);
         },
 
         beforeDomInsertion() {
@@ -44,7 +90,8 @@ export default {
         },
 
         afterDomInsertion() {
-            const id = 4;
+            WebSocketManager.setCurrentRoute("torunament");
+            const id = 3;  // TODO: MAKE IT COME FROM THE URL
             call(`tournament/lobby/${id}/`, 'GET').then(data => {
                 //console.log(data);
                 let stateColor;
@@ -59,6 +106,11 @@ export default {
 
                 this.buildParticipantsList(data.tournamentMembers);
 
+                this.domManip.$on(this.domManip.$id("join-button"), "click", this.joinTournament);
+                this.domManip.$on(this.domManip.$id("leave-button"), "click", this.leaveTournament);
+                this.domManip.$on(this.domManip.$id("start-button"), "click", this.startTournament);
+                this.domManip.$on(this.domManip.$id("cancel-button"), "click", this.cancelTournament);
+                this.domManip.$id("leave-button").style.display = "none";
             })
         },
     }

@@ -10,6 +10,7 @@ from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 from services.chat_service import setup_all_conversations, send_total_unread_counter
+from services.tournament_service import setup_all_tournament_channels
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
 
 # Basic Connect an Disconnet functions for the WebSockets
@@ -64,7 +65,8 @@ class MainConsumer(CustomWebSocketLogic):
         cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups
         await setup_all_conversations(user, self.channel_name, intialize=True)
-        #TODO: Add the user to all their toruanemnt groups
+        # Add the user to all their toruanemnt groups
+        await setup_all_tournament_channels(user, self.channel_name, intialize=True)
         # Accept the connection
         await self.accept()
         # Send the inizial badge nummer
@@ -83,7 +85,8 @@ class MainConsumer(CustomWebSocketLogic):
         logging.info(f"User {user.username} marked as offline.")
         # Remove the user from all their conversation groups
         await setup_all_conversations(user, self.channel_name, intialize=False)
-        #TODO: Remove the user from all their toruanemnt groups
+        # Remove the user from all their toruanemnt groups
+        await setup_all_tournament_channels(user, self.channel_name, intialize=False)
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
@@ -101,6 +104,12 @@ class MainConsumer(CustomWebSocketLogic):
         await self.send(text_data=json.dumps({**event}))
 
     async def new_conversation(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
+    async def tournament_subscription(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
+    async def tournament_state(self, event):
         await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game
