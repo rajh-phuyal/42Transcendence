@@ -15,7 +15,7 @@ class Game(models.Model):
     )
     map_number = models.IntegerField()
     powerups = models.BooleanField()
-    tournament_id = models.IntegerField(null=True, blank=True)
+    tournament = models.ForeignKey('tournament.Tournament', null=True, blank=True, on_delete=models.SET_NULL, related_name='games')
     deadline = models.DateTimeField(null=True, blank=True)
     finish_time = models.DateTimeField(null=True, blank=True)
 

@@ -21,7 +21,7 @@ def debug_task(self):
 
 app.conf.beat_schedule = {
     'hello-world-every-minute': {
-        'task': 'tournament.tasks.hello_world',
+        'task': 'tournament.tasks.check_overdue_tournament_games',
         'schedule': crontab(minute='*'),  # Runs every minute
     },
 }

@@ -29,11 +29,11 @@ echo -e $BL '================================================' $NC
 echo -e $BL '================================================' $NC
 echo -e "${BL}Running Celery as appuser...${NC}"
 export > /home/appuser/.tempEnv
+sleep 1
 su - appuser -c "
-source /home/appuser/.tempEnv;
-celery -A app worker --loglevel=info;
-"
-rm /home/appuser/.tempEnv
+source /home/appuser/.tempEnv && celery -A app worker --loglevel=info &
+source /home/appuser/.tempEnv && celery -A app beat --loglevel=info &
+" &
 echo -e "${BL}Running Celery as appuser...${GR}DONE${NC}"
 echo -e $BL '================================================' $NC
 
