@@ -539,6 +539,18 @@ insert_dummy "$TABLE_NAME" \
         (17,   4,        4,              'Player 4',     FALSE,   FALSE,       NULL), \
         (18,   5,        4,              'Player 5',     FALSE,   TRUE,        NULL);"
 
+# Make some friends so that xico can create tournaments
+echo -e "CREATING FRIENDSHIPS:\tXico is friends with 3, 4, 5, 6, 7"
+TABLE_NAME="barelyaschema.is_cool_with"
+insert_dummy "$TABLE_NAME"                                      \
+	"INSERT INTO $TABLE_NAME                                    \
+        (id,    requester_id,   requestee_id, status) VALUES    \
+        (39,    12,             3,            'accepted'),        \
+        (40,    12,             4,            'accepted'),        \
+        (41,    12,             5,            'accepted'),        \
+        (42,    12,             6,            'accepted'),        \
+        (43,    12,             7,            'accepted');"
+
 print_header "RESETING SEQUENCES..."
 for table in "${ALL_TABLES[@]}"; do
     reset_sequence "$table"
