@@ -11,6 +11,7 @@ import logging
 from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
+from tournament.tournament_manager import create_initial_games
 
 def parse_bool(string):
     logging.info(f"parse_bool: {string}")
@@ -280,4 +281,5 @@ def start_tournament(user, tournament_id):
         _("{username} started the tournament '{name}'! Go to lobby to not miss a game!").format(username=user.username, name=tournament.name),
         **{"state": "start"}
     )
-    # TODO: create the games
+    # create the games
+    create_initial_games(tournament, tournament_members)

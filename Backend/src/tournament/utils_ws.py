@@ -18,7 +18,7 @@ def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **jso
         "message": message,
         **json_details
     })
-    logging.info(f"Message sent to tournament {tournament_id} channel")
+    logging.info(f"Message sent to tournament {tournament_id} channel: {message}")
 
 # This function should be only called by the endpoint lobby/<int:id>/ to add
 # the user to the websocket group of the tournament

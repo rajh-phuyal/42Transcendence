@@ -33,7 +33,7 @@ export default {
 
         joinTournament() {
             console.log("Joining tournament");
-            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            const id = 5;   // TODO: MAKE IT COME FROM THE URL
             call(`tournament/join/${id}/`, 'PUT').then(data => {
                 console.log(data);
                 $callToast("success", data.message);
@@ -44,7 +44,7 @@ export default {
 
         leaveTournament() {
             console.log("Leaving tournament");
-            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            const id = 5;   // TODO: MAKE IT COME FROM THE URL
             call(`tournament/leave/${id}/`, 'DELETE').then(data => {
                 console.log(data);
                 $callToast("success", data.message);
@@ -55,7 +55,7 @@ export default {
 
         startTournament() {
             console.log("Starting tournament");
-            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            const id = 5;   // TODO: MAKE IT COME FROM THE URL
             call(`tournament/start/${id}/`, 'PUT').then(data => {
                 console.log(data);
                 $callToast("success", data.message);
@@ -64,7 +64,7 @@ export default {
 
         cancelTournament() {
             console.log("Cancelling tournament");
-            const id = 3;   // TODO: MAKE IT COME FROM THE URL
+            const id = 5;   // TODO: MAKE IT COME FROM THE URL
             call(`tournament/delete/${id}/`, 'DELETE').then(data => {
                 console.log(data);
                 $callToast("success", data.message);
@@ -91,7 +91,7 @@ export default {
 
         afterDomInsertion() {
             WebSocketManager.setCurrentRoute("torunament");
-            const id = 3;  // TODO: MAKE IT COME FROM THE URL
+            const id = 5;  // TODO: MAKE IT COME FROM THE URL
             call(`tournament/lobby/${id}/`, 'GET').then(data => {
                 //console.log(data);
                 let stateColor;
