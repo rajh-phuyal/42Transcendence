@@ -10,6 +10,7 @@ from user.utils_relationship import are_friends, is_blocking, is_blocked
 import logging
 from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
+from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 
 def parse_bool(string):
     logging.info(f"parse_bool: {string}")
@@ -41,7 +42,8 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     # Check if the creator is already in a tournament which is not finished
     if TournamentMember.objects.filter(
         user=creator,
-        tournament__state__in=[TournamentState.SETUP, TournamentState.ONGOING]
+        tournament__state__in=[TournamentState.SETUP, TournamentState.ONGOING],
+        accepted=True
     ).exists():
         raise BarelyAnException(_("You can't create a new tournament while you are in another one"))
 
@@ -65,6 +67,10 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     if len(opponent_ids) < 2:
         raise BarelyAnException(_("You must invite at least two opponents to a tournament"))
 
+    # Validate max number of players
+    if len(opponent_ids) + 1 > MAX_PLAYERS_FOR_TOURNAMENT:
+        raise BarelyAnException(_("You can't invite more than {max_players} players to a tournament").format(max_players=MAX_PLAYERS_FOR_TOURNAMENT))
+
     # Validate all opponent ids
     for opponent_id in opponent_ids:
         if not isinstance(opponent_id, int):
@@ -76,7 +82,7 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         if creator_id == opponent_id:
             raise BarelyAnException(_("You can't invite yourself to a tournament"))
         if opponent.id == USER_ID_AI:
-            logging.error("TODO: Playing against AI is not supported yet")
+            logging.error("TODO: Playing against AI is not supported yet! issue #216")
         if is_blocking(creator, opponent):
             raise BlockingException(_("You can't invite a user whom you have blocked: {opponent.username}").format(opponent=opponent))
         if is_blocked(creator, opponent):
@@ -182,6 +188,9 @@ def join_tournament(user, tournament_id):
             raise BarelyAnException(_("You are not invited to this tournament"), status_code=status.HTTP_403_FORBIDDEN)
         if tournament.state != TournamentState.SETUP:
             raise BarelyAnException(_("Tournament has already started or ended"))
+        members_count = TournamentMember.objects.filter(tournament_id=tournament_id).count()
+        if members_count >= MAX_PLAYERS_FOR_TOURNAMENT:
+            raise BarelyAnException(_("Tournament is full"))
         tournament_member = TournamentMember.objects.create(
             user=user,
             tournament=tournament,
