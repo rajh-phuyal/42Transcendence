@@ -102,14 +102,25 @@ class MainConsumer(CustomWebSocketLogic):
 
     async def update_badge(self, event):
         await self.send(text_data=json.dumps({**event}))
-
     async def new_conversation(self, event):
         await self.send(text_data=json.dumps({**event}))
-
     async def tournament_subscription(self, event):
         await self.send(text_data=json.dumps({**event}))
-
     async def tournament_state(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def tournament_fan(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def info(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def game_create(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def game_set_deadline(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def game_update_score(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def game_update_state(self, event):
+        await self.send(text_data=json.dumps({**event}))
+    async def game_update_rank(self, event):
         await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game

@@ -100,18 +100,26 @@ class WebSocketManager {
                 return ;
 
             case "tournamentSubscription":
+                $callToast("success", message.message);
                 if (this.currentRoute == "tournament")
-                    this.updateTournamentMemberCard(message);
+                    // TODO: this.updateTournamentMemberCard(message);
                 return ;
+
             case "tournamentState":
-                if (this.currentRoute == "tournament")
+                $callToast("success", message.message);
+                if (this.currentRoute == "tournament"){
                     $id("status").style.backgroundColor = "green";
-                else
-                    $callToast("success", message.message);
+                }
                 return ;
+
             case "error":
                 $callToast("error", message.message);
                 return ;
+
+            case "info":
+                $callToast("sucess", message.message);
+                return ;
+
         }
 
         console.warn("FE doen't know what to do with this type:", message);

@@ -9,7 +9,7 @@ from user.constants import USER_ID_AI
 from user.utils_relationship import are_friends, is_blocking, is_blocked
 import logging
 from rest_framework import status
-from tournament.utils_ws import send_tournament_ws_msg
+from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 
 def parse_bool(string):
     logging.info(f"parse_bool: {string}")
@@ -141,7 +141,8 @@ def delete_tournament(user, tournament_id):
         # Delete the tournament
         tournament_members.delete()
         tournament.delete()
-    # TODO:utils ws send message via websocket
+    # inform users and delete the channel
+    delete_tournament_channel(tournament_id)
 
 def join_tournament(user, tournament_id):
     with transaction.atomic():
@@ -168,7 +169,7 @@ def join_tournament(user, tournament_id):
                 tournament_id,
                 "tournamentSubscription",
                 "tournament_subscription",
-                _("Tournament joined successfully"),
+                _("{username} accepted the tournament invitation").format(username=user.username),
                 **{
                     "userId": user.id,
                     "state": "join"
@@ -193,7 +194,7 @@ def join_tournament(user, tournament_id):
         tournament_id,
         "tournamentSubscription",
         "tournament_subscription",
-        _("Tournament joined successfully"),
+        _("{username} joined the tournament").format(username=user.username),
         **{
             "userId": user.id,
             "state": "join"
@@ -218,11 +219,15 @@ def leave_tournament(user, tournament_id):
         tournament_member.delete()
         # TODO: check if there are enough players left and cancel the tournament if not (only for private tournaments)
     # Send websocket update message to admin to update the lobby
+    if tournament_member.accepted:
+        message=_("User {username} left the tournament").format(username=user.username)
+    else:
+        message=_("User {username} declined the tournament invitation").format(username=user.username)
     send_tournament_ws_msg(
         tournament_id,
         "tournamentSubscription",
         "tournament_subscription",
-        _("Tournament left successfully"),
+        message,
         **{
             "userId": user.id,
             "state": "leave"
@@ -263,7 +268,7 @@ def start_tournament(user, tournament_id):
         tournament_id,
         "tournamentState",
         "tournament_state",
-        _("Tournament {name} started!").format(name=tournament.name),
+        _("{username} started the tournament '{name}'! Go to lobby to not miss a game!").format(username=user.username, name=tournament.name),
         **{"state": "start"}
     )
     # TODO: create the games
