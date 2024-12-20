@@ -11,6 +11,7 @@ import logging
 from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
+from .serializer import TournamentMemberSerializer
 
 
 def parse_bool(string):
@@ -178,16 +179,14 @@ def join_tournament(user, tournament_id):
         if tournament_member:
             tournament_member.accepted = True
             tournament_member.save()
+            data = TournamentMemberSerializer(tournament_member).data
             # Send message via websocket
             send_tournament_ws_msg(
                 tournament_id,
                 "tournamentSubscription",
                 "tournament_subscription",
                 _("{username} accepted the tournament invitation").format(username=user.username),
-                **{
-                    "userId": user.id,
-                    "state": "join"
-                }
+                **data
             )
             return
 
@@ -240,13 +239,14 @@ def leave_tournament(user, tournament_id):
         message=_("User {username} left the tournament").format(username=user.username)
     else:
         message=_("User {username} declined the tournament invitation").format(username=user.username)
+        data = TournamentMemberSerializer(tournament_member).data
     send_tournament_ws_msg(
         tournament_id,
         "tournamentSubscription",
         "tournament_subscription",
         message,
         **{
-            "userId": user.id,
+            "userId" : user.id,
             "state": "leave"
         }
     )

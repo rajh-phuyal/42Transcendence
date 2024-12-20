@@ -8,6 +8,7 @@ class Game(models.Model):
         FINISHED = 'finished', 'Finished'
         QUITED = 'quited', 'Quited'
 
+    id = models.AutoField(primary_key=True)
     state = models.CharField(
         max_length=10,
         choices=GameState.choices,
@@ -32,6 +33,7 @@ class GameMember(models.Model):
         WON = 'won', 'Won'
         LOST = 'lost', 'Lost'
 
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='game_members')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_members')
     local_game = models.BooleanField()

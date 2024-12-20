@@ -3,6 +3,7 @@ import { createMessage } from '../views/chat/methods.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
+import { updateParticipantsCard, createParticipantCard, createGameList } from '../views/tournament/methods.js';
 
 const { hostname } = window.location;
 
@@ -79,6 +80,7 @@ class WebSocketManager {
     receiveMessage(message) {
 
         console.log("BE -> FE:", message);
+        console.log("Current route:", this.currentRoute);
 
         switch (message.messageType) {
             case "chat":
@@ -99,17 +101,46 @@ class WebSocketManager {
                 this.createConversationCard(message);
                 return ;
 
-            case "tournamentSubscription":
-                $callToast("success", message.message);
-                if (this.currentRoute == "tournament")
-                    // TODO: this.updateTournamentMemberCard(message);
+            case "tournamentFan":
+                console.warn("TODO!")
                 return ;
 
             case "tournamentState":
-                $callToast("success", message.message);
+                console.warn("TODO!")
                 if (this.currentRoute == "tournament"){
                     $id("status").style.backgroundColor = "green";
                 }
+                return ;
+
+            case "tournamentSubscription":
+                console.warn("TODO!")
+                if (this.currentRoute == "tournament"){
+                    updateParticipantsCard(message);
+                    return ;
+                }
+                break;
+
+            case "gameCreate":
+                if (this.currentRoute == "tournament"){
+                    createGameList(message.games);
+                    return ;
+                }
+                break ;
+
+            case "gameSetDeadline":
+                console.warn("TODO!")
+                return ;
+
+            case "gameUpdateScore":
+                console.warn("TODO!")
+                return ;
+
+            case "gameUpdateState":
+                console.warn("TODO!")
+                return ;
+
+            case "gameUpdateRank":
+                console.warn("TODO!")
                 return ;
 
             case "error":
@@ -123,7 +154,7 @@ class WebSocketManager {
         }
 
         console.warn("FE doen't know what to do with this type:", message);
-        $callToast("error", message.message);
+        $callToast("sucess", message.message);
     }
 
     // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
@@ -192,6 +223,27 @@ class WebSocketManager {
 
     updateTournamentMemberCard(message) {
         console.log("TODO: Implement updateTournamentMemberCard", message);
+    }
+
+    createParticipantCard(userData) {
+        // Clone the template
+        let card = this.domManip.$id("tournament-list-card-template").content.cloneNode(true);
+
+        // Update the card background color based on user state
+        if (userData.userState === "pending") {
+            card.querySelector(".card").style.backgroundColor = "grey";
+        }
+
+        // Populate the template fields with user data
+        console.log("AAAAAAAAAAAAAA userData:", userData);
+        card.querySelector(".user-id .value").textContent = "ID: " + userData.userId;
+        card.querySelector(".username .value").textContent = "Username: " + userData.username;
+        card.querySelector(".user-avatar").src = "https://localhost/media/avatars/" + userData.userAvatar;
+        card.querySelector(".user-avatar").alt = `Avatar of ${userData.username}`;
+        card.querySelector(".user-state .value").textContent = "State: " + userData.userState;
+
+        // Return the populated card
+        return card;
     }
 
     setCurrentRoute(route) {

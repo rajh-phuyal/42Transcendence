@@ -1,82 +1,84 @@
 <div id="tournament-view">
     <h1>
-        tournament view
+        Tournament View
     </h1>
-    <h3 id="tournament-name">tournament name</h3>
-    <h4 id="client-role">"(here the role of the client should be displayed)>"</h4>
-    <div id="main-container">
 
-        <div id="Tournament-status">
-           <button id="start-button">Start</button>
-           <button id="join-button">Join</button>
-           <button id="leave-button">Leave</button>
-           <button id="cancel-button">Cancel Tournamnt as admin</button>
-           <div id="status">status</div>
-        </div>
-        <div id="tournament-list">
-            <h5>Participants List</h5>
-            <template id="tournament-list-card-template">
-                <div class="card">
-                    <span class="username">user</span>
+    <!-- Name and Info Section -->
+    <h3 id="tournament-name">Tournament Name</h3>
+    <h4 id="client-role">"(here the role of the client should be displayed)"</h4>
+
+    <!-- Buttons Section -->
+    <div id="Tournament-status">
+        <button id="start-button">Start</button>
+        <button id="join-button">Join</button>
+        <button id="leave-button">Leave</button>
+        <button id="cancel-button">Cancel Tournament as Admin</button>
+        <div id="status">Status</div>
+    </div>
+
+    <!-- Members Section -->
+    <div id="tournament-list">
+        <h5>Participants List</h5>
+        <template id="tournament-list-card-template">
+            <div class="card" style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
+                <div class="user-info" style="display: flex; flex-direction: column;">
+                    <span class="user-id">ID: <span class="value"></span></span>
+                    <span class="username">Username: <span class="value"></span></span>
+                    <span class="user-state">State: <span class="value"></span></span>
                 </div>
-            </template>
-        </div>
+                <img class="user-avatar" src="" alt="User Avatar" style="width: 60px; height: 60px; margin-left: auto;" />
+            </div>
+        </template>
+    </div>
+
+    <!-- Game Section -->
+    <div id="game-list">
+        <h5>Game List</h5>
+        <template id="game-card-template">
+            <div class="game-card" style="border: 1px solid black; padding: 10px; margin: 10px; display: flex; flex-direction: column;">
+                <!-- Game Info -->
+                <div class="game-info" style="margin-bottom: 10px;">
+                    <span class="game-id">Game ID: <span class="value"></span></span>
+                    <span class="map-number">Map Number: <span class="value"></span></span>
+                    <span class="game-state">State: <span class="value"></span></span>
+                    <span class="finish-time">Finish Time: <span class="value"></span></span>
+                    <span class="deadline">Deadline: <span class="value"></span></span>
+                </div>
+
+                <!-- Players Section -->
+                <div class="players" style="display: flex; justify-content: space-between; align-items: center;">
+                    <!-- Player 1 -->
+                    <div class="player player1" style="display: flex; flex-direction: column; align-items: center;">
+                        <img class="avatar1" src="" alt="Player 1 Avatar" style="width: 40px; height: 40px; border-radius: 50%; margin-bottom: 5px;" />
+                        <span class="username1">Username: <span class="value"></span></span>
+                        <span class="points1">Points: <span class="value"></span></span>
+                        <span class="result1">Result: <span class="value"></span></span>
+                    </div>
+
+                    <span style="font-weight: bold;">VS</span>
+
+                    <!-- Player 2 -->
+                    <div class="player player2" style="display: flex; flex-direction: column; align-items: center;">
+                        <img class="avatar2" src="" alt="Player 2 Avatar" style="width: 40px; height: 40px; border-radius: 50%; margin-bottom: 5px;" />
+                        <span class="username2">Username: <span class="value"></span></span>
+                        <span class="point2">Points: <span class="value"></span></span>
+                        <span class="result2">Result: <span class="value"></span></span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </div>
+
+    <!-- Rank Section -->
+    <div id="rank-list">
+        <h5>Rank List</h5>
+        <template id="rank-list-card-template">
+            <div class="rank-card">
+                <span class="rank-position">Position</span>
+                <span class="rank-username">Username</span>
+                <span class="rank-score">Score</span>
+            </div>
+        </template>
     </div>
 </div>
-
-<style>
-
-    button {
-        height: 10%;
-        width: 20%;
-        margin: 3% 10%;
-    }
-
-    .card {
-        height: 10%;
-        width: 40%;
-        background-color: antiquewhite;
-    }
-
-    #status {
-        background-color: red;
-        height: 10%;
-        width: 10%;
-
-    }
-
-    #main-container {
-        background-color: rgba(209, 13, 13, 0.5);
-        height: 60%;
-        width: 60%;
-        display: flex;
-        flex-direction: row;
-    }
-
-    #Tournament-status {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(6, 67, 152, 0.576);
-        height: 100%;
-        width: 50%;
-    }
-
-    #tournament-list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-top: 6%;
-        background-color: rgba(221, 232, 2, 0.632);
-        height: 100%;
-        width: 50%;
-    }
-
-    #tournament-view {
-        justify-items: center;
-        height: 100%;
-        width: 100%;
-        background-color: #ff05ee6c;
-    }
-</style>

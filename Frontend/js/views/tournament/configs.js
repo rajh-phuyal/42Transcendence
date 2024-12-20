@@ -1,6 +1,7 @@
 import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { createParticipantCard } from './methods.js';
 
 export default {
     attributes: {
@@ -8,26 +9,12 @@ export default {
     },
 
     methods: {
-
-        createParticipantCard(userData) {
-
-            //console.log("helo", userData);
-            let card = this.domManip.$id("tournament-list-card-template").content.cloneNode(true);
-            // atripute grey background color if the user is not in the tournament yet
-            if (userData.userState == "pending")
-                card.querySelector(".card").style.backgroundColor = "grey";
-
-            card.querySelector(".username").textContent = userData.username;
-            //console.log("card:", card);
-            return card;
-        },
-
         buildParticipantsList(list) {
             //console.log("Building participants list from list: ", list);
             const mainDiv = this.domManip.$id("tournament-list");
             for (let element of list){
                 //console.log("participant card:", particpantCard);
-                mainDiv.appendChild(this.createParticipantCard(element));
+                mainDiv.appendChild(createParticipantCard(element));
             }
         },
 
@@ -90,7 +77,7 @@ export default {
         },
 
         afterDomInsertion() {
-            WebSocketManager.setCurrentRoute("torunament");
+            WebSocketManager.setCurrentRoute("tournament");
             const id = 5;  // TODO: MAKE IT COME FROM THE URL
             call(`tournament/lobby/${id}/`, 'GET').then(data => {
                 //console.log(data);
@@ -102,8 +89,9 @@ export default {
                 else
                     stateColor = "red";
                 this.domManip.$id("status").style.backgroundColor = stateColor;
-                this.domManip.$id("tournament-name").textContent = data.tournamentName;
-                this.domManip.$id("client-role").textContent = data.clientRole;
+                this.domManip.$id("status").textContent = "State: " + data.tournamentState;
+                this.domManip.$id("tournament-name").textContent = "Tournament Name: " + data.tournamentName;
+                this.domManip.$id("client-role").textContent = "Client Role: " + data.clientRole;
 
                 this.buildParticipantsList(data.tournamentMembers);
 

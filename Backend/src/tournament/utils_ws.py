@@ -6,6 +6,7 @@ channel_layer = get_channel_layer()
 from tournament.models import TournamentMember
 from services.websocket_utils import send_message_to_user_sync
 import logging
+from .serializer import TournamentMemberSerializer
 
 def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **json_details):
     tournament_id_name = f"tournament{tournament_id}"
@@ -39,6 +40,8 @@ def join_tournament_channel(user, tournament_id, activate=True):
     if activate:
         # Add the user to the tournament channel (doesnt matter if the user is already in the channel)
         async_to_sync(channel_layer.group_add)(tournament_id_name, channel_name_user)
+        data = TournamentMemberSerializer(TournamentMember.objects.get(user_id=user.id, tournament_id=tournament_id)).data
+        # TODO Implelemnt the tournament state
         send_tournament_ws_msg(
             tournament_id,
             "tournamentFan",
