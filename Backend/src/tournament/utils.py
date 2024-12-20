@@ -11,7 +11,7 @@ import logging
 from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
-from tournament.tournament_manager import create_initial_games
+
 
 def parse_bool(string):
     logging.info(f"parse_bool: {string}")
@@ -149,6 +149,13 @@ def delete_tournament(user, tournament_id):
         tournament_members.delete()
         tournament.delete()
     # inform users and delete the channel
+    send_tournament_ws_msg(
+        tournament_id,
+        "tournamentState",
+        "tournament_state",
+        _("The admin has deleted the tournament!"),
+        **{"state": "delete"}
+    )
     delete_tournament_channel(tournament_id)
 
 def join_tournament(user, tournament_id):
@@ -246,6 +253,7 @@ def leave_tournament(user, tournament_id):
     return
 
 def start_tournament(user, tournament_id):
+    from tournament.tournament_manager import create_initial_games
     with transaction.atomic():
         tournament = Tournament.objects.select_for_update().get(id=tournament_id)
         # Check if already a member
@@ -283,3 +291,24 @@ def start_tournament(user, tournament_id):
     )
     # create the games
     create_initial_games(tournament, tournament_members)
+
+def finish_tournament(tournament):
+    # THE TOURNAMENT IS OVER!!!
+    # The rank by now is already set due to:
+    # game_utils.finish_game() -> tournament_manager.update_tournament_ranks()
+    # so only:
+    # - set the tournament state to finished
+    with transaction.atomic():
+        tournament.state = TournamentState.FINISHED
+        tournament.save()
+    # - send the websocket message
+    send_tournament_ws_msg(
+        tournament.id,
+        "tournamentState",
+        "tournament_state",
+        _("The tournament has finished!"),
+        **{"state": "finished"}
+    )
+    # - closse the channel
+    delete_tournament_channel(tournament.id)
+    logging.info(f"Tournament {tournament.id} has finished!")

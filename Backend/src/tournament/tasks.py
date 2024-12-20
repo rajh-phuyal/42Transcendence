@@ -6,8 +6,9 @@ from game.models import Game, GameMember
 import logging
 from django.db import transaction
 import random
-from tournament.tournament_manager import check_if_new_games_can_have_a_deadline
+from tournament.tournament_manager import check_tournament_routine
 from tournament.utils_ws import send_tournament_ws_msg
+from game.utils import finish_game
 
 @shared_task(ignore_result=True)
 def check_overdue_tournament_games():
@@ -39,40 +40,35 @@ def check_overdue_tournament_games():
                 game=Game.objects.select_for_update().get(id=game.id)
                 looser=GameMember.objects.select_for_update().get(id=looser.id)
                 winner=GameMember.objects.select_for_update().get(id=winner.id)
-                game.state = Game.GameState.FINISHED
-                game.finish_time = current_time
-                game.save()
                 looser.result = GameMember.GameResult.LOST
                 looser.points = 0
                 looser.save()
                 winner.result = GameMember.GameResult.WON
                 winner.points = 11
                 winner.save()
-            logging.info(f"Game {game.id} has passed its deadline. Setting it to finished. Winner is {winner.user_id} and looser is {looser.user_id}")
+            logging.info(f"Game {game.id} has passed its deadline. Decided: Winner is {winner.user_id} and looser is {looser.user_id}")
             # Send websocket notification
             send_tournament_ws_msg(
                 game.tournament_id,
                 "gameUpdateScore",
                 "game_update_score",
-                _("Score updated of finished game {game_id}. User {username} lost the game.").format(game_id=game.id, username=looser.user.username),
+                _(
+                    "Score updated game {game_id}. {usernameA} {pointsA}:{pointsB} {usernameB}").format(
+                ).format(
+                    game_id=game.id,
+                    usernameA=looser.user.username,
+                    pointsA=looser.points,
+                    pointsB=winner.points,
+                    usernameB=winner.user.username
+                ),
                 **{
                     "gameId": game.id,
-                    "state": "finished",
+                    "state": None,
                     "score":{looser.user_id: looser.points, winner.user_id: winner.points},
                    }
             )
-            send_tournament_ws_msg(
-                game.tournament_id,
-                "gameUpdateState",
-                "game_update_state",
-                _("The overloards lost their patience. Game {game_id} has been set to finished since the deadline has passed. They randomly decided that user {username} lost the game.").format(game_id=game.id, username=looser.user.username),
-                **{
-                    "gameId": game.id,
-                    "state": "finished",
-                    "winnerId": winner.user_id,
-                   }
-            )
-            check_if_new_games_can_have_a_deadline(game.tournament_id)
+            #Set game to finished
+            finish_game(game, _("The overloards lost their patience. Game {game_id} has been set to finished since the deadline has passed. They randomly decided that user {username} won the game.").format(game_id=game.id, username=winner.user.username))
     if not found_one:
         logging.info("No overdue games found.")
 

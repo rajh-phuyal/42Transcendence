@@ -103,6 +103,7 @@ export default {
                     stateColor = "red";
                 this.domManip.$id("status").style.backgroundColor = stateColor;
                 this.domManip.$id("tournament-name").textContent = data.tournamentName;
+                this.domManip.$id("client-role").textContent = data.clientRole;
 
                 this.buildParticipantsList(data.tournamentMembers);
 

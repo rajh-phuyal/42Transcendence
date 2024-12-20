@@ -123,7 +123,7 @@ class WebSocketManager {
         }
 
         console.warn("FE doen't know what to do with this type:", message);
-        $callToast("error", "FE doen't know what to do with this type:" + message.message);
+        $callToast("error", message.message);
     }
 
     // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close

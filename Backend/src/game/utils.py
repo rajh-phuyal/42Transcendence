@@ -1,3 +1,5 @@
+from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
+from tournament.utils_ws import send_tournament_ws_msg
 from rest_framework import status
 from django.db import transaction
 from django.utils import timezone
@@ -10,6 +12,7 @@ from user.utils_relationship import is_blocking, are_friends
 from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 import logging
+
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
@@ -96,6 +99,46 @@ def delete_game(user_id, game_id):
         game.delete()
     return True
 
+def finish_game(game, message):
+    logging.info(f"Finishing game {game.id}")
+    game_members = GameMember.objects.filter(game=game.id)
+    if not message:
+        message = _(
+                    "Game between {user1} and {user2} has been finished"
+                ).format(
+                    user1=game_members.first().user.username,
+                    user2=game_members.last().user.username
+                )
+    ...
+    with transaction.atomic():
+        game.state = Game.GameState.FINISHED
+        game.finish_time = timezone.now()
+        game.save()
+
+    # For tournament games only:
+    if not game.tournament_id:
+        return
+    # - inform everyone that the game finished
+    winner = game_members.filter(result=GameMember.GameResult.WON).first()
+    send_tournament_ws_msg(
+        game.tournament_id,
+        "gameUpdateState",
+        "game_update_state",
+        message,
+        **{
+            "gameId": game.id,
+            "state": "finished",
+            "winnerId": winner.user_id,
+        }
+    )
+    update_tournament_ranks(game.tournament_id)
+    check_tournament_routine(game.tournament_id)
+
+
+
+
+
+# OLD:
 # def start_game(map_number, powerups, tournament_id=None, deadline=None):
 #     """
 #     Initializes a new game in the 'pending' state.

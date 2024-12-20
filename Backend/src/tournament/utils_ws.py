@@ -77,15 +77,6 @@ def send_tournament_invites_via_ws(tournament_id):
 
 
 def delete_tournament_channel(tournament_id):
-    # Inform all users that the tournament has been deleted
-    send_tournament_ws_msg(
-        tournament_id,
-        "tournamentState",
-        "tournament_state",
-        _("The admin has deleted the tournament!"),
-        **{"state": "delete"}
-    )
-
     # Remove all users from the tournament channel
     tournament_id_name = f"tournament{tournament_id}"
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id)
