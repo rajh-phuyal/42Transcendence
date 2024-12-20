@@ -1,13 +1,12 @@
 #!/bin/bash
 # TODO:
 # This script is working but needs to be imporved a little bit with those things:
-# - add a command to put dummy data into the database+
 # - sort out all the volumes and mounts we use
 #
 # BARELY ALIVE
 # ------------
 # This script is used to deploy the application to a target environment.
-# 
+#
 # USAGE:
 #	./deploy.sh [FLAGS] [COMMAND] [CONTAINER]
 #
@@ -15,9 +14,22 @@
 #	| Flag  | Description                                                                                                            |
 #	|-------|------------------------------------------------------------------------------------------------------------------------|
 #	| `-e`  | Path to the .env file. If not set the script will look for the file in the current directory.                          |
-# 	
+#	| `-p`  | This will deploy the app for production!
+#
 # e.g.:	./deploy.sh -e ./path/to/.env
-# 
+#
+# DOCKER COMPOSE FILES:
+COMPOSE_FILE="docker-compose.main.yml"
+COMPOSE_FILE_PRODUCTION="docker-compose.prod.yml"
+# The domain name will be set according to the flag -p
+DOMAIN_NAMES=""
+DOMAIN_NAMES_LOCAL=localhost,127.0.0.1
+DOMAIN_NAMES_PRODUCTION=ahok.cool,217.160.125.56
+#
+# this will be updated to "-f $COMPOSE_FILE_PRODUCTION" if -p flag is set
+SECOND_COMPOSE_FLAG=""
+#
+#
 # PARSING THE ARGUMENTS:
 #   This will populate the global variables:
 NEW_ENV_PATH=""
@@ -28,7 +40,7 @@ CONTAINERS=""
 ENV_PATH_FILE=".transcendence_env_path"
 #
 # COMMANDS:
-ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re")
+ALLOWED_COMMANDS=("help" "stop" "build" "start" "clean" "fclean" "reset" "re" "dummy" "test")
 # Join the array in a single string for error messages
 ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #
@@ -44,6 +56,9 @@ ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #	| `fclean`| `clean`, removes docker volumes and docker network, deleting the volume folders, deleting the linkt to the `.env` file |
 #	| `reset` | `clean` + `start`                                                                                                      |
 #	| `re`    | `fclean` + `start`                                                                                                     |
+#	|---------|------------------------------------------------------------------------------------------------------------------------|
+#	| `dummy` | Puts dummy data into the database                                                                                      |
+#	| `test`  | Starts as script to test the backend api                                                                               |
 #
 # CONTAINER:
 ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
@@ -51,12 +66,12 @@ ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
 #   If no container is specified ALL containers will be affected.
 #   The allowed containers are:
 #
-#	| Container  | Service  | Volumes   | Description                                  |
-#	|------------|----------|-----------|----------------------------------------------|
-#	| `fe`       | frontend |           | The frontend service (nginx, html, css, Js)  |
-#	| `be`       | backend  |           | The backend service (django)                 |
-#	| `db`       | database | db-volume | The database service (postgres)              |
-#	| `pa`       | pgadmin  | pa-volume | The pgadmin service (pgadmin)                |
+#	| Container  | Service  | Volumes          | Description                                  |
+#	|------------|----------|------------------|----------------------------------------------|
+#	| `fe`       | frontend | media-volume     | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  | media-volume     | The backend service (django)                 |
+#	| `db`       | database | db-volume        | The database service (postgres)              |
+#	| `pa`       | pgadmin  | pa-volume        | The pgadmin service (pgadmin)                |
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
@@ -66,10 +81,13 @@ OS_HOME_PATH=""
 #   The volume folders will be created in a folder located at home called:
 VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
+PA_VOLUME_NAME=pa-volume
+MEDIA_VOLUME_NAME=media-volume
+export DB_VOLUME_NAME PA_VOLUME_NAME MEDIA_VOLUME_NAME
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
-# The spinner allows os to nest a task in it and show a message while the task 
+# The spinner allows os to nest a task in it and show a message while the task
 # is running. The result of the task will be shown after the spinner stops.
 # USAGE:
 # 	perform_task_with_spinner "Message" "Task" "Success Message" "Failure Message" "Fail Continue"
@@ -81,14 +99,14 @@ DB_VOLUME_NAME=db-volume
 #
 #	Example:
 #		perform_task_with_spinner "Checking if the file exists" '[ -f "$FILE" ]' "" "File does not exist" false
-# 
+#
 # The functions start_spinner & stop_spinner are helper functions for the
 # spinner and should not be called directly!
-# 
+#
 # Here we store the PID of the spinner process in a global variable so that we
 # can kill it if the script is stopped:
 SPINNER_PID=""
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 #
 # OTHER VARIABLES:
 #This option ensures that if any command in a pipeline fails, the entire pipeline fails. Without this, only the exit status of the last command in the pipeline would be considered.
@@ -101,20 +119,20 @@ OR='\033[38;5;208m'
 GR='\033[0;32m'
 BL='\033[0;36m'
 NC='\033[0m'
+# BOLD
+BOLD="\033[1m"
 #
 # MORE INFO AT:
 # https://github.com/rajh-phuyal/42Transcendence/wiki/
 # ------------------------------------------------------------------------------
 # UPDATE THE VARIABLE BELOW TO CHANGE THE HELP MESSAGE LENGTH OF ./deploy.sh help
-HELP_ENDS_AT_LINE=105
+# to this line number - 2
+HELP_ENDS_AT_LINE=127
 # ------------------------------------------------------------------------------
-
-
-
 
 ################################################################################
 # PRINT FUNCTIONS
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # Function to print a important message in color
 print_header() {
 	printf "$1 >>> %b${NC}\n" "$2"
@@ -125,9 +143,16 @@ print_error() {
 	print_header "${RD}" "Error: $1"
     exit 1
 }
-# ------------------------------------------------------------------------------ 
+
+# URL clickable format function
+url() {
+    local url=$1
+    local text=$2
+    echo -e "\e]8;;${url}\a${text}\e]8;;\a"
+}
+# ------------------------------------------------------------------------------
 # SPINNER FUNCTIONS
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # see comment block above
 start_spinner() {
     local message="$1"
@@ -140,7 +165,7 @@ start_spinner() {
             sleep 0.1
         done
     done ) &
-    
+
     # Save the PID of the spinner process
     SPINNER_PID=$!
 }
@@ -162,10 +187,10 @@ stop_spinner() {
 
     # Move to the beginning of the line and print the final status
 	if [ $exit_code -eq 0 ]; then
-	    printf "\r\u2705 "
+	    printf "\r✅ "
 	    echo -e "$message $GR ${success_message} $NC"
 	else
-	    printf "\r\u274C "
+	    printf "\r❌ "
 	    echo -e "$message $RD ${failure_message} $NC"
 	    if [ "$fail_continue" == "false" ]; then
 	        exit 1  # Exit the script with a failure
@@ -191,7 +216,7 @@ perform_task_with_spinner() {
 	local success_message="${3:-"done"}"
 	local failure_message="$4"
 	local fail_continue="${5:-false}"
-	    
+
     # Start the spinner
     start_spinner "$message"
 
@@ -204,7 +229,7 @@ perform_task_with_spinner() {
 	return $?
 }
 
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # SETUP FUNCTIONS
 # ------------------------------------------------------------------------------
 # As a short pre-setup the arguments are processed via parse_args. This function
@@ -212,7 +237,8 @@ perform_task_with_spinner() {
 # - NEW_ENV_PATH
 # - COMMAND
 # - CONTAINERS
-# 
+# - COMPOSE_FLAG
+#
 # The main function check_setup is called by the main script to check if the
 # environment is set up correctly. It checks:
 # 	- if the .env file is linked and loaded
@@ -222,7 +248,7 @@ perform_task_with_spinner() {
 #
 # Besides the function check_setup all other functions are helper functions and
 # should not be called directly!
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 parse_args()
 {
 	print_header "${BL}" "Parsing arguments..."
@@ -231,11 +257,26 @@ parse_args()
 	CONTAINERS=""
 	ENV_FLAG_FOUND=false
 	MSG_MISSING_PATH="The -e flag is used but the path is missing. Flag will be ignored!"
+    # Default Domain is $DOMAIN_NAMES_LOCAL
+    DOMAIN_NAMES=$DOMAIN_NAMES_LOCAL
+    export LOCAL_DEPLOY=TRUE
 	for arg in "$@"
 	do
 		if [ "$arg" == "-e" ]; then
+			echo "found flag 'e'"
 			NEW_ENV_PATH=$MSG_MISSING_PATH	# So the call ./deploy.sh start -e will fail (the path is missing)
 			ENV_FLAG_FOUND=true
+		elif [ "$arg" == "-p" ]; then
+		    print_header "${RD}" " ################################## "${NC}
+		    print_header "${RD}" " #        (found flag '-p')       # "${NC}
+		    print_header "${RD}" " # !! DEPLOYING FOR PRODUCTION !! # "${NC}
+		    print_header "${RD}" " ################################## "${NC}
+			SECOND_COMPOSE_FLAG="-f ""$COMPOSE_FILE_PRODUCTION"
+            echo -e "DEPLOY FOR PRODUCTION: set SECOND_COMPOSE_FLAG to:$RD$SECOND_COMPOSE_FLAG$NC"
+            DOMAIN_NAMES=$DOMAIN_NAMES_PRODUCTION
+            echo -e "DEPLOY FOR PRODUCTION: set DOMAIN_NAMES to:$RD$DOMAIN_NAMES$NC"
+            export LOCAL_DEPLOY=FALSE
+            echo -e "DEPLOY FOR PRODUCTION: set LOCAL_DEPLOY to:$RD$LOCAL_DEPLOY$NC"
 		elif [ "$ENV_FLAG_FOUND" == true ]; then
 			NEW_ENV_PATH=$arg
 			ENV_FLAG_FOUND=false
@@ -265,9 +306,9 @@ parse_args()
 	echo -e "COMMAND:\t$COMMAND"
 
 	# 	checking the CONTAINERS
-	# 	Containers can't be specified for the commands fclean, re and help
-	if [[ "$COMMAND" == "fclean" || "$COMMAND" == "re" || "$COMMAND" == "help" ]] && [[ "$CONTAINERS" != "" ]]; then
-		echo -e $OR "Containers can't be specified for the commands fclean, re and help" $NC
+	# 	Containers can't be specified for the commands fclean, re, help and dummy
+	if [[ "$COMMAND" == "dummy" || "$COMMAND" == "fclean" || "$COMMAND" == "re" || "$COMMAND" == "help" ]] && [[ "$CONTAINERS" != "" ]]; then
+		echo -e $OR "Containers can't be specified for the commands fclean, re, help and dummy" $NC
 		echo -e $OR "The input '$CONTAINERS' will be ignored" $NC
 		CONTAINERS=""
 	fi
@@ -285,7 +326,7 @@ parse_args()
 	        fi
 	    done
 	fi
-	
+
 	echo -e "CONTAINERS:\t$CONTAINERS"
 
 	#	checking the ENV_PATH
@@ -293,7 +334,16 @@ parse_args()
 		echo -e $OR $MSG_MISSING_PATH $NC
 		NEW_ENV_PATH=""
 	fi
-	echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+    if [ "$NEW_ENV_PATH" != "" ]; then
+        echo -e "NEW_ENV_PATH:\t$NEW_ENV_PATH"
+    fi
+
+    # Export the DOMAIN_NAMES
+    export DOMAIN_NAMES
+    echo -e "DOMAIN_NAMES:\t$DOMAIN_NAMES"
+	# Exporting the user and the group so that docker compse can use this
+	#export UID=$(id -u)
+	#export GID=$(id -g)
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
 }
 
@@ -310,9 +360,11 @@ check_os()
 	if [[ "$OSTYPE" == "darwin"* ]]; then
 	    # macOS
 	    OS_HOME_PATH="/Users/$(whoami)/"
+		IS_MACOS=true
 	elif [[ "$OSTYPE" == "linux"* ]]; then
 	    # Any Linux distribution
 	    OS_HOME_PATH="$HOME/"
+		IS_MACOS=false
 	else
 		print_error "Unsupported OS: $OSTYPE"
 	fi
@@ -324,7 +376,7 @@ check_os()
 		false
 }
 
-# Function to check (and update) the link to the .env file which will then be 
+# Function to check (and update) the link to the .env file which will then be
 # sourced and sample tested with $DB_NAME
 check_env_link() {
 	print_header "${BL}" "Checking for the .env file link..."
@@ -343,7 +395,7 @@ check_env_link() {
 			"" \
 			"Could not update the environment path." \
 			false
-		
+
         # Unset the NEW_ENV_PATH variable
         NEW_ENV_PATH=""
     fi
@@ -355,7 +407,7 @@ check_env_link() {
 		"" \
 		"No environment file path is set. Please provide the path using the -e option." \
 		false; then
-        
+
 		STORED_ENV_PATH=$(cat "$ENV_PATH_FILE")
 		if perform_task_with_spinner \
 			"Checking if path ($STORED_ENV_PATH) is valid" \
@@ -370,9 +422,9 @@ check_env_link() {
 				"" \
 				"" \
 				false
-		fi  
+		fi
 	fi
-	
+
     # Step 3: Make a sample test to see if the .env file is loaded
 	perform_task_with_spinner \
 		"Sample test with <DB_NAME> " \
@@ -380,28 +432,35 @@ check_env_link() {
 		"$DB_NAME" \
 		"Sample test with <DB_NAME> failed. The .env file is not loaded correctly." \
 		false
-	
-	# Step 4: Append or update the var VOLUME_ROOT_PATH in the .env file
-	if perform_task_with_spinner \
-		"Checking if env VOLUME_ROOT_PATH already exists" \
-		"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
-		"" \
-		"" \
-		true; then
-			perform_task_with_spinner \
-				"Updating var VOLUME_ROOT_PATH in env file" \
-				"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
-				"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
-				"failed to update var VOLUME_ROOT_PATH in env file" \
-				false
-		else
-			perform_task_with_spinner \
-			"Adding var VOLUME_ROOT_PATH to env file" \
-			"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
-			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
-			"failed to add var VOLUME_ROOT_PATH to env file" \
-			false
-	fi
+
+	# Step 4: Export the VOLUME_ROOT_PATH
+    perform_task_with_spinner \
+        "Exporting the VOLUME_ROOT_PATH: "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"" \
+        'export VOLUME_ROOT_PATH="$OS_HOME_PATH$VOLUME_FOLDER_NAME/"' \
+        "done" \
+        "failed to export VOLUME_ROOT_PATH" \
+        false
+
+	#if perform_task_with_spinner \
+	#	"Checking if env VOLUME_ROOT_PATH already exists" \
+	#	"grep -q '^VOLUME_ROOT_PATH=' '$STORED_ENV_PATH'" \
+	#	"" \
+	#	"" \
+	#	true; then
+	#		perform_task_with_spinner \
+	#			"Updating var VOLUME_ROOT_PATH in env file" \
+	#			"sed -i.bak 's|^VOLUME_ROOT_PATH=.*|VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"|g' '$STORED_ENV_PATH' && rm -f '$STORED_ENV_PATH.bak'" \
+	#			"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+	#			"failed to update var VOLUME_ROOT_PATH in env file" \
+	#			false
+	#	else
+	#		perform_task_with_spinner \
+	#		"Adding var VOLUME_ROOT_PATH to env file" \
+	#		"echo 'VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"' >> '$STORED_ENV_PATH'" \
+	#		"VOLUME_ROOT_PATH=\"$OS_HOME_PATH$VOLUME_FOLDER_NAME/\"" \
+	#		"failed to add var VOLUME_ROOT_PATH to env file" \
+	#		false
+	#fi
 
 	# Step 5: Source again
 	perform_task_with_spinner \
@@ -418,16 +477,17 @@ check_env_link() {
 		"$VOLUME_ROOT_PATH" \
 		"Sample test with <VOLUME_ROOT_PATH> failed. The .env file is not loaded correctly." \
 		false
-	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}" 
+	print_header "${BL}" "Checking for the .env file link...${GR}DONE${NC}"
 }
 
 # Used to prepare the folders for the docker volumes
 check_path_and_permission()
 {
 	local path=$1
+	path_formated=$(url "file://$path" "$path")
 
 	if ! perform_task_with_spinner \
-		"Checking presents of folder: <$path>" \
+		"Checking presents of folder: $path_formated ..." \
 		'[ -e "$path" ]' \
 		"is there" \
 		"doesn't exist" \
@@ -435,37 +495,42 @@ check_path_and_permission()
 
 		# Create the folder
 		perform_task_with_spinner \
-			"Creating folder: <$path>" \
+			" ...creating the folder" \
 			'mkdir -p $path' \
 			"created" \
-			"couldn't create folder: <$path>!" \
+			"couldn't create folder: $path_formated!" \
 			false
 	fi
-	
+
 	# [astein]:
 	# Since i had a lot of trouble with the permissions i will set them here
 	# accoring to this guide:
 	# https://medium.com/@nielssj/docker-volumes-and-file-system-permissions-772c1aee23ca
-	perform_task_with_spinner \
-		"Changing ownership of folder: <$path>" \
-		'sudo chown -R ":1024" "$path"' \
-		"" \
-		"couldn't change ownership of folder: <$path>!" \
-		false
-	
-	perform_task_with_spinner \
-		"Changing permission of folder: <$path>" \
-		'sudo chmod -R 775 "$path"' \
-		"" \
-		"couldn't change permission of folder: <$path>!" \
-		false
+	if [ "$IS_MACOS" != true ]; then
+        # On Linux, perform ownership and permission changes
+        perform_task_with_spinner \
+            " ...changing ownership of the folder" \
+            'sudo chown -R ":1024" "$path"' \
+            "" \
+            "couldn't change ownership of folder: $path_formated!" \
+            false
 
-	perform_task_with_spinner \
-		"Ensure all future content in the folder <$path> will inherit group ownership" \
-		'sudo chmod g+s "$path"' \
-		"" \
-		'could not run sudo chmod g+s "$path"' \
-		false
+        perform_task_with_spinner \
+            " ...changing permission of the folder" \
+            'sudo chmod -R 775 "$path"' \
+            "" \
+            "couldn't change permission of folder: $path_formated!" \
+            false
+
+        perform_task_with_spinner \
+            " ...ensure all future content in the folder will inherit group ownership" \
+            'sudo chmod g+s "$path"' \
+            "" \
+            'could not run sudo chmod g+s "$path"' \
+            false
+    else
+        echo "Skipping ownership and permission changes on macOS"
+    fi
 }
 
 # Function to check if the folders for the volumes are there
@@ -473,10 +538,20 @@ check_volume_folders()
 {
 	print_header "${YL}" "Checking paths for volumes..."
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$DB_VOLUME_NAME/"
+	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$PA_VOLUME_NAME/"
+	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$MEDIA_VOLUME_NAME/"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
 
-# ------------------------------------------------------------------------------ 
+print_server_urls()
+{
+    IFS=','
+    for DOMAIN in $DOMAIN_NAMES_LOCAL; do
+        echo -e "${GR}" "\tWebsite reachable at: ${BL}$(url "https://$DOMAIN" "$DOMAIN")${NC}"
+    done
+}
+
+# ------------------------------------------------------------------------------
 # DOCKER BASIC FUNCTIONS
 #	stop [contaier]			| Stops the container(s)
 #	build [contaier]		| Building the container(s)
@@ -485,16 +560,18 @@ check_volume_folders()
 #	fclean 					| Deletes the container(s) + Volumes + Network
 #	reset [container]		| clean + start
 #	re 						| fclean + start
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
+# 	insert_dummy_data		| Puts dummy data into the database
+# ------------------------------------------------------------------------------
 docker_stop() {
 	print_header "${BL}" "Stopping containers: $CONTAINERS..."
-	docker-compose --env-file "$STORED_ENV_PATH" stop $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" stop $CONTAINERS
 	print_header "${BL}" "Stopping containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
 docker_build() {
 	print_header "${BL}" "Building containers: $CONTAINERS"
-	docker-compose --env-file "$STORED_ENV_PATH" build $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" build $CONTAINERS
 	print_header "${BL}" "Building containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -502,7 +579,7 @@ docker_start() {
 	docker_stop
 	docker_build
 	print_header "${BL}" "Starting containers: $CONTAINERS"
-	docker-compose --env-file "$STORED_ENV_PATH" up -d $CONTAINERS
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" up -d $CONTAINERS
 	print_header "${BL}" "Starting containers: $CONTAINERS...${GR}DONE${NC}"
 }
 
@@ -516,7 +593,7 @@ docker_clean() {
 	print_header "${OR}" "Deleting images...${GR}DONE${NC}"
 }
 
-docker_fclean() {    
+docker_fclean() {
 	# Prompt user for confirmation
 	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL CONTAINERS, IMAGES, VOLUMES, AND THE DOCKER NETWORK (y/n): "
 	read -p "choose: " confirm
@@ -524,27 +601,30 @@ docker_fclean() {
 		print_header "${RD}" "Operation cancelled."
 		exit 1
 	fi
+	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network..."
 	docker_clean "$ALLOWED_CONTAINERS"
 
 	print_header "${OR}" "Deleting docker network..."
 	docker network rm "$DOCKER_NETWORK" || true
 	print_header "${OR}" "Deleting docker network...${GR}DONE${NC}"
 
-	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network..."
-	docker-compose --env-file "$STORED_ENV_PATH" down --rmi all --remove-orphans
+	docker compose -f="$COMPOSE_FILE" $SECOND_COMPOSE_FLAG --env-file="$STORED_ENV_PATH" down --rmi all --remove-orphans
+
 	print_header "${OR}" "Stopping and deleting all containers, images, volumes, and network...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
+	docker volume rm "$PA_VOLUME_NAME" || true
+	docker volume rm "$MEDIA_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 
 	print_header "${OR}" "Deleting folder of docker volumes...($OS_HOME_PATH$VOLUME_FOLDER_NAME/)"
-	sudo rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
+	rm -rf "$OS_HOME_PATH$VOLUME_FOLDER_NAME/"
 	print_header "${OR}" "Deleting folder of docker volumes...${GR}DONE${NC}"
 
-	print_header "${OR}" "Deltete the link to the environment file..."
+	print_header "${OR}" "Delete the link to the environment file..."
 	rm -f ".transcendence_env_path"
-	print_header "${OR}" "Deltete the link to the environment file...${GR}DONE${NC}"
+	print_header "${OR}" "Delete the link to the environment file...${GR}DONE${NC}"
 
 	print_header "${RD}" "Do u additionaly do a full clean aka 'docker system prune -a --volumes -f' (y/n): "
 	read -p "choose: " confirm
@@ -583,6 +663,53 @@ docker_re() {
 	docker_start
 }
 
+check_healthy() {
+    if [[ " ${ALLOWED_CONTAINERS[*]} " =~ " $1 " ]]; then
+        if perform_task_with_spinner \
+            "Checking if the container $1 is healthy" \
+            "[ $(docker inspect --format='{{.State.Health.Status}}' $1 2>/dev/null) = "healthy" ]" \
+            "$1 container is up and healthy" \
+            "$1 container isn't running (or unhealthy)!" \
+            true; then
+            return 0 # Success
+        else
+            return 1 # Failure
+        fi
+    else
+        print_error "Invalid container: '$1' (only '${ALLOWED_CONTAINERS[*]}' are allowed!)"
+        return 1 # Failure
+    fi
+}
+
+insert_dummy_data() {
+	check_healthy "db"
+    if [[ $? -eq 1 ]]; then
+        print_header "${RD}" "The database is not running (or unhealthy)!\nRun './deploy.sh start db' first!"
+        exit 1
+    fi
+
+	print_header "${RD}" "ARE YOU SURE YOU WANT TO DELETE ALL THE DATA FROM THE DATABASE AND INSERT DUMMY DATA INSTEAD (y/n): "
+	read -p "choose: " confirm
+	if [[ "$confirm" != "y" ]]; then
+		print_header "${RD}" "Operation cancelled."
+		exit 1
+	fi
+
+	print_header "${OR}" "Inserting dummy data into the database..."
+	docker exec -it db  bash /tools/create_dummy.sh
+	print_header "${OR}" "Inserting dummy data into the database...${GR}DONE${NC}"
+}
+
+run_test() {
+    # TODO: When healthceck is implemented, check if the backend is healthy
+    # check_healthy "be"
+    if [[ $? -eq 1 ]]; then
+        print_header "${RD}" "The backend is not running (or unhealthy)!\nRun './deploy.sh start be' first!"
+        exit 1
+    fi
+    print_header "${BL}" "Starting the tester...${NC}"
+    bash "$(dirname "$(realpath "$0")")/Tester/tester.sh"
+}
 
 ################################################################################
 #       Main Script
@@ -592,7 +719,7 @@ docker_re() {
 echo ""
 perform_task_with_spinner \
 	"Welcome to Barely Alive" \
-	'sleep 1' \
+	'sleep 0.1' \
 	"Let's go" \
 	"Failed to print welcome message." \
 	false
@@ -608,6 +735,7 @@ case "$COMMAND" in
 	start)
 		check_setup
 		docker_start
+        print_server_urls
 		;;
 	stop)
 		check_setup
@@ -628,12 +756,22 @@ case "$COMMAND" in
 	reset)
 		check_setup
 		docker_reset
+        print_server_urls
 		;;
 	re)
 		check_setup
 		docker_re
+        print_server_urls
 		;;
+	dummy)
+		insert_dummy_data
+		;;
+    test)
+        run_test
+        ;;
 	*)
 		print_error "Invalid command: >${COMMAND}<, run >./deploy.sh help< to see the available commands."
 		;;
 esac
+
+print_header "${BL}" "DONE - Barely Alive"

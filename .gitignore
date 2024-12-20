@@ -1,11 +1,24 @@
-#TODO: Do we need all those sections?
+# SSL KEY!
+*.cer
+*.key
+*.crt
+
+# Tester files
+Tester/*.log
+Tester/*.env
+Tester/*.json
+Tester/*.csv
 
 # Environment-specific files and directories
 Environments/*
 
+# Localizations / Translations
+*.mo
+*.po
+
 # Logs
 Logs/*
-*/*.log
+**/*.log
 
 # Database files
 Database/postgres-data
@@ -24,3 +37,9 @@ example.enviroment
 
 # VS-CODE
 .vscode/
+
+# Migrations
+Backend/src/authentication/migrations/*
+Backend/src/chat/migrations/*
+Backend/src/user/migrations/*
+Backend/src/game/migrations/*

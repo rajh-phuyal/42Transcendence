@@ -1,50 +1,78 @@
-import { state, mutations } from './states.js';
-import { $getLocal, $setLocal, $setSession } from '../abstracts/dollars.js';
+import { state } from './states.js';
+import { mutations } from './mutations.js';
+import { actions } from './actions.js';
+import { $getLocal, $removeLocal, $setLocal } from '../abstracts/dollars.js';
 
 class Store {
-    constructor(initialState) {
-        this.state = { ...initialState };
+    constructor(initialState, mutations, actions) {
+        this.initialState = initialState;
+        this.mutations = mutations;
+        this.actions = actions;
+        this.mutationListeners = [];
+        this.initializer()
+    }
+
+    initializer() {
+        console.log("Initializing store: initializer");
+        this.state = { ...this.initialState };
 
         // pull from local storage
         const localStore = JSON.parse($getLocal("store")) || {};
         this.state = { ...this.state, ...localStore };
-
-        this.mutationListeners = [];
     }
 
     fromState(key) {
         return this.state[key];
     }
 
-    mutationListeners(mutationName, action) {
+    addMutationListener(mutationName, action) {
         this.mutationListeners.push({
             mutationName: mutationName,
             action: action
         });
     }
 
-    notifyListeners(mutationName) {
+    removeMutationListener(mutationName) {
+        this.mutationListeners = _.filter(this.mutationListeners, listener => listener.mutationName !== mutationName);
+    }
+
+    notifyListeners(mutationName, newState) {
         this.mutationListeners
             .filter(listener => listener.mutationName === mutationName)
-            .forEach(listener => listener.action(this.state));
+            .forEach(listener => listener.action(newState));
     }
 
     commit(mutationName, value) {
-        this.notifyListeners(mutationName);
+        this.mutations[mutationName]?.onUpdate(this.state, value);
 
-        mutations[mutationName]?.method(this.state, value);
+        this.notifyListeners(mutationName, value);
 
-        if (!mutations[mutationName]?.presistence) return;
+        if (!this.mutations[mutationName]?.presistence) return;
 
-        $setLocal("store", JSON.stringify(this.state));
+        // clear all the mutations, that have presistence set to false
+        let savedObject = {};
+        for (const value of _.values(this.mutations)) {
+            const stateKey = value.stateName;
+
+            if (value.presistence) {
+                savedObject[stateKey] = this.state[stateKey];
+            }
+        }
+
+        $setLocal("store", JSON.stringify(savedObject));
+    }
+
+    async dispatch(actionName, payload) {
+        await this.actions[actionName](this, payload);
     }
 
     clear() {
-        this.state = { ...state };
-        $setLocal("store", JSON.stringify(this.state));
+        // Reset to initial state
+        this.state = { ...this.initialState };
+        $removeLocal("store");
     }
 }
 
-const $store = new Store(state);
+const $store = new Store(state, mutations, actions);
 
 export default $store;

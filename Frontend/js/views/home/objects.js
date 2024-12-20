@@ -1,5 +1,8 @@
-
 export const imageDir = '../../../assets/homeView/';
+import { AIModalCallback, battleModalCallback, 
+    tournamentModalCallback, chatRoomModalCallback,
+    leaderboardModalCallback } from './callbacks.js';
+import { translate } from '../../locale/locale.js';
 
 // Array containing the objects for each element of the home-view that should be responsive
 export const imageBook = [
@@ -13,6 +16,7 @@ export const imageBook = [
         height: 300,
         shadow: 5,
         lines: [0],
+        callback: AIModalCallback,
     },
     {
         id: 2,
@@ -24,6 +28,7 @@ export const imageBook = [
         height: 300,
         shadow: 5,
         lines: [1, 3],
+        callback: battleModalCallback,
     },
     {
         id: 3,
@@ -35,6 +40,7 @@ export const imageBook = [
         height: 300,
         shadow: 5,
         lines: [2, 4, 5],
+        callback: tournamentModalCallback,
     },
     {
         id: 4,
@@ -46,6 +52,7 @@ export const imageBook = [
         height: 290,
         shadow: 5,
         lines: [11, 12, 15],
+        callback: chatRoomModalCallback,
     },
     {
         id: 5,
@@ -57,6 +64,7 @@ export const imageBook = [
         height: 260,
         shadow: 5,
         lines: [10, 11, 13, 14],
+        callback: leaderboardModalCallback,
     },
 ]
 
@@ -159,42 +167,42 @@ export const backgroundImageBook = [
 // Array containing the objects for the labels
 export const labels = [
     {
-        text: 'GAME PLAY',
+        text: translate("home", "gamePlay"),
         x: 185,
         y: 80,
         width: 300,
         height: 50,
     },
     {
-        text: 'A.I.',
+        text: translate("home", "A.I."),
         x: imageBook[0].x,
         y: imageBook[0].y + imageBook[0].height + 15,
         width: imageBook[0].width,
         height: 50,
     },
     {
-        text: 'INVITE A FRIEND',
+        text: translate("home", "inviteFriends"),
         x: imageBook[1].x,
         y: imageBook[1].y + imageBook[1].height + 15,
         width: imageBook[1].width,
         height: 50,
     },
     {
-        text: 'TOURNAMENT',
+        text: translate("home", "tournament"),
         x: imageBook[2].x,
         y: imageBook[2].y + imageBook[2].height + 15,
         width: imageBook[2].width,
         height: 50,
     },
     {
-        text: 'CHAT ROOM',
+        text: translate("home", "chatRoom"),
         x: imageBook[3].x,
         y: imageBook[3].y + imageBook[3].height + 15,
         width: imageBook[3].width,
         height: 50,
     },
     {
-        text: 'LEADERBOARD',
+        text: translate("home", "leaderboard"),
         x: imageBook[4].x,
         y: imageBook[4].y + imageBook[4].height + 15,
         width: imageBook[4].width,

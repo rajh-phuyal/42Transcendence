@@ -1,20 +1,34 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from core.exceptions import BarelyAnException
+from django.utils import timezone
+from asgiref.sync import sync_to_async
+from django.utils.translation import gettext as _
+from .constants import DEFAULT_AVATAR
 
 # Table: barelyaschema.user
-class User(models.Model):
-    id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=255, null=False, default='this isn\'t a username but helpful for migration')
-    # TODO: rename pswd to password before submitting. it does not work on Anatolii's machine for some reason
-    pswd = models.CharField(max_length=255, null=False, default='this isn\'t a password but helpful for migration')
+class User(AbstractUser):
+    # We inherit the functionality of the AbstractUser class, which provides the
+    # funcitonality of a user model, and change the table name to
+    # "barelyaschema.user" which will be created form our 010_user.sql file
+    # during the database container build.
+    avatar_path = models.CharField(max_length=40, default=DEFAULT_AVATAR, blank=True)
+    language = models.CharField(max_length=5, default='en-US', blank=True)
 
     class Meta:
         db_table = '"barelyaschema"."user"'
+
+    def update_last_seen(self):
+        self.last_login = timezone.now()
+        self.save(update_fields=['last_login'])
+    
+    def __str__(self):
+        return f"id:{self.id}({self.username})"
 
 # Enum for friend request status (cool_status)
 class CoolStatus(models.TextChoices):
     PENDING = 'pending', 'Pending'
     ACCEPTED = 'accepted', 'Accepted'
-    REJECTED = 'rejected', 'Rejected'
 
 # Table: barelyaschema.is_cool_with
 class IsCoolWith(models.Model):
@@ -25,7 +39,22 @@ class IsCoolWith(models.Model):
 
     class Meta:
         db_table = '"barelyaschema"."is_cool_with"'
-        unique_together = ('requester', 'requestee')  # Enforce the unique constraint in Django
+        unique_together = ('requester', 'requestee')
+
+    def clean(self):
+        if self.pk:
+            return
+        # Check for the existence of a reversed duplicate relationship (if new entry)
+        if IsCoolWith.objects.filter(
+            models.Q(requester=self.requester, requestee=self.requestee) |
+            models.Q(requester=self.requestee, requestee=self.requester)
+        ).exists():
+            raise BarelyAnException(_('A relationship between these two users already exists.'))
+
+    def save(self, *args, **kwargs):
+        # Validate before saving
+        self.clean()
+        super().save(*args, **kwargs)
 
 # Table: barelyaschema.no_cool_with
 class NoCoolWith(models.Model):
@@ -35,3 +64,4 @@ class NoCoolWith(models.Model):
 
     class Meta:
         db_table = '"barelyaschema"."no_cool_with"'
+        unique_together = ('blocker', 'blocked')

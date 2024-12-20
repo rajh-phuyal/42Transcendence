@@ -4,37 +4,33 @@ class BarelyAButton extends HTMLElement
     {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        this.height = 4;
+        this.width = 8;
+        this.fontSize = 2;
+        this.name = undefined;
+        this.route = undefined;
+        this.height = undefined;
+        this.height = undefined;
+        this.fontSize = undefined;
+        this.method = undefined;
+        this.datapayload = undefined;
+        this.onresolve = undefined;
     }
 
     static get observedAttributes()
     {
-        return["name", "route", "method", "datapayload", "onresolve", "buttonclass", "onerror"];
+        return["name", "route", "method", "height", "width", "datapayload", "fontsize", "onresolve", "buttonclass", "onerror"];
     }
 
     connectedCallback()
     {
         this.render();
-        this.shadow.addEventListener('click', this.method.bind(this));
+        // this.shadow.addEventListener('click', this.method.bind(this));
     }
 
     attributeChangedCallback(name, oldValue, newValue)
     {
-        if (name === "name")
-            this.name = newValue;
-        else if (name === "route")
-            this.route = newValue;
-        else if (name === "method")
-            this.method = newValue;
-        else if (name === "datapayload")
-            this.datapayload = newValue;
-        else if (name === "onresolve")
-            this.onresolve = newValue;
-        else if (name === "buttonclass")
-            this.buttonclass = newValue;
-        else if (name === "cocoxixi")
-            this.cocoxixi = newValue;
-        else if (name === "onerror")
-            console.log("Error");
+        this[name] = newValue;
         this.render();
     }
 
@@ -61,20 +57,16 @@ class BarelyAButton extends HTMLElement
                 }
 
                 .rect-button{
-                    display: flex;
                     font-family: 'Courier';
-                    font-size: 25px;
+                    font-size: ${this.fontSize}vh;
+                    vertical-align: middle;
                     text-align: center;
-                    line-height: 50px;
+                    align-items: justify;
                     font-weight: 700;
                     color: #FFFCE6;
-                    width: 150px;
-                    flex-direction: row;
-                    margin: 15px;
-                    padding: 3px;
-                    border: 2px solid  #595959;
-                    border-radius: 8px;
-                    background-color: #3D3D3D;
+                    height: ${this.height}vh;
+                    width: ${this.width}vw;
+                    background-color: #000000;
                     cursor: pointer;
                 }
 

@@ -1,12 +1,33 @@
 import { routes } from './routes.js';
+import { functionalRoutes } from './functionalRoutes.js';
 import { setViewLoading } from '../abstracts/loading.js';
 import { $id } from '../abstracts/dollars.js';
 
-// bind store and auth singleton to 'this' in the hooks
+// bind store, auth and other singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
+import $syncer from '../sync/Syncer.js';
+import call from '../abstracts/call.js';
+import WebSocketManager from '../abstracts/WebSocketManager.js';
+// import loading from '../abstracts/loading.js'; TODO this should be added later
+import dollars from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
 
-const objectToBind = (config) => {
+const simpleObjectToBind = () => {
+    return {
+        router: router,
+        $store: $store,
+        $auth: $auth,
+        $syncer: $syncer,
+        call: call,
+        // loading: loading,
+        webSocketManager: WebSocketManager,
+        translate: translate,
+        domManip: dollars,
+    }
+}
+
+const objectToBind = (config, params = null) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
 
@@ -14,13 +35,11 @@ const objectToBind = (config) => {
         binder[key] = value;
     }
 
+    binder = { ...simpleObjectToBind(), ...binder, routeParams: params };
+
     for (const [key, value] of Object.entries(methods || {})) {
         binder[key] = value.bind(binder);
     }
-
-    binder.router = router;
-    binder.$store = $store;
-    binder.$auth = $auth;
 
     return binder;
 }
@@ -37,15 +56,36 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null) {
-    setViewLoading(true); // later this responsibility will the that of the view
+    setViewLoading(true);
 
-    if ($auth.isUserAuthenticated() && path === '/auth') {
-        path = '/home';
+    // check for routes pre authentication check
+    const functionalRoute = functionalRoutes.find(route => route.path === path);
+    if (functionalRoute && !functionalRoute?.requireAuth) {
+        await functionalRoute.execute.bind(simpleObjectToBind())();
+        setViewLoading(false);
+        return;
     }
 
-    if (!$auth.isUserAuthenticated() && path !== '/auth') {
+    const userAuthenticated = await $auth.isUserAuthenticated();
+    console.log("User authenticated:", userAuthenticated);
+
+    if (userAuthenticated && path === '/auth') {
+        console.log("Redirecting to home");
+        path = '/home';
+        params = null;
+    }
+
+    if (!userAuthenticated && path !== '/auth') {
+        console.log("Redirecting to auth");
         path = '/auth';
-        params = { login: true };
+        params = null;
+    }
+
+    // execute the functional route which needs auth
+    if (functionalRoute) {
+        await functionalRoute.execute.bind(simpleObjectToBind())();
+        setViewLoading(false);
+        return;
     }
 
     const viewContainer = $id('router-view');
@@ -59,16 +99,16 @@ async function router(path, params = null) {
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
-    const viewConfigWithoutHooks = objectToBind(viewHooks);
+    const viewConfigWithoutHooks = objectToBind(viewHooks, params);
 
     // get the hooks of the last view and call the beforeRouteLeave hook
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
 
     // bind everything except the hooks to the object
-    lastViewHooks && lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
+    lastViewHooks && await lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
     // about to change route
-    viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
+    await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
 
     // reduce the params to a query string
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
@@ -76,14 +116,14 @@ async function router(path, params = null) {
     history.pushState({}, 'newUrl', pathWithParams);
 
     // DOM manipulation
-    viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
+    await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
-    viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
-
-    setViewLoading(false);
+    await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
 
     // set the view name to the container
     viewContainer.dataset.view = route.view;
+
+    setViewLoading(false);
 }
 
 export default router;

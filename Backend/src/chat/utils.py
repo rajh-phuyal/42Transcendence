@@ -1,0 +1,52 @@
+from django.db import transaction
+from django.utils import timezone
+from django.db.models import F
+from django.utils.translation import gettext as _
+from user.constants import USER_ID_OVERLOARDS
+from user.models import User
+from django.db.models import Q
+from .models import Message, ConversationMember
+from asgiref.sync import sync_to_async
+import logging
+from channels.db import database_sync_to_async
+
+def mark_all_messages_as_seen_sync(user_id, conversation_id):
+    try:
+        with transaction.atomic():
+            unread_messages = (
+                Message.objects
+                .select_for_update()
+                .filter(conversation_id=conversation_id, seen_at__isnull=True)
+                .exclude(user=user_id)
+            )
+
+            # Update messages
+            unread_messages.update(seen_at=timezone.now())
+            logging.info(f"Marked {len(unread_messages)} messages as seen by user {user_id} in conversation {conversation_id}")
+            # Update unread counter
+            conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
+            conversation_member.unread_counter = 0
+            conversation_member.save(update_fields=['unread_counter'])
+    except Exception as e:
+        logging.error(f"Error marking messages as seen: {e}")
+
+@database_sync_to_async
+def mark_all_messages_as_seen_async(user_id, conversation_id):
+    mark_all_messages_as_seen_sync(user_id, conversation_id)
+
+
+
+def get_conversation_name(user, conversation):
+    if conversation.name:
+        return conversation.name
+
+    try:
+        overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+        other_member = conversation.members.exclude(Q(user=user) | Q(user=overlords)).first()
+        if other_member and other_member.user.username:
+            return other_member.user.username
+    except Exception:
+        pass
+
+    # Fallback to "Top Secret"
+    return _("top secret")

@@ -1,18 +1,15 @@
-from rest_framework.response import Response
-from rest_framework import status
-from .exceptions import ValidationException
+import os
+from django.core.files.storage import default_storage
+from django.conf import settings
 
-def get_and_validate_data(request, action, doer_name, target_name):
-
-    doer = request.data.get(doer_name)
-    if not doer:
-        raise ValidationException(f'Key --> "{doer_name}".    {doer_name} must be provided')
+def change_avatar_in_db(user, file_path):
+    # Check if there's an existing avatar and delete it if it's not the default
+    if user.avatar_path and user.avatar_path != "54c455d5-761b-46a2-80a2-7a557d9ec618.png":
+        old_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars/', user.avatar_path)
+        if default_storage.exists(old_avatar_path):
+            default_storage.delete(old_avatar_path)
     
-    target = request.data.get(target_name)
-    if not target:
-        raise ValidationException(f'Key --> "{target_name}".    {target_name} must be provided')
-    
-    if doer == target:
-        raise ValidationException(f'"{action}" failed.    {doer_name} and {target_name} cannot be the same')
-    
-    return doer, target
+	# TODO: Add the atomic transaction here
+    # Update user's avatar_path field and save the user model
+    user.avatar_path = file_path
+    user.save()

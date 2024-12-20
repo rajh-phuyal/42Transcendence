@@ -14,9 +14,11 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+print("Loading settings.py...")
+print("------------------------------------")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -24,28 +26,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('BE_SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Enforce the use of the custom user model
+AUTH_USER_MODEL = 'user.User'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# DEBUG MODE
+local_deploy = os.getenv('LOCAL_DEPLOY', 'True')
+DEBUG = local_deploy.lower() == 'true'
+print(f"DEBUG is set to: {DEBUG}")
 
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+print(f"ALLOWED_HOSTS is set to: {ALLOWED_HOSTS}")
 
 # Application definition
 
 # [astein:] DO WE NEED ALL OF THEM? THEY CREATE A LOT OF TABLES IN THE DATABASE
 # @RAJH: please review :)
 INSTALLED_APPS = [
-    'django.contrib.admin',
+	# Core Django Apps
+    'django.contrib.admin', 			# [astein:] needed for migrations
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    'django.contrib.contenttypes',		# [astein:] required for the auth app
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+	# Third-party Apps
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+	'channels',
+
+	# Custom Apps
     'authentication',
-    'user',
+    'user.apps.UserConfig',
+    'chat',
+    'game'
 ]
 
 MIDDLEWARE = [
@@ -59,9 +74,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://localhost"
-]
+CORS_ALLOWED_ORIGINS = [f'https://{domain}' for domain in ALLOWED_HOSTS]
 
 ROOT_URLCONF = 'app.urls'
 
@@ -81,8 +94,28 @@ TEMPLATES = [
     },
 ]
 
+# This is for HTTP requests
 WSGI_APPLICATION = 'app.wsgi.application'
 
+# We need this for DJANGO CHANNELS!
+ASGI_APPLICATION = 'app.asgi.application'
+
+# This is the default channel layer configuration #TODO change it to redis later
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        'CONFIG': {
+            'capacity': 2000,  # Maximum number of messages that can be in a channel layer
+        },
+    },
+}
+
+# Security settings for WebSocket
+CHANNEL_SECURITY = {
+    'SECURE_ONLY': True,
+    'ALLOWED_HOSTS': ALLOWED_HOSTS,
+    'AUTH_TIMEOUT': 20, # Seconds for authentication to complete
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -101,6 +134,11 @@ DATABASES = {
     }
 }
 
+# Media for the user profile pictures aka avatars
+MEDIA_ROOT = '/' + os.getenv('MEDIA_VOLUME_NAME', 'media-volume') + '/'
+MEDIA_URL = '/media/'
+print(f"MEDIA_ROOT is set to: {MEDIA_ROOT}")
+print(f"MEDIA_URL is set to: {MEDIA_URL}")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -121,6 +159,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Mulitlang section below:
+# ==============================================================================
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -128,10 +168,31 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+# TODO: check how the pluralization is breaking on start up
+USE_I18N = True # [astein:] for internationalization
+USE_L10N = True # [astein:] for localization (formats dates, numbers, etc., based on locale)
+USE_TZ = True	# [astein:] for timezone support
 
-USE_TZ = True
+# Supported languages | NOTE: Django works with lowercase language codes!
+LANGUAGES = [
+    ('en-us', ('English (US)')),            # English (United States)
+    ('pt-pt', ('Portuguese (Portugal)')),   # Portuguese (Portugal)
+    ('pt-br', ('Portuguese (Brazil)')),     # Portuguese (Brazil)
+    ('de-de', ('German (Germany)')),        # German (Germany)
+    ('uk-ua', ('Ukrainian (Ukraine)')),     # Ukrainian (Ukraine)
+    ('ne-np', ('Nepali (Nepal)'))           # Nepali (Nepal)
+]
 
+# Ensure locale directory exists
+os.makedirs(BASE_DIR / 'locale', exist_ok=True)
+
+# Path for Locale Files
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Ensure this directory exists
+]
+print(f"LOCALE_PATHS is set to: {LOCALE_PATHS}")
+
+# ==============================================================================
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -144,27 +205,53 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'core.cookies.CookieJWTAuthentication',
+    ],
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=130), # temporary for development
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 }
+
+SIMPLE_JWT_COOKIE = {
+    'ACCESS_COOKIE_NAME': 'access_token',
+    'REFRESH_COOKIE_NAME': 'refresh_token',
+    'ACCESS_COOKIE_PATH': '/',
+    'REFRESH_COOKIE_PATH': '/api/auth/token/refresh/',
+    'ACCESS_COOKIE_SECURE': True,
+    'REFRESH_COOKIE_SECURE': True,
+    'ACCESS_COOKIE_HTTPONLY': True,
+    'REFRESH_COOKIE_HTTPONLY': True,
+    'ACCESS_COOKIE_SAMESITE': 'Strict',
+    'REFRESH_COOKIE_SAMESITE': 'Strict',
+}
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+print("------------------------------------")
+print("Loading settings.py...DONE")

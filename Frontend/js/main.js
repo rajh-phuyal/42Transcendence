@@ -1,8 +1,12 @@
-import { $id } from './abstracts/dollars.js';
+import $nav from './abstracts/nav.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
-
+import { routes } from './navigation/routes.js';
+import $store from './store/store.js';
+import WebSocketManager from './abstracts/WebSocketManager.js';
+import $callToast from './abstracts/callToast.js';
+import { translate } from './locale/locale.js';
 setViewLoading(true);
 
 try {
@@ -14,38 +18,52 @@ try {
     console.error('Error importing web components:', error);
 }
 
-// initilize the nav bar
-const navigationBarMap = [
-    { id: 'home-nav', path: '/home' },
-    { id: 'game-nav', path: '/game' },
-    { id: 'tournament-nav', path: '/tournament' },
-    { id: 'chat-nav', path: '/chat' },
-    { id: 'logout-nav', path: '/logout' },
-    { id: 'profile-nav', path: '/profile', params: { id: 1 } },
-    { id: 'login-nav', path: '/auth', params: { login: true } },
-    { id: 'register-nav', path: '/auth', params: { login: false } }
-];
-
-for (const route of navigationBarMap) {
-    $id(route.id)?.addEventListener('click', () => router(route.path, route.params));
-}
 
 window.addEventListener('popstate', () => {
     router(window.location.pathname)
 });
 
-// get the path and call the router
-router(window.location.pathname);
+// get the translations for all the registered views
+$store.dispatch('loadTranslations', routes.map(route => route.view));
 
-// set the loading to false
-setViewLoading(false);
-
-
+// Initializes the nav bar
+$nav();
 
 
+// go to path only after the translations are loaded
+$store.addMutationListener('setTranslations', () => {
+    // get the current route and its params
+    const currentRoute = window.location.pathname;
+    const currentParams = window.location.search;
 
+    // make the current params an object
+    const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
 
+    router(currentRoute, currentParamsObject);
 
+    // set the loading to false
+    setViewLoading(false);
+});
+
+let setInervalId = undefined;
+$store.addMutationListener('setWebSocketIsAlive', (state) => {
+    if (state) {
+        console.log("Web socket is connected!");
+        if (setInervalId) {
+            $callToast("success", translate("global:main", "connectionReestablished"))
+            clearInterval(setInervalId);
+            setInervalId = undefined;
+        }
+    } else {
+        console.log("Web socket is disconnected!");
+        if (!setInervalId && $store.fromState('isAuthenticated')) {
+            $callToast("error", translate("global:main", "connectionError"))
+            setInervalId = setInterval(() => {
+                WebSocketManager.connect();
+            }, 2000);
+        }
+    }
+});
 
 /* DESABLE ZOOM*/
 

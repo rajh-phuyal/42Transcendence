@@ -1,0 +1,30 @@
+{
+    "main": {
+        "connectionReestablished": {
+            "en-US": "Connection re-established. What ever...",
+            "pt-PT": "Conexão reestabelecida. O que quer que seja...",
+            "pt-BR": "Conexão reestabelecida. O que quer que seja...",
+            "de-DE": "Verbindung wiederhergestellt. Was auch immer...",
+            "uk-UA": "З'єднання відновлено. Що завгодно...",
+            "ne-NP": "जोड़ी समाप्त भएको छ। के भन्न छ।"
+        },
+        "connectionError": {
+            "en-US": "Connection error. But remember that the overlords are STILL watching...",
+            "pt-PT": "Conexão falhou. Mas lembre-se que os Overlords ainda estão a observar...",
+            "pt-BR": "Conexão falhou. Mas lembre-se que os Overlords ainda estão a observar...",
+            "de-DE": "Verbindung fehlgeschlagen. Aber denken Sie daran, dass die Overlords immer noch zuschauen...",
+            "uk-UA": "З'єднання не встановлено. Але пам'ятайте, що Overlords все ще спостерігають...",
+            "ne-NP": "जोड़ी समाप्त भएको छ। के भन्न छ।"
+        }
+    },
+    "call": {
+        "requestFailed": {
+            "en-US": "Request failed",
+            "pt-PT": "Pedido falhou",
+            "pt-BR": "Pedido falhou",
+            "de-DE": "Anfrage fehlgeschlagen",
+            "uk-UA": "Запит не вдався",
+            "ne-NP": "अनुरोध समाप्त भएको छ।"
+        }
+    }
+}

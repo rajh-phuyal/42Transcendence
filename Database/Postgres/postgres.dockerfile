@@ -19,15 +19,26 @@ RUN addgroup -g 1024 pg_group && adduser postgres pg_group
 # All those Scripts will be executed in alphabetical order when the container starts
 COPY ./init-db /docker-entrypoint-initdb.d/
 
-# Copy the custom entrypoint script and make it executable
-COPY ./tools/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Make a directory for the tools
+RUN mkdir -p /tools
 
-# Set the custom entrypoint script as the default entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Copy the custom entrypoint script and make it executable
+COPY ./tools/entrypoint.sh /tools/entrypoint.sh
+RUN chmod +x /tools/entrypoint.sh
+
+# Copy the root user accoints script and make it executable
+COPY ./tools/root_accounts.sh /tools/root_accounts.sh
+RUN chmod +x /tools/root_accounts.sh
+
+# Copy the dummy data script and make it executable
+COPY ./tools/create_dummy.sh /tools/create_dummy.sh
+RUN chmod +x /tools/create_dummy.sh
 
 # Expose the default PostgreSQL port
 EXPOSE 5432
+
+# Set the custom entrypoint script as the default entrypoint
+ENTRYPOINT ["/tools/entrypoint.sh"]
 
 # Start the PostgreSQL server
 CMD ["postgres"]
