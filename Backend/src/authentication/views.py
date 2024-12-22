@@ -63,6 +63,27 @@ class RegisterView(APIView):
         except Exception as e:
             raise exceptions.APIException(f"Error during user registration: {str(e)}")
 
+    def get(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def put(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def delete(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer
 
@@ -103,6 +124,27 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             )
             return custom_response
         return error_response(_("Login failed"))
+
+    def get(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def put(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def delete(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
 
     def get_user_from_request(self, request):
         """
@@ -152,3 +194,24 @@ class InternalTokenRefreshView(TokenRefreshView):
             )
 
         return response
+
+    def get(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def put(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def delete(self, request):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=405)
