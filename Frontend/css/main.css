@@ -18,13 +18,16 @@ html, body {
 	padding: 0.5em;
 	background-color: #00ccff;
 	cursor: pointer;
+	background-color: #170100;
+	background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
 }
 
 .navbar-brand-custom {
 	padding: 0.7rem !important;
-	border: 1px solid grey;
+	border: 1px solid white;
 	border-radius: 8px;
-	background-color: rgba(246, 255, 0, 0.603);
+	background-color: #3c2803;
+	color: white;
 }
 
 #view-loader {
@@ -103,8 +106,9 @@ h1 {
 #home-nav {
 	gap: 0.5rem;
 	padding: 0.2rem !important;
-	background-color: rgba(246, 255, 0, 0.603);
-	border: 1px solid black;
+	background-color: #3c2803;
+	color: white;
+	border: 1px solid white;
 	border-radius: 8px;
 }
 
@@ -112,17 +116,49 @@ h1 {
 	width: 95vw !important;
 }
 
+#main-nav-container > * {
+	flex: 1;
+}
+
 .nav-username {
 	padding: 0.5rem !important;
 }
 
 #nav-left-side {
-	width: 33%;
-	max-width: 130px;
+	gap: 0.5rem;
+}
+
+#nav-right-side {
+	height: 80%;
+}
+
+#nav-mid-side {
+
+}
+
+#profile-nav-avatar {
+	/* width: 100%; */
+	height: 100%;
+	/* border-radius: 50%; */
+}
+
+#site-title {
+	color: white;
+}
+
+#chat-nav {
+	position: relative;
 }
 
 #chat-nav-badge {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: -0.3rem;
+	right: -0.3rem;
+	background-color: red !important;
+	width: auto;
+	height: auto;
+	text-align: center;
+	border-radius: 0.3rem;
+	padding-top: 1px !important;
+	padding: 0.2rem !important;
 }
