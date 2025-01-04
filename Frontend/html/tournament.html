@@ -1,12 +1,138 @@
 <div id="tournament-view">
-    <h1>
-        tournament view
-    </h1>
+	<div id="tournament-left-side">
+		<div id="tornament-left-upper-side">
+			<h2>
+				Tournament Name:
+			</h2>
+		</div>
+		<div id="tournament-left-bottom-side">
+			<button>
+				Go to chat
+				<!--should be adpated to the language module -->
+			</button>
+			
+			<button>
+				Leave lobby
+				<!--should be adpated to the language module -->
+			</button>
+		</div>
+	</div>
+	<div id="tournament-middle">
+		<div id="tournament-middle-upper">
+			<button>
+				Game to come <!--should be adpated to the language module -->
+			</button>
+			<button>
+				Tournament rank <!--should be adpated to the language module -->
+			</button>
+			<button>
+				Tournament History <!--should be adpated to the language module -->
+			</button>
+		</div>
+		<div id="tournament-middle-center">
+			<div id="tournament-matches-table">
+				<p>players <!--should be replaced dynamicaly with the matches--></p>
+			</div>
+		</div>
+		<div id="tournament-middle-bottom">
+			<button>
+				Go to your current game <!--should be adpated to the language module -->
+			</button>
+		</div>
+	</div>
+	<div id="tournament-right-side">
+		<button>
+			Quit tournament <!--should be adpated to the language module -->
+		</button>
+	</div>
+	
 </div>
-
 <style>
     #tournament-view {
-        height: 100%;
-        background-color: #ff05ee6c;
+		height: 100%;
+		width: 100vw;
+        background-color: purple;
+		display: flex;
     }
+
+	#tournament-left-side {
+		background-color: red;
+		width: 23%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	#tornament-left-upper-side {
+		background-color: beige;
+		text-align: center;
+		margin-top: 1rem !important;
+		width: 90%;
+	}
+
+	#tournament-left-bottom-side {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		align-items: center;
+		width: 90%;
+	}
+
+	#tournament-left-bottom-side > button, #tournament-right-side > button,
+	#tournament-middle-bottom > button {
+		background-color: black;
+		color: white;
+		border: 2px solid white;
+		padding: 0.5rem !important;
+		width: 90%;
+	}
+
+	#tournament-left-bottom-side > :last-child, #tournament-right-side > :last-child,
+	#tournament-middle-bottom > :last-child {
+		margin-bottom: 1rem !important;
+	}
+
+	#tournament-middle {
+		background-color: green;
+		width: 54%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	#tournament-middle-bottom {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	#tournament-middle-upper {
+		width: 100%;
+		display: flex;
+		justify-content: space-around;
+	}
+
+	#tournament-middle-upper > button {
+		background-color: black;
+		color: white;
+		border: 2px solid white;
+		padding: 0.5rem !important;
+		margin-top: 1rem !important;
+	}
+
+	#tournament-middle-upper > *.active {
+		background-color: red;
+		color: white;
+	}
+
+	#tournament-right-side {
+		background-color: blue;
+		width: 23%;
+		display: flex;
+		flex-direction: column;
+		flex-flow: column-reverse;
+		align-items: center;
+	}
 </style>
