@@ -79,7 +79,7 @@ class MainConsumer(CustomWebSocketLogic):
         # Set the last login time for the user
         await sync_to_async(user.update_last_seen)()
         # Remove the user's online status from cache
-        cache.delete(f'user_online_{user.id}')
+        user.set_online_status(False)
         # Remove the user's WebSocket channel from cache
         cache.delete(f'user_channel_{user.id}')
         logging.info(f"User {user.username} marked as offline.")
