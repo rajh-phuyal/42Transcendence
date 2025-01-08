@@ -57,7 +57,6 @@ class LoadConversationView(BaseAuthenticatedView):
         # Determine blocking status
         the_overloards = User.objects.get(id=USER_ID_OVERLOARDS)
         other_user = self.get_other_user(conversation, user, the_overloards)
-        other_user_online = cache.get(f'user_online_{other_user.id}', False)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
 
@@ -92,7 +91,7 @@ class LoadConversationView(BaseAuthenticatedView):
         response_data = self.prepare_response(conversation,
                                               user,
                                               serialized_messages,
-                                              other_user_online,
+                                              other_user,
                                               is_blocking,
                                               is_blocked,
                                               conversation_avatar,

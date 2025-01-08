@@ -58,9 +58,9 @@ class MainConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
-        # Setting the user's online status in cache
         user = self.scope['user']
-        cache.set(f'user_online_{user.id}', True, timeout=3000) # 3000 seconds = 50 minutes
+        # Setting the user's online status in cache
+        user.set_online_status(True)
         # Store the WebSocket channel to the cache with the user ID as the key
         cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups

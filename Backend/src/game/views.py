@@ -52,3 +52,38 @@ class DeleteGameView(BaseAuthenticatedView):
         # Most likely this won't be reached since delete_game will raise an
         # exception in error cases
         return error_response(_('Could not delete game'))
+
+class LobbyView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, id):
+        user = request.user
+        try:
+            game = Game.objects.get(id=id)
+        except Game.DoesNotExist:
+            return error_response(_("Game not found"))
+        user_member = GameMember.objects.filter(game=game, user=user).first()
+        if not user_member:
+            return error_response(_("You are not a member of this game"))
+        opponent_memeber = GameMember.objects.filter(game=game).exclude(user=user).first()
+        if not opponent_memeber:
+            return error_response(_("Opponent not found"))
+        if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
+            return error_response(_("Game can't be played since it's either finished or quited"))
+        response_message = {
+            'gameState': game.state,
+            'username': user_member.user.username,
+            'userAvatar': user_member.user.avatar_path,
+            'userPoints': user_member.points,
+            'opponentId': opponent_memeber.user.id,
+            'opponentUsername': opponent_memeber.user.username,
+            'opponentAvatar': opponent_memeber.user.avatar_path,
+            'opponentOnlineStatus': opponent_memeber.user.get_online_status(),
+            'opponentPoints': opponent_memeber.points,
+            'map': game.map_number,
+            'powerup_big': user_member.powerup_big,
+            'powerup_fast': user_member.powerup_fast,
+            'powerup_slow': user_member.powerup_slow
+        }
+        return success_response(_('Lobby details'), **response_message)
+        # The frontend will use this response to show the lobby details and
+        # establish the WebSocket connection for this specific game
