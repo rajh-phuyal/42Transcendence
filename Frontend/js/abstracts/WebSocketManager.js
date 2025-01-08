@@ -3,7 +3,6 @@ import { createMessage } from '../views/chat/methods.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
-
 const { hostname } = window.location;
 
 class WebSocketManager {

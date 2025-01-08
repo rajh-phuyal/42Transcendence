@@ -57,9 +57,9 @@ class MainConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
-        # Setting the user's online status in cache
         user = self.scope['user']
-        cache.set(f'user_online_{user.id}', True, timeout=3000) # 3000 seconds = 50 minutes
+        # Setting the user's online status in cache
+        user.set_online_status(True)
         # Store the WebSocket channel to the cache with the user ID as the key
         cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups
@@ -76,7 +76,7 @@ class MainConsumer(CustomWebSocketLogic):
         # Set the last login time for the user
         await sync_to_async(user.update_last_seen)()
         # Remove the user's online status from cache
-        cache.delete(f'user_online_{user.id}')
+        user.set_online_status(False)
         # Remove the user's WebSocket channel from cache
         cache.delete(f'user_channel_{user.id}')
         logging.info(f"User {user.username} marked as offline.")
@@ -107,7 +107,8 @@ class GameConsumer(CustomWebSocketLogic):
     async def connect(self):
         await super().connect()
         # Doing game stuff
-        ...
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
         # Accept the connection
         await self.accept()
 
