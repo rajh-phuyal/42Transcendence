@@ -7,7 +7,7 @@ class Auth {
     constructor() {
         this.isAuthenticated = false;
         this._lastCheckTimestamp = 0;
-        this._cacheTimeout = 30000; // 30, sec, optimal for UX
+        this._cacheTimeout = 10000; // 10, sec, optimal for UX and verification
         return this;
     }
 
