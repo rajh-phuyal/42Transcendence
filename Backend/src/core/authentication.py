@@ -9,12 +9,17 @@ import logging
 
 
 class NotAuthenticated(BarelyAnException):
-    status_code = 403
+    status_code = 401
     default_detail = _("Authentication credentials were not provided.")
-    def __init__(self, detail, status_code=403):
-        super().__init__(detail)		# Allows APIException to handle `detail` first
-        self.detail = detail			# Ensures our custom `self.detail` is explicitly set
+
+    def __init__(self, detail, status_code=401):
+        super().__init__(detail)
         self.status_code = status_code
+        self.detail = {
+            "status": "error",
+            "statusCode": self.status_code,
+            "message": detail
+        }
 
 
 # Base view class for all authenticated views we wanna create
@@ -22,20 +27,21 @@ class BaseAuthenticatedView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def initialize_request(self, request, *args, **kwargs):
-        request = super().initialize_request(request, *args, **kwargs)
+    def perform_authentication(self, request):
+        super().perform_authentication(request)
 
-        # Let the authentication process complete first, or we will have a 500 (which is BAD!)
-        self.perform_authentication(request)
-
-        # we can safely check the authentication status # TODO: currently this throws a 500, needs fix
-        if isinstance(request.user, AnonymousUser):
-            raise NotAuthenticated(_("User is not authenticated"))
-
+        # Set language after authentication
         preferred_language = getattr(request.user, 'language', 'en-US')
         activate(preferred_language)
+
+        # Check for anonymous user and return formatted error response
+        if isinstance(request.user, AnonymousUser):
+            raise NotAuthenticated(_("User is not authenticated"), status_code=401)
+
         logging.info(f"User {request.user} has preferred language {preferred_language}")
 
+    def initialize_request(self, request, *args, **kwargs):
+        request = super().initialize_request(request, *args, **kwargs)
         return request
 
     # We don't want to allow any methods by default
