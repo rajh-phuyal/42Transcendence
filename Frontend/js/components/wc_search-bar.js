@@ -6,10 +6,11 @@ class SearchBar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.searchResults = [];
         this.searchType = "user";
+        this.width = "300";
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "searchType"];
+        return ["placeholder", "width", "search-type"];
     }
 
     reRenderAndAttach() {
@@ -23,6 +24,7 @@ class SearchBar extends HTMLElement {
 
     handleKeyPress(event) {
         const value = event.target.value.trim();
+        console.log("Search type:", this.searchType);
 
         // Clear results if input is empty
         if (!value) {
@@ -73,11 +75,14 @@ class SearchBar extends HTMLElement {
             this.placeholder = newValue;
         } else if (name === "width") {
             this.width = newValue;
+        } else if (name === "search-type") {
+            this.searchType = newValue;
         }
         this.render();
     }
 
     render() {
+        console.log(this.searchType);
         this.shadow.innerHTML = `
             <style>
                 .container {
