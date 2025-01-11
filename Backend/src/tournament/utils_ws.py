@@ -60,6 +60,19 @@ def join_tournament_channel(user, tournament_id, activate=True):
             **{"state": "False"}
         )
 
+def send_tournament_invites_via_pm(tournament_id):
+    # Get all users that are invited to the tournament
+    tournament_admin = TournamentMember.objects.get(tournament_id=tournament_id, is_admin=True)
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
+
+    # for member in tournament_members:
+    #     # Check if there's a private conversation between the user and the admin
+    #     if not Conversat
+    #         # If not, create one
+    #     # Send a message to the user
+
+
+
 def send_tournament_invites_via_ws(tournament_id):
     # Get all users that are invited to the tournament
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
