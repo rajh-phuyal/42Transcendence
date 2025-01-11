@@ -4,6 +4,8 @@ import router from '../../navigation/router.js';
 function hideModalElements(){
     let modalContent = $id("AI-modal");
     modalContent.style.display = 'none';
+    $id("tournament-modal").style.display = 'none';
+    $id('home-modal-body').style.backgroundImage = 'none';
 }
 
 export function AIModalCallback(){
@@ -14,8 +16,8 @@ export function AIModalCallback(){
 
     hideModalElements();
     modalBody.style.backgroundImage = "url('../../../assets/homeView/AIModal.png')";
-    modalBody.style.height = '90vh';
-    modalBody.style.width = '30vw';
+    // modalBody.style.height = '90vh';
+    // modalBody.style.width = '30vw';
 
     modalContent.style.display = 'block';
     const modal = new bootstrap.Modal(modalElement);
@@ -40,17 +42,18 @@ export function battleModalCallback(){
 }
 
 export function tournamentModalCallback(){
-    
+    console.log("here");
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
-
+    
     hideModalElements();
-    modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
+    // modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
     modalBody.style.height = '90vh';
-    modalBody.style.width = '30vw';
-    modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
-    modalBody.style.backgroundPosition = 'center'; // Center the image
-    modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
+    modalBody.style.width = '80vw';
+    // modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
+    // modalBody.style.backgroundPosition = 'center'; // Center the image
+    // modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
+    $id("tournament-modal").style.display = 'flex';
     const modal = new bootstrap.Modal(modalElement);
     modal.show();
 }
