@@ -130,6 +130,8 @@ export default {
             element = this.domManip.$class("tournament-modal-create-form-type-buttons");
             for (let individualElement of element)
                 this.domManip.$on(individualElement, "click", this.selectMap);
+            this.domManip.$off(element, "click", this.goToJoinTournament);
+            this.domManip.$off(element, "click", this.goToCreateTournament);
         },
 
         beforeDomInsertion() {
@@ -171,6 +173,8 @@ export default {
             element = this.domManip.$class("tournament-modal-create-form-type-buttons");
             for (let individualElement of element)
                 this.domManip.$on(individualElement, "click", this.selectTournamentType);
+			this.domManip.$on(this.domManip.$id("tournament-modal-create-form-join-button"), "click", this.goToJoinTournament);
+			this.domManip.$on(this.domManip.$id("tournament-modal-join-form-host-button"), "click", this.goToCreateTournament);
         },
     }
 }
