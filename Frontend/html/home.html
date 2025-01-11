@@ -89,6 +89,17 @@
             </div>
 			<div id="tournament-modal-join-container">
 				<div class="tournament-modal-center join-modal">
+					<div id="tournament-modal-join-container-left-side">
+						<div id="tournament-modal-join-container-left-side-top">
+							<h1 id="tournament-modal-join-title">Join Tournament</h1>
+						</div>
+						<div id="tournament-modal-join-container-left-side-center">
+							
+						</div>
+						<div id="tournament-modal-join-container-left-side-bottom">
+							<button id="tournament-modal-join-form-host-button">Host</button>
+						</div>
+					</div>
 					<img class="tournament-modal-bigfoot-2" id='modal-bigfoot-2' src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
 					<img src="../../../assets/homeView/bigfootModal3.png" alt="big foot 3" id="tournament-modal-bigfoot-3">
 				</div>
@@ -170,6 +181,42 @@
 		left: -50%;
 	}
 
+	#tournament-modal-join-container-left-side {
+		background-color: rgba(255, 0, 0, 0.249);
+		position: absolute;
+		top: 0;
+		left: -50%;
+		width: 100%;
+		height: 81%;
+		z-index: 2;
+	}
+	
+	#tournament-modal-join-container-left-side-top {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: rgba(0, 0, 255, 0.514);
+		width: 100%;
+		height: 15.5%;
+	}
+	
+	#tournament-modal-join-title {
+		margin: auto;
+		text-align: center;
+		font-size: clamp(0.8rem, calc(7vw + 1rem), 3rem);
+	}
+
+	#tournament-modal-join-container-left-side-center {
+		background-color: rgba(0, 128, 0, 0.433);
+		width: 100%;
+		height: 72.5%;
+	}
+
+	#tournament-modal-join-container-left-side-bottom {
+		background-color: rgba(137, 43, 226, 0.398);
+		width: 100%;
+		height: 12%;
+	}
 
 	/* continue */
 	#tournament-modal-create-form {

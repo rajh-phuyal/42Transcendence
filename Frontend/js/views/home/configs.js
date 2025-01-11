@@ -17,13 +17,25 @@ export default {
             
         },
 
-		joinTournament() {
+		goToJoinTournament() {
 			const createTournament = $id("tournament-modal-create-container");
 			const joinTournament = $id("tournament-modal-join-container");
 			createTournament.style.display = 'none';
 			joinTournament.style.display = 'flex';
-		}
+		},
 
+		goToCreateTournament() {
+			const createTournament = $id("tournament-modal-create-container");
+			const joinTournament = $id("tournament-modal-join-container");
+			createTournament.style.display = 'flex';
+			joinTournament.style.display = 'none';
+		},
+		toggleCreateJoinView() {
+			const createTournament = $id("tournament-modal-create-container");
+			const joinTournament = $id("tournament-modal-join-container");
+			createTournament.style.display = createTournament.style.display === 'none' ? 'flex' : 'none';
+			joinTournament.style.display = joinTournament.style.display === 'none' ? 'flex' : 'none';
+		}
     },
 
     hooks: {
@@ -36,7 +48,8 @@ export default {
             $off(document, "mousemove", isHovering);
             let element = this.domManip.$id("tournament-modal-create-form-create-button");
             this.domManip.$off(element, "click", this.createTournament);
-            this.domManip.$off(element, "click", this.joinTournament);
+            this.domManip.$off(element, "click", this.goToJoinTournament);
+            this.domManip.$off(element, "click", this.goToCreateTournament);
         },
 
         beforeDomInsertion() {
@@ -69,7 +82,8 @@ export default {
             $on(document, "mousemove", isHovering);
             let element = this.domManip.$id("tournament-modal-create-form-create-button");
             this.domManip.$on(element, "click", this.createTournament);
-			this.domManip.$on(this.domManip.$id("tournament-modal-create-form-join-button"), "click", this.joinTournament);
+			this.domManip.$on(this.domManip.$id("tournament-modal-create-form-join-button"), "click", this.goToJoinTournament);
+			this.domManip.$on(this.domManip.$id("tournament-modal-join-form-host-button"), "click", this.goToCreateTournament);
         },
     }
 }
