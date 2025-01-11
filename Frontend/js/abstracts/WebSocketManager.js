@@ -235,7 +235,7 @@ class WebSocketManager {
         }
 
         // Populate the template fields with user data
-        console.log("AAAAAAAAAAAAAA userData:", userData);
+        //console.log("AAAAAAAAAAAAAA userData:", userData);
         card.querySelector(".user-id .value").textContent = "ID: " + userData.userId;
         card.querySelector(".username .value").textContent = "Username: " + userData.username;
         card.querySelector(".user-avatar").src = "https://localhost/media/avatars/" + userData.userAvatar;

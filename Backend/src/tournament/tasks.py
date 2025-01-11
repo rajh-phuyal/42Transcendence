@@ -69,6 +69,7 @@ def check_overdue_tournament_games():
             )
             #Set game to finished
             finish_game(game, _("The overloards lost their patience. Game {game_id} has been set to finished since the deadline has passed. They randomly decided that user {username} won the game.").format(game_id=game.id, username=winner.user.username))
+    # TODO: HACKATHON: Check if we can move this up for early return
     if not found_one:
         logging.info("No overdue games found.")
 

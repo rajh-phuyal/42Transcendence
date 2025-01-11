@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 import logging
 
+#TODO: HACKATHON:Check if this is needed!
 class Command(BaseCommand):
     help = 'Check game deadlines and trigger actions'
 
