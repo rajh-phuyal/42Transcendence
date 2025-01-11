@@ -1,3 +1,6 @@
+from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
+from tournament.utils_ws import send_tournament_ws_msg
+from rest_framework import status
 from django.db import transaction
 from django.utils import timezone
 from .models import Game, GameMember
@@ -8,6 +11,8 @@ from user.exceptions import UserNotFound, RelationshipException, BlockingExcepti
 from user.utils_relationship import is_blocking, are_friends
 from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
+import logging
+
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
@@ -26,7 +31,7 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent is AI
         if opponent.id == USER_ID_AI:
             # TODO: issue #210
-            raise BarelyAnException(_("Playing against AI is not supported yet"))
+            logging.error("Playing against AI is not supported yet")
         # Check if there is already a direct game between the user and the opponent
         user_games = GameMember.objects.filter(
             user=user.id,
@@ -74,14 +79,14 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
 def delete_game(user_id, game_id):
     # Check if the game exists
     try:
-        game = Game.objects.get(id=game_id) 
+        game = Game.objects.get(id=game_id)
     except Game.DoesNotExist:
         raise BarelyAnException(_("Game not found"))
     # Check if the user is a member of the game
     try:
         GameMember.objects.get(game=game_id, user=user_id)
     except GameMember.DoesNotExist:
-        raise BarelyAnException(_("You are not a member of this game"))
+        raise BarelyAnException(_("You are not a member of this game"), status_code=status.HTTP_403_FORBIDDEN)
     # Check for not being a tournament game
     if game.tournament_id:
         raise BarelyAnException(_("You can't delete a tournament game"))
@@ -89,11 +94,51 @@ def delete_game(user_id, game_id):
     if game.state != Game.GameState.PENDING:
         raise BarelyAnException(_("You can only delete a pending game"))
     # Delete the game and the game members in a transaction
-    with transaction.atomic():  
+    with transaction.atomic():
         GameMember.objects.filter(game=game_id).delete()
         game.delete()
     return True
 
+def finish_game(game, message):
+    logging.info(f"Finishing game {game.id}")
+    game_members = GameMember.objects.filter(game=game.id)
+    if not message:
+        message = _(
+                    "Game between {user1} and {user2} has been finished"
+                ).format(
+                    user1=game_members.first().user.username,
+                    user2=game_members.last().user.username
+                )
+    ...
+    with transaction.atomic():
+        game.state = Game.GameState.FINISHED
+        game.finish_time = timezone.now()
+        game.save()
+
+    # For tournament games only:
+    if not game.tournament_id:
+        return
+    # - inform everyone that the game finished
+    winner = game_members.filter(result=GameMember.GameResult.WON).first()
+    send_tournament_ws_msg(
+        game.tournament_id,
+        "gameUpdateState",
+        "game_update_state",
+        message,
+        **{
+            "gameId": game.id,
+            "state": "finished",
+            "winnerId": winner.user_id,
+        }
+    )
+    update_tournament_ranks(game.tournament_id)
+    check_tournament_routine(game.tournament_id)
+
+
+
+
+
+# OLD:
 # def start_game(map_number, powerups, tournament_id=None, deadline=None):
 #     """
 #     Initializes a new game in the 'pending' state.

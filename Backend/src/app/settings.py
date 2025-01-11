@@ -55,12 +55,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
 	'channels',
+    'django_celery_results',
 
 	# Custom Apps
     'authentication',
     'user.apps.UserConfig',
     'chat',
-    'game'
+    'game',
+    'tournament'
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,12 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [f'https://{domain}' for domain in ALLOWED_HOSTS]
 
 ROOT_URLCONF = 'app.urls'
+
+# For Celery | periodically check for tasks e.g. tournament deadlines
+CELERY_BROKER_URL = 'redis://redis:6379/0'  # Use Redis as the broker
+CELERY_RESULT_BACKEND = 'django-db'  # Store task results in the database
+CELERY_ACCEPT_CONTENT = ['json']  # Only accept JSON-serialized content
+CELERY_TASK_SERIALIZER = 'json'  # Serialize tasks in JSON format
 
 TEMPLATES = [
     {
@@ -252,6 +260,20 @@ SIMPLE_JWT_COOKIE = {
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 print("------------------------------------")
 print("Loading settings.py...DONE")

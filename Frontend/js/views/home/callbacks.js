@@ -1,5 +1,7 @@
 import { $id } from '../../abstracts/dollars.js';
 import router from '../../navigation/router.js';
+import call from '../../abstracts/call.js'
+import data from './data.js';
 
 function hideModalElements(){
     let modalContent = $id("AI-modal");
@@ -41,6 +43,38 @@ export function battleModalCallback(){
     modal.show();
 }
 
+
+// TODO: return a boolean and treat the data inside the call function
+function checkEnrolement() {
+    call('tournament/enrolment/','GET').then(data => {
+        console.log("enrolement:", data);
+        return data;
+    }).error( error => {
+        console.log(error);
+        return error; // TODO: maybe return a "error"
+    })
+}
+
+function createTournamentCard(element) {
+    const template = $id("tournament-modal-tournament-template").content.cloneNode(true);
+
+    template.querySelector("tournament-modal-tournament-name").textContent = element.name; // Check if this is the keyword name
+    
+}
+
+function createJoinTournamentList() {
+
+    call('tournament/to-join/','GET').then(data => {
+        const listContainer = $id("tournament-modal-tournament-list");
+
+        // loop through the tournaments call the createTournamentCard function
+
+    })
+
+}
+
+
+
 export function tournamentModalCallback(){
     console.log("here");
     let modalElement = $id('home-modal');
@@ -55,6 +89,7 @@ export function tournamentModalCallback(){
     // modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
     $id("tournament-modal").style.display = 'flex';
     const modal = new bootstrap.Modal(modalElement);
+
     modal.show();
 }
 

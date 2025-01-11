@@ -78,7 +78,7 @@ class RelationshipView(BaseAuthenticatedView):
             self.block_user(user, target)
             return success_response(_("User blocked"), status.HTTP_201_CREATED)
         else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
 
     @barely_handle_exceptions
     def put(self, request):
@@ -88,7 +88,7 @@ class RelationshipView(BaseAuthenticatedView):
             self.accept_request(user, target)
             return success_response(_("Friend request accepted"))
         else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
 
     @barely_handle_exceptions
     def delete(self, request):
@@ -107,7 +107,7 @@ class RelationshipView(BaseAuthenticatedView):
             self.unblock_user(user, target)
             return success_response(_("User unblocked"))
         else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions))
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
 
     # Utility function to validate that:
     # - the request data contains the required fields
@@ -121,7 +121,7 @@ class RelationshipView(BaseAuthenticatedView):
         if not action:
             raise ValidationException(_("key 'action' must be provided!"))
         if action not in allowed_actions:
-            raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions))
+            raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
         if not target_id:
             raise ValidationException(_("key 'target_id' must be provided!"))
         target = User.objects.get(id=target_id)
@@ -222,9 +222,12 @@ class RelationshipView(BaseAuthenticatedView):
 class ListFriendsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
+        user = request.user
         target_user = User.objects.get(id=id)
+        if is_blocking(target_user, user):
+            return error_response(_("You are blocked by this user"), status_code=403) #TODO: HACKATHON: REPLACE WITH STATUS CODE
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
-        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'requester_user_id': request.user.id, 'target_user_id': target_user.id})
+        serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'requester_user_id': user.id, 'target_user_id': target_user.id})
         return success_response(_("Friends list of user"), friends=serializer.data)
 
 class UpdateAvatarView(BaseAuthenticatedView):
