@@ -3,23 +3,9 @@ from core.cookies import CookieJWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import gettext as _, activate
-from core.exceptions import BarelyAnException
 from core.response import error_response
+from core.exceptions import NotAuthenticated
 import logging
-
-
-class NotAuthenticated(BarelyAnException):
-    status_code = 401
-    default_detail = _("Authentication credentials were not provided.")
-
-    def __init__(self, detail, status_code=401):
-        super().__init__(detail)
-        self.status_code = status_code
-        self.detail = {
-            "status": "error",
-            "statusCode": self.status_code,
-            "message": detail
-        }
 
 
 # Base view class for all authenticated views we wanna create
