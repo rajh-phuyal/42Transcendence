@@ -38,9 +38,9 @@
           <!-- Tournament Modal -->
           <div id="tournament-modal">
             <div id="tournament-modal-create-container">
-				<div id="tournament-modal-center">
+				<div class="tournament-modal-center create-modal">
 					<img id="tournament-modal-bigfoot-1" src="../../../assets/homeView/bigfootModal1.png" alt="big foot 1">
-					<img id="tournament-modal-bigfoot-2" src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
+					<img class="tournament-modal-bigfoot-2" src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
 				</div>
               <div id="tournament-modal-create-container-right-side">
                 <div id="tournament-modal-create-form">
@@ -82,11 +82,17 @@
                 </div>
                 <div id="tournament-modal-create-form-name-container-bottom-buttons">
                   <barely-a-button id="tournament-modal-create-form-create-button" name="Create" buttonclass="rect-button"></barely-a-button>
-                  <barely-a-button name="join" buttonclass="rect-button"></barely-a-button>
+                  <barely-a-button name="join" buttonclass="rect-button" id='tournament-modal-create-form-join-button'></barely-a-button>
                 </div>
                 </div>
               </div>
             </div>
+			<div id="tournament-modal-join-container">
+				<div class="tournament-modal-center join-modal">
+					<img class="tournament-modal-bigfoot-2" id='modal-bigfoot-2' src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
+					<img src="../../../assets/homeView/bigfootModal3.png" alt="big foot 3" id="tournament-modal-bigfoot-3">
+				</div>
+			</div>
           </div>
         </div>
       </div>
@@ -114,7 +120,7 @@
 	  /* background-color: brown */
     }
 
-    #tournament-modal-create-container {
+    #tournament-modal-create-container, #tournament-modal-join-container {
       display: flex;
 	  justify-content: center;
 	  align-items: center;
@@ -123,7 +129,15 @@
 	  /* background-color: purple; */
     }
 
-	#tournament-modal-center {
+	#tournament-modal-join-container {
+		display: none;
+	}
+
+	#tournament-modal-create-container {
+		display: display;
+	}
+
+	.tournament-modal-center {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
@@ -136,7 +150,8 @@
 	}
 
 	#tournament-modal-bigfoot-1,
-	#tournament-modal-bigfoot-2 {
+	.tournament-modal-bigfoot-2,
+	#tournament-modal-bigfoot-3 {
 		position: relative;
 		top: 0;
 		height: 100%;
@@ -144,10 +159,15 @@
 		width: 100%;
 	}
 
-	#tournament-modal-bigfoot-2,
-	#tournament-modal-create-container-right-side {
+	.tournament-modal-bigfoot-2,
+	#tournament-modal-create-container-right-side,
+	#tournament-modal-bigfoot-3 {
 		position: absolute;
 		left: 50%;
+	}
+
+	#modal-bigfoot-2 {
+		left: -50%;
 	}
 
 

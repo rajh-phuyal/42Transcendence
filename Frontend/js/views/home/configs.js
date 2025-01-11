@@ -1,4 +1,4 @@
-import { $id, $on, $off } from '../../abstracts/dollars.js';
+import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
 import canvasData from './data.js'
 
@@ -15,7 +15,14 @@ export default {
 
             
             
-        }
+        },
+
+		joinTournament() {
+			const createTournament = $id("tournament-modal-create-container");
+			const joinTournament = $id("tournament-modal-join-container");
+			createTournament.style.display = 'none';
+			joinTournament.style.display = 'flex';
+		}
 
     },
 
@@ -29,6 +36,7 @@ export default {
             $off(document, "mousemove", isHovering);
             let element = this.domManip.$id("tournament-modal-create-form-create-button");
             this.domManip.$off(element, "click", this.createTournament);
+            this.domManip.$off(element, "click", this.joinTournament);
         },
 
         beforeDomInsertion() {
@@ -61,6 +69,7 @@ export default {
             $on(document, "mousemove", isHovering);
             let element = this.domManip.$id("tournament-modal-create-form-create-button");
             this.domManip.$on(element, "click", this.createTournament);
+			this.domManip.$on(this.domManip.$id("tournament-modal-create-form-join-button"), "click", this.joinTournament);
         },
     }
 }
