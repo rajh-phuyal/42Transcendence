@@ -8,6 +8,7 @@ class Game(models.Model):
         FINISHED = 'finished', 'Finished'
         QUITED = 'quited', 'Quited'
 
+    id = models.AutoField(primary_key=True)
     state = models.CharField(
         max_length=10,
         choices=GameState.choices,
@@ -15,13 +16,13 @@ class Game(models.Model):
     )
     map_number = models.IntegerField()
     powerups = models.BooleanField()
-    tournament_id = models.IntegerField(null=True, blank=True)
+    tournament = models.ForeignKey('tournament.Tournament', null=True, blank=True, on_delete=models.SET_NULL, related_name='games')
     deadline = models.DateTimeField(null=True, blank=True)
     finish_time = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Game {self.id} - State: {self.state}"
-    
+
     class Meta:
         db_table = '"barelyaschema"."game"'
 
@@ -32,6 +33,7 @@ class GameMember(models.Model):
         WON = 'won', 'Won'
         LOST = 'lost', 'Lost'
 
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='game_members')
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_members')
     local_game = models.BooleanField()
@@ -47,6 +49,6 @@ class GameMember(models.Model):
 
     def __str__(self):
         return f"GameMember {self.id} - User: {self.user_id} - Game: {self.game_id} - Result: {self.result}"
-    
+
     class Meta:
         db_table = '"barelyaschema"."game_member"'
