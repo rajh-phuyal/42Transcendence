@@ -38,11 +38,11 @@
           <!-- Tournament Modal -->
           <div id="tournament-modal">
             <div id="tournament-modal-create-container">
-              <div id="tournament-modal-create-container-left-side">
-                <img id="tournament-modal-create-container-left-image" src="../../../assets/homeView/bigfootModal1.png" alt="image not found">
-              </div>
+				<div id="tournament-modal-center">
+					<img id="tournament-modal-bigfoot-1" src="../../../assets/homeView/bigfootModal1.png" alt="big foot 1">
+					<img id="tournament-modal-bigfoot-2" src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
+				</div>
               <div id="tournament-modal-create-container-right-side">
-                <img id="tournament-modal-create-container-right-image" src="../../../assets/homeView/bigfootModal2.png" alt="image not found">
                 <div id="tournament-modal-create-form">
                   <h2>Host Tournament</h2>
                   <div id="tournament-modal-create-form-name-container">
@@ -87,7 +87,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -97,92 +96,108 @@
 
 <style>
 
-    /* TOurnament modal */
+	.modal {
+		--bs-modal-width: none !important;
+		display: flex !important;
+		justify-content: center;
+		align-items: center;
+		/* background-color: rgba(0, 0, 255, 0.34); */
+	}
+
+    /* Tournament modal */
     #tournament-modal {
       display: flex;
+	  justify-content: center;
+	  align-items: center;
       height: 100%;
       width: 100%;
+	  /* background-color: brown */
     }
 
     #tournament-modal-create-container {
-      flex-wrap: nowrap;  
-      position: relative;
       display: flex;
-      flex-direction: row;
+	  justify-content: center;
+	  align-items: center;
       height: 100%;
-      width: 100%;
+	  width: 100%;
+	  /* background-color: purple; */
     }
 
-    #tournament-modal-create-container-left-side {
-      /* position: absolute; */
-      height: 100%;
-      width: 42%;
-    }
+	#tournament-modal-center {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		position: relative;
+		height: 100%;
+		width: 30%;
+		min-width: 300px;
+		max-height: 800px;
+		/* background-color: green; */
+	}
 
-    #tournament-modal-create-container-right-side {
-      position: relative;
-      display: flex;
-      height: 100%;
-      width: 50%;
-    }
+	#tournament-modal-bigfoot-1,
+	#tournament-modal-bigfoot-2 {
+		position: relative;
+		top: 0;
+		height: 100%;
+		left: -50%;
+		width: 100%;
+	}
 
-    #tournament-modal-create-container-left-image,
-    #tournament-modal-create-container-right-image {
-      position: absolute; 
-      height: 100%;
-      /* z-index: calc(var(--bs-modal-zindex) + 100); */
-    }
+	#tournament-modal-bigfoot-2,
+	#tournament-modal-create-container-right-side {
+		position: absolute;
+		left: 50%;
+	}
 
-    /* #tournament-modal-create-container-right-image {
-      margin-left: 42%;
-    } */
 
-    #tournament-modal-create-form {
-      height: 100%;
-      width: 58%;
-      z-index: 1200;  
-      padding: 6%;
-    }
+	/* continue */
+	#tournament-modal-create-form {
+	height: 100%;
+	width: 58%;
+	z-index: 1200;  
+	padding: 6%;
+  }
 
-    .tournament-modal-create-maps-button {
-      height: 5vh;
-    }
+  .tournament-modal-create-maps-button {
+	height: 5vh;
+  }
 
-    #tournament-modal-create-form-name-container {
-      display: flex;
-      flex-direction: row;
-      margin: 13% 0% 10% 0%;
-    }
+  #tournament-modal-create-form-name-container {
+	display: flex;
+	flex-direction: row;
+	margin: 13% 0% 10% 0%;
+  }
 
-    #tournament-modal-create-form-container-center {
-      display: flex;
-      flex-direction: row;
-    }
+  #tournament-modal-create-form-container-center {
+	display: flex;
+	flex-direction: row;
+  }
 
-    #tournament-modal-create-form-powerups-container {
-      display: flex;
-      flex-direction: row;
-    }
+  #tournament-modal-create-form-powerups-container {
+	display: flex;
+	flex-direction: row;
+  }
 
-    #tournament-modal-create-form-type-buttons {
-      display: flex;
-      flex-direction: row;
-    }
+  #tournament-modal-create-form-type-buttons {
+	display: flex;
+	flex-direction: row;
+  }
 
-    #tournament-modal-create-form-name-container-bottom-buttons  {
-      display: flex;
-      flex-direction: row;
-      margin-top: 10%;
-    }
-    #tournament-modal-create-maps-container {
-      display: flex;
-      flex-direction: column;
-    }
+  #tournament-modal-create-form-name-container-bottom-buttons  {
+	display: flex;
+	flex-direction: row;
+	margin-top: 10%;
+  }
+  #tournament-modal-create-maps-container {
+	display: flex;
+	flex-direction: column;
+  }
 
-    #tournament-modal-create-form-container-center {
-      /* background-color: rgba(239, 38, 38, 0.659); */
-      height: 50%;
-    }
+  #tournament-modal-create-form-container-center {
+	/* background-color: rgba(239, 38, 38, 0.659); */
+	height: 50%;
+  }
 
 
     #home-canvas {
