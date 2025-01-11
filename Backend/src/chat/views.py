@@ -168,7 +168,7 @@ class LoadConversationView(BaseAuthenticatedView):
             return conversation.name
         return other_user.username
 
-    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
+    def prepare_response(self, conversation, user, serialized_messages, other_user, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
         members = conversation.members.all()
         member_ids = members.values_list('id', flat=True)
 
@@ -180,7 +180,7 @@ class LoadConversationView(BaseAuthenticatedView):
             "isEditable": conversation.is_editable,
             "conversationName": conversation_name,
             "conversationAvatar": conversation_avatar,
-            "online": other_user_online,
+            "online": other_user.get_online_status(),
             "userIds": list(member_ids),
             "conversationUnreadCounter": new_unread_counter,
             "totalUnreadCounter": new_unread_counter_total,

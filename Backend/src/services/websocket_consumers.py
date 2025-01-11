@@ -129,7 +129,8 @@ class GameConsumer(CustomWebSocketLogic):
     async def connect(self):
         await super().connect()
         # Doing game stuff
-        ...
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
         # Accept the connection
         await self.accept()
 

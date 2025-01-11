@@ -5,7 +5,6 @@ from chat.models import Message, ConversationMember, Conversation
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from user.exceptions import BlockingException
-import json
 from user.constants import USER_ID_OVERLOARDS
 from django.db.models import Q
 from user.utils_relationship import is_blocked
@@ -22,7 +21,6 @@ def validate_user_is_member_of_conversation(user, conversation_id):
     if not conversation_member_entry:
         raise BarelyAnException(_("Conversation not found or user is not a member of the conversation"))
     return conversation_member_entry
-
 
 # Wrap the synchronous database operations with sync_to_async
 @database_sync_to_async

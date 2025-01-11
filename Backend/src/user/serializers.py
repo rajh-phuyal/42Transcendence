@@ -36,12 +36,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
         return obj.last_login.strftime("%Y-%m-%d %H:%M")
 
-    def get_online(self, obj):
+    def get_online(self, user):
         # AI Opponent and Overlords are always online
-        if obj.id == USER_ID_OVERLOARDS or obj.id == USER_ID_AI:
+        if user.id == USER_ID_OVERLOARDS or user.id == USER_ID_AI:
             return True
         # Check if the user's online status is in the cache
-        return cache.get(f'user_online_{obj.id}', False)
+        return user.get_online_status()
 
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):

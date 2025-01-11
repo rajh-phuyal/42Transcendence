@@ -26,6 +26,8 @@ class User(AbstractUser):
     def set_online_status(self, status):
         if status:
             cache.set(f'user_online_{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
+            # TODO:should be matched with the JWT token expiration time
+            # And refresh if the client is still active or is calling an enpoint
         else:
             cache.delete(f'user_online_{self.id}')
 
