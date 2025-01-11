@@ -3,10 +3,15 @@ from django.core.cache import cache
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
-from tournament.models import TournamentMember
+from tournament.models import Tournament, TournamentMember
 from services.websocket_utils import send_message_to_user_sync
 import logging
 from .serializer import TournamentMemberSerializer
+from user.constants import USER_ID_OVERLOARDS
+from user.models import User
+from chat.models import Message
+from services.chat_service import broadcast_message
+
 
 def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **json_details):
     tournament_id_name = f"tournament{tournament_id}"
@@ -61,15 +66,30 @@ def join_tournament_channel(user, tournament_id, activate=True):
         )
 
 def send_tournament_invites_via_pm(tournament_id):
+    from chat.utils import create_conversation, get_conversation
     # Get all users that are invited to the tournament
     tournament_admin = TournamentMember.objects.get(tournament_id=tournament_id, is_admin=True)
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
+    tournament = Tournament.objects.get(id=tournament_id)
 
-    # for member in tournament_members:
-    #     # Check if there's a private conversation between the user and the admin
-    #     if not Conversat
-    #         # If not, create one
-    #     # Send a message to the user
+    for member in tournament_members:
+        # Check if there's a private conversation between the user and the admin
+        conversation = get_conversation(tournament_admin, member)
+        invite_message = _("The overloads spectace that the holly {username} has invited you to the fantastic tournament {tournament_name}").format(username=tournament_admin.user.username, tournament_name=tournament.name)
+        
+        # If not, create one
+        if not conversation:
+            conversation = create_conversation(tournament_admin, member, invite_message)
+            continue
+        
+        # Create overloards message in the DB
+        overlords = User.objects.get(id=USER_ID_OVERLOARDS) 
+        newMessage = Message.objects.create(user=overlords, conversation=conversation, content=invite_message)
+        newMessage.save()
+
+        # Send a message to an existing conversation
+        broadcast_message(newMessage)
+
 
 
 
