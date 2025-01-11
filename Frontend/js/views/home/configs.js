@@ -1,4 +1,4 @@
-import { $id, $on, $off } from '../../abstracts/dollars.js';
+import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
 import canvasData from './data.js'
 
@@ -91,8 +91,27 @@ export default {
             this.domManip.$on(template.querySelector(".tournament-modal-create-form-invited-user-card-delete-user"), "click", this.deleteInviteUserCard);
             this.domManip.$id("template-tournament-modal-create-form-invited-user-card-container").appendChild(container);
             
-        }
+        },
 
+		goToJoinTournament() {
+			const createTournament = $id("tournament-modal-create-container");
+			const joinTournament = $id("tournament-modal-join-container");
+			createTournament.style.display = 'none';
+			joinTournament.style.display = 'flex';
+		},
+
+		goToCreateTournament() {
+			const createTournament = $id("tournament-modal-create-container");
+			const joinTournament = $id("tournament-modal-join-container");
+			createTournament.style.display = 'flex';
+			joinTournament.style.display = 'none';
+		},
+		toggleCreateJoinView() {
+			const createTournament = $id("tournament-modal-create-container");
+			const joinTournament = $id("tournament-modal-join-container");
+			createTournament.style.display = createTournament.style.display === 'none' ? 'flex' : 'none';
+			joinTournament.style.display = joinTournament.style.display === 'none' ? 'flex' : 'none';
+		}
     },
 
     hooks: {
