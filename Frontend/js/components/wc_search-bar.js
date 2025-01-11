@@ -5,7 +5,7 @@ class SearchBar extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
         this.searchResults = [];
-        this.searchType = "user";
+        this.searchType = "users";
         this.width = "300";
     }
 
@@ -24,30 +24,34 @@ class SearchBar extends HTMLElement {
 
     handleKeyPress(event) {
         const value = event.target.value.trim();
-        console.log("Search type:", this.searchType);
 
         // Clear results if input is empty
         if (!value) {
             this.searchResults = [];
-            this.updateSearchResults(); // Only update the results, not the whole component
+            this.updateSearchResults(this.searchType, value);
             return;
         }
 
-        // Only search if there's at least 1 character
-        call(`user/search/${value}/`, 'GET')
+        const endpoint = {
+            "users": `user/search/${value}/`,
+            "tournaments": `tournament/to-join/`
+        }
+        console.log(endpoint[this.searchType]);
+
+        call(endpoint[this.searchType], 'GET')
             .then(response => {
-                this.searchResults = response.users;
-                this.updateSearchResults(); // Only update the results
+                this.searchResults = response?.[this.searchType] || [];
+                this.updateSearchResults(this.searchType, value);
             })
             .catch(error => {
                 console.error("Error fetching search results:", error);
                 this.searchResults = []; // Clear results on error
-                this.updateSearchResults(); // Only update the results
+                this.updateSearchResults(this.searchType, value);
             });
     }
 
     // Add new method to update only the search results
-    updateSearchResults() {
+    updateSearchResults(type, value) {
         const dropdown = this.shadow.querySelector('.dropdown');
         if (!dropdown) return;
 
@@ -57,17 +61,24 @@ class SearchBar extends HTMLElement {
             return;
         }
 
-        // Show dropdown and update content
-        dropdown.style.display = 'block';
-        dropdown.innerHTML = this.searchResults
+        const innerHTML = type === "tournaments" ? this.searchResults
+            .filter(tournament => tournament.tournamentName.includes(value))
+            .map(tournament => `
+                <div class="tournament-item">
+                    <span class="tournament-name">${tournament.tournamentName}</span>
+                </div>
+            `).join('') : this.searchResults
             .map(player => `
-                <div class="player-item">
+                <div class="user-item">
                     <img src="${window.origin}/media/avatars/${player.avatar_path}"
                          alt="${player.username}"
                          class="player-image">
                     <span class="player-name">${player.username}</span>
                 </div>
             `).join('');
+
+        dropdown.innerHTML = innerHTML;
+        dropdown.style.display = 'block';
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -130,7 +141,7 @@ class SearchBar extends HTMLElement {
                     display: block;
                 }
 
-                .player-item {
+                .tournament-item {
                     display: flex;
                     align-items: center;
                     padding: 8px 12px;
@@ -141,7 +152,18 @@ class SearchBar extends HTMLElement {
                     gap: 12px;
                 }
 
-                .player-item:last-child {
+                .user-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 12px;
+                    border-bottom: 1px solid rgba(42, 42, 42, 0.2);
+                    cursor: pointer;
+                    background-color: #F5E6BE;
+                    color: #2A2A2A;
+                    gap: 12px;
+                }
+
+                .user-item:last-child {
                     border-bottom: none;
                 }
 
