@@ -7,6 +7,16 @@ export default {
     },
 
     methods: {
+
+        createTournament() {
+            const tournamentName = this.domManip.$id("tournament-modal-create-form-name-container-input").value;
+            const powerups = this.domManip.$id("tournament-modal-create-form-name-container-checkbox").checked;
+            console.log(tournamentName, powerups);
+
+            
+            
+        }
+
     },
 
     hooks: {
@@ -17,6 +27,8 @@ export default {
         beforeRouteLeave() {
             $off(document, "click", mouseClick);
             $off(document, "mousemove", isHovering);
+            let element = this.domManip.$id("tournament-modal-create-form-create-button");
+            this.domManip.$off(element, "click", this.createTournament);
         },
 
         beforeDomInsertion() {
@@ -47,6 +59,8 @@ export default {
 
             $on(document, "click", mouseClick);
             $on(document, "mousemove", isHovering);
+            let element = this.domManip.$id("tournament-modal-create-form-create-button");
+            this.domManip.$on(element, "click", this.createTournament);
         },
     }
 }

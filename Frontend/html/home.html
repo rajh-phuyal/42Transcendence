@@ -56,10 +56,10 @@
                         <h5>Powerups</h5>
                         <input type="checkbox" name="" id="tournament-modal-create-form-name-container-checkbox">
                     </div>
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                      <button type="button" class="btn btn-secondary">Left</button>
-                      <button type="button" class="btn btn-secondary">Middle</button>
-                      <button type="button" class="btn btn-secondary">Right</button>
+                    <div id="tournament-modal-create-form-type-buttons">
+                      <barely-a-button name="Local" width="3.6" buttonclass="rect-button">Left</barely-a-button>
+                      <barely-a-button name="private" width="3.6" buttonclass="rect-button">Middle</barely-a-button>
+                      <barely-a-button name="public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
                     </div>
                     <input type="search">
                     <template>
@@ -81,7 +81,7 @@
                   </div>
                 </div>
                 <div id="tournament-modal-create-form-name-container-bottom-buttons">
-                  <barely-a-button name="Create" buttonclass="rect-button"></barely-a-button>
+                  <barely-a-button id="tournament-modal-create-form-create-button" name="Create" buttonclass="rect-button"></barely-a-button>
                   <barely-a-button name="join" buttonclass="rect-button"></barely-a-button>
                 </div>
                 </div>
@@ -164,6 +164,11 @@
       flex-direction: row;
     }
 
+    #tournament-modal-create-form-type-buttons {
+      display: flex;
+      flex-direction: row;
+    }
+
     #tournament-modal-create-form-name-container-bottom-buttons  {
       display: flex;
       flex-direction: row;
@@ -175,7 +180,7 @@
     }
 
     #tournament-modal-create-form-container-center {
-      background-color: rgba(239, 38, 38, 0.659);
+      /* background-color: rgba(239, 38, 38, 0.659); */
       height: 50%;
     }
 
