@@ -15,11 +15,12 @@ class BarelyAButton extends HTMLElement
         this.method = undefined;
         this.datapayload = undefined;
         this.onresolve = undefined;
+        this.color = "black";
     }
 
     static get observedAttributes()
     {
-        return["name", "route", "method", "height", "width", "datapayload", "fontsize", "onresolve", "buttonclass", "onerror"];
+        return["name", "route", "method", "height", "width", "datapayload", "fontsize", "onresolve", "buttonclass", "onerror", "highlight"];
     }
 
     connectedCallback()
@@ -31,6 +32,12 @@ class BarelyAButton extends HTMLElement
     attributeChangedCallback(name, oldValue, newValue)
     {
         this[name] = newValue;
+        if (name === "highlight") {
+            if (newValue === "true")
+                this.color = "#7B0101";
+            else
+                this.color = "black";
+        }
         this.render();
     }
 
@@ -66,7 +73,7 @@ class BarelyAButton extends HTMLElement
                     color: #FFFCE6;
                     height: ${this.height}vh;
                     width: ${this.width}vw;
-                    background-color: #000000;
+                    background-color: ${this.color};
                     cursor: pointer;
                 }
 

@@ -56,19 +56,21 @@
                         <h5>Powerups</h5>
                         <input type="checkbox" name="" id="tournament-modal-create-form-name-container-checkbox">
                     </div>
-                    <div id="tournament-modal-create-form-type-buttons">
-                      <barely-a-button name="Local" width="3.6" buttonclass="rect-button">Left</barely-a-button>
-                      <barely-a-button name="private" width="3.6" buttonclass="rect-button">Middle</barely-a-button>
-                      <barely-a-button name="public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
+                    <div id="tournament-modal-create-form-type-buttons-container">
+                      <barely-a-button class="tournament-modal-create-form-type-buttons" type="local" name="Local" width="3.6" buttonclass="rect-button">Left</barely-a-button>
+                      <barely-a-button class="tournament-modal-create-form-type-buttons" type="private" name="Private" width="3.6" buttonclass="rect-button">Middle</barely-a-button>
+                      <barely-a-button class="tournament-modal-create-form-type-buttons" type="public" name="Public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
                     </div>
-                    <input type="search">
-                    <template>
-                      <div>
-                        <img>
-                        <p></p>
-                        <img>
-                      </div>
-                    </template>
+                    <div id="template-tournament-modal-create-form-invited-user-card-container">
+                      <input type="search">
+                      <template id="template-tournament-modal-create-form-invited-user-card">
+                        <div class="tournament-modal-create-form-invited-user-card">
+                          <img class="tournament-modal-create-form-invited-user-card-avatar">
+                          <p class="tournament-modal-create-form-invited-user-card-username"></p>
+                          <img class="tournament-modal-create-form-invited-user-card-delete-user" src="../assets/logo.png">
+                        </div>
+                      </template>
+                    </div>
                   </div>
                   <div id="tournament-modal-create-form-right">
                     <div id="tournament-modal-create-maps-container">
@@ -218,12 +220,19 @@
 		height: 12%;
 	}
 
-	/* continue */
-	#tournament-modal-create-form {
-	height: 100%;
-	width: 58%;
-	z-index: 1200;  
-	padding: 6%;
+  #tournament-modal-create-form-type-buttons-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #template-tournament-modal-create-form-invited-user-card-container {
+    display: none;
+    flex-direction: column;
+  }
+
+  .tournament-modal-create-form-invited-user-card {
+    display: flex;
+    flex-direction: row;
   }
 
   .tournament-modal-create-maps-button {
