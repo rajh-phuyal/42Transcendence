@@ -112,12 +112,13 @@
                     <h1 id="tournament-modal-join-title">Join Tournament</h1>
                   </div>
                   <div id="tournament-modal-join-container-left-side-center">
+                    <template id="tournament-modal-join-tournament-cards-template">
+                      <div class="tournament-modal-join-tournament-card">
+                        <p class="tournament-modal-join-tournament-name"></p>
+                      </div>
+                    </template>
                     <div id="tournament-modal-join-tournament-cards-container">
-                      <template id="tournament-modal-join-tournament-cards-container">
-                        <div class="tournament-modal-join-tournament-card">
-                          <p class="tournament-modal-join-tournament-name"></p>
-                        </div>
-                      </template>
+                      <p class="tournament-modal-join-tournament-cards-container-loading"> Loading...</p>
                     </div>
                   </div>
                   <div id="tournament-modal-join-container-left-side-bottom">
@@ -212,7 +213,7 @@
   }
 
   #tournament-modal-join-container-left-side {
-    background-color: rgba(255, 0, 0, 0.249);
+    background-color: transparent;
     position: absolute;
     top: 0;
     left: -50%;
@@ -225,7 +226,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 255, 0.514);
+    background-color: transparent;
     width: 100%;
     height: 15.5%;
   }
@@ -237,9 +238,46 @@
   }
 
   #tournament-modal-join-container-left-side-center {
-    background-color: rgba(0, 128, 0, 0.433);
+    background-color: transparent;
     width: 100%;
     height: 72.5%;
+    padding: 2em !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  #tournament-modal-join-tournament-cards-container-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .tournament-modal-join-tournament-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: 100%;
+    margin: 1em 0em !important;
+    padding: 1em !important;
+    background-color: rgba(0, 0, 0, 0.297);
+    border: 3px solid black;
+    cursor: pointer;
+  }
+
+  .tournament-modal-join-tournament-card:hover {
+    background-color: rgba(0, 0, 0, 0.497);
+  }
+
+  .tournament-modal-join-tournament-card-name {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.2em;
   }
 
   #tournament-modal-join-container-left-side-bottom {
