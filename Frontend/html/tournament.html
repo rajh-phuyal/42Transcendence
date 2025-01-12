@@ -17,13 +17,13 @@
 	<div id="tournament-middle">
 		<div id="tournament-middle-upper">
             <div id="tournament-middle-upper-ongoing-stage" class="tournament-ongoing">
-                <button>
+                <button id="tournament-games-do-come-button" class="tournament-tabs">
                     Game to come 
                 </button>
-                <button>
+                <button id="tournament-rank-button" class="tournament-tabs">
                     Tournament rank 
                 </button>
-                <button>
+                <button id="tournament-history-button" class="tournament-tabs">
                     Tournament History 
                 </button>
             </div>
@@ -37,7 +37,7 @@
 				<template id="tournament-players-list-template">
                     <div class="tournament-players-list-player-card">
                         <img class="tournament-players-list-player-card-avatar" alt="image not found">
-                        <p class="tournament-players-list-player-card-username"></p>
+                        <h6 class="tournament-players-list-player-card-username"></h6>
                     </div>
                 </template>
 			</div>
@@ -53,7 +53,7 @@
 			</div>
 
             <!-- Tournament History -->
-			<div id="tournament-matches-table-container">
+			<div id="tournament-history-container">
 				<p>Tournament History</p>
 			</div>
 		</div>
@@ -78,6 +78,22 @@
 	
 </div>
 <style>
+
+    #tournament-players-list-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tournament-players-list-player-card {
+        display: flex;
+        flex-direction: row;
+        height: 7vh;
+        width: 20vw;
+        background-color: white;
+    }
+    .tournament-players-list-player-card-avatar {
+        height: 90%;
+    }
 
     #tournament-players-list-container,
     #tournament-current-games-container,
