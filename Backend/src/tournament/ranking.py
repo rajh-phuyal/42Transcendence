@@ -16,8 +16,8 @@ def update_tournament_member_stats(game, game_member_winner, game_member_looser)
         tournament_member_looser = TournamentMember.objects.select_for_update().get(user_id=game_member_looser.user.id, tournament_id=game.tournament_id)
 
         # 2. update tournament_member stats
-        tournament_member_looser.games_played += 1
-        tournament_member_winner.games_played += 1
+        tournament_member_looser.played_games += 1
+        tournament_member_winner.played_games += 1
         tournament_member_winner.won_games += 1
         tournament_member_winner.win_points += difference
         tournament_member_winner.save()

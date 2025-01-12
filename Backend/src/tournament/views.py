@@ -121,7 +121,7 @@ class LeaveTournamentView(BaseAuthenticatedView):
         return success_response(_("Tournament left successfully"))
 
 class StartTournamentView(BaseAuthenticatedView):
-    @barely_handle_exceptions
+    # @barely_handle_exceptions
     def put(self, request, id):
         user = request.user
         start_tournament(user, id)

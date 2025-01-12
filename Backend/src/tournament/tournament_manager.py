@@ -9,6 +9,7 @@ from tournament.serializer import TournamentGameSerializer
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from django.utils import timezone
 from django.utils.translation import gettext as _
+import random
 import logging
 
 # This creates the games for everyone against everyone in the tournament
@@ -95,8 +96,8 @@ def check_final_games_with_3_members(tournament, final_game):
         # This means the final game is already over (should not happen)
     except GameMember.DoesNotExist:
         # The final game is not over yet so it members need to be set
-        player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=1)
-        player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=2)
+        player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
+        player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
         with transaction.atomic():
             game_member1 = GameMember.objects.create(
                 user=player_rank_1.user,
@@ -128,14 +129,14 @@ def check_final_games_with_3_members(tournament, final_game):
             games=data
         )
         # Set the deadline for the game
-        update_deadlines(tournament.id, [final_game])
+        update_deadlines(tournament, [final_game])
 
 def start_semi_finals(tournament, semi_finals):
     # Get the players
-    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=1)
-    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=2)
-    player_rank_3 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=3)
-    player_rank_4 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=4)
+    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
+    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
+    player_rank_3 = TournamentMember.objects.get(tournament_id=tournament.id, rank=3)
+    player_rank_4 = TournamentMember.objects.get(tournament_id=tournament.id, rank=4)
     # Create the game member entrys
     with transaction.atomic():
         #   Semi-final 1:        1st vs 4th (Winner goes to final, Loser goes to third place game)
@@ -189,7 +190,7 @@ def start_semi_finals(tournament, semi_finals):
         games=data
     )
     # Set the deadlines for the games
-    update_deadlines(tournament.id, semi_finals)
+    update_deadlines(tournament, semi_finals)
 
 def start_finals(tournament, all_finals):
     # We need to generate the final and the third place game
@@ -267,7 +268,7 @@ def start_finals(tournament, all_finals):
         games=data
     )
     #Set the deadlines for the games
-    update_deadlines(tournament.id, all_finals[2:])
+    update_deadlines(tournament, all_finals[2:])
 
 def check_final_games_with_more_than_3_members(tournament, final_games):
     logging.info(f"Checking final games with more than 3 members for tournament {tournament.id}")
@@ -321,11 +322,12 @@ def tournament_finals_started(tournament):
     # If there are not more games than everyone against everyone, then the final games havent started yet
     # this is the binomial coefficient
     total_games_count = Game.objects.filter(tournament_id=tournament.id).count()
-    if total_games_count == len(tournament.tournament_members) * (len(tournament.tournament_members) - 1) / 2:
+    number_of_members = TournamentMember.objects.filter(tournament_id=tournament.id).count()
+    if total_games_count == number_of_members * (number_of_members - 1) / 2:
         return False
     return True
 
-def update_deadlines(tournament_id, pending_games):
+def update_deadlines(tournament, pending_games):
     # Update the deadline for all pending games
     for game in pending_games:
         logging.info(f"Checking game {game.id}")
@@ -344,7 +346,7 @@ def update_deadlines(tournament_id, pending_games):
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Inform all users of the tournament
         send_tournament_ws_msg(
-            tournament_id,
+            tournament.id,
             "gameSetDeadline",
             "game_set_deadline",
             _("Game {game_id} has been set to pending. The deadline is {deadline}").format(game_id=game.id, deadline=game.deadline),
@@ -356,7 +358,8 @@ def update_deadlines(tournament_id, pending_games):
 
 def check_tournament_routine(tournament_id):
     phase = "round_robin"
-    if tournament_finals_started(tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    if tournament_finals_started(tournament):
         phase = "finals"
 
     # This will check all pending games and check if users are free to play
@@ -369,15 +372,15 @@ def check_tournament_routine(tournament_id):
     logging.info(f"Checking tournament {tournament_id} with phase {phase}")
     if phase == "finals":
         if pending_games:
-            check_final_games(tournament_id)
+            check_final_games(tournament)
         else:
-            finish_tournament(tournament_id)
+            finish_tournament(tournament)
     else:
         # Phase is round robin
         if pending_games:
-            update_deadlines(tournament_id, pending_games)
+            update_deadlines(tournament, pending_games)
         else:
-            create_final_games(tournament_id)
+            create_final_games(tournament)
             check_tournament_routine(tournament_id)
 
 # This will be called when a game is finished
