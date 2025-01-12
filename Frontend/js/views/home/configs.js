@@ -114,7 +114,19 @@ export default {
 			};
 			createTournament.style.display = displaySwitch[window.getComputedStyle(createTournament, null).display];
 			joinTournament.style.display = displaySwitch[window.getComputedStyle(joinTournament, null).display];
-		}
+		},
+
+        // createJoinTournamentCard (tournamentObject) {
+            
+        //     let template = $id("tournament-modal-join-tournament-cards-container").content.cloneNode(true);
+    
+
+        //     const container = template.querySelector(".tournament-modal-join-tournament-card");
+        //     container.setAttribute("tournamentId", tournamentObject.id);
+        //     template.querySelector(".tournament-modal-join-tournament-name").textContent = tournamentObject.name;
+        //     this.domManip.$on(container, "click", this.redirectTournamentLobby);
+        //     this.domManip.$id("tournament-modal-join-tournament-cards-container").appendChild(container);
+        // }
     },
 
     hooks: {
