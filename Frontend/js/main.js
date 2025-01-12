@@ -65,6 +65,13 @@ $store.addMutationListener('setWebSocketIsAlive', (state) => {
     }
 });
 
+
+/* listen to nav- search bar */
+window.addEventListener('select-user-nav', (event) => {
+    router('/profile', { id: event.detail.user.id });
+});
+
+
 /* DESABLE ZOOM*/
 
 document.addEventListener('keydown', function(event) {

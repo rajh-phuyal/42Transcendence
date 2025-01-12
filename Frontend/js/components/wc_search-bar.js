@@ -8,10 +8,11 @@ class SearchBar extends HTMLElement {
         this.searchType = "users";
         this.width = "300";
         this.onClickEvent = "select-user";
+        this.clearOnClick = false;
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "search-type", "on-click-event"];
+        return ["placeholder", "width", "search-type", "on-click-event", "clear-on-click"];
     }
 
     reRenderAndAttach() {
@@ -27,6 +28,7 @@ class SearchBar extends HTMLElement {
         const value = event.target.value.trim();
 
         if (!value) {
+            console.log("clearing search results");
             this.searchResults = [];
             this.updateSearchResults(this.searchType, value);
             return;
@@ -55,6 +57,8 @@ class SearchBar extends HTMLElement {
         if (!dropdown) return;
 
         if (!this.searchResults.length) {
+            this.searchResults = [];
+            dropdown.innerHTML = "";
             dropdown.style.display = 'none';
             return;
         }
@@ -81,11 +85,16 @@ class SearchBar extends HTMLElement {
         // Add event listeners to each item
         for (const item of this.searchResults) {
             const idPrefix = this.searchType === "users" ? "user" : "tournament";
-            console.log(this.shadow.getElementById, `${idPrefix}-item-${item.id}`);
             const element = this.shadow.getElementById(`${idPrefix}-item-${item.id}`);
 
             element.addEventListener('click', () => {
                 window.dispatchEvent(new CustomEvent(this.onClickEvent, { detail: { [idPrefix]: item } }));
+                if (this.clearOnClick) {
+                    this.shadow.getElementById("input-bar").value = "";
+                    this.searchResults = [];
+                    dropdown.innerHTML = "";
+                    dropdown.style.display = 'none';
+                }
             });
         }
     }
@@ -99,6 +108,8 @@ class SearchBar extends HTMLElement {
             this.searchType = newValue;
         } else if (name === "on-click-event") {
             this.onClickEvent = newValue;
+        } else if (name === "clear-on-click") {
+            this.clearOnClick = newValue;
         }
         this.render();
     }
