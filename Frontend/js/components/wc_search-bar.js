@@ -28,7 +28,6 @@ class SearchBar extends HTMLElement {
         const value = event.target.value.trim();
 
         if (!value) {
-            console.log("clearing search results");
             this.searchResults = [];
             this.updateSearchResults(this.searchType, value);
             return;
@@ -38,18 +37,20 @@ class SearchBar extends HTMLElement {
             "users": `user/search/${value}/`,
             "tournaments": `tournament/to-join/`
         }
-        console.log(endpoint[this.searchType]);
 
-        call(endpoint[this.searchType], 'GET')
-            .then(response => {
-                this.searchResults = response?.[this.searchType] || [];
-                this.updateSearchResults(this.searchType, value);
-            })
-            .catch(error => {
-                console.error("Error fetching search results:", error);
-                this.searchResults = [];
-                this.updateSearchResults(this.searchType, value);
-            });
+        setTimeout(() => {
+            console.log(endpoint[this.searchType]);
+            call(endpoint[this.searchType], 'GET')
+                .then(response => {
+                    this.searchResults = response?.[this.searchType] || [];
+                    this.updateSearchResults(this.searchType, value);
+                })
+                .catch(error => {
+                    console.error("Error fetching search results:", error);
+                    this.searchResults = [];
+                    this.updateSearchResults(this.searchType, value);
+                });
+        }, 300); // delay to allow the input to be typed
     }
 
     updateSearchResults(type, value) {
