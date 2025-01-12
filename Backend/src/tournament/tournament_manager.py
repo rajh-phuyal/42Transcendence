@@ -88,48 +88,42 @@ def create_final_games(tournament):
         final_game.save()
 
 def check_final_games_with_3_members(tournament, final_game):
-    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")
-
-    # If the members are not set yet, set them
-    try:
-        final_members = GameMember.objects.filter(game_id=final_game.id)
-        # This means the final game is already over (should not happen)
-    except GameMember.DoesNotExist:
-        # The final game is not over yet so it members need to be set
-        player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
-        player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
-        with transaction.atomic():
-            game_member1 = GameMember.objects.create(
-                user=player_rank_1.user,
-                game=final_game,
-                local_game=tournament.local_tournament,
-                powerup_big=tournament.powerups,
-                powerup_fast=tournament.powerups,
-                powerup_slow=tournament.powerups
-            )
-            game_member2 = GameMember.objects.create(
-                user=player_rank_2.user,
-                game=final_game,
-                local_game=tournament.local_tournament,
-                powerup_big=tournament.powerups,
-                powerup_fast=tournament.powerups,
-                powerup_slow=tournament.powerups
-            )
-            game_member1.save()
-            game_member2.save()
-        # Send websocket notifications to all tournament members
-        data = TournamentGameSerializer([final_game], many=True).data
-        for item in data:
-            item['gameType'] = 'final'
-        send_tournament_ws_msg(
-            tournament.id,
-            "gameCreate",
-            "game_create",
-            f"Final Game {final_game.id} has been created.",
-            games=data
+    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")  
+    # The final game is not over yet so its members need to be set
+    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
+    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
+    with transaction.atomic():
+        game_member1 = GameMember.objects.create(
+            user=player_rank_1.user,
+            game=final_game,
+            local_game=tournament.local_tournament,
+            powerup_big=tournament.powerups,
+            powerup_fast=tournament.powerups,
+            powerup_slow=tournament.powerups
         )
-        # Set the deadline for the game
-        update_deadlines(tournament, [final_game])
+        game_member2 = GameMember.objects.create(
+            user=player_rank_2.user,
+            game=final_game,
+            local_game=tournament.local_tournament,
+            powerup_big=tournament.powerups,
+            powerup_fast=tournament.powerups,
+            powerup_slow=tournament.powerups
+        )
+        game_member1.save()
+        game_member2.save()
+    # Send websocket notifications to all tournament members
+    data = TournamentGameSerializer([final_game], many=True).data
+    for item in data:
+        item['gameType'] = 'final'
+    send_tournament_ws_msg(
+        tournament.id,
+        "gameCreate",
+        "game_create",
+        f"Final Game {final_game.id} has been created.",
+        games=data
+    )
+    # Set the deadline for the game
+    update_deadlines(tournament, [final_game])
 
 def start_semi_finals(tournament, semi_finals):
     # Get the players
@@ -294,12 +288,15 @@ def check_final_games_with_more_than_3_members(tournament, final_games):
 # So the finals are already created at this point but some games are still pending
 def check_final_games(tournament):
     logging.info(f"Checking final games for tournament {tournament.id}")
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
     # So at this point the last (or last four games) are created
-    final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:4]
-    if final_games.count() == 1:
+    if tournament_members.count() == 3:
+        final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:1]
         check_final_games_with_3_members(tournament, final_games.first())
     else:
+        final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:4]
         check_final_games_with_more_than_3_members(tournament, final_games)
+
 
 def is_user_available(user):
     # No ongoing/paused tournament games...
