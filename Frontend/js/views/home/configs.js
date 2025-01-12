@@ -34,7 +34,11 @@ export default {
         createTournament() {
             const tournamentName = this.domManip.$id("tournament-modal-create-form-name-container-input").value;
             const powerups = this.domManip.$id("tournament-modal-create-form-name-container-checkbox").checked;
-        
+            if (this.tournament.map == "random") {
+                this.tournament.map = parseInt(Math.random() * (4 - 1) + 1);
+
+            }
+
             call('tournament/create/', "POST", {
                 "name": tournamentName,
                 "localTournament": this.tournament.type === "local" ? true : false,
@@ -134,6 +138,9 @@ export default {
 
         beforeDomInsertion() {
             
+            this.tournament.type = "public";
+            this.tournament.map = "random";
+            this.tournament.userIds = [];
         },
 
         afterDomInsertion() {
