@@ -11,6 +11,9 @@ html, body {
 }
 
 #navigator {
+	margin: 0 !important;
+	padding: 0 !important;
+	z-index: 1100;
 	display: flex;
 	justify-content: center;
 	height: 10vh;
@@ -22,6 +25,8 @@ html, body {
 }
 
 .navbar-brand-custom {
+	margin: 0 !important;
+	padding: 0 !important;
 	padding: 0.7rem !important;
 	border: 1px solid white;
 	border-radius: 8px;

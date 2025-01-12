@@ -91,6 +91,10 @@ create_dummy(){
     if [[ -z "$input" ]]; then
         return
     fi
+    if [[ "$input" != "y" ]]; then
+        echo -e "${RED}Skipping this step...${RESET}"
+        return
+    fi
     # First create static dummys to also clean db
     echo -e "${BLUE}Running ./deploy.sh dummy...${RESET}"
     bash "$(dirname "$(realpath "$0")")/../deploy.sh" dummy
@@ -113,6 +117,10 @@ download_tests(){
         echo -e "${ORANGE}If u don't wanna update/download them again, just press enter${RESET}"
         read -p "Wanna download/update tests? Input y: " input
         if [[ -z "$input" ]]; then
+            return
+        fi
+        if [[ "$input" != "y" ]]; then
+            echo -e "${RED}Skipping this step...${RESET}"
             return
         fi
     fi
