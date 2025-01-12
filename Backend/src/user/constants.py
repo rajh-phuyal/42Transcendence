@@ -1,5 +1,6 @@
 USER_ID_OVERLOARDS = 1
 USER_ID_AI = 2
+# TODO: HACKATHON add avatars of overlords and AI
 DEFAULT_AVATAR = "54c455d5-761b-46a2-80a2-7a557d9ec618.png"
 AVATAR_FRAME = "e7dd102e-fcbc-4eda-b973-e2252c35b1b5.png"
 NO_OF_USERS_TO_LOAD = 20
