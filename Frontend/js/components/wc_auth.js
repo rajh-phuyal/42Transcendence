@@ -77,6 +77,7 @@ class AuthCard extends HTMLElement {
     showNav(){
         let nav = document.getElementById('navigator');
         nav.style.display = 'flex';
+		nav.classList.add("d-flex", "flex-row", "justify-content-center");
     }
 
     connectedCallback() {
@@ -191,11 +192,13 @@ class AuthCard extends HTMLElement {
             $store.commit('setIsAuthenticated', true);
             $store.commit('setUser', {
                 id: response.userId,
-                username: response.username
+                username: response.username,
+				avatar: response.userAvatar,
             });
 
             // update the profile route params
             $nav({ "/profile": { id: response.userId } });
+			$id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
 
             const successToast = $id('logged-in-toast');
             new bootstrap.Toast(successToast, { autohide: true, delay: 5000 }).show();
@@ -301,11 +304,9 @@ class AuthCard extends HTMLElement {
 		if (passwordField[0].value === passwordField[1].value) {
 			passwordField[0].style.border = "3px solid #FFF6D4";
 			passwordField[1].style.border = "3px solid #FFF6D4";
-			console.log("passwords match");
 		} else {
 			passwordField[0].style.border = "3px solid red";
 			passwordField[1].style.border = "3px solid red";
-			console.log("passwords do not match");
 		}
 	}
 

@@ -4,11 +4,12 @@ class AvatarButton extends HTMLElement
     {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        this.color = "black";
     }
 
     static get observedAttributes()
     {
-        return["image", "user", "redir"];
+        return["image", "user", "redir", "highlight"];
     }
 
     connectedCallback()
@@ -29,6 +30,7 @@ class AvatarButton extends HTMLElement
             else
                 this.is_redir = false;
         }
+        
         this.render();
     }
 

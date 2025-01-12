@@ -1,84 +1,209 @@
 <div id="tournament-view">
-    <h1>
-        Tournament View
-    </h1>
-
-    <!-- Name and Info Section -->
-    <h3 id="tournament-name">Tournament Name</h3>
-    <h4 id="client-role">"(here the role of the client should be displayed)"</h4>
-
-    <!-- Buttons Section -->
-    <div id="Tournament-status">
-        <button id="start-button">Start</button>
-        <button id="join-button">Join</button>
-        <button id="leave-button">Leave</button>
-        <button id="cancel-button">Cancel Tournament as Admin</button>
-        <div id="status">Status</div>
-    </div>
-
-    <!-- Members Section -->
-    <div id="tournament-list">
-        <h5>Participants List</h5>
-        <template id="tournament-list-card-template">
-            <div class="card" style="display: flex; align-items: center; gap: 10px; justify-content: flex-start;">
-                <div class="user-info" style="display: flex; flex-direction: column;">
-                    <span class="user-id">ID: <span class="value"></span></span>
-                    <span class="username">Username: <span class="value"></span></span>
-                    <span class="user-state">State: <span class="value"></span></span>
-                </div>
-                <img class="user-avatar" src="" alt="User Avatar" style="width: 60px; height: 60px; margin-left: auto;" />
+	<div id="tournament-left-side">
+		<div id="tornament-left-upper-side">
+			<h2>
+				Tournament Name:
+			</h2>
+		</div>
+		<div id="tournament-left-bottom-side">
+			<button>
+				Go to chat
+			</button>
+			<button id="tournament-leave-to-lobby">
+				Leave lobby
+			</button>
+		</div>
+	</div>
+	<div id="tournament-middle">
+		<div id="tournament-middle-upper">
+            <div id="tournament-middle-upper-ongoing-stage" class="tournament-ongoing">
+                <button id="tournament-games-do-come-button" class="tournament-tabs">
+                    Game to come 
+                </button>
+                <button id="tournament-rank-button" class="tournament-tabs">
+                    Tournament rank 
+                </button>
+                <button id="tournament-history-button" class="tournament-tabs">
+                    Tournament History 
+                </button>
             </div>
-        </template>
-    </div>
-
-    <!-- Game Section -->
-    <div id="game-list">
-        <h5>Game List</h5>
-        <template id="game-card-template">
-            <div class="game-card" style="border: 1px solid black; padding: 10px; margin: 10px; display: flex; flex-direction: column;">
-                <!-- Game Info -->
-                <div class="game-info" style="margin-bottom: 10px;">
-                    <span class="game-id">Game ID: <span class="value"></span></span>
-                    <span class="map-number">Map Number: <span class="value"></span></span>
-                    <span class="game-state">State: <span class="value"></span></span>
-                    <span class="finish-time">Finish Time: <span class="value"></span></span>
-                    <span class="deadline">Deadline: <span class="value"></span></span>
-                </div>
-
-                <!-- Players Section -->
-                <div class="players" style="display: flex; justify-content: space-between; align-items: center;">
-                    <!-- Player 1 -->
-                    <div class="player player1" style="display: flex; flex-direction: column; align-items: center;">
-                        <img class="avatar1" src="" alt="Player 1 Avatar" style="width: 40px; height: 40px; border-radius: 50%; margin-bottom: 5px;" />
-                        <span class="username1">Username: <span class="value"></span></span>
-                        <span class="points1">Points: <span class="value"></span></span>
-                        <span class="result1">Result: <span class="value"></span></span>
+            <div id="tournament-middle-upper-setup-stage" class="tournament-setup">
+                <h2>List of players</h2>
+            </div>
+		</div>
+		<div id="tournament-middle-center">
+            <!-- Players List -->
+            <div id="tournament-players-list-container" class="tournament-setup">
+				<template id="tournament-players-list-template">
+                    <div class="tournament-players-list-player-card">
+                        <img class="tournament-players-list-player-card-avatar" alt="image not found">
+                        <h6 class="tournament-players-list-player-card-username"></h6>
                     </div>
+                </template>
+			</div>
 
-                    <span style="font-weight: bold;">VS</span>
 
-                    <!-- Player 2 -->
-                    <div class="player player2" style="display: flex; flex-direction: column; align-items: center;">
-                        <img class="avatar2" src="" alt="Player 2 Avatar" style="width: 40px; height: 40px; border-radius: 50%; margin-bottom: 5px;" />
-                        <span class="username2">Username: <span class="value"></span></span>
-                        <span class="point2">Points: <span class="value"></span></span>
-                        <span class="result2">Result: <span class="value"></span></span>
-                    </div>
+            <!-- Game card template -->
+            <template id="tournament-game-card-template">
+                <div class="tournament-game-card-container">
+                    <img class="tournament-game-card-player1-avatar" alt="image not found">
+                    <h5 class="tournament-game-card-player1-username"></h5>
+                    <h4 class="tournament-game-card-score"></h4>
+                    <h5 class="tournament-game-card-player2-username"></h5>
+                    <img class="tournament-game-card-player2-avatar" alt="image not found">
                 </div>
-            </div>
-        </template>
+            </template>
 
-    </div>
 
-    <!-- Rank Section -->
-    <div id="rank-list">
-        <h5>Rank List</h5>
-        <template id="rank-list-card-template">
-            <div class="rank-card">
-                <span class="rank-position">Position</span>
-                <span class="rank-username">Username</span>
-                <span class="rank-score">Score</span>
+            <!-- Current Games -->
+            <div id="tournament-current-games-container" class="tournament-ongoing">
+				<p>Current Games</p>
+			</div>
+
+            <!-- Tournament Rank -->
+            <div id="tournament-rank-container">
+				<p>Tournament Rank</p>
+			</div>
+
+            <!-- Tournament History -->
+			<div id="tournament-history-container">
+				<p>Tournament History</p>
+			</div>
+		</div>
+		<div id="tournament-middle-bottom">
+            <div id="tournament-middle-bottom-current-game-button" class="tournament-ongoing">
+                <button>
+                    Go to your current game 
+                </button>
             </div>
-        </template>
-    </div>
+            <div id="tournament-middle-bottom-subscribe-start-button" class="tournament-setup">
+                <button>
+                    Subscribe / Start
+                </button>
+            </div>
+		</div>
+	</div>
+	<div id="tournament-right-side">
+		<button id="tournament-quit-cancel-button" class="tournament-setup">
+			Quit tournament 
+		</button>
+	</div>
+	
 </div>
+<style>
+
+    #tournament-players-list-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tournament-players-list-player-card {
+        display: flex;
+        flex-direction: row;
+        height: 7vh;
+        width: 20vw;
+        background-color: white;
+    }
+    .tournament-players-list-player-card-avatar {
+        height: 90%;
+    }
+
+    #tournament-players-list-container,
+    #tournament-current-games-container,
+    #tournament-rank-container,
+    #tournament-matches-table-container{
+        height: 60%;
+    }
+
+
+
+
+    #tournament-view {
+		height: 100%;
+		width: 100vw;
+        background-color: purple;
+		display: flex;
+    }
+
+	#tournament-left-side {
+		background-color: red;
+		width: 23%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	#tornament-left-upper-side {
+		background-color: beige;
+		text-align: center;
+		margin-top: 1rem !important;
+		width: 90%;
+	}
+
+	#tournament-left-bottom-side {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		align-items: center;
+		width: 90%;
+	}
+
+	#tournament-left-bottom-side > button, #tournament-right-side > button,
+	#tournament-middle-bottom > button {
+		background-color: black;
+		color: white;
+		border: 2px solid white;
+		padding: 0.5rem !important;
+		width: 90%;
+	}
+
+	#tournament-left-bottom-side > :last-child, #tournament-right-side > :last-child,
+	#tournament-middle-bottom > :last-child {
+		margin-bottom: 1rem !important;
+	}
+
+	#tournament-middle {
+		background-color: green;
+        height: 100%;
+		width: 54%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	#tournament-middle-bottom {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	#tournament-middle-upper {
+		width: 100%;
+		display: flex;
+		justify-content: space-around;
+	}
+
+	#tournament-middle-upper > #tournament-middle-upper-ongoing-stage > button {
+		background-color: black;
+		color: white;
+		border: 2px solid white;
+		padding: 0.5rem !important;
+		margin-top: 1rem !important;
+	}
+
+	#tournament-middle-upper > *.active {
+		background-color: red;
+		color: white;
+	}
+
+	#tournament-right-side {
+		background-color: blue;
+		width: 23%;
+		display: flex;
+		flex-direction: column;
+		flex-flow: column-reverse;
+		align-items: center;
+	}
+</style>

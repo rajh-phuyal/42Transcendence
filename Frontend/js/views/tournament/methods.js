@@ -1,4 +1,59 @@
-import { $id } from "../../abstracts/dollars.js";
+import { $id , $class} from "../../abstracts/dollars.js";
+
+
+export function buildView(tournamentState) {
+
+    console.log("state:", tournamentState);
+
+    let divs1;
+    let divs2;
+
+    if (tournamentState === "setup") {
+        divs1 = $class("tournament-setup")
+        divs2 = $class("tournament-ongoing")
+    }
+    else {
+        divs1 = $class("tournament-ongoing")
+        divs2 = $class("tournament-setup")
+    }
+
+    
+    for (let element of divs1) {
+        console.log("flexing:", element.getAttribute("id"));
+        element.style.display = 'flex';
+    }
+    for (let element of divs2) {
+        console.log("noning:", element.getAttribute("id"));
+        element.style.display = 'none';
+    }
+
+    $id("tournament-rank-container").style.display = "none"; 
+    $id("tournament-history-container").style.display = "none"; 
+}
+
+export function createPlayerCard(playerObject) {
+
+    console.log("player", playerObject);
+
+    const template = $id("tournament-players-list-template").content.cloneNode(true);
+    const container = template.querySelector(".tournament-players-list-player-card");
+
+    container.setAttribute("id", "tournament-players-list-player" + playerObject.userId)
+    template.querySelector(".tournament-players-list-player-card-avatar").src = window.origin + "/media/avatars/" + playerObject.userAvatar;
+    template.querySelector(".tournament-players-list-player-card-username").textContent = playerObject.username;
+
+    $id("tournament-players-list-container").appendChild(container);
+}
+
+
+
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+// =================================================================================================
+
 
 export function createGameList(games) {
     console.log("Creating game list with data: ", games);
