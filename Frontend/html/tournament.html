@@ -8,46 +8,87 @@
 		<div id="tournament-left-bottom-side">
 			<button>
 				Go to chat
-				<!--should be adpated to the language module -->
 			</button>
-			
-			<button>
+			<button id="tournament-leave-to-lobby">
 				Leave lobby
-				<!--should be adpated to the language module -->
 			</button>
 		</div>
 	</div>
 	<div id="tournament-middle">
 		<div id="tournament-middle-upper">
-			<button>
-				Game to come <!--should be adpated to the language module -->
-			</button>
-			<button>
-				Tournament rank <!--should be adpated to the language module -->
-			</button>
-			<button>
-				Tournament History <!--should be adpated to the language module -->
-			</button>
+            <div id="tournament-middle-upper-ongoing-stage" class="tournament-ongoing">
+                <button>
+                    Game to come 
+                </button>
+                <button>
+                    Tournament rank 
+                </button>
+                <button>
+                    Tournament History 
+                </button>
+            </div>
+            <div id="tournament-middle-upper-setup-stage" class="tournament-setup">
+                <h2>List of players</h2>
+            </div>
 		</div>
 		<div id="tournament-middle-center">
-			<div id="tournament-matches-table">
-				<p>players <!--should be replaced dynamicaly with the matches--></p>
+            <!-- Players List -->
+            <div id="tournament-players-list-container" class="tournament-setup">
+				<template id="tournament-players-list-template">
+                    <div class="tournament-players-list-player-card">
+                        <img class="tournament-players-list-player-card-avatar" alt="image not found">
+                        <p class="tournament-players-list-player-card-username"></p>
+                    </div>
+                </template>
+			</div>
+
+            <!-- Current Games -->
+            <div id="tournament-current-games-container" class="tournament-ongoing">
+				<p>Current Games</p>
+			</div>
+
+            <!-- Tournament Rank -->
+            <div id="tournament-rank-container">
+				<p>Tournament Rank</p>
+			</div>
+
+            <!-- Tournament History -->
+			<div id="tournament-matches-table-container">
+				<p>Tournament History</p>
 			</div>
 		</div>
 		<div id="tournament-middle-bottom">
-			<button>
-				Go to your current game <!--should be adpated to the language module -->
-			</button>
+            <div id="tournament-middle-bottom-current-game-button" class="tournament-ongoing">
+                <button>
+                    Go to your current game 
+                </button>
+            </div>
+            <div id="tournament-middle-bottom-subscribe-start-button" class="tournament-setup">
+                <button>
+                    Subscribe / Start
+                </button>
+            </div>
 		</div>
 	</div>
 	<div id="tournament-right-side">
-		<button>
-			Quit tournament <!--should be adpated to the language module -->
+		<button id="tournament-quit-cancel-button" class="tournament-setup">
+			Quit tournament 
 		</button>
 	</div>
 	
 </div>
 <style>
+
+    #tournament-players-list-container,
+    #tournament-current-games-container,
+    #tournament-rank-container,
+    #tournament-matches-table-container{
+        height: 60%;
+    }
+
+
+
+
     #tournament-view {
 		height: 100%;
 		width: 100vw;
@@ -95,6 +136,7 @@
 
 	#tournament-middle {
 		background-color: green;
+        height: 100%;
 		width: 54%;
 		display: flex;
 		flex-direction: column;
@@ -114,7 +156,7 @@
 		justify-content: space-around;
 	}
 
-	#tournament-middle-upper > button {
+	#tournament-middle-upper > #tournament-middle-upper-ongoing-stage > button {
 		background-color: black;
 		color: white;
 		border: 2px solid white;
