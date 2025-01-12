@@ -94,20 +94,26 @@ export default {
         },
 
         createInviteUserCard(userObject) {
-            if (this.tournament.userIds.find(id => id === userObject.id))
+			const { user } = userObject;
+            if (this.tournament.userIds.find(id => id === user.id))
                 return;
-            this.tournament.userIds.push(userObject.id);
+            this.tournament.userIds.push(user.id);
 
             let template = $id("template-tournament-modal-create-form-invited-user-card").content.cloneNode(true);
 
-
             const container = template.querySelector(".tournament-modal-create-form-invited-user-card");
-            container.setAttribute("userId", userObject.id);
-            template.querySelector(".tournament-modal-create-form-invited-user-card-avatar").src = userObject.avatar;
-            template.querySelector(".tournament-modal-create-form-invited-user-card-username").textContent = userObject.username;
+            container.setAttribute("userId", user.id);
+            template.querySelector(".tournament-modal-create-form-invited-user-card-avatar").src = window.location.origin + "/media/avatars/" + user.avatar_path;
+            template.querySelector(".tournament-modal-create-form-invited-user-card-username").textContent = user.username;
             this.domManip.$on(template.querySelector(".tournament-modal-create-form-invited-user-card-delete-user"), "click", this.deleteInviteUserCard);
             this.domManip.$id("template-tournament-modal-create-form-invited-user-card-container").appendChild(container);
 
+        },
+
+        selectUserToInvite(event) {
+            const user = event.detail;
+            console.log("user", user);
+            this.createInviteUserCard(user);
         },
 
         fetchAvailableTournaments() {
@@ -167,6 +173,7 @@ export default {
         },
 
         beforeRouteLeave() {
+            $off(window, "select-user-invite", this.selectUserToInvite);
             // Close the modal properly using Bootstrap's modal API before leaving
             const tournamentModal = bootstrap.Modal.getInstance(this.domManip.$id("home-modal"));
             if (tournamentModal) {
@@ -218,8 +225,8 @@ export default {
             // build thexport e first frame
             buildCanvas();
 
-            for (let element of this.users)
-                this.createInviteUserCard(element);
+            // for (let element of this.users)
+                // this.createInviteUserCard(element);
 
             $on(document, "click", mouseClick);
             $on(document, "mousemove", isHovering);
@@ -233,6 +240,9 @@ export default {
             element = this.domManip.$class("tournament-modal-create-form-type-buttons");
             for (let individualElement of element)
                 this.domManip.$on(individualElement, "click", this.selectTournamentType);
+
+            // for the search bar
+            this.domManip.$on(window, "select-user-invite", this.selectUserToInvite);
         },
     }
 }

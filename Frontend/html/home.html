@@ -69,7 +69,14 @@
                               name="Public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
                           </div>
                           <div id="template-tournament-modal-create-form-invited-user-card-container">
-                            <input type="search" placeholder='search (language model)'>
+                            <search-bar
+								placeholder="Invite a user"
+								width="250"
+								search-type="users"
+								on-click-event="select-user-invite"
+								clear-on-click="true"
+							>
+							</search-bar>
                             <template id="template-tournament-modal-create-form-invited-user-card">
                               <div class="tournament-modal-create-form-invited-user-card">
                                 <img class="tournament-modal-create-form-invited-user-card-avatar">
@@ -467,6 +474,7 @@
     flex-direction: row;
     height: 100%;
     justify-content: space-between;
+    max-height: 50px;
     padding: 0.5rem 1rem;
     width: 80%;
     background-color: rgb(217, 217, 217);
