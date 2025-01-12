@@ -1,6 +1,7 @@
 import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
 import { buildView, createPlayerCard } from './methods.js';
 
@@ -46,7 +47,11 @@ export default {
                     $callToast("success", data.message);
                 })
             }
-        }
+        },
+
+        leaveLobbyButtonAction() {
+            router("/home");
+        },
 
 
         // buildParticipantsList(list) {
@@ -121,12 +126,15 @@ export default {
             call(`tournament/lobby/${this.routeParams.id}/`, 'GET').then(data => {
                 console.log("data:", data);
                 this.data = data;
+
                 buildView(data.tournamentState);
 
                 if (data.tournamentState === "setup") {
                     for (let element of data.tournamentMembers)
                         createPlayerCard(element);
                 }
+
+                this.domManip.$on("tournament-middle-bottom-subscribe-start-button", "click", leaveLobbyButtonAction);
             })
 
 
