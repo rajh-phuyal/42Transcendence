@@ -35,12 +35,12 @@ def create_message(user, conversation_id, content):
             .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
             .first() #TODO: #204 Groupchat remove the first() and return the list
         )
-    
+
     # Check if user is blocked by other member (if not group chat)
     if not conversation.is_group_conversation:
         if is_blocked(user, other_user_member.user):
             raise BlockingException(_("You have been blocked by this user"))
-    
+
     try:
         with transaction.atomic():
             # Create message
@@ -49,7 +49,7 @@ def create_message(user, conversation_id, content):
                 conversation=conversation,
                 content=content,
             )
-    
+
             # Update unread message count for the other user
             unread_messages_count = Message.objects.filter(
                 conversation=conversation,
@@ -78,7 +78,7 @@ async def process_incoming_chat_message(consumer, user, text):
     conversation_id = message.get('conversationId')
     content = message.get('content')
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
-    
+
     # Do db operations
     new_message, other_user_member_id = await create_message(user, conversation_id, content)
 

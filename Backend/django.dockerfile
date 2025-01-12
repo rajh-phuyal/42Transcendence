@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y gettext && rm -rf /var/lib/apt/lists/*
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=app.settings
-ENV PYTHONPATH=/Backend/src
-
+# /app Since it's on the container not on the host!
+ENV PYTHONPATH=/app
 # Make media directory
 RUN mkdir -p /$MEDIA_VOLUME_NAME/
 
@@ -30,6 +30,12 @@ WORKDIR /
 RUN mkdir -p /tools
 COPY ./tools/entrypoint.sh /tools/entrypoint.sh
 RUN chmod +x /tools/entrypoint.sh
+
+# Create a non-root user with a valid home directory and shell
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup --home /home/appuser --shell /bin/bash appuser
+
+# Ensure appuser owns the necessary directories
+RUN chown -R appuser:appgroup /app
 
 # make migrations and generate language files on the entrypoint
 ENTRYPOINT ["/tools/entrypoint.sh"]

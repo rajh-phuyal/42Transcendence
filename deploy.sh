@@ -61,7 +61,7 @@ ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #	| `test`  | Starts as script to test the backend api                                                                               |
 #
 # CONTAINER:
-ALLOWED_CONTAINERS=("fe" "be" "db" "pa")
+ALLOWED_CONTAINERS=("fe" "be" "db" "pa" "redis")
 #   The container is the service that should be affected by the command.
 #   If no container is specified ALL containers will be affected.
 #   The allowed containers are:

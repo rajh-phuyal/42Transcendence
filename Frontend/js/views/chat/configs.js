@@ -29,11 +29,11 @@ export default {
         //         const conversations_respond = await this.call('chat/load/conversations/', 'GET');
 
         //         console.log("Conversations loaded:", conversations_respond);
-                
+
         //     // Populate the conversation list UI
         //     const conversationListElement = document.getElementById("conversation-items");
         //     conversationListElement.innerHTML = ''; // Clear any existing items
-                        
+
         //     conversations_respond.forEach(conversation => {
         //         const listItem = document.createElement('li');
         //         listItem.textContent = conversation.name || `Conversation ${conversation.id}`;
@@ -44,7 +44,7 @@ export default {
         //         });
         //         conversationListElement.appendChild(listItem);
         //     });
-                
+
         //     } catch (error) {
         //         console.error('Failed to load conversations:', error);
         //     }
@@ -54,7 +54,7 @@ export default {
 		// async selectConversation(conversation) {
         //     console.log('Selected conversation:', conversation, 'ID:', conversation.id);
         //     this.selectedConversation = conversation.id
-        
+
 		// 	try {
 		// 		// Use the abstracted call method instead of fetch
 		// 		//TODO: add offsett for pagination (change 0 in the next line)
@@ -138,7 +138,7 @@ export default {
 
         // Method to load messages when a conversation is selected
 
-		
+
         // UNCOMENT THIS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // Send a chat message
         // sendMessage(message) {
@@ -174,24 +174,24 @@ export default {
         },
 
         populateConversationMessages(data) {
-            
+
             const container = this.domManip.$id("chat-view-messages-container");
 
             this.removeConversationMessages();
-            
-            for (let element of data) 
+
+            for (let element of data)
                 container.appendChild(createMessage(element));
         },
-        
+
         removeConversationMessages() {
             let toDelete = this.domManip.$queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-overlords-message-container")
-    
+
             for (let element of toDelete)
                 element.remove();
         },
 
         higlightCard(element) {
-            
+
             let highlightedElement = this.domManip.$class("chat-view-conversation-card-highlighted");
             if (highlightedElement){
                 for (let individualElement of highlightedElement)
@@ -201,7 +201,7 @@ export default {
         },
 
         conversationCallback(event) {
-            
+
             let element = event.srcElement;
 
             if (!element.getAttribute("conversation_id"))
@@ -247,14 +247,14 @@ export default {
             const conversation = this.domManip.$id("chat-view-conversation-card-template").content.cloneNode(true);
 
             let container = conversation.querySelector(".chat-view-conversation-card");
-            
+
             if (element.conversationId == this.routeParams.id)
                 this.higlightCard(container);
 
-            container.id = "chat-view-conversation-card-" +  element.conversationId; 
+            container.id = "chat-view-conversation-card-" +  element.conversationId;
             container.setAttribute("conversation_id", element.conversationId);
             container.setAttribute("last-message-time", element.lastUpdate);
-            
+
             // Avatar
             conversation.querySelector(".chat-view-conversation-card-avatar").src = window.origin + '/media/avatars/' + element.conversationAvatar;
 
@@ -282,15 +282,15 @@ export default {
                     this.domManip.$id("chat-view-conversations-no-converations-found").textContent = data.message;
                     return ;
                 }
-                
+
                 for (let element of data.data)
                     this.createConversationCard(element);
             }).then(date => {
-                
+
                 this.sortConversationsByTimestamp();
             })
 
-            
+
         },
 
         removeConversationsEventListners() {
@@ -300,15 +300,15 @@ export default {
 
         sortConversationsByTimestamp() {
             const conversationsContainer = this.domManip.$id('chat-view-conversations-container');
-            
+
             const conversationCardsArray = Array.from(this.domManip.$queryAll(".chat-view-conversation-card, .chat-view-conversation-card-highlighted"));
-        
+
             conversationCardsArray.sort((a, b) => {
                 const timestampA = new Date(a.getAttribute('last-message-time'));
                 const timestampB = new Date(b.getAttribute('last-message-time'));
                 return timestampB - timestampA; // Sort in descending order (latest first)
             });
-        
+
             conversationCardsArray.forEach(card => {
                 conversationsContainer.appendChild(card);
             });
@@ -363,7 +363,7 @@ export default {
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
 
             await this.populateConversations();
-            
+
 
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");

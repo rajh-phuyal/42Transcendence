@@ -9,7 +9,6 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from rest_framework import status
 from django.utils import timezone
 from .utils import mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException
@@ -19,6 +18,7 @@ from user.constants import USER_ID_OVERLOARDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
+from user.utils_relationship import is_blocked
 
 import logging
 from asgiref.sync import sync_to_async
@@ -209,6 +209,9 @@ class CreateConversationView(BaseAuthenticatedView):
             except User.DoesNotExist:
                 return error_response(_("User not found"), status_code=404)
 
+            # Check if the user blocked client
+            if is_blocked(user.id, other_user.id):
+                return error_response(_("You are blocked by the user"), status_code=403)
             # Check if the conversation already exists
             user_conversations = ConversationMember.objects.filter(
                 user=user.id,
@@ -224,7 +227,7 @@ class CreateConversationView(BaseAuthenticatedView):
 
             if common_conversations:
                 conversation_id = common_conversations.pop()
-                return success_response(_('Conversation already exists'), **{'conversation_id': conversation_id})
+                return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
         elif len(userIds) > 1:
             # TODO: #204
             error_response(_("Group chats are not supported yet"), status_code=400)
@@ -272,4 +275,4 @@ class CreateConversationView(BaseAuthenticatedView):
             })
         async_to_sync(send_total_unread_counter)(other_user.id)
         async_to_sync(send_conversation_unread_counter)(other_user.id, new_conversation.id)
-        return success_response(_('Conversation created successfully'), **{'conversation_id': new_conversation.id})
+        return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})
