@@ -132,8 +132,9 @@ export default {
                 this.domManip.$off(individualElement, "click", this.selectMap);
 			element = this.domManip.$class("tournament-modal-create-form-type-buttons");
             for (let individualElement of element)
-                this.domManip.$on(individualElement, "click", this.selectMap);
-			this.domManip.$off(element, "click", this.toggleCreateJoinView);
+                this.domManip.$off(individualElement, "click", this.selectMap);
+			this.domManip.$off(this.domManip.$id("tournament-modal-create-form-join-button"), "click", this.toggleCreateJoinView);
+			this.domManip.$off(this.domManip.$id("tournament-modal-join-form-host-button"), "click", this.toggleCreateJoinView);
         },
 
         beforeDomInsertion() {

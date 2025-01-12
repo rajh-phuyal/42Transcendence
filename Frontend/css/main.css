@@ -13,6 +13,7 @@ html, body {
 #navigator {
 	margin: 0 !important;
 	padding: 0 !important;
+	z-index: 1100;
 	display: flex;
 	justify-content: center;
 	height: 10vh;
