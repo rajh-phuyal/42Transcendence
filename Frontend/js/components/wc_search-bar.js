@@ -7,10 +7,11 @@ class SearchBar extends HTMLElement {
         this.searchResults = [];
         this.searchType = "users";
         this.width = "300";
+        this.onClickEvent = "select-user";
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "search-type"];
+        return ["placeholder", "width", "search-type", "on-click-event"];
     }
 
     reRenderAndAttach() {
@@ -25,7 +26,6 @@ class SearchBar extends HTMLElement {
     handleKeyPress(event) {
         const value = event.target.value.trim();
 
-        // Clear results if input is empty
         if (!value) {
             this.searchResults = [];
             this.updateSearchResults(this.searchType, value);
@@ -45,17 +45,15 @@ class SearchBar extends HTMLElement {
             })
             .catch(error => {
                 console.error("Error fetching search results:", error);
-                this.searchResults = []; // Clear results on error
+                this.searchResults = [];
                 this.updateSearchResults(this.searchType, value);
             });
     }
 
-    // Add new method to update only the search results
     updateSearchResults(type, value) {
         const dropdown = this.shadow.querySelector('.dropdown');
         if (!dropdown) return;
 
-        // If no results, just hide the dropdown
         if (!this.searchResults.length) {
             dropdown.style.display = 'none';
             return;
@@ -64,21 +62,32 @@ class SearchBar extends HTMLElement {
         const innerHTML = type === "tournaments" ? this.searchResults
             .filter(tournament => tournament.tournamentName.includes(value))
             .map(tournament => `
-                <div class="tournament-item">
+                <div id="tournament-item-${tournament.id}" class="tournament-item">
                     <span class="tournament-name">${tournament.tournamentName}</span>
                 </div>
             `).join('') : this.searchResults
-            .map(player => `
-                <div class="user-item">
-                    <img src="${window.origin}/media/avatars/${player.avatar_path}"
-                         alt="${player.username}"
-                         class="player-image">
-                    <span class="player-name">${player.username}</span>
+            .map(user => `
+                <div id="user-item-${user.id}" class="user-item">
+                    <img src="${window.origin}/media/avatars/${user.avatar_path}"
+                         alt="${user.username}"
+                         class="user-image">
+                    <span class="user-name">${user.username}</span>
                 </div>
             `).join('');
 
         dropdown.innerHTML = innerHTML;
         dropdown.style.display = 'block';
+
+        // Add event listeners to each item
+        for (const item of this.searchResults) {
+            const idPrefix = this.searchType === "users" ? "user" : "tournament";
+            console.log(this.shadow.getElementById, `${idPrefix}-item-${item.id}`);
+            const element = this.shadow.getElementById(`${idPrefix}-item-${item.id}`);
+
+            element.addEventListener('click', () => {
+                window.dispatchEvent(new CustomEvent(this.onClickEvent, { detail: { [idPrefix]: item } }));
+            });
+        }
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -88,6 +97,8 @@ class SearchBar extends HTMLElement {
             this.width = newValue;
         } else if (name === "search-type") {
             this.searchType = newValue;
+        } else if (name === "on-click-event") {
+            this.onClickEvent = newValue;
         }
         this.render();
     }
@@ -167,14 +178,14 @@ class SearchBar extends HTMLElement {
                     border-bottom: none;
                 }
 
-                .player-image {
+                .user-image {
                     width: 32px;
                     height: 32px;
                     border: 1px solid #2A2A2A;
                     flex-shrink: 0;
                 }
 
-                .player-name {
+                .user-name {
                     font-family: 'Times New Roman', serif;
                     font-size: 16px;
                     font-weight: normal;
