@@ -48,7 +48,10 @@ export default {
                 "powerups": powerups
             }).then(data => {
                 callToast("success", data.message);
-            })
+                this.router(`/tournament`, { id: data.tournamentId });
+            }).catch(error => {
+                callToast("error", error.message);
+            });
         },
 
         selectMap(chosenMap) {
