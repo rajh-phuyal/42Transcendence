@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
 from core.exceptions import BarelyAnException
-from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer
+from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
 from django.db import models
 from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm, send_tournament_invites_via_ws
@@ -149,6 +149,10 @@ class TournamentLobbyView(BaseAuthenticatedView):
         tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
         admin_name = tournament_members.get(is_admin=True).user.username
         tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
+        if tournament.state == TournamentState.SETUP: 
+            tournament_rank_data = []
+        else:
+            tournament_rank_data = TournamentRankSerializer(tournament_members, many=True).data
         # Get all games of the tournament and serialize them
         games = Game.objects.filter(tournament_id=tournament.id)
         games_data = TournamentGameSerializer(games, many=True).data
@@ -165,7 +169,8 @@ class TournamentLobbyView(BaseAuthenticatedView):
             'tournamentLocal': tournament.local_tournament,
             'clientRole': role,
             'tournamentMembers': tournament_members_data,
-            'tournamentGames': games_data
+            'tournamentGames': games_data,
+            'tournamentRank': tournament_rank_data
         }
 
         # Add client to websocket group if game is not finished

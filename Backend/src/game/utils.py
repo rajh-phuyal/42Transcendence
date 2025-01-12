@@ -12,6 +12,7 @@ from user.utils_relationship import is_blocking, are_friends
 from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 import logging
+from tournament.ranking import update_tournament_member_stats
 
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
@@ -120,6 +121,7 @@ def finish_game(game, message):
         return
     # - inform everyone that the game finished
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
+    looser = game_members.filter(result=GameMember.GameResult.LOST).first()
     send_tournament_ws_msg(
         game.tournament_id,
         "gameUpdateState",
@@ -131,6 +133,7 @@ def finish_game(game, message):
             "winnerId": winner.user_id,
         }
     )
+    update_tournament_member_stats(game, winner, looser)
     update_tournament_ranks(game.tournament_id)
     check_tournament_routine(game.tournament_id)
 

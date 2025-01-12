@@ -399,10 +399,8 @@ def update_tournament_ranks(tournament_id):
     for member in members:
         user = member.user
         games = GameMember.objects.filter(game__tournament=tournament, user=user)
-        wins = games.filter(result=GameMember.GameResult.WON).count()
-        point_diff = games.filter(result=GameMember.GameResult.WON).aggregate(
-            total_diff=Sum(F('points') - F('game__game_members__points'))
-        )['total_diff'] or 0
+        wins = member.won_games
+        point_diff = member.win_points
         member_stats.append({
             'user_id': user.id,
             'username': user.username,
@@ -417,19 +415,19 @@ def update_tournament_ranks(tournament_id):
         reverse=True
     )
 
-    # Update the TournamentMember finish_place
+    # Update the TournamentMember rank
     with transaction.atomic():
         for idx, stat in enumerate(sorted_stats, start=1):
             TournamentMember.objects.filter(
                 user_id=stat['user_id'],
                 tournament=tournament
             ).select_for_update(
-            ).update(finish_place=idx)
+            ).update(rank=idx)
 
     # Prepare the data for WebSocket broadcasting
     ranking_json = [
         {
-            'username': stat['username'],
+            'userId': stat['user_id'],
             'wins': stat['wins'],
             'point_diff': stat['point_diff'],
             'rank': idx + 1
