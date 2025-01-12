@@ -60,7 +60,7 @@ export default {
                 })
             }
             else {
-                call(`tournament/join/${id}/`, 'PUT').then(data => {
+                call(`tournament/join/${this.routeParams.id}/`, 'PUT').then(data => {
                     console.log(data);
                     $callToast("success", data.message);
                 })
