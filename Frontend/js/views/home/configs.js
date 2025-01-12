@@ -36,14 +36,15 @@ export default {
             const powerups = this.domManip.$id("tournament-modal-create-form-name-container-checkbox").checked;
             if (this.tournament.map == "random") {
                 this.tournament.map = parseInt(Math.random() * (4 - 1) + 1);
-
             }
+            else
+            this.tournament.map = this.maps[this.tournament.map]
 
             call('tournament/create/', "POST", {
                 "name": tournamentName,
                 "localTournament": this.tournament.type === "local" ? true : false,
                 "publicTournament": this.tournament.type === "public" ? true : false,
-                "mapNumber": this.maps[this.tournament.map],
+                "mapNumber": this.tournament.map,
                 "opponentIds": this.tournament.type !==  "public" ? this.tournament.userIds : [],
                 "powerups": powerups
                 }).then(data => {
