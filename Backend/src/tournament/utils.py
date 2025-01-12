@@ -53,6 +53,9 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     tournament_user_objects = []
     tournament_user_objects.append(creator)
 
+    if not opponent_ids:
+        opponent_ids = None
+
     # Validate tournament params for edge cases
     if local_tournament and public_tournament:
         raise BarelyAnException(_("Tournament can't be both local and public"))
