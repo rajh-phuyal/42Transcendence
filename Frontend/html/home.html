@@ -62,7 +62,15 @@
                       <barely-a-button class="tournament-modal-create-form-type-buttons" type="public" name="Public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
                     </div>
                     <div id="template-tournament-modal-create-form-invited-user-card-container">
-                      <input type="search">
+                      <search-bar
+                        placeholder="Search for a user"
+                        width="250"
+                        search-type="users"
+                        on-click-event="select-user-invite"
+                        clear-on-click="true"
+                        style="margin-right: 1em; margin-left: -17em;"
+                      >
+                      </search-bar>
                       <template id="template-tournament-modal-create-form-invited-user-card">
                         <div class="tournament-modal-create-form-invited-user-card">
                           <img class="tournament-modal-create-form-invited-user-card-avatar">
