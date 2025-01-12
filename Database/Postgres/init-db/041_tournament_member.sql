@@ -15,7 +15,10 @@ CREATE TABLE IF NOT EXISTS barelyaschema.tournament_member
 	tournament_alias VARCHAR(150),
     is_admin BOOLEAN NOT NULL DEFAULT FALSE,
 	accepted BOOLEAN NOT NULL DEFAULT FALSE,
-	finish_place INT,
+	played_games INT NOT NULL DEFAULT 0,
+	won_games INT NOT NULL DEFAULT 0,
+	win_points INT NOT NULL DEFAULT 0,
+	rank INT NOT NULL DEFAULT 0,
 	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
 	FOREIGN KEY (tournament_id) REFERENCES barelyaschema.tournament(id)
 );
