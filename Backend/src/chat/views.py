@@ -9,9 +9,8 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from rest_framework import status
 from django.utils import timezone
-from .utils import mark_all_messages_as_seen_sync
+from .utils import create_conversation, get_conversation, mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException
 from rest_framework import status
 from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
@@ -19,6 +18,7 @@ from user.constants import USER_ID_OVERLOARDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
+from user.utils_relationship import is_blocked
 
 import logging
 from asgiref.sync import sync_to_async
@@ -57,7 +57,6 @@ class LoadConversationView(BaseAuthenticatedView):
         # Determine blocking status
         the_overloards = User.objects.get(id=USER_ID_OVERLOARDS)
         other_user = self.get_other_user(conversation, user, the_overloards)
-        other_user_online = cache.get(f'user_online_{other_user.id}', False)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
 
@@ -92,7 +91,7 @@ class LoadConversationView(BaseAuthenticatedView):
         response_data = self.prepare_response(conversation,
                                               user,
                                               serialized_messages,
-                                              other_user_online,
+                                              other_user,
                                               is_blocking,
                                               is_blocked,
                                               conversation_avatar,
@@ -169,7 +168,7 @@ class LoadConversationView(BaseAuthenticatedView):
             return conversation.name
         return other_user.username
 
-    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
+    def prepare_response(self, conversation, user, serialized_messages, other_user, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
         members = conversation.members.all()
         member_ids = members.values_list('id', flat=True)
 
@@ -181,12 +180,13 @@ class LoadConversationView(BaseAuthenticatedView):
             "isEditable": conversation.is_editable,
             "conversationName": conversation_name,
             "conversationAvatar": conversation_avatar,
-            "online": other_user_online,
+            "online": other_user.get_online_status(),
             "userIds": list(member_ids),
             "conversationUnreadCounter": new_unread_counter,
             "totalUnreadCounter": new_unread_counter_total,
             "data": serialized_messages.data,
         }
+
 
 class CreateConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -210,22 +210,13 @@ class CreateConversationView(BaseAuthenticatedView):
             except User.DoesNotExist:
                 return error_response(_("User not found"), status_code=404)
 
+            # Check if the user blocked client
+            if is_blocked(user.id, other_user.id):
+                return error_response(_("You are blocked by the user"), status_code=403)
             # Check if the conversation already exists
-            user_conversations = ConversationMember.objects.filter(
-                user=user.id,
-                conversation__is_group_conversation=False,
-            ).values_list('conversation_id', flat=True)
-
-            other_user_conversations = ConversationMember.objects.filter(
-                user=other_user.id,
-                conversation__is_group_conversation=False
-            ).values_list('conversation_id', flat=True)
-
-            common_conversations = set(user_conversations).intersection(other_user_conversations)
-
-            if common_conversations:
-                conversation_id = common_conversations.pop()
-                return success_response(_('Conversation already exists'), **{'conversation_id': conversation_id})
+            conversation_id = get_conversation(user, other_user)
+            if conversation_id:
+                return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
         elif len(userIds) > 1:
             # TODO: #204
             error_response(_("Group chats are not supported yet"), status_code=400)
@@ -234,43 +225,7 @@ class CreateConversationView(BaseAuthenticatedView):
             #    return error_response(_("No 'name' provided"), status_code=400)
             #is_group_conversation = True
 
-        # Start a transaction to make sure all database operations happen together
-        with transaction.atomic():
-            # Create the Conversation
-            new_conversation = Conversation.objects.create(name=conversation_name, is_group_conversation=is_group_conversation, is_editable=True)
-            ConversationMember.objects.create(user=user, conversation=new_conversation)
-            # TODO: #204
-            #if is_group_conversation:
-            #    for userId in userIds:
-            #        other_user = User.objects.get(id=userId)
-            #        ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
-            #else:
-            ConversationMember.objects.create(user=other_user, conversation=new_conversation, unread_counter=1)
-            initialMessageObject = Message.objects.create(user=user, conversation=new_conversation, content=initialMessage)
-
-        # Adding the conversation to the user's WebSocket groups (if they are logged in)
-        group_name = f"conversation_{new_conversation.id}"
-        channel_name_user =  cache.get(f'user_channel_{user.id}', None)
-        if channel_name_user:
-            async_to_sync(channel_layer.group_add)(group_name, channel_name_user)
-        channel_name_other_user =  cache.get(f'user_channel_{other_user.id}', None)
-        if channel_name_other_user:
-            async_to_sync(channel_layer.group_add)(group_name, channel_name_other_user)
-        async_to_sync(channel_layer.group_send)(
-            group_name,
-            {
-                "messageType": "newConversation",
-                "type": "new_conversation",
-                "conversationId": new_conversation.id,
-                "isGroupChat": new_conversation.is_group_conversation,
-                "isEditable": new_conversation.is_editable,
-                "conversationName": user.username,
-                "conversationAvatar": user.avatar_path,
-                "unreadCounter": 1,
-                "online": True,
-                "lastUpdate": initialMessageObject.created_at.isoformat(),
-                "isEmpty": False
-            })
-        async_to_sync(send_total_unread_counter)(other_user.id)
-        async_to_sync(send_conversation_unread_counter)(other_user.id, new_conversation.id)
-        return success_response(_('Conversation created successfully'), **{'conversation_id': new_conversation.id})
+        # Create the conversation
+        new_conversation = create_conversation(user, other_user, initialMessage, user)
+        
+        return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})

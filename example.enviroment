@@ -37,4 +37,3 @@ BE_SECRET_KEY=django-insecure-@ry+-mwb0wgdn0koep$_!a0^k^59+z!pa6pmdi2aq9z143lxy4
 
 # CONTAINER FRONTEND AKA FE
 # -------------------------------------------------------------------
-LOCAL_DEPLOY=TRUE

@@ -5,7 +5,6 @@ from chat.models import Message, ConversationMember, Conversation
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from user.exceptions import BlockingException
-import json
 from user.constants import USER_ID_OVERLOARDS
 from django.db.models import Q
 from user.utils_relationship import is_blocked
@@ -23,7 +22,6 @@ def validate_user_is_member_of_conversation(user, conversation_id):
         raise BarelyAnException(_("Conversation not found or user is not a member of the conversation"))
     return conversation_member_entry
 
-
 # Wrap the synchronous database operations with sync_to_async
 @database_sync_to_async
 def create_message(user, conversation_id, content):
@@ -37,12 +35,12 @@ def create_message(user, conversation_id, content):
             .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
             .first() #TODO: #204 Groupchat remove the first() and return the list
         )
-    
+
     # Check if user is blocked by other member (if not group chat)
     if not conversation.is_group_conversation:
         if is_blocked(user, other_user_member.user):
             raise BlockingException(_("You have been blocked by this user"))
-    
+
     try:
         with transaction.atomic():
             # Create message
@@ -51,7 +49,7 @@ def create_message(user, conversation_id, content):
                 conversation=conversation,
                 content=content,
             )
-    
+
             # Update unread message count for the other user
             unread_messages_count = Message.objects.filter(
                 conversation=conversation,
@@ -80,7 +78,7 @@ async def process_incoming_chat_message(consumer, user, text):
     conversation_id = message.get('conversationId')
     content = message.get('content')
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
-    
+
     # Do db operations
     new_message, other_user_member_id = await create_message(user, conversation_id, content)
 

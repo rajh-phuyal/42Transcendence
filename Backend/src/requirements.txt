@@ -13,3 +13,10 @@ daphne==4.0.0	            # ASGI server for Django WebSockets
 Pillow==10.0.0              # Image processing library for user avatar
 numpy==1.26.0	            # Needed for sepia filter of user avatar
 twisted[http2,tls]==23.10.0 # To avvoid this error: HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+kombu==5.4.2                # Required for messaging (used by Celery)
+celery==5.4.0               # Celery for task scheduling and async processing (Check deadline of tournament games, etc.)
+django-celery-results==2.5.1
+redis==5.0.0
+
+
+

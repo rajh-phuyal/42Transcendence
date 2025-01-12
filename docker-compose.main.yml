@@ -132,6 +132,12 @@ services:
       retries: 3
       start_period: 10s
 
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+
 networks:
   default:
     name: $DOCKER_NETWORK

@@ -67,7 +67,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         else:
             try:
                 other_member = obj.members.exclude(user=current_user).first()
-                if other_member and cache.get(f'user_online_{other_member.user.id}'):
+                if other_member and other_member.user.get_online_status():
                     return True
                 return False
             except Exception:
@@ -77,7 +77,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         # Fetch the timestamp of the last message in the conversation
         last_message = obj.messages.order_by('-created_at').first()
         return last_message.created_at if last_message else None
-    
+
     def get_isEmpty(self, obj):
         return obj.messages.count() == 0
 
