@@ -9,7 +9,6 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from rest_framework import status
 from django.utils import timezone
 from .utils import mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException
@@ -19,6 +18,7 @@ from user.constants import USER_ID_OVERLOARDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
+from user.utils_relationship import is_blocked
 
 import logging
 from asgiref.sync import sync_to_async
@@ -57,7 +57,6 @@ class LoadConversationView(BaseAuthenticatedView):
         # Determine blocking status
         the_overloards = User.objects.get(id=USER_ID_OVERLOARDS)
         other_user = self.get_other_user(conversation, user, the_overloards)
-        other_user_online = cache.get(f'user_online_{other_user.id}', False)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
 
@@ -92,7 +91,7 @@ class LoadConversationView(BaseAuthenticatedView):
         response_data = self.prepare_response(conversation,
                                               user,
                                               serialized_messages,
-                                              other_user_online,
+                                              other_user,
                                               is_blocking,
                                               is_blocked,
                                               conversation_avatar,
@@ -169,7 +168,7 @@ class LoadConversationView(BaseAuthenticatedView):
             return conversation.name
         return other_user.username
 
-    def prepare_response(self, conversation, user, serialized_messages, other_user_online, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
+    def prepare_response(self, conversation, user, serialized_messages, other_user, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
         members = conversation.members.all()
         member_ids = members.values_list('id', flat=True)
 
@@ -181,7 +180,7 @@ class LoadConversationView(BaseAuthenticatedView):
             "isEditable": conversation.is_editable,
             "conversationName": conversation_name,
             "conversationAvatar": conversation_avatar,
-            "online": other_user_online,
+            "online": other_user.get_online_status(),
             "userIds": list(member_ids),
             "conversationUnreadCounter": new_unread_counter,
             "totalUnreadCounter": new_unread_counter_total,
@@ -210,6 +209,9 @@ class CreateConversationView(BaseAuthenticatedView):
             except User.DoesNotExist:
                 return error_response(_("User not found"), status_code=404)
 
+            # Check if the user blocked client
+            if is_blocked(user.id, other_user.id):
+                return error_response(_("You are blocked by the user"), status_code=403)
             # Check if the conversation already exists
             user_conversations = ConversationMember.objects.filter(
                 user=user.id,
@@ -225,7 +227,7 @@ class CreateConversationView(BaseAuthenticatedView):
 
             if common_conversations:
                 conversation_id = common_conversations.pop()
-                return success_response(_('Conversation already exists'), **{'conversation_id': conversation_id})
+                return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
         elif len(userIds) > 1:
             # TODO: #204
             error_response(_("Group chats are not supported yet"), status_code=400)
@@ -273,4 +275,4 @@ class CreateConversationView(BaseAuthenticatedView):
             })
         async_to_sync(send_total_unread_counter)(other_user.id)
         async_to_sync(send_conversation_unread_counter)(other_user.id, new_conversation.id)
-        return success_response(_('Conversation created successfully'), **{'conversation_id': new_conversation.id})
+        return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})

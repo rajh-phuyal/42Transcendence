@@ -49,7 +49,7 @@ if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user;"
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "INSERT INTO barelyaschema.user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined, avatar_path) VALUES \
 		($OVERLORDS_ID, 'hashed_password_1', '2000-01-01 00:00:00+00', TRUE, '$OVERLORDS_USERNAME', '$OVERLORDS_FIRST_NAME', '$OVERLORDS_LAST_NAME', 'we dont use email', TRUE, TRUE, '2000-01-01 00:00:00+00', '$OVERLORDS_AVATAR'), \
 		($AI_ID, 'hashed_password_2', '2000-01-01 00:00:00+00', TRUE, '$AI_USERNAME', '$AI_FIRST_NAME', '$AI_LAST_NAME', 'we dont use email', TRUE, TRUE, '2000-01-01 00:00:00+00', '$AI_AVATAR');"
-	echo -e "Database is empty therfore create the root accounts..."$GR" DONE" $NC	
+	echo -e "Database is empty therfore create the root accounts..."$GR" DONE" $NC
 	echo "Now resetting the sequences..."
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT setval('barelyaschema.user_id_seq', COALESCE((SELECT MAX(id) FROM barelyaschema.user), 1) + 1, false);"
 	echo -e "Now resetting the sequences..."$GR" DONE" $NC

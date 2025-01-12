@@ -5,6 +5,7 @@ from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
 from chat.models import Conversation
+import logging
 
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,12 +36,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
         return obj.last_login.strftime("%Y-%m-%d %H:%M")
 
-    def get_online(self, obj):
+    def get_online(self, user):
         # AI Opponent and Overlords are always online
-        if obj.id == USER_ID_OVERLOARDS or obj.id == USER_ID_AI:
+        if user.id == USER_ID_OVERLOARDS or user.id == USER_ID_AI:
             return True
         # Check if the user's online status is in the cache
-        return cache.get(f'user_online_{obj.id}', False)
+        return user.get_online_status()
 
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
     def get_relationship(self, obj):
@@ -69,7 +70,7 @@ class ProfileSerializer(serializers.ModelSerializer):
                 "total": 0.50
             }
         }
-    
+
     def get_chatId(self, obj):
         # `requester` is the current authenticated user
         requester = self.context['request'].user
@@ -81,6 +82,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             members__user=requester
         ).filter(members__user=requested
         ).values_list('id', flat=True).first()
+        logging.info(f'conversation_id: {conversation_id}')
         return conversation_id
 
 # This will prepare the data for endpoint '/user/friend/list/<int:id>/'

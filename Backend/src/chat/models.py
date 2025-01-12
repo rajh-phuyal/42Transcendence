@@ -9,7 +9,7 @@ class Conversation(models.Model):
 
     def __str__(self):
         return f'id:{self.id} name: {self.name} is_group_conversation: {self.is_group_conversation} is_editable: {self.is_editable}'
-    
+
     class Meta:
         db_table = '"barelyaschema"."conversation"'
 
@@ -23,7 +23,7 @@ class ConversationMember(models.Model):
 
     #def __str__(self):
     #    return f'{self.user_id.username} in {self.chat_id.name}'
-    
+
     class Meta:
         db_table = '"barelyaschema"."conversation_member"'
         unique_together = ('conversation', 'user')
@@ -40,6 +40,6 @@ class Message(models.Model):
 
     def __str__(self):
         return f"id:{self.id} from {self.user} in {self.conversation} content: '{self.content}'"
-    
+
     class Meta:
         db_table = '"barelyaschema"."message"'
