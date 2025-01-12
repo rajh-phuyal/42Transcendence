@@ -7,6 +7,7 @@ import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
 import { translate } from '../../locale/locale.js';
+import { $id } from '../../abstracts/dollars.js';
 
 export default {
     attributes: {
@@ -225,7 +226,8 @@ export default {
                 }
                 return response.json();
             }).then(data => {
-                console.log('Success:', data);
+				$store.commit("setUser", { ...$store.fromState("user"), avatar: data.avatar_url.avatar_url });
+				$id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${data.avatar_url.avatar_url}`;
                 this.hideModal("edit-profile-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: $store.fromState("user").id});

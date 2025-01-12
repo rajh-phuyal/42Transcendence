@@ -3,7 +3,7 @@ import router from '../navigation/router.js';
 import { $id, $on, $off } from './dollars.js';
 
 function updateUserInfo() {
-    $id('profile-nav-username').textContent = `${$store.fromState("user").username}`;
+    $id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
 }
 
 const styleUpdateMap = {
@@ -50,7 +50,7 @@ export default function $nav(navigationPathParams = null) {
         { id: 'tournament-nav', path: '/tournament' },
         { id: 'chat-nav', path: '/chat' },
         { id: 'logout-nav', path: '/logout' },
-        { id: 'profile-nav', path: '/profile' },
+        { id: 'profile-nav-avatar', path: '/profile' },
         { id: 'login-nav', path: '/auth' },
         { id: 'register-nav', path: '/auth' }
     ];
