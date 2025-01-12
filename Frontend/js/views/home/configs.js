@@ -105,15 +105,15 @@ export default {
                 return;
             this.tournament.userIds.push(userObject.id);            
 
-            let template = $id("template-tournament-modal-create-form-invited-user-card").content.cloneNode(true);
+            // let template = $id("template-tournament-modal-create-form-invited-user-card").content.cloneNode(true);
     
 
-            const container = template.querySelector(".tournament-modal-create-form-invited-user-card");
-            container.setAttribute("userId", userObject.id);
-            template.querySelector(".tournament-modal-create-form-invited-user-card-avatar").src = userObject.avatar;
-            template.querySelector(".tournament-modal-create-form-invited-user-card-username").textContent = userObject.username;
-            this.domManip.$on(template.querySelector(".tournament-modal-create-form-invited-user-card-delete-user"), "click", this.deleteInviteUserCard);
-            this.domManip.$id("template-tournament-modal-create-form-invited-user-card-container").appendChild(container);
+            // const container = template.querySelector(".tournament-modal-create-form-invited-user-card");
+            // container.setAttribute("userId", userObject.id);
+            // template.querySelector(".tournament-modal-create-form-invited-user-card-avatar").src = userObject.avatar;
+            // template.querySelector(".tournament-modal-create-form-invited-user-card-username").textContent = userObject.username;
+            // this.domManip.$on(template.querySelector(".tournament-modal-create-form-invited-user-card-delete-user"), "click", this.deleteInviteUserCard);
+            // this.domManip.$id("template-tournament-modal-create-form-invited-user-card-container").appendChild(container);
             
         },
 		toggleCreateJoinView() {
