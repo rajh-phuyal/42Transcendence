@@ -40,7 +40,7 @@ class TournamentGameSerializer(serializers.ModelSerializer):
         model = Game
         fields = ['gameId', 'mapNumber', 'state', 'finishTime', 'deadline', 'player1', 'player2']
 
-    def get_player1(self, obj):
+    def get_player1(self, obj): # TODO: HACKATHON #265
         # Get the first palyer of the game
         game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').first()
         return TournamentGamePlayerSerializer(game_member).data
