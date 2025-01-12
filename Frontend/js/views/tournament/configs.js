@@ -53,7 +53,7 @@ export default {
             router("/home");
         },
 
-
+       
         // buildParticipantsList(list) {
         //     //console.log("Building participants list from list: ", list);
         //     const mainDiv = this.domManip.$id("tournament-list");
@@ -115,6 +115,12 @@ export default {
             // this.domManip.$off(this.domManip.$id("start-button"), "click", this.startTournament);
             // this.domManip.$off(this.domManip.$id("cancel-button"), "click", this.cancelTournament);
             // WebSocketManager.setCurrentRoute(undefined);
+        
+        
+            this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
+            this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
+    
+            
         },
 
         beforeDomInsertion() {
@@ -134,7 +140,7 @@ export default {
                         createPlayerCard(element);
                 }
 
-                this.domManip.$on("tournament-middle-bottom-subscribe-start-button", "click", leaveLobbyButtonAction);
+                this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
             })
 
 
