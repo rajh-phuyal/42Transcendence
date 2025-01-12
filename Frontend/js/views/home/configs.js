@@ -34,15 +34,10 @@ export default {
         createTournament() {
             const tournamentName = this.domManip.$id("tournament-modal-create-form-name-container-input").value;
             const powerups = this.domManip.$id("tournament-modal-create-form-name-container-checkbox").checked;
-            console.log("name:", tournamentName);
-            console.log("powerups:",powerups);
-            console.log("map:", this.tournament.map);
-            console.log("type:", this.tournament.type);
-            console.log("ids:", this.tournament.userIds);
+            if (this.tournament.map == "random") {
+                this.tournament.map = parseInt(Math.random() * (4 - 1) + 1);
 
-            console.log("users:", this.tournament.user);
-
-
+            }
 
             call('tournament/create/', "POST", {
                 "name": tournamentName,
@@ -72,8 +67,6 @@ export default {
         selectTournamentType(chosenType) {
             const type = this.domManip.$class("tournament-modal-create-form-type-buttons");
             this.tournament.type = chosenType.srcElement.getAttribute("type");
-            // TODO: HACHATHON: desable the search bar (disabled attribute) and delet all user cards selected
-            console.log("type", this.tournament.type);
             if (this.tournament.type != "public")
                 this.domManip.$id("template-tournament-modal-create-form-invited-user-card-container").style.display = "flex";
             else
@@ -91,16 +84,12 @@ export default {
         deleteInviteUserCard(event) {
 
             const userId = event.target.parentNode.getAttribute("userId"); 
-            console.log("before:", this.tournament.userIds);
             this.tournament.userIds = this.tournament.userIds.filter((element) => element != userId);
-            console.log("after:", this.tournament.userIds);
             event.target.parentNode.remove();
             
         },
 
         createInviteUserCard(userObject) {
-
-            console.log(userObject);
             if (this.tournament.userIds.find(id => id === userObject.id))
                 return;
             this.tournament.userIds.push(userObject.id);            
@@ -125,7 +114,19 @@ export default {
 			};
 			createTournament.style.display = displaySwitch[window.getComputedStyle(createTournament, null).display];
 			joinTournament.style.display = displaySwitch[window.getComputedStyle(joinTournament, null).display];
-		}
+		},
+
+        // createJoinTournamentCard (tournamentObject) {
+            
+        //     let template = $id("tournament-modal-join-tournament-cards-container").content.cloneNode(true);
+    
+
+        //     const container = template.querySelector(".tournament-modal-join-tournament-card");
+        //     container.setAttribute("tournamentId", tournamentObject.id);
+        //     template.querySelector(".tournament-modal-join-tournament-name").textContent = tournamentObject.name;
+        //     this.domManip.$on(container, "click", this.redirectTournamentLobby);
+        //     this.domManip.$id("tournament-modal-join-tournament-cards-container").appendChild(container);
+        // }
     },
 
     hooks: {
@@ -143,12 +144,16 @@ export default {
                 this.domManip.$off(individualElement, "click", this.selectMap);
 			element = this.domManip.$class("tournament-modal-create-form-type-buttons");
             for (let individualElement of element)
-                this.domManip.$on(individualElement, "click", this.selectMap);
-			this.domManip.$off(element, "click", this.toggleCreateJoinView);
+                this.domManip.$off(individualElement, "click", this.selectMap);
+			this.domManip.$off(this.domManip.$id("tournament-modal-create-form-join-button"), "click", this.toggleCreateJoinView);
+			this.domManip.$off(this.domManip.$id("tournament-modal-join-form-host-button"), "click", this.toggleCreateJoinView);
         },
 
         beforeDomInsertion() {
             
+            this.tournament.type = "public";
+            this.tournament.map = "random";
+            this.tournament.userIds = [];
         },
 
         afterDomInsertion() {
