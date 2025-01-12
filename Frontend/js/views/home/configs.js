@@ -132,6 +132,8 @@ export default {
             joinTournament.style.display = displaySwitch[window.getComputedStyle(joinTournament, null).display];
 
             if (window.getComputedStyle(joinTournament, null).display === "flex") {
+                const container = this.domManip.$id("tournament-modal-join-tournament-cards-container");
+                container.innerHTML = `<p class="tournament-modal-join-tournament-cards-container-loading"> Loading...</p>`;
                 this.fetchAvailableTournaments();
             }
         },
