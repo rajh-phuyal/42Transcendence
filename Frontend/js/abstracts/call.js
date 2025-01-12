@@ -9,8 +9,6 @@ async function call(url, method, data = null, showToast = true) {
         'Content-Type': 'application/json'
     };
 
-    console.log("data:", data);
-
     let payload = {
         method: method,
         headers: headers,

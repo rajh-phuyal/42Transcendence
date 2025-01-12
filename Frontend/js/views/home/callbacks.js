@@ -76,7 +76,6 @@ function createJoinTournamentList() {
 
 
 export function tournamentModalCallback(){
-    console.log("here");
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
     

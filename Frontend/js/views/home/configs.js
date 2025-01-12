@@ -34,16 +34,7 @@ export default {
         createTournament() {
             const tournamentName = this.domManip.$id("tournament-modal-create-form-name-container-input").value;
             const powerups = this.domManip.$id("tournament-modal-create-form-name-container-checkbox").checked;
-            console.log("name:", tournamentName);
-            console.log("powerups:",powerups);
-            console.log("map:", this.tournament.map);
-            console.log("type:", this.tournament.type);
-            console.log("ids:", this.tournament.userIds);
-
-            console.log("users:", this.tournament.user);
-
-
-
+        
             call('tournament/create/', "POST", {
                 "name": tournamentName,
                 "localTournament": this.tournament.type === "local" ? true : false,
@@ -72,8 +63,6 @@ export default {
         selectTournamentType(chosenType) {
             const type = this.domManip.$class("tournament-modal-create-form-type-buttons");
             this.tournament.type = chosenType.srcElement.getAttribute("type");
-            // TODO: HACHATHON: desable the search bar (disabled attribute) and delet all user cards selected
-            console.log("type", this.tournament.type);
             if (this.tournament.type != "public")
                 this.domManip.$id("template-tournament-modal-create-form-invited-user-card-container").style.display = "flex";
             else
@@ -91,16 +80,12 @@ export default {
         deleteInviteUserCard(event) {
 
             const userId = event.target.parentNode.getAttribute("userId"); 
-            console.log("before:", this.tournament.userIds);
             this.tournament.userIds = this.tournament.userIds.filter((element) => element != userId);
-            console.log("after:", this.tournament.userIds);
             event.target.parentNode.remove();
             
         },
 
         createInviteUserCard(userObject) {
-
-            console.log(userObject);
             if (this.tournament.userIds.find(id => id === userObject.id))
                 return;
             this.tournament.userIds.push(userObject.id);            
