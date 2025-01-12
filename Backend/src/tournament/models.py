@@ -34,7 +34,10 @@ class TournamentMember(models.Model):
     tournament_alias = models.CharField(max_length=150, null=True, blank=True)
     is_admin = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
-    finish_place = models.IntegerField(null=True, blank=True)
+    played_games = models.IntegerField(default=0)
+    won_games = models.IntegerField(default=0)
+    win_points = models.IntegerField(default=0)
+    rank = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.tournament_alias or self.user.username} in {self.tournament.name}"

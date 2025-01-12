@@ -9,6 +9,7 @@ from tournament.serializer import TournamentGameSerializer
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from django.utils import timezone
 from django.utils.translation import gettext as _
+import random
 import logging
 
 # This creates the games for everyone against everyone in the tournament
@@ -87,55 +88,49 @@ def create_final_games(tournament):
         final_game.save()
 
 def check_final_games_with_3_members(tournament, final_game):
-    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")
-
-    # If the members are not set yet, set them
-    try:
-        final_members = GameMember.objects.filter(game_id=final_game.id)
-        # This means the final game is already over (should not happen)
-    except GameMember.DoesNotExist:
-        # The final game is not over yet so it members need to be set
-        player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=1)
-        player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=2)
-        with transaction.atomic():
-            game_member1 = GameMember.objects.create(
-                user=player_rank_1.user,
-                game=final_game,
-                local_game=tournament.local_tournament,
-                powerup_big=tournament.powerups,
-                powerup_fast=tournament.powerups,
-                powerup_slow=tournament.powerups
-            )
-            game_member2 = GameMember.objects.create(
-                user=player_rank_2.user,
-                game=final_game,
-                local_game=tournament.local_tournament,
-                powerup_big=tournament.powerups,
-                powerup_fast=tournament.powerups,
-                powerup_slow=tournament.powerups
-            )
-            game_member1.save()
-            game_member2.save()
-        # Send websocket notifications to all tournament members
-        data = TournamentGameSerializer([final_game], many=True).data
-        for item in data:
-            item['gameType'] = 'final'
-        send_tournament_ws_msg(
-            tournament.id,
-            "gameCreate",
-            "game_create",
-            f"Final Game {final_game.id} has been created.",
-            games=data
+    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")  
+    # The final game is not over yet so its members need to be set
+    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
+    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
+    with transaction.atomic():
+        game_member1 = GameMember.objects.create(
+            user=player_rank_1.user,
+            game=final_game,
+            local_game=tournament.local_tournament,
+            powerup_big=tournament.powerups,
+            powerup_fast=tournament.powerups,
+            powerup_slow=tournament.powerups
         )
-        # Set the deadline for the game
-        update_deadlines(tournament.id, [final_game])
+        game_member2 = GameMember.objects.create(
+            user=player_rank_2.user,
+            game=final_game,
+            local_game=tournament.local_tournament,
+            powerup_big=tournament.powerups,
+            powerup_fast=tournament.powerups,
+            powerup_slow=tournament.powerups
+        )
+        game_member1.save()
+        game_member2.save()
+    # Send websocket notifications to all tournament members
+    data = TournamentGameSerializer([final_game], many=True).data
+    for item in data:
+        item['gameType'] = 'final'
+    send_tournament_ws_msg(
+        tournament.id,
+        "gameCreate",
+        "game_create",
+        f"Final Game {final_game.id} has been created.",
+        games=data
+    )
+    # Set the deadline for the game
+    update_deadlines(tournament, [final_game])
 
 def start_semi_finals(tournament, semi_finals):
     # Get the players
-    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=1)
-    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=2)
-    player_rank_3 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=3)
-    player_rank_4 = TournamentMember.objects.get(tournament_id=tournament.id, finish_place=4)
+    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
+    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
+    player_rank_3 = TournamentMember.objects.get(tournament_id=tournament.id, rank=3)
+    player_rank_4 = TournamentMember.objects.get(tournament_id=tournament.id, rank=4)
     # Create the game member entrys
     with transaction.atomic():
         #   Semi-final 1:        1st vs 4th (Winner goes to final, Loser goes to third place game)
@@ -189,7 +184,7 @@ def start_semi_finals(tournament, semi_finals):
         games=data
     )
     # Set the deadlines for the games
-    update_deadlines(tournament.id, semi_finals)
+    update_deadlines(tournament, semi_finals)
 
 def start_finals(tournament, all_finals):
     # We need to generate the final and the third place game
@@ -267,7 +262,7 @@ def start_finals(tournament, all_finals):
         games=data
     )
     #Set the deadlines for the games
-    update_deadlines(tournament.id, all_finals[2:])
+    update_deadlines(tournament, all_finals[2:])
 
 def check_final_games_with_more_than_3_members(tournament, final_games):
     logging.info(f"Checking final games with more than 3 members for tournament {tournament.id}")
@@ -293,12 +288,15 @@ def check_final_games_with_more_than_3_members(tournament, final_games):
 # So the finals are already created at this point but some games are still pending
 def check_final_games(tournament):
     logging.info(f"Checking final games for tournament {tournament.id}")
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
     # So at this point the last (or last four games) are created
-    final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:4]
-    if final_games.count() == 1:
+    if tournament_members.count() == 3:
+        final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:1]
         check_final_games_with_3_members(tournament, final_games.first())
     else:
+        final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:4]
         check_final_games_with_more_than_3_members(tournament, final_games)
+
 
 def is_user_available(user):
     # No ongoing/paused tournament games...
@@ -321,11 +319,12 @@ def tournament_finals_started(tournament):
     # If there are not more games than everyone against everyone, then the final games havent started yet
     # this is the binomial coefficient
     total_games_count = Game.objects.filter(tournament_id=tournament.id).count()
-    if total_games_count == len(tournament.tournament_members) * (len(tournament.tournament_members) - 1) / 2:
+    number_of_members = TournamentMember.objects.filter(tournament_id=tournament.id).count()
+    if total_games_count == number_of_members * (number_of_members - 1) / 2:
         return False
     return True
 
-def update_deadlines(tournament_id, pending_games):
+def update_deadlines(tournament, pending_games):
     # Update the deadline for all pending games
     for game in pending_games:
         logging.info(f"Checking game {game.id}")
@@ -344,7 +343,7 @@ def update_deadlines(tournament_id, pending_games):
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Inform all users of the tournament
         send_tournament_ws_msg(
-            tournament_id,
+            tournament.id,
             "gameSetDeadline",
             "game_set_deadline",
             _("Game {game_id} has been set to pending. The deadline is {deadline}").format(game_id=game.id, deadline=game.deadline),
@@ -356,7 +355,8 @@ def update_deadlines(tournament_id, pending_games):
 
 def check_tournament_routine(tournament_id):
     phase = "round_robin"
-    if tournament_finals_started(tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    if tournament_finals_started(tournament):
         phase = "finals"
 
     # This will check all pending games and check if users are free to play
@@ -369,15 +369,15 @@ def check_tournament_routine(tournament_id):
     logging.info(f"Checking tournament {tournament_id} with phase {phase}")
     if phase == "finals":
         if pending_games:
-            check_final_games(tournament_id)
+            check_final_games(tournament)
         else:
-            finish_tournament(tournament_id)
+            finish_tournament(tournament)
     else:
         # Phase is round robin
         if pending_games:
-            update_deadlines(tournament_id, pending_games)
+            update_deadlines(tournament, pending_games)
         else:
-            create_final_games(tournament_id)
+            create_final_games(tournament)
             check_tournament_routine(tournament_id)
 
 # This will be called when a game is finished
@@ -399,10 +399,8 @@ def update_tournament_ranks(tournament_id):
     for member in members:
         user = member.user
         games = GameMember.objects.filter(game__tournament=tournament, user=user)
-        wins = games.filter(result=GameMember.GameResult.WON).count()
-        point_diff = games.filter(result=GameMember.GameResult.WON).aggregate(
-            total_diff=Sum(F('points') - F('game__game_members__points'))
-        )['total_diff'] or 0
+        wins = member.won_games
+        point_diff = member.win_points
         member_stats.append({
             'user_id': user.id,
             'username': user.username,
@@ -417,19 +415,19 @@ def update_tournament_ranks(tournament_id):
         reverse=True
     )
 
-    # Update the TournamentMember finish_place
+    # Update the TournamentMember rank
     with transaction.atomic():
         for idx, stat in enumerate(sorted_stats, start=1):
             TournamentMember.objects.filter(
                 user_id=stat['user_id'],
                 tournament=tournament
             ).select_for_update(
-            ).update(finish_place=idx)
+            ).update(rank=idx)
 
     # Prepare the data for WebSocket broadcasting
     ranking_json = [
         {
-            'username': stat['username'],
+            'userId': stat['user_id'],
             'wins': stat['wins'],
             'point_diff': stat['point_diff'],
             'rank': idx + 1
