@@ -14,7 +14,7 @@ export default {
     methods: {
 
         quitCancelTournamentButtonAction() {
-            if (tournamentState !== "setup")
+            if (this.data.tournamentState !== "setup")
                 return
             if (this.data.clientRole === "admin") {
                 console.log("canceling tournament");
@@ -32,7 +32,7 @@ export default {
         },
 
         subscribeStartTournamentButtonAction() {
-            if (tournamentState !== "setup")
+            if (this.data.tournamentState !== "setup")
                 return;
             if (this.data.clientRole === "admin") {
                 console.log("starting tournament");
@@ -42,7 +42,7 @@ export default {
                 })
             }
             else {
-                call(`tournament/join/${id}/`, 'PUT').then(data => {
+                call(`tournament/join/${this.routeParams.id}/`, 'PUT').then(data => {
                     console.log(data);
                     $callToast("success", data.message);
                 })

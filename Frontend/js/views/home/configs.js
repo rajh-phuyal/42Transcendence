@@ -21,11 +21,11 @@ export default {
         },
 
         users: [
-            { id: 3, avatar: '../../../assets/avatars/dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png', username: "rajh" },
-            { id: 4, avatar: "../../../assets/avatars/73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png", username: "alex" },
-            { id: 5, avatar: "../../../assets/avatars/4d39f530-68c8-42eb-ad28-45445424da5b.png", username: "ale" },
-            { id: 6, avatar: '../../../assets/avatars/1e3751c5-5e47-45f2-9967-111fd26a6be8.png', username: "anatolii" },
-            { id: 7, avatar: "../../../assets/avatars/fe468ade-12ed-4045-80a7-7d3e45be997e.png", username: "xico" },
+            { id: 13, avatar: '../../../assets/avatars/dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png', username: "rajh" },
+            { id: 11, avatar: "../../../assets/avatars/73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png", username: "alex" },
+            { id: 10, avatar: "../../../assets/avatars/4d39f530-68c8-42eb-ad28-45445424da5b.png", username: "ale" },
+            { id: 18, avatar: '../../../assets/avatars/1e3751c5-5e47-45f2-9967-111fd26a6be8.png', username: "anatolii" },
+            { id: 12, avatar: "../../../assets/avatars/fe468ade-12ed-4045-80a7-7d3e45be997e.png", username: "xico" },
         ]
     },
 
@@ -44,7 +44,7 @@ export default {
                 "name": tournamentName,
                 "localTournament": this.tournament.type === "local",
                 "publicTournament": this.tournament.type === "public",
-                "mapNumber": this.maps[this.tournament.map],
+                "mapNumber": this.tournament.map,
                 "opponentIds": this.tournament.type !== "public" ? this.tournament.userIds : [],
                 "powerups": powerups
             }).then(data => {
