@@ -11,22 +11,26 @@ html, body {
 }
 
 #navigator {
+	margin: 0 !important;
+	padding: 0 !important;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	height: 10vh;
 	align-items: center;
 	padding: 0.5em;
-	background-color: #00ccff;
 	cursor: pointer;
+	background-color: #170100;
+	background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
 }
 
-.navbar-brand {
-	padding: 4px 8px;
-	margin: 0px;
-	margin-left: 10px;
-	border: 1px dashed grey;
+.navbar-brand-custom {
+	margin: 0 !important;
+	padding: 0 !important;
+	padding: 0.7rem !important;
+	border: 1px solid white;
 	border-radius: 8px;
-	background-color: rgba(246, 255, 0, 0.603);
+	background-color: #3c2803;
+	color: white;
 }
 
 #view-loader {
@@ -102,3 +106,62 @@ h1 {
 	color: #f5c518;
 }
 
+#home-nav {
+	gap: 0.5rem;
+	padding: 0.2rem !important;
+	background-color: #3c2803;
+	color: white;
+	border: 1px solid white;
+	border-radius: 8px;
+}
+
+#main-nav-container {
+	width: 95vw !important;
+}
+
+#main-nav-container > * {
+	flex: 1;
+}
+
+.nav-username {
+	padding: 0.5rem !important;
+}
+
+#nav-left-side {
+	gap: 0.5rem;
+}
+
+#nav-right-side {
+	height: 80%;
+}
+
+#nav-mid-side {
+
+}
+
+#profile-nav-avatar {
+	/* width: 100%; */
+	height: 100%;
+	/* border-radius: 50%; */
+}
+
+#site-title {
+	color: white;
+}
+
+#chat-nav {
+	position: relative;
+}
+
+#chat-nav-badge {
+	position: absolute;
+	top: -0.3rem;
+	right: -0.3rem;
+	background-color: red !important;
+	width: auto;
+	height: auto;
+	text-align: center;
+	border-radius: 0.3rem;
+	padding-top: 1px !important;
+	padding: 0.2rem !important;
+}

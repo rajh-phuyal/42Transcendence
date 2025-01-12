@@ -51,6 +51,7 @@ class RegisterView(APIView):
                 "userId": user.id,
                 "username": user.username,
                 "language": user.language,
+                "userAvatar": user.avatar_path,
             })
 
             # Set the cookies
@@ -107,6 +108,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
                 "userId": user.id,
                 "username": user.username,
                 "language": user.language,
+                "userAvatar": user.avatar_path,
             })
 
             set_jwt_cookies(
