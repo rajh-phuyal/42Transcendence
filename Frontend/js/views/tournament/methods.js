@@ -28,7 +28,7 @@ export function buildView(tournamentState) {
     }
 
     $id("tournament-rank-container").style.display = "none"; 
-    $id("tournament-matches-table-container").style.display = "none"; 
+    $id("tournament-history-container").style.display = "none"; 
 }
 
 export function createPlayerCard(playerObject) {

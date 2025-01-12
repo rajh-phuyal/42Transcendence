@@ -17,13 +17,13 @@
 	<div id="tournament-middle">
 		<div id="tournament-middle-upper">
             <div id="tournament-middle-upper-ongoing-stage" class="tournament-ongoing">
-                <button>
+                <button id="tournament-games-do-come-button" class="tournament-tabs">
                     Game to come 
                 </button>
-                <button>
+                <button id="tournament-rank-button" class="tournament-tabs">
                     Tournament rank 
                 </button>
-                <button>
+                <button id="tournament-history-button" class="tournament-tabs">
                     Tournament History 
                 </button>
             </div>
@@ -37,10 +37,23 @@
 				<template id="tournament-players-list-template">
                     <div class="tournament-players-list-player-card">
                         <img class="tournament-players-list-player-card-avatar" alt="image not found">
-                        <p class="tournament-players-list-player-card-username"></p>
+                        <h6 class="tournament-players-list-player-card-username"></h6>
                     </div>
                 </template>
 			</div>
+
+
+            <!-- Game card template -->
+            <template id="tournament-game-card-template">
+                <div class="tournament-game-card-container">
+                    <img class="tournament-game-card-player1-avatar" alt="image not found">
+                    <h5 class="tournament-game-card-player1-username"></h5>
+                    <h4 class="tournament-game-card-score"></h4>
+                    <h5 class="tournament-game-card-player2-username"></h5>
+                    <img class="tournament-game-card-player2-avatar" alt="image not found">
+                </div>
+            </template>
+
 
             <!-- Current Games -->
             <div id="tournament-current-games-container" class="tournament-ongoing">
@@ -53,7 +66,7 @@
 			</div>
 
             <!-- Tournament History -->
-			<div id="tournament-matches-table-container">
+			<div id="tournament-history-container">
 				<p>Tournament History</p>
 			</div>
 		</div>
@@ -78,6 +91,22 @@
 	
 </div>
 <style>
+
+    #tournament-players-list-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tournament-players-list-player-card {
+        display: flex;
+        flex-direction: row;
+        height: 7vh;
+        width: 20vw;
+        background-color: white;
+    }
+    .tournament-players-list-player-card-avatar {
+        height: 90%;
+    }
 
     #tournament-players-list-container,
     #tournament-current-games-container,

@@ -13,6 +13,24 @@ export default {
 
     methods: {
 
+        openCurrentGames() {
+            this.domManip.$id("tournament-current-games-container").style.display = "flex";
+            this.domManip.$id("tournament-rank-container").style.display = "none";
+            this.domManip.$id("tournament-history-container").style.display = "none";
+        },
+
+        openTournamentRank() {
+            this.domManip.$id("tournament-current-games-container").style.display = "none";
+            this.domManip.$id("tournament-rank-container").style.display = "flex";
+            this.domManip.$id("tournament-history-container").style.display = "none";
+        },
+
+        openTournamentHistory() {
+            this.domManip.$id("tournament-current-games-container").style.display = "none";
+            this.domManip.$id("tournament-rank-container").style.display = "none";
+            this.domManip.$id("tournament-history-container").style.display = "flex";
+        },
+
         quitCancelTournamentButtonAction() {
             if (this.data.tournamentState !== "setup")
                 return
@@ -120,7 +138,9 @@ export default {
             this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
-    
+            this.domManip.$off(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
+            this.domManip.$off(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
+            this.domManip.$off(this.domManip.$id("tournament-history-button"), "click", this.openTournamentHistory);
             
         },
 
@@ -134,6 +154,7 @@ export default {
                 console.log("data:", data);
                 this.data = data;
 
+
                 buildView(data.tournamentState);
 
                 if (data.tournamentState === "setup") {
@@ -144,6 +165,9 @@ export default {
                 this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
+                this.domManip.$on(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
+                this.domManip.$on(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
+                this.domManip.$on(this.domManip.$id("tournament-history-button"), "click", this.openTournamentHistory);
             })
 
 
