@@ -6,7 +6,7 @@ from game.models import Game, GameMember
 from tournament.models import Tournament, TournamentMember, TournamentState
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
+from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, prepare_tournament_data_json, start_tournament
 from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
@@ -131,49 +131,11 @@ class TournamentLobbyView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
         user = request.user
-        role = ""
+
         tournament = Tournament.objects.get(id=id)
-        try:
-            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
-            if tournament_member.is_admin:
-                role = "admin"
-            else:
-                if tournament_member.accepted:
-                    role = "member"
-                else:
-                    role = "invited"
-        except TournamentMember.DoesNotExist:
-            role = "fan"
-
-        # Get all members of the tournament and serialize them
-        tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
-        admin_name = tournament_members.get(is_admin=True).user.username
-        tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
-        if tournament.state == TournamentState.SETUP: 
-            tournament_rank_data = []
-        else:
-            tournament_rank_data = TournamentRankSerializer(tournament_members, many=True).data
-        # Get all games of the tournament and serialize them
-        games = Game.objects.filter(tournament_id=tournament.id)
-        games_data = TournamentGameSerializer(games, many=True).data
-
-        # Get details of the tournament
-        response_json = {
-            'tournamentId': tournament.id,
-            'tournamentName': tournament.name,
-            'createdBy': admin_name,
-            'tournamentState': tournament.state,
-            'tournamentMapNumber': tournament.map_number,
-            'tournamentPowerups': tournament.powerups,
-            'tournamentPublic': tournament.public_tournament,
-            'tournamentLocal': tournament.local_tournament,
-            'clientRole': role,
-            'tournamentMembers': tournament_members_data,
-            'tournamentGames': games_data,
-            'tournamentRank': tournament_rank_data
-        }
-
         # Add client to websocket group if game is not finished
         if tournament.state != TournamentState.FINISHED:
             join_tournament_channel(user, tournament.id)
+
+        response_json=prepare_tournament_data_json(user, tournament)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)
