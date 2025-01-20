@@ -198,10 +198,10 @@ class GoToGameView(BaseAuthenticatedView):
         # Check if the tournament is ongoing
         if tournament.state != TournamentState.ONGOING:
             return error_response(_("Tournament is not ongoing"))
-        # Get the game
+        # Get the game wich needs to be pending or paused and has a deadline set
         sheduelted_games = Game.objects.filter(
             tournament_id=tournament_id,
-            state=Game.GameState.PENDING,
+            state__in=[Game.GameState.PENDING, Game.GameState.PAUSED],
             deadline__isnull=False)
         if not sheduelted_games:
             return error_response(_("No pending games with deadline set found"))
