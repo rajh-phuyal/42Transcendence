@@ -87,45 +87,8 @@ def create_final_games(tournament):
         )
         final_game.save()
 
-def check_final_games_with_3_members(tournament, final_game):
-    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")  
-    # The final game is not over yet so its members need to be set
-    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
-    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
-    with transaction.atomic():
-        game_member1 = GameMember.objects.create(
-            user=player_rank_1.user,
-            game=final_game,
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
-        )
-        game_member2 = GameMember.objects.create(
-            user=player_rank_2.user,
-            game=final_game,
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
-        )
-        game_member1.save()
-        game_member2.save()
-    # Send websocket notifications to all tournament members
-    data = TournamentGameSerializer([final_game], many=True).data
-    for item in data:
-        item['gameType'] = 'final'
-    send_tournament_ws_msg(
-        tournament.id,
-        "gameCreate",
-        "game_create",
-        f"Final Game {final_game.id} has been created.",
-        games=data
-    )
-    # Set the deadline for the game
-    update_deadlines(tournament, [final_game])
-
 def start_semi_finals(tournament, semi_finals):
+    logging.info(f"Starting semi-finals for tournament {tournament.id}")
     # Get the players
     player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
     player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
@@ -173,7 +136,7 @@ def start_semi_finals(tournament, semi_finals):
         game_member2.save()
         game_member3.save()
         game_member4.save()
-    data = TournamentGameSerializer([semi_finals], many=True).data
+    data = TournamentGameSerializer(semi_finals, many=True).data
     for item in data:
         item['gameType'] = 'semi-final'
     send_tournament_ws_msg(
@@ -264,23 +227,52 @@ def start_finals(tournament, all_finals):
     #Set the deadlines for the games
     update_deadlines(tournament, all_finals[2:])
 
+def check_final_games_with_3_members(tournament, final_game):
+    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")
+    # The final game is not over yet so its members need to be set
+    player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
+    player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
+    with transaction.atomic():
+        game_member1 = GameMember.objects.create(
+            user=player_rank_1.user,
+            game=final_game,
+            local_game=tournament.local_tournament,
+            powerup_big=tournament.powerups,
+            powerup_fast=tournament.powerups,
+            powerup_slow=tournament.powerups
+        )
+        game_member2 = GameMember.objects.create(
+            user=player_rank_2.user,
+            game=final_game,
+            local_game=tournament.local_tournament,
+            powerup_big=tournament.powerups,
+            powerup_fast=tournament.powerups,
+            powerup_slow=tournament.powerups
+        )
+        game_member1.save()
+        game_member2.save()
+    # Send websocket notifications to all tournament members
+    data = TournamentGameSerializer([final_game], many=True).data
+    for item in data:
+        item['gameType'] = 'final'
+    send_tournament_ws_msg(
+        tournament.id,
+        "gameCreate",
+        "game_create",
+        f"Final Game {final_game.id} has been created.",
+        games=data
+    )
+    # Set the deadline for the game
+    update_deadlines(tournament, [final_game])
+
 def check_final_games_with_more_than_3_members(tournament, final_games):
     logging.info(f"Checking final games with more than 3 members for tournament {tournament.id}")
     game_member_entrys_count = GameMember.objects.filter(game__in=final_games).count()
     if game_member_entrys_count == 0:
         # Case 1: No final game was played yet
-        start_semi_finals(tournament, final_games[:2])
-        return
-    finals_finished = Game.objects.filter(tournament_id=tournament.id, state=Game.GameState.FINISHED).count()
-    if finals_finished == 1:
-        # Case 2: One final game was played (one of the semi-finals)
-        logging.info(f"Case 2: One final game was played (one of the semi-finals)")
-        # Just wait for the other semi-final to finish
-        return
-    if finals_finished == 2:
-        # Case 3: Two final games were played (both semi-finals)
-        logging.info(f"Case 3: Two final games were played (both semi-finals)")
+        start_semi_finals(tournament, final_games[-2:]) #Takes the last two games
         start_finals(tournament, final_games)
+        asdasdasd continuer here!!!
     else:
         # Case 4: Three final games were played (both semi-finals and either final or third place game)
         logging.info(f"Case 4: Three final games were played (both semi-finals and either final or third place game; Just wait for the other final game to finish)")
@@ -296,7 +288,6 @@ def check_final_games(tournament):
     else:
         final_games = Game.objects.filter(tournament_id=tournament.id).order_by('id').reverse()[:4]
         check_final_games_with_more_than_3_members(tournament, final_games)
-
 
 def is_user_available(user):
     # No ongoing/paused tournament games...
@@ -325,6 +316,7 @@ def tournament_finals_started(tournament):
     return True
 
 def update_deadlines(tournament, pending_games):
+    logging.info(f"Updating deadlines for tournament {tournament.id} with {len(pending_games)} pending games")
     # Update the deadline for all pending games
     for game in pending_games:
         logging.info(f"Checking game {game.id}")
