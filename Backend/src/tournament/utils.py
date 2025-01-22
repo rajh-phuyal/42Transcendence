@@ -284,6 +284,7 @@ def start_tournament(user, tournament_id):
         tournament.save()
         # Remove all persons who have not accepted the invitation
         tournament_members.filter(accepted=False).delete()
+        tournament_members_after_start = TournamentMember.objects.filter(tournament_id=tournament_id)
     # Send websocket update message to all members to start the game
     send_tournament_ws_msg(
         tournament_id,
@@ -293,7 +294,7 @@ def start_tournament(user, tournament_id):
         **{"state": "start"}
     )
     # create the games
-    create_initial_games(tournament, tournament_members)
+    create_initial_games(tournament, tournament_members_after_start)
 
 def finish_tournament(tournament):
     # THE TOURNAMENT IS OVER!!!

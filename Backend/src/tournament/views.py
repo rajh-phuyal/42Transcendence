@@ -121,7 +121,7 @@ class LeaveTournamentView(BaseAuthenticatedView):
         return success_response(_("Tournament left successfully"))
 
 class StartTournamentView(BaseAuthenticatedView):
-    @barely_handle_exceptions
+    #@barely_handle_exceptions TODO: uncomment
     def put(self, request, id):
         user = request.user
         start_tournament(user, id)
@@ -149,7 +149,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
         tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
         admin_name = tournament_members.get(is_admin=True).user.username
         tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
-        if tournament.state == TournamentState.SETUP: 
+        if tournament.state == TournamentState.SETUP:
             tournament_rank_data = []
         else:
             tournament_rank_data = TournamentRankSerializer(tournament_members, many=True).data
