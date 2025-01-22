@@ -3,7 +3,7 @@ import $callToast from '../../abstracts/callToast.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
-import { buildView, createPlayerCard } from './methods.js';
+import { buildView, createPlayerCard, createGameCard } from './methods.js';
 
 
 export default {
@@ -160,6 +160,11 @@ export default {
                 if (data.tournamentState === "setup") {
                     for (let element of data.tournamentMembers)
                         createPlayerCard(element);
+                }
+                else {
+                    for (let element of data.tournamentGames) {
+                        createGameCard(element);
+                    }
                 }
 
                 this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);

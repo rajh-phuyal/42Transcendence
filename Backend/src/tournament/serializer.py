@@ -21,8 +21,6 @@ class TournamentGamePlayerSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     avatarPath = serializers.CharField(source='user.avatar_path', read_only=True)
-    points = serializers.IntegerField(source='game_member.points', read_only=True)
-    result = serializers.CharField(source='game_member.result', read_only=True)
 
     class Meta:
         model = GameMember
