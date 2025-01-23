@@ -1,3 +1,4 @@
+from django.utils import timezone
 from tournament.models import Tournament, TournamentMember, TournamentState
 from core.exceptions import BarelyAnException
 from user.exceptions import RelationshipException, BlockingException
@@ -291,6 +292,7 @@ def finish_tournament(tournament):
     # - set the tournament state to finished
     with transaction.atomic():
         tournament.state = TournamentState.FINISHED
+        tournament.finish_time = timezone.now()
         tournament.save()
     # - send the websocket message
     send_tournament_ws_msg(
