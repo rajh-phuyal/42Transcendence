@@ -62,7 +62,7 @@ class LoadConversationView(BaseAuthenticatedView):
 
         # Fetch and process messages
         messages_queryset = self.get_messages_queryset(conversation, msgid)
-        messages, last_seen_msg, unseen_messages = self.process_messages(messages_queryset)
+        messages, last_seen_msg, unseen_messages = self.process_messages(user, messages_queryset)
 
         # Blackout messages if blocking
         if is_blocking:
@@ -128,9 +128,10 @@ class LoadConversationView(BaseAuthenticatedView):
         queryset = queryset.order_by('-created_at')
         return queryset
 
-    def process_messages(self, messages_queryset):
+    def process_messages(self, user, messages_queryset):
         last_seen_msg = messages_queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
-        unseen_messages = messages_queryset.filter(seen_at__isnull=True)
+        # Exclude the user from unseen messages because they can't miss their own messages.
+        unseen_messages = messages_queryset.filter(seen_at__isnull=True).exclude(user=user)
         messages = messages_queryset[:NO_OF_MSG_TO_LOAD]
         return messages, last_seen_msg, unseen_messages
 
@@ -193,7 +194,7 @@ class CreateConversationView(BaseAuthenticatedView):
     def post(self, request):
         user = request.user
         userIds = request.data.get('userIds', [])
-        initialMessage = request.data.get('initialMessage')
+        initialMessage = request.data.get('initialMessage', '').strip()
         conversation_name = request.data.get('name', None)
         if not userIds:
            return error_response(_("No 'userIds' provided"), status_code=400)
@@ -227,5 +228,5 @@ class CreateConversationView(BaseAuthenticatedView):
 
         # Create the conversation
         new_conversation = create_conversation(user, other_user, initialMessage, user)
-        
+
         return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})
