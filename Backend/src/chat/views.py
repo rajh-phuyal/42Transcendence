@@ -194,7 +194,7 @@ class CreateConversationView(BaseAuthenticatedView):
     def post(self, request):
         user = request.user
         userIds = request.data.get('userIds', [])
-        initialMessage = request.data.get('initialMessage')
+        initialMessage = request.data.get('initialMessage', '').strip()
         conversation_name = request.data.get('name', None)
         if not userIds:
            return error_response(_("No 'userIds' provided"), status_code=400)

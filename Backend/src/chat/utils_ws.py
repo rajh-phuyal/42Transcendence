@@ -80,7 +80,7 @@ async def process_incoming_chat_message(consumer, user, text):
     from services.websocket_utils import parse_message
     message = parse_message(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
-    content = message.get('content')
+    content = message.get('content', '').strip()
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
 
     # Do db operations
