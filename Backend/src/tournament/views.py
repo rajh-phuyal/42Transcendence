@@ -82,8 +82,9 @@ class ToJoinView(BaseAuthenticatedView):
         return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
 
 class CreateTournamentView(BaseAuthenticatedView):
-    @barely_handle_exceptions
+    #@barely_handle_exceptions TODO: uncomment
     def post(self, request):
+        logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
         tournament = create_tournament(
@@ -92,7 +93,7 @@ class CreateTournamentView(BaseAuthenticatedView):
             local_tournament=request.data.get('localTournament'),
             public_tournament=request.data.get('publicTournament'),
             map_number=request.data.get('mapNumber'),
-            powerups_string=request.data.get('powerups'),
+            powerups=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')
         )
         if not tournament.public_tournament:

@@ -13,27 +13,14 @@ from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channe
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from .serializer import TournamentMemberSerializer
 
-
-def parse_bool(string):
-    logging.info(f"parse_bool: {string}")
-    if string == "true" or string == "True":
-        return True
-    return False
-
-def validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups):
+def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
         raise BarelyAnException(_("Can't create a tournament without a name"))
-
-    local_tournament_bool = parse_bool(local_tournament)
-    public_tournament_bool = parse_bool(public_tournament)
-    powerups_bool = parse_bool(powerups)
-
     if map_number is None or not isinstance(map_number, int):
         raise BarelyAnException(_("Can't create a tournament without specifying a map number"))
     if map_number not in [1, 2, 3, 4]:
         raise BarelyAnException(_("Invalid map number"))
 
-    return local_tournament_bool, public_tournament_bool, powerups_bool
 def validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament):
     # Get creator of the tournament
     try:
@@ -97,19 +84,19 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         tournament_user_objects.append(opponent)
     return tournament_user_objects
 
-def create_tournament(creator_id, name, local_tournament, public_tournament, map_number, powerups_string, opponent_ids=None):
+def create_tournament(creator_id, name, local_tournament, public_tournament, map_number, powerups, opponent_ids=None):
     # Validate args
-    local, public, powerups = validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups_string)
-    tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local, public)
+    validate_tournament_creation(name, map_number)
+    tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament)
 
     # Create the tournament and the tournament members in a single transaction
     with transaction.atomic():
         tournament = Tournament.objects.create(
             name=name,
-            local_tournament=local,
-            public_tournament=public,
+            local_tournament=local_tournament,
+            public_tournament=public_tournament,
             map_number=map_number,
-            powerups=powerups,
+            powerups=powerups
         )
         tournament.save()
 
