@@ -2,12 +2,13 @@ from django.db import models
 
 from django.db import models
 
-class   TournamentState(models.TextChoices):
-    SETUP = 'setup', 'Setup'
-    ONGOING = 'ongoing', 'Ongoing'
-    FINISHED = 'finished', 'Finished'
 
 class Tournament(models.Model):
+    class   TournamentState(models.TextChoices):
+        SETUP = 'setup', 'Setup'
+        ONGOING = 'ongoing', 'Ongoing'
+        FINISHED = 'finished', 'Finished'
+
     id = models.AutoField(primary_key=True)
     state = models.CharField(
         max_length=8,

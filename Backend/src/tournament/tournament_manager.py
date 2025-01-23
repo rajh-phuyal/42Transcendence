@@ -1,6 +1,6 @@
 from itertools import combinations
 from django.db import transaction
-from tournament.models import Tournament, TournamentMember, TournamentState
+from tournament.models import Tournament, TournamentMember
 from game.models import Game, GameMember
 from core.exceptions import BarelyAnException
 from tournament.utils import finish_tournament
@@ -88,7 +88,7 @@ def create_final_games(tournament):
         final_game.save()
 
 def check_final_games_with_3_members(tournament, final_game):
-    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")  
+    logging.info(f"Checking final game with 3 members for tournament {tournament.id}")
     # The final game is not over yet so its members need to be set
     player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
     player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)

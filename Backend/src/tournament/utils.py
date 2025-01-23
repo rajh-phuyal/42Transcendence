@@ -1,4 +1,4 @@
-from tournament.models import Tournament, TournamentMember, TournamentState
+from tournament.models import Tournament, TournamentMember
 from core.exceptions import BarelyAnException
 from user.exceptions import RelationshipException, BlockingException
 from user.models import User
@@ -44,7 +44,7 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     # Check if the creator is already in a tournament which is not finished
     if TournamentMember.objects.filter(
         user=creator,
-        tournament__state__in=[TournamentState.SETUP, TournamentState.ONGOING],
+        tournament__state__in=[Tournament.TournamentState.SETUP, Tournament.TournamentState.ONGOING],
         accepted=True
     ).exists():
         raise BarelyAnException(_("You can't create a new tournament while you are in another one"))
@@ -147,7 +147,7 @@ def delete_tournament(user, tournament_id):
         if not tournament_member.is_admin:
             raise BarelyAnException(_("You are not the admin of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
         # Check if the tournament has already started
-        if not tournament.state == TournamentState.SETUP:
+        if not tournament.state == Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be deleted if it is in setup state"))
         # Delete the tournament
         tournament_members.delete()
@@ -177,7 +177,7 @@ def join_tournament(user, tournament_id):
         if (tournament_member and tournament_member.accepted):
             raise BarelyAnException(_("You have already accepted this tournament invitation"))
             # Accept the invitation
-        if (tournament_member and tournament.state != TournamentState.SETUP):
+        if (tournament_member and tournament.state != Tournament.TournamentState.SETUP):
                 raise BarelyAnException(_("Tournament has already started or ended"))
         if tournament_member:
             tournament_member.accepted = True
@@ -196,7 +196,7 @@ def join_tournament(user, tournament_id):
         # In case we don't have an entry:
         if not tournament.public_tournament:
             raise BarelyAnException(_("You are not invited to this tournament"), status_code=status.HTTP_403_FORBIDDEN)
-        if tournament.state != TournamentState.SETUP:
+        if tournament.state != Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament has already started or ended"))
         members_count = TournamentMember.objects.filter(tournament_id=tournament_id).count()
         if members_count >= MAX_PLAYERS_FOR_TOURNAMENT:
@@ -230,7 +230,7 @@ def leave_tournament(user, tournament_id):
         except TournamentMember.DoesNotExist:
             raise BarelyAnException(_("You are not a member of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
 
-        if tournament.state != TournamentState.SETUP:
+        if tournament.state != Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be left if it is in setup state"))
         if tournament_member.is_admin:
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
@@ -270,7 +270,7 @@ def start_tournament(user, tournament_id):
 
         if not tournament_member.is_admin:
             raise BarelyAnException(_("You are not the admin of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
-        if not tournament.state == TournamentState.SETUP:
+        if not tournament.state == Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be started if it is in setup state"))
         # Check if at least 3 members are there
         tournament_members_count = tournament_members.filter(accepted=True).count()
@@ -302,7 +302,7 @@ def finish_tournament(tournament):
     # so only:
     # - set the tournament state to finished
     with transaction.atomic():
-        tournament.state = TournamentState.FINISHED
+        tournament.state = Tournament.TournamentState.FINISHED
         tournament.save()
     # - send the websocket message
     send_tournament_ws_msg(

@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _, activate
 from django.db import transaction
 from rest_framework import status
 from django.db.models import Q
-from user.models import User, CoolStatus, IsCoolWith, NoCoolWith
+from user.models import User, IsCoolWith, NoCoolWith
 from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
 from core.exceptions import BarelyAnException
 from user.exceptions import ValidationException, BlockingException, RelationshipException
@@ -26,8 +26,8 @@ class SearchView(BaseAuthenticatedView):
         if onlyFriends == 'true':
             # Filter to find users who have an ACCEPTED status in the 'IsCoolWith' table
             users = users.filter(
-                Q(requester_cool__requestee=current_user, requester_cool__status=CoolStatus.ACCEPTED) |
-                Q(requestee_cool__requester=current_user, requestee_cool__status=CoolStatus.ACCEPTED)
+                Q(requester_cool__requestee=current_user, requester_cool__status=IsCoolWith.CoolStatus.ACCEPTED) |
+                Q(requestee_cool__requester=current_user, requestee_cool__status=IsCoolWith.CoolStatus.ACCEPTED)
             )
         # Limit the result
         users = users[:NO_OF_USERS_TO_LOAD]
@@ -168,10 +168,10 @@ class RelationshipView(BaseAuthenticatedView):
             raise RelationshipException(_('You are already friends with this user'))
         with transaction.atomic():
             try:
-                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=CoolStatus.PENDING)
+                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=IsCoolWith.CoolStatus.PENDING)
             except ObjectDoesNotExist:
                 raise RelationshipException(_('Friend request not found'))
-            cool_status.status = CoolStatus.ACCEPTED
+            cool_status.status = IsCoolWith.CoolStatus.ACCEPTED
             cool_status.save()
 
     # Logic for cancelling a friend request:
@@ -180,7 +180,7 @@ class RelationshipView(BaseAuthenticatedView):
             raise RelationshipException(_('You are already friends with this user. Need to remove them as a friend instead.'))
         with transaction.atomic():
             try:
-                cool_status = IsCoolWith.objects.select_for_update().get(requester=user, requestee=target, status=CoolStatus.PENDING)
+                cool_status = IsCoolWith.objects.select_for_update().get(requester=user, requestee=target, status=IsCoolWith.CoolStatus.PENDING)
             except ObjectDoesNotExist:
                 raise RelationshipException(_('Friend request not found'))
             cool_status.delete()
@@ -191,7 +191,7 @@ class RelationshipView(BaseAuthenticatedView):
             raise RelationshipException(_('You are already friends with this user. Need to remove them as a friend instead.'))
         with transaction.atomic():
             try:
-                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=CoolStatus.PENDING)
+                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=IsCoolWith.CoolStatus.PENDING)
             except ObjectDoesNotExist:
                 raise RelationshipException(_('Friend request not found'))
             cool_status.delete()
@@ -204,7 +204,7 @@ class RelationshipView(BaseAuthenticatedView):
             cool_status = IsCoolWith.objects.select_for_update().filter(
                 (Q(requester=user) & Q(requestee=target)) |
                 (Q(requester=target) & Q(requestee=user)),
-                status=CoolStatus.ACCEPTED
+                status=IsCoolWith.CoolStatus.ACCEPTED
             )
             if not cool_status:
                 raise RelationshipException(_('You are not friends with this user'))
