@@ -45,25 +45,9 @@ def join_tournament_channel(user, tournament_id, activate=True):
     if activate:
         # Add the user to the tournament channel (doesnt matter if the user is already in the channel)
         async_to_sync(channel_layer.group_add)(tournament_id_name, channel_name_user)
-        data = TournamentMemberSerializer(TournamentMember.objects.get(user_id=user.id, tournament_id=tournament_id)).data
-        # TODO Implelemnt the tournament state
-        send_tournament_ws_msg(
-            tournament_id,
-            "tournamentFan",
-            "tournament_fan",
-            _("User {username} is watching the tournament page").format(username=user.username),
-            **{"state": "True"}
-        )
     else:
         # Remove the user from the tournament channel
         async_to_sync(channel_layer.group_discard)(tournament_id_name, channel_name_user)
-        send_tournament_ws_msg(
-            tournament_id,
-            "tournamentFan",
-            "tournament_fan",
-            _("User {username} is not watching the tournament page anymore").format(username=user.username),
-            **{"state": "False"}
-        )
 
 def send_tournament_invites_via_pm(tournament_id):
     from chat.utils import create_conversation, get_conversation

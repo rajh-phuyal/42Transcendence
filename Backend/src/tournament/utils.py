@@ -12,7 +12,7 @@ import logging
 from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
-from .serializer import TournamentMemberSerializer
+from .serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
 
 def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
@@ -305,3 +305,48 @@ def finish_tournament(tournament):
     # - closse the channel
     delete_tournament_channel(tournament.id)
     logging.info(f"Tournament {tournament.id} has finished!")
+
+def prepare_tournament_data_json(user, tournament):
+    role = ""
+    try:
+        tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
+        if tournament_member.is_admin:
+            role = "admin"
+        else:
+            if tournament_member.accepted:
+                role = "member"
+            else:
+                role = "invited"
+    except TournamentMember.DoesNotExist:
+        role = "fan"
+
+    # Get all members of the tournament and serialize them
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+    admin_name = tournament_members.get(is_admin=True).user.username
+    tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
+    if tournament.state == TournamentState.SETUP:
+        tournament_rank_data = []
+    else:
+        tournament_rank_data = TournamentRankSerializer(tournament_members, many=True).data
+    # Get all games of the tournament and serialize them
+    games = Game.objects.filter(tournament_id=tournament.id)
+    games_data = TournamentGameSerializer(games, many=True).data
+
+    # Get details of the tournament
+    response_json = {
+        'tournamentId': tournament.id,
+        'tournamentName': tournament.name,
+        'createdBy': admin_name,
+        'tournamentState': tournament.state,
+        'tournamentMapNumber': tournament.map_number,
+        'tournamentPowerups': tournament.powerups,
+        'tournamentPublic': tournament.public_tournament,
+        'tournamentLocal': tournament.local_tournament,
+        'clientRole': role,
+        'tournamentMembers': tournament_members_data,
+        'tournamentGames': games_data,
+        'tournamentRank': tournament_rank_data
+    }
+
+    return response_json
+
