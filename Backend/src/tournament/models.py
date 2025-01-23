@@ -2,7 +2,7 @@ from django.db import models
 
 from django.db import models
 
-class TournamentState(models.TextChoices):
+class   TournamentState(models.TextChoices):
     SETUP = 'setup', 'Setup'
     ONGOING = 'ongoing', 'Ongoing'
     FINISHED = 'finished', 'Finished'
