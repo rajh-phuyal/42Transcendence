@@ -59,7 +59,12 @@ def send_tournament_invites_via_pm(tournament_id):
     for member in tournament_members:
         # Check if there's a private conversation between the user and the admin
         conversation = get_conversation(tournament_admin, member)
-        invite_message = _("The overloads spectace that the holly @{username} has invited you to the fantastic tournament '{tournament_name}'").format(username=tournament_admin.user.username, tournament_name=tournament.name)
+        invite_message = _("The overloads spectace that the holly @{username_admin} has invited @{username_guest} to the fantastic tournament '{tournament_name}'"
+            ).format(
+                username_admin=tournament_admin.user.username,
+                username_guest=member.user.username,
+                tournament_name=tournament.name
+            )
 
         # If not, create one
         if not conversation:

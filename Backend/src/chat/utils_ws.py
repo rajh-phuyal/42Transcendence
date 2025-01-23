@@ -41,6 +41,10 @@ def create_message(user, conversation_id, content):
         if is_blocked(user, other_user_member.user):
             raise BlockingException(_("You have been blocked by this user"))
 
+    # Check if content is empty
+    if not content:
+        raise BarelyAnException(_("Message content cannot be empty"))
+
     try:
         with transaction.atomic():
             # Create message
@@ -76,7 +80,7 @@ async def process_incoming_chat_message(consumer, user, text):
     from services.websocket_utils import parse_message
     message = parse_message(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
-    content = message.get('content')
+    content = message.get('content', '').strip()
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
 
     # Do db operations
