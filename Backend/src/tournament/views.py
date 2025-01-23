@@ -12,6 +12,7 @@ from tournament.serializer import TournamentMemberSerializer, TournamentGameSeri
 import logging
 from django.db import models
 from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm, send_tournament_invites_via_ws
+from rest_framework import status
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -133,9 +134,44 @@ class TournamentLobbyView(BaseAuthenticatedView):
         user = request.user
 
         tournament = Tournament.objects.get(id=id)
-        # Add client to websocket group if game is not finished
+        # Add client to websocket group if tournament is not finished
         if tournament.state != TournamentState.FINISHED:
             join_tournament_channel(user, tournament.id)
 
         response_json=prepare_tournament_data_json(user, tournament)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)
+
+# If the user is in a tournament and has a pending game with a deadline set,
+# this endpoint will return the gameId so that the FE can redir to the game
+# lobby page. In any other case this endpoint will return an error_response
+class GoToGameView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request):
+        user = request.user
+        tournament_id=request.data.get('tournamentId')
+        if not tournament_id:
+            return error_response(_("tournament_id is required"))
+        tournament = Tournament.objects.get(id=tournament_id)
+        # Check if user is in the tournament
+        try:
+            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament_id)
+        except TournamentMember.DoesNotExist:
+            return error_response(_("U are not part of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
+        # Check if the tournament is ongoing
+        if tournament.state != TournamentState.ONGOING:
+            return error_response(_("Tournament is not ongoing"))
+        # Get the game wich needs to be pending or paused and has a deadline set
+        sheduelted_games = Game.objects.filter(
+            tournament_id=tournament_id,
+            state__in=[Game.GameState.PENDING, Game.GameState.PAUSED],
+            deadline__isnull=False)
+        if not sheduelted_games:
+            return error_response(_("No pending games with deadline set found"))
+        # Filter the sheduelted games to get the game that the user is part of
+        try:
+            game_member_entry = GameMember.objects.filter(
+                user_id=user.id,
+                game__in=sheduelted_games)
+            return success_response(_("Shedueled Game found"), **{'gameId': game_member_entry.first().game_id})
+        except GameMember.DoesNotExist:
+            return error_response(_("The overloards ask u to be patient. There will be a game for u soon."))

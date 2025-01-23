@@ -9,7 +9,8 @@ from tournament.views import (
     JoinTournamentView,
     LeaveTournamentView,
     StartTournamentView,
-    TournamentLobbyView
+    TournamentLobbyView,
+    GoToGameView
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path('leave/<int:id>/', LeaveTournamentView.as_view(), name='leave_tournament'),
     path('start/<int:id>/', StartTournamentView.as_view(), name='start_tournament'),
     path('lobby/<int:id>/', TournamentLobbyView.as_view(), name='tournament_lobby'),
+    path('go-to-game/', GoToGameView.as_view(), name='go_to_game'),
 ]
