@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from celery.schedules import crontab
+from datetime import timedelta
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
@@ -22,6 +23,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'hello-world-every-minute': {
         'task': 'tournament.tasks.check_overdue_tournament_games',
-        'schedule': crontab(minute='*'),  # Runs every minute
+        'schedule': timedelta(seconds=10),  # Runs every 20 seconds
+        #'schedule': crontab(minute='*'),  # Runs every minute TODO: Reset to 1 minute
     },
 }

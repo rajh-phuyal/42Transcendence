@@ -14,7 +14,7 @@ from services.chat_service import broadcast_message
 
 
 def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **json_details):
-    tournament_id_name = f"tournament{tournament_id}"
+    tournament_id_name = f"tournament_{tournament_id}"
     async_to_sync(channel_layer.group_send)(
     tournament_id_name,
     {
@@ -24,7 +24,7 @@ def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **jso
         "message": message,
         **json_details
     })
-    logging.info(f"Message sent to tournament {tournament_id} channel: {message}")
+    logging.info(f"Message sent to tournament {tournament_id} channel ({tournament_id_name}): {message}")
 
 # This function should be only called by the endpoint lobby/<int:id>/ to add
 # the user to the websocket group of the tournament
@@ -36,7 +36,7 @@ def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **jso
 # Also if a user connets to the websocket, the user should be added to the group
 # and if the user disconnects, the user should be removed from the group
 def join_tournament_channel(user, tournament_id, activate=True):
-    tournament_id_name = f"tournament{tournament_id}"
+    tournament_id_name = f"tournament_{tournament_id}"
     channel_name_user =  cache.get(f'user_channel_{user.id}', None)
 
     # Check if the user has an active channel
@@ -103,7 +103,7 @@ def send_tournament_invites_via_ws(tournament_id):
 
 def delete_tournament_channel(tournament_id):
     # Remove all users from the tournament channel
-    tournament_id_name = f"tournament{tournament_id}"
+    tournament_id_name = f"tournament_{tournament_id}"
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id)
     for member in tournament_members:
         channel_name_user =  cache.get(f'user_channel_{member.user.id}', None)
@@ -111,7 +111,7 @@ def delete_tournament_channel(tournament_id):
             continue
         async_to_sync(channel_layer.group_discard)(tournament_id_name, channel_name_user)
         logging.info(f"Removed user {member.user.username} from tournament {tournament_id} channel")
-    logging.info(f"Removed all users from tournament {tournament_id} channel")
+    logging.info(f"Removed all users from tournament {tournament_id} channel ({tournament_id_name})")
     # Remove the tournament channel
     # This in not needed since the channel will be removed automatically by
     # the channel layer

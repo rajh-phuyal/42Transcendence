@@ -113,7 +113,7 @@ def finish_game(game, message):
     ...
     with transaction.atomic():
         game.state = Game.GameState.FINISHED
-        game.finish_time = timezone.now()
+        game.finish_time = timezone.now() #TODO: Issue #193
         game.save()
 
     # For tournament games only:

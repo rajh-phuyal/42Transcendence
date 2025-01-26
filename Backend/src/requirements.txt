@@ -17,6 +17,8 @@ kombu==5.4.2                # Required for messaging (used by Celery)
 celery==5.4.0               # Celery for task scheduling and async processing (Check deadline of tournament games, etc.)
 django-celery-results==2.5.1
 redis==5.0.0
+channels_redis==4.2.1
+
 
 
 
