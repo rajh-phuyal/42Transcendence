@@ -4,7 +4,7 @@ from django.core.cache import cache
 from rest_framework import serializers
 from .models import Conversation, Message, ConversationMember
 from .constants import CHAT_AVATAR_GROUP_DEFAULT
-from user.constants import DEFAULT_AVATAR
+from user.constants import AVATAR_DEFAULT
 from user.constants import USER_ID_OVERLOARDS
 from user.models import User
 from django.utils.translation import gettext as _
@@ -50,7 +50,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             return other_user.avatar_path if other_user.avatar_path else 'CHAT_AVATAR_DEFAULT'
 
         # Default avatar in case no other members exist (which should never happen)
-        return DEFAULT_AVATAR
+        return AVATAR_DEFAULT
 
     def get_unreadCounter(self, obj):
         current_user = self.context['request'].user
@@ -100,8 +100,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj):
         if isinstance(obj, dict):  # Custom separator message
-            return obj.get('user').avatar_path if obj.get('user') else DEFAULT_AVATAR
-        return obj.user.avatar_path if obj.user.avatar_path else DEFAULT_AVATAR
+            return obj.get('user').avatar_path if obj.get('user') else AVATAR_DEFAULT
+        return obj.user.avatar_path if obj.user.avatar_path else AVATAR_DEFAULT
 
     def to_representation(self, instance):
         if isinstance(instance, dict):  # Handle custom dictionary data

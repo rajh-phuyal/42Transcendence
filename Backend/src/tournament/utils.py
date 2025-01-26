@@ -1,3 +1,4 @@
+from django.utils import timezone
 from tournament.models import Tournament, TournamentMember, TournamentState
 from core.exceptions import BarelyAnException
 from user.exceptions import RelationshipException, BlockingException
@@ -13,27 +14,14 @@ from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channe
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from .serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
 
-
-def parse_bool(string):
-    logging.info(f"parse_bool: {string}")
-    if string == "true" or string == "True":
-        return True
-    return False
-
-def validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups):
+def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
         raise BarelyAnException(_("Can't create a tournament without a name"))
-
-    local_tournament_bool = parse_bool(local_tournament)
-    public_tournament_bool = parse_bool(public_tournament)
-    powerups_bool = parse_bool(powerups)
-
     if map_number is None or not isinstance(map_number, int):
         raise BarelyAnException(_("Can't create a tournament without specifying a map number"))
     if map_number not in [1, 2, 3, 4]:
         raise BarelyAnException(_("Invalid map number"))
 
-    return local_tournament_bool, public_tournament_bool, powerups_bool
 def validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament):
     # Get creator of the tournament
     try:
@@ -97,19 +85,19 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         tournament_user_objects.append(opponent)
     return tournament_user_objects
 
-def create_tournament(creator_id, name, local_tournament, public_tournament, map_number, powerups_string, opponent_ids=None):
+def create_tournament(creator_id, name, local_tournament, public_tournament, map_number, powerups, opponent_ids=None):
     # Validate args
-    local, public, powerups = validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups_string)
-    tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local, public)
+    validate_tournament_creation(name, map_number)
+    tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament)
 
     # Create the tournament and the tournament members in a single transaction
     with transaction.atomic():
         tournament = Tournament.objects.create(
             name=name,
-            local_tournament=local,
-            public_tournament=public,
+            local_tournament=local_tournament,
+            public_tournament=public_tournament,
             map_number=map_number,
-            powerups=powerups,
+            powerups=powerups
         )
         tournament.save()
 
@@ -236,7 +224,7 @@ def leave_tournament(user, tournament_id):
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
         # Delete the tournament member
         tournament_member.delete()
-        # TODO: check if there are enough players left and cancel the tournament if not (only for private tournaments)
+        # TODO: issue #281 check if there are enough players left and cancel the tournament if not (only for private tournaments)
     # Send websocket update message to admin to update the lobby
     if tournament_member.accepted:
         message=_("User {username} left the tournament").format(username=user.username)
@@ -284,6 +272,7 @@ def start_tournament(user, tournament_id):
         tournament.save()
         # Remove all persons who have not accepted the invitation
         tournament_members.filter(accepted=False).delete()
+        tournament_members_after_start = TournamentMember.objects.filter(tournament_id=tournament_id)
     # Send websocket update message to all members to start the game
     send_tournament_ws_msg(
         tournament_id,
@@ -293,7 +282,7 @@ def start_tournament(user, tournament_id):
         **{"state": "start"}
     )
     # create the games
-    create_initial_games(tournament, tournament_members)
+    create_initial_games(tournament, tournament_members_after_start)
 
 def finish_tournament(tournament):
     # THE TOURNAMENT IS OVER!!!
@@ -303,6 +292,7 @@ def finish_tournament(tournament):
     # - set the tournament state to finished
     with transaction.atomic():
         tournament.state = TournamentState.FINISHED
+        tournament.finish_time = timezone.now()
         tournament.save()
     # - send the websocket message
     send_tournament_ws_msg(

@@ -279,9 +279,11 @@ def check_final_games_with_more_than_3_members(tournament, final_games):
     logging.info(f"The semi-finals states are: {semi_finals[0].state} and {semi_finals[1].state}")
     if semi_finals[0].state != Game.GameState.FINISHED:
         logging.info(f"Case 2.1: Semi-final 1 is not finished yet")
+        update_deadlines(tournament, final_games)
         return
     if semi_finals[1].state != Game.GameState.FINISHED:
         logging.info(f"Case 2.2: Semi-final 2 is not finished yet")
+        update_deadlines(tournament, final_games)
         return
 
     # Check if the final games are already created (aka the game_member_entries)
@@ -294,6 +296,8 @@ def check_final_games_with_more_than_3_members(tournament, final_games):
 
     # Check if the final games are finished aka just wait
     logging.info(f"The final games states are: {finals[0].state} and {finals[1].state}. We just need to wait until both are finished...")
+    # For local games we need to update the deadlines again
+    update_deadlines(tournament, final_games)
 
 # So the finals are already created at this point but some games are still pending
 def check_final_games(tournament):
@@ -335,9 +339,10 @@ def is_tournament_finals_started(tournament):
         return False
     return True
 
-def update_deadlines(tournament, pending_games):
-    logging.info(f"Updating deadlines for tournament {tournament.id} with {len(pending_games)} pending games")
-    # Update the deadline for all pending games
+def update_deadline_normal_tournament(tournament, pending_games):
+    from game.utils import update_deadline_of_game
+    logging.info(f"Tournament Manager logic: NORMAL for tournament {tournament.id}")
+     # Update the deadline for all pending games
     for game in pending_games:
         logging.info(f"Checking game {game.id}")
         # Check if both users are free to play
@@ -348,26 +353,48 @@ def update_deadlines(tournament, pending_games):
             continue
         # Both users are free to play so set the deadline
         logging.info(f"Both users ({game_member1.user.username} and {game_member2.user.username}) are available to play")
-        with transaction.atomic():
-            game = Game.objects.select_for_update().get(id=game.id)
-            game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START #TODO: Issue #193
-            game.save()
-        logging.info(f"Game {game.id} now has the deadline {game.deadline}")
-        # Inform all users of the tournament
-        send_tournament_ws_msg(
-            tournament.id,
-            "gameSetDeadline",
-            "game_set_deadline",
-            _("Game {game_id} has been set to pending. The deadline is {deadline}"
-                ).format(
-                    game_id=game.id,
-                    deadline=localtime(game.deadline).isoformat() #TODO: Issue #193
-                ),
-            **{
-                "gameId": game.id,
-                "deadline": localtime(game.deadline).isoformat() #TODO: Issue #193
-            }
-        )
+        update_deadline_of_game(game.id)
+
+def update_deadline_local_tournament(tournament, pending_games):
+    from game.utils import update_deadline_of_game
+    logging.info(f"Tournament Manager logic: LOCAL for tournament {tournament.id}")
+    # Just need to check if there is already another game ongoing or paused
+    tournament_games_ongoing = Game.objects.filter(
+        tournament_id=tournament.id,
+        state__in=[Game.GameState.ONGOING, Game.GameState.PAUSED]
+    ).count()
+    if tournament_games_ongoing > 0:
+        logging.info(f"Another game is already ongoing or paused")
+        return
+    # Check if another game already has a deadline
+    tournament_games_with_deadline = Game.objects.filter(
+        tournament_id=tournament.id,
+        state=Game.GameState.PENDING,
+        deadline__isnull=False
+    ).count()
+    if tournament_games_with_deadline > 0:
+        logging.info(f"Another game already has a deadline")
+        return
+    # Update the deadline for a random pending game
+    if not pending_games:
+        logging.info(f"No pending games found - that is strange!")
+    update_deadline_of_game(random.choice(pending_games).id)
+
+
+def update_deadlines(tournament, pending_games):
+    logging.info(f"Updating deadlines for tournament {tournament.id} with {len(pending_games)} pending games")
+
+    # Just make sure pending_games is filtered correctly (could be important for local tournaments)
+    pending_games = Game.objects.filter(
+        id__in=[game.id for game in pending_games],
+        tournament_id=tournament.id,
+        deadline__isnull=True,
+        state=Game.GameState.PENDING)
+
+    if tournament.local_tournament:
+        update_deadline_local_tournament(tournament, pending_games)
+    else:
+        update_deadline_normal_tournament(tournament, pending_games)
 
 def check_tournament_routine(tournament_id):
     phase = "round_robin"

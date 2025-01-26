@@ -37,7 +37,7 @@ services:
         PA_DB_USER : $PA_DB_USER
         PA_DB_PSWD : $PA_DB_PSWD
     depends_on:
-      db:
+      fe:
         condition: service_healthy
     environment:
       PGADMIN_DEFAULT_EMAIL : $PA_MAIL
@@ -63,7 +63,7 @@ services:
       context: ./Backend
       dockerfile: django.dockerfile
     depends_on:
-      db:
+      redis:
         condition: service_healthy
     environment:
       LOCAL_DEPLOY            : $LOCAL_DEPLOY
@@ -84,7 +84,7 @@ services:
       - media-volume:/$MEDIA_VOLUME_NAME
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "./app/python manage.py check"]
+      test: ["CMD-SHELL", "python ./app/manage.py check >> /tmp/healthcheck.log 2>&1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -98,10 +98,8 @@ services:
       context: ./Frontend
       dockerfile: nginx.dockerfile
     depends_on:
-      - be
-      # TODO: Uncomment the line below as soon as the backend healthcheck is implemented!
-      #be:
-        #condition: service_healthy
+      be:
+        condition: service_healthy
     environment:
       LOCAL_DEPLOY : $LOCAL_DEPLOY
       DOMAIN_NAMES : $DOMAIN_NAMES
@@ -136,6 +134,12 @@ services:
   redis:
     image: redis:7.0
     container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
     ports:
       - "${REDIS_PORT}:6379"
 
