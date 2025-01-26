@@ -1,3 +1,5 @@
+from django.utils.timezone import localtime
+from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
 from tournament.utils_ws import send_tournament_ws_msg
 from rest_framework import status
@@ -13,7 +15,6 @@ from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 import logging
 from tournament.ranking import update_tournament_member_stats
-
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
@@ -113,7 +114,7 @@ def finish_game(game, message):
     ...
     with transaction.atomic():
         game.state = Game.GameState.FINISHED
-        game.finish_time = timezone.now()
+        game.finish_time = timezone.now() #TODO: Issue #193
         game.save()
 
     # For tournament games only:
@@ -136,6 +137,42 @@ def finish_game(game, message):
     update_tournament_member_stats(game, winner, looser)
     update_tournament_ranks(game.tournament_id)
     check_tournament_routine(game.tournament_id)
+
+def update_deadline_of_game(game_id):
+    try:
+        with transaction.atomic():
+            game = Game.objects.select_for_update().get(id=game_id)
+
+            if game.state != Game.GameState.PENDING:
+                logging.info(f"ERROR: Game {game_id} is not in pending state")
+                return
+
+            if game.tournament_id is None:
+                logging.info(f"ERROR: Game {game_id} is not a tournament game")
+                return
+
+            game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
+            game.save()
+        logging.info(f"Game {game.id} now has the deadline {game.deadline}")
+        # Inform all users of the tournament
+        send_tournament_ws_msg(
+            game.tournament.id,
+            "gameSetDeadline",
+            "game_set_deadline",
+            _("Game {game_id} has been set to pending. The deadline is {deadline}"
+                ).format(
+                    game_id=game.id,
+                    deadline=localtime(game.deadline).isoformat()
+                ),
+            **{
+                "gameId": game.id,
+                "deadline": localtime(game.deadline).isoformat()
+            }
+        )
+    except Game.DoesNotExist:
+        logging.info(f"ERROR: Game {game_id} not found in function call update_deadline_of_game")
+        return
+
 
 
 

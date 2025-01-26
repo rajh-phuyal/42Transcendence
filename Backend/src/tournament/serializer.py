@@ -40,14 +40,19 @@ class TournamentGameSerializer(serializers.ModelSerializer):
         model = Game
         fields = ['gameId', 'mapNumber', 'state', 'finishTime', 'deadline', 'player1', 'player2']
 
-    def get_player1(self, obj): # TODO: HACKATHON #265
+
+    def get_player1(self, obj):
         # Get the first palyer of the game
         game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').first()
+        if game_member is None:
+            return None
         return TournamentGamePlayerSerializer(game_member).data
 
     def get_player2(self, obj):
         # Get the second player of the game
         game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').last()
+        if game_member is None:
+            return None
         return TournamentGamePlayerSerializer(game_member).data
 
 class TournamentRankSerializer(serializers.Serializer):

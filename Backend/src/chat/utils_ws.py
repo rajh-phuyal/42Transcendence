@@ -33,7 +33,7 @@ def create_message(user, conversation_id, content):
         ConversationMember.objects
             .filter(conversation=conversation_id)
             .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
-            .first() #TODO: #204 Groupchat remove the first() and return the list
+            .first()
         )
 
     # Check if user is blocked by other member (if not group chat)
@@ -65,7 +65,7 @@ def create_message(user, conversation_id, content):
                     .select_for_update()
                     .filter(conversation=conversation)
                     .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
-                    .first() #TODO: #204 Groupchat remove the first() and return the list
+                    .first()
                 )
             other_user_member.unread_counter = unread_messages_count
             other_user_member.save(update_fields=['unread_counter'])

@@ -9,6 +9,7 @@ from core.authentication import BaseAuthenticatedView
 from authentication.models import DevUserData
 from core.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
+from rest_framework import status
 from core.decorators import barely_handle_exceptions
 from rest_framework_simplejwt.exceptions import InvalidToken
 from django.conf import settings
@@ -65,25 +66,25 @@ class RegisterView(APIView):
             raise exceptions.APIException(f"Error during user registration: {str(e)}")
 
     def get(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def put(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def delete(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def patch(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def head(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def options(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def trace(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class InternalTokenObtainPairView(TokenObtainPairView):
     serializer_class = InternalTokenObtainPairSerializer
@@ -128,25 +129,25 @@ class InternalTokenObtainPairView(TokenObtainPairView):
         return error_response(_("Login failed"))
 
     def get(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def put(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def delete(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def patch(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def head(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def options(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def trace(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def get_user_from_request(self, request):
         """
@@ -198,22 +199,22 @@ class InternalTokenRefreshView(TokenRefreshView):
         return response
 
     def get(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def put(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def delete(self, request):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def patch(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def head(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def options(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def trace(self, request, *args, **kwargs):
-        return error_response(_("Method not allowed"), status_code=405)
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)

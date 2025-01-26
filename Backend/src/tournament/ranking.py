@@ -5,7 +5,7 @@ from django.db import transaction
 def updateCurrentRank(tournamentId):
     ...
 
-
+# Only called when finishing a game
 def update_tournament_member_stats(game, game_member_winner, game_member_looser):
     # 0. calculate point difference
     difference = game_member_winner.points - game_member_looser.points
@@ -22,11 +22,5 @@ def update_tournament_member_stats(game, game_member_winner, game_member_looser)
         tournament_member_winner.win_points += difference
         tournament_member_winner.save()
         tournament_member_looser.save()
-        
-    
 
-
-# sendCurrentRankWS
-
-
-# Serializer for rank to send it via REST
+    # sendCurrentRankWS -> THIS WILL BE DONE BY FINISH GAME FUNCTION!
