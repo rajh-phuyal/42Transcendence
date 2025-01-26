@@ -135,7 +135,8 @@ class TournamentLobbyView(BaseAuthenticatedView):
         user = request.user
 
         tournament = Tournament.objects.get(id=id)
-        # Add client to websocket group if game is not finished
+
+        # Add client to websocket group if tournament is not finished
         if tournament.state != TournamentState.FINISHED:
             join_tournament_channel(user, tournament.id)
 
