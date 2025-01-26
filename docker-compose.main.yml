@@ -76,6 +76,7 @@ services:
       DJANGO_SETTINGS_MODULE  : app.settings
       DJANGO_ALLOWED_HOSTS    : $DOMAIN_NAMES
       MEDIA_VOLUME_NAME       : $MEDIA_VOLUME_NAME
+      REDIS_PORT              : $REDIS_PORT
     ports:
       - "8000:8000" #need to be changed. remove it after
     volumes:
@@ -136,7 +137,7 @@ services:
     image: redis:7.0
     container_name: redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
 
 networks:
   default:

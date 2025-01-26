@@ -108,11 +108,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # We need this for DJANGO CHANNELS!
 ASGI_APPLICATION = 'app.asgi.application'
 
+print(f"setting REDIS_PORT from env: {os.environ.get('REDIS_PORT')}")
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('redis', 6379)],  # the name of our Redis container in Docker
+            'hosts': [('redis', os.environ.get('REDIS_PORT'))],  # the name of our Redis container in Docker
         },
     },
 }
