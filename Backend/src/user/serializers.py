@@ -34,7 +34,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             return "under surveillance"
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
-        return obj.last_login.strftime("%Y-%m-%d %H:%M")
+        return obj.last_login.strftime("%Y-%m-%d %H:%M") #TODO: Issue #193
 
     def get_online(self, user):
         # AI Opponent and Overlords are always online

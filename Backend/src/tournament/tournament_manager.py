@@ -350,7 +350,7 @@ def update_deadlines(tournament, pending_games):
         logging.info(f"Both users ({game_member1.user.username} and {game_member2.user.username}) are available to play")
         with transaction.atomic():
             game = Game.objects.select_for_update().get(id=game.id)
-            game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
+            game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START #TODO: Issue #193
             game.save()
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Inform all users of the tournament
@@ -361,11 +361,11 @@ def update_deadlines(tournament, pending_games):
             _("Game {game_id} has been set to pending. The deadline is {deadline}"
                 ).format(
                     game_id=game.id,
-                    deadline=localtime(game.deadline).isoformat()
+                    deadline=localtime(game.deadline).isoformat() #TODO: Issue #193
                 ),
             **{
                 "gameId": game.id,
-                "deadline": localtime(game.deadline).isoformat()
+                "deadline": localtime(game.deadline).isoformat() #TODO: Issue #193
             }
         )
 
