@@ -182,7 +182,7 @@ class LoadConversationView(BaseAuthenticatedView):
             "conversationName": conversation_name,
             "conversationAvatar": conversation_avatar,
             "online": other_user.get_online_status(),
-            "userIds": list(member_ids),
+            "userId": other_user.id,
             "conversationUnreadCounter": new_unread_counter,
             "totalUnreadCounter": new_unread_counter_total,
             "data": serialized_messages.data,

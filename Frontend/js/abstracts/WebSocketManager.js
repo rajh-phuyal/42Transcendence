@@ -171,13 +171,14 @@ class WebSocketManager {
 
     processIncomingChatMessageChatView(message) {
         if (this.currentConversation == message.conversationId) {
-            $id("chat-view-messages-container").prepend(createMessage(message));
+            createMessage(message, false, true);
 
             // send seen message if it is not ur own message
             if (message.userId != $store.fromState("user").id)
                 this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
+        } else {
+            $id("chat-view-conversations-container").prepend($id("chat-view-conversation-card-" +  message.conversationId));
         }
-        $id("chat-view-conversations-container").prepend($id("chat-view-conversation-card-" +  message.conversationId));
     }
 
     updateConversationBadge(message) {

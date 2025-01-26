@@ -54,7 +54,7 @@
           <span class="chat-view-messages-message-time-stamp"></span>
         </div>
       </template>
-      
+
       <!-- Overlords message Template -->
       <template id="chat-view-overlords-message-template">
         <div class="chat-view-overlords-message-container">
@@ -67,12 +67,13 @@
         </div>
       </template>
     </div>
+
     <!-- Text field -->
     <div id="chat-view-text-field-container">
       <text-field id="chat-view-text-field" width="96" clear="true" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
     </div>
   </div>
-    
+
 </div>
 <style>
 
@@ -80,7 +81,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: auto !important; 
+    margin-left: auto !important;
     height: 90%;
     width: auto;
     align-self: flex-end;
@@ -107,7 +108,7 @@
     height: 80%;
     margin-left: auto !important;
   }
-  
+
   #chat-view-header-subject-container {
     display: flex;
     flex-direction: row;
@@ -117,7 +118,7 @@
     width: 30%;
     /* background-color: rgba(0, 0, 255, 0.316); */
   }
-  
+
   .chat-view-conversation-card {
     display: flex;
     flex-direction: row;
@@ -193,7 +194,7 @@
     background-color: #202020;
     cursor: pointer;
   }
-  
+
   .chat-view-conversation-card-avatar {
     height: 90%;
     margin: 0% 4% 0% 2% !important;
@@ -203,12 +204,12 @@
     height: 50%;
     margin: 0% 0% 4% 3% !important;
   }
-  
+
   .chat-view-header-icons {
     height: 40%;
     margin-top: 10% !important;
   }
-  
+
   .chat-view-header-icons:hover {
     height: 43%;
     margin-top: 9.7% !important;
@@ -219,30 +220,30 @@
     margin-left: 36% !important;
     margin-right: 0.3% !important;
   }
-  
+
   #chat-view-header-invite-for-game-image:hover {
     margin-left: 35.7% !important;
     margin-right: 0% !important;
   }
-  
+
   #chat-view-header-group-chat-image {
     margin-left: 1.5% !important;
     margin-right: 0.3% !important;
   }
-  
+
   #chat-view-header-group-chat-image:hover {
     margin-left: 1.2% !important;
     margin-right: 0% !important;
   }
-  
-  #chat-view-left-side-container{      
+
+  #chat-view-left-side-container{
     z-index: 1;
     width: 45%;
     height: 95%;
     padding: 2% 0% 0% 1% !important;
     /* background-color: rgba(0, 0, 255, 0.316); */
   }
-  
+
   #chat-view-header-container {
     display: flex;
     flex-direction: row;
@@ -250,14 +251,14 @@
     height: 21%;
     padding-right: 1% !important;
   }
-  
+
   #chat-view-messages-container {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     width: 100%;
     height: 58%;
     margin: 2% 0% !important;
-    overflow-y: auto;
+    overflow-y: scroll;
     /* background-color: rgba(243, 247, 7, 0.396); */
     /* box-sizing: border-box; */
   }
@@ -322,7 +323,9 @@
     overflow: visible;
     color: yellow;
   }
-  
+
+
+
   #chat-view-text-field-container {
     width: 100%;
     height: 15%;
@@ -352,7 +355,7 @@
     box-sizing: border-box;
   }
 
-  #chat-view-right-side-container { 
+  #chat-view-right-side-container {
     z-index: 1;
     width: 100%;
     height: 95%;
@@ -362,7 +365,7 @@
   #chat-view-background-image{
     z-index: 0;
     position: relative;
-    height: 100%; 
+    height: 100%;
   }
 
   #chat-view-image-container {
