@@ -9,13 +9,14 @@ from user.utils import change_avatar_in_db
 from core.exceptions import BarelyAnException
 from django.utils.translation import gettext as _
 from user.constants import AVATAR_FRAME
+from rest_framework import status
 
 # This function opens an image file and returns a PIL Image object
 def open_image(img):
     try:
         return Image.open(img)
     except FileNotFoundError as e:
-        raise BarelyAnException(_('Avatar file not found'), status_code=404)
+        raise BarelyAnException(_('Avatar file not found'), status_code=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         raise BarelyAnException(_('Error opening image'), str(e))
 
@@ -80,7 +81,7 @@ def add_frame(image):
         positioned_image.paste(image, (15, 19))  # Paste the avatar image at (15, 19)
     except Exception as e:
         raise BarelyAnException(_('Error creating positioned image'))
-    
+
     # Combine the frame and positioned image, preserving transparency
     try:
         final_image = Image.alpha_composite(positioned_image, frame)
@@ -101,8 +102,8 @@ def generate_filename_and_save(image):
     except Exception as e:
         raise BarelyAnException(_('Error saving image'), str(e))
     return file_name
-    
-# This function processes an avatar image file and returns a response    
+
+# This function processes an avatar image file and returns a response
 def process_avatar(user, avatar_file):
     if not avatar_file.content_type.startswith('image'):
         raise BarelyAnException(_('File type not supported'))

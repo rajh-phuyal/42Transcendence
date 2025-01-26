@@ -83,7 +83,7 @@ class ToJoinView(BaseAuthenticatedView):
         return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
 
 class CreateTournamentView(BaseAuthenticatedView):
-    #@barely_handle_exceptions TODO: uncomment
+    @barely_handle_exceptions
     def post(self, request):
         logging.info(f"Request data: {request.data}")
         # Get the user from the request
@@ -123,7 +123,7 @@ class LeaveTournamentView(BaseAuthenticatedView):
         return success_response(_("Tournament left successfully"))
 
 class StartTournamentView(BaseAuthenticatedView):
-    #@barely_handle_exceptions TODO: uncomment
+    @barely_handle_exceptions
     def put(self, request, id):
         user = request.user
         start_tournament(user, id)

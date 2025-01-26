@@ -224,7 +224,7 @@ def leave_tournament(user, tournament_id):
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
         # Delete the tournament member
         tournament_member.delete()
-        # TODO: check if there are enough players left and cancel the tournament if not (only for private tournaments)
+        # TODO: issue #281 check if there are enough players left and cancel the tournament if not (only for private tournaments)
     # Send websocket update message to admin to update the lobby
     if tournament_member.accepted:
         message=_("User {username} left the tournament").format(username=user.username)

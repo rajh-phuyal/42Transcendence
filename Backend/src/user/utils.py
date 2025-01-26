@@ -8,7 +8,7 @@ def change_avatar_in_db(user, file_path):
         old_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars/', user.avatar_path)
         if default_storage.exists(old_avatar_path):
             default_storage.delete(old_avatar_path)
-    
+
 	# TODO: Add the atomic transaction here
     # Update user's avatar_path field and save the user model
     user.avatar_path = file_path

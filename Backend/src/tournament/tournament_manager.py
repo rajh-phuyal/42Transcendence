@@ -1,3 +1,4 @@
+from django.utils.timezone import localtime
 from itertools import combinations
 from django.db import transaction
 from tournament.models import Tournament, TournamentMember, TournamentState

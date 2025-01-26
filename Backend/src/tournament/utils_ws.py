@@ -79,17 +79,9 @@ def send_tournament_invites_via_pm(tournament_id):
         # Send a message to an existing conversation
         broadcast_message(newMessage)
 
-
-
-
 def send_tournament_invites_via_ws(tournament_id):
     # Get all users that are invited to the tournament
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
-
-    #TODO: Since we don't have the notification system implemented yet, and no
-    # private chat with the overloards, we can't send a persitent message to the
-    # yet. But anyhow we can send a toat message to the user (done below)
-    # and the user can see the invite in the modal done by issue #234
 
     # Also send an info message that will show as a toast message
     message={
@@ -99,7 +91,6 @@ def send_tournament_invites_via_ws(tournament_id):
     }
     for member in tournament_members:
         send_message_to_user_sync(member.user_id, **message)
-
 
 def delete_tournament_channel(tournament_id):
     # Remove all users from the tournament channel

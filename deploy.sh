@@ -635,25 +635,26 @@ docker_re() {
 
 check_healthy() {
     if [[ " ${ALLOWED_CONTAINERS[*]} " =~ " $1 " ]]; then
-        if perform_task_with_spinner \
-            "Checking if the container $1 is healthy" \
-            "[ $(docker inspect --format='{{.State.Health.Status}}' $1 2>/dev/null) = "healthy" ]" \
-            "$1 container is up and healthy" \
-            "$1 container isn't running (or unhealthy)!" \
-            true; then
-            return 0 # Success
-        else
-            return 1 # Failure
-        fi
+        for index in {1..15}; do
+            if perform_task_with_spinner \
+                "Checking if the container $1 is healthy (try:${index}/15)" \
+                "[ $(docker inspect --format='{{.State.Health.Status}}' $1 2>/dev/null) = "healthy" ]" \
+                "$1 container is up and healthy" \
+                "$1 container isn't running (or unhealthy)!" \
+                true; then
+                return 0 # Success
+            fi
+            sleep 1
+        done
+        return 1
     else
         print_error "Invalid container: '$1' (only '${ALLOWED_CONTAINERS[*]}' are allowed!)"
-        return 1 # Failure
+        return 1
     fi
 }
 
 insert_dummy_data() {
-	check_healthy "db"
-    if [[ $? -eq 1 ]]; then
+    if ! check_healthy "db"; then
         print_header "${RD}" "The database is not running (or unhealthy)!\nRun './deploy.sh start db' first!"
         exit 1
     fi
@@ -671,12 +672,14 @@ insert_dummy_data() {
 }
 
 run_test() {
-    # TODO: When healthceck is implemented, check if the backend is healthy
-    # check_healthy "be"
-    if [[ $? -eq 1 ]]; then
-        print_header "${RD}" "The backend is not running (or unhealthy)!\nRun './deploy.sh start be' first!"
-        exit 1
-    fi
+    services=("db" "be" "fe")
+    for service in "${services[@]}"; do
+        if ! check_healthy "$service"; then
+            print_header "${RD}" "The $service is not running (or unhealthy)!\nRun './deploy.sh start $service' first!"
+            exit 1
+        fi
+    done
+
     print_header "${BL}" "Starting the tester...${NC}"
     bash "$(dirname "$(realpath "$0")")/Tester/tester.sh"
 }

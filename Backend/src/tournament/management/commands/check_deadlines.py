@@ -7,6 +7,6 @@ class Command(BaseCommand):
     help = 'Check game deadlines and trigger actions'
 
     def handle(self, *args, **options):
-        now = timezone.now()
+        now = timezone.now() #TODO: Issue #193
         #overdue_games = Game.objects.filter(deadline__lte=now, status='pending')
         logging.info(f"Checking game deadlines at {now}")
