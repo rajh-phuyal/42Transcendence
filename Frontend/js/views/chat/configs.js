@@ -259,7 +259,7 @@ export default {
             this.domManip.$on(container, "click", this.conversationCallback);
         },
 
-        async populateConversations() {
+        populateConversations() {
             call('chat/load/conversations/', 'GET').then(data => {
                 if (!data.data)
                 {
@@ -337,18 +337,22 @@ export default {
 
         // Open WebSocket after the DOM is inserted
         async afterDomInsertion() {
-
-            // TODO: issue #208 when params are not defined the routeParam.id crashes
-            //          maybe the routeParam.id should be defined if no params are set.
             WebSocketManager.setCurrentRoute("chat");
-            this.hideChatElements();
-            if (this.routeParams?.id)
-                this.loadConversation(this.routeParams.id);
             this.conversationsContainer = this.domManip.$id("chat-view-conversations-container");
-
+            this.hideChatElements();
             await this.populateConversations();
             this.initInfiniteScroll();
             this.initAvatarClick();
+
+            if (this.routeParams?.id){
+                console.log("this.routeParams.id:", this.routeParams.id);
+                this.loadConversation(this.routeParams.id);
+            }
+
+
+            //          maybe the routeParam.id should be defined if no params are set.
+            // TODO: issue #208 when params are not defined the routeParam.id crashes
+
 
 			// Add event listener for the Send button
             // const sendButton = document.getElementById("chat-message-submit");
