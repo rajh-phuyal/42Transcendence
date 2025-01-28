@@ -102,15 +102,6 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         overloards = User.objects.get(id=USER_ID_OVERLOARDS)
         if not creator:
             creator = overloards
-        # TODO: This message will show up in the language of the creator!
-        # Not sure how we can make it change if the user changes their language
-        # Maybe nothing for the MVP, but it's something to keep in mind
-        createConversationObject = Message.objects.create(
-            user=overloards,
-            conversation=new_conversation,
-            content=_("Start of conversation between @{user1} and @{user2}").format(user1=user1.username, user2=user2.username),
-            seen_at=timezone.now() #TODO: Issue #193
-        )
         initialMessageObject = Message.objects.create(user=creator, conversation=new_conversation, content=initialMessage)
 
     # Adding the conversation to the user's WebSocket groups (if they are logged in)
