@@ -25,7 +25,6 @@ export default {
         initInfiniteScroll() {
             const container = this.domManip.$id("chat-view-messages-container");
             this.handleScroll = () => {
-                console.log("Scrolling... %s/%s/%s", container.scrollTop, container.scrollHeight, container.clientHeight);
                 if (container.scrollTop === 0) {
                     const conversationId = this.domManip.$id("chat-view-text-field").getAttribute("conversation-id");
                     if(conversationId){
@@ -113,6 +112,85 @@ export default {
             const avatar = this.domManip.$id("chat-view-header-avatar");
             avatar.style.cursor = "default";
             avatar.removeEventListener("click", () => {});
+        },
+
+        initSearch() {
+            const searchBar = this.domManip.$id("chat-view-searchbar");
+            const conversationsContainer = this.domManip.$id("chat-view-conversations-container");
+
+            // This filters the items in the conversation list based on the search bar input
+            searchBar.addEventListener("input", () => {
+                const query = searchBar.value.toLowerCase();
+                const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+
+                conversationCards.forEach((card) => {
+                    const username = card.querySelector(".chat-view-conversation-card-username").textContent.toLowerCase();
+                    if (username.includes(query)) {
+                        card.style.display = "flex"; // Show matching cards
+                    } else {
+                        card.style.display = "none"; // Hide non-matching cards
+                    }
+                });
+            });
+
+            searchBar.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") {
+                // ESC clears the search bar
+                    searchBar.value = ""; // Clear the search bar
+                    const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+
+                    conversationCards.forEach((card) => {
+                        card.style.display = "flex"; // Show all cards
+                    });
+                }else if (event.key === "Enter") {
+                // ENTER selects the first visible card
+                    const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
+                        .filter((card) => card.style.display !== "none"); // Only include visible cards
+
+                    if (visibleCards.length > 0) {
+                        visibleCards[0].click(); // Simulate a click on the first filtered card
+                        searchBar.value = ""; // Clear the search bar
+
+                        // Show all cards again
+                        const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+                        allCards.forEach((card) => {
+                            card.style.display = "flex";
+                        });
+                    }
+                }
+            });
+        },
+
+        initMentionClick() {
+            const container = this.domManip.$id("chat-view-messages-container");
+            container.addEventListener("click", (event) => {
+                // Check if a mention USER was clicked
+                const mention = event.target.closest(".mention-user");
+                if (mention) {
+                    const userId = mention.getAttribute("data-userid");
+                    if (userId) {
+                        console.log(`Redirecting to profile?id=${userId}`);
+                        // Navigate to the profile page
+                        router(`/profile`, { id: userId }); // Adjust as per your routing mechanism
+                    } else {
+                        console.warn("Mention clicked but no user ID found.");
+                    }
+                }
+                // Check if a mention TOURNAMENT was clicked
+                const tournament = event.target.closest(".mention-tournament");
+                if (tournament) {
+                    const tournamentId = tournament.getAttribute("data-tournamentid");
+                    console.log(`Redirecting to tournament?id=${tournamentId}`);
+                    router(`/tournament`, { id: tournamentId });
+                }
+                // Check if a mention GAME was clicked
+                const game = event.target.closest(".mention-game");
+                if (game) {
+                    const gameId = game.getAttribute("data-gameid");
+                    console.log(`Redirecting to game?id=${gameId}`);
+                    router(`/game`, { id: gameId });
+                }
+            });
         },
 
 //        populateConversationHeader() {
@@ -413,6 +491,7 @@ export default {
             // Hide non MVP Elements
             this.domManip.$id("chat-view-header-invite-for-game-image").style.display = "none";
             this.domManip.$id("chat-view-header-group-chat-image").style.display = "none";
+            this.domManip.$id("chat-view-searchbar").placeholder = translate("chat", "filter...");
 
             WebSocketManager.setCurrentRoute("chat");
             // Init everything conversation related
@@ -443,7 +522,8 @@ export default {
             // Add event listeners
             this.initInfiniteScroll();
             this.initAvatarClick();
-            // this.initSearch(); TODO
+            this.initSearch()
+            this.initMentionClick();
 
 
 

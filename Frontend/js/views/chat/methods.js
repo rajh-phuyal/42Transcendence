@@ -66,13 +66,35 @@ export function createMessage(element, prepend = true) {
     else
         messageContainer.id = "message-" + element.id;
 
-    // Set the content of the message
     if (element.userId != $store.fromState("user").id)
         template.querySelector(".chat-view-messages-message-sender").textContent = element.username;
+
+    // PARSE THE CONTENT
+    // Match @<username>@<userid>@ pattern
+    let parsedContent = element.content.replace(
+        /@([^@]+)@([^@]+)@/g,
+        `<span class="mention-user" data-userid="$2">@$1</span>`
+    );
+    // Match #T#<tournamentName>#<tournamentId># pattern
+    parsedContent = parsedContent.replace(
+        /#T#([^#]+)#([^#]+)#/g,
+        '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
+    );
+    // Match #G#<gameId># pattern
+    parsedContent = parsedContent.replace(
+        /#G#([^#]+)#/g,
+        '<span class="mention-game" data-gameid="$1">#$1</span>'
+    );
+    // Set the content of the message
     if (element.userId == 1)
-        template.querySelector(".chat-view-messages-message-overlords-box").textContent = element.content;
-    else
-        template.querySelector(".chat-view-messages-message-box").textContent = element.content;
+        template.querySelector(".chat-view-messages-message-overlords-box").innerHTML = parsedContent;
+    else{
+        template.querySelector(".chat-view-messages-message-box").innerHTML = parsedContent;
+
+
+        //template.querySelector(".chat-view-messages-message-box").innerHTML = parsedContent
+    }
+
     template.querySelector(".chat-view-messages-message-time-stamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
@@ -88,7 +110,6 @@ export function createMessage(element, prepend = true) {
     const lastMessageId = container.getAttribute("last-message-id");
     if (!lastMessageId || lastMessageId == 0 || element.id < lastMessageId)
         container.setAttribute("last-message-id", element.id);
-    console.log("Last message id", lastMessageId);
 }
 
 export function highlightConversationCard(conversationId) {
@@ -262,7 +283,7 @@ export function loadMessages(conversationId) {
         .then(data => {
             const elapsedTime = Date.now() - startTime;
             const delay = Math.max(200 - elapsedTime, 0);
-
+            console.log("Messages loaded:", data);
             return new Promise(resolve => {
                 setTimeout(() => {
                     spinner.remove();

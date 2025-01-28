@@ -29,7 +29,7 @@ class TextField extends HTMLElement {
         const value = inputElement.value;
 
         WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
-        
+
         inputElement.value = '';
     }
 
@@ -63,10 +63,10 @@ class TextField extends HTMLElement {
             this.height = newValue;
         }
         else if (name === "conversation-id") {
-            console.log("convo id:", newValue)
+            //console.log("conversation id:", newValue)
             this.conversationId = newValue;
         }
-        
+
         // this.render();
     }
 
@@ -100,13 +100,13 @@ class TextField extends HTMLElement {
                     outline: none;
                     background-color: #FFF7E3;
                     resize: none;
-                    overflow: auto; 
+                    overflow: auto;
                 }
 
                 textarea:hover{
                     background-color: #EFE7D3;
                 }
-                
+
                 textarea:focus{
                     background-color: #EFE7D3;
                 }
@@ -127,7 +127,7 @@ class TextField extends HTMLElement {
                 button:hover {
                     background-color: #303030;
                 }
-                
+
                 button:active{
                     background-color: #505050;
                 }

@@ -5,7 +5,7 @@
   <!-- Side Container -->
   <div id="chat-view-left-side-container">
     <h2 style="color: white;">chat room</h2>
-    <input id="chat-view-searchbar" placeholder="search..." type="text">
+    <input id="chat-view-searchbar" placeholder="" type="text">
     <div id="chat-view-conversations-container">
       <span id="chat-view-conversations-no-converations-found"></span>
 
@@ -60,8 +60,6 @@
         <div class="chat-view-overlords-message-container">
           <span class="chat-view-messages-message-sender"></span>
           <div class="chat-view-messages-message-overlords-box">
-            <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>
-            <!-- <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button> -->
           </div>
           <span class="chat-view-messages-message-time-stamp"></span>
         </div>
@@ -337,7 +335,30 @@
     color: yellow;
   }
 
-
+  .mention-user {
+      color: rgb(159, 144, 144) !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+  }
+  .mention-user:hover {
+      text-decoration: none !important;
+  }
+  .mention-game {
+      color: rgb(206, 111, 22) !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+  }
+  .mention-game:hover {
+      text-decoration: none !important;
+  }
+  .mention-tournament {
+      color: rgb(214, 108, 27) !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+  }
+  .mention-user:hover {
+      text-decoration: none !important;
+  }
 
   #chat-view-text-field-container {
     width: 100%;

@@ -77,8 +77,12 @@ class LoadConversationView(BaseAuthenticatedView):
                     "user": the_overloards,
                     "created_at": firstMessage.created_at,
                     "seen_at": firstMessage.seen_at,
-                    "content": _("Start of conversation between @{username1} and @{username2}")
-                        .format(username1=user.username, username2=other_user.username)
+                    "content": _("Start of conversation between @{username1}@{userid1}@ and @{username2}@{userid2}@")
+                        .format(
+                            username1=user.username,
+                            userid1=user.id,
+                            username2=other_user.username,
+                            userid2=other_user.id)
                 })
 
             # Blackout messages if blocking
