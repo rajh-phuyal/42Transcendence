@@ -1,10 +1,8 @@
 import $store from '../store/store.js';
-import { createConversationCard, createMessage } from '../views/chat/methods.js';
-import { $id, $on } from './dollars.js';
+import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import router from '../navigation/router.js';
-import { updateParticipantsCard, createParticipantCard, createGameList } from '../views/tournament/methods.js';
-import { processIncomingWsChatMessage, updateConversationBadge } from '../views/chat/methods.js';
+import { updateParticipantsCard, createGameList } from '../views/tournament/methods.js';
+import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
 
 const { hostname } = window.location;
 
@@ -12,7 +10,6 @@ class WebSocketManager {
     constructor() {
         this.socket = null;
         this.currentRoute = undefined;
-        this.currentConversation = undefined;
     }
 
     // Connect to WebSocket with the provided token
@@ -95,7 +92,7 @@ class WebSocketManager {
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
                 else if (message.what == "conversation")
-                    updateConversationBadge(message);
+                    updateConversationBadge(message.id, message.value);
                 return ;
 
             case "newConversation":
@@ -230,10 +227,6 @@ class WebSocketManager {
 
     setCurrentRoute(route) {
         this.currentRoute = route;
-    }
-
-    setCurrentConversation(conversationId) {
-        this.currentConversation = conversationId;
     }
 
     reconnect() {

@@ -138,7 +138,7 @@ class TextField extends HTMLElement {
             </style>
             <div id="main-container">
                 <textarea id="text-field" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
-                <button id="textFieldButton">Send</button>
+                <button id="textFieldButton">${translate("chat", "sendButton")}</button>
             </div>
         `;
     }

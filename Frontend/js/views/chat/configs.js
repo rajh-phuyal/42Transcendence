@@ -20,7 +20,6 @@ export default {
 
     methods: {
         setTranslations() {
-            console.log("Setting translations for chat view.");
             this.domManip.$id("chat-view-searchbar").placeholder = translate("chat", "filterConversations");
             this.domManip.$id("chat-room-heading").innerText = translate("chat", "ChatRoom");
         },
