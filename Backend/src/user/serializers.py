@@ -1,5 +1,5 @@
 from django.db.models import Q
-from user.models import User, IsCoolWith, CoolStatus
+from user.models import User, IsCoolWith
 from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
@@ -117,6 +117,6 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         # 'requester_user_id'
         # 'target_user_id'
         user_id = self.context.get('requester_user_id')
-        if obj.status == CoolStatus.PENDING:
+        if obj.status == IsCoolWith.CoolStatus.PENDING:
             return 'requestSent' if obj.requester.id == user_id else 'requestReceived'
         return 'friend'

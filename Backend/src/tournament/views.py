@@ -3,7 +3,7 @@ from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
 from game.models import Game, GameMember
-from tournament.models import Tournament, TournamentMember, TournamentState
+from tournament.models import Tournament, TournamentMember
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, prepare_tournament_data_json, start_tournament
@@ -21,13 +21,13 @@ class EnrolmentView(BaseAuthenticatedView):
         user = request.user
         try:
             # Check if user has an active tournament
-            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.ONGOING).tournament
+            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=Tournament.TournamentState.ONGOING).tournament
             return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
         except Exception as e:
             ...  # Continue to the next check
         try:
             # Check if user has an accepted tournament which is not ongoing
-            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.SETUP, accepted=True).tournament
+            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=Tournament.TournamentState.SETUP, accepted=True).tournament
             return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
         except Exception as e:
             return success_response(_("User has no active tournament"), **{'tournamentId': None, 'tournamentName': None})
@@ -60,7 +60,7 @@ class ToJoinView(BaseAuthenticatedView):
         invited_tournaments = TournamentMember.objects.filter(
             user_id=user.id,
             accepted=False,
-            tournament__state=TournamentState.SETUP
+            tournament__state=Tournament.TournamentState.SETUP
         ).annotate(
             tournamentId=models.F('tournament_id'),
             tournamentName=models.F('tournament__name')
@@ -70,7 +70,7 @@ class ToJoinView(BaseAuthenticatedView):
         )
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
-            state=TournamentState.SETUP
+            state=Tournament.TournamentState.SETUP
         ).annotate(
             tournamentId=models.F('id'),
             tournamentName=models.F('name')
@@ -137,7 +137,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
         tournament = Tournament.objects.get(id=id)
 
         # Add client to websocket group if tournament is not finished
-        if tournament.state != TournamentState.FINISHED:
+        if tournament.state != Tournament.TournamentState.FINISHED:
             join_tournament_channel(user, tournament.id)
 
         response_json=prepare_tournament_data_json(user, tournament)
@@ -160,7 +160,7 @@ class GoToGameView(BaseAuthenticatedView):
         except TournamentMember.DoesNotExist:
             return error_response(_("U are not part of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
         # Check if the tournament is ongoing
-        if tournament.state != TournamentState.ONGOING:
+        if tournament.state != Tournament.TournamentState.ONGOING:
             return error_response(_("Tournament is not ongoing"))
         # Get the game wich needs to be pending or paused and has a deadline set
         sheduelted_games = Game.objects.filter(
