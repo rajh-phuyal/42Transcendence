@@ -1,7 +1,7 @@
 from django.utils.translation import gettext as _
 from celery import shared_task
 from django.utils import timezone
-from tournament.models import Tournament, TournamentState
+from tournament.models import Tournament
 from game.models import Game, GameMember
 import logging
 from django.db import transaction
@@ -14,7 +14,7 @@ from game.utils import finish_game
 def check_overdue_tournament_games():
     # Check all tournament games that have passed their deadline
     active_tournaments_ids = Tournament.objects.filter(
-        state=TournamentState.ONGOING
+        state=Tournament.TournamentState.ONGOING
     ).values_list('id', flat=True)
     pending_games = Game.objects.filter(
         tournament_id__in=active_tournaments_ids,
@@ -22,7 +22,7 @@ def check_overdue_tournament_games():
         deadline__isnull=False
     )
     found_one = False
-    current_time = timezone.now()
+    current_time = timezone.now() #TODO: Issue #193
     for game in pending_games:
         if timezone.is_naive(game.deadline):
             game_deadline_aware = timezone.make_aware(game.deadline)
@@ -53,9 +53,9 @@ def check_overdue_tournament_games():
                 "gameUpdateScore",
                 "game_update_score",
                 _(
-                    "Score updated game {game_id}. {usernameA} {pointsA}:{pointsB} {usernameB}").format(
-                ).format(
-                    game_id=game.id,
+                    "Score updated game {gameId}. {usernameA} {pointsA}:{pointsB} {usernameB}")
+                .format(
+                    gameId=game.id,
                     usernameA=looser.user.username,
                     pointsA=looser.points,
                     pointsB=winner.points,
@@ -68,7 +68,8 @@ def check_overdue_tournament_games():
                    }
             )
             #Set game to finished
-            finish_game(game, _("The overloards lost their patience. Game {game_id} has been set to finished since the deadline has passed. They randomly decided that user {username} won the game.").format(game_id=game.id, username=winner.user.username))
+            finish_game(game, _("The overloards lost their patience. Game {gameId} has been set to finished since the deadline has passed. They randomly decided that user {username} won the game.")
+                .format(gameId=game.id, username=winner.user.username))
     # TODO: HACKATHON: Check if we can move this up for early return
     if not found_one:
         logging.info("No overdue games found.")

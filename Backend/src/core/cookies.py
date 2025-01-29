@@ -6,7 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from django.utils.translation import gettext as _
 from core.exceptions import NotAuthenticated
-
+from rest_framework import status
 
 JAR = settings.SIMPLE_JWT_COOKIE
 
@@ -18,18 +18,18 @@ class CookieJWTAuthentication(JWTAuthentication):
             token = request.COOKIES.get('access_token')
 
             if not token:
-                raise NotAuthenticated(_("Authentication credentials were not provided."), status_code=401)
+                raise NotAuthenticated(_("Authentication credentials were not provided."), status_code=status.HTTP_401_UNAUTHORIZED)
 
             validated_token = self.get_validated_token(token)
             user = self.get_user(validated_token)
             return user, validated_token
 
         except TokenError as e:
-            raise NotAuthenticated(_("Invalid or expired token."), status_code=401)
+            raise NotAuthenticated(_("Invalid or expired token."), status_code=status.HTTP_401_UNAUTHORIZED)
         except InvalidToken as e:
-            raise NotAuthenticated(_("Invalid or expired token."), status_code=401)
+            raise NotAuthenticated(_("Invalid or expired token."), status_code=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            raise NotAuthenticated(_("Authentication failed."), status_code=401)
+            raise NotAuthenticated(_("Authentication failed."), status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: str = None) -> HttpResponse:

@@ -517,27 +517,31 @@ echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 2: Round Robin between players
 echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 3: Round Robin Public in setup"
 echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 4: Round Robin Private in setup"
 TABLE_NAME="barelyaschema.tournament_member"
-insert_dummy "$TABLE_NAME" \
-    "INSERT INTO $TABLE_NAME \
-        (id, user_id, tournament_id, tournament_alias, is_admin, accepted, finish_place) VALUES \
-        (1,    8,        1,              'Player 8',     TRUE,    TRUE,        1), \
-        (2,    9,        1,              'Player 9',     FALSE,   TRUE,        2), \
-        (3,    10,       1,              'Player 10',    FALSE,   TRUE,        3), \
-        (4,    11,       1,              'Player 11',    FALSE,   TRUE,        4), \
-        (5,    3,        2,              'Player 3',     TRUE,    TRUE,        1), \
-        (6,    5,        2,              'Player 5',     FALSE,   TRUE,        2), \
-        (7,    4,        2,              'Player 4',     FALSE,   TRUE,        3), \
-        (8,    6,        2,              'Player 6',     FALSE,   TRUE,        4), \
-        (9,    7,        2,              'Player 7',     FALSE,   TRUE,        5), \
-        (10,   8,        2,              'Player 8',     FALSE,   TRUE,        6), \
-        (11,   9,        2,              'Player 9',     FALSE,   TRUE,        7), \
-        (12,   10,       2,              'Player 10',    FALSE,   TRUE,        8), \
-        (13,   11,       2,              'Player 11',    FALSE,   TRUE,        9), \
-        (14,   10,       3,              'Player 10',    TRUE,    TRUE,        NULL), \
-        (15,   11,       3,              'Player 11',    FALSE,   TRUE,        NULL), \
-        (16,   3,        4,              'Player 3',     TRUE,    TRUE,        NULL), \
-        (17,   4,        4,              'Player 4',     FALSE,   FALSE,       NULL), \
-        (18,   5,        4,              'Player 5',     FALSE,   TRUE,        NULL);"
+insert_dummy "$TABLE_NAME"                                                                                                   \
+    "INSERT INTO $TABLE_NAME                                                                                                 \
+        (id, user_id, tournament_id, tournament_alias, is_admin, accepted, played_games, won_games, win_points, rank) VALUES \
+        -- Tournament 1 Members
+        (1,    8,        1,              'Player 8',     TRUE,    TRUE,         4,          4,          8,        1), \
+        (2,    9,        1,              'Player 9',     FALSE,   TRUE,         4,          2,          6,        2), \
+        (3,    10,       1,              'Player 10',    FALSE,   TRUE,         4,          1,          2,        3), \
+        (4,    11,       1,              'Player 11',    FALSE,   TRUE,         4,          0,          0,        4), \
+        -- Tournament 2 Members                           
+        (5,    3,        2,              'Player 3',     TRUE,    TRUE,         6,          6,          18,       1), \
+        (6,    5,        2,              'Player 5',     FALSE,   TRUE,         6,          3,          9,        2), \
+        (7,    4,        2,              'Player 4',     FALSE,   TRUE,         6,          2,          6,        3), \
+        (8,    6,        2,              'Player 6',     FALSE,   TRUE,         6,          2,          8,        4), \
+        (9,    7,        2,              'Player 7',     FALSE,   TRUE,         6,          3,          12,       5), \
+        (10,   8,        2,              'Player 8',     FALSE,   TRUE,         6,          3,          9,        6), \
+        (11,   9,        2,              'Player 9',     FALSE,   TRUE,         6,          2,          6,        7), \
+        (12,   10,       2,              'Player 10',    FALSE,   TRUE,         6,          3,          8,        8), \
+        (13,   11,       2,              'Player 11',    FALSE,   TRUE,         6,          1,          4,        9), \
+        -- Tournament 3 and 4 are in setup and no games are completed                             
+        (14,   10,       3,              'Player 10',    TRUE,    TRUE,         0,          0,          0,        0), \
+        (15,   11,       3,              'Player 11',    FALSE,   TRUE,         0,          0,          0,        0), \
+        (16,   3,        4,              'Player 3',     TRUE,    TRUE,         0,          0,          0,        0), \
+        (17,   4,        4,              'Player 4',     FALSE,   FALSE,        0,          0,          0,        0), \
+        (18,   5,        4,              'Player 5',     FALSE,   TRUE,         0,          0,          0,        0);"
+
 
 # Make some friends so that xico can create tournaments
 echo -e "CREATING FRIENDSHIPS:\tXico is friends with 3, 4, 5, 6, 7"

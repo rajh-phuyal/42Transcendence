@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _, activate
 from django.db import transaction
 from rest_framework import status
 from django.db.models import Q
-from user.models import User, CoolStatus, IsCoolWith, NoCoolWith
+from user.models import User, IsCoolWith, NoCoolWith
 from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
 from core.exceptions import BarelyAnException
 from user.exceptions import ValidationException, BlockingException, RelationshipException
@@ -26,8 +26,8 @@ class SearchView(BaseAuthenticatedView):
         if onlyFriends == 'true':
             # Filter to find users who have an ACCEPTED status in the 'IsCoolWith' table
             users = users.filter(
-                Q(requester_cool__requestee=current_user, requester_cool__status=CoolStatus.ACCEPTED) |
-                Q(requestee_cool__requester=current_user, requestee_cool__status=CoolStatus.ACCEPTED)
+                Q(requester_cool__requestee=current_user, requester_cool__status=IsCoolWith.CoolStatus.ACCEPTED) |
+                Q(requestee_cool__requester=current_user, requestee_cool__status=IsCoolWith.CoolStatus.ACCEPTED)
             )
         # Limit the result
         users = users[:NO_OF_USERS_TO_LOAD]
@@ -78,7 +78,7 @@ class RelationshipView(BaseAuthenticatedView):
             self.block_user(user, target)
             return success_response(_("User blocked"), status.HTTP_201_CREATED)
         else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @barely_handle_exceptions
     def put(self, request):
@@ -88,7 +88,7 @@ class RelationshipView(BaseAuthenticatedView):
             self.accept_request(user, target)
             return success_response(_("Friend request accepted"))
         else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @barely_handle_exceptions
     def delete(self, request):
@@ -107,7 +107,7 @@ class RelationshipView(BaseAuthenticatedView):
             self.unblock_user(user, target)
             return success_response(_("User unblocked"))
         else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
+            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     # Utility function to validate that:
     # - the request data contains the required fields
@@ -121,7 +121,7 @@ class RelationshipView(BaseAuthenticatedView):
         if not action:
             raise ValidationException(_("key 'action' must be provided!"))
         if action not in allowed_actions:
-            raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions), status_code=405) #TODO: HACKATHON: REPLACE WITH STATUS CODE
+            raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
         if not target_id:
             raise ValidationException(_("key 'target_id' must be provided!"))
         target = User.objects.get(id=target_id)
@@ -168,10 +168,10 @@ class RelationshipView(BaseAuthenticatedView):
             raise RelationshipException(_('You are already friends with this user'))
         with transaction.atomic():
             try:
-                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=CoolStatus.PENDING)
+                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=IsCoolWith.CoolStatus.PENDING)
             except ObjectDoesNotExist:
                 raise RelationshipException(_('Friend request not found'))
-            cool_status.status = CoolStatus.ACCEPTED
+            cool_status.status = IsCoolWith.CoolStatus.ACCEPTED
             cool_status.save()
 
     # Logic for cancelling a friend request:
@@ -180,7 +180,7 @@ class RelationshipView(BaseAuthenticatedView):
             raise RelationshipException(_('You are already friends with this user. Need to remove them as a friend instead.'))
         with transaction.atomic():
             try:
-                cool_status = IsCoolWith.objects.select_for_update().get(requester=user, requestee=target, status=CoolStatus.PENDING)
+                cool_status = IsCoolWith.objects.select_for_update().get(requester=user, requestee=target, status=IsCoolWith.CoolStatus.PENDING)
             except ObjectDoesNotExist:
                 raise RelationshipException(_('Friend request not found'))
             cool_status.delete()
@@ -191,7 +191,7 @@ class RelationshipView(BaseAuthenticatedView):
             raise RelationshipException(_('You are already friends with this user. Need to remove them as a friend instead.'))
         with transaction.atomic():
             try:
-                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=CoolStatus.PENDING)
+                cool_status = IsCoolWith.objects.select_for_update().get(requester=target, requestee=user, status=IsCoolWith.CoolStatus.PENDING)
             except ObjectDoesNotExist:
                 raise RelationshipException(_('Friend request not found'))
             cool_status.delete()
@@ -204,7 +204,7 @@ class RelationshipView(BaseAuthenticatedView):
             cool_status = IsCoolWith.objects.select_for_update().filter(
                 (Q(requester=user) & Q(requestee=target)) |
                 (Q(requester=target) & Q(requestee=user)),
-                status=CoolStatus.ACCEPTED
+                status=IsCoolWith.CoolStatus.ACCEPTED
             )
             if not cool_status:
                 raise RelationshipException(_('You are not friends with this user'))
@@ -225,7 +225,7 @@ class ListFriendsView(BaseAuthenticatedView):
         user = request.user
         target_user = User.objects.get(id=id)
         if is_blocking(target_user, user):
-            return error_response(_("You are blocked by this user"), status_code=403) #TODO: HACKATHON: REPLACE WITH STATUS CODE
+            return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
         serializer = ListFriendsSerializer(cool_with_entries, many=True, context={'requester_user_id': user.id, 'target_user_id': target_user.id})
         return success_response(_("Friends list of user"), friends=serializer.data)

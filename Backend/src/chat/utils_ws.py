@@ -33,13 +33,17 @@ def create_message(user, conversation_id, content):
         ConversationMember.objects
             .filter(conversation=conversation_id)
             .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
-            .first() #TODO: #204 Groupchat remove the first() and return the list
+            .first()
         )
 
     # Check if user is blocked by other member (if not group chat)
     if not conversation.is_group_conversation:
         if is_blocked(user, other_user_member.user):
             raise BlockingException(_("You have been blocked by this user"))
+
+    # Check if content is empty
+    if not content:
+        raise BarelyAnException(_("Message content cannot be empty"))
 
     try:
         with transaction.atomic():
@@ -61,7 +65,7 @@ def create_message(user, conversation_id, content):
                     .select_for_update()
                     .filter(conversation=conversation)
                     .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
-                    .first() #TODO: #204 Groupchat remove the first() and return the list
+                    .first()
                 )
             other_user_member.unread_counter = unread_messages_count
             other_user_member.save(update_fields=['unread_counter'])
@@ -76,7 +80,7 @@ async def process_incoming_chat_message(consumer, user, text):
     from services.websocket_utils import parse_message
     message = parse_message(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
-    content = message.get('content')
+    content = message.get('content', '').strip()
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
 
     # Do db operations

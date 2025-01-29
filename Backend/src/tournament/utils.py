@@ -1,4 +1,5 @@
-from tournament.models import Tournament, TournamentMember, TournamentState
+from django.utils import timezone
+from tournament.models import Tournament, TournamentMember
 from core.exceptions import BarelyAnException
 from user.exceptions import RelationshipException, BlockingException
 from user.models import User
@@ -11,29 +12,16 @@ import logging
 from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
-from .serializer import TournamentMemberSerializer
+from .serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
 
-
-def parse_bool(string):
-    logging.info(f"parse_bool: {string}")
-    if string == "true" or string == "True":
-        return True
-    return False
-
-def validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups):
+def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
         raise BarelyAnException(_("Can't create a tournament without a name"))
-
-    local_tournament_bool = parse_bool(local_tournament)
-    public_tournament_bool = parse_bool(public_tournament)
-    powerups_bool = parse_bool(powerups)
-
     if map_number is None or not isinstance(map_number, int):
         raise BarelyAnException(_("Can't create a tournament without specifying a map number"))
     if map_number not in [1, 2, 3, 4]:
         raise BarelyAnException(_("Invalid map number"))
 
-    return local_tournament_bool, public_tournament_bool, powerups_bool
 def validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament):
     # Get creator of the tournament
     try:
@@ -44,7 +32,7 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     # Check if the creator is already in a tournament which is not finished
     if TournamentMember.objects.filter(
         user=creator,
-        tournament__state__in=[TournamentState.SETUP, TournamentState.ONGOING],
+        tournament__state__in=[Tournament.TournamentState.SETUP, Tournament.TournamentState.ONGOING],
         accepted=True
     ).exists():
         raise BarelyAnException(_("You can't create a new tournament while you are in another one"))
@@ -52,6 +40,9 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     # Prepare the list of tournament users (creator is always included)
     tournament_user_objects = []
     tournament_user_objects.append(creator)
+
+    if not opponent_ids:
+        opponent_ids = None
 
     # Validate tournament params for edge cases
     if local_tournament and public_tournament:
@@ -94,19 +85,19 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
         tournament_user_objects.append(opponent)
     return tournament_user_objects
 
-def create_tournament(creator_id, name, local_tournament, public_tournament, map_number, powerups_string, opponent_ids=None):
+def create_tournament(creator_id, name, local_tournament, public_tournament, map_number, powerups, opponent_ids=None):
     # Validate args
-    local, public, powerups = validate_tournament_creation(name, local_tournament, public_tournament, map_number, powerups_string)
-    tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local, public)
+    validate_tournament_creation(name, map_number)
+    tournament_user_objects = validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament)
 
     # Create the tournament and the tournament members in a single transaction
     with transaction.atomic():
         tournament = Tournament.objects.create(
             name=name,
-            local_tournament=local,
-            public_tournament=public,
+            local_tournament=local_tournament,
+            public_tournament=public_tournament,
             map_number=map_number,
-            powerups=powerups,
+            powerups=powerups
         )
         tournament.save()
 
@@ -144,7 +135,7 @@ def delete_tournament(user, tournament_id):
         if not tournament_member.is_admin:
             raise BarelyAnException(_("You are not the admin of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
         # Check if the tournament has already started
-        if not tournament.state == TournamentState.SETUP:
+        if not tournament.state == Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be deleted if it is in setup state"))
         # Delete the tournament
         tournament_members.delete()
@@ -174,7 +165,7 @@ def join_tournament(user, tournament_id):
         if (tournament_member and tournament_member.accepted):
             raise BarelyAnException(_("You have already accepted this tournament invitation"))
             # Accept the invitation
-        if (tournament_member and tournament.state != TournamentState.SETUP):
+        if (tournament_member and tournament.state != Tournament.TournamentState.SETUP):
                 raise BarelyAnException(_("Tournament has already started or ended"))
         if tournament_member:
             tournament_member.accepted = True
@@ -193,7 +184,7 @@ def join_tournament(user, tournament_id):
         # In case we don't have an entry:
         if not tournament.public_tournament:
             raise BarelyAnException(_("You are not invited to this tournament"), status_code=status.HTTP_403_FORBIDDEN)
-        if tournament.state != TournamentState.SETUP:
+        if tournament.state != Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament has already started or ended"))
         members_count = TournamentMember.objects.filter(tournament_id=tournament_id).count()
         if members_count >= MAX_PLAYERS_FOR_TOURNAMENT:
@@ -227,13 +218,13 @@ def leave_tournament(user, tournament_id):
         except TournamentMember.DoesNotExist:
             raise BarelyAnException(_("You are not a member of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
 
-        if tournament.state != TournamentState.SETUP:
+        if tournament.state != Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be left if it is in setup state"))
         if tournament_member.is_admin:
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
         # Delete the tournament member
         tournament_member.delete()
-        # TODO: check if there are enough players left and cancel the tournament if not (only for private tournaments)
+        # TODO: issue #281 check if there are enough players left and cancel the tournament if not (only for private tournaments)
     # Send websocket update message to admin to update the lobby
     if tournament_member.accepted:
         message=_("User {username} left the tournament").format(username=user.username)
@@ -267,7 +258,7 @@ def start_tournament(user, tournament_id):
 
         if not tournament_member.is_admin:
             raise BarelyAnException(_("You are not the admin of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
-        if not tournament.state == TournamentState.SETUP:
+        if not tournament.state == Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be started if it is in setup state"))
         # Check if at least 3 members are there
         tournament_members_count = tournament_members.filter(accepted=True).count()
@@ -281,6 +272,7 @@ def start_tournament(user, tournament_id):
         tournament.save()
         # Remove all persons who have not accepted the invitation
         tournament_members.filter(accepted=False).delete()
+        tournament_members_after_start = TournamentMember.objects.filter(tournament_id=tournament_id)
     # Send websocket update message to all members to start the game
     send_tournament_ws_msg(
         tournament_id,
@@ -290,7 +282,7 @@ def start_tournament(user, tournament_id):
         **{"state": "start"}
     )
     # create the games
-    create_initial_games(tournament, tournament_members)
+    create_initial_games(tournament, tournament_members_after_start)
 
 def finish_tournament(tournament):
     # THE TOURNAMENT IS OVER!!!
@@ -299,7 +291,8 @@ def finish_tournament(tournament):
     # so only:
     # - set the tournament state to finished
     with transaction.atomic():
-        tournament.state = TournamentState.FINISHED
+        tournament.state = Tournament.TournamentState.FINISHED
+        tournament.finish_time = timezone.now()
         tournament.save()
     # - send the websocket message
     send_tournament_ws_msg(
@@ -312,3 +305,48 @@ def finish_tournament(tournament):
     # - closse the channel
     delete_tournament_channel(tournament.id)
     logging.info(f"Tournament {tournament.id} has finished!")
+
+def prepare_tournament_data_json(user, tournament):
+    role = ""
+    try:
+        tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
+        if tournament_member.is_admin:
+            role = "admin"
+        else:
+            if tournament_member.accepted:
+                role = "member"
+            else:
+                role = "invited"
+    except TournamentMember.DoesNotExist:
+        role = "fan"
+
+    # Get all members of the tournament and serialize them
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+    admin_name = tournament_members.get(is_admin=True).user.username
+    tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
+    if tournament.state == Tournament.TournamentState.SETUP:
+        tournament_rank_data = []
+    else:
+        tournament_rank_data = TournamentRankSerializer(tournament_members, many=True).data
+    # Get all games of the tournament and serialize them
+    games = Game.objects.filter(tournament_id=tournament.id)
+    games_data = TournamentGameSerializer(games, many=True).data
+
+    # Get details of the tournament
+    response_json = {
+        'tournamentId': tournament.id,
+        'tournamentName': tournament.name,
+        'createdBy': admin_name,
+        'tournamentState': tournament.state,
+        'tournamentMapNumber': tournament.map_number,
+        'tournamentPowerups': tournament.powerups,
+        'tournamentPublic': tournament.public_tournament,
+        'tournamentLocal': tournament.local_tournament,
+        'clientRole': role,
+        'tournamentMembers': tournament_members_data,
+        'tournamentGames': games_data,
+        'tournamentRank': tournament_rank_data
+    }
+
+    return response_json
+

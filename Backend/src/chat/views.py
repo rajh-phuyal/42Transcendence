@@ -62,7 +62,7 @@ class LoadConversationView(BaseAuthenticatedView):
 
         # Fetch and process messages
         messages_queryset = self.get_messages_queryset(conversation, msgid)
-        messages, last_seen_msg, unseen_messages = self.process_messages(messages_queryset)
+        messages, last_seen_msg, unseen_messages = self.process_messages(user, messages_queryset)
 
         # Blackout messages if blocking
         if is_blocking:
@@ -128,9 +128,10 @@ class LoadConversationView(BaseAuthenticatedView):
         queryset = queryset.order_by('-created_at')
         return queryset
 
-    def process_messages(self, messages_queryset):
+    def process_messages(self, user, messages_queryset):
         last_seen_msg = messages_queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
-        unseen_messages = messages_queryset.filter(seen_at__isnull=True)
+        # Exclude the user from unseen messages because they can't miss their own messages.
+        unseen_messages = messages_queryset.filter(seen_at__isnull=True).exclude(user=user)
         messages = messages_queryset[:NO_OF_MSG_TO_LOAD]
         return messages, last_seen_msg, unseen_messages
 
@@ -161,7 +162,7 @@ class LoadConversationView(BaseAuthenticatedView):
             return 'CHAT_AVATAR_GROUP_DEFAULT'
         if other_user.avatar_path:
             return other_user.avatar_path
-        return 'DEFAULT_AVATAR'
+        return 'AVATAR_DEFAULT'
 
     def get_conversation_name(self, conversation, other_user):
         if conversation.is_group_conversation:
@@ -187,20 +188,19 @@ class LoadConversationView(BaseAuthenticatedView):
             "data": serialized_messages.data,
         }
 
-
 class CreateConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
         user = request.user
         userIds = request.data.get('userIds', [])
-        initialMessage = request.data.get('initialMessage')
+        initialMessage = request.data.get('initialMessage', '').strip()
         conversation_name = request.data.get('name', None)
         if not userIds:
-           return error_response(_("No 'userIds' provided"), status_code=400)
+           return error_response(_("No 'userIds' provided"), status_code=status.HTTP_400_BAD_REQUEST)
         if not initialMessage:
-           return error_response(_("No 'initialMessage' provided"), status_code=400)
+           return error_response(_("No 'initialMessage' provided"), status_code=status.HTTP_400_BAD_REQUEST)
         if len(userIds) == 0:
-            return error_response(_("No 'userIds' provided"), status_code=400)
+            return error_response(_("No 'userIds' provided"), status_code=status.HTTP_400_BAD_REQUEST)
         if len(userIds) == 1:
             # A PM conversation
             is_group_conversation = False
@@ -208,24 +208,19 @@ class CreateConversationView(BaseAuthenticatedView):
             try:
                 other_user = User.objects.get(id=other_user_id)
             except User.DoesNotExist:
-                return error_response(_("User not found"), status_code=404)
+                return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
 
             # Check if the user blocked client
             if is_blocked(user.id, other_user.id):
-                return error_response(_("You are blocked by the user"), status_code=403)
+                return error_response(_("You are blocked by the user"), status_code=status.HTTP_403_FORBIDDEN)
             # Check if the conversation already exists
             conversation_id = get_conversation(user, other_user)
             if conversation_id:
                 return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
         elif len(userIds) > 1:
-            # TODO: #204
-            error_response(_("Group chats are not supported yet"), status_code=400)
-            # A group conversation
-            #if not conversation_name:
-            #    return error_response(_("No 'name' provided"), status_code=400)
-            #is_group_conversation = True
+            error_response(_("Group chats are not supported (yet)"), status_code=status.HTTP_400_BAD_REQUEST)
 
         # Create the conversation
         new_conversation = create_conversation(user, other_user, initialMessage, user)
-        
+
         return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})

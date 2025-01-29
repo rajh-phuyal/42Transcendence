@@ -3,15 +3,16 @@ from django.db import transaction
 from core.response import success_response, error_response
 from user.models import User
 from game.models import Game, GameMember
-from tournament.models import Tournament, TournamentMember, TournamentState
+from tournament.models import Tournament, TournamentMember
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
+from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, prepare_tournament_data_json, start_tournament
 from core.exceptions import BarelyAnException
-from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer
+from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
 from django.db import models
 from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm, send_tournament_invites_via_ws
+from rest_framework import status
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -20,13 +21,13 @@ class EnrolmentView(BaseAuthenticatedView):
         user = request.user
         try:
             # Check if user has an active tournament
-            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.ONGOING).tournament
+            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=Tournament.TournamentState.ONGOING).tournament
             return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
         except Exception as e:
             ...  # Continue to the next check
         try:
             # Check if user has an accepted tournament which is not ongoing
-            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=TournamentState.SETUP, accepted=True).tournament
+            tournament = TournamentMember.objects.get(user_id=user.id, tournament__state=Tournament.TournamentState.SETUP, accepted=True).tournament
             return success_response(_("User has an active tournament"), **{'tournamentId': tournament.id, 'tournamentName': tournament.name})
         except Exception as e:
             return success_response(_("User has no active tournament"), **{'tournamentId': None, 'tournamentName': None})
@@ -59,7 +60,7 @@ class ToJoinView(BaseAuthenticatedView):
         invited_tournaments = TournamentMember.objects.filter(
             user_id=user.id,
             accepted=False,
-            tournament__state=TournamentState.SETUP
+            tournament__state=Tournament.TournamentState.SETUP
         ).annotate(
             tournamentId=models.F('tournament_id'),
             tournamentName=models.F('tournament__name')
@@ -69,7 +70,7 @@ class ToJoinView(BaseAuthenticatedView):
         )
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
-            state=TournamentState.SETUP
+            state=Tournament.TournamentState.SETUP
         ).annotate(
             tournamentId=models.F('id'),
             tournamentName=models.F('name')
@@ -84,6 +85,7 @@ class ToJoinView(BaseAuthenticatedView):
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
+        logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
         tournament = create_tournament(
@@ -92,7 +94,7 @@ class CreateTournamentView(BaseAuthenticatedView):
             local_tournament=request.data.get('localTournament'),
             public_tournament=request.data.get('publicTournament'),
             map_number=request.data.get('mapNumber'),
-            powerups_string=request.data.get('powerups'),
+            powerups=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')
         )
         if not tournament.public_tournament:
@@ -131,44 +133,47 @@ class TournamentLobbyView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
         user = request.user
-        role = ""
+
         tournament = Tournament.objects.get(id=id)
-        try:
-            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
-            if tournament_member.is_admin:
-                role = "admin"
-            else:
-                if tournament_member.accepted:
-                    role = "member"
-                else:
-                    role = "invited"
-        except TournamentMember.DoesNotExist:
-            role = "fan"
 
-        # Get all members of the tournament and serialize them
-        tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
-        admin_name = tournament_members.get(is_admin=True).user.username
-        tournament_members_data = TournamentMemberSerializer(tournament_members, many=True).data
-        # Get all games of the tournament and serialize them
-        games = Game.objects.filter(tournament_id=tournament.id)
-        games_data = TournamentGameSerializer(games, many=True).data
-
-        # Get details of the tournament
-        response_json = {
-            'tournamentId': tournament.id,
-            'tournamentName': tournament.name,
-            'createdBy': admin_name,
-            'tournamentState': tournament.state,
-            'tournamentMapNumber': tournament.map_number,
-            'tournamentPowerups': tournament.powerups,
-            'tournamentPublic': tournament.public_tournament,
-            'tournamentLocal': tournament.local_tournament,
-            'clientRole': role,
-            'tournamentMembers': tournament_members_data,
-            'tournamentGames': games_data
-        }
-
-        # Add client to websocket group if game is not finished
-        if tournament.state != TournamentState.FINISHED:
+        # Add client to websocket group if tournament is not finished
+        if tournament.state != Tournament.TournamentState.FINISHED:
             join_tournament_channel(user, tournament.id)
+
+        response_json=prepare_tournament_data_json(user, tournament)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)
+
+# If the user is in a tournament and has a pending game with a deadline set,
+# this endpoint will return the gameId so that the FE can redir to the game
+# lobby page. In any other case this endpoint will return an error_response
+class GoToGameView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request):
+        user = request.user
+        tournament_id=request.data.get('tournamentId')
+        if not tournament_id:
+            return error_response(_("tournament_id is required"))
+        tournament = Tournament.objects.get(id=tournament_id)
+        # Check if user is in the tournament
+        try:
+            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament_id)
+        except TournamentMember.DoesNotExist:
+            return error_response(_("U are not part of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
+        # Check if the tournament is ongoing
+        if tournament.state != Tournament.TournamentState.ONGOING:
+            return error_response(_("Tournament is not ongoing"))
+        # Get the game wich needs to be pending or paused and has a deadline set
+        sheduelted_games = Game.objects.filter(
+            tournament_id=tournament_id,
+            state__in=[Game.GameState.PENDING, Game.GameState.PAUSED],
+            deadline__isnull=False)
+        if not sheduelted_games:
+            return error_response(_("No pending games with deadline set found"))
+        # Filter the sheduelted games to get the game that the user is part of
+        try:
+            game_member_entry = GameMember.objects.filter(
+                user_id=user.id,
+                game__in=sheduelted_games)
+            return success_response(_("Shedueled Game found"), **{'gameId': game_member_entry.first().game_id})
+        except GameMember.DoesNotExist:
+            return error_response(_("The overloards ask u to be patient. There will be a game for u soon."))

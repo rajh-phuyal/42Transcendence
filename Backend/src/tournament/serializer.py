@@ -38,12 +38,30 @@ class TournamentGameSerializer(serializers.ModelSerializer):
         model = Game
         fields = ['gameId', 'mapNumber', 'state', 'finishTime', 'deadline', 'player1', 'player2']
 
+
     def get_player1(self, obj):
         # Get the first palyer of the game
         game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').first()
+        if game_member is None:
+            return None
         return TournamentGamePlayerSerializer(game_member).data
 
     def get_player2(self, obj):
         # Get the second player of the game
         game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').last()
+        if game_member is None:
+            return None
         return TournamentGamePlayerSerializer(game_member).data
+
+class TournamentRankSerializer(serializers.Serializer):
+    userId = serializers.IntegerField(source='user.id', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+    avatarPath = serializers.CharField(source='user.avatar_path', read_only=True)
+    gamesPlayed = serializers.IntegerField(source='games_played', read_only=True)
+    wonGames = serializers.IntegerField(source='won_games', read_only=True)
+    winPoints = serializers.IntegerField(source='win_points', read_only=True)
+    rank = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = TournamentMember
+        fields = ['userId', 'username', 'avatarPath', 'gamesPlayed', 'wonGames', 'winPoints', 'rank']

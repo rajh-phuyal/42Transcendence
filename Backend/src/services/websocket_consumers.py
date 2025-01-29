@@ -50,7 +50,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         logging.info(f"Received Websocket Message type: {self.message_type}")
 
     def update_user_last_seen(self, user):
-        user.last_seen = timezone.now()
+        user.last_seen = timezone.now() #TODO: Issue #193
         user.save(update_fields=['last_seen'])
 
 # Manages the WebSocket connection for all pages after login
@@ -107,8 +107,6 @@ class MainConsumer(CustomWebSocketLogic):
     async def tournament_subscription(self, event):
         await self.send(text_data=json.dumps({**event}))
     async def tournament_state(self, event):
-        await self.send(text_data=json.dumps({**event}))
-    async def tournament_fan(self, event):
         await self.send(text_data=json.dumps({**event}))
     async def info(self, event):
         await self.send(text_data=json.dumps({**event}))
