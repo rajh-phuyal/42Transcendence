@@ -37,13 +37,12 @@ class User(AbstractUser):
     def __str__(self):
         return f"id:{self.id}({self.username})"
 
-# Enum for friend request status (cool_status)
-class CoolStatus(models.TextChoices):
-    PENDING = 'pending', 'Pending'
-    ACCEPTED = 'accepted', 'Accepted'
-
 # Table: barelyaschema.is_cool_with
 class IsCoolWith(models.Model):
+    class CoolStatus(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        ACCEPTED = 'accepted', 'Accepted'
+
     id = models.AutoField(primary_key=True)
     requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requester_cool')
     requestee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requestee_cool')

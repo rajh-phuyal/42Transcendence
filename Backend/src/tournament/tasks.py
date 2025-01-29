@@ -1,7 +1,7 @@
 from django.utils.translation import gettext as _
 from celery import shared_task
 from django.utils import timezone
-from tournament.models import Tournament, TournamentState
+from tournament.models import Tournament
 from game.models import Game, GameMember
 import logging
 from django.db import transaction
@@ -14,7 +14,7 @@ from game.utils import finish_game
 def check_overdue_tournament_games():
     # Check all tournament games that have passed their deadline
     active_tournaments_ids = Tournament.objects.filter(
-        state=TournamentState.ONGOING
+        state=Tournament.TournamentState.ONGOING
     ).values_list('id', flat=True)
     pending_games = Game.objects.filter(
         tournament_id__in=active_tournaments_ids,
