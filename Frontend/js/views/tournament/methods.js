@@ -42,7 +42,19 @@ export function createPlayerCard(playerObject) {
     template.querySelector(".tournament-players-list-player-card-avatar").src = window.origin + "/media/avatars/" + playerObject.userAvatar;
     template.querySelector(".tournament-players-list-player-card-username").textContent = playerObject.username;
 
+    if (playerObject.userState === "pending")
+        container.style.backgroundColor = "grey";
+
     $id("tournament-players-list-container").appendChild(container);
+}
+
+export function removePlayerCard(playerId) {
+    //TODO: I have to find a way to delete the player ID from the data on the config file
+    $id("tournament-players-list-player" + playerId).remove();
+}
+
+export function changePlayerCardToAccepted(playerId) {
+    $id("tournament-players-list-player" + playerId).style.backgroundColor = "white";
 }
 
 export function createGameCard(gameObject) {
@@ -68,6 +80,14 @@ export function createGameCard(gameObject) {
     else
         $id("tournament-current-games-container").appendChild(container);
 
+}
+
+export function moveGameCardToHistory(gameId) {
+    $id("tournament-history-container").appendChild($id("tournament-game-" + gameId));
+}
+
+export function updateGameCardScore(gameObject) {
+    $id("tournament-game-" + gameId).querySelector(".tournament-game-card-score").textContent = gameObject.player1.points + "-" + gameObject.player2.points; 
 }
 
 
