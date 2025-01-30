@@ -99,8 +99,9 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         else:
             ConversationMember.objects.create(user=user2, conversation=new_conversation, unread_counter=1)
 
+        overloards = User.objects.get(id=USER_ID_OVERLOARDS)
         if not creator:
-            creator = User.objects.get(id=USER_ID_OVERLOARDS)
+            creator = overloards
         initialMessageObject = Message.objects.create(user=creator, conversation=new_conversation, content=initialMessage)
 
     # Adding the conversation to the user's WebSocket groups (if they are logged in)

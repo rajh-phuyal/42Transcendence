@@ -38,7 +38,7 @@ class LoadConversationsView(BaseAuthenticatedView):
         # Serialize only the conversation id and name
         serializer = ConversationSerializer(conversations, many=True, context={'request': request})
         if not serializer.data or len(serializer.data) == 0:
-            return success_response(_('No conversations found'), status_code=status.HTTP_202_ACCEPTED)
+            return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
 class LoadConversationView(BaseAuthenticatedView):
@@ -47,6 +47,8 @@ class LoadConversationView(BaseAuthenticatedView):
         from services.websocket_utils import send_message_to_user
         user = request.user
         msgid = int(request.GET.get('msgid', 0))
+        if(msgid < 0):
+            return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
 
         conversation = self.get_conversation(conversation_id)
         self.validate_conversation_membership(conversation, user)
@@ -64,14 +66,34 @@ class LoadConversationView(BaseAuthenticatedView):
         messages_queryset = self.get_messages_queryset(conversation, msgid)
         messages, last_seen_msg, unseen_messages = self.process_messages(user, messages_queryset)
 
-        # Blackout messages if blocking
-        if is_blocking:
-            for message in messages:
-                if message.user != user:
-                    message.content = _('**This message is hidden because you are blocking the user**')
+        if messages:
+            # Transform messages to list
+            messages = list(messages)
+            # Add beginning of the conversation message if needed
+            firstMessage = Message.objects.filter(conversation=conversation).order_by('created_at').first()
+            if messages[messages.__len__()-1].id == firstMessage.id:
+                messages.append({
+                    "id": -1,
+                    "user": the_overloards,
+                    "created_at": firstMessage.created_at,
+                    "seen_at": firstMessage.seen_at,
+                    "content": _("Start of conversation between @{username1}@{userid1}@ and @{username2}@{userid2}@")
+                        .format(
+                            username1=user.username,
+                            userid1=user.id,
+                            username2=other_user.username,
+                            userid2=other_user.id)
+                })
 
-        # Add separator messages if needed
-        messages_with_separator = self.add_separator_message(messages, last_seen_msg, unseen_messages)
+            # Blackout messages if blocking
+            if is_blocking:
+                for message in messages:
+                    if message.user == other_user:
+                        message.content = _('**This message is hidden because you are blocking the user**')
+
+
+            # Add separator messages if needed (if there are unseen messages)
+            messages = self.add_separator_message(messages, last_seen_msg, unseen_messages)
 
         # Mark as seen
         if not is_blocking:
@@ -81,7 +103,7 @@ class LoadConversationView(BaseAuthenticatedView):
         new_unread_counter_total = ConversationMember.objects.filter(user=user).aggregate(total_unread_counter=Sum('unread_counter'))['total_unread_counter']
 
         # Serialize messages
-        serialized_messages = MessageSerializer(messages_with_separator, many=True)
+        serialized_messages = MessageSerializer(messages, many=True)
 
         # Get the conversation avatar and name
         conversation_avatar = self.get_conversation_avatar(conversation, other_user)
@@ -182,7 +204,7 @@ class LoadConversationView(BaseAuthenticatedView):
             "conversationName": conversation_name,
             "conversationAvatar": conversation_avatar,
             "online": other_user.get_online_status(),
-            "userIds": list(member_ids),
+            "userId": other_user.id,
             "conversationUnreadCounter": new_unread_counter,
             "totalUnreadCounter": new_unread_counter_total,
             "data": serialized_messages.data,

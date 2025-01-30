@@ -4,8 +4,8 @@
   </div>
   <!-- Side Container -->
   <div id="chat-view-left-side-container">
-    <h2 style="color: white;">chat room</h2>
-    <input id="chat-view-searchbar" placeholder="search..." type="text">
+    <h2 id="chat-room-heading" style="color: white;">chat room</h2>
+    <input id="chat-view-searchbar" placeholder="" type="text">
     <div id="chat-view-conversations-container">
       <span id="chat-view-conversations-no-converations-found"></span>
 
@@ -15,7 +15,7 @@
           <img class="chat-view-conversation-card-avatar" alt="error loading image">
           <h5 class="chat-view-conversation-card-username"></h5>
           <div class="chat-view-conversation-card-unseen-container">
-            <img class="chat-view-conversation-card-unseen-image" src="../assets/profileView/unreadMessageIcon.png" alt="error loadiing image"></img>
+            <img class="chat-view-conversation-card-unseen-image" src="../assets/profileView/unreadMessageIcon.png" alt="error loading image"></img>
             <span class="chat-view-conversation-card-unseen-counter"></span>
           </div>
         </div>
@@ -54,25 +54,24 @@
           <span class="chat-view-messages-message-time-stamp"></span>
         </div>
       </template>
-      
+
       <!-- Overlords message Template -->
       <template id="chat-view-overlords-message-template">
         <div class="chat-view-overlords-message-container">
           <span class="chat-view-messages-message-sender"></span>
           <div class="chat-view-messages-message-overlords-box">
-            <strong>| *** A MESSAGE FROM THE OVERLORDS *** |</strong>
-            <!-- <barely-a-button name="go to tournament" buttonclass="rect-button"></barely-a-button> -->
           </div>
           <span class="chat-view-messages-message-time-stamp"></span>
         </div>
       </template>
     </div>
+
     <!-- Text field -->
     <div id="chat-view-text-field-container">
       <text-field id="chat-view-text-field" width="96" clear="true" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
     </div>
   </div>
-    
+
 </div>
 <style>
 
@@ -80,7 +79,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: auto !important; 
+    margin-left: auto !important;
     height: 90%;
     width: auto;
     align-self: flex-end;
@@ -107,17 +106,16 @@
     height: 80%;
     margin-left: auto !important;
   }
-  
+
   #chat-view-header-subject-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    margin: 13% 0% 0% 3% !important;
+    margin: 13% 0% 0% 50% !important;
     width: 30%;
-    /* background-color: rgba(0, 0, 255, 0.316); */
   }
-  
+
   .chat-view-conversation-card {
     display: flex;
     flex-direction: row;
@@ -129,7 +127,17 @@
     align-self: center;
     border:  3px solid  black;
     background-color: #EFE7D3;
-    transition: all 0.3s ease;
+  }
+
+  .chat-view-conversation-card-enter {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  .chat-view-conversation-card-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
   .chat-view-conversation-card:hover {
@@ -163,37 +171,6 @@
     cursor: pointer;
   }
 
-  .chat-view-conversation-card:hover {
-    background-color: #DFD7C3;
-    cursor: pointer;
-  }
-  .chat-view-conversation-card:active {
-    background-color: #CFC7B3;
-    cursor: pointer;
-  }
-
-  .chat-view-conversation-card-highlighted {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 95%;
-    height: 17%;
-    margin: 1% 0% !important;
-    align-self: center;
-    border:  3px solid  black;
-    background-color: black;
-    color: white;
-  }
-
-  .chat-view-conversation-card-highlighted:hover {
-    background-color: #101010;
-    cursor: pointer;
-  }
-  .chat-view-conversation-card-highlighted:active {
-    background-color: #202020;
-    cursor: pointer;
-  }
-  
   .chat-view-conversation-card-avatar {
     height: 90%;
     margin: 0% 4% 0% 2% !important;
@@ -203,46 +180,25 @@
     height: 50%;
     margin: 0% 0% 4% 3% !important;
   }
-  
+
   .chat-view-header-icons {
     height: 40%;
     margin-top: 10% !important;
   }
-  
+
   .chat-view-header-icons:hover {
     height: 43%;
     margin-top: 9.7% !important;
     cursor: pointer;
   }
 
-  #chat-view-header-invite-for-game-image {
-    margin-left: 36% !important;
-    margin-right: 0.3% !important;
-  }
-  
-  #chat-view-header-invite-for-game-image:hover {
-    margin-left: 35.7% !important;
-    margin-right: 0% !important;
-  }
-  
-  #chat-view-header-group-chat-image {
-    margin-left: 1.5% !important;
-    margin-right: 0.3% !important;
-  }
-  
-  #chat-view-header-group-chat-image:hover {
-    margin-left: 1.2% !important;
-    margin-right: 0% !important;
-  }
-  
-  #chat-view-left-side-container{      
+  #chat-view-left-side-container{
     z-index: 1;
     width: 45%;
     height: 95%;
     padding: 2% 0% 0% 1% !important;
-    /* background-color: rgba(0, 0, 255, 0.316); */
   }
-  
+
   #chat-view-header-container {
     display: flex;
     flex-direction: row;
@@ -250,16 +206,15 @@
     height: 21%;
     padding-right: 1% !important;
   }
-  
+
   #chat-view-messages-container {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     width: 100%;
     height: 58%;
     margin: 2% 0% !important;
-    overflow-y: auto;
-    /* background-color: rgba(243, 247, 7, 0.396); */
-    /* box-sizing: border-box; */
+    overflow-y: scroll;
+    scroll-behavior: smooth;
   }
 
   .chat-view-incoming-message-container {
@@ -269,7 +224,6 @@
     height: auto;
     margin: 0 2% !important;
     align-self: flex-start;
-    /* box-sizing: border-box; */
   }
 
   .chat-view-sent-message-container {
@@ -278,8 +232,6 @@
     width: 60%;
     height: auto;
     margin: 0 2% !important;
-    /* box-sizing: border-box; */
-    /* margin: 1% 0% 0% 37%; */
     align-self: flex-end;
     align-items: left;
   }
@@ -289,14 +241,12 @@
     flex-direction: column;
     width: 60%;
     height: auto;
-    /* box-sizing: border-box; */
     align-self: center;
   }
 
   .chat-view-messages-message-box {
     height: auto;
     width: 100%;
-    /* min-height: 50%; */
     min-height: initial;
     border:  3px solid  black;
     background-color: #EFE7D3;
@@ -312,7 +262,6 @@
     align-items: center;
     height: auto;
     width: 100%;
-    /* min-height: 50%; */
     min-height: initial;
     border:  3px solid  yellow;
     background-color: black;
@@ -322,7 +271,35 @@
     overflow: visible;
     color: yellow;
   }
-  
+
+  .mention-user {
+      color: rgb(159, 144, 144) !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+      display: inline;
+  }
+  .mention-user:hover {
+      text-decoration: none !important;
+  }
+  .mention-game {
+      color: rgb(206, 111, 22) !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+      display: inline;
+  }
+  .mention-game:hover {
+      text-decoration: none !important;
+  }
+  .mention-tournament {
+      color: rgb(214, 108, 27) !important;
+      cursor: pointer !important;
+      text-decoration: underline !important;
+      display: inline;
+  }
+  .mention-tournament:hover {
+      text-decoration: none !important;
+  }
+
   #chat-view-text-field-container {
     width: 100%;
     height: 15%;
@@ -352,17 +329,16 @@
     box-sizing: border-box;
   }
 
-  #chat-view-right-side-container { 
+  #chat-view-right-side-container {
     z-index: 1;
     width: 100%;
     height: 95%;
-    /* background-color: rgba(165, 42, 42, 0.283); */
   }
 
   #chat-view-background-image{
     z-index: 0;
     position: relative;
-    height: 100%; 
+    height: 100%;
   }
 
   #chat-view-image-container {
