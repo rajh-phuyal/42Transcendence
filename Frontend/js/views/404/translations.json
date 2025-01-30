@@ -1,10 +1,18 @@
 {
-    "template": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+    "title": {
+        "en-US": "404 | Page not found",
+        "pt-PT": "404 | Página não encontrada",
+        "pt-BR": "404 | Página não encontrada",
+        "de-DE": "404 | Seite nicht gefunden",
+        "uk-UA": "404 | Сторінку не знайдено",
+        "ne-NP": "404 | पृष्ठ फेला परेन"
+    },
+    "homeButton": {
+        "en-US": "Return to home",
+        "pt-PT": "Voltar para a página inicial",
+        "pt-BR": "Voltar para a página inicial",
+        "de-DE": "Zur Startseite zurückkehren",
+        "uk-UA": "Повернутися на головну",
+        "ne-NP": "गृहपृष्ठमा फर्किनुहोस्"
     }
 }
