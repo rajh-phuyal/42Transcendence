@@ -1,12 +1,151 @@
 <div id="game-view">
-    <h1>
-        Game view
-    </h1>
+    <!-- Image container to maintain aspect ratio -->
+    <div id="game-view-image-container">
+        <!-- Left Section -->
+        <div id="game-view-left-side-container">
+            <div class="game-view-left-side-container-top">
+                <!-- Left User Card -->
+                <div class="user-card" id="user-card-player-1">
+                    <h2 id="player-1-username" class="username"></h2>
+                    <img id="player-1-avatar" alt="User Image" class="user-image">
+                    <h3 id="player-1-state" class="user-state">
+                        <div id="player-1-state-spinner" class="spinner-grow" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </h3>
+                </div>
+            </div>
+            <div class="game-view-left-side-container-bottom">Left Bottom</div>
+        </div>
+
+        <!-- Middle Section -->
+        <div id="game-view-middle-side-container">
+            <div class="game-view-middle-side-container-top">Middle Content</div>
+            <div class="game-view-middle-side-container-bottom">
+                <barely-a-button id="button-leave-lobby"></barely-a-button>
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div id="game-view-right-side-container">
+            <div class="game-view-right-side-container-top">
+                <div class="user-card" id="user-card-player-2">
+                    <h2 id="player-2-username" class="username"></h2>
+                    <img id="player-2-avatar" alt="User Image" class="user-image">
+                    <h3 id="player-2-state" class="user-state">
+                        <div id="player-2-state-spinner" class="spinner-grow" role="status">
+                            <span class="sr-only"></span>
+                        </div>
+                    </h3>
+                </div>
+            </div>
+            <div class="game-view-right-side-container-bottom">
+                <barely-a-button id="button-quit-game"></barely-a-button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
-    #game-view {
-        height: 100%;
-        background-color: #00ff006c;
-    }
+    /* Main game view container */
+#game-view {
+    display: flex;
+    justify-content: center; /* Centers the image horizontally */
+    align-items: center; /* Centers everything vertically */
+    width: 100%;
+    height: calc(100vh - 100px); /* Adjust for navbar */
+    background-color: rgb(255, 255, 255); /* Fallback background */
+    position: relative;
+}
+
+/* Image container with correct aspect ratio */
+#game-view-image-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 80%;
+    height: calc(100vh - 100px);
+    aspect-ratio: 16 / 9; /* Ensures the image maintains ratio */
+    background: url('../assets/game/gameWaitingRoom.png') no-repeat center center;
+    background-size: 100% 100%;
+}
+
+/* Ensure the sections are on top of the image */
+#game-view-left-side-container,
+#game-view-middle-side-container,
+#game-view-right-side-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-grow: 1;
+    position: relative;
+}
+
+/* Sidebar Widths */
+#game-view-left-side-container   { background-color: rgba(255, 0, 0, 0.3); width: 20%;}
+#game-view-middle-side-container { background-color: rgba(0, 255, 0, 0.3); width: 60%;}
+#game-view-right-side-container  { background-color: rgba(0, 0, 255, 0.3); width: 20%;}
+
+/* Top Containers Take Most of the Space */
+.game-view-left-side-container-top,
+.game-view-middle-side-container-top,
+.game-view-right-side-container-top {
+    flex-grow: 1;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Bottom Containers */
+.game-view-left-side-container-bottom,
+.game-view-middle-side-container-bottom,
+.game-view-right-side-container-bottom {
+    height: 20%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* User Card Styling */
+.user-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 50%;
+    text-align: center;
+}
+
+/* Username Styling */
+.username {
+    font-size: 18px;
+}
+
+/* User Image Styling */
+.user-image {
+    width: 80%;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+/* User State Styling */
+.user-state {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
 </style>
