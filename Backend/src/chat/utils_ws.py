@@ -1,5 +1,6 @@
 from django.core.cache import cache
 from django.db import transaction
+from chat.constants import ALLOWED_MSG_CMDS_PATTERNS
 from user.models import User
 from chat.models import Message, ConversationMember, Conversation
 from django.utils.translation import gettext as _
@@ -75,6 +76,42 @@ def create_message(user, conversation_id, content):
         logging.error(f"Error updating unread messages count for user {other_user_member.user}: {e}")
     return message, other_user_member.user.id
 
+# Valid commands in messaages are defined in ALLOWED_MSG_CMDS_PATTERNS
+async def parse_message_cmd(user, conversation_id, content):
+    logging.info("Checking for cmds in message: %s", content)
+
+    if content.startswith("**"):
+        logging.info("Message could contain cmd")
+
+        # Parse the command
+        try:
+            for cmd_name, (patterns, args) in ALLOWED_MSG_CMDS_PATTERNS.items():
+                for pattern in patterns:
+                    match = pattern.match(content)
+                    if match:
+                        logging.info(f"Message contains valid cmd: {cmd_name}")
+
+                        # Extract values dynamically
+                        values = {args[i]: match.group(i + 1) for i in range(len(args))}
+
+                        logging.info(f"Extracted values: {values}")
+
+                        # Execute the command with extracted values
+                        if cmd_name == "invite":
+                            logging.info("Executing invite cmd with args: %s", values)
+                            # TODO conitnue here!!!!!
+                            asdasdsad
+                            # map_name_to_number
+                            #await create_game(values["powerups"], values["map"], user, conversation_id)
+
+                        return user, content
+        except Exception as e:
+            logging.error(f"Error parsing: {e}")
+            logging.info("Send info msg")
+            #await send_cmd_info_msg(user.id, conversation_id)
+    logging.info("Send info msg")
+    return user, content
+
 # Websocket message
 async def process_incoming_chat_message(consumer, user, text):
     from services.websocket_utils import parse_message
@@ -82,6 +119,9 @@ async def process_incoming_chat_message(consumer, user, text):
     conversation_id = message.get('conversationId')
     content = message.get('content', '').strip()
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
+
+    # Check if content contains a cmd
+    user, content = await parse_message_cmd(user, conversation_id, content)
 
     # Do db operations
     new_message, other_user_member_id = await create_message(user, conversation_id, content)

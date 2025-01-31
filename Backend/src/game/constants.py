@@ -1,7 +1,6 @@
-#TODO: Valistate that names an numbers match!!!
 MAPNAME_TO_MAPNUMBER = {
-    "ufo": 0,
-    "snowman": 1,
-    "lizard": 2,
-    "whatever": 3
+    "ufo": 1,
+    "lizard-people": 2,
+    "snowman": 3,
+    "lochness": 4
 }
