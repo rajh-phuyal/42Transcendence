@@ -157,7 +157,7 @@ export default {
             // Check if a mention GAME was clicked
             if (game) {
                 const gameId = game.getAttribute("data-gameid");
-                if(!gameId)
+                if(gameId)
                     router(`/game`, { id: gameId });
                 else
                     console.warn("Mention clicked but no game ID found.");

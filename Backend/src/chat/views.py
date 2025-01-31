@@ -90,7 +90,29 @@ class LoadConversationView(BaseAuthenticatedView):
                 for message in messages:
                     if message.user == other_user:
                         message.content = _('**This message is hidden because you are blocking the user**')
-
+            else:
+                # Parse invite messages
+                for message in messages:
+                    if message.content.startswith('**invite/') and message.content.endswith('**'):
+                        try:
+                            # Parse the message e.g. **inviter=10,receiver=9,gameid=#76**
+                            message_parts = message.content[2:-2].split('/')
+                            inviter_id = int(message_parts[1])
+                            receiver_id = int(message_parts[2])
+                            game_id = int(message_parts[3])
+                            logging.info(f'Parsed invite message: inviter={inviter_id}, receiver={receiver_id}, gameid={game_id}')
+                            # Get usernames
+                            inviter_name = User.objects.get(id=inviter_id).username
+                            receiver_name = User.objects.get(id=receiver_id).username
+                            # Format the message
+                            message.content = _('@{inviter_name}@{inviter_id}@ invited @{receiver_name}@{receiver_id}@ to a friendly match: #G#{game_id}#').format(
+                                    inviter_name=inviter_name,
+                                    inviter_id=inviter_id,
+                                    receiver_name=receiver_name,
+                                    receiver_id=receiver_id,
+                                    game_id=game_id)
+                        except Exception as e:
+                            logging.error(f'Error parsing invite message ({message.content}): {e}')
 
             # Add separator messages if needed (if there are unseen messages)
             messages = self.add_separator_message(messages, last_seen_msg, unseen_messages)
