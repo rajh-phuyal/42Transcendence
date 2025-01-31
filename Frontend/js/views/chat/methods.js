@@ -1,6 +1,6 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 // -----------------------------------------------------------------------------
@@ -83,7 +83,7 @@ export function createConversationCard(element, highlight = false) {
     card.setAttribute("last-message-time", element.lastUpdate);
     card.querySelector(".chat-view-conversation-card-avatar").src = window.origin + "/media/avatars/" + element.conversationAvatar;
     card.querySelector(".chat-view-conversation-card-username").textContent = element.conversationName;
-    card.addEventListener("click", coversationCardClickListener);
+    $on(card, "click", coversationCardClickListener);
 
     // Prepend the card to the container
     container.prepend(card);
@@ -158,7 +158,7 @@ export function sortConversationCardsByTimestamp() {
 export function deleteAllConversationCards() {
     const cards = $queryAll(".chat-view-conversation-card");
     for (let card of cards) {
-        card.removeEventListener("click", coversationCardClickListener);
+        $off(card, "click", coversationCardClickListener);
         card.remove();
     }
 }

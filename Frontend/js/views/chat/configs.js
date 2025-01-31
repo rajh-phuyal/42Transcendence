@@ -175,14 +175,14 @@ export default {
             }
             // Adding theEventListener
             if (init){
-                container.addEventListener("scroll", this.scrollListener);
+                this.domManip.$on(container, "scroll", this.scrollListener);
                 return ;
             }
 
             // Remove the event listener before leaving the page
             if (!init){
                 if(this.scrollListener)
-                    container.removeEventListener("scroll", this.scrollListener);
+                    this.domManip.$off(container, "scroll", this.scrollListener);
                 else
                     console.log("handleScroll is not defined, cannot remove listener.");
                 return ;
@@ -200,14 +200,14 @@ export default {
 
             // Adding theEventListener
             if (init){
-                avatar.addEventListener("click", this.clickAvatarListener);
+                this.domManip.$on(avatar, "click", this.clickAvatarListener);
                 return ;
             }
 
             // Remove the event listener before leaving the page
             if (!init){
                 if(this.clickAvatarListener)
-                    avatar.removeEventListener("click", this.clickAvatarListener);
+                    this.domManip.$off(avatar, "click", this.clickAvatarListener);
                 else
                     console.log("clickAvatarListener is not defined, cannot remove listener.");
                 return ;
@@ -226,19 +226,19 @@ export default {
 
             // Adding theEventListener
             if (init){
-                searchBar.addEventListener("input", this.searchBarTypeListener);
-                searchBar.addEventListener("keydown", this.searchBarKeydownListener);
+                this.domManip.$on(searchBar, "input", this.searchBarTypeListener);
+                this.domManip.$on(searchBar, "keydown", this.searchBarKeydownListener);
                 return ;
             }
 
             // Remove the event listener before leaving the page
             if (!init){
                 if(this.searchBarTypeListener)
-                    searchBar.removeEventListener("input", this.searchBarTypeListener);
+                    this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
                 else
                     console.log("searchBarListenerType is not defined, cannot remove listener.");
                 if(this.searchBarKeydownListener)
-                    searchBar.removeEventListener("keydown", this.searchBarKeydownListener);
+                    this.domManip.$off(searchBar, "keydown", this.searchBarKeydownListener);
                 else
                     console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
                 return ;
@@ -256,14 +256,14 @@ export default {
 
             // Adding theEventListener
             if(init){
-                container.addEventListener("click", this.messageMeantionListener);
+                this.domManip.$on(container, "click", this.messageMeantionListener);
                 return ;
             }
 
             // Remove the event listener before leaving the page
             if (!init){
                 if(this.messageMeantionListener)
-                    container.removeEventListener("click", this.messageMeantionListener);
+                    this.domManip.$off(container, "click", this.messageMeantionListener);
                 else
                     console.log("messageMeantionListener is not defined, cannot remove listener.");
                 return ;
