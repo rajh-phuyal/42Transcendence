@@ -5,7 +5,7 @@ from rest_framework import serializers
 from .models import Conversation, Message, ConversationMember
 from .constants import CHAT_AVATAR_GROUP_DEFAULT
 from user.constants import AVATAR_DEFAULT
-from user.constants import USER_ID_OVERLOARDS
+from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from django.utils.translation import gettext as _
 from .utils import get_conversation_name
@@ -42,7 +42,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             return CHAT_AVATAR_GROUP_DEFAULT
         else:
             current_user = self.context.get('request').user
-            overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+            overlords = User.objects.get(id=USER_ID_OVERLORDS)
             other_members = obj.members.exclude(Q(user=current_user) | Q(user=overlords))
 
         if other_members.exists():

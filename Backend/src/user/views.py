@@ -12,7 +12,7 @@ from user.exceptions import ValidationException, BlockingException, Relationship
 from django.core.exceptions import ObjectDoesNotExist
 from .utils_img import process_avatar
 from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
-from user.constants import USER_ID_OVERLOARDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
@@ -153,7 +153,7 @@ class RelationshipView(BaseAuthenticatedView):
 
     # Logic for blocking a user:
     def block_user(self, user, target):
-        if target.id == USER_ID_OVERLOARDS:
+        if target.id == USER_ID_OVERLORDS:
             raise BlockingException(_('Try harder...LOL'))
         if target.id == USER_ID_AI:
             raise BlockingException(_('Computer says no'))

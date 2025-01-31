@@ -24,12 +24,12 @@
         "ne-NP": "विषय: "
     },
     "textAreaPlaceHolder": {
-        "en-US": "write a message... Just don’t forget that they see everything",
-        "pt-PT": "escreve uma mensagem... Apenas não te equeças de que eles vêm tudo",
-        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo",
-        "de-DE": "schreiben Sie eine Nachricht... Vergessen Sie nicht, dass die da oben alles sehen",
-        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони бачать усе",
-        "ne-NP": "सन्देश लेख्नुहोस्... बस यसलाई नबिर्सनुहोस् कि उनीहरूले सबै कुरा देख्छन्"
+        "en-US": "write a message... Just don’t forget that they see everything...\n(I wonder what happens if u start a message with **",
+        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\n(Será que algo acontece se você começar uma mensagem com **",
+        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\n(Será que algo acontece se você começar uma mensagem com **",
+        "de-DE": "schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\n(Ich frage mich, was passiert, wenn du eine Nachricht mit ** beginnst",
+        "uk-UA": "напиши повідомлення... Тільки не забувай, що вони все бачать...\n(Цікаво, що станеться, якщо почати повідомлення з **",
+        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नबिर्सनुहोस् कि उनीहरूले सबै कुरा देख्छन्...\n(मलाई चासो छ, यदि तपाईं सन्देश ** बाट सुरु गर्नुहुन्छ भने के हुन्छ"
     },
     "sendButton": {
         "en-US": "Send",

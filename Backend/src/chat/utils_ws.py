@@ -5,7 +5,7 @@ from chat.models import Message, ConversationMember, Conversation
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 from user.exceptions import BlockingException
-from user.constants import USER_ID_OVERLOARDS
+from user.constants import USER_ID_OVERLORDS
 from django.db.models import Q
 from user.utils_relationship import is_blocked
 import logging
@@ -32,7 +32,7 @@ def create_message(user, conversation_id, content):
     other_user_member = (
         ConversationMember.objects
             .filter(conversation=conversation_id)
-            .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
+            .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLORDS))
             .first()
         )
 
@@ -64,7 +64,7 @@ def create_message(user, conversation_id, content):
                 ConversationMember.objects
                     .select_for_update()
                     .filter(conversation=conversation)
-                    .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLOARDS))
+                    .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLORDS))
                     .first()
                 )
             other_user_member.unread_counter = unread_messages_count

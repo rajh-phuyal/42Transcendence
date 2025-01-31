@@ -7,7 +7,7 @@ from tournament.models import Tournament, TournamentMember
 from services.websocket_utils import send_message_to_user_sync
 import logging
 from .serializer import TournamentMemberSerializer
-from user.constants import USER_ID_OVERLOARDS
+from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from chat.models import Message
 from services.chat_service import broadcast_message
@@ -75,7 +75,7 @@ def send_tournament_invites_via_pm(tournament_id):
             continue
 
         # Create overloards message in the DB
-        overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+        overlords = User.objects.get(id=USER_ID_OVERLORDS)
         newMessage = Message.objects.create(user=overlords, conversation=conversation, content=invite_message)
         newMessage.save()
 

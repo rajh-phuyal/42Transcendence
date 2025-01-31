@@ -1,3 +1,4 @@
+from .constants import MAPNAME_TO_MAPNUMBER
 from django.utils.timezone import localtime
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
@@ -15,6 +16,9 @@ from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 import logging
 from tournament.ranking import update_tournament_member_stats
+
+def map_name_to_number(map_name):
+    return MAPNAME_TO_MAPNUMBER.get(map_name.lower(), None)
 
 def create_game(user_id, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist

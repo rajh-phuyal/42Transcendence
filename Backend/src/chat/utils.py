@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.db.models import F
 from django.utils.translation import gettext as _
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
-from user.constants import USER_ID_OVERLOARDS
+from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from django.db.models import Q
 from .models import Conversation, Message, ConversationMember
@@ -47,7 +47,7 @@ def get_conversation_name(user, conversation):
         return conversation.name
 
     try:
-        overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+        overlords = User.objects.get(id=USER_ID_OVERLORDS)
         other_member = conversation.members.exclude(Q(user=user) | Q(user=overlords)).first()
         if other_member and other_member.user.username:
             return other_member.user.username
@@ -99,7 +99,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         else:
             ConversationMember.objects.create(user=user2, conversation=new_conversation, unread_counter=1)
 
-        overloards = User.objects.get(id=USER_ID_OVERLOARDS)
+        overloards = User.objects.get(id=USER_ID_OVERLORDS)
         if not creator:
             creator = overloards
         initialMessageObject = Message.objects.create(user=creator, conversation=new_conversation, content=initialMessage)

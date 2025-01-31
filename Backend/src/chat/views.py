@@ -14,7 +14,7 @@ from .utils import create_conversation, get_conversation, mark_all_messages_as_s
 from core.exceptions import BarelyAnException
 from rest_framework import status
 from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
-from user.constants import USER_ID_OVERLOARDS
+from user.constants import USER_ID_OVERLORDS
 from .constants import NO_OF_MSG_TO_LOAD
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
@@ -57,7 +57,7 @@ class LoadConversationView(BaseAuthenticatedView):
             return error_response(_('Group chats are not supported yet'), status_code=status.HTTP_400_BAD_REQUEST)
 
         # Determine blocking status
-        the_overloards = User.objects.get(id=USER_ID_OVERLOARDS)
+        the_overloards = User.objects.get(id=USER_ID_OVERLORDS)
         other_user = self.get_other_user(conversation, user, the_overloards)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
@@ -163,7 +163,7 @@ class LoadConversationView(BaseAuthenticatedView):
             for message in messages:
                 if last_seen_msg and message.id == last_seen_msg.id:
                     # Add separator message
-                    overlords = User.objects.get(id=USER_ID_OVERLOARDS)
+                    overlords = User.objects.get(id=USER_ID_OVERLORDS)
                     # Here we create a fake message wich is not stored in the db
                     # It is really important to keep the structure of this
                     # message the same as the Message Model so that the
