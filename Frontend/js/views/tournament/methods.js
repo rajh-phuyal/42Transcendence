@@ -1,6 +1,6 @@
 import { $id , $class} from "../../abstracts/dollars.js";
 import { tournamentData } from "./objects.js";
-
+import router from "../../navigation/router.js";
 
 export function buildView(tournamentState) {
 
@@ -12,6 +12,10 @@ export function buildView(tournamentState) {
     if (tournamentState === "setup") {
         flexDivs = $class("tournament-setup")
         hideDivs = $class("tournament-ongoing")
+    }
+    else if (tournamentState === "delete") {
+        router('/home');
+        return ;
     }
     else {
         flexDivs = $class("tournament-ongoing")
@@ -26,6 +30,18 @@ export function buildView(tournamentState) {
     for (let element of hideDivs) {
         console.log("noning:", element.getAttribute("id"));
         element.style.display = 'none';
+    }
+
+    if (tournamentState === "finished") {
+        $id("tournament-middle-bottom-current-game-button").style.display = "none"; 
+        $id("tournament-games-do-come-button").style.display = "none";
+        $id("tournament-middle-bottom-subscribe-start-button").style.display = "none";
+        $id("tournament-quit-cancel-button").style.display = "none";
+        $id("tournament-current-games-container").style.display = "none"; 
+        $id("tournament-rank-container").style.display = "flex"; 
+        $id("tournament-history-container").style.display = "none"; 
+        return ;
+        
     }
 
     $id("tournament-rank-container").style.display = "none"; 
@@ -75,6 +91,9 @@ export function createGameCard(gameObject) {
     template.querySelector(".tournament-game-card-player2-avatar").src = window.origin + "/media/avatars/" + gameObject.player2.avatarPath;
     template.querySelector(".tournament-game-card-player1-username").textContent = gameObject.player1.username;
     template.querySelector(".tournament-game-card-player2-username").textContent = gameObject.player2.username;
+    template.querySelector(".tournament-game-card-spinner").style.display = "none";
+    template.querySelector(".tournament-game-card-player1-winner-tag").style.display = "none";
+    template.querySelector(".tournament-game-card-player2-winner-tag").style.display = "none";
 
     if (gameObject.state === "pending")
         template.querySelector(".tournament-game-card-score").textContent = "VS";
@@ -88,7 +107,7 @@ export function createGameCard(gameObject) {
 
 }
 
-export function moveGameCardToHistory(gameId) {
+function moveGameCardToHistory(gameId) {
     $id("tournament-history-container").appendChild($id("tournament-game-" + gameId));
 }
 
@@ -96,7 +115,58 @@ export function updateGameCardScore(gameObject) {
     $id("tournament-game-" + gameId).querySelector(".tournament-game-card-score").textContent = gameObject.player1.points + "-" + gameObject.player2.points; 
 }
 
+export function gameUpdateScore(gameObject) {
+    $id("tournament-game-" + gameObject.gameId).querySelector(".tournament-game-card-score").textContent = gameObject.newScore;
+}
 
+export function gameUpdateState(gameObject) {
+    const gameCard = $id("tournament-game-" + gameObject.gameId);
+
+    gameCard.querySelector(".tournament-game-card-spinner").style.display = "none";
+
+    
+    // TODO: make sure that the ongoing state is only sent from the be once it starts
+    if (gameObject.state === "ongoing")
+        gameCard.querySelector(".tournament-game-card-score").textContent = "0 - 0";
+    //TODO: it would be cool to mention which of the players (player1 or player2) is having the connection issues so that we can show the spinner on his side
+    else if (gameObject.state === "paused")
+        gameCard.querySelector(".tournament-game-card-spinner").style.display = "flex";
+    else if (gameObject.state === "quitted") {
+        //TODO: what does the ws message contain? does the "finished" message comes after?
+    }
+    else if (gameObject.state === "finished") {
+        console.log("FINIIIIISHH HIIIIIIIM!!!!!");
+        //TODO: the winner value should be player1/2 instead of player id
+        moveGameCardToHistory(gameObject.gameId);
+    }
+}
+
+function createRankCard(rankCardObject) {
+    const template = $id("tournament-rank-card-template").content.cloneNode(true);
+
+    //TODO: the object fetched from the ws should be in exactly the same format as the one from REST
+
+    const container = template.querySelector(".tournament-rank-card-container");
+    template.querySelector(".tournament-rank-card-position").textContent = rankCardObject.rank;
+    // TODO: the backend should pass the avatar and username
+    // template.querySelector(".tournament-rank-card-avatar").src = rankCardObject.avatar;
+    // template.querySelector(".tournament-rank-card-username").textContent = rankCardObject.username;
+    template.querySelector(".tournament-rank-card-wins").textContent = rankCardObject.wins;
+    template.querySelector(".tournament-rank-card-diff").textContent = rankCardObject.points_diff; //TODO: this should be camelCase
+    // TODO: it would be cool if it also showed the games played :D
+    // template.querySelector(".tournament-rank-card-games").textContent = rankCardObject.games;
+
+    $id("tournament-rank-list-cards-list").appendChild(container);
+}
+
+export function updateTournamentRank(rankObject) {
+
+    $id("tournament-rank-list-cards-list").innerHTML = "";
+
+
+    for (let element of rankObject)
+        createRankCard(element);
+}
 
 // =================================================================================================
 // =================================================================================================
@@ -109,7 +179,7 @@ export function updateGameCardScore(gameObject) {
 export function createGameList(games) {
     console.log("Creating game list with data: ", games);
     for (let element of games) {
-        $id("game-list").appendChild(createGameCard(element));
+        createGameCard(element);
     }
 }
 

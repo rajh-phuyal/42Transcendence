@@ -1,7 +1,7 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList } from '../views/tournament/methods.js';
+import { buildView, updateParticipantsCard, createGameList, updateGameCardScore, gameUpdateState, updateTournamentRank } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
 
 const { hostname } = window.location;
@@ -109,7 +109,6 @@ class WebSocketManager {
             case "tournamentSubscription":
                 console.warn("TODO!")
                 if (this.currentRoute == "tournament"){
-                    //TODO:
                     updateParticipantsCard(message);
                     return ;
                 }
@@ -117,26 +116,27 @@ class WebSocketManager {
 
             case "gameCreate":
                 if (this.currentRoute == "tournament"){
-                    //TODO:
                     createGameList(message.games);
                     return ;
                 } 
                 break ;
 
             case "gameSetDeadline":
-                console.warn("TODO!")
+                //TODO:
+                console.log("deadline:", message);
                 return ;
 
             case "gameUpdateScore":
-                console.warn("TODO!")
+                //TODO: test with the real ws message when they are created.
+                updateGameCardScore(message);
                 return ;
 
             case "gameUpdateState": // pending "VS" > ongoing "a x b (score)" / paused a x b (score, with red spinner) > finished (move the card to history and highlight the winner)
-                console.warn("TODO!")
+                gameUpdateState(message);
                 return ;
 
             case "gameUpdateRank": // delete the old one and put the new there
-                console.warn("TODO!")
+                updateTournamentRank(message.ranking);
                 return ;
 
             case "error":

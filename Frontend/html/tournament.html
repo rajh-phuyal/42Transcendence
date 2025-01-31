@@ -48,7 +48,14 @@
                 <div class="tournament-game-card-container">
                     <img class="tournament-game-card-player1-avatar" alt="image not found">
                     <h5 class="tournament-game-card-player1-username"></h5>
+					<h4 class="tournament-game-card-player1-winner-tag">(W)</h4>
+					<div class="tournament-game-card-spinner">
+						<div class="spinner-border" role="status">
+							<span class="sr-only">Loading...</span>
+						</div>
+					</div>
                     <h4 class="tournament-game-card-score"></h4>
+					<h4 class="tournament-game-card-player2-winner-tag">(W)</h4>
                     <h5 class="tournament-game-card-player2-username"></h5>
                     <img class="tournament-game-card-player2-avatar" alt="image not found">
                 </div>
@@ -62,12 +69,32 @@
 
             <!-- Tournament Rank -->
             <div id="tournament-rank-container">
-				<p>Tournament Rank</p>
+				<div id="tournament-rank-list">
+					<div id="tournament-rank-list-header">
+						<p>Position</p>
+						<p>Player</p>
+						<p>Wins</p>
+						<p>Diff</p>
+						<p>Games</p>
+					</div>
+					<div id="tournament-rank-list-cards-list">
+						<!-- where the rank cards will be -->
+					</div>
+					<template id="tournament-rank-card-template">
+						<div class="tournament-rank-card-container">
+							<h5 class="tournament-rank-card-position"></h5>
+							<img class="tournament-rank-card-avatar" alt="image not found">
+							<h5 class="tournament-rank-card-username"></h5>
+							<h6 class="tournament-rank-card-wins"></h6>
+							<h6 class="tournament-rank-card-diff"></h6>
+							<h6 class="tournament-rank-card-games"></h6>
+						</div>
+					</template>
+				</div>
 			</div>
 
             <!-- Tournament History -->
 			<div id="tournament-history-container">
-				<p>Tournament History</p>
 			</div>
 		</div>
 		<div id="tournament-middle-bottom">
@@ -91,6 +118,44 @@
 	
 </div>
 <style>
+
+	#tournament-rank-list-cards-list {
+		display: flex;
+		flex-direction: column;
+		size: 90%;
+		width: 100%;
+	}
+
+	#tournament-rank-container {
+		background-color: orange;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#tournament-rank-list {
+		height: 100%;
+	}
+
+	#tournament-rank-list-header {
+		display: flex;
+		flex-direction: row;	
+		height: 10%;
+		width: 100%;
+		background-color:black;
+		color: wheat;
+		border: white 4px;
+
+	}
+
+	.tournament-rank-card-container {
+		display: flex;
+		flex-direction: row;	
+		height: 20%;
+		width: 100%;
+		color: black;
+		background-color: white;
+		border: black 4px;
+	}
 
 	#tournament-middle-upper-setup-stage {
 		background-color: black;
@@ -161,8 +226,10 @@
     #tournament-players-list-container,
     #tournament-current-games-container,
     #tournament-rank-container,
+	#tournament-rank-container,
     #tournament-matches-table-container{
         height: 60%;
+		width: 80%;
     }
 
     #tournament-view {
