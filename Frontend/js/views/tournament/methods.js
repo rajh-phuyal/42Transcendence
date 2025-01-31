@@ -1,28 +1,29 @@
 import { $id , $class} from "../../abstracts/dollars.js";
+import { tournamentData } from "./objects.js";
 
 
 export function buildView(tournamentState) {
 
     console.log("state:", tournamentState);
 
-    let divs1;
-    let divs2;
+    let flexDivs;
+    let hideDivs;
 
     if (tournamentState === "setup") {
-        divs1 = $class("tournament-setup")
-        divs2 = $class("tournament-ongoing")
+        flexDivs = $class("tournament-setup")
+        hideDivs = $class("tournament-ongoing")
     }
     else {
-        divs1 = $class("tournament-ongoing")
-        divs2 = $class("tournament-setup")
+        flexDivs = $class("tournament-ongoing")
+        hideDivs = $class("tournament-setup")
     }
 
     
-    for (let element of divs1) {
+    for (let element of flexDivs) {
         console.log("flexing:", element.getAttribute("id"));
         element.style.display = 'flex';
     }
-    for (let element of divs2) {
+    for (let element of hideDivs) {
         console.log("noning:", element.getAttribute("id"));
         element.style.display = 'none';
     }
@@ -35,11 +36,17 @@ export function createPlayerCard(playerObject) {
 
     console.log("player", playerObject);
 
+    tournamentData.playersIds.push(playerObject.userId);
+
     const template = $id("tournament-players-list-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-players-list-player-card");
 
     container.setAttribute("id", "tournament-players-list-player" + playerObject.userId)
-    template.querySelector(".tournament-players-list-player-card-avatar").src = window.origin + "/media/avatars/" + playerObject.userAvatar;
+
+    if (playerObject.userAvatar)
+        template.querySelector(".tournament-players-list-player-card-avatar").src = window.origin + "/media/avatars/" + playerObject.userAvatar;
+    else
+    template.querySelector(".tournament-players-list-player-card-avatar").style.display = "none";
     template.querySelector(".tournament-players-list-player-card-username").textContent = playerObject.username;
 
     if (playerObject.userState === "pending")
@@ -49,7 +56,6 @@ export function createPlayerCard(playerObject) {
 }
 
 export function removePlayerCard(playerId) {
-    //TODO: I have to find a way to delete the player ID from the data on the config file
     $id("tournament-players-list-player" + playerId).remove();
 }
 
@@ -145,62 +151,50 @@ export function createGameList(games) {
 //     return template;
 // }
 
-export function createParticipantCard(userData) {
-    console.log("Creating participant card for user with data: ", userData);
+// export function createParticipantCard(userData) {
+//     console.log("Creating participant card for user with data: ", userData);
 
-    // Clone the template
-    let template = $id("tournament-list-card-template").content.cloneNode(true);
-    const card = template.querySelector(".card");
-    card.setAttribute("user-id", userData.userId);
-    // Update the card background color based on user state
-    if (userData.userState === "pending") {
-        template.querySelector(".card").style.backgroundColor = "grey";
-    }
+//     // Clone the template
+//     let template = $id("tournament-list-card-template").content.cloneNode(true);
+//     const card = template.querySelector(".card");
+//     card.setAttribute("user-id", userData.userId);
+//     // Update the card background color based on user state
+//     if (userData.userState === "pending") {
+//         template.querySelector(".card").style.backgroundColor = "grey";
+//     }
 
-    // Populate the template fields with user data
-    template.querySelector(".user-id .value").textContent = userData.userId;
-    template.querySelector(".username .value").textContent = "Username: " + userData.username;
-    template.querySelector(".user-avatar").src = "https://localhost/media/avatars/" + userData.userAvatar;
-    template.querySelector(".user-avatar").alt = `Avatar of ${userData.username}`;
-    template.querySelector(".user-state .value").textContent = "State: " + userData.userState;
+//     // Populate the template fields with user data
+//     template.querySelector(".user-id .value").textContent = userData.userId;
+//     template.querySelector(".username .value").textContent = "Username: " + userData.username;
+//     template.querySelector(".user-avatar").src = "https://localhost/media/avatars/" + userData.userAvatar;
+//     template.querySelector(".user-avatar").alt = `Avatar of ${userData.username}`;
+//     template.querySelector(".user-state .value").textContent = "State: " + userData.userState;
 
-    // Return the populated card
-    return template;
-}
+//     // Return the populated card
+//     return template;
+// }
 
 export function updateParticipantsCard(userData) {
-    console.log("Updating participant card for user with data: ", userData);
-    // Find the card with the user id
-    let card = null;
-    for (let element of $id("tournament-list").querySelectorAll(".card")) {
-        console.log("Checking card: ", element, "for user id: ", userData.userId);
-        if (element.getAttribute("user-id") == userData.userId) {
-            card = element;
-            break
-        }
+
+    console.log("user data:", userData);
+
+    
+    // TODO:    a) on "accepted" the keyword is data.userState and on the others is data.state
+    //          b) in the "join" message the avatar and username needs to be included
+
+
+    if (userData.userState === "accepted") {
+        changePlayerCardToAccepted(userData.userId);
+    }
+    else if (userData.state === "join")
+        createPlayerCard(userData);
+    else if (userData.state === "leave"){
+        removePlayerCard(userData.userId);
+        tournamentData.playersIds.pop(userData.userState);
     }
 
-    console.log("Found card: ", card);
-    if(card)
-    {
-        // Update the card
-        card.querySelector(".user-state .value").textContent = "State: " + userData.userState;
-        if (userData.state === "join" || userData.userState === "accepted") {
-            card.querySelector(".user-state .value").textContent = "State: " + "joined";
-            card.style.backgroundColor = "white";
-            return;
-        }
-        if (userData.state === "leave") {
-            console.log("Removing card: ", card);
-            card.remove();
-            return;
-        }
-        console.warn("Unknown state: ", userData.state);
-        return;
-    }
-
-    // Couldn't find the card, create a new one
-    card = createParticipantCard(userData);
-    $id("tournament-list").appendChild(card);
+    console.log("incoming state:", userData.userState);
+    console.log("expected state: leave");
+    console.log("players:", tournamentData.playersIds);
 }
 

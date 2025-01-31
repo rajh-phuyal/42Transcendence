@@ -4,6 +4,7 @@ import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
 import { buildView, createPlayerCard, createGameCard } from './methods.js';
+import { tournamentData } from './objects.js';
 
 
 export default {
@@ -153,6 +154,9 @@ export default {
             call(`tournament/lobby/${this.routeParams.id}/`, 'GET').then(data => {
                 console.log("data:", data);
                 this.data = data;
+
+                tournamentData.isPublic = data.tournamentPublic;
+                
 
 
                 buildView(data.tournamentState);
