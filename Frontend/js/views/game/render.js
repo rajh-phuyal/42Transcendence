@@ -5,18 +5,18 @@ import { gameObject } from './objects.js';
 const borders = {
 	rightUpperCorner: {
 		x: 0,
-		y: 5
+		y: 0
 	},
 	rightLowerCorner: {
 		x: 0,
 		y: 0
 	},
 	leftUpperCorner: {
-		x: 5,
-		y: 5
+		x: 0,
+		y: 0
 	},
 	leftLowerCorner: {
-		x: 5,
+		x: 0,
 		y: 0
 	}
 };
@@ -31,19 +31,21 @@ const borders = {
 
 // ############## FUNCTIONS ##############
 
-const drawPaddles = (gameField, ctx) => {
-	ctx.fillStyle = 'white';
-	ctx.fillRect(10, gameObject.playerLeft.pos, 4, gameObject.playerLeft.size);
-	ctx.fillRect(gameField.width - 4 - 10, gameObject.playerRight.pos, 4, gameObject.playerRight.size);
+const percentageToPixels = (percentage, edgeSize) => {
+	return (edgeSize / 100) * percentage;
 }
 
-const drawBall = (ctx) => {
+const drawPaddles = (gameField, ctx, normalizedGameObject) => {
+	ctx.fillStyle = 'white';
+	ctx.fillRect(10, normalizedGameObject.playerLeft.pos - (normalizedGameObject.playerLeft.size / 2), 4, normalizedGameObject.playerLeft.size);
+	ctx.fillRect(gameField.width - 4 - 10, normalizedGameObject.playerRight.pos - (normalizedGameObject.playerRight.size / 2), 4, normalizedGameObject.playerRight.size);
+}
+
+const drawBall = (ctx, normalizedGameObject) => {
+	const ballStartPosX = normalizedGameObject.ball.posX - (normalizedGameObject.ball.size / 2);
+	const ballStartPosY = normalizedGameObject.ball.posY - (normalizedGameObject.ball.size / 2);
 	ctx.beginPath();
-	ctx.moveTo(gameObject.ball.posX, gameObject.ball.posY);
-	ctx.lineTo(gameObject.ball.posX - 6, gameObject.ball.posY);
-	ctx.lineTo(gameObject.ball.posX - 6, gameObject.ball.posY - 4);
-	ctx.lineTo(gameObject.ball.posX, gameObject.ball.posY - 4);
-	ctx.lineTo(gameObject.ball.posX, gameObject.ball.posY);
+	ctx.fillRect(ballStartPosX, ballStartPosY, normalizedGameObject.ball.size, normalizedGameObject.ball.size);
 	ctx.fill();
 	ctx.closePath();
 }
@@ -51,11 +53,11 @@ const drawBall = (ctx) => {
 const drawBorders = (gameField, ctx) => {
 	ctx.strokeStyle = 'white';
 	ctx.beginPath();
-	ctx.moveTo(5, 5);
-	borders.rightUpperCorner.x = gameField.width - 5;
-	borders.rightLowerCorner.x = gameField.width - 5;
-	borders.rightLowerCorner.y = gameField.height - 5;
-	borders.leftLowerCorner.y = gameField.height - 5;
+	ctx.moveTo(0, 0);
+	borders.rightUpperCorner.x = gameField.width;
+	borders.rightLowerCorner.x = gameField.width;
+	borders.rightLowerCorner.y = gameField.height;
+	borders.leftLowerCorner.y = gameField.height;
 	ctx.lineTo(borders.leftLowerCorner.x, borders.leftLowerCorner.y);
 	ctx.lineTo(borders.rightLowerCorner.x, borders.rightLowerCorner.y);
 	ctx.lineTo(borders.rightUpperCorner.x, borders.rightUpperCorner.y);
@@ -67,7 +69,7 @@ const drawBorders = (gameField, ctx) => {
 const drawFieldSeparator = (gameField, ctx) => {
 	ctx.strokeStyle = 'white';
 	ctx.beginPath();
-	let high = 5;
+	let high = 0;
 	while (high < gameField.height){
 
 		ctx.rect((gameField.width / 2) - 1, high, 2, 15);
@@ -78,24 +80,31 @@ const drawFieldSeparator = (gameField, ctx) => {
 	ctx.closePath();
 }
 
-const drawField = (gameField, ctx) => {
+const drawField = (gameField, ctx, normalizedGameObject) => {
 	ctx.fillStyle = 'black';
 	ctx.fillRect(0, 0, gameField.width, gameField.height);
 	drawFieldSeparator(gameField, ctx);
 	drawBorders(gameField, ctx);
-	drawPaddles(gameField, ctx);
-	drawBall(ctx);
+	drawPaddles(gameField, ctx, normalizedGameObject);
+	drawBall(ctx, normalizedGameObject);
+}
+
+const normalizeGameObject = (gameObject, gameField) => {
+	const normalizedGameObject = { ...gameObject };
+	normalizedGameObject.playerLeft.pos = percentageToPixels(gameObject.playerLeft.pos, gameField.height);
+	normalizedGameObject.playerRight.pos = percentageToPixels(gameObject.playerRight.pos, gameField.height);
+	normalizedGameObject.playerLeft.size = percentageToPixels(gameObject.playerLeft.size, gameField.height);
+	normalizedGameObject.playerRight.size = percentageToPixels(gameObject.playerRight.size, gameField.height);
+	normalizedGameObject.ball.posX = percentageToPixels(gameObject.ball.posX, gameField.width);
+	normalizedGameObject.ball.posY = percentageToPixels(gameObject.ball.posY, gameField.height);
+	normalizedGameObject.ball.size = 4;
+	return normalizedGameObject;
 }
 
 export function gameRender (gameField, ctx) {
 	// TODO: DUMMY DATA REMOVE
-	gameObject.playerLeft.pos = gameField.height / 2 - 30 / 2;
-	gameObject.playerRight.pos = gameField.height / 2 - 30 / 2;
-	gameObject.playerLeft.size = 30;
-	gameObject.playerRight.size = 30;
-	gameObject.ball.posX = gameField.width / 2 + 3;
-	gameObject.ball.posY = gameField.height / 2 + 3;
+	const normalizedGameObject = normalizeGameObject(gameObject, gameField);
 	// TODO: DUMMY DATA REMOVE
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
-	drawField(gameField, ctx);
+	drawField(gameField, ctx, normalizedGameObject);
 }

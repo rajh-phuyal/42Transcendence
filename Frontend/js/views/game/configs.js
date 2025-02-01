@@ -114,6 +114,15 @@ export default {
 			const ctx = gameField.getContext('2d');
 			ctx.clearRect(0, 0, gameField.width, gameField.height);
 
+			// TODO: DUMMY DATA REMOVE
+			gameObject.playerLeft.pos = 6;
+			gameObject.playerLeft.size = 10;
+			gameObject.playerRight.pos = 50;
+			gameObject.playerRight.size = 10;
+			gameObject.ball.posX = 50;
+			gameObject.ball.posY = 50;
+			// TODO: DUMMY DATA REMOVE
+
 			gameRender(gameField, ctx);
 
 			const goToGameButton = this.domManip.$id("go-to-game");
@@ -129,6 +138,8 @@ export default {
 				gameImage.style.display = "block";
 				console.log("test button");
 			});
+
+			
 		},
     }
 }
