@@ -7,6 +7,7 @@ import callToast from '../../abstracts/callToast.js'
 export default {
     attributes: {
 
+        //TODO: place this map in the store
         maps: {
             "ufo": 1,
             "lizard-people": 2,

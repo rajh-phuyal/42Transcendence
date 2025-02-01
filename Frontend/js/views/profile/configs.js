@@ -24,8 +24,16 @@ export default {
             method: undefined,
         },
 
+        //TODO: place this map in the store
+        maps: {
+            "ufo": 1,
+            "lizard-people": 2,
+            "snowman": 3,
+            "lochness": 4,
+        },
+
         gameSettings: {
-            map: "random",
+            map: parseInt(Math.random() * (4 - 1) + 1),
             powerups: false,
         },
 
@@ -406,6 +414,17 @@ export default {
         },
         submitInvitation() {
             console.log(this.gameSettings);
+
+            const data = {
+                "mapNumber": this.maps[this.gameSettings.map],
+                "powerups": JSON.stringify(this.gameSettings.powerups),
+                "opponentId": this.routeParams.id,
+                "localGame": JSON.stringify(false),
+            }
+            call('game/create/', 'POST', data).then(data => {
+                this.hideModal("invite-for-game-modal");
+                router('/game', {"id": data.gameId});
+            })
         },
 
         cancelButton() {
