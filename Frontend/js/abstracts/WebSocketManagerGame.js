@@ -1,9 +1,10 @@
 import $store from '../store/store.js';
-import { createMessage } from '../views/chat/methods.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
-import { updateParticipantsCard, createParticipantCard, createGameList } from '../views/tournament/methods.js';
+import { updateReadyState } from '../views/game/methods.js';
+
+
 
 const { hostname } = window.location;
 
@@ -76,8 +77,10 @@ class WebSocketManagerGame {
         console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
-            case "connectionConfirmation":
+            case "playersReady":
+                updateReadyState(message);
                 return ;
+            
         }
 
         console.warn("WS GAME: FE doen't know what to do with this type:", message);
