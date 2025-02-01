@@ -1,10 +1,100 @@
+import { translate } from '../../locale/locale.js';
+import call from '../../abstracts/call.js';
+import router from '../../navigation/router.js';
+import { changeGameState } from './methods.js';
+import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
+
 export default {
     attributes: {
-
+        gameId: null,
+        loading: false,
     },
 
     methods: {
+        listenerLeaveLobby() {
+            // TODO: Close WS connection
+            // redir home
+            router('/');
+        },
 
+        listenerQuitGame() {
+            // TODO:Check if allowed to quit
+                // Quit game
+                call(`game/delete/${this.gameId}/`, 'DELETE')
+                // Close WS connection
+                // Redir home
+                router('/');
+        },
+
+        initListeners(init = true) {
+            const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
+            const buttonQuitGame = this.domManip.$id("button-quit-game");
+            if (!buttonLeaveLobby || !buttonQuitGame) {
+                console.warn("Button not found. Please check the button id.");
+                return;
+            }
+
+            if (init) {
+                buttonLeaveLobby.name = translate("game", "button-leave-lobby");
+                buttonLeaveLobby.render();
+                buttonQuitGame.name = translate("game", "button-quit-game");
+                buttonQuitGame.render();
+                this.domManip.$on(buttonLeaveLobby, "click", this.listenerLeaveLobby);
+                this.domManip.$on(buttonQuitGame, "click", this.listenerQuitGame);
+                return ;
+            }
+
+            if (!init) {
+                if (buttonLeaveLobby) {
+                    // Remove the event listener if exists
+                    if (buttonLeaveLobby.eventListeners)
+                        this.domManip.$off(buttonLeaveLobby, "click");
+                    if (buttonQuitGame.eventListeners)
+                        this.domManip.$off(buttonQuitGame, "click");
+                }
+            }
+        },
+        initAndTranslate() {
+            // Set default values
+            // TODO: we should store the default avatar filename somwhere i guess
+            // Player 1
+            this.domManip.$id("player-1-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
+            this.domManip.$id("player-1-username").innerText = translate("game", "loading...")
+
+            // Player 2
+            this.domManip.$id("player-2-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
+            this.domManip.$id("player-2-username").innerText = translate("game", "loading...")
+
+        },
+
+        async loadDetails() {
+            // To avoid multiple calls at the same time
+            if(this.loading) {
+                console.warn("Already loading view. Please wait.");
+                return Promise.resolve();
+            }
+            this.loading = true;
+
+            // Load the data from REST API
+            return call(`game/lobby/${this.gameId}/`, 'GET')
+                .then(data => {
+                    console.log("data:", data);
+
+                    // Set user cards
+                    this.domManip.$id("player-1-username").innerText = "@" + data.username
+                    this.domManip.$id("player-1-avatar").src = window.origin + '/media/avatars/' + data.userAvatar
+                    this.domManip.$id("player-2-username").innerText = "@" + data.opponentUsername
+                    this.domManip.$id("player-2-avatar").src = window.origin + '/media/avatars/' + data.opponentAvatar
+
+                    // Set game state
+                    changeGameState(data.gameState);
+
+                })
+                .catch(error => {
+                    router('/');
+                    console.error('Error occurred:', error);
+                });
+        },
     },
 
     hooks: {
@@ -13,15 +103,36 @@ export default {
         },
 
         beforeRouteLeave() {
+            // Disconnect from Websocket
+            // Connect to Websocket
+            WebSocketManagerGame.disconnect(this.gameId);
 
+            this.initListeners(false);
         },
 
         beforeDomInsertion() {
 
         },
 
-        afterDomInsertion() {
+        async afterDomInsertion() {
+            this.initAndTranslate();
+            this.initListeners();
 
+            // Checking game id
+            if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
+                console.warn("Invalid game id '%s' from routeParams?.id -> redir to home", this.routeParams.id);
+                router('/');
+                return;
+            }
+            this.gameId = this.routeParams.id;
+            this.loadDetails()
+
+            // Connect to Websocket
+            WebSocketManagerGame.connect(this.gameId);
+
+            // Hide the spinner and show conncted message
+            this.domManip.$id("player-1-state-spinner").style.display = "none";
+            this.domManip.$id("player-1-state").innerText = translate("game", "ready");
         },
     }
 }

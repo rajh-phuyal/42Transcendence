@@ -80,9 +80,10 @@ class LobbyView(BaseAuthenticatedView):
             'opponentOnlineStatus': opponent_memeber.user.get_online_status(),
             'opponentPoints': opponent_memeber.points,
             'map': game.map_number,
-            'powerup_big': user_member.powerup_big,
-            'powerup_fast': user_member.powerup_fast,
-            'powerup_slow': user_member.powerup_slow
+            'powerupBig': user_member.powerup_big,
+            'powerupFast': user_member.powerup_fast,
+            'powerupSlow': user_member.powerup_slow,
+            'tournamentId': game.tournament_id,
         }
         return success_response(_('Lobby details'), **response_message)
         # The frontend will use this response to show the lobby details and
