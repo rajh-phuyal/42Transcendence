@@ -171,9 +171,9 @@ class WebSocketManager {
         $id("chat-nav-badge").textContent = value || "";
     }
 
-    updateTournamentMemberCard(message) {
-        console.log("TODO: Implement updateTournamentMemberCard", message);
-    }
+    // updateTournamentMemberCard(message) {
+    //     console.log("TODO: Implement updateTournamentMemberCard", message);
+    // }
 
     setCurrentRoute(route) {
         this.currentRoute = route;
