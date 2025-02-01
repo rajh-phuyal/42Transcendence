@@ -6,13 +6,21 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import AnonymousUser
 import logging
+from chat.models import ConversationMember
+
 from django.core.cache import cache
 from django.utils.translation import gettext as _
+from asgiref.sync import async_to_sync
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.tournament_service import setup_all_tournament_channels
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
+from channels.layers import get_channel_layer
+from channels.db import database_sync_to_async
+
+channel_layer = get_channel_layer()
+
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -126,21 +134,37 @@ class MainConsumer(CustomWebSocketLogic):
 class GameConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
+        # TODO: check if the user is in the game
         await super().connect()
-        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
+        # Add client to the channel layer group
+        game_id = self.scope['url_route']['kwargs']['game_id']
+        logging.info(f"Opening WebSocket connection for game {game_id} and user {self.scope['user']} ...")
         # Set the player ready
-        self.game_id = self.scope['url_route']['kwargs']['game_id']
-        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        game = await database_sync_to_async(Game.objects.get)(id=game_id)
         game.set_player_ready(self.scope['user'].id, True)
+        game_name = f"game_{game_id}"
+        await channel_layer.group_add(game_name, self.channel_name)
         # Accept the connection
         await self.accept()
+
+        # Send the current game state
+        await channel_layer.group_send(
+            game_name,
+            {
+                "type": "game_update_state",
+                "messageType": "gameUpdateReadyState",
+                "gameId": game_id,
+                "state": game.state
+            }
+        )
+
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         # Set the player ready
-        self.game_id = self.scope['url_route']['kwargs']['game_id']
-        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        game_id = self.scope['url_route']['kwargs']['game_id']
+        game = await sync_to_async(Game.objects.get)(id=game_id)
         game.set_player_ready(self.scope['user'].id, False)
 
         # Doing game stuff
@@ -154,3 +178,7 @@ class GameConsumer(CustomWebSocketLogic):
         user = self.scope['user']
         # Process the message
         await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
+
+    @barely_handle_ws_exceptions
+    async def game_update_state(self, event):
+        await self.send(text_data=json.dumps({**event}))
