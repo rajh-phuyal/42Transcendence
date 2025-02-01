@@ -1,3 +1,4 @@
+import asyncio
 from game.models import Game
 from asgiref.sync import sync_to_async
 import json
@@ -19,6 +20,9 @@ from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMess
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
 from datetime import datetime, timedelta
+from game.constants import GAME_FPS
+from game.utils_ws import init_game
+from game.utils_ws import update_game_state_db
 
 channel_layer = get_channel_layer()
 
@@ -133,19 +137,21 @@ class MainConsumer(CustomWebSocketLogic):
 
 # Manages the temporary WebSocket connection for a single game
 class GameConsumer(CustomWebSocketLogic):
-    @barely_handle_ws_exceptions    
+    game_loops = {}
+
+    # @barely_handle_ws_exceptions TODO HACKATHON uncomment   
     async def connect(self):
         # TODO: check if the user is in the game
         await super().connect()
         # Add client to the channel layer group
-        game_id = self.scope['url_route']['kwargs']['game_id']
-        logging.info(f"Opening WebSocket connection for game {game_id} and user {self.scope['user']} ...")
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
 
         # Set the player ready
-        game = await database_sync_to_async(Game.objects.get)(id=game_id)
+        game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
         game.set_player_ready(self.scope['user'].id, True)
         
-        game_name = f"game_{game_id}"
+        game_name = f"game_{self.game_id}"
         await channel_layer.group_add(game_name, self.channel_name)
         
         # Accept the connection
@@ -157,7 +163,8 @@ class GameConsumer(CustomWebSocketLogic):
         start_time = None
         if player_left and player_right:
             start_time = datetime.now() + timedelta(seconds=5)
-            start_time = start_time.isoformat()        
+            start_time = start_time.isoformat()       
+        logging.info(f"Player left: {player_left}, Player right: {player_right}, Start time: {start_time}")
 
         await channel_layer.group_send(
             game_name,
@@ -169,19 +176,23 @@ class GameConsumer(CustomWebSocketLogic):
                 "startTime": start_time 
             }
         )
+        logging.info(f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
+        if player_left and player_right:
+            await init_game(game, self)
+            GameConsumer.game_loops[self.game_id] = GameConsumer.run_game_loop(self.game_id, start_time)
 
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         # Set the player ready
-        game_id = self.scope['url_route']['kwargs']['game_id']
-        game = await sync_to_async(Game.objects.get)(id=game_id)
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        game = await sync_to_async(Game.objects.get)(id=self.game_id)
         game.set_player_ready(self.scope['user'].id, False)
 
         # Doing game stuff
 
-        game_name = f"game_{game_id}"
+        game_name = f"game_{self.game_id}"
         await channel_layer.group_add(game_name, self.channel_name)
         
         game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
@@ -202,8 +213,8 @@ class GameConsumer(CustomWebSocketLogic):
                 "startTime": start_time 
             }
         )
+        await update_game_state_db(game, Game.GameState.PAUSED)
 
-        ...
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
@@ -217,3 +228,52 @@ class GameConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def update_players_ready(self, event):
         await self.send(text_data=json.dumps({**event}))
+
+    @barely_handle_ws_exceptions
+    async def update_game_state(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
+    @staticmethod
+    def run_game_loop(game_id, start_time):
+
+        async def game_loop():
+            game_over = False
+            while not game_over:
+                try:
+                    # Fetches data from cache
+                    left_player = cache.get(f'game_{game_id}_player_left', {})
+                    right_player = cache.get(f'game_{game_id}_player_right', {})
+
+
+                    # Checks if cache data is allowed (move paddle in wall etc.)
+                    game_data = cache.get(f'game_{game_id}_state', {})
+                    # Then calculate ball movement
+                    game_data['gameData']['ballPosX'] += 1
+                    # if game_data['gameData']['ballPosX'] == 10:
+                    #     game_over = True
+                    # update paddle position (keep in mind powerups)
+                    # Check if point is over
+                    # Update game cache and send it via WS to FE
+                    cache.set(f'game_{game_id}_state', game_data, timeout=3000)
+
+                    logging.info(f"Game state in loop: {game_data}")
+
+                    game_name = f"game_{game_id}"
+                    await channel_layer.group_send(
+                    game_name,
+                    {
+                        "type": "update_game_state",
+                        "messageType": "gameState",
+                        **game_data
+                    }
+                    )
+
+                    await asyncio.sleep(1 / GAME_FPS)
+                except Exception as e:
+                    logging.error(f"Error in game loop: {e}")
+                    game_over = True
+                    break
+
+        logging.info("Game loop ended")
+        return asyncio.create_task(game_loop())
+    

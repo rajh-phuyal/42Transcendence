@@ -55,6 +55,17 @@ class WebSocketMessageHandlersGame:
         ...
         logging.info(f"Hanlding game message: {message}. tbd!")
 
+    @staticmethod
+    async def handle_playerInput(consumer, user, message):
+        message = parse_message(message) # TODO: @Rajh implement deep json thing
+        if "playerLeft" in message:
+            cache.set(f'game_{consumer.game_id}_player_left', message["playerLeft"], timeout=3000)
+        
+        if "playerRight" in message:
+            cache.set(f'game_{consumer.game_id}_player_right', message["playerRight"], timeout=3000)
+        
+        logging.info(f"Hanlding game message: {message}. tbd!")    
+
 # To send by consumer
 async def send_response_message(client_consumer, type, message):
     """Send a message to a WebSocket connection."""
