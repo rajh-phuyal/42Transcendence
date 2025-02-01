@@ -8,6 +8,14 @@ export default {
     attributes: {
         gameId: null,
         loading: false,
+        map: undefined,
+
+        maps: {
+            "ufo": 1,
+            "lizard-people": 2,
+            "snowman": 3,
+            "lochness": 4,
+        },
     },
 
     methods: {
@@ -58,12 +66,12 @@ export default {
             // Set default values
             // TODO: we should store the default avatar filename somwhere i guess
             // Player 1
-            this.domManip.$id("player-1-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
-            this.domManip.$id("player-1-username").innerText = translate("game", "loading...")
+            this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
+            this.domManip.$id("player-left-username").innerText = translate("game", "loading...")
 
             // Player 2
-            this.domManip.$id("player-2-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
-            this.domManip.$id("player-2-username").innerText = translate("game", "loading...")
+            this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
+            this.domManip.$id("player-right-username").innerText = translate("game", "loading...")
 
         },
 
@@ -81,11 +89,13 @@ export default {
                     console.log("data:", data);
 
                     // Set user cards
-                    this.domManip.$id("player-1-username").innerText = "@" + data.username
-                    this.domManip.$id("player-1-avatar").src = window.origin + '/media/avatars/' + data.userAvatar
-                    this.domManip.$id("player-2-username").innerText = "@" + data.opponentUsername
-                    this.domManip.$id("player-2-avatar").src = window.origin + '/media/avatars/' + data.opponentAvatar
+                    this.domManip.$id("player-left-username").innerText = "@" + data.playerLeft.username
+                    this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/' + data.playerLeft.avatar
+                    this.domManip.$id("player-right-username").innerText = "@" + data.playerRight.username
+                    this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
+                    this.map = this.maps[data.gameData.mapNumber];
+                    
                     // Set game state
                     changeGameState(data.gameState);
 
@@ -125,14 +135,14 @@ export default {
                 return;
             }
             this.gameId = this.routeParams.id;
-            this.loadDetails()
+            await this.loadDetails()
 
             // Connect to Websocket
             WebSocketManagerGame.connect(this.gameId);
 
             // Hide the spinner and show conncted message
-            this.domManip.$id("player-1-state-spinner").style.display = "none";
-            this.domManip.$id("player-1-state").innerText = translate("game", "ready");
+            this.domManip.$id("player-left-state-spinner").style.display = "none";
+            this.domManip.$id("player-left-state").innerText = translate("game", "ready");
         },
     }
 }
