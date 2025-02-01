@@ -2,7 +2,7 @@ import $store from '../store/store.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
-import { updateReadyState } from '../views/game/methods.js';
+import { updateReadyState, updateGameObjects } from '../views/game/methods.js';
 
 
 
@@ -80,6 +80,9 @@ class WebSocketManagerGame {
             case "playersReady":
                 updateReadyState(message);
                 return ;
+            case "gameState":
+                updateGameObjects(message.gameState);
+                return;
             
         }
 

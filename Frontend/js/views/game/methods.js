@@ -45,16 +45,16 @@ function gameLoop(currentTime) {
     if (currentTime - gameObject.lastFrameTime >= 15) {
 
         // Check if the game is ongoing
-        // if (gameObject.state !== "ongoing") {
-        //     cancelAnimationFrame(gameObject.animationId);
-        //     return ;
-        // }
+        if (gameObject.state !== "ongoing") {
+            cancelAnimationFrame(gameObject.animationId);
+            return ;
+        }
         // Send the ws message to the server
-        updateServer();
+        // updateServer();
         // Render the game
+        console.log("player1:", gameObject.playerLeft.pos);
+        console.log("player2:", gameObject.playerRight.pos);
 
-        console.log("paddle movement player1:", gameObject.playerInput.paddleMovement);
-        console.log("animation id:", gameObject.animationId);
         gameObject.lastFrameTime = currentTime;
     }
     gameObject.animationId = requestAnimationFrame(gameLoop);

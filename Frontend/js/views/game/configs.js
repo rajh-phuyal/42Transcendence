@@ -3,6 +3,7 @@ import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { startGameLoop, endGameLoop, changeGameState } from './methods.js';
+import { gameObject } from './objects.js';
 
 export default {
     attributes: {
@@ -78,6 +79,13 @@ export default {
                     console.error('Error occurred:', error);
                 });
         },
+        initObjects() {
+            // TODO: the game state should be set by the WSManager
+            gameObject.state = "ongoing";
+            gameObject.playerLeft.pos = 50;
+            gameObject.playerRight.pos = 50;
+            gameObject.playerLeft.size = 10;
+        },
     },
 
     hooks: {
@@ -97,7 +105,7 @@ export default {
 
         async afterDomInsertion() {
             this.initListeners();
-
+            
             // Checking game id
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
                 console.warn("Invalid game id '%s' from routeParams?.id -> redir to home", this.routeParams.id);
@@ -105,6 +113,7 @@ export default {
                 return;
             }
             this.gameId = this.routeParams.id;
+            this.initObjects();
             await this.loadDetails()
 
             // Connect to Websocket

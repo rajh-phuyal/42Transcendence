@@ -64,12 +64,11 @@ class WebSocketMessageHandlersGame:
         if "playerRight" in message:
             cache.set(f'game_{consumer.game_id}_player_right', message["playerRight"], timeout=3000)
         
-        logging.info(f"Hanlding game message: {message}. tbd!")    
 
 # To send by consumer
 async def send_response_message(client_consumer, type, message):
     """Send a message to a WebSocket connection."""
-    logging.info(f"Sending message to connection {client_consumer}: {message}")
+    # logging.info(f"Sending message to connection {client_consumer}: {message}")
     message_dict = {
         "messageType": type,
         "message": message

@@ -177,9 +177,9 @@ class GameConsumer(CustomWebSocketLogic):
             }
         )
         logging.info(f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
-        if player_left and player_right:
-            await init_game(game, self)
-            GameConsumer.game_loops[self.game_id] = GameConsumer.run_game_loop(self.game_id, start_time)
+        # if player_left and player_right:
+        #     await init_game(game, self)
+            # GameConsumer.game_loops[self.game_id] = GameConsumer.run_game_loop(self.game_id, start_time)
 
 
     @barely_handle_ws_exceptions
