@@ -1,4 +1,8 @@
 <div id="game-view">
+	<div id="game-view-map-image">
+		<img src='' alt="Game Map">
+		<canvas id="game-field"></canvas>
+	</div>
     <!-- Image container to maintain aspect ratio -->
     <div id="game-view-image-container">
         <!-- Left Section -->
@@ -20,10 +24,12 @@
 
         <!-- Middle Section -->
         <div id="game-view-middle-side-container">
-            <div class="game-view-middle-side-container-top">Middle Content</div>
+            <div class="game-view-middle-side-container-top">
+			</div>
             <div class="game-view-middle-side-container-bottom">
-                <barely-a-button id="button-leave-lobby"></barely-a-button>
+				<barely-a-button id="button-leave-lobby"></barely-a-button>
             </div>
+			<button id="go-to-game">Go to game</button>
         </div>
 
         <!-- Right Section -->
@@ -86,9 +92,23 @@
 }
 
 /* Sidebar Widths */
-#game-view-left-side-container   { background-color: rgba(255, 0, 0, 0.3); width: 20%;}
-#game-view-middle-side-container { background-color: rgba(0, 255, 0, 0.3); width: 60%;}
-#game-view-right-side-container  { background-color: rgba(0, 0, 255, 0.3); width: 20%;}
+#game-view-left-side-container   { 
+	background-color: rgba(255, 0, 0, 0.3);
+	width: 20%;
+	max-width: 200px;
+}
+
+#game-view-middle-side-container { 
+	/* background-color: rgba(0, 255, 0, 0.3); */
+	width: 60%;
+}
+
+#game-view-right-side-container  { 
+	background-color: rgba(0, 0, 255, 0.3);
+	width: 20%;
+	max-width: 200px;
+}
+
 
 /* Top Containers Take Most of the Space */
 .game-view-left-side-container-top,
@@ -148,4 +168,35 @@
     margin-top: 5px;
 }
 
+/* Game Field Styling */
+
+#game-view-map-image {
+	position: absolute;
+	width: 65%;
+	height: 90%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#game-view-map-image > img {
+	display: none;
+	height: 100%;
+	max-width: 1080px;
+	aspect-ratio: 16 / 9;
+	background-size: 100% 100%;
+	position: relative;
+}
+
+
+#game-field {
+	display: none;
+	height: 60%;
+	aspect-ratio: 19 / 12;
+	background-color: black;
+	position: absolute;
+}
+
+
 </style>
+
