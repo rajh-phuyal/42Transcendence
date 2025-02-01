@@ -1,5 +1,4 @@
-export const gameObject = [
-    {
+export const gameObject ={
         state: undefined,
         lastFrameTime: undefined,
         animationId: undefined,
@@ -34,4 +33,3 @@ export const gameObject = [
             posY: undefined,
         },
     }
-]
