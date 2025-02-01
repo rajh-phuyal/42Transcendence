@@ -69,8 +69,9 @@ class LobbyView(BaseAuthenticatedView):
             return error_response(_("Opponent not found"))
         if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
             return error_response(_("Game can't be played since it's either finished or quited"))
+        tournament_name = None
         if (game.tournament):
-            tournament_Name = game.tournament.name
+            tournament_name = game.tournament.name
         # User with lower id will be playerRight
         if user.id < opponent_member.user.id:
             playerLeft = opponent_member.user
@@ -99,7 +100,7 @@ class LobbyView(BaseAuthenticatedView):
                 'state': game.state,
                 'mapNumber': game.map_number,
                 'tournamentId': game.tournament_id,
-                'tournamentName': tournament_Name
+                'tournamentName': tournament_name
             },
         }
         return success_response(_('Lobby details'), **response_message)
