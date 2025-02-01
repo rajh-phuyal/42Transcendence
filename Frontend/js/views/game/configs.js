@@ -1,7 +1,6 @@
 import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
-import { changeGameState } from './methods.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { gameRender } from './render.js';
 import { gameObject } from './objects.js';
@@ -9,40 +8,40 @@ import { gameObject } from './objects.js';
 export default {
     attributes: {
         gameId: null,
-        loading: false,
+        map: undefined,
+
+        maps: {
+            "ufo": 1,
+            "lizard-people": 2,
+            "snowman": 3,
+            "lochness": 4,
+        },
     },
 
     methods: {
-        listenerLeaveLobby() {
-            // TODO: Close WS connection
-            // redir home
+        leaveLobbyCallback() {
             router('/');
         },
 
-        listenerQuitGame() {
-            // TODO:Check if allowed to quit
-                // Quit game
-                call(`game/delete/${this.gameId}/`, 'DELETE')
-                // Close WS connection
-                // Redir home
+        quitGameCallback() {
+            // Quit game
+            call(`game/delete/${this.gameId}/`, 'DELETE').then(data => {
                 router('/');
+            })
         },
 
         initListeners(init = true) {
             const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
             const buttonQuitGame = this.domManip.$id("button-quit-game");
-            if (!buttonLeaveLobby || !buttonQuitGame) {
-                console.warn("Button not found. Please check the button id.");
-                return;
-            }
 
             if (init) {
+                // TODO: translation for buttons should be done in with the abstraction tool TBC
                 buttonLeaveLobby.name = translate("game", "button-leave-lobby");
                 buttonLeaveLobby.render();
                 buttonQuitGame.name = translate("game", "button-quit-game");
                 buttonQuitGame.render();
-                this.domManip.$on(buttonLeaveLobby, "click", this.listenerLeaveLobby);
-                this.domManip.$on(buttonQuitGame, "click", this.listenerQuitGame);
+                this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
+                this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
                 return ;
             }
 
@@ -56,41 +55,20 @@ export default {
                 }
             }
         },
-        initAndTranslate() {
-            // Set default values
-            // TODO: we should store the default avatar filename somwhere i guess
-            // Player 1
-            this.domManip.$id("player-1-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
-            this.domManip.$id("player-1-username").innerText = translate("game", "loading...")
-
-            // Player 2
-            this.domManip.$id("player-2-avatar").src = window.origin + '/media/avatars/' + '54c455d5-761b-46a2-80a2-7a557d9ec618.png'
-            this.domManip.$id("player-2-username").innerText = translate("game", "loading...")
-
-        },
-
+        
         async loadDetails() {
-            // To avoid multiple calls at the same time
-            if(this.loading) {
-                console.warn("Already loading view. Please wait.");
-                return Promise.resolve();
-            }
-            this.loading = true;
-
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
                     console.log("data:", data);
 
                     // Set user cards
-                    this.domManip.$id("player-1-username").innerText = "@" + data.username
-                    this.domManip.$id("player-1-avatar").src = window.origin + '/media/avatars/' + data.userAvatar
-                    this.domManip.$id("player-2-username").innerText = "@" + data.opponentUsername
-                    this.domManip.$id("player-2-avatar").src = window.origin + '/media/avatars/' + data.opponentAvatar
+                    this.domManip.$id("player-left-username").innerText = "@" + data.playerLeft.username
+                    this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/' + data.playerLeft.avatar
+                    this.domManip.$id("player-right-username").innerText = "@" + data.playerRight.username
+                    this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
-                    // Set game state
-                    changeGameState(data.gameState);
-
+                    this.map = this.maps[data.gameData.mapNumber];
                 })
                 .catch(error => {
                     router('/');
@@ -105,10 +83,7 @@ export default {
         },
 
         beforeRouteLeave() {
-            // Disconnect from Websocket
-            // Connect to Websocket
             WebSocketManagerGame.disconnect(this.gameId);
-
             this.initListeners(false);
         },
 
@@ -117,7 +92,6 @@ export default {
         },
 
         async afterDomInsertion() {
-            this.initAndTranslate();
             this.initListeners();
 
             // Checking game id
@@ -127,7 +101,7 @@ export default {
                 return;
             }
             this.gameId = this.routeParams.id;
-            this.loadDetails()
+            await this.loadDetails()
 
             // Connect to Websocket
             WebSocketManagerGame.connect(this.gameId);

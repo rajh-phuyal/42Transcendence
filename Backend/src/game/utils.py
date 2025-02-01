@@ -76,6 +76,8 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
             game.save()
             game_member_user.save()
             game_member_opponent.save()
+
+        # TODO: send a chat message inviting the opponent to the game like #G#<game_id>#
         return game.id, True
 
 def delete_game(user_id, game_id):
