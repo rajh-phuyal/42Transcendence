@@ -1,4 +1,6 @@
+import logging
 from django.db import models
+from django.core.cache import cache
 
 class Game(models.Model):
     class GameState(models.TextChoices):
@@ -25,6 +27,17 @@ class Game(models.Model):
 
     class Meta:
         db_table = '"barelyaschema"."game"'
+
+    def set_player_ready(self, userId, status):
+        if status:
+            cache.set(f'game_{self.id}_user_{userId}_ready', status, timeout=3000)  # 3000 seconds = 50 minutes
+            logging.info(f"User {userId} marked as ready for game {self.id}.")
+        else:
+            cache.delete(f'game_{self.id}_user_{userId}_ready')
+            logging.info(f"User {userId} marked as not ready for game {self.id}.")
+
+    def get_player_ready(self, userId):
+        return cache.get(f'game_{self.id}_user_{userId}_ready', default=False)
 
 
 class GameMember(models.Model):

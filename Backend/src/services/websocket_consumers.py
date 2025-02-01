@@ -1,3 +1,4 @@
+from game.models import Game
 from asgiref.sync import sync_to_async
 import json
 from django.utils import timezone
@@ -126,15 +127,22 @@ class GameConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
-        # Doing game stuff
-        self.game_id = self.scope['url_route']['kwargs']['game_id']
         logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
+        # Set the player ready
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        game.set_player_ready(self.scope['user'].id, True)
         # Accept the connection
         await self.accept()
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
+        # Set the player ready
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+        game.set_player_ready(self.scope['user'].id, False)
+
         # Doing game stuff
         ...
 
