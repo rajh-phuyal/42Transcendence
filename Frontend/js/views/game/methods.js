@@ -1,4 +1,5 @@
 import { $id } from '../../abstracts/dollars.js';
+import { translate } from '../../locale/locale.js';
 
 export function changeGameState(state) {
     switch (state) {
@@ -19,20 +20,20 @@ export function updateReadyState(readyStateObject) {
 
     if (readyStateObject.playerLeft) {
         $id("player-left-state-spinner").style.display = "none";
-        $id("player-left-state").innerText = translate("game", "ready");
+        $id("player-left-state").style.display = "block";
     }
     else {
         $id("player-left-state-spinner").style.display = "block";
-        $id("player-left-state").innerText = "";
+        $id("player-left-state").style.display = "none";
     }
 
     if (readyStateObject.playerRight) {
         $id("player-right-state-spinner").style.display = "none";
-        $id("player-right-state").innerText = translate("game", "ready");
+        $id("player-right-state").style.display = "block";
     }
     else {
         $id("player-right-state-spinner").style.display = "block";
-        $id("player-right-state").innerText = "";
+        $id("player-right-state").style.display = "none";
     }
 
     if (readyStateObject.startTime)

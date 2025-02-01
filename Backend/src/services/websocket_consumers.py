@@ -156,7 +156,7 @@ class GameConsumer(CustomWebSocketLogic):
         player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
         start_time = None
         if player_left and player_right:
-            start_time = datetime.now() + timedelta(seconds=60)
+            start_time = datetime.now() + timedelta(seconds=5)
             start_time = start_time.isoformat()        
 
         await channel_layer.group_send(
@@ -180,6 +180,29 @@ class GameConsumer(CustomWebSocketLogic):
         game.set_player_ready(self.scope['user'].id, False)
 
         # Doing game stuff
+
+        game_name = f"game_{game_id}"
+        await channel_layer.group_add(game_name, self.channel_name)
+        
+        game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
+        player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
+        player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
+        start_time = None
+        if player_left and player_right:
+            start_time = datetime.now() + timedelta(seconds=5)
+            start_time = start_time.isoformat()        
+
+        await channel_layer.group_send(
+            game_name,
+            {
+                "type": "update_players_ready",
+                "messageType": "playersReady",
+                "playerLeft": player_left,
+                "playerRight": player_right,
+                "startTime": start_time 
+            }
+        )
+
         ...
 
     @barely_handle_ws_exceptions
