@@ -3,6 +3,7 @@ import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import { changeGameState } from './methods.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
+import { startGameLoop, endGameLoop } from './methods.js';
 
 export default {
     attributes: {
@@ -95,7 +96,7 @@ export default {
                     this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
                     this.map = this.maps[data.gameData.mapNumber];
-                    
+
                     // Set game state
                     changeGameState(data.gameState);
 
@@ -118,6 +119,7 @@ export default {
             WebSocketManagerGame.disconnect(this.gameId);
 
             this.initListeners(false);
+            endGameLoop();
         },
 
         beforeDomInsertion() {
@@ -143,6 +145,7 @@ export default {
             // Hide the spinner and show conncted message
             this.domManip.$id("player-left-state-spinner").style.display = "none";
             this.domManip.$id("player-left-state").innerText = translate("game", "ready");
+            startGameLoop();
         },
     }
 }
