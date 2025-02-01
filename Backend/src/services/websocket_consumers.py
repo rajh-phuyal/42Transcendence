@@ -18,6 +18,7 @@ from services.tournament_service import setup_all_tournament_channels
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
+from datetime import datetime, timedelta
 
 channel_layer = get_channel_layer()
 
@@ -132,29 +133,40 @@ class MainConsumer(CustomWebSocketLogic):
 
 # Manages the temporary WebSocket connection for a single game
 class GameConsumer(CustomWebSocketLogic):
-    @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions    
     async def connect(self):
         # TODO: check if the user is in the game
         await super().connect()
         # Add client to the channel layer group
         game_id = self.scope['url_route']['kwargs']['game_id']
         logging.info(f"Opening WebSocket connection for game {game_id} and user {self.scope['user']} ...")
+
         # Set the player ready
         game = await database_sync_to_async(Game.objects.get)(id=game_id)
         game.set_player_ready(self.scope['user'].id, True)
+        
         game_name = f"game_{game_id}"
         await channel_layer.group_add(game_name, self.channel_name)
+        
         # Accept the connection
         await self.accept()
 
-        # Send the current game state
+        game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
+        player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
+        player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
+        start_time = None
+        if player_left and player_right:
+            start_time = datetime.now() + timedelta(seconds=60)
+            start_time = start_time.isoformat()        
+
         await channel_layer.group_send(
             game_name,
             {
-                "type": "game_update_state",
-                "messageType": "gameUpdateReadyState",
-                "gameId": game_id,
-                "state": game.state
+                "type": "update_players_ready",
+                "messageType": "playersReady",
+                "playerLeft": player_left,
+                "playerRight": player_right,
+                "startTime": start_time 
             }
         )
 
@@ -180,5 +192,5 @@ class GameConsumer(CustomWebSocketLogic):
         await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
 
     @barely_handle_ws_exceptions
-    async def game_update_state(self, event):
+    async def update_players_ready(self, event):
         await self.send(text_data=json.dumps({**event}))
