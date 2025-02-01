@@ -15,6 +15,7 @@ export default {
         },
 
         beforeRouteLeave() {
+            // TODO: remove listener
         },
 
         beforeDomInsertion() {
