@@ -204,7 +204,10 @@ def join_tournament(user, tournament_id):
         _("{username} joined the tournament").format(username=user.username),
         **{
             "userId": user.id,
-            "state": "join"
+            "state": "join",
+            "username": user.username,
+            "userAvatar": user.avatar_path,
+            "userState": "accepted" # TO match the serializer
         }
     )
 
