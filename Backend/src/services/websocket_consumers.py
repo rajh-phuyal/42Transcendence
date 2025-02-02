@@ -259,8 +259,8 @@ class GameConsumer(CustomWebSocketLogic):
                 await asyncio.sleep(1 / GAME_FPS)
             except Exception as e:
                 logging.error(f"Error in game loop: {e}")
-                game_over = True
                 break
+        logging.info(f"Game finished: {game_id}")
 
 
 def move_paddle(player, game_state_data_player):
@@ -286,7 +286,7 @@ def move_paddle(player, game_state_data_player):
 
 
 def move_ball(game_state_data):
-    logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']}")
+    logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']} \t Players pos: left --> {game_state_data['playerLeft']['paddlePos']} {game_state_data['playerRight']['paddlePos']}")
 
     # Move the ball
     game_state_data['gameData']['ballPosX'] += game_state_data['gameData']['ballDirectionX'] * game_state_data['gameData']['ballSpeed']

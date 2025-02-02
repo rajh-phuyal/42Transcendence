@@ -81,7 +81,7 @@ class WebSocketManagerGame {
                 updateReadyState(message);
                 return ;
             case "gameState":
-                // console.log("got game state", message);
+                console.log("got game state", message);
                 updateGameObjects(message);
                 return;
 
