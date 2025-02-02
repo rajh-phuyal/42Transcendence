@@ -107,23 +107,23 @@ export function updateGameObjects(gameState) {
     const gameField = $id("game-field");
 
     gameObject.state = gameState?.gameData?.state;
-    gameObject.playerLeft.points = gameState.playerLeft.points;
-    gameObject.playerRight.points = gameState.playerRight.points;
+    gameObject.playerLeft.points = gameState?.playerLeft?.points;
+    gameObject.playerRight.points = gameState?.playerRight?.points;
 
-    gameObject.playerLeft.pos = percentageToPixels(gameState.playerLeft.paddlePos, gameField.height);
-	gameObject.playerRight.pos = percentageToPixels(gameState.playerRight.paddlePos, gameField.height);
-	gameObject.playerLeft.size = percentageToPixels(gameState.playerLeft.paddleSize, gameField.height);
-	gameObject.playerRight.size = percentageToPixels(gameState.playerRight.paddleSize, gameField.height);
-	gameObject.ball.posX = percentageToPixels(gameState.gameData.ballPosX, gameField.width);
-	gameObject.ball.posY = percentageToPixels(gameState.gameData.ballPosY, gameField.height);
+    gameObject.playerLeft.pos = percentageToPixels(gameState?.playerLeft?.paddlePos, gameField?.height);
+	gameObject.playerRight.pos = percentageToPixels(gameState?.playerRight?.paddlePos, gameField?.height);
+	gameObject.playerLeft.size = percentageToPixels(gameState?.playerLeft?.paddleSize, gameField?.height);
+	gameObject.playerRight.size = percentageToPixels(gameState?.playerRight?.paddleSize, gameField?.height);
+	gameObject.ball.posX = percentageToPixels(gameState?.gameData?.ballPosX, gameField?.width);
+	gameObject.ball.posY = percentageToPixels(gameState?.gameData?.ballPosY, gameField?.height);
 	gameObject.ball.size = 4;
 
-    gameObject.playerLeft.powerups.big = gameState.playerLeft.powerupBig;
-    gameObject.playerLeft.powerups.slow = gameState.playerLeft.powerupSlow;
-    gameObject.playerLeft.powerups.fast = gameState.playerLeft.powerupFast;
-    gameObject.playerRight.powerups.big = gameState.playerRight.powerupBig;
-    gameObject.playerRight.powerups.slow = gameState.playerRight.powerupSlow;
-    gameObject.playerRight.powerups.fast = gameState.playerRight.powerupFast;
+    gameObject.playerLeft.powerups.big = gameState?.playerLeft?.powerupBig;
+    gameObject.playerLeft.powerups.slow = gameState?.playerLeft?.powerupSlow;
+    gameObject.playerLeft.powerups.fast = gameState?.playerLeft?.powerupFast;
+    gameObject.playerRight.powerups.big = gameState?.playerRight?.powerupBig;
+    gameObject.playerRight.powerups.slow = gameState?.playerRight?.powerupSlow;
+    gameObject.playerRight.powerups.fast = gameState?.playerRight?.powerupFast;
 }
 
 export function endGameLoop() {
@@ -139,31 +139,59 @@ export function startGameLoop() {
     gameObject.animationId = requestAnimationFrame(gameLoop);
 }
 
+const animateImage = (id, animationName, duration) => {
+    const image = $id(id);
+    image.style.animationDuration = duration;
+    image.style.animationName = animationName;
+    image.style.animationIterationCount = "ease-in-out";
+}
+
+const removeImageAnimation = (id) => {
+    const image = $id(id);
+    image.style.animationDuration = "0s";
+    image.style.animationName = "";
+    image.style.animationIterationCount = "0";
+}
+
+
 const showGame = () => {
     const gameField = $id("game-field");
     const gameViewImageContainer = $id("game-view-image-container");
     const gameImageContainer = $id("game-view-map-image");
+
     const gameImage = gameImageContainer.children[0];
-    gameField.style.display = "block";
+
+    // TODO: add proper map image
     gameImage.src = window.location.origin + '/assets/game/maps/ufo.png';
+
     gameViewImageContainer.style.backgroundImage = "none";
-    gameViewImageContainer.style.width= "100%";
+    animateImage("game-view-map-image", "fadein", "2s");
+    gameViewImageContainer.style.width = "100%";
+
+    gameField.style.display = "block";
     gameImage.style.display = "block";
+
+    setTimeout(() => {
+        removeImageAnimation("game-view-map-image");
+    }, 2000);
 }
 
-const tempImageObject = {
+const countdownImageObject = {
     0: "",
-    1: "https://svgsilh.com/svg/1563467.svg",
-    2: "https://svgsilh.com/svg/1216173.svg",
-    3: "https://svgsilh.com/svg/592740.svg",
-    4: "https://svgsilh.com/svg/1563467.svg",
-    5: "https://svgsilh.com/svg/1216173.svg",
-    6: "https://svgsilh.com/svg/592740.svg",
+    1: `${window.origin}/assets/game/countdown/countdown1.png`,
+    2: `${window.origin}/assets/game/countdown/countdown2.png`,
+    3: `${window.origin}/assets/game/countdown/countdown3.png`,
+    4: `${window.origin}/assets/game/countdown/countdown4.png`,
+    5: `${window.origin}/assets/game/countdown/countdown5.png`,
+    6: `${window.origin}/assets/game/countdown/countdown6.png`,
+    7: `${window.origin}/assets/game/countdown/countdown7.png`,
+    8: `${window.origin}/assets/game/countdown/countdown8.png`,
+    9: `${window.origin}/assets/game/countdown/countdown9.png`,
 }
 
 const gameCountdownImage = (currentTime) => {
     const gameCountdownImage = $id("game-countdown-image");
-    gameCountdownImage.src = tempImageObject[currentTime];
+    gameCountdownImage.src = countdownImageObject[currentTime];
     gameCountdownImage.style.display = "block";
 
     if (!currentTime) {
@@ -193,6 +221,8 @@ export function updateReadyState(readyStateObject) {
     }
 
     if (readyStateObject.startTime) {
+        const animationDuration = Math.floor((Date.parse(readyStateObject.startTime) - new Date()) / 1000) - 2;
+        animateImage("game-countdown-image", "pulsate", `${animationDuration}` + "s");
         gameCountdownIntervalId = setInterval((startTime) => {
             let diff = startTime - new Date();
             if (diff <= 0) {
