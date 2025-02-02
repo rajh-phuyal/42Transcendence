@@ -120,13 +120,6 @@ export default {
             // Connect to Websocket
             WebSocketManagerGame.connect(this.gameId);
 
-            // Hide the spinner and show conncted message
-            this.domManip.$id("player-left-state-spinner").style.display = "none";
-            this.domManip.$id("player-left-state").innerText = translate("game", "ready");
-
-            this.domManip.$id("player-1-state-spinner").style.display = "none";
-            this.domManip.$id("player-1-state").innerText = translate("game", "ready");
-
 			const gameField = this.domManip.$id("game-field");
 			const ctx = gameField.getContext('2d');
 			ctx.clearRect(0, 0, gameField.width, gameField.height);

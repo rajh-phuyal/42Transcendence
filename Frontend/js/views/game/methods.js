@@ -1,6 +1,7 @@
 import { $id, $on, $off } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
+import { gameRender } from './render.js';
 
 export function changeGameState(state) {
     switch (state) {
@@ -27,14 +28,14 @@ export function changeGameState(state) {
 //     console.log(`${hours}:${minutes}:${seconds}.${milliseconds}`);
 // }
 
-function updateServer() {
+function updatePlayerInput() {
     // Send the ws message to the server
     const message = {
         messageType: "playerInput",
-        paddleMovement: gameObject.playerInput.paddleMovement,
-        powerupBig: gameObject.playerInput.powerupBig,
-        powerupSlow: gameObject.playerInput.powerupSlow,
-        powerupFast: gameObject.playerInput.powerupFast,
+        movePaddle: gameObject.playerInput.paddleMovement || "0",
+        powerupBig: gameObject.playerInput.powerupBig || false,
+        powerupSlow: gameObject.playerInput.powerupSlow || false,
+        powerupFast: gameObject.playerInput.powerupFast || false,
     }
     console.log("sending message to server:", message);
     WebSocketManagerGame.sendMessage(message);
@@ -42,6 +43,8 @@ function updateServer() {
 
 function gameLoop(currentTime) {
     console.log("gameLoop");
+    const gameField = $id("game-field");
+    const ctx = gameField.getContext('2d');
     if (currentTime - gameObject.lastFrameTime >= 15) {
 
         // Check if the game is ongoing
@@ -52,6 +55,7 @@ function gameLoop(currentTime) {
         // Render the game
         // console.log("player1:", gameObject.playerLeft.pos);
         // console.log("player2:", gameObject.playerRight.pos);
+        gameRender(gameField, ctx);
 
         gameObject.lastFrameTime = currentTime;
     }
@@ -64,32 +68,27 @@ function keyPressCallback(event) {
         case "w":
             // Move the paddle up
             gameObject.playerInput.paddleMovement = "-";
-            // console.log("up");
-            return ;
+            break;
         case "s":
             // Move the paddle down
             gameObject.playerInput.paddleMovement = "+";
-            // console.log("down");
-            return ;
+            break;
         case "1":
             // Activate the powerup
             gameObject.playerInput.powerupBig = true;
-            // console.log("big");
-            return ;
+            break;
         case "2":
             // Activate the powerup
             gameObject.playerInput.powerupSlow = true;
-            // console.log("slow");
-            return ;
+            break;
         case "3":
             // Activate the powerup
             gameObject.playerInput.powerupFast = true;
-            // console.log("fast");
-            return ;
+            break;
+        default:
+            return;
     }
-    setTimeout(() => {
-        updateServer();
-    }, 100);
+    updatePlayerInput();
 }
 
 function keyReleaseCallback(event) {
@@ -97,17 +96,13 @@ function keyReleaseCallback(event) {
         case "w":
             // Stop the paddle
             gameObject.playerInput.paddleMovement = "0";
-            // console.log("stop");
-            return ;
+            break;
         case "s":
             // Stop the paddle
             gameObject.playerInput.paddleMovement = "0";
-            // console.log("stop");
-            return ;
+            break;
     }
-    setTimeout(() => {
-        updateServer();
-    }, 100);
+    updatePlayerInput();
 }
 
 export function updateGameObjects(gameState) {
