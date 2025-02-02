@@ -215,13 +215,12 @@ class GameConsumer(CustomWebSocketLogic):
         while not game_over:
             try:
                 # Fetches data from cache
-                left_player_input = cache.get(
-                    f'game_{game_id}_player_left', {})
-                right_player_input = cache.get(
-                    f'game_{game_id}_player_right', {})
+                left_player_input = cache.get(f'game_{game_id}_player_left', {})
+                right_player_input = cache.get(f'game_{game_id}_player_right', {})
 
                 # Checks if cache data is allowed (move paddle in wall etc.)
                 game_state_data = cache.get(f'game_{game_id}_state', {})
+
                 game_state_data_left = game_state_data['playerLeft']
                 game_state_data_right = game_state_data['playerRight']
                 # Then calculate ball movement
@@ -229,18 +228,15 @@ class GameConsumer(CustomWebSocketLogic):
                     left_player_input, game_state_data_left)
                 game_state_data_right = move_paddle(
                     right_player_input, game_state_data_right)
+
                 game_state_data['playerLeft'] = game_state_data_left
                 game_state_data['playerRight'] = game_state_data_right
                 # update paddle position (keep in mind powerups)
                 # Check if point is over
                 # Update game cache and send it via WS to FE
-                cache.set(f'game_{game_id}_state',
-                          game_state_data, timeout=3000)
-
-                # logging.info(f"Game state in loop: {game_state_data}")
 
                 game_name = f"game_{game_id}"
-                await channel_layer.group_send(
+                channel_layer.group_send(
                     game_name,
                     {
                         "type": "update_game_state",
@@ -248,6 +244,9 @@ class GameConsumer(CustomWebSocketLogic):
                         **game_state_data
                     }
                 )
+
+                cache.set(f'game_{game_id}_state',
+                          game_state_data, timeout=3000)
 
                 await asyncio.sleep(1 / GAME_FPS)
             except Exception as e:
@@ -257,8 +256,11 @@ class GameConsumer(CustomWebSocketLogic):
 
 
 def move_paddle(player, game_state_data_player):
+    logging.info(f"paddlePos for {player['movePaddle']}: {game_state_data_player['paddlePos']}")
+
     if player['movePaddle'] == '0':
-        return
+        return game_state_data_player
+
 
     new_paddle_pos = game_state_data_player['paddlePos']
     if player['movePaddle'] == '+':
@@ -266,9 +268,10 @@ def move_paddle(player, game_state_data_player):
     elif player['movePaddle'] == '-':
         new_paddle_pos -= game_state_data_player['paddleSpeed']
 
-    if (new_paddle_pos - 0.5 * game_state_data_player['paddleSize']) < 0:
-        new_paddle_pos = 0.5 * game_state_data_player['paddleSize']
-    elif (new_paddle_pos + 0.5 * game_state_data_player['paddleSize']) > 1:
-        new_paddle_pos = 1 - 0.5 * game_state_data_player['paddleSize']
+    if (new_paddle_pos - (game_state_data_player['paddleSize'] / 2)) < 0:
+        new_paddle_pos = game_state_data_player['paddleSize'] / 2
+
+    elif (new_paddle_pos + (game_state_data_player['paddleSize'] / 2)) > 100:
+        new_paddle_pos = 100 - (game_state_data_player['paddleSize'] / 2)
     game_state_data_player['paddlePos'] = new_paddle_pos
     return game_state_data_player

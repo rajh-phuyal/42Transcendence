@@ -1,4 +1,5 @@
 import { gameObject } from './objects.js';
+import { $id } from '../../abstracts/dollars.js';
 
 // ############## VARIABLES ##############
 
@@ -31,9 +32,6 @@ const borders = {
 
 // ############## FUNCTIONS ##############
 
-const percentageToPixels = (percentage, edgeSize) => {
-	return (edgeSize / 100) * percentage;
-}
 
 const drawPaddles = (gameField, ctx, normalizedGameObject) => {
 	ctx.fillStyle = 'white';
@@ -89,22 +87,10 @@ const drawField = (gameField, ctx, normalizedGameObject) => {
 	drawBall(ctx, normalizedGameObject);
 }
 
-const normalizeGameObject = (gameObject, gameField) => {
-	const normalizedGameObject = { ...gameObject };
-	normalizedGameObject.playerLeft.pos = percentageToPixels(gameObject.playerLeft.pos, gameField.height);
-	normalizedGameObject.playerRight.pos = percentageToPixels(gameObject.playerRight.pos, gameField.height);
-	normalizedGameObject.playerLeft.size = percentageToPixels(gameObject.playerLeft.size, gameField.height);
-	normalizedGameObject.playerRight.size = percentageToPixels(gameObject.playerRight.size, gameField.height);
-	normalizedGameObject.ball.posX = percentageToPixels(gameObject.ball.posX, gameField.width);
-	normalizedGameObject.ball.posY = percentageToPixels(gameObject.ball.posY, gameField.height);
-	normalizedGameObject.ball.size = 4;
-	return normalizedGameObject;
-}
 
-export function gameRender (gameField, ctx) {
-	// TODO: DUMMY DATA REMOVE
-	const normalizedGameObject = normalizeGameObject(gameObject, gameField);
-	// TODO: DUMMY DATA REMOVE
+export function gameRender () {
+	const gameField = $id("game-field");
+    const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
-	drawField(gameField, ctx, normalizedGameObject);
+	drawField(gameField, ctx, gameObject);
 }
