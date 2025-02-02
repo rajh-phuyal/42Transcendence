@@ -20,13 +20,15 @@ GAME_STATE = {
         "paddleSpeed": 1
     },
     "gameData" : {
-        "ballPosX": 0,
-        "ballPosY": 0,
+        "ballPosX": 50,
+        "ballPosY": 50,
         "state": "ongoing",
         "ballSpeed": 1,
         "ballRadius": 1,
         "ballDirectionX": -1,
         "ballDirectionY": 0,
+        "playerServes": "playerLeft",
+        "remainingServes": 2
     }
 }
 

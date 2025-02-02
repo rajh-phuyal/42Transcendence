@@ -1,4 +1,5 @@
 import asyncio
+import random
 from game.models import Game
 from asgiref.sync import sync_to_async
 import json
@@ -212,36 +213,31 @@ class GameConsumer(CustomWebSocketLogic):
 
     @staticmethod
     async def run_game_loop(game_id, start_time):
-        game_over = False
-        while not game_over:
+        while True:
             try:
-                # Fetches data from cache
+                # Fetches user desires from cache
                 left_player_input = cache.get(f'game_{game_id}_player_left', {})
                 right_player_input = cache.get(f'game_{game_id}_player_right', {})
 
-                # Checks if cache data is allowed (move paddle in wall etc.)
+                # Fetches game state from cache
                 game_state_data = cache.get(f'game_{game_id}_state', {})
 
+                # Extract user state from game state
                 game_state_data_left = game_state_data['playerLeft']
                 game_state_data_right = game_state_data['playerRight']
 
-                game_state_game_data = game_state_data['gameData']
+                # Change postions of both paddles if requested and allowed
+                game_state_data_left = move_paddle(left_player_input, game_state_data_left)
+                game_state_data_right = move_paddle(right_player_input, game_state_data_right)
 
-                # Then calculate ball movement
-                game_state_data_left = move_paddle(
-                    left_player_input, game_state_data_left)
-                game_state_data_right = move_paddle(
-                    right_player_input, game_state_data_right)
-
-                game_state_game_data = move_ball(game_state_game_data)
-
+                # Update game state with new paddle positions
                 game_state_data['playerLeft'] = game_state_data_left
                 game_state_data['playerRight'] = game_state_data_right
-                game_state_data['gameData'] = game_state_game_data
-                # update paddle position (keep in mind powerups)
-                # Check if point is over
-                # Update game cache and send it via WS to FE
 
+                # Then calculate ball movement
+                game_state_data = move_ball(game_state_data)
+
+                # Send the updated game state to FE
                 game_name = f"game_{game_id}"
                 await channel_layer.group_send(
                     game_name,
@@ -252,9 +248,14 @@ class GameConsumer(CustomWebSocketLogic):
                     }
                 )
 
-                cache.set(f'game_{game_id}_state',
-                          game_state_data, timeout=3000)
+                # Store the updated game state in cache
+                cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
 
+                # Check if the game is over and exit the loop
+                if game_state_data['gameData']['state'] == 'finished':
+                    break
+
+                # Await for next frame render
                 await asyncio.sleep(1 / GAME_FPS)
             except Exception as e:
                 logging.error(f"Error in game loop: {e}")
@@ -285,26 +286,93 @@ def move_paddle(player, game_state_data_player):
 
 
 def move_ball(game_state_data):
-    logging.info(f"ballPos:\t x --> {game_state_data['ballPosX']} \t y --> {game_state_data['ballPosY']}")
+    logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']}")
 
     # Move the ball
-    game_state_data['ballPosX'] += game_state_data['ballDirectionX'] * game_state_data['ballSpeed']
-    game_state_data['ballPosY'] += game_state_data['ballDirectionY'] * game_state_data['ballSpeed']
+    game_state_data['gameData']['ballPosX'] += game_state_data['gameData']['ballDirectionX'] * game_state_data['gameData']['ballSpeed']
+    game_state_data['gameData']['ballPosY'] += game_state_data['gameData']['ballDirectionY'] * game_state_data['gameData']['ballSpeed']
 
-    # Check if the ball is out of bounds
-    if game_state_data['ballPosX'] < PADDLE_OFFSET + game_state_data['ballRadius']:
-        game_state_data['ballPosX'] = PADDLE_OFFSET + game_state_data['ballRadius']
-        game_state_data['ballDirectionX'] *= -1
-    elif game_state_data['ballPosX'] > 100 - PADDLE_OFFSET - game_state_data['ballRadius']:
-        game_state_data['ballPosX'] = 100 - PADDLE_OFFSET - game_state_data['ballRadius']
-        game_state_data['ballDirectionX'] *= -1
+    # Check if the ball is hitting the left or right paddle(point was scored)
+    if game_state_data['gameData']['ballPosX'] <= PADDLE_OFFSET + game_state_data['gameData']['ballRadius']:
+        game_state_data['gameData']['ballPosX'] = PADDLE_OFFSET + game_state_data['gameData']['ballRadius']
+        game_state_data['gameData']['ballDirectionX'] *= -1
+        game_state_data = check_padlle_hit(game_state_data, 'playerLeft')
+    elif game_state_data['gameData']['ballPosX'] >= 100 - PADDLE_OFFSET - game_state_data['gameData']['ballRadius']:
+        game_state_data['gameData']['ballPosX'] = 100 - PADDLE_OFFSET - game_state_data['gameData']['ballRadius']
+        game_state_data['gameData']['ballDirectionX'] *= -1
+        game_state_data = check_padlle_hit(game_state_data, 'playerRight')
 
-    if game_state_data['ballPosY'] < game_state_data['ballRadius']:
-        game_state_data['ballPosY'] = game_state_data['ballRadius']
-        game_state_data['ballDirectionY'] *= -1
-    elif game_state_data['ballPosY'] > 100 - game_state_data['ballRadius']:
-        game_state_data['ballPosY'] = 100 - game_state_data['ballRadius']
-        game_state_data['ballDirectionY'] *= -1
+    # Calculate if the upper or lower wall was hit
+    if game_state_data['gameData']['ballPosY'] <= game_state_data['gameData']['ballRadius']:
+        game_state_data['gameData']['ballPosY'] = game_state_data['gameData']['ballRadius']
+        game_state_data['gameData']['ballDirectionY'] *= -1
+    elif game_state_data['gameData']['ballPosY'] >= 100 - game_state_data['gameData']['ballRadius']:
+        game_state_data['gameData']['ballPosY'] = 100 - game_state_data['gameData']['ballRadius']
+        game_state_data['gameData']['ballDirectionY'] *= -1
 
     return game_state_data
     
+def check_padlle_hit(game_state_data, player_side):
+    # Check if a point was scored
+    # if ballPos < paddlePos
+    if game_state_data['gameData']['ballPosY'] < game_state_data[player_side]['paddlePos']:
+    #     if ballPos + ballRadius < paddlePos - paddleSize / 2
+        if game_state_data['gameData']['ballPosY'] + game_state_data['gameData']['ballRadius'] < game_state_data[player_side]['paddlePos'] - game_state_data[player_side]['paddleSize'] / 2:
+    #         score a point
+            game_state_data = score_point(game_state_data, player_side)
+        else:
+            # Ball should bounce off up
+    #         distance_paddle_ball = paddlePos - ballPos
+            distance_paddle_ball = game_state_data[player_side]['paddlePos'] - game_state_data['gameData']['ballPosY']
+    #         percentage_y = distance_paddle_ball / (paddleSize / 2 + ballRadius)
+            percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
+    #         ballDirectionY = -percentage_y
+            game_state_data['gameData']['ballDirectionY'] = -percentage_y
+    else:
+    #     if ballPos - ballRadius > paddlePos + paddleSize / 2
+        if game_state_data['gameData']['ballPosY'] - game_state_data['gameData']['ballRadius'] > game_state_data[player_side]['paddlePos'] + game_state_data[player_side]['paddleSize'] / 2:
+    #         score a point
+            game_state_data = score_point(game_state_data, player_side)
+        else:
+    #         # Ball should bounce off down
+    #         distance_paddle_ball = ballPos - paddlePos
+            distance_paddle_ball = game_state_data['gameData']['ballPosY'] - game_state_data[player_side]['paddlePos']
+    #         percentage_y = distance_paddle_ball / (paddleSize / 2 + ballRadius)
+            percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
+    #         ballDirectionY = percentage_y
+            game_state_data['gameData']['ballDirectionY'] = percentage_y
+        
+    return game_state_data
+
+
+def score_point(game_state_data, player_side):
+    game_state_data['gameData']['ballPosX'] = 50
+    game_state_data['gameData']['ballPosY'] = 50
+    game_state_data['gameData']['ballSpeed'] = 1
+
+    if (game_state_data['gameData']['remainingServes'] > 0):
+        game_state_data['gameData']['remainingServes'] -= 1
+    else:
+        game_state_data['gameData']['remainingServes'] = 2
+        if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
+            game_state_data['gameData']['playerServes'] = 'playerRight'
+        else:
+            game_state_data['gameData']['playerServes'] = 'playerLeft'
+    
+    if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
+        game_state_data['gameData']['ballDirectionX'] = -1
+    else:
+        game_state_data['gameData']['ballDirectionX'] = 1
+    # Setting dir to a random value
+    game_state_data['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
+
+    # Update the score
+    if (player_side == 'playerLeft'):
+        game_state_data['playerLeft']['points'] += 1 # TODO: HACKATHON Update db
+    else:
+        game_state_data['playerRight']['points'] += 1 # TODO: HACKATHON Update db
+    
+    if (game_state_data['playerLeft']['points'] >= 11 or game_state_data['playerRight']['points'] >= 11):
+        game_state_data['gameData']['state'] = 'finished' # TODO: HACKATHON Update db
+
+    return game_state_data

@@ -1,3 +1,4 @@
+import random
 from game.models import Game
 from core.exceptions import BarelyAnException
 from game.constants import GAME_STATE, GAME_PLAYER_INPUT
@@ -22,7 +23,16 @@ async def init_game(game):
         raise BarelyAnException(_("Game is not in a state to be started"))
 
     # Init game data on cache
-    cache.set(f'game_{game.id}_state', deepcopy(GAME_STATE), timeout=3000)
+    new_game_state = deepcopy(GAME_STATE)
+    # Randomize serving player
+    if random.randint(0, 1) == 0:
+        new_game_state["gameData"]["playerServes"] = "playerLeft"
+        new_game_state["gameData"]["ballDirectionX"] = -1
+    else:
+        new_game_state["gameData"]["playerServes"] = "playerRight"
+        new_game_state["gameData"]["ballDirectionX"] = 1
+    new_game_state['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
+    cache.set(f'game_{game.id}_state', new_game_state, timeout=3000)
     cache.set(f'game_{game.id}_player_left', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
     cache.set(f'game_{game.id}_player_right', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
 
