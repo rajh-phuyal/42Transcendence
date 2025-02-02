@@ -19,9 +19,10 @@ from services.tournament_service import setup_all_tournament_channels
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, send_player_ready_state, parse_message
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
-from game.constants import GAME_FPS
+from game.constants import GAME_FPS, PADDLE_OFFSET
 from game.utils_ws import init_game
 from game.utils_ws import update_game_state_db
+
 
 channel_layer = get_channel_layer()
 
@@ -61,7 +62,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         # Parse the message (only the messageType is required at this point)
         self.message_type = parse_message(text_data, mandatory_keys=[
                                           'messageType']).get('messageType')
-        logging.info(f"Received Websocket Message type: {self.message_type}")
+        # logging.info(f"Received Websocket Message type: {self.message_type}")
 
     def update_user_last_seen(self, user):
         user.last_seen = timezone.now()  # TODO: Issue #193
@@ -223,14 +224,20 @@ class GameConsumer(CustomWebSocketLogic):
 
                 game_state_data_left = game_state_data['playerLeft']
                 game_state_data_right = game_state_data['playerRight']
+
+                game_state_game_data = game_state_data['gameData']
+
                 # Then calculate ball movement
                 game_state_data_left = move_paddle(
                     left_player_input, game_state_data_left)
                 game_state_data_right = move_paddle(
                     right_player_input, game_state_data_right)
 
+                game_state_game_data = move_ball(game_state_game_data)
+
                 game_state_data['playerLeft'] = game_state_data_left
                 game_state_data['playerRight'] = game_state_data_right
+                game_state_data['gameData'] = game_state_game_data
                 # update paddle position (keep in mind powerups)
                 # Check if point is over
                 # Update game cache and send it via WS to FE
@@ -256,7 +263,7 @@ class GameConsumer(CustomWebSocketLogic):
 
 
 def move_paddle(player, game_state_data_player):
-    logging.info(f"paddlePos for {player['movePaddle']}: {game_state_data_player['paddlePos']}")
+    # logging.info(f"paddlePos for {player['movePaddle']}: {game_state_data_player['paddlePos']}")
 
     if player['movePaddle'] == '0':
         return game_state_data_player
@@ -275,3 +282,29 @@ def move_paddle(player, game_state_data_player):
         new_paddle_pos = 100 - (game_state_data_player['paddleSize'] / 2)
     game_state_data_player['paddlePos'] = new_paddle_pos
     return game_state_data_player
+
+
+def move_ball(game_state_data):
+    logging.info(f"ballPos:\t x --> {game_state_data['ballPosX']} \t y --> {game_state_data['ballPosY']}")
+
+    # Move the ball
+    game_state_data['ballPosX'] += game_state_data['ballDirectionX'] * game_state_data['ballSpeed']
+    game_state_data['ballPosY'] += game_state_data['ballDirectionY'] * game_state_data['ballSpeed']
+
+    # Check if the ball is out of bounds
+    if game_state_data['ballPosX'] < PADDLE_OFFSET + game_state_data['ballRadius']:
+        game_state_data['ballPosX'] = PADDLE_OFFSET + game_state_data['ballRadius']
+        game_state_data['ballDirectionX'] *= -1
+    elif game_state_data['ballPosX'] > 100 - PADDLE_OFFSET - game_state_data['ballRadius']:
+        game_state_data['ballPosX'] = 100 - PADDLE_OFFSET - game_state_data['ballRadius']
+        game_state_data['ballDirectionX'] *= -1
+
+    if game_state_data['ballPosY'] < game_state_data['ballRadius']:
+        game_state_data['ballPosY'] = game_state_data['ballRadius']
+        game_state_data['ballDirectionY'] *= -1
+    elif game_state_data['ballPosY'] > 100 - game_state_data['ballRadius']:
+        game_state_data['ballPosY'] = 100 - game_state_data['ballRadius']
+        game_state_data['ballDirectionY'] *= -1
+
+    return game_state_data
+    

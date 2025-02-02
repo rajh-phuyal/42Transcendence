@@ -1,4 +1,5 @@
 GAME_FPS = 30
+
 GAME_STATE = {
     "playerLeft" : {
         "points": 0,
@@ -21,12 +22,19 @@ GAME_STATE = {
     "gameData" : {
         "ballPosX": 0,
         "ballPosY": 0,
-        "state": "ongoing"
+        "state": "ongoing",
+        "ballSpeed": 1,
+        "ballRadius": 1,
+        "ballDirectionX": -1,
+        "ballDirectionY": 0,
     }
 }
+
 GAME_PLAYER_INPUT = {
     "movePaddle": "0",
     "activatePowerupBig": False,
     "activatePowerupSlow": False,
     "activatePowerupFast": False
 }
+
+PADDLE_OFFSET = 3
