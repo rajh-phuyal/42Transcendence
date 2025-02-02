@@ -32,17 +32,19 @@ function updatePlayerInput() {
     // Send the ws message to the server
     const message = {
         messageType: "playerInput",
+        playerLeft: {
         movePaddle: gameObject.playerInput.paddleMovement || "0",
         powerupBig: gameObject.playerInput.powerupBig || false,
         powerupSlow: gameObject.playerInput.powerupSlow || false,
-        powerupFast: gameObject.playerInput.powerupFast || false,
+        powerupFast: gameObject.playerInput.powerupFast || false
+        }
+        // TODO: add player right
     }
-    console.log("sending message to server:", message);
+    //console.log("sending message to server:", message);
     WebSocketManagerGame.sendMessage(message);
 }
 
 function gameLoop(currentTime) {
-    console.log("gameLoop");
     if (currentTime - gameObject.lastFrameTime >= 30) {
 
         // Check if the game is ongoing
@@ -53,7 +55,7 @@ function gameLoop(currentTime) {
         // Render the game
         // console.log("player1:", gameObject.playerLeft.pos);
         // console.log("player2:", gameObject.playerRight.pos);
-        updatePlayerInput();
+
         gameRender();
 
         gameObject.lastFrameTime = currentTime;
@@ -62,7 +64,7 @@ function gameLoop(currentTime) {
 }
 
 function keyPressCallback(event) {
-    console.log("keyPressCallback", event.key);
+    //console.log("keyPressCallback", event.key);
     switch (event.key) {
         case "w":
             // Move the paddle up
@@ -87,6 +89,7 @@ function keyPressCallback(event) {
         default:
             return;
     }
+    updatePlayerInput();
 }
 
 function keyReleaseCallback(event) {
@@ -100,10 +103,11 @@ function keyReleaseCallback(event) {
             gameObject.playerInput.paddleMovement = "0";
             break;
     }
+    updatePlayerInput();
 }
 
 const percentageToPixels = (percentage, edgeSize) => {
-	console.log("percentageToPixels", percentage, edgeSize);
+	//console.log("percentageToPixels", percentage, edgeSize);
 	return (edgeSize / 100) * percentage;
 }
 

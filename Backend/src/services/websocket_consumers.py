@@ -269,6 +269,7 @@ def move_paddle(player, game_state_data_player):
     if player['movePaddle'] == '0':
         return game_state_data_player
 
+    logging.info(f"player['movePaddle']: player['movePaddle']")
 
     new_paddle_pos = game_state_data_player['paddlePos']
     if player['movePaddle'] == '+':
@@ -286,7 +287,7 @@ def move_paddle(player, game_state_data_player):
 
 
 def move_ball(game_state_data):
-    logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']} \t Players pos: left --> {game_state_data['playerLeft']['paddlePos']} {game_state_data['playerRight']['paddlePos']}")
+    #logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']} \t Players pos: left --> {game_state_data['playerLeft']['paddlePos']} {game_state_data['playerRight']['paddlePos']}")
 
     # Move the ball
     game_state_data['gameData']['ballPosX'] += game_state_data['gameData']['ballDirectionX'] * game_state_data['gameData']['ballSpeed']
@@ -311,7 +312,7 @@ def move_ball(game_state_data):
         game_state_data['gameData']['ballDirectionY'] *= -1
 
     return game_state_data
-    
+
 def check_padlle_hit(game_state_data, player_side):
     # Check if a point was scored
     # if ballPos < paddlePos
@@ -341,7 +342,7 @@ def check_padlle_hit(game_state_data, player_side):
             percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
     #         ballDirectionY = percentage_y
             game_state_data['gameData']['ballDirectionY'] = percentage_y
-        
+
     return game_state_data
 
 
@@ -358,7 +359,7 @@ def score_point(game_state_data, player_side):
             game_state_data['gameData']['playerServes'] = 'playerRight'
         else:
             game_state_data['gameData']['playerServes'] = 'playerLeft'
-    
+
     if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
         game_state_data['gameData']['ballDirectionX'] = -1
     else:
@@ -371,7 +372,7 @@ def score_point(game_state_data, player_side):
         game_state_data['playerLeft']['points'] += 1 # TODO: HACKATHON Update db
     else:
         game_state_data['playerRight']['points'] += 1 # TODO: HACKATHON Update db
-    
+
     if (game_state_data['playerLeft']['points'] >= 11 or game_state_data['playerRight']['points'] >= 11):
         game_state_data['gameData']['state'] = 'finished' # TODO: HACKATHON Update db
 

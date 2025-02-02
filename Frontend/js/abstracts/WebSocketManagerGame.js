@@ -68,13 +68,13 @@ class WebSocketManagerGame {
     // - TODO: !!!
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        console.log("GAME: FE -> BE:", message);
+        //console.log("GAME: FE -> BE:", message);
     }
 
     // The backend send:
     // - TODO: !!!
     receiveMessage(message) {
-        // console.log("GAME: BE -> FE:", message);
+        console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
             case "playersReady":
