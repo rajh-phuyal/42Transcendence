@@ -1,4 +1,4 @@
-import { $id, $on, $off } from '../../abstracts/dollars.js';
+import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { gameRender } from './render.js';
@@ -51,7 +51,9 @@ function gameLoop(currentTime) {
         // Render the game
         // console.log("player1:", gameObject.playerLeft.pos);
         // console.log("player2:", gameObject.playerRight.pos);
+
         updatePlayerInput();
+        updatePowerupStatus();
         gameRender();
 
         gameObject.lastFrameTime = currentTime;
@@ -126,6 +128,31 @@ export function updateGameObjects(gameState) {
     gameObject.playerRight.powerups.fast = gameState?.playerRight?.powerupFast;
 }
 
+function updatePowerupStatus() {
+    gameObject.playerLeft.powerups.big != "used" ? $id('player-left-powerups-big').style.color = "white" : $id('player-left-powerups-big').style.color = "gray";
+    gameObject.playerLeft.powerups.fast != "used" ? $id('player-left-powerups-fast').style.color = "white" : $id('player-left-powerups-fast').style.color = "gray";
+    gameObject.playerLeft.powerups.slow != "used" ? $id('player-left-powerups-slow').style.color = "white" : $id('player-left-powerups-slow').style.color = "gray";
+    gameObject.playerRight.powerups.big != "used" ? $id('player-right-powerups-big').style.color = "white" : $id('player-right-powerups-big').style.color = "gray";
+    gameObject.playerRight.powerups.fast != "used" ? $id('player-right-powerups-fast').style.color = "white" : $id('player-right-powerups-fast').style.color = "gray";
+    gameObject.playerRight.powerups.slow != "used" ? $id('player-right-powerups-slow').style.color = "white" : $id('player-right-powerups-slow').style.color = "gray";
+}
+
+function showPowerupStatus() {
+        let elements = $class('user-state')
+        for (let element of elements)
+            element.style.display = "none";
+
+         $id("player-left-state-spinner").style.display = "none";
+         $id("player-right-state-spinner").style.display = "none";
+
+        elements = $class('player-powerup-status')
+
+        for (let element of elements)
+            element.style.display = "flex";
+
+        updatePowerupStatus();
+}
+
 export function endGameLoop() {
     cancelAnimationFrame(gameObject.animationId);
     $off(document, 'keydown', keyPressCallback);
@@ -137,6 +164,8 @@ export function startGameLoop() {
     $on(document, 'keyup', keyReleaseCallback);
     gameObject.lastFrameTime = performance.now();
     gameObject.animationId = requestAnimationFrame(gameLoop);
+    showPowerupStatus();
+
 }
 
 const animateImage = (id, animationName, duration, iterationCount = "ease-in-out") => {

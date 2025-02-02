@@ -131,6 +131,12 @@ export default {
 			gameObject.playerRight.size = 10;
 			gameObject.ball.posX = 50;
 			gameObject.ball.posY = 50;
+            gameObject.playerLeft.powerups.big = "active";
+            gameObject.playerRight.powerups.big = "used";
+            gameObject.playerLeft.powerups.slow = "active";
+            gameObject.playerRight.powerups.slow = "available";
+            gameObject.playerLeft.powerups.fast = "used";
+            gameObject.playerRight.powerups.fast = "used";
 			// TODO: DUMMY DATA REMOVE
 		},
     }
