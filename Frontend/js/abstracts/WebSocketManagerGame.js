@@ -74,16 +74,17 @@ class WebSocketManagerGame {
     // The backend send:
     // - TODO: !!!
     receiveMessage(message) {
-        console.log("GAME: BE -> FE:", message);
+        // console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
             case "playersReady":
                 updateReadyState(message);
                 return ;
             case "gameState":
-                updateGameObjects(message.gameState);
+                // console.log("got game state", message);
+                updateGameObjects(message);
                 return;
-            
+
         }
 
         console.warn("WS GAME: FE doen't know what to do with this type:", message);

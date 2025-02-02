@@ -14,14 +14,17 @@ def update_game_state_db(game, state):
     game.save()
     logging.info(f"Game state after: {game.state}")
 
-async def init_game(game, consumer):
-    logging.info(f"Game state: {game.state}") # pending
+async def init_game(game):
+    logging.info(f"Game state: {game.state}")
+
     # Check game state
-    if game.state != Game.GameState.PENDING and game.state != Game.GameState.PAUSED:
+    if game.state not in [Game.GameState.PENDING, Game.GameState.PAUSED]:
         raise BarelyAnException(_("Game is not in a state to be started"))
+
     # Init game data on cache
     cache.set(f'game_{game.id}_state', deepcopy(GAME_STATE), timeout=3000)
     cache.set(f'game_{game.id}_player_left', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
     cache.set(f'game_{game.id}_player_right', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
+
     # Change database
     await update_game_state_db(game, Game.GameState.ONGOING)

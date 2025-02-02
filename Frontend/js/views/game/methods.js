@@ -27,7 +27,7 @@ export function changeGameState(state) {
 //     console.log(`${hours}:${minutes}:${seconds}.${milliseconds}`);
 // }
 
-async function updateServer() {
+function updateServer() {
     // Send the ws message to the server
     const message = {
         messageType: "playerInput",
@@ -37,7 +37,7 @@ async function updateServer() {
         powerupFast: gameObject.playerInput.powerupFast,
     }
     console.log("sending message to server:", message);
-    await WebSocketManagerGame.sendMessage(message);
+    WebSocketManagerGame.sendMessage(message);
 }
 
 function gameLoop(currentTime) {
@@ -49,11 +49,9 @@ function gameLoop(currentTime) {
             cancelAnimationFrame(gameObject.animationId);
             return ;
         }
-        // Send the ws message to the server
-        // updateServer();
         // Render the game
-        console.log("player1:", gameObject.playerLeft.pos);
-        console.log("player2:", gameObject.playerRight.pos);
+        // console.log("player1:", gameObject.playerLeft.pos);
+        // console.log("player2:", gameObject.playerRight.pos);
 
         gameObject.lastFrameTime = currentTime;
     }
@@ -61,6 +59,7 @@ function gameLoop(currentTime) {
 }
 
 function keyPressCallback(event) {
+    console.log("keyPressCallback", event.key);
     switch (event.key) {
         case "w":
             // Move the paddle up
@@ -88,6 +87,9 @@ function keyPressCallback(event) {
             // console.log("fast");
             return ;
     }
+    setTimeout(() => {
+        updateServer();
+    }, 100);
 }
 
 function keyReleaseCallback(event) {
@@ -103,24 +105,27 @@ function keyReleaseCallback(event) {
             // console.log("stop");
             return ;
     }
+    setTimeout(() => {
+        updateServer();
+    }, 100);
 }
 
 export function updateGameObjects(gameState) {
-    gameObject.state = gameState.state;
+    gameObject.state = gameState?.gameData?.state;
     gameObject.playerLeft.points = gameState.playerLeft.points;
     gameObject.playerRight.points = gameState.playerRight.points;
     gameObject.playerLeft.pos = gameState.playerLeft.paddlePos;
     gameObject.playerRight.pos = gameState.playerRight.paddlePos;
     gameObject.playerLeft.size = gameState.playerLeft.paddleSize;
     gameObject.playerRight.size = gameState.playerRight.paddleSize;
-    gameObject.ball.posX = gameState.ball.ballPosX;
-    gameObject.ball.posY = gameState.ball.ballPosY;
-    gameObject.playerLeft.powerups.big = gameState.playerLeft.powerupsBig;
-    gameObject.playerLeft.powerups.slow = gameState.playerLeft.powerupsSlow;
-    gameObject.playerLeft.powerups.fast = gameState.playerLeft.powerupsFast;
-    gameObject.playerRight.powerups.big = gameState.playerRight.powerupsBig;
-    gameObject.playerRight.powerups.slow = gameState.playerRight.powerupsSlow;
-    gameObject.playerRight.powerups.fast = gameState.playerRight.powerupsFast;
+    gameObject.ball.posX = gameState.gameData.ballPosX;
+    gameObject.ball.posY = gameState.gameData.ballPosY;
+    gameObject.playerLeft.powerups.big = gameState.playerLeft.powerupBig;
+    gameObject.playerLeft.powerups.slow = gameState.playerLeft.powerupSlow;
+    gameObject.playerLeft.powerups.fast = gameState.playerLeft.powerupFast;
+    gameObject.playerRight.powerups.big = gameState.playerRight.powerupBig;
+    gameObject.playerRight.powerups.slow = gameState.playerRight.powerupSlow;
+    gameObject.playerRight.powerups.fast = gameState.playerRight.powerupFast;
 }
 
 export function endGameLoop() {
@@ -130,7 +135,6 @@ export function endGameLoop() {
 }
 
 export function startGameLoop() {
-    //TODO: Time it with the start game timestamp
     $on(document, 'keydown', keyPressCallback);
     $on(document, 'keyup', keyReleaseCallback);
     gameObject.lastFrameTime = performance.now();
@@ -156,6 +160,11 @@ export function updateReadyState(readyStateObject) {
         $id("player-right-state").style.display = "none";
     }
 
-    if (readyStateObject.startTime)
+    if (readyStateObject.startTime) {
         console.warn("Start Time:", readyStateObject.startTime);
+        setTimeout(() => {
+            console.log("Starting game loop");
+            startGameLoop();
+        }, Date.parse(readyStateObject.startTime) - Date.now());
+    }
 }

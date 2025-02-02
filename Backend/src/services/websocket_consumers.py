@@ -16,10 +16,9 @@ from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.tournament_service import setup_all_tournament_channels
-from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
+from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, send_player_ready_state, parse_message
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
-from datetime import datetime, timedelta
 from game.constants import GAME_FPS
 from game.utils_ws import init_game
 from game.utils_ws import update_game_state_db
@@ -60,14 +59,17 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             await self.close()
             raise BarelyAnException(_("User is not authenticated."))
         # Parse the message (only the messageType is required at this point)
-        self.message_type = parse_message(text_data, mandatory_keys=['messageType']).get('messageType')
+        self.message_type = parse_message(text_data, mandatory_keys=[
+                                          'messageType']).get('messageType')
         logging.info(f"Received Websocket Message type: {self.message_type}")
 
     def update_user_last_seen(self, user):
-        user.last_seen = timezone.now() #TODO: Issue #193
+        user.last_seen = timezone.now()  # TODO: Issue #193
         user.save(update_fields=['last_seen'])
 
 # Manages the WebSocket connection for all pages after login
+
+
 class MainConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
@@ -116,105 +118,79 @@ class MainConsumer(CustomWebSocketLogic):
 
     async def update_badge(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def new_conversation(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def tournament_subscription(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def tournament_state(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def info(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def game_create(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def game_set_deadline(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def game_update_score(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def game_update_state(self, event):
         await self.send(text_data=json.dumps({**event}))
+
     async def game_update_rank(self, event):
         await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game
+
+
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
-    # @barely_handle_ws_exceptions TODO HACKATHON uncomment   
+    @barely_handle_ws_exceptions
     async def connect(self):
         # TODO: check if the user is in the game
         await super().connect()
         # Add client to the channel layer group
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
+        logging.info(
+            f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
 
         # Set the player ready
         game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
         game.set_player_ready(self.scope['user'].id, True)
-        
+
         game_name = f"game_{self.game_id}"
         await channel_layer.group_add(game_name, self.channel_name)
-        
+
         # Accept the connection
         await self.accept()
 
-        game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-        player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
-        player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
-        start_time = None
-        if player_left and player_right:
-            start_time = datetime.now() + timedelta(seconds=5)
-            start_time = start_time.isoformat()       
-        logging.info(f"Player left: {player_left}, Player right: {player_right}, Start time: {start_time}")
+        can_start_game, start_time = await send_player_ready_state(game, channel_layer)
 
-        await channel_layer.group_send(
-            game_name,
-            {
-                "type": "update_players_ready",
-                "messageType": "playersReady",
-                "playerLeft": player_left,
-                "playerRight": player_right,
-                "startTime": start_time 
-            }
-        )
-        logging.info(f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
-        # if player_left and player_right:
-        #     await init_game(game, self)
-            # GameConsumer.game_loops[self.game_id] = GameConsumer.run_game_loop(self.game_id, start_time)
-
+        logging.info(
+            f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
+        if can_start_game:
+            await init_game(game)
+            GameConsumer.game_loops[self.game_id] = asyncio.create_task(
+                GameConsumer.run_game_loop(self.game_id, start_time))
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
-        # Set the player ready
+        # Set the player ready to false
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         game = await sync_to_async(Game.objects.get)(id=self.game_id)
         game.set_player_ready(self.scope['user'].id, False)
 
-        # Doing game stuff
+        await send_player_ready_state(game, channel_layer)
 
-        game_name = f"game_{self.game_id}"
-        await channel_layer.group_add(game_name, self.channel_name)
-        
-        game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-        player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
-        player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
-        start_time = None
-        if player_left and player_right:
-            start_time = datetime.now() + timedelta(seconds=5)
-            start_time = start_time.isoformat()        
-
-        await channel_layer.group_send(
-            game_name,
-            {
-                "type": "update_players_ready",
-                "messageType": "playersReady",
-                "playerLeft": player_left,
-                "playerRight": player_right,
-                "startTime": start_time 
-            }
-        )
         await update_game_state_db(game, Game.GameState.PAUSED)
-
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
@@ -234,52 +210,52 @@ class GameConsumer(CustomWebSocketLogic):
         await self.send(text_data=json.dumps({**event}))
 
     @staticmethod
-    def run_game_loop(game_id, start_time):
+    async def run_game_loop(game_id, start_time):
+        game_over = False
+        while not game_over:
+            try:
+                # Fetches data from cache
+                left_player_input = cache.get(
+                    f'game_{game_id}_player_left', {})
+                right_player_input = cache.get(
+                    f'game_{game_id}_player_right', {})
 
-        async def game_loop():
-            game_over = False
-            while not game_over:
-                try:
-                    # Fetches data from cache
-                    left_player_input = cache.get(f'game_{game_id}_player_left', {})
-                    right_player_input = cache.get(f'game_{game_id}_player_right', {})
+                # Checks if cache data is allowed (move paddle in wall etc.)
+                game_state_data = cache.get(f'game_{game_id}_state', {})
+                game_state_data_left = game_state_data['playerLeft']
+                game_state_data_right = game_state_data['playerRight']
+                # Then calculate ball movement
+                game_state_data_left = move_paddle(
+                    left_player_input, game_state_data_left)
+                game_state_data_right = move_paddle(
+                    right_player_input, game_state_data_right)
+                game_state_data['playerLeft'] = game_state_data_left
+                game_state_data['playerRight'] = game_state_data_right
+                # update paddle position (keep in mind powerups)
+                # Check if point is over
+                # Update game cache and send it via WS to FE
+                cache.set(f'game_{game_id}_state',
+                          game_state_data, timeout=3000)
 
+                # logging.info(f"Game state in loop: {game_state_data}")
 
-                    # Checks if cache data is allowed (move paddle in wall etc.)
-                    game_state_data = cache.get(f'game_{game_id}_state', {})
-                    game_state_data_left = game_state_data['playerLeft']
-                    game_state_data_right = game_state_data['playerRight']
-                    # Then calculate ball movement
-                    game_state_data_left = move_paddle(left_player_input, game_state_data_left)
-                    game_state_data_right = move_paddle(right_player_input, game_state_data_right)
-                    game_state_data['playerLeft'] = game_state_data_left
-                    game_state_data['playerRight'] = game_state_data_right
-                    # update paddle position (keep in mind powerups)
-                    # Check if point is over
-                    # Update game cache and send it via WS to FE
-                    cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
-
-                    logging.info(f"Game state in loop: {game_state_data}")
-
-                    game_name = f"game_{game_id}"
-                    await channel_layer.group_send(
+                game_name = f"game_{game_id}"
+                await channel_layer.group_send(
                     game_name,
                     {
                         "type": "update_game_state",
                         "messageType": "gameState",
                         **game_state_data
                     }
-                    )
+                )
 
-                    await asyncio.sleep(1 / GAME_FPS)
-                except Exception as e:
-                    logging.error(f"Error in game loop: {e}")
-                    game_over = True
-                    break
+                await asyncio.sleep(1 / GAME_FPS)
+            except Exception as e:
+                logging.error(f"Error in game loop: {e}")
+                game_over = True
+                break
 
-        logging.info("Game loop ended")
-        return asyncio.create_task(game_loop())
-    
+
 def move_paddle(player, game_state_data_player):
     if player['movePaddle'] == '0':
         return

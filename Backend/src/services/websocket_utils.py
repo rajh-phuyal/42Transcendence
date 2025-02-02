@@ -6,6 +6,10 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from core.exceptions import BarelyAnException
 from django.utils.translation import gettext as _
+from datetime import datetime, timedelta
+from channels.db import database_sync_to_async
+from asgiref.sync import sync_to_async
+
 
 class WebSocketMessageHandlersMain:
 
@@ -60,10 +64,34 @@ class WebSocketMessageHandlersGame:
         message = parse_message(message) # TODO: @Rajh implement deep json thing
         if "playerLeft" in message:
             cache.set(f'game_{consumer.game_id}_player_left', message["playerLeft"], timeout=3000)
-        
+
         if "playerRight" in message:
             cache.set(f'game_{consumer.game_id}_player_right', message["playerRight"], timeout=3000)
-        
+
+
+async def send_player_ready_state(game, channel_layer):
+    game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
+    player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
+    player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
+    start_time = None
+    if player_left and player_right:
+        start_time = datetime.now() + timedelta(seconds=5)
+        start_time = start_time.isoformat()
+
+    logging.info(f"Player left: {player_left}, Player right: {player_right}, Start time: {start_time}")
+
+    await channel_layer.group_send(
+        f"game_{game.id}",
+        {
+            "type": "update_players_ready",
+            "messageType": "playersReady",
+            "playerLeft": player_left,
+            "playerRight": player_right,
+            "startTime": start_time
+        }
+    )
+
+    return player_left and player_right, start_time
 
 # To send by consumer
 async def send_response_message(client_consumer, type, message):

@@ -55,7 +55,7 @@ export default {
                 }
             }
         },
-        
+
         async loadDetails() {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
@@ -105,7 +105,7 @@ export default {
 
         async afterDomInsertion() {
             this.initListeners();
-            
+
             // Checking game id
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
                 console.warn("Invalid game id '%s' from routeParams?.id -> redir to home", this.routeParams.id);
@@ -122,7 +122,7 @@ export default {
             // Hide the spinner and show conncted message
             this.domManip.$id("player-left-state-spinner").style.display = "none";
             this.domManip.$id("player-left-state").innerText = translate("game", "ready");
-            startGameLoop();
+            // startGameLoop();
         },
     }
 }
