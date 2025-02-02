@@ -132,22 +132,6 @@ export default {
 			gameObject.ball.posX = 50;
 			gameObject.ball.posY = 50;
 			// TODO: DUMMY DATA REMOVE
-
-			gameRender(gameField, ctx);
-
-			const goToGameButton = this.domManip.$id("go-to-game");
-			console.log("goToGameButton", goToGameButton);
-			goToGameButton.addEventListener('click', () => {
-				const gameViewImageContainer = this.domManip.$id("game-view-image-container");
-				const gameImageContainer = this.domManip.$id("game-view-map-image");
-				const gameImage = gameImageContainer.children[0];
-				gameField.style.display = "block";
-				gameImage.src = window.location.origin + '/assets/game/maps/ufo.png';
-				gameViewImageContainer.style.backgroundImage = "none";
-				gameViewImageContainer.style.width= "100%";
-				gameImage.style.display = "block";
-				console.log("test button");
-			});
 		},
     }
 }

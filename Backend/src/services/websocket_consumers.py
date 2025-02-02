@@ -152,7 +152,7 @@ class MainConsumer(CustomWebSocketLogic):
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
-    @barely_handle_ws_exceptions
+    # @barely_handle_ws_exceptions
     async def connect(self):
         # TODO: check if the user is in the game
         await super().connect()

@@ -139,11 +139,11 @@ export function startGameLoop() {
     gameObject.animationId = requestAnimationFrame(gameLoop);
 }
 
-const animateImage = (id, animationName, duration) => {
+const animateImage = (id, animationName, duration, iterationCount = "ease-in-out") => {
     const image = $id(id);
     image.style.animationDuration = duration;
     image.style.animationName = animationName;
-    image.style.animationIterationCount = "ease-in-out";
+    image.style.animationIterationCount = iterationCount;
 }
 
 const removeImageAnimation = (id) => {
@@ -165,15 +165,11 @@ const showGame = () => {
     gameImage.src = window.location.origin + '/assets/game/maps/ufo.png';
 
     gameViewImageContainer.style.backgroundImage = "none";
-    animateImage("game-view-map-image", "fadein", "2s");
     gameViewImageContainer.style.width = "100%";
-
     gameField.style.display = "block";
-    gameImage.style.display = "block";
 
-    setTimeout(() => {
-        removeImageAnimation("game-view-map-image");
-    }, 2000);
+    gameImage.style.display = "block";
+    animateImage("game-view-map-image", "fadein", "3s");
 }
 
 const countdownImageObject = {
@@ -221,22 +217,27 @@ export function updateReadyState(readyStateObject) {
     }
 
     if (readyStateObject.startTime) {
-        const animationDuration = Math.floor((Date.parse(readyStateObject.startTime) - new Date()) / 1000) - 2;
-        animateImage("game-countdown-image", "pulsate", `${animationDuration}` + "s");
+        animateImage("game-countdown-image", "pulsate", "1s", "infinite");
         gameCountdownIntervalId = setInterval((startTime) => {
-            let diff = startTime - new Date();
+            let diff = Math.floor((startTime - new Date()) / 1000);
             if (diff <= 0) {
                 clearInterval(gameCountdownIntervalId);
                 console.log("Starting game loop");
                 gameCountdownImage(0);
-                showGame();
                 startGameLoop();
                 return ;
             }
 
+            if (diff == 3) {
+                console.log("Fading in map image");
+                showGame();
+                setTimeout(() => {
+                    removeImageAnimation("game-view-map-image");
+                }, 3000);
+            }
+
             // update image here
-            console.log("gameCountdown",  startTime - new Date());
-            gameCountdownImage(Math.floor(diff / 1000));
+            gameCountdownImage(diff);
         }, 1000, Date.parse(readyStateObject.startTime));
     }
 }
