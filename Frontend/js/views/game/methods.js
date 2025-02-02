@@ -7,13 +7,13 @@ export function changeGameState(state) {
     switch (state) {
         case "ongoing": // transition lobby to game
             $id("button-quit-game").style.display = "none";
-            return ;
+            return;
         case "paused": // transition game to lobby
             $id("button-quit-game").style.display = "none";
-            return ;
+            return;
         case "finished": // transition game to lobby
             $id("button-quit-game").style.display = "none";
-            return ;
+            return;
     }
     console.warn("FE doen't know what to do with this state:", state);
 }
@@ -46,7 +46,7 @@ function gameLoop(currentTime) {
         // Check if the game is ongoing
         if (gameObject.state !== "ongoing") {
             cancelAnimationFrame(gameObject.animationId);
-            return ;
+            return;
         }
         // Render the game
         // console.log("player1:", gameObject.playerLeft.pos);
@@ -100,7 +100,7 @@ function keyReleaseCallback(event) {
 }
 
 const percentageToPixels = (percentage, edgeSize) => {
-	return (edgeSize / 100) * percentage;
+    return (edgeSize / 100) * percentage;
 }
 
 export function updateGameObjects(gameState) {
@@ -111,12 +111,12 @@ export function updateGameObjects(gameState) {
     gameObject.playerRight.points = gameState?.playerRight?.points;
 
     gameObject.playerLeft.pos = percentageToPixels(gameState?.playerLeft?.paddlePos, gameField?.height);
-	gameObject.playerRight.pos = percentageToPixels(gameState?.playerRight?.paddlePos, gameField?.height);
-	gameObject.playerLeft.size = percentageToPixels(gameState?.playerLeft?.paddleSize, gameField?.height);
-	gameObject.playerRight.size = percentageToPixels(gameState?.playerRight?.paddleSize, gameField?.height);
-	gameObject.ball.posX = percentageToPixels(gameState?.gameData?.ballPosX, gameField?.width);
-	gameObject.ball.posY = percentageToPixels(gameState?.gameData?.ballPosY, gameField?.height);
-	gameObject.ball.size = 4;
+    gameObject.playerRight.pos = percentageToPixels(gameState?.playerRight?.paddlePos, gameField?.height);
+    gameObject.playerLeft.size = percentageToPixels(gameState?.playerLeft?.paddleSize, gameField?.height);
+    gameObject.playerRight.size = percentageToPixels(gameState?.playerRight?.paddleSize, gameField?.height);
+    gameObject.ball.posX = percentageToPixels(gameState?.gameData?.ballPosX, gameField?.width);
+    gameObject.ball.posY = percentageToPixels(gameState?.gameData?.ballPosY, gameField?.height);
+    gameObject.ball.size = 4;
 
     gameObject.playerLeft.powerups.big = gameState?.playerLeft?.powerupBig;
     gameObject.playerLeft.powerups.slow = gameState?.playerLeft?.powerupSlow;
@@ -139,12 +139,19 @@ export function startGameLoop() {
     gameObject.animationId = requestAnimationFrame(gameLoop);
 }
 
-const animateImage = (id, animationName, duration, iterationCount = "ease-in-out") => {
+const animateImage = (
+    id,
+    animationName,
+    duration = "1s",
+    iterationCount = "1",
+    timingFunction = "ease-in-out"
+) => {
     const image = $id(id);
     image.style.animationDuration = duration;
     image.style.animationName = animationName;
     image.style.animationIterationCount = iterationCount;
-}
+    image.style.animationTimingFunction = timingFunction;
+};
 
 const removeImageAnimation = (id) => {
     const image = $id(id);
@@ -225,7 +232,7 @@ export function updateReadyState(readyStateObject) {
                 console.log("Starting game loop");
                 gameCountdownImage(0);
                 startGameLoop();
-                return ;
+                return;
             }
 
             if (diff == 3) {
