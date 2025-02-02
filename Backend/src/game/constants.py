@@ -20,6 +20,7 @@ GAME_STATE = {
         "paddleSpeed": 1
     },
     "gameData" : {
+        "localGame": False,
         "ballPosX": 50,
         "ballPosY": 50,
         "state": "ongoing",

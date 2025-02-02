@@ -1,5 +1,5 @@
 import random
-from game.models import Game
+from game.models import Game, GameMember
 from core.exceptions import BarelyAnException
 from game.constants import GAME_STATE, GAME_PLAYER_INPUT
 from django.core.cache import cache
@@ -32,6 +32,10 @@ async def init_game(game):
         new_game_state["gameData"]["playerServes"] = "playerRight"
         new_game_state["gameData"]["ballDirectionX"] = 1
     new_game_state['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
+
+    # Check if the game is a local game
+    gameMember = GameMember.objects.filter(game=game).first()
+    new_game_state['gameData']['localGame'] = gameMember.local_game
     cache.set(f'game_{game.id}_state', new_game_state, timeout=3000)
     cache.set(f'game_{game.id}_player_left', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
     cache.set(f'game_{game.id}_player_right', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
