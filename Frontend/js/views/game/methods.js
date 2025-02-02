@@ -37,12 +37,10 @@ function updatePlayerInput() {
         powerupSlow: gameObject.playerInput.powerupSlow || false,
         powerupFast: gameObject.playerInput.powerupFast || false,
     }
-    console.log("sending message to server:", message);
     WebSocketManagerGame.sendMessage(message);
 }
 
 function gameLoop(currentTime) {
-    console.log("gameLoop");
     if (currentTime - gameObject.lastFrameTime >= 30) {
 
         // Check if the game is ongoing
@@ -62,7 +60,6 @@ function gameLoop(currentTime) {
 }
 
 function keyPressCallback(event) {
-    console.log("keyPressCallback", event.key);
     switch (event.key) {
         case "w":
             // Move the paddle up
@@ -103,7 +100,6 @@ function keyReleaseCallback(event) {
 }
 
 const percentageToPixels = (percentage, edgeSize) => {
-	console.log("percentageToPixels", percentage, edgeSize);
 	return (edgeSize / 100) * percentage;
 }
 
@@ -142,6 +138,40 @@ export function startGameLoop() {
     gameObject.lastFrameTime = performance.now();
     gameObject.animationId = requestAnimationFrame(gameLoop);
 }
+
+const showGame = () => {
+    const gameField = $id("game-field");
+    const gameViewImageContainer = $id("game-view-image-container");
+    const gameImageContainer = $id("game-view-map-image");
+    const gameImage = gameImageContainer.children[0];
+    gameField.style.display = "block";
+    gameImage.src = window.location.origin + '/assets/game/maps/ufo.png';
+    gameViewImageContainer.style.backgroundImage = "none";
+    gameViewImageContainer.style.width= "100%";
+    gameImage.style.display = "block";
+}
+
+const tempImageObject = {
+    0: "",
+    1: "https://svgsilh.com/svg/1563467.svg",
+    2: "https://svgsilh.com/svg/1216173.svg",
+    3: "https://svgsilh.com/svg/592740.svg",
+    4: "https://svgsilh.com/svg/1563467.svg",
+    5: "https://svgsilh.com/svg/1216173.svg",
+    6: "https://svgsilh.com/svg/592740.svg",
+}
+
+const gameCountdownImage = (currentTime) => {
+    const gameCountdownImage = $id("game-countdown-image");
+    gameCountdownImage.src = tempImageObject[currentTime];
+    gameCountdownImage.style.display = "block";
+
+    if (!currentTime) {
+        gameCountdownImage.style.display = "none";
+    }
+}
+
+let gameCountdownIntervalId = undefined;
 export function updateReadyState(readyStateObject) {
 
     if (readyStateObject.playerLeft) {
@@ -163,10 +193,20 @@ export function updateReadyState(readyStateObject) {
     }
 
     if (readyStateObject.startTime) {
-        console.warn("Start Time:", readyStateObject.startTime);
-        setTimeout(() => {
-            console.log("Starting game loop");
-            startGameLoop();
-        }, Date.parse(readyStateObject.startTime) - Date.now());
+        gameCountdownIntervalId = setInterval((startTime) => {
+            let diff = startTime - new Date();
+            if (diff <= 0) {
+                clearInterval(gameCountdownIntervalId);
+                console.log("Starting game loop");
+                gameCountdownImage(0);
+                showGame();
+                startGameLoop();
+                return ;
+            }
+
+            // update image here
+            console.log("gameCountdown",  startTime - new Date());
+            gameCountdownImage(Math.floor(diff / 1000));
+        }, 1000, Date.parse(readyStateObject.startTime));
     }
 }
