@@ -147,17 +147,17 @@ const animateImage = (
     timingFunction = "ease-in-out"
 ) => {
     const image = $id(id);
-    image.style.animationDuration = duration;
-    image.style.animationName = animationName;
-    image.style.animationIterationCount = iterationCount;
-    image.style.animationTimingFunction = timingFunction;
+    //image.style.animationDuration = duration;
+    //image.style.animationName = animationName;
+    //image.style.animationIterationCount = iterationCount;
+    //image.style.animationTimingFunction = timingFunction;
 };
 
 const removeImageAnimation = (id) => {
     const image = $id(id);
-    image.style.animationDuration = "0s";
-    image.style.animationName = "";
-    image.style.animationIterationCount = "0";
+    //image.style.animationDuration = "0s";
+    //image.style.animationName = "";
+    //image.style.animationIterationCount = "0";
 }
 
 
