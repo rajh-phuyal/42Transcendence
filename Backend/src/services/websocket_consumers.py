@@ -236,7 +236,7 @@ class GameConsumer(CustomWebSocketLogic):
                 # Update game cache and send it via WS to FE
 
                 game_name = f"game_{game_id}"
-                channel_layer.group_send(
+                await channel_layer.group_send(
                     game_name,
                     {
                         "type": "update_game_state",

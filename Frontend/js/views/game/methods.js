@@ -43,7 +43,7 @@ function updatePlayerInput() {
 
 function gameLoop(currentTime) {
     console.log("gameLoop");
-    if (currentTime - gameObject.lastFrameTime >= 100) {
+    if (currentTime - gameObject.lastFrameTime >= 30) {
 
         // Check if the game is ongoing
         if (gameObject.state !== "ongoing") {
@@ -107,44 +107,27 @@ const percentageToPixels = (percentage, edgeSize) => {
 	return (edgeSize / 100) * percentage;
 }
 
-const normalizeGameObject = (gameObject, gameField) => {
-	const normalizedGameObject = { ...gameObject };
-	normalizedGameObject.playerLeft.pos = percentageToPixels(gameObject.playerLeft.pos, gameField.height);
-	normalizedGameObject.playerRight.pos = percentageToPixels(gameObject.playerRight.pos, gameField.height);
-	normalizedGameObject.playerLeft.size = percentageToPixels(gameObject.playerLeft.size, gameField.height);
-	normalizedGameObject.playerRight.size = percentageToPixels(gameObject.playerRight.size, gameField.height);
-	normalizedGameObject.ball.posX = percentageToPixels(gameObject.ball.posX, gameField.width);
-	normalizedGameObject.ball.posY = percentageToPixels(gameObject.ball.posY, gameField.height);
-	normalizedGameObject.ball.size = 4;
-	console.log("normalizedGameObject", normalizedGameObject);
-	return normalizedGameObject;
-}
-
 export function updateGameObjects(gameState) {
     const gameField = $id("game-field");
 
     gameObject.state = gameState?.gameData?.state;
     gameObject.playerLeft.points = gameState.playerLeft.points;
     gameObject.playerRight.points = gameState.playerRight.points;
-    gameObject.playerLeft.pos = gameState.playerLeft.paddlePos;
-    gameObject.playerRight.pos = gameState.playerRight.paddlePos;
-    gameObject.playerLeft.size = gameState.playerLeft.paddleSize;
-    gameObject.playerRight.size = gameState.playerRight.paddleSize;
-    gameObject.ball.posX = gameState.gameData.ballPosX;
-    gameObject.ball.posY = gameState.gameData.ballPosY;
+
+    gameObject.playerLeft.pos = percentageToPixels(gameState.playerLeft.paddlePos, gameField.height);
+	gameObject.playerRight.pos = percentageToPixels(gameState.playerRight.paddlePos, gameField.height);
+	gameObject.playerLeft.size = percentageToPixels(gameState.playerLeft.paddleSize, gameField.height);
+	gameObject.playerRight.size = percentageToPixels(gameState.playerRight.paddleSize, gameField.height);
+	gameObject.ball.posX = percentageToPixels(gameState.gameData.ballPosX, gameField.width);
+	gameObject.ball.posY = percentageToPixels(gameState.gameData.ballPosY, gameField.height);
+	gameObject.ball.size = 4;
+
     gameObject.playerLeft.powerups.big = gameState.playerLeft.powerupBig;
     gameObject.playerLeft.powerups.slow = gameState.playerLeft.powerupSlow;
     gameObject.playerLeft.powerups.fast = gameState.playerLeft.powerupFast;
     gameObject.playerRight.powerups.big = gameState.playerRight.powerupBig;
     gameObject.playerRight.powerups.slow = gameState.playerRight.powerupSlow;
     gameObject.playerRight.powerups.fast = gameState.playerRight.powerupFast;
-
-    const normalizedGameObject = normalizeGameObject(gameObject, gameField);
-
-    gameObject = {
-        ...gameObject,
-        ...normalizedGameObject,
-    }
 }
 
 export function endGameLoop() {
