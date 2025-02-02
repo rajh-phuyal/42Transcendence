@@ -131,22 +131,28 @@ export default {
 			gameObject.playerRight.size = 10;
 			gameObject.ball.posX = 50;
 			gameObject.ball.posY = 50;
+            gameObject.playerLeft.powerups.big = "active";
+            gameObject.playerRight.powerups.big = "used";
+            gameObject.playerLeft.powerups.slow = "active";
+            gameObject.playerRight.powerups.slow = "available";
+            gameObject.playerLeft.powerups.fast = "used";
+            gameObject.playerRight.powerups.fast = "used";
+			gameObject.playerLeft.score = 5;
+			gameObject.playerRight.score = 3;
 			// TODO: DUMMY DATA REMOVE
 
 			gameRender(gameField, ctx);
 
 			const goToGameButton = this.domManip.$id("go-to-game");
-			console.log("goToGameButton", goToGameButton);
 			goToGameButton.addEventListener('click', () => {
 				const gameViewImageContainer = this.domManip.$id("game-view-image-container");
 				const gameImageContainer = this.domManip.$id("game-view-map-image");
 				const gameImage = gameImageContainer.children[0];
 				gameField.style.display = "block";
-				gameImage.src = window.location.origin + '/assets/game/maps/ufo.png';
+				gameImage.src = window.location.origin + '/assets/game/maps/lizard-people.png';
 				gameViewImageContainer.style.backgroundImage = "none";
 				gameViewImageContainer.style.width= "100%";
 				gameImage.style.display = "block";
-				console.log("test button");
 			});
 		},
     }

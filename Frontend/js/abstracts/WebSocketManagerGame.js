@@ -68,7 +68,6 @@ class WebSocketManagerGame {
     // - TODO: !!!
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        //console.log("GAME: FE -> BE:", message);
     }
 
     // The backend send:
