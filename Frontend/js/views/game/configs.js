@@ -2,7 +2,8 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { startGameLoop, endGameLoop, changeGameState } from './methods.js';
+import { endGameLoop, changeGameState } from './methods.js';
+import { gameRender } from './render.js';
 import { gameObject } from './objects.js';
 
 export default {
@@ -122,7 +123,38 @@ export default {
             // Hide the spinner and show conncted message
             this.domManip.$id("player-left-state-spinner").style.display = "none";
             this.domManip.$id("player-left-state").innerText = translate("game", "ready");
-            // startGameLoop();
-        },
+
+            this.domManip.$id("player-1-state-spinner").style.display = "none";
+            this.domManip.$id("player-1-state").innerText = translate("game", "ready");
+
+			const gameField = this.domManip.$id("game-field");
+			const ctx = gameField.getContext('2d');
+			ctx.clearRect(0, 0, gameField.width, gameField.height);
+
+			// TODO: DUMMY DATA REMOVE
+			gameObject.playerLeft.pos = 6;
+			gameObject.playerLeft.size = 10;
+			gameObject.playerRight.pos = 50;
+			gameObject.playerRight.size = 10;
+			gameObject.ball.posX = 50;
+			gameObject.ball.posY = 50;
+			// TODO: DUMMY DATA REMOVE
+
+			gameRender(gameField, ctx);
+
+			const goToGameButton = this.domManip.$id("go-to-game");
+			console.log("goToGameButton", goToGameButton);
+			goToGameButton.addEventListener('click', () => {
+				const gameViewImageContainer = this.domManip.$id("game-view-image-container");
+				const gameImageContainer = this.domManip.$id("game-view-map-image");
+				const gameImage = gameImageContainer.children[0];
+				gameField.style.display = "block";
+				gameImage.src = window.location.origin + '/assets/game/maps/ufo.png';
+				gameViewImageContainer.style.backgroundImage = "none";
+				gameViewImageContainer.style.width= "100%";
+				gameImage.style.display = "block";
+				console.log("test button");
+			});
+		},
     }
 }
