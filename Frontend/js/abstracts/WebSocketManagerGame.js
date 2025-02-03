@@ -67,13 +67,14 @@ class WebSocketManagerGame {
     // Allowd types are:
     // - TODO: !!!
     sendMessage(message) {
+        console.log("GAME: FE -> BE:", message);
         this.socket.send(JSON.stringify(message));
     }
 
     // The backend send:
     // - TODO: !!!
     receiveMessage(message) {
-        console.log("GAME: BE -> FE:", message);
+        //console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
             case "playersReady":

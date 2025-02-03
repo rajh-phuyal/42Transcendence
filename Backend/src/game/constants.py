@@ -22,7 +22,7 @@ GAME_STATE = {
     "gameData" : {
         "ballPosX": 50,
         "ballPosY": 50,
-        "state": "ongoing",
+        "state": "pending",
         "ballSpeed": 1,
         "ballRadius": 1,
         "ballDirectionX": -1,

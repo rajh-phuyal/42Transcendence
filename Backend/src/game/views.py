@@ -70,6 +70,12 @@ class LobbyView(BaseAuthenticatedView):
         # Removed this since u can see a lobby even if the game is finished
         #if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
         #    return error_response(_("Game can't be played since it's either finished or quited"))
+
+        # Check if the game is local, than only the admin can fetch the lobby
+        if user_member.local_game and not user_member.admin:
+            return error_response(_("Only the admin @{admin_username} can fetch the lobby for local games. You have to go to his computer and play there together")
+                .format(admin_username=opponent_member.user.username))
+
         tournament_name = None
         if (game.tournament):
             tournament_name = game.tournament.name

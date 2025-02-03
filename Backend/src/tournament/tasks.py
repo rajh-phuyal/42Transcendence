@@ -40,10 +40,8 @@ def check_overdue_tournament_games():
                 game=Game.objects.select_for_update().get(id=game.id)
                 looser=GameMember.objects.select_for_update().get(id=looser.id)
                 winner=GameMember.objects.select_for_update().get(id=winner.id)
-                looser.result = GameMember.GameResult.LOST
                 looser.points = 0
                 looser.save()
-                winner.result = GameMember.GameResult.WON
                 winner.points = 11
                 winner.save()
             logging.info(f"Game {game.id} has passed its deadline. Decided: Winner is {winner.user_id} and looser is {looser.user_id}")

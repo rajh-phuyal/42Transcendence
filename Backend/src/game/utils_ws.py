@@ -1,3 +1,4 @@
+from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
 import random
 from game.models import Game, GameMember
 from core.exceptions import BarelyAnException
@@ -45,18 +46,20 @@ def update_game_points(game_id, player_id=None, player_side=None):
         if player_side is None:
             logging.error("update_game_points: player_id and player_side are None u must provide one")
             return
-        user_id = get_user_of_game(game_id, player_side)
-        if not user_id:
-            logging.error("update_game_points: user_id not found")
+        player_id = get_user_of_game(game_id, player_side)
+        if not player_id:
+            logging.error("update_game_points: player_id not found")
             return
-        player_id = user_id
+
+    # If player_side is not provided, we have to find it by the player_id
+    if player_side is None:
+        if is_left_player(game_id, player_id):
+            player_side = 'playerLeft'
+        else:
+            player_side = 'playerRight'
 
     # Update cache
-    game_state_data = cache.get(f'game_{game_id}_state', {})
-    if is_left_player(player_id):
-        game_state_data['playerLeft']['points'] += 1
-    else:
-        game_state_data['playerRight']['points'] += 1
+    set_game_data(game_id, player_side, 'points', get_game_data(game_id, player_side, 'points') + 1)
 
     # Update db
     with transaction.atomic():
@@ -68,9 +71,9 @@ def update_game_points(game_id, player_id=None, player_side=None):
     # if tournament game
     #      inform tournament guys (gameUpdateState)
 
-
-
-
+    points_left = get_game_data(game_id, 'playerLeft', 'points')
+    points_right = get_game_data(game_id, 'playerRight', 'points')
+    logging.info(f"Game {game_id} points/score updated (cache and db) to: {points_left}/{points_right}")
 
 # TODO: below is old code!!!!
 

@@ -63,8 +63,6 @@ class WebSocketMessageHandlersGame:
     @staticmethod
     async def handle_playerInput(consumer, user, message):
         message = parse_message(message) # TODO: @Rajh implement deep json thing
-        #logging.info(f"Handling player input message: {message} with game id {consumer.game_id}")
-
         if consumer.local_game or consumer.isLeftPlayer:
             cache.set(f'game_{consumer.game_id}_playerLeft', message.get("playerLeft"), timeout=3000)
         if consumer.local_game or not consumer.isLeftPlayer:

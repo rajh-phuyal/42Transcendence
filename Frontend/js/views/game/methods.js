@@ -38,12 +38,17 @@ function updatePlayerInput() {
     const message = {
         messageType: "playerInput",
         playerLeft: {
-        movePaddle: gameObject.playerInput.paddleMovement || "0",
-        powerupBig: gameObject.playerInput.powerupBig || false,
-        powerupSlow: gameObject.playerInput.powerupSlow || false,
-        powerupFast: gameObject.playerInput.powerupFast || false
+            movePaddle: gameObject.playerInputLeft.paddleMovement || "0",
+            activatePowerupBig: gameObject.playerInputLeft.powerupBig || false,
+            activatePowerupSlow: gameObject.playerInputLeft.powerupSlow || false,
+            activatePowerupFast: gameObject.playerInputLeft.powerupFast || false
+        },
+        playerRight: {
+            movePaddle: gameObject.playerInputRight.paddleMovement || "0",
+            activatePowerupBig: gameObject.playerInputRight.powerupBig || false,
+            activatePowerupSlow: gameObject.playerInputRight.powerupSlow || false,
+            activatePowerupFast: gameObject.playerInputRight.powerupFast || false
         }
-        // TODO: add player right
     }
     WebSocketManagerGame.sendMessage(message);
 }
@@ -67,26 +72,48 @@ function gameLoop(currentTime) {
 
 function keyPressCallback(event) {
     switch (event.key) {
+        // Player LEFT
         case "w":
             // Move the paddle up
-            gameObject.playerInput.paddleMovement = "-";
+            gameObject.playerInputLeft.paddleMovement = "-";
             break;
         case "s":
             // Move the paddle down
-            gameObject.playerInput.paddleMovement = "+";
+            gameObject.playerInputLeft.paddleMovement = "+";
             break;
         case "1":
             // Activate the powerup
-            gameObject.playerInput.powerupBig = true;
+            gameObject.playerInputLeft.powerupBig = true;
             break;
         case "2":
             // Activate the powerup
-            gameObject.playerInput.powerupSlow = true;
+            gameObject.playerInputLeft.powerupSlow = true;
             break;
         case "3":
             // Activate the powerup
-            gameObject.playerInput.powerupFast = true;
+            gameObject.playerInputLeft.powerupFast = true;
             break;
+
+        // Player RIGHT
+        case "o":
+            gameObject.playerInputRight.paddleMovement = "-";
+            break;
+        case "l":
+            gameObject.playerInputRight.paddleMovement = "+";
+            break;
+        case "8":
+            // Activate the powerup
+            gameObject.playerInputRight.powerupBig = true;
+            break;
+        case "9":
+            // Activate the powerup
+            gameObject.playerInputRight.powerupSlow = true;
+            break;
+        case "0":
+            // Activate the powerup
+            gameObject.playerInputRight.powerupFast = true;
+            break;
+
         default:
             return;
     }
@@ -95,13 +122,22 @@ function keyPressCallback(event) {
 
 function keyReleaseCallback(event) {
     switch (event.key) {
+        // Player LEFT
         case "w":
             // Stop the paddle
-            gameObject.playerInput.paddleMovement = "0";
+            gameObject.playerInputLeft.paddleMovement = "0";
             break;
         case "s":
             // Stop the paddle
-            gameObject.playerInput.paddleMovement = "0";
+            gameObject.playerInputLeft.paddleMovement = "0";
+            break;
+
+        // Player RIGHT
+        case "o":
+            gameObject.playerInputRight.paddleMovement = "0";
+            break;
+        case "l":
+            gameObject.playerInputRight.paddleMovement = "0";
             break;
     }
     updatePlayerInput();

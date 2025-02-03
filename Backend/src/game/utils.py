@@ -64,7 +64,8 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
                 local_game=local_game,
                 powerup_big = powerups,
                 powerup_fast = powerups,
-                powerup_slow = powerups
+                powerup_slow = powerups,
+                admin=True
             )
             game_member_opponent = GameMember.objects.create(
                 game=game,
@@ -72,7 +73,8 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
                 local_game=local_game,
                 powerup_big = powerups,
                 powerup_fast = powerups,
-                powerup_slow = powerups
+                powerup_slow = powerups,
+                admin=False
             )
             game.save()
             game_member_user.save()
@@ -104,7 +106,7 @@ def delete_game(user_id, game_id):
         game.delete()
     return True
 
-def finish_game(game, message):
+def finish_game(game, message=None):
     logging.info(f"Finishing game {game.id}")
     game_members = GameMember.objects.filter(game=game.id)
     if not message:
@@ -119,6 +121,20 @@ def finish_game(game, message):
         game.state = Game.GameState.FINISHED
         game.finish_time = timezone.now() #TODO: Issue #193
         game.save()
+        if game_members.count() != 2:
+            logging.error(f"Game {game.id} has not 2 members")
+            return
+        # Update the game members
+        game_member_1 = GameMember.objects.select_for_update().get(id=game_members.first().id)
+        game_member_2 = GameMember.objects.select_for_update().get(id=game_members.last().id)
+        if game_member_1.points > game_member_2.points:
+            game_member_1.result = GameMember.GameResult.WON
+            game_member_2.result = GameMember.GameResult.LOST
+        else:
+            game_member_1.result = GameMember.GameResult.LOST
+            game_member_2.result = GameMember.GameResult.WON
+        game_member_1.save()
+        game_member_2.save()
 
     # For tournament games only:
     if not game.tournament_id:
@@ -243,7 +259,7 @@ def get_player_input(game_id, side, key1):
     cache_key = f'game_{game_id}_{side}'
     if (input_player := cache.get(cache_key)):
         if key1 not in input_player:
-            logging.error(f"! Key '{key1}' does not exist in game player {side} cache!")
+            logging.error(f"! Key '{key1}' does not exist in " + cache_key + " cache!")
             return None
         return input_player[key1]
     else:
