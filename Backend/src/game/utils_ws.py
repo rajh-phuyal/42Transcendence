@@ -8,23 +8,65 @@ from django.utils.translation import gettext as _
 import logging
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
+from django.db import transaction
+from game.utils import is_left_player, finish_game, get_user_of_game
 
 @database_sync_to_async
-def update_game_state_db(game, state):
-    # TODO:
-    # just update cache
-    # and update db without await
+def update_game_state(game_id, state):
+    # Update cache
+    game_state_data = cache.get(f'game_{game_id}_state', {})
+    if not game_state_data:
+        logging.error(f"! can't update game state to{state} because game {game_id} is not in cache!")
+    else:
+        game_state_data['gameData']['state'] = state
+        cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
+
+    # Update db
+    with transaction.atomic():
+        game = Game.objects.select_for_update().get(id=game_id)
+        if (state == Game.GameState.FINISHED):
+            # Use my finish_game function to deal with everything
+            finish_game(game)
+        else:
+            game.state = state
+            if(state == Game.GameState.ONGOING):
+                game.deadline = None # So the recconection deadline is gone
+        game.save()
+
+    # TODO: tournament game
     # if tournament game
     #      inform tournament guys (gameUpdateState)
-    # if game is finished
-    #     remove_game_from_cache
+    logging.info(f"Game state updated (cache and db) to: {state}")
 
+@database_sync_to_async
+def update_game_points(game_id, player_id=None, player_side=None):
+    # If the player id is not provided, we have to find it by the side
+    if player_id is None:
+        if player_side is None:
+            logging.error("update_game_points: player_id and player_side are None u must provide one")
+            return
+        user_id = get_user_of_game(game_id, player_side)
+        if not user_id:
+            logging.error("update_game_points: user_id not found")
+            return
+        player_id = user_id
 
+    # Update cache
+    game_state_data = cache.get(f'game_{game_id}_state', {})
+    if is_left_player(player_id):
+        game_state_data['playerLeft']['points'] += 1
+    else:
+        game_state_data['playerRight']['points'] += 1
 
-    logging.info(f"Game state before: {game.state}")
-    game.state = state
-    game.save()
-    logging.info(f"Game state after: {game.state}")
+    # Update db
+    with transaction.atomic():
+        gameMember = GameMember.objects.select_for_update().get(game_id=game_id, user_id=player_id)
+        gameMember.points += 1
+        gameMember.save()
+
+    # TODO: tournament game
+    # if tournament game
+    #      inform tournament guys (gameUpdateState)
 
 
 
@@ -47,7 +89,7 @@ async def init_game(game):
         raise BarelyAnException(_("Game is not in a state to be started"))
 
     # Change database
-    await update_game_state_db(game, Game.GameState.ONGOING)
+    await update_game_state(game, Game.GameState.ONGOING)
 
     logging.info(f"Game state 2: {game.state}")
     # Init game data on cache (if is the first time)

@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.utils.timezone import localtime
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
@@ -184,14 +185,69 @@ def is_left_player(game_id, user_id):
 
 def get_user_of_game(game_id, side):
     game_members = GameMember.objects.filter(game_id=game_id)
-    if side == "left":
+    if side == "playerLeft":
         user_id_left = max(game_members.values_list('user_id', flat=True))
         return User.objects.get(id=user_id_left)
-    elif side == "right":
+    elif side == "playerRight":
         user_id_right = min(game_members.values_list('user_id', flat=True))
         return User.objects.get(id=user_id_right)
     else:
+        logging.error(f"! Side '{side}' is not valid has to be 'playerLeft' or 'playerRight'")
         return None
+
+def set_game_data(game_id, key1, key2, new_value, timeout=3000):
+    cache_key = f'game_{game_id}_state'
+    if (game_state_data := cache.get(cache_key)):
+        if key1 in game_state_data and key2 in game_state_data[key1]:
+            game_state_data[key1][key2] = new_value
+            cache.set(cache_key, game_state_data, timeout=timeout)
+            return True
+        logging.error(f"! Key '{key1}' or '{key2}' does not exist in game {game_id} cache!")
+    else:
+        logging.error(f"! Can't update game state because game {game_id} is not in cache!")
+    return False
+
+def get_game_data(game_id, key1=None, key2=None):
+    cache_key = f'game_{game_id}_state'
+    if (game_state_data := cache.get(cache_key)):
+        if not key1:
+            return game_state_data
+        elif key1 not in game_state_data:
+            logging.error(f"! Key '{key1}' does not exist in game {game_id} cache!")
+            return None
+        if game_state_data_key1 := game_state_data[key1]:
+            if not key2:
+                return game_state_data_key1
+            elif key2 not in game_state_data_key1:
+                logging.error(f"! Key '{key2}' does not exist in game {game_id} cache!")
+                return None
+            return game_state_data_key1[key2]
+    else:
+        logging.error(f"! Can't get game state because game {game_id} is not in cache!")
+
+# def set_player_input_cache_value(game_id, key, new_value, timeout=3000):
+#     cache_key = f'game_{game_id}_player_left'
+#     if (input_player := cache.get(cache_key)):
+#         if key in input_player
+#             input_player[key][key2] = new_value
+#             cache.set(cache_key, input_player, timeout=timeout)
+#             return True
+#         logging.error(f"! Key '{key}' or '{key2}' does not exist in game {game_id} cache!")
+#     else:
+#         logging.error(f"! Can't update game state because game {game_id} is not in cache!")
+#     return False
+
+
+# SIDE: needs to be playerLeft or playerRight
+def get_player_input(game_id, side, key1):
+    cache_key = f'game_{game_id}_{side}'
+    if (input_player := cache.get(cache_key)):
+        if key1 not in input_player:
+            logging.error(f"! Key '{key1}' does not exist in game player {side} cache!")
+            return None
+        return input_player[key1]
+    else:
+        logging.error("! Can't get game player input because game " +  cache_key + " is not in cache!")
 
 
 # OLD:

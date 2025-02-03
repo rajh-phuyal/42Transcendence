@@ -23,8 +23,8 @@ from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMess
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
 from game.constants import GAME_FPS, PADDLE_OFFSET
-from game.utils_ws import update_game_state_db
-from game.utils import is_left_player, get_user_of_game
+from game.utils_ws import update_game_state, update_game_points
+from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
 
 channel_layer = get_channel_layer()
 
@@ -166,9 +166,9 @@ class GameConsumer(CustomWebSocketLogic):
         logging.info(f"Local game: {self.local_game}")
         self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user_id)
         logging.info(f"Is left player: {self.isLeftPlayer}")
-        self.leftPlayer =  await database_sync_to_async(get_user_of_game)(self.game_id, 'left')
+        self.leftPlayer =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
         logging.info(f"Left player: {self.leftPlayer}")
-        self.rightPlayer =  await database_sync_to_async(get_user_of_game)(self.game_id, 'right')
+        self.rightPlayer =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
         logging.info(f"Right player: {self.rightPlayer}")
         logging.info("Initialiazing consumer self vars: user_id %s, game_id: %s, local_game: %s, isLeftPlayer: %s", self.user_id, self.game_id, self.local_game, self.isLeftPlayer)
 
@@ -214,38 +214,40 @@ class GameConsumer(CustomWebSocketLogic):
     #@barely_handle_ws_exceptions TODO: uncomment this line
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
-#        self.game_id = self.scope['url_route']['kwargs']['game_id']
-#        game = await sync_to_async(Game.objects.get)(id=self.game_id)
-#
-#        # Change the game state to paused on
-#        # -> 1. The cache (if it exists)
-#        game_state_data = cache.get(f'game_{self.game_id}_state', {})
-#        if game_state_data:
-#            game_state_data['gameData']['state'] = 'paused'
-#            # The player that disconnected is the one that looses the point
-#            game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-#            player_right_id = min(game_user_ids)
-#            if player_right_id == self.scope['user'].id:
-#                game_state_data = score_point(game_state_data, 'playerLeft')
-#            cache.set(f'game_{self.game_id}_state', game_state_data, timeout=3000)
-#
-#        # TODO: Check if the db update is already done in loop aka after the loop
-#        # -> 2. The database
-#        if(game.state == Game.GameState.ONGOING):
-#            await update_game_state_db(game, Game.GameState.PAUSED)
-#
-#        # Set the player ready to false
-#        game.set_player_ready(self.scope['user'].id, False)
-#        await send_update_players_ready_msg(game, channel_layer)
+
+        # Remove client from the channel layer group
+        await channel_layer.group_discard(f"game_{self.game_id}", self.channel_name)
+
+        # Set the player NOT ready
+        self.game.set_player_ready(self.scope['user'].id, False)
+        await self.send_update_players_ready_msg()
+
+        # If the game was ongoing, pause it
+        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+        if game_state_data['gameData']['state'] == 'ongoing':
+            # Set deadline to reconnection time
+            # # TODO
+
+            # Set game to paused
+            await update_game_state(self.game_id, Game.GameState.PAUSED)
+
+            # Other player scores that point
+            user_id_for_point = self.leftPlayer.id
+            if self.user_id == self.leftPlayer.id:
+                user_id_for_point = self.rightPlayer.id
+            await update_game_points(self.game_id, user_id_for_point)
+
+            # Send the updated game state to FE
+            self.send_update_game_data_msg()
 
     #@barely_handle_ws_exceptions  TODO: Uncomment this line
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-#        # Setting the user
-#        user = self.scope['user']
-#        # Process the message
-#        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
+        # Setting the user
+        user = self.scope['user']
+        # Process the message
+        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
 
     @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def update_players_ready(self, event):
@@ -254,6 +256,12 @@ class GameConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def update_game_state(self, event):
         await self.send(text_data=json.dumps({**event}))
+
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
+    async def game_finished(self, event):
+        # This is triggerd by the end of the game loop to close the connection
+        await self.close()
+
 
     @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def send_update_players_ready_msg(self, start_time = None):
@@ -290,58 +298,47 @@ class GameConsumer(CustomWebSocketLogic):
     # Just for making sure all the game data is initialized on cache
     async def init_game_on_cache(self):
         # CREATE GAME DATA ON CACHE IF DOESNT EXIST
-        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+
+        game_state_data = get_game_data (self.game_id)
         if not game_state_data:
             logging.info(f"Init game on cache: game_{self.game_id}_state")
-            new_game_state = deepcopy(GAME_STATE)
+            cache.set(f'game_{self.game_id}_state', deepcopy(GAME_STATE), timeout=3000)
             # Randomize serving player
             if random.randint(0, 1) == 0:
-                new_game_state["gameData"]["playerServes"] = "playerLeft"
-                new_game_state["gameData"]["ballDirectionX"] = -1
+                set_game_data(self.game_id, 'gameData', 'playerServes', 'playerLeft')
+                set_game_data(self.game_id, 'gameData', 'ballDirectionX', -1)
             else:
-                new_game_state["gameData"]["playerServes"] = "playerRight"
-                new_game_state["gameData"]["ballDirectionX"] = 1
-            logging.info(f"Game state 3:")
-            new_game_state['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
-            cache.set(f'game_{self.game_id}_state', new_game_state, timeout=3000)
+                set_game_data(self.game_id, 'gameData', 'playerServes', 'playerRight')
+                set_game_data(self.game_id, 'gameData', 'ballDirectionX', 1)
+            # Add a minimal random direction to the ball so it won't be stuck horizontally
+            set_game_data(self.game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
+            # TODO UNCOMMENT THIS LLINES BELOW
+            set_game_data(self.game_id, 'gameData', 'ballDirectionY', 1)
+            set_game_data(self.game_id, 'gameData', 'ballDirectionX', -0.5)
 
         # CREATE LEFT PLAYER INPUT ON CACHE IF DOESNT EXIST
-        input_player_left = cache.get(f'game_{self.game_id}_player_left', {})
+        cache_key = f'game_{self.game_id}_playerLeft'
+        input_player_left = cache.get(cache_key, {})
         if not input_player_left:
-            logging.info(f"Init game on cache: game_{self.game_id}_player_left")
-            cache.set(f'game_{self.game_id}_player_left', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
+            logging.info(f"Init game on cache: {cache_key}")
+            cache.set(cache_key, deepcopy(GAME_PLAYER_INPUT), timeout=3000)
 
         # CREATE RIGHT PLAYER INPUT ON CACHE IF DOESNT EXIST
-        input_player_right = cache.get(f'game_{self.game_id}_player_right', {})
+        cache_key = f'game_{self.game_id}_playerRight'
+        input_player_right = cache.get(cache_key, {})
         if not input_player_right:
-            logging.info(f"Init game on cache: game_{self.game_id}_player_right")
-            cache.set(f'game_{self.game_id}_player_right', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            logging.info(f"Init game on cache: {cache_key}")
+            cache.set(cache_key, deepcopy(GAME_PLAYER_INPUT), timeout=3000)
 
     @staticmethod
     async def run_game_loop(game_id):
-        logging.info(f"Game loop started: {game_id}")
-        # Fetches game state from cache
-        game_state_data = cache.get(f'game_{game_id}_state', {})
-        while game_state_data['gameData']['state'] == 'ongoing':
-            try:
-                # Fetches user desires from cache
-                left_player_input = cache.get(f'game_{game_id}_player_left', {})
-                right_player_input = cache.get(f'game_{game_id}_player_right', {})
+        # Updates the state to ongoing
+        await update_game_state(game_id, Game.GameState.ONGOING)
 
+        # Start the game loop
+        logging.info(f"Game loop starts now: {game_id}")
+        while get_game_data(game_id, 'gameData', 'state') == 'ongoing':
+            try:
                 # Fetches game state from cache
                 game_state_data = cache.get(f'game_{game_id}_state', {})
 
@@ -350,15 +347,13 @@ class GameConsumer(CustomWebSocketLogic):
                 game_state_data_right = game_state_data['playerRight']
 
                 # Change postions of both paddles if requested and allowed
-                game_state_data_left = move_paddle(left_player_input, game_state_data_left)
-                game_state_data_right = move_paddle(right_player_input, game_state_data_right)
-
-                # Update game state with new paddle positions
-                game_state_data['playerLeft'] = game_state_data_left
-                game_state_data['playerRight'] = game_state_data_right
+                move_paddle(game_id, 'playerLeft')
+                move_paddle(game_id, 'playerRight')
 
                 # Then calculate ball movement
-                game_state_data = move_ball(game_state_data)
+                move_ball(game_id)
+                apply_wall_bonce(game_id)
+                check_paddle_bounce(game_id)
 
                 # Send the updated game state to FE
                 game_name = f"game_{game_id}"
@@ -367,138 +362,183 @@ class GameConsumer(CustomWebSocketLogic):
                     {
                         "type": "update_game_state",
                         "messageType": "gameState",
-                        **game_state_data
+                        **get_game_data(game_id)
                     }
                 )
 
-                # Store the updated game state in cache
-                cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
+                check_if_game_is_finished(game_id)
+
 
                 # Await for next frame render
                 await asyncio.sleep(1 / GAME_FPS)
             except Exception as e:
                 logging.error(f"Error in game loop: {e}")
                 break
-        logging.info(f"Game finished: {game_id}")
-        # Save the state to db
-        game = await database_sync_to_async(Game.objects.get)(id=game_id)
-        if game_state_data['gameData']['state'] == 'finished':
-            await update_game_state_db(game, Game.GameState.FINISHED)
-        elif game_state_data['gameData']['state'] == 'paused':
-            await update_game_state_db(game, Game.GameState.PAUSED)
-        else:
-            logging.error(f"Game loop ended with state: {game_state_data['gameData']['state']}")
-def move_paddle(player, game_state_data_player):
-    # logging.info(f"paddlePos for {player['movePaddle']}: {game_state_data_player['paddlePos']}")
+        logging.info(f"Game loop ended: {game_id}")
+        if(get_game_data(game_id, 'gameData', 'state') == 'finished'):
+            # Clear the game data on cache
+            cache.delete(f'game_{game_id}_state')
+            cache.delete(f'game_{game_id}_player_left')
+            cache.delete(f'game_{game_id}_player_right')
+            logging.info(f"Game was finished and cache cleared: {game_id}")
+            # Inform both consumers to close the connection
+            await channel_layer.group_send(
+                game_name,
+                {
+                    "type": "game_finished",
+                }
+            )
 
-    if player['movePaddle'] == '0':
-        return game_state_data_player
+# Player side needs to be 'playerLeft' or 'playerRight'
+def move_paddle(game_id, playerSide):
+    movePaddle = get_player_input(game_id, playerSide, 'movePaddle')
+    if  movePaddle == '0':
+        return
 
-    #logging.info(f"player['movePaddle']: player['movePaddle']")
+    new_paddle_pos = get_game_data(game_id, playerSide, 'paddlePos')
+    paddle_speed = get_game_data(game_id, playerSide, 'paddleSpeed')
+    paddle_size = get_game_data(game_id, playerSide, 'paddleSize')
 
-    new_paddle_pos = game_state_data_player['paddlePos']
-    if player['movePaddle'] == '+':
-        new_paddle_pos += game_state_data_player['paddleSpeed']
-    elif player['movePaddle'] == '-':
-        new_paddle_pos -= game_state_data_player['paddleSpeed']
+    # Trying the player input
+    if movePaddle == '+':
+        new_paddle_pos += paddle_speed
+    elif movePaddle == '-':
+        new_paddle_pos -= paddle_speed
 
-    if (new_paddle_pos - (game_state_data_player['paddleSize'] / 2)) < 0:
-        new_paddle_pos = game_state_data_player['paddleSize'] / 2
+    # Validating / Adjusting the new paddle position
+    if (new_paddle_pos - (paddle_size / 2)) < 0:
+        new_paddle_pos = paddle_size / 2
+    elif (new_paddle_pos + (paddle_size / 2)) > 100:
+        new_paddle_pos = 100 - (paddle_size / 2)
 
-    elif (new_paddle_pos + (game_state_data_player['paddleSize'] / 2)) > 100:
-        new_paddle_pos = 100 - (game_state_data_player['paddleSize'] / 2)
-    game_state_data_player['paddlePos'] = new_paddle_pos
-    return game_state_data_player
+    # Save the new paddle position
+    set_game_data(game_id, playerSide, 'paddlePos', new_paddle_pos)
 
+def move_ball(game_id):
 
-def move_ball(game_state_data):
-    #logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']} \t Players pos: left --> {game_state_data['playerLeft']['paddlePos']} {game_state_data['playerRight']['paddlePos']}")
+    # Get from cache
+    ball_pos_x = get_game_data(game_id, 'gameData', 'ballPosX')
+    ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
+    ball_direction_x = get_game_data(game_id, 'gameData', 'ballDirectionX')
+    ball_direction_y = get_game_data(game_id, 'gameData', 'ballDirectionY')
+    ball_speed = get_game_data(game_id, 'gameData', 'ballSpeed')
 
     # Move the ball
-    game_state_data['gameData']['ballPosX'] += game_state_data['gameData']['ballDirectionX'] * game_state_data['gameData']['ballSpeed']
-    game_state_data['gameData']['ballPosY'] += game_state_data['gameData']['ballDirectionY'] * game_state_data['gameData']['ballSpeed']
+    ball_pos_x += ball_direction_x * ball_speed
+    ball_pos_y += ball_direction_y * ball_speed
+    # TODO: change ball speed
+
+    # Save the new ball position
+    set_game_data(game_id, 'gameData', 'ballPosX', ball_pos_x)
+    set_game_data(game_id, 'gameData', 'ballPosY', ball_pos_y)
+
+def apply_wall_bonce(game_id):
+    ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
+    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
+    ball_direction_y = get_game_data(game_id, 'gameData', 'ballDirectionY')
+    # Apply wall bounce (Calculate if the upper or lower wall was hit)
+    if ball_pos_y <= ball_radius:
+        set_game_data(game_id, 'gameData', 'ballPosY', ball_radius)
+        set_game_data(game_id, 'gameData', 'ballDirectionY', ball_direction_y * -1)
+    elif ball_pos_y >= 100 - ball_radius:
+        set_game_data(game_id, 'gameData', 'ballPosY', 100 - ball_radius)
+        set_game_data(game_id, 'gameData', 'ballDirectionY', ball_direction_y * -1)
+    else:
+        # No wall bounce happend
+        ...
+
+def check_paddle_bounce(game_id):
+    ball_pos_x = get_game_data(game_id, 'gameData', 'ballPosX')
+    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
+    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
 
     # Check if the ball is hitting the left or right paddle(point was scored)
-    if game_state_data['gameData']['ballPosX'] <= PADDLE_OFFSET + game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosX'] = PADDLE_OFFSET + game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionX'] *= -1
-        game_state_data = check_padlle_hit(game_state_data, 'playerLeft')
-    elif game_state_data['gameData']['ballPosX'] >= 100 - PADDLE_OFFSET - game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosX'] = 100 - PADDLE_OFFSET - game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionX'] *= -1
-        game_state_data = check_padlle_hit(game_state_data, 'playerRight')
+    if ball_pos_x <= PADDLE_OFFSET + ball_radius:
+        apply_padlle_hit(game_id, 'playerLeft')
+    elif ball_pos_x >= 100 - PADDLE_OFFSET - ball_radius:
+        apply_padlle_hit(game_id, 'playerRight')
+    else:
+        # No paddle bounce happend
+        ...
 
-    # Calculate if the upper or lower wall was hit
-    if game_state_data['gameData']['ballPosY'] <= game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosY'] = game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionY'] *= -1
-    elif game_state_data['gameData']['ballPosY'] >= 100 - game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosY'] = 100 - game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionY'] *= -1
+# Only called when the x pos of ball is on the x of the paddle
+def apply_padlle_hit(game_id, player_side):
+    logging.info(f"Ball hit the paddle: {player_side}")
+    ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
+    paddle_pos = get_game_data(game_id, player_side, 'paddlePos')
+    paddle_size = get_game_data(game_id, player_side, 'paddleSize')
+    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
+    logging.info(f"Ball pos y: {ball_pos_y}, paddle pos: {paddle_pos}, paddle size: {paddle_size}")
 
-    return game_state_data
-
-def check_padlle_hit(game_state_data, player_side):
     # Check if a point was scored
-    # if ballPos < paddlePos
-    if game_state_data['gameData']['ballPosY'] < game_state_data[player_side]['paddlePos']:
-    #     if ballPos + ballRadius < paddlePos - paddleSize / 2
-        if game_state_data['gameData']['ballPosY'] + game_state_data['gameData']['ballRadius'] < game_state_data[player_side]['paddlePos'] - game_state_data[player_side]['paddleSize'] / 2:
-    #         score a point
-            game_state_data = score_point(game_state_data, player_side)
+    if ball_pos_y < paddle_pos:
+        if ball_pos_y + ball_radius < paddle_pos - paddle_size / 2:
+            apply_point(game_id, player_side)
         else:
             # Ball should bounce off up
-    #         distance_paddle_ball = paddlePos - ballPos
-            distance_paddle_ball = game_state_data[player_side]['paddlePos'] - game_state_data['gameData']['ballPosY']
-    #         percentage_y = distance_paddle_ball / (paddleSize / 2 + ballRadius)
-            percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
-    #         ballDirectionY = -percentage_y
-            game_state_data['gameData']['ballDirectionY'] = -percentage_y
+            logging.info(f"Ball should bounce off up")
+            distance_paddle_ball = paddle_pos - ball_pos_y
+            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_radius)
+            set_game_data(game_id, 'gameData', 'ballDirectionX', -1 * get_game_data(game_id, 'gameData', 'ballDirectionX'))
+            set_game_data(game_id, 'gameData', 'ballDirectionY', -percentage_y)
     else:
-    #     if ballPos - ballRadius > paddlePos + paddleSize / 2
-        if game_state_data['gameData']['ballPosY'] - game_state_data['gameData']['ballRadius'] > game_state_data[player_side]['paddlePos'] + game_state_data[player_side]['paddleSize'] / 2:
-    #         score a point
-            game_state_data = score_point(game_state_data, player_side)
+        if ball_pos_y - ball_radius > paddle_pos + paddle_size / 2:
+            apply_point(game_id, player_side)
         else:
-    #         # Ball should bounce off down
-    #         distance_paddle_ball = ballPos - paddlePos
-            distance_paddle_ball = game_state_data['gameData']['ballPosY'] - game_state_data[player_side]['paddlePos']
-    #         percentage_y = distance_paddle_ball / (paddleSize / 2 + ballRadius)
-            percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
-    #         ballDirectionY = percentage_y
-            game_state_data['gameData']['ballDirectionY'] = percentage_y
+            logging.info(f"Ball should bounce off down")
+            distance_paddle_ball = ball_pos_y - paddle_pos
+            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_radius)
+            set_game_data(game_id, 'gameData', 'ballDirectionX', -1 * get_game_data(game_id, 'gameData', 'ballDirectionX'))
+            set_game_data(game_id, 'gameData', 'ballDirectionY', percentage_y)
 
-    return game_state_data
+def apply_point(game_id, player_side):
+    logging.info(f"Point scored by: {player_side}")
+    # update_score_points in cache and db
+    update_game_points(game_id, player_side=player_side)
 
+    # Reset the ball
+    set_game_data(game_id, 'gameData', 'ballPosX', 50)
+    set_game_data(game_id, 'gameData', 'ballPosY', 50)
+    set_game_data(game_id, 'gameData', 'ballSpeed', 1)
+    set_game_data(game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
 
-def score_point(game_state_data, player_side):
-    game_state_data['gameData']['ballPosX'] = 50
-    game_state_data['gameData']['ballPosY'] = 50
-    game_state_data['gameData']['ballSpeed'] = 1
+    # Check if extende mode should be activated (on the score of 10:10)
+    if not get_game_data(game_id, 'gameData', 'extendingGameMode'):
+        if get_game_data(game_id, 'playerLeft', 'points') == 10 and get_game_data(game_id, 'playerRight', 'points') == 10:
+            set_game_data(game_id, 'gameData', 'extendingGameMode', True)
 
-    if (game_state_data['gameData']['remainingServes'] > 0):
-        game_state_data['gameData']['remainingServes'] -= 1
-    else:
-        game_state_data['gameData']['remainingServes'] = 2
-        if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
-            game_state_data['gameData']['playerServes'] = 'playerRight'
+    # Set the next serve
+    if get_game_data(game_id, 'gameData', 'extendingGameMode'):
+        # 1 Serve each
+        if get_game_data(game_id, 'gameData', 'playerServes') == 'playerLeft':
+            set_game_data(game_id, 'gameData', 'playerServes', 'playerRight')
         else:
-            game_state_data['gameData']['playerServes'] = 'playerLeft'
-
-    if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
-        game_state_data['gameData']['ballDirectionX'] = -1
+            set_game_data(game_id, 'gameData', 'playerServes', 'playerLeft')
     else:
-        game_state_data['gameData']['ballDirectionX'] = 1
-    # Setting dir to a random value
-    game_state_data['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
-
-    # Update the score
-    if (player_side == 'playerLeft'):
-        game_state_data['playerLeft']['points'] += 1 # TODO: HACKATHON Update db
+        # 2 Serves each
+        remaining_serves = get_game_data(game_id, 'gameData', 'remainingServes')
+        if remaining_serves > 1:
+            set_game_data(game_id, 'gameData', 'remainingServes', remaining_serves - 1)
+        else:
+            set_game_data(game_id, 'gameData', 'remainingServes', 2)
+            if get_game_data(game_id, 'gameData', 'playerServes') == 'playerLeft':
+                set_game_data(game_id, 'gameData', 'playerServes', 'playerRight')
+            else:
+                set_game_data(game_id, 'gameData', 'playerServes', 'playerLeft')
+    if get_game_data(game_id, 'gameData', 'playerServes') == 'playerLeft':
+        set_game_data(game_id, 'gameData', 'ballDirectionX', -1)
     else:
-        game_state_data['playerRight']['points'] += 1 # TODO: HACKATHON Update db
+        set_game_data(game_id, 'gameData', 'ballDirectionX', 1)
 
-    if (game_state_data['playerLeft']['points'] >= 11 or game_state_data['playerRight']['points'] >= 11):
-        game_state_data['gameData']['state'] = 'finished' # TODO: HACKATHON Update db
 
-    return game_state_data
+def check_if_game_is_finished(game_id):
+    score_left = get_game_data(game_id, 'playerLeft', 'points')
+    score_right = get_game_data(game_id, 'playerRight', 'points')
+    if get_game_data(game_id, 'gameData', 'extendingGameMode'):
+        # One player needs to points ahead
+        if abs(score_left - score_right) >= 2:
+            update_game_state(game_id, Game.GameState.FINISHED)
+    else:
+        # One player needs to score 11 points
+        if score_left >= 11 or score_right >= 11:
+            update_game_state(game_id, Game.GameState.FINISHED)

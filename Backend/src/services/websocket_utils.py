@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 from game.models import Game
-from game.utils_ws import init_game, update_game_state_db
+from game.utils_ws import init_game, update_game_state
 
 class WebSocketMessageHandlersMain:
 
@@ -65,26 +65,10 @@ class WebSocketMessageHandlersGame:
         message = parse_message(message) # TODO: @Rajh implement deep json thing
         #logging.info(f"Handling player input message: {message} with game id {consumer.game_id}")
 
-        # Validate that the user is allowed to send the data
-        # Only if not local game we have to be strict with the player input
-        game_state_data = cache.get(f'game_{consumer.game_id}_state', {})
-        if not game_state_data:
-            logging.info(f"Game state not found for game {consumer.game_id}")
-            return
-        local_game = game_state_data['gameData']['localGame']
-        game = await database_sync_to_async(lambda: Game.objects.get(id=consumer.game_id))()
-        game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-        player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
-        player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
-
-        # So if its a local game or the user matches the player, we can update the player input
-        if local_game or player_right.user.id == consumer.user.id:
-            if "playerRight" in message:
-                cache.set(f'game_{consumer.game_id}_player_right', message["playerRight"], timeout=3000)
-        if local_game or player_left.user.id == consumer.user.id:
-            if "playerLeft" in message:
-                cache.set(f'game_{consumer.game_id}_player_left', message["playerLeft"], timeout=3000)
-
+        if consumer.local_game or consumer.isLeftPlayer:
+            cache.set(f'game_{consumer.game_id}_playerLeft', message.get("playerLeft"), timeout=3000)
+        if consumer.local_game or not consumer.isLeftPlayer:
+            cache.set(f'game_{consumer.game_id}_playerRight', message.get("playerRight"), timeout=3000)
 
 async def check_if_game_can_be_started(game, channel_layer):
     game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
@@ -99,7 +83,7 @@ async def check_if_game_can_be_started(game, channel_layer):
         except BarelyAnException as e:
             logging.error(f"Error initializing game: {str(e)}")
             logging.info(f"TODO: remove this: but for debuging purposes we will set the state to pending. So if u try again, it will start...")
-            await update_game_state_db(game, Game.GameState.PENDING)
+            await update_game_state(game, Game.GameState.PENDING)
             return False
 
         # STEP 2: Define the start time (so the frontend can start the game loop)

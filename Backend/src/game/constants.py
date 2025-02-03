@@ -26,9 +26,10 @@ GAME_STATE = {
         "ballSpeed": 1,
         "ballRadius": 1,
         "ballDirectionX": -1,
-        "ballDirectionY": 0,
+        "ballDirectionY": 1,
         "playerServes": "playerLeft",
-        "remainingServes": 2
+        "remainingServes": 2,
+        "extendingGameMode": False
     }
 }
 
