@@ -69,10 +69,17 @@ export default {
                     this.domManip.$id("player-right-username").innerText = "@" + data.playerRight.username
                     this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
+                    // Set game data
+                    gameObject.playerLeft.points = data.playerLeft.points;
+                    gameObject.playerRight.points = data.playerRight.points;
                     this.map = this.maps[data.gameData.mapNumber];
 
                     // Set game state
-                    changeGameState(data.gameState);
+                    changeGameState(data.gameData.state);
+
+                    // Only if game state is pending, ongoing or paused, open the WS connection
+                    if (data.gameData.state === "pending" || data.gameData.state === "ongoing" || data.gameData.state === "paused")
+                        WebSocketManagerGame.connect(this.gameId);
 
                 })
                 .catch(error => {
@@ -82,10 +89,27 @@ export default {
         },
         initObjects() {
             // TODO: the game state should be set by the WSManager
+            gameObject.gameId = this.gameId;
+            gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
             gameObject.state = "ongoing";
+            gameObject.playerLeft.points = 0;
+            gameObject.playerRight.points = 0;
+
             gameObject.playerLeft.pos = 50;
             gameObject.playerRight.pos = 50;
+
             gameObject.playerLeft.size = 10;
+			gameObject.playerRight.size = 10;
+
+			gameObject.ball.posX = 50;
+			gameObject.ball.posY = 50;
+
+            gameObject.playerLeft.powerups.big = "used";  // active / used / available
+            gameObject.playerRight.powerups.big = "used";
+            gameObject.playerLeft.powerups.slow = "used";
+            gameObject.playerRight.powerups.slow = "used";
+            gameObject.playerLeft.powerups.fast = "used";
+            gameObject.playerRight.powerups.fast = "used";
         },
     },
 
@@ -117,34 +141,14 @@ export default {
             this.initObjects();
             await this.loadDetails()
 
-            // Connect to Websocket
-            WebSocketManagerGame.connect(this.gameId);
-
 			const gameField = this.domManip.$id("game-field");
 			const ctx = gameField.getContext('2d');
 			ctx.clearRect(0, 0, gameField.width, gameField.height);
 
-			// TODO: DUMMY DATA REMOVE
-			gameObject.playerLeft.pos = 6;
-			gameObject.playerLeft.size = 10;
-			gameObject.playerRight.pos = 50;
-			gameObject.playerRight.size = 10;
-			gameObject.ball.posX = 50;
-			gameObject.ball.posY = 50;
-            gameObject.playerLeft.powerups.big = "active";
-            gameObject.playerRight.powerups.big = "used";
-            gameObject.playerLeft.powerups.slow = "active";
-            gameObject.playerRight.powerups.slow = "available";
-            gameObject.playerLeft.powerups.fast = "used";
-            gameObject.playerRight.powerups.fast = "used";
-			gameObject.playerLeft.score = 5;
-			gameObject.playerRight.score = 3;
-			// TODO: DUMMY DATA REMOVE
-
 			gameRender(gameField, ctx);
 
-			const goToGameButton = this.domManip.$id("go-to-game");
-			goToGameButton.addEventListener('click', () => {
+			//const goToGameButton = this.domManip.$id("go-to-game");
+			//goToGameButton.addEventListener('click', () => {
 				const gameViewImageContainer = this.domManip.$id("game-view-image-container");
 				const gameImageContainer = this.domManip.$id("game-view-map-image");
 				const gameImage = gameImageContainer.children[0];
@@ -153,7 +157,7 @@ export default {
 				gameViewImageContainer.style.backgroundImage = "none";
 				gameViewImageContainer.style.width= "100%";
 				gameImage.style.display = "block";
-			});
+			//});
 		},
     }
 }

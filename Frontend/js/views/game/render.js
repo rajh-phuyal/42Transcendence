@@ -281,9 +281,9 @@ const drawField = (gameField, ctx, normalizedGameObject) => {
 	drawBorders(gameField, ctx);
 	drawPaddles(gameField, ctx, normalizedGameObject);
 	drawBall(ctx, normalizedGameObject);
-	drawScore(ctx, gameField, normalizedGameObject.playerLeft.score, "left");
-	drawScore(ctx, gameField, normalizedGameObject.playerRight.score, "right");
-}	
+	drawScore(ctx, gameField, normalizedGameObject.playerLeft.points, "left");
+	drawScore(ctx, gameField, normalizedGameObject.playerRight.points, "right");
+}
 
 
 export function gameRender () {

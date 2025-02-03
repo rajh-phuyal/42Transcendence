@@ -1,9 +1,9 @@
-GAME_FPS = 30
+GAME_FPS = 15
 
 GAME_STATE = {
     "playerLeft" : {
         "points": 0,
-        "paddlePos": 25,
+        "paddlePos": 50,
         "paddleSize": 10,
         "powerupBig": 0,
         "powerupSlow": 0,
@@ -12,7 +12,7 @@ GAME_STATE = {
     },
     "playerRight" : {
         "points": 0,
-        "paddlePos": 25,
+        "paddlePos": 50,
         "paddleSize": 10,
         "powerupBig": 0,
         "powerupSlow": 0,

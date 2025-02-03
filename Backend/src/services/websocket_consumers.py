@@ -17,11 +17,10 @@ from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.tournament_service import setup_all_tournament_channels
-from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, send_player_ready_state, parse_message
+from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_if_game_can_be_started, parse_message, send_update_players_ready_msg
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
 from game.constants import GAME_FPS, PADDLE_OFFSET
-from game.utils_ws import init_game
 from game.utils_ws import update_game_state_db
 
 
@@ -154,14 +153,12 @@ class MainConsumer(CustomWebSocketLogic):
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
-    # @barely_handle_ws_exceptions
+    # @barely_handle_ws_exceptions TODO: Uncomment this line
     async def connect(self):
         # TODO: check if the user is in the game
         await super().connect()
         # Add client to the channel layer group
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        logging.info(
-            f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
 
         # Set the player ready
         game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
@@ -171,30 +168,44 @@ class GameConsumer(CustomWebSocketLogic):
         await channel_layer.group_add(game_name, self.channel_name)
 
         # Accept the connection
+        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
         await self.accept()
+        logging.info(f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
 
-        can_start_game, start_time = await send_player_ready_state(game, channel_layer)
-
-        logging.info(
-            f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
-        if can_start_game:
-            await init_game(game)
+        can_start_game_loop = await check_if_game_can_be_started(game, channel_layer)
+        if can_start_game_loop:
             GameConsumer.game_loops[self.game_id] = asyncio.create_task(
-                GameConsumer.run_game_loop(self.game_id, start_time))
+                GameConsumer.run_game_loop(self.game_id))
 
-    @barely_handle_ws_exceptions
+    #@barely_handle_ws_exceptions TODO: uncomment this line
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
-        # Set the player ready to false
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         game = await sync_to_async(Game.objects.get)(id=self.game_id)
+
+        # Change the game state to paused on
+        # -> 1. The cache (if it exists)
+        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+        if game_state_data:
+            game_state_data['gameData']['state'] = 'paused'
+            # The player that disconnected is the one that looses the point
+            game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
+            player_right_id = min(game_user_ids)
+            if player_right_id == self.scope['user'].id:
+                game_state_data = score_point(game_state_data, 'playerLeft')
+            cache.set(f'game_{self.game_id}_state', game_state_data, timeout=3000)
+
+        # TODO: Check if the db update is already done in loop aka after the loop
+        # -> 2. The database
+        if(game.state == Game.GameState.ONGOING):
+            await update_game_state_db(game, Game.GameState.PAUSED)
+
+        # Set the player ready to false
         game.set_player_ready(self.scope['user'].id, False)
+        await send_update_players_ready_msg(game, channel_layer)
 
-        await send_player_ready_state(game, channel_layer)
 
-        await update_game_state_db(game, Game.GameState.PAUSED)
-
-    @barely_handle_ws_exceptions
+    #@barely_handle_ws_exceptions  TODO: Uncomment this line
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
@@ -212,8 +223,10 @@ class GameConsumer(CustomWebSocketLogic):
         await self.send(text_data=json.dumps({**event}))
 
     @staticmethod
-    async def run_game_loop(game_id, start_time):
-        while True:
+    async def run_game_loop(game_id):
+        # Fetches game state from cache
+        game_state_data = cache.get(f'game_{game_id}_state', {})
+        while game_state_data['gameData']['state'] == 'ongoing':
             try:
                 # Fetches user desires from cache
                 left_player_input = cache.get(f'game_{game_id}_player_left', {})
@@ -251,25 +264,27 @@ class GameConsumer(CustomWebSocketLogic):
                 # Store the updated game state in cache
                 cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
 
-                # Check if the game is over and exit the loop
-                if game_state_data['gameData']['state'] == 'finished':
-                    break
-
                 # Await for next frame render
                 await asyncio.sleep(1 / GAME_FPS)
             except Exception as e:
                 logging.error(f"Error in game loop: {e}")
                 break
         logging.info(f"Game finished: {game_id}")
-
-
+        # Save the state to db
+        game = await database_sync_to_async(Game.objects.get)(id=game_id)
+        if game_state_data['gameData']['state'] == 'finished':
+            await update_game_state_db(game, Game.GameState.FINISHED)
+        elif game_state_data['gameData']['state'] == 'paused':
+            await update_game_state_db(game, Game.GameState.PAUSED)
+        else:
+            logging.error(f"Game loop ended with state: {game_state_data['gameData']['state']}")
 def move_paddle(player, game_state_data_player):
     # logging.info(f"paddlePos for {player['movePaddle']}: {game_state_data_player['paddlePos']}")
 
     if player['movePaddle'] == '0':
         return game_state_data_player
 
-    logging.info(f"player['movePaddle']: player['movePaddle']")
+    #logging.info(f"player['movePaddle']: player['movePaddle']")
 
     new_paddle_pos = game_state_data_player['paddlePos']
     if player['movePaddle'] == '+':

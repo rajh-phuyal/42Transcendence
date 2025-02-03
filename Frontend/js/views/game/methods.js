@@ -2,8 +2,11 @@ import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { gameRender } from './render.js';
+import router from '../../navigation/router.js';
 
 export function changeGameState(state) {
+    // For debug TODO: remove
+    $id("game-view-left-side-container-bottom").innerText = "GAME STATE: " + state;
     switch (state) {
         case "ongoing": // transition lobby to game
             $id("button-quit-game").style.display = "none";
@@ -13,6 +16,8 @@ export function changeGameState(state) {
             return;
         case "finished": // transition game to lobby
             $id("button-quit-game").style.display = "none";
+            $id("player-left-state-spinner").style.display = "none";
+            $id("player-right-state-spinner").style.display = "none";
             return;
     }
     console.warn("FE doen't know what to do with this state:", state);
@@ -44,21 +49,17 @@ function updatePlayerInput() {
 }
 
 function gameLoop(currentTime) {
-    if (currentTime - gameObject.lastFrameTime >= 30) {
-
-        // Check if the game is ongoing
-        if (gameObject.state !== "ongoing") {
-            cancelAnimationFrame(gameObject.animationId);
-            return;
-        }
-        // Render the game
-        // console.log("player1:", gameObject.playerLeft.pos);
-        // console.log("player2:", gameObject.playerRight.pos);
-
+    if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
         updatePlayerInput();
         updatePowerupStatus();
         gameRender();
-
+        // Check if the game is ongoing
+        if (gameObject.state !== "ongoing") {
+            cancelAnimationFrame(gameObject.animationId);
+            // Todo: make this better but for now just reload page
+            //router('/game', {"id": gameObject.gameId});
+            return;
+        }
         gameObject.lastFrameTime = currentTime;
     }
     gameObject.animationId = requestAnimationFrame(gameLoop);
@@ -117,6 +118,9 @@ export function updateGameObjects(gameState) {
     gameObject.playerLeft.points = gameState?.playerLeft?.points;
     gameObject.playerRight.points = gameState?.playerRight?.points;
 
+    // TODO: remove only for debugging:
+    $id("game-view-left-side-container-bottom").innerHTML = "GAME STATE: " + gameObject.state + "<br>(" + gameObject.playerLeft.points +":" + gameObject.playerRight.points + ")";
+
     gameObject.playerLeft.pos = percentageToPixels(gameState?.playerLeft?.paddlePos, gameField?.height);
     gameObject.playerRight.pos = percentageToPixels(gameState?.playerRight?.paddlePos, gameField?.height);
     gameObject.playerLeft.size = percentageToPixels(gameState?.playerLeft?.paddleSize, gameField?.height);
@@ -147,8 +151,8 @@ function showPowerupStatus() {
         for (let element of elements)
             element.style.display = "none";
 
-         $id("player-left-state-spinner").style.display = "none";
-         $id("player-right-state-spinner").style.display = "none";
+        $id("player-left-state-spinner").style.display = "none";
+        $id("player-right-state-spinner").style.display = "none";
 
         elements = $class('player-powerup-status')
 

@@ -1,5 +1,7 @@
 export const gameObject = {
+    gameId: undefined,
     state: undefined,
+    frameTime: undefined,
     lastFrameTime: undefined,
     animationId: undefined,
     playerInput: {

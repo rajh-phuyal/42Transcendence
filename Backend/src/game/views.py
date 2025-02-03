@@ -67,8 +67,9 @@ class LobbyView(BaseAuthenticatedView):
         opponent_member = GameMember.objects.filter(game=game).exclude(user=user).first()
         if not opponent_member:
             return error_response(_("Opponent not found"))
-        if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
-            return error_response(_("Game can't be played since it's either finished or quited"))
+        # Removed this since u can see a lobby even if the game is finished
+        #if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
+        #    return error_response(_("Game can't be played since it's either finished or quited"))
         tournament_name = None
         if (game.tournament):
             tournament_name = game.tournament.name
