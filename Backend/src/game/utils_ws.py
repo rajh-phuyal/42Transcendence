@@ -11,10 +11,28 @@ from asgiref.sync import sync_to_async
 
 @database_sync_to_async
 def update_game_state_db(game, state):
+    # TODO:
+    # just update cache
+    # and update db without await
+    # if tournament game
+    #      inform tournament guys (gameUpdateState)
+    # if game is finished
+    #     remove_game_from_cache
+
+
+
     logging.info(f"Game state before: {game.state}")
     game.state = state
     game.save()
     logging.info(f"Game state after: {game.state}")
+
+
+
+
+
+# TODO: below is old code!!!!
+
+
 
 # This will:
 # - Check if the game is in a state to be started

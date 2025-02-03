@@ -12,8 +12,6 @@ from asgiref.sync import sync_to_async
 from game.models import Game
 from game.utils_ws import init_game, update_game_state_db
 
-
-
 class WebSocketMessageHandlersMain:
 
     """If u wanna handle a new message type, add a new static method with the name handle_{message_type}"""
@@ -86,21 +84,6 @@ class WebSocketMessageHandlersGame:
         if local_game or player_left.user.id == consumer.user.id:
             if "playerLeft" in message:
                 cache.set(f'game_{consumer.game_id}_player_left', message["playerLeft"], timeout=3000)
-
-async def send_update_players_ready_msg(game, channel_layer, start_time = None):
-    game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-    player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
-    player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
-    await channel_layer.group_send(
-        f"game_{game.id}",
-        {
-            "type": "update_players_ready",
-            "messageType": "playersReady",
-            "playerLeft": player_left,
-            "playerRight": player_right,
-            "startTime": start_time
-        }
-    )
 
 
 async def check_if_game_can_be_started(game, channel_layer):

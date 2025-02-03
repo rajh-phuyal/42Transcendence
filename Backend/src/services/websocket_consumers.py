@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from game.constants import GAME_STATE, GAME_PLAYER_INPUT
+from copy import deepcopy
 import asyncio
 import random
 from game.models import Game
@@ -9,7 +12,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.models import AnonymousUser
 import logging
 from chat.models import ConversationMember
-
 from django.core.cache import cache
 from django.utils.translation import gettext as _
 from asgiref.sync import async_to_sync
@@ -17,15 +19,14 @@ from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.tournament_service import setup_all_tournament_channels
-from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_if_game_can_be_started, parse_message, send_update_players_ready_msg
+from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_if_game_can_be_started, parse_message
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
 from game.constants import GAME_FPS, PADDLE_OFFSET
 from game.utils_ws import update_game_state_db
-
+from game.utils import is_left_player, get_user_of_game
 
 channel_layer = get_channel_layer()
-
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -69,8 +70,6 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         user.save(update_fields=['last_seen'])
 
 # Manages the WebSocket connection for all pages after login
-
-
 class MainConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
@@ -148,8 +147,6 @@ class MainConsumer(CustomWebSocketLogic):
         await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game
-
-
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
@@ -157,73 +154,186 @@ class GameConsumer(CustomWebSocketLogic):
     async def connect(self):
         # TODO: check if the user is in the game
         await super().connect()
-        # Add client to the channel layer group
+
+        # Set self vars for consumer
+        self.user_id = self.scope['user'].id
+        logging.info(f"User id: {self.user_id}")
         self.game_id = self.scope['url_route']['kwargs']['game_id']
+        logging.info(f"Game id: {self.game_id}")
+        self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
+        logging.info(f"Game: {self.game}")
+        self.local_game = await database_sync_to_async(lambda: self.game.game_members.first().local_game)()
+        logging.info(f"Local game: {self.local_game}")
+        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user_id)
+        logging.info(f"Is left player: {self.isLeftPlayer}")
+        self.leftPlayer =  await database_sync_to_async(get_user_of_game)(self.game_id, 'left')
+        logging.info(f"Left player: {self.leftPlayer}")
+        self.rightPlayer =  await database_sync_to_async(get_user_of_game)(self.game_id, 'right')
+        logging.info(f"Right player: {self.rightPlayer}")
+        logging.info("Initialiazing consumer self vars: user_id %s, game_id: %s, local_game: %s, isLeftPlayer: %s", self.user_id, self.game_id, self.local_game, self.isLeftPlayer)
 
-        # Set the player ready
-        game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
-        game.set_player_ready(self.scope['user'].id, True)
+        # If the game is not in the right state, close the connection
+        if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:
+            await self.close()
+            logging.info(f"Game {self.game_id} is not in the right state to be played. CONNECTION CLOSED.")
 
+        # Add client to the channel layer group
         game_name = f"game_{self.game_id}"
         await channel_layer.group_add(game_name, self.channel_name)
 
         # Accept the connection
-        logging.info(f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
         await self.accept()
-        logging.info(f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
 
-        can_start_game_loop = await check_if_game_can_be_started(game, channel_layer)
-        if can_start_game_loop:
-            GameConsumer.game_loops[self.game_id] = asyncio.create_task(
-                GameConsumer.run_game_loop(self.game_id))
+        # Init game on cache
+        await self.init_game_on_cache()
+        await self.send_update_game_data_msg()
+
+        # Set the player ready
+        self.game.set_player_ready(self.scope['user'].id, True)
+        await self.send_update_players_ready_msg()
+
+        # If both users are ready start the loop
+        left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftPlayer.id)
+        right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightPlayer.id)
+        if left_ready and right_ready:
+            # Start / Continue the loop
+            # 1. Set start time and send it to channel
+            start_time = datetime.now() + timedelta(seconds=5)
+            start_time_formated = start_time.isoformat()
+            logging.info(f"Game will start at: {start_time_formated}")
+            await self.send_update_players_ready_msg(start_time_formated)
+
+            # 2. Calculate the delay so the game loop start not before the start time
+            delay = (start_time - datetime.now()).total_seconds()
+            if delay > 0:
+                await asyncio.sleep(delay)  # Wait until the start time
+
+            # 3. Start the game loop
+            GameConsumer.game_loops[self.game_id] = asyncio.create_task(GameConsumer.run_game_loop(self.game_id))
 
     #@barely_handle_ws_exceptions TODO: uncomment this line
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
-        self.game_id = self.scope['url_route']['kwargs']['game_id']
-        game = await sync_to_async(Game.objects.get)(id=self.game_id)
-
-        # Change the game state to paused on
-        # -> 1. The cache (if it exists)
-        game_state_data = cache.get(f'game_{self.game_id}_state', {})
-        if game_state_data:
-            game_state_data['gameData']['state'] = 'paused'
-            # The player that disconnected is the one that looses the point
-            game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-            player_right_id = min(game_user_ids)
-            if player_right_id == self.scope['user'].id:
-                game_state_data = score_point(game_state_data, 'playerLeft')
-            cache.set(f'game_{self.game_id}_state', game_state_data, timeout=3000)
-
-        # TODO: Check if the db update is already done in loop aka after the loop
-        # -> 2. The database
-        if(game.state == Game.GameState.ONGOING):
-            await update_game_state_db(game, Game.GameState.PAUSED)
-
-        # Set the player ready to false
-        game.set_player_ready(self.scope['user'].id, False)
-        await send_update_players_ready_msg(game, channel_layer)
-
+#        self.game_id = self.scope['url_route']['kwargs']['game_id']
+#        game = await sync_to_async(Game.objects.get)(id=self.game_id)
+#
+#        # Change the game state to paused on
+#        # -> 1. The cache (if it exists)
+#        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+#        if game_state_data:
+#            game_state_data['gameData']['state'] = 'paused'
+#            # The player that disconnected is the one that looses the point
+#            game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
+#            player_right_id = min(game_user_ids)
+#            if player_right_id == self.scope['user'].id:
+#                game_state_data = score_point(game_state_data, 'playerLeft')
+#            cache.set(f'game_{self.game_id}_state', game_state_data, timeout=3000)
+#
+#        # TODO: Check if the db update is already done in loop aka after the loop
+#        # -> 2. The database
+#        if(game.state == Game.GameState.ONGOING):
+#            await update_game_state_db(game, Game.GameState.PAUSED)
+#
+#        # Set the player ready to false
+#        game.set_player_ready(self.scope['user'].id, False)
+#        await send_update_players_ready_msg(game, channel_layer)
 
     #@barely_handle_ws_exceptions  TODO: Uncomment this line
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-        # Setting the user
-        user = self.scope['user']
-        # Process the message
-        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
+#        # Setting the user
+#        user = self.scope['user']
+#        # Process the message
+#        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
 
-    @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def update_players_ready(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def update_game_state(self, event):
         await self.send(text_data=json.dumps({**event}))
 
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
+    async def send_update_players_ready_msg(self, start_time = None):
+        left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftPlayer.id)
+        right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightPlayer.id)
+        await channel_layer.group_send(
+            f"game_{self.game_id}",
+            {
+                "type": "update_players_ready",
+                "messageType": "playersReady",
+                "playerLeft": left_ready,
+                "playerRight": right_ready,
+                "startTime": start_time
+            }
+        )
+
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
+    async def send_update_game_data_msg(self):
+        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+        if not game_state_data:
+            logging.error(f"Game state not found for game {self.game_id} so it can't be send as a ws message!")
+            return
+        game_name = f"game_{self.game_id}"
+        await channel_layer.group_send(
+            game_name,
+            {
+                "type": "update_game_state",
+                "messageType": "gameState",
+                **game_state_data
+            }
+        )
+        logging.info(f"Game state sent to group {game_name}")
+
+    # Just for making sure all the game data is initialized on cache
+    async def init_game_on_cache(self):
+        # CREATE GAME DATA ON CACHE IF DOESNT EXIST
+        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+        if not game_state_data:
+            logging.info(f"Init game on cache: game_{self.game_id}_state")
+            new_game_state = deepcopy(GAME_STATE)
+            # Randomize serving player
+            if random.randint(0, 1) == 0:
+                new_game_state["gameData"]["playerServes"] = "playerLeft"
+                new_game_state["gameData"]["ballDirectionX"] = -1
+            else:
+                new_game_state["gameData"]["playerServes"] = "playerRight"
+                new_game_state["gameData"]["ballDirectionX"] = 1
+            logging.info(f"Game state 3:")
+            new_game_state['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
+            cache.set(f'game_{self.game_id}_state', new_game_state, timeout=3000)
+
+        # CREATE LEFT PLAYER INPUT ON CACHE IF DOESNT EXIST
+        input_player_left = cache.get(f'game_{self.game_id}_player_left', {})
+        if not input_player_left:
+            logging.info(f"Init game on cache: game_{self.game_id}_player_left")
+            cache.set(f'game_{self.game_id}_player_left', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
+
+        # CREATE RIGHT PLAYER INPUT ON CACHE IF DOESNT EXIST
+        input_player_right = cache.get(f'game_{self.game_id}_player_right', {})
+        if not input_player_right:
+            logging.info(f"Init game on cache: game_{self.game_id}_player_right")
+            cache.set(f'game_{self.game_id}_player_right', deepcopy(GAME_PLAYER_INPUT), timeout=3000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @staticmethod
     async def run_game_loop(game_id):
+        logging.info(f"Game loop started: {game_id}")
         # Fetches game state from cache
         game_state_data = cache.get(f'game_{game_id}_state', {})
         while game_state_data['gameData']['state'] == 'ongoing':

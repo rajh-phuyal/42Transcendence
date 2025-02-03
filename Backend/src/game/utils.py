@@ -175,9 +175,23 @@ def update_deadline_of_game(game_id):
         logging.info(f"ERROR: Game {game_id} not found in function call update_deadline_of_game")
         return
 
+def is_left_player(game_id, user_id):
+    game_members = GameMember.objects.filter(game_id=game_id)
+    if max(game_members.values_list('user_id', flat=True)) == user_id:
+        return True
+    else:
+        return False
 
-
-
+def get_user_of_game(game_id, side):
+    game_members = GameMember.objects.filter(game_id=game_id)
+    if side == "left":
+        user_id_left = max(game_members.values_list('user_id', flat=True))
+        return User.objects.get(id=user_id_left)
+    elif side == "right":
+        user_id_right = min(game_members.values_list('user_id', flat=True))
+        return User.objects.get(id=user_id_right)
+    else:
+        return None
 
 
 # OLD:
