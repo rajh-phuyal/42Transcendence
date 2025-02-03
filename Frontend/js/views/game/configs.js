@@ -147,6 +147,8 @@ export default {
 
 			gameRender(gameField, ctx);
 
+            //TODO: I uncommented the button so that for debung we always see the game field
+            // related to issue: #304
 			//const goToGameButton = this.domManip.$id("go-to-game");
 			//goToGameButton.addEventListener('click', () => {
 				const gameViewImageContainer = this.domManip.$id("game-view-image-container");

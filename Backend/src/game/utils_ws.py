@@ -34,7 +34,7 @@ def update_game_state(game_id, state):
                 game.deadline = None # So the recconection deadline is gone
         game.save()
 
-    # TODO: tournament game
+    # TODO: tournament game issue #309
     # if tournament game
     #      inform tournament guys (gameUpdateState)
     logging.info(f"Game state updated (cache and db) to: {state}")
@@ -67,9 +67,9 @@ def update_game_points(game_id, player_id=None, player_side=None):
         gameMember.points += 1
         gameMember.save()
 
-    # TODO: tournament game
+    # TODO: tournament game # issue #309
     # if tournament game
-    #      inform tournament guys (gameUpdateState)
+    #      inform tournament guys (gameUpdateScore)
 
     points_left = get_game_data(game_id, 'playerLeft', 'points')
     points_right = get_game_data(game_id, 'playerRight', 'points')

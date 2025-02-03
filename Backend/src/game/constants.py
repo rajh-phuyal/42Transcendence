@@ -1,4 +1,6 @@
 GAME_FPS = 15
+RECONNECT_TIMEOUT = 2 # Minutes
+POWERUP_DURATION = 10 # Seconds
 
 GAME_STATE = {
     "playerLeft" : {

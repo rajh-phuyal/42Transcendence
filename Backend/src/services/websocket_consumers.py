@@ -22,7 +22,7 @@ from services.tournament_service import setup_all_tournament_channels
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_if_game_can_be_started, parse_message
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
-from game.constants import GAME_FPS, PADDLE_OFFSET
+from game.constants import GAME_FPS
 from game.utils_ws import update_game_state, update_game_points
 from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
 from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished
