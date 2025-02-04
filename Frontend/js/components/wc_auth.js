@@ -6,6 +6,7 @@ import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import $callToast from '../abstracts/callToast.js';
+import call from '../abstracts/call.js';
 
 // TODO put the css styling in a css file (for all web components)
 
@@ -128,11 +129,13 @@ class AuthCard extends HTMLElement {
 		switch (true) {
 			case username.value === "" || username.value === null:
 				username.style.border = "2px solid red";
+				return (true);
 			case password.value === "" || password.value === null:
 				password.style.border = "2px solid red";
+				return (true);
 			case passwordConfirmation.value === "" || passwordConfirmation.value === null:
 				passwordConfirmation.style.border = "2px solid red";
-				break ;
+				return (true);
 			case password.value != passwordConfirmation.value:
 				password.style.border = "2px solid red";
 				passwordConfirmation.style.border = "2px solid red";
@@ -162,12 +165,14 @@ class AuthCard extends HTMLElement {
 			usernameField = this.shadow.getElementById("username-login-input");
 			passwordField = this.shadow.getElementById("password-login-input");
 			if (this.loginErrorMessages(usernameField, passwordField))
-					return ;
+				return ;
 		} else if (this.displayMode === "register") {
 			usernameField = this.shadow.getElementById("username-register-input");
 			passwordField = this.shadow.querySelectorAll(".password-register");
-			if (this.regiterErrorMessages(usernameField, passwordField[0], passwordField[1]))
+			if (this.regiterErrorMessages(usernameField, passwordField[0], passwordField[1])) {
+				$callToast("error", "Please fill in all fields correctly"); // TODO Translate
 				return ;
+			}
 			passwordField = passwordField[0];
 		}
 
@@ -252,7 +257,6 @@ class AuthCard extends HTMLElement {
 	}
 
 	async registerButtonClick() {
-		console.log("registerButtonClick");
 		const loginButton = this.shadow.getElementById("login-button");
 		const registerButton = this.shadow.getElementById("register-button");
 		const registerSection = this.shadow.getElementById("register-section");
@@ -391,6 +395,10 @@ class AuthCard extends HTMLElement {
 				color: #FFF6D4;
 				border: 3px solid #FFF6D4;
 				background-color: #100C09;
+			}
+
+			.password-register {
+				outline: none;
 			}
 
 			.buttons-container {
