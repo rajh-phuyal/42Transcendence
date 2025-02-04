@@ -2,6 +2,9 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
+import { endGameLoop, changeGameState } from './methods.js';
+import { gameRender } from './render.js';
+import { gameObject } from './objects.js';
 
 export default {
     attributes: {
@@ -53,7 +56,7 @@ export default {
                 }
             }
         },
-        
+
         async loadDetails() {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
@@ -67,11 +70,22 @@ export default {
                     this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
                     this.map = this.maps[data.gameData.mapNumber];
+
+                    // Set game state
+                    changeGameState(data.gameState);
+
                 })
                 .catch(error => {
                     router('/');
                     console.error('Error occurred:', error);
                 });
+        },
+        initObjects() {
+            // TODO: the game state should be set by the WSManager
+            gameObject.state = "ongoing";
+            gameObject.playerLeft.pos = 50;
+            gameObject.playerRight.pos = 50;
+            gameObject.playerLeft.size = 10;
         },
     },
 
@@ -83,6 +97,7 @@ export default {
         beforeRouteLeave() {
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
+            endGameLoop();
         },
 
         beforeDomInsertion() {
@@ -99,10 +114,46 @@ export default {
                 return;
             }
             this.gameId = this.routeParams.id;
+            this.initObjects();
             await this.loadDetails()
 
             // Connect to Websocket
             WebSocketManagerGame.connect(this.gameId);
-        },
+
+			const gameField = this.domManip.$id("game-field");
+			const ctx = gameField.getContext('2d');
+			ctx.clearRect(0, 0, gameField.width, gameField.height);
+
+			// TODO: DUMMY DATA REMOVE
+			gameObject.playerLeft.pos = 6;
+			gameObject.playerLeft.size = 10;
+			gameObject.playerRight.pos = 50;
+			gameObject.playerRight.size = 10;
+			gameObject.ball.posX = 50;
+			gameObject.ball.posY = 50;
+            gameObject.playerLeft.powerups.big = "active";
+            gameObject.playerRight.powerups.big = "used";
+            gameObject.playerLeft.powerups.slow = "active";
+            gameObject.playerRight.powerups.slow = "available";
+            gameObject.playerLeft.powerups.fast = "used";
+            gameObject.playerRight.powerups.fast = "used";
+			gameObject.playerLeft.score = 5;
+			gameObject.playerRight.score = 3;
+			// TODO: DUMMY DATA REMOVE
+
+			gameRender(gameField, ctx);
+
+			const goToGameButton = this.domManip.$id("go-to-game");
+			goToGameButton.addEventListener('click', () => {
+				const gameViewImageContainer = this.domManip.$id("game-view-image-container");
+				const gameImageContainer = this.domManip.$id("game-view-map-image");
+				const gameImage = gameImageContainer.children[0];
+				gameField.style.display = "block";
+				gameImage.src = window.location.origin + '/assets/game/maps/lizard-people.png';
+				gameViewImageContainer.style.backgroundImage = "none";
+				gameViewImageContainer.style.width= "100%";
+				gameImage.style.display = "block";
+			});
+		},
     }
 }
