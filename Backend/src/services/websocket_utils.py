@@ -1,17 +1,27 @@
+# Basics
 import logging, json
-from django.core.cache import cache
-from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
-from services.chat_service import broadcast_message
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from core.exceptions import BarelyAnException
-from django.utils.translation import gettext as _
+
+# Python stuff
 from datetime import datetime, timedelta
+from django.core.cache import cache
+from django.utils.translation import gettext as _
+from core.exceptions import BarelyAnException
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync, sync_to_async
 from channels.db import database_sync_to_async
-from asgiref.sync import sync_to_async
+
+# Game stuff
 from game.models import Game
 from game.utils_ws import init_game, update_game_state
 
+# Chat stuff
+from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
+
+# Services
+from services.chat_service import broadcast_message
+
+## HANDLER FOR MAIN WEBSOCKET CONNECTION
+## ------------------------------------------------------------------------------------------------
 class WebSocketMessageHandlersMain:
 
     """If u wanna handle a new message type, add a new static method with the name handle_{message_type}"""
@@ -41,6 +51,8 @@ class WebSocketMessageHandlersMain:
     async def handle_relationship(consumer, user, message):
         logging.info("Received relationship message - TODO: issue #206 implement")
 
+## HANDLER FOR GAME WEBSOCKET CONNECTION
+## ------------------------------------------------------------------------------------------------
 class WebSocketMessageHandlersGame:
 
     """If u wanna handle a new message type, add a new static method with the name handle_{message_type}"""
@@ -62,37 +74,14 @@ class WebSocketMessageHandlersGame:
 
     @staticmethod
     async def handle_playerInput(consumer, user, message):
-        message = parse_message(message) # TODO: @Rajh implement deep json thing
+        message = parse_message(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
         if consumer.local_game or consumer.isLeftPlayer:
             cache.set(f'game_{consumer.game_id}_playerLeft', message.get("playerLeft"), timeout=3000)
         if consumer.local_game or not consumer.isLeftPlayer:
             cache.set(f'game_{consumer.game_id}_playerRight', message.get("playerRight"), timeout=3000)
 
-async def check_if_game_can_be_started(game, channel_layer):
-    game_user_ids = await database_sync_to_async(lambda: [player.user.id for player in list(game.game_members.all())])()
-    player_right = await sync_to_async(game.get_player_ready)(min(game_user_ids))
-    player_left = await sync_to_async(game.get_player_ready)(max(game_user_ids))
-    start_time = None
-    if player_left and player_right:
-        # We can start the game
-        # Step 1: Prepare the backend for starting the game
-        try:
-            await init_game(game)
-        except BarelyAnException as e:
-            logging.error(f"Error initializing game: {str(e)}")
-            logging.info(f"TODO: remove this: but for debuging purposes we will set the state to pending. So if u try again, it will start...")
-            await update_game_state(game, Game.GameState.PENDING)
-            return False
-
-        # STEP 2: Define the start time (so the frontend can start the game loop)
-        start_time = datetime.now() + timedelta(seconds=5)
-        start_time = start_time.isoformat()
-
-    # STEP 3: Send the start game message to the frontend
-    await send_update_players_ready_msg(game, channel_layer, start_time)
-
-    return True if start_time else False
-
+## UTILS
+## ------------------------------------------------------------------------------------------------
 # To send by consumer
 async def send_response_message(client_consumer, type, message):
     """Send a message to a WebSocket connection."""

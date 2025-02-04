@@ -2,7 +2,7 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { endGameLoop, changeGameState } from './methods.js';
+import { endGameLoop, changeGameState, showPowerupStatus } from './methods.js';
 import { gameRender } from './render.js';
 import { gameObject } from './objects.js';
 
@@ -74,6 +74,25 @@ export default {
                     gameObject.playerRight.points = data.playerRight.points;
                     this.map = this.maps[data.gameData.mapNumber];
 
+                    // I send the ready state also via REST NOW
+                    // TODO: but i guess this could go in a function thath is also called by the WSManager
+                    if (data.playerLeft.ready) {
+                        this.domManip.$id("player-left-state-spinner").style.display = "none";
+                        this.domManip.$id("player-left-state").style.display = "block";
+                    }
+                    else {
+                        this.domManip.$id("player-left-state-spinner").style.display = "block";
+                        this.domManip.$id("player-left-state").style.display = "none";
+                    }
+                    if (data.playerRight.ready) {
+                        this.domManip.$id("player-right-state-spinner").style.display = "none";
+                        this.domManip.$id("player-right-state").style.display = "block";
+                    }
+                    else {
+                        this.domManip.$id("player-right-state-spinner").style.display = "block";
+                        this.domManip.$id("player-right-state").style.display = "none";
+                    }
+
                     // Set game state
                     changeGameState(data.gameData.state);
 
@@ -89,6 +108,10 @@ export default {
         },
         initObjects() {
             // TODO: the game state should be set by the WSManager
+            // Not sure if this TODO is correct.
+            // THe initial load will only be done here
+            // If a game is finished we will never opene a connection just show this default stuff
+            // but with an updated score!
             gameObject.gameId = this.gameId;
             gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
             gameObject.state = "ongoing";
@@ -104,12 +127,12 @@ export default {
 			gameObject.ball.posX = 50;
 			gameObject.ball.posY = 50;
 
-            gameObject.playerLeft.powerups.big = "used";  // active / used / available
-            gameObject.playerRight.powerups.big = "used";
-            gameObject.playerLeft.powerups.slow = "used";
-            gameObject.playerRight.powerups.slow = "used";
-            gameObject.playerLeft.powerups.fast = "used";
-            gameObject.playerRight.powerups.fast = "used";
+            gameObject.playerLeft.powerups.big = "unavailable";  // available / using / used / unavailable
+            gameObject.playerRight.powerups.big = "unavailable";
+            gameObject.playerLeft.powerups.slow = "unavailable";
+            gameObject.playerRight.powerups.slow = "unavailable";
+            gameObject.playerLeft.powerups.fast = "unavailable";
+            gameObject.playerRight.powerups.fast = "unavailable";
         },
     },
 
@@ -139,6 +162,7 @@ export default {
             }
             this.gameId = this.routeParams.id;
             this.initObjects();
+            showPowerupStatus(false);
             await this.loadDetails()
 
 			const gameField = this.domManip.$id("game-field");

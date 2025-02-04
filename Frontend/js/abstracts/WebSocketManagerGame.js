@@ -2,7 +2,7 @@ import $store from '../store/store.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
-import { updateReadyState, updateGameObjects } from '../views/game/methods.js';
+import { updateReadyState, updateGameObjects, endGameLoop } from '../views/game/methods.js';
 
 
 
@@ -67,21 +67,21 @@ class WebSocketManagerGame {
     // Allowd types are:
     // - TODO: !!!
     sendMessage(message) {
-        console.log("GAME: FE -> BE:", message);
+        //console.log("GAME: FE -> BE:", message);
         this.socket.send(JSON.stringify(message));
     }
 
     // The backend send:
     // - TODO: !!!
     receiveMessage(message) {
-        //console.log("GAME: BE -> FE:", message);
+        console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
             case "playersReady":
                 updateReadyState(message);
                 return ;
             case "gameState":
-                console.log("got game state", message);
+                //console.log("got game state", message);
                 updateGameObjects(message);
                 return;
 
@@ -100,6 +100,7 @@ class WebSocketManagerGame {
         } else {
             console.log("GAME WebSocket is not connected.");
         }
+        endGameLoop();
     }
 
     // TODO: do we use this?

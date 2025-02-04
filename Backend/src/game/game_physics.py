@@ -1,12 +1,12 @@
+import logging, random
+from game.constants import PADDLE_OFFSET, INIT_BALL_SPEED
 from game.models import Game
 from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
 from game.utils_ws import update_game_state, update_game_points
-from game.constants import PADDLE_OFFSET
-import logging, random
 
 # Player side needs to be 'playerLeft' or 'playerRight'
 async def activate_power_ups(game_id, playerSide):
-    # TODO Implement Powerups
+    # TODO Implement Powerups issue #308
     # I guess it should be done by just changeing the game state data on cache
     # The calculation of ball move and paddle move should be done with the new game state data
     if get_player_input(game_id, playerSide, 'activatePowerupBig') == 'true':
@@ -53,7 +53,7 @@ async def move_ball(game_id):
     # Move the ball
     ball_pos_x += ball_direction_x * ball_speed
     ball_pos_y += ball_direction_y * ball_speed
-    # TODO: change ball speed
+    # TODO: change ball speed issue #311
 
     # Save the new ball position
     set_game_data(game_id, 'gameData', 'ballPosX', ball_pos_x)
@@ -89,6 +89,7 @@ async def check_paddle_bounce(game_id):
         ...
 
 # Only called when the x pos of ball is on the x of the paddle
+# TODO: In this function we need to normalize the ball direction so the speed is always the same issue #311
 async def apply_padlle_hit(game_id, player_side):
     ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
     paddle_pos = get_game_data(game_id, player_side, 'paddlePos')
@@ -123,7 +124,7 @@ async def apply_point(game_id, player_side):
     # Reset the ball
     set_game_data(game_id, 'gameData', 'ballPosX', 50)
     set_game_data(game_id, 'gameData', 'ballPosY', 50)
-    set_game_data(game_id, 'gameData', 'ballSpeed', 1)
+    set_game_data(game_id, 'gameData', 'ballSpeed', INIT_BALL_SPEED)
     set_game_data(game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
 
     # Check if extende mode should be activated (on the score of 10:10)
