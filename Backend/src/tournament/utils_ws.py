@@ -4,7 +4,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 from tournament.models import Tournament, TournamentMember
-from services.websocket_utils import send_message_to_user_sync
 import logging
 from .serializer import TournamentMemberSerializer
 from user.constants import USER_ID_OVERLORDS
@@ -59,12 +58,12 @@ def send_tournament_invites_via_pm(tournament_id):
     for member in tournament_members:
         # Check if there's a private conversation between the user and the admin
         conversation = get_conversation(tournament_admin, member)
-        invite_message = _("The overloads spectace that the holly @{username_admin}@{userid_admin}@ has invited @{username_guest}@{userid_guest}@ to the fantastic tournament #T#{tournament_name}#{tournament_id}#"
+        invite_message = _("The overloads spectace that the holly @{admin_username}@{admin_id}@ has invited @{guest_username}@{guest_id}@ to the fantastic tournament #T#{tournament_name}#{tournament_id}#"
             ).format(
-                username_admin=tournament_admin.user.username,
-                userid_admin=tournament_admin.user.id,
-                username_guest=member.user.username,
-                userid_guest=member.user.id,
+                admin_username=tournament_admin.user.username,
+                admin_id=tournament_admin.user.id,
+                guest_username=member.user.username,
+                guest_id=member.user.id,
                 tournament_name=tournament.name,
                 tournament_id=tournament.id
             )
@@ -83,6 +82,7 @@ def send_tournament_invites_via_pm(tournament_id):
         broadcast_message(newMessage)
 
 def send_tournament_invites_via_ws(tournament_id):
+    from services.websocket_utils import send_message_to_user_sync
     # Get all users that are invited to the tournament
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
 
