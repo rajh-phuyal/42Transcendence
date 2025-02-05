@@ -258,10 +258,7 @@ class UpdateUserInfoView(BaseAuthenticatedView):
 
         # Check if the new username is valid
         if new_username != user.username:
-            try:
-                validate_username(new_username)
-            except BarelyAnException as e:
-                return error_response(str(e))
+            validate_username(new_username)
 
         # Check if the language is valid
         valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
