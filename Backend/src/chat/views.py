@@ -6,9 +6,10 @@ from django.db.models import Q
 from django.db.models import Sum
 from django.utils.translation import gettext as _
 from channels.layers import get_channel_layer
-
+channel_layer = get_channel_layer()
 # Services
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
+from services.websocket_utils import send_message_to_user_sync
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
@@ -23,10 +24,6 @@ from chat.constants import NO_OF_MSG_TO_LOAD
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync
-
-
-channel_layer = get_channel_layer()
-from services.websocket_utils import send_message_to_user_sync
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -56,41 +53,30 @@ class LoadConversationView(BaseAuthenticatedView):
         self.validate_conversation_membership(conversation, user)
 
         # Determine blocking status
-        the_overloards = User.objects.get(id=USER_ID_OVERLORDS)
         other_user = self.get_other_user(conversation, user, the_overloards)
-        is_blocking = user_is_blocking(user.id, other_user.id)
-        is_blocked = user_is_blocked(user.id, other_user.id)
+        is_blocking = is_blocking(user.id, other_user.id)
+        is_blocked = is_blocked(user.id, other_user.id)
 
         # Fetch and process messages
         messages_queryset = self.get_messages_queryset(conversation, msgid)
         messages, last_seen_msg, unseen_messages = self.process_messages(user, messages_queryset)
+        the_overloards = User.objects.get(id=USER_ID_OVERLORDS)
 
-        if messages:
-            # Transform messages to list
-            messages = list(messages)
-            # Add beginning of the conversation message if needed
-            firstMessage = Message.objects.filter(conversation=conversation).order_by('created_at').first()
-            if messages[messages.__len__()-1].id == firstMessage.id:
-                messages.append({
-                    "id": -1,
-                    "user": the_overloards,
-                    "created_at": firstMessage.created_at,
-                    "seen_at": firstMessage.seen_at,
-                    "content": _("Start of conversation between @{username1}@{userid1}@ and @{username2}@{userid2}@")
-                        .format(
-                            username1=user.username,
-                            userid1=user.id,
-                            username2=other_user.username,
-                            userid2=other_user.id)
-                })
+        if not messages:
+            return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
 
+        # Transform messages to list
+        messages = list(messages)
+
+        for message in messages:
             # Blackout messages if blocking
-            if is_blocking:
-                for message in messages:
-                    if message.user == other_user:
-                        message.content = _('**This message is hidden because you are blocking the user**')
+            if is_blocking and message.user == other_user:
+                message.content = _('**This message is hidden because you are blocking the user**')
             else:
-                # Parse invite messages
+                # There are two parsings that need to be done in this order:
+                # 1. translate template messages e.g:
+                #   **B,requester,requestee** -> User @{requester_id} has blocked @{requestee_id}."
+                # 2. @{user_id} -> @{user_name}@{user_id}@
                 ...
                 #TODO:
                 #for message in messages:
