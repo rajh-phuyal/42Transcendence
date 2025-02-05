@@ -193,9 +193,8 @@ export function mouseClick(event){
     
     if (modalElement.classList.contains('show'))
         return ;
-    
-    
-    let mouseX = event.clientX;
+
+	let mouseX = event.clientX;
     let mouseY = event.clientY;
     
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
@@ -207,5 +206,5 @@ export function mouseClick(event){
     
     if (!foundElement)
         return ;
-    
+	modalElement.classList.remove('custom-modal');
 }
