@@ -180,15 +180,8 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
 
         # Check if the new username is valid
-       # Validate new username
-        try:
-            validate_username(new_username)
-        except BarelyAnException as e:
-            return error_response(str(e))
-
         if new_username != user.username:
-            if User.objects.filter(username=new_username).exists():
-                raise BarelyAnException((_("Username '{username}' already exists").format(username=new_username)))
+            validate_username(new_username)
 
         # Check if the language is valid
         valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
