@@ -1,28 +1,30 @@
-from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
+# Basics
+import logging
+# Django
+from rest_framework import status
 from django.db.models import Q
 from django.db.models import Sum
+from django.utils.translation import gettext as _
+from channels.layers import get_channel_layer
+
+# Services
+from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
+# Core
 from core.authentication import BaseAuthenticatedView
-from django.db import transaction
 from core.response import success_response, error_response
+from core.decorators import barely_handle_exceptions
+from core.exceptions import BarelyAnException
+# User
+from user.constants import USER_ID_OVERLORDS
 from user.models import User
+from user.utils_relationship import is_blocking, is_blocked
+# Chat
+from chat.constants import NO_OF_MSG_TO_LOAD
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
-from django.utils.translation import gettext as _
-from core.decorators import barely_handle_exceptions
-from django.utils import timezone
-from .utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync
-from core.exceptions import BarelyAnException
-from rest_framework import status
-from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
-from user.constants import USER_ID_OVERLORDS
-from .constants import NO_OF_MSG_TO_LOAD
-from django.core.cache import cache
-from asgiref.sync import async_to_sync
-from user.utils_relationship import is_blocked
+from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync
 
-import logging
-from asgiref.sync import sync_to_async
-from channels.layers import get_channel_layer
+
 channel_layer = get_channel_layer()
 from services.websocket_utils import send_message_to_user_sync
 
@@ -52,9 +54,6 @@ class LoadConversationView(BaseAuthenticatedView):
 
         conversation = self.get_conversation(conversation_id)
         self.validate_conversation_membership(conversation, user)
-
-        if conversation.is_group_conversation:
-            return error_response(_('Group chats are not supported yet'), status_code=status.HTTP_400_BAD_REQUEST)
 
         # Determine blocking status
         the_overloards = User.objects.get(id=USER_ID_OVERLORDS)

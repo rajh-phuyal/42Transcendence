@@ -41,8 +41,6 @@ def get_other_user_member(user, conversation_id):
         ).user
     return other_user_member
 
-# Wrap the synchronous database operations with sync_to_async
-@database_sync_to_async
 def create_chat_message(user, other_user_member, conversation_id, content):
     logging.info("Creating a message in conversation %s from user %s to user %s: '%s'", conversation_id, user, other_user_member, content)
     # Validate conversation exists & user is a member of the conversation
@@ -109,7 +107,8 @@ async def process_incoming_chat_message(consumer, user, text):
     await check_if_msg_contains_username(user, other_user_member, conversation_id, content)
 
     # Do db operations
-    new_message = await create_chat_message(user, other_user_member, conversation_id, content)
+    # TODO: change since the function is now sync
+    #new_message = await create_chat_message(user, other_user_member, conversation_id, content)
 
     # TODO: here we need to parse the message maybe via serializer?
     await broadcast_chat_message(new_message)
@@ -141,4 +140,4 @@ def create_overloards_pm(userA, userB, content, sendIt=True):
         conversation = Conversation.objects.get(id=conversation_id)
     else:
         conversation = create_conversation(userA, userB, content)
-    await create_chat_message(userA, userB, conversation.id, content)
+    create_chat_message(userA, userB, conversation.id, content)

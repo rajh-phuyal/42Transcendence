@@ -16,6 +16,7 @@ from user.constants import NO_OF_USERS_TO_LOAD
 from user.models import User, IsCoolWith
 from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
 from user.exceptions import ValidationException
+from user.utils import get_user_by_id
 from user.utils_img import process_avatar
 from user.utils_relationship import is_blocking, block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
 
@@ -128,9 +129,7 @@ class RelationshipView(BaseAuthenticatedView):
             raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
         if not target_id:
             raise ValidationException(_("key 'target_id' must be provided!"))
-        target = User.objects.get(id=target_id)
-        if not target: # #TODO: @alex change this to a function call: get_user_by_id()
-            raise ValidationException(_("user with 'target_id' not found"))
+        target = get_user_by_id(target_id) # This will trigger an exception if the user does not exist
         if user.id == target.id:
             raise ValidationException(_("cannot perform action on yourself"))
         return user, target, action

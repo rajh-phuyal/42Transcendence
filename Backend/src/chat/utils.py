@@ -1,18 +1,21 @@
-from django.db import transaction
-from django.utils import timezone
-from django.db.models import F
-from django.utils.translation import gettext as _
-from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
-from user.constants import USER_ID_OVERLORDS
-from user.models import User
-from django.db.models import Q
-from .models import Conversation, Message, ConversationMember
-from asgiref.sync import sync_to_async
+# Basics
 import logging
-from channels.db import database_sync_to_async
+# Django
+from django.db import transaction
+from django.db.models import Q
+from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.core.cache import cache
 from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
+# Services
+from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
+# User
+from user.constants import USER_ID_OVERLORDS
+from user.models import User
+# Chat
+from chat.models import Conversation, Message, ConversationMember
 channel_layer = get_channel_layer()
 
 def mark_all_messages_as_seen_sync(user_id, conversation_id):
@@ -151,3 +154,30 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         async_to_sync(send_conversation_unread_counter)(user1.id, new_conversation.id)
 
     return new_conversation
+
+def generate_template_msg(message):
+    message = message[2:-2]
+    parts = message.split(',')
+    cmd_type = parts[0]
+    params = parts[1:]
+
+    message_templates = {
+        "G": _("Game with ID {gameid} has been created."),
+        "GL": _("Local game with ID {gameid} has been created."),
+        "FS": _("User @{requester} has sent a friend request to @{requestee}."),
+        "FA": _("User @{requester} has accepted the friend request from @{requestee}."),
+        "FC": _("User @{requester} has canceled the friend request to @{requestee}."),
+        "FR": _("User @{requester} has rejected the friend request from @{requestee}."),
+        "FU": _("User @{requester} has removed @{requestee} from their friends list."),
+        "B": _("User @{requester} has blocked @{requestee}."),
+        "U": _("User @{requester} has unblocked @{requestee}."),
+        "S": _("User @{requester} has started a conversation with @{requestee}."),
+    }
+
+    if cmd_type in message_templates:
+        if cmd_type in ["G", "GL"]:
+            return message_templates[cmd_type].format(gameid=params[0])
+        else:
+            return message_templates[cmd_type].format(requester=params[0], requestee=params[1])
+
+    return _("Unknown command.")
