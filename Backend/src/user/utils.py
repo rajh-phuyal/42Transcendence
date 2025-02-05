@@ -1,6 +1,8 @@
 import os
 from django.core.files.storage import default_storage
 from django.conf import settings
+from user.models import User
+from user.exceptions import UserNotFound
 
 def change_avatar_in_db(user, file_path):
     # Check if there's an existing avatar and delete it if it's not the default
@@ -13,3 +15,9 @@ def change_avatar_in_db(user, file_path):
     # Update user's avatar_path field and save the user model
     user.avatar_path = file_path
     user.save()
+
+def get_user_by_id(user_id):
+    try:
+        return User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        raise UserNotFound

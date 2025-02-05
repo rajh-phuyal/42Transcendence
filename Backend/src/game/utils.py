@@ -16,25 +16,29 @@ from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 import logging
 from tournament.ranking import update_tournament_member_stats
+from user.utils import get_user_by_id
 
-def create_game(user_id, opponent_id, map_number, powerups, local_game):
+def create_game(user, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
-        try:
-            user = User.objects.get(id=user_id)
-            opponent = User.objects.get(id=opponent_id)
-        except User.DoesNotExist:
-            raise UserNotFound()
+        opponent = get_user_by_id(opponent_id)
         # Check if opponent isn't urself, is ur friend and not blocking you
-        if user_id == opponent_id:
+        if user.id == opponent_id:
             raise BarelyAnException(_("You can't play against yourself"))
         if not are_friends(user, opponent):
             raise RelationshipException(_("You can only play against your friends"))
         if is_blocking(opponent, user):
             raise BlockingException(_("Opponent is blocking you"))
+        if not map_number in [1, 2, 3, 4]:
+            raise BarelyAnException(_("Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"))
+        if not opponent_id:
+            raise BarelyAnException(_("Missing key 'opponentId'"))
+
         # Check if opponent is AI
         if opponent.id == USER_ID_AI:
+            if local_game:
+                raise BarelyAnException(_("AI is above all, you can't play against it in a local game"))
             # TODO: issue #210
-            logging.error("Playing against AI is not supported yet")
+            raise BarelyAnException(_("Playing against AI is not supported yet"))
         # Check if there is already a direct game between the user and the opponent
         user_games = GameMember.objects.filter(
             user=user.id,
