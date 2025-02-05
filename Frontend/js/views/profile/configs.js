@@ -418,9 +418,9 @@ export default {
 
             const data = {
                 "mapNumber": this.maps[this.gameSettings.map],
-                "powerups": JSON.stringify(this.gameSettings.powerups),
+                "powerups": this.gameSettings.powerups,
                 "opponentId": this.routeParams.id,
-                "localGame": JSON.stringify(this.gameSettings.localGame),
+                "localGame": this.gameSettings.localGame,
             }
             call('game/create/', 'POST', data).then(data => {
                 this.hideModal("invite-for-game-modal");

@@ -126,7 +126,7 @@ class RelationshipView(BaseAuthenticatedView):
         if not target_id:
             raise ValidationException(_("key 'target_id' must be provided!"))
         target = User.objects.get(id=target_id)
-        if not target:
+        if not target: # #TODO: @alex change this to a function call: get_user_by_id()
             raise ValidationException(_("user with 'target_id' not found"))
         if user.id == target.id:
             raise ValidationException(_("cannot perform action on yourself"))
