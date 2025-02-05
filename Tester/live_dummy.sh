@@ -3,8 +3,7 @@
 # ADD ALL TABLES INTO THIS ARRAY!
 # (start from weak entity too not to break FK constraints)
 # ------------------------------------------------------------------------------
-ALL_TABLES=("barelyaschema.dev_user_data"
-            "barelyaschema.game_member"
+ALL_TABLES=("barelyaschema.game_member"
             "barelyaschema.game"
             "barelyaschema.tournament_member"
             "barelyaschema.tournament"

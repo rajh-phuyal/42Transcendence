@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from core.cookies import set_jwt_cookies, unset_jwt_cookies
 from core.authentication import BaseAuthenticatedView
-from authentication.models import DevUserData
 from core.response import success_response, error_response
 from django.utils.translation import gettext as _, activate
 from rest_framework import status
@@ -44,16 +43,6 @@ class RegisterView(APIView):
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
-
-            # Store dev user data if needed
-            DevUserData.objects.update_or_create(
-                user=user,
-                defaults={
-                    'username': user.username,
-                    'access_token': access_token,
-                    'refresh_token': refresh_token,
-                }
-            )
 
             response = success_response(_("User registered successfully"), **{
                 "userId": user.id,
@@ -125,13 +114,6 @@ class InternalTokenObtainPairView(TokenObtainPairView):
                 refresh_token=response.data['refresh']
             )
 
-            DevUserData.objects.update_or_create(
-                user=user,
-                defaults={
-                    'access_token': response.data['access'],
-                    'refresh_token': response.data['refresh'],
-                }
-            )
             return custom_response
         return error_response(_("Login failed"))
 
