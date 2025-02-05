@@ -13,6 +13,9 @@ from rest_framework import status
 from core.decorators import barely_handle_exceptions
 from rest_framework_simplejwt.exceptions import InvalidToken
 from django.conf import settings
+from core.exceptions import BarelyAnException
+from authentication.utils import validate_username
+    
 
 
 class RegisterView(APIView):
@@ -28,6 +31,10 @@ class RegisterView(APIView):
 
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        # Validate username
+        username = serializer.validated_data.get('username')
+        validate_username(username)
 
         try:
             user = serializer.save()
