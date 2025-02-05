@@ -54,6 +54,77 @@
         "de-DE": "filtern...",
         "uk-UA": "фільтрувати...",
         "ne-NP": "फिल्टर गर्नुहोस्..."
+    },
+    "helpMessage/": {
+        "en-US": "<strong><u>Use one of those cmds:</u></strong><br>/G - create a new Game<br>/F - change friendship status<br>/B - block user<br>/U - unblock user",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G0": {
+        "en-US": "<strong><u>(0/3) Create a game</u><br>Choose a map</strong> e.g. /Gufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G1": {
+        "en-US": "<strong><u>(1/3) Create a game</u><br>Choose type</strong> e.g. /Gufo,remote,<br>remote<br>local",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G2": {
+        "en-US": "<strong><u>(2/3) Create a game</u><br>Wanna play with powerups?</strong> e.g. /Gufo,remote,yes,<br>yes<br>no",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G3": {
+        "en-US": "<strong><u>(3/3) Create a game</u><br>Press return to create the game</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/F": {
+        "en-US": "<strong><u>Modify friendship</u><br>Choose an option</strong> e.g. /FS<br>S - Send a friend request<br>C - Cancel the pending friend request<br>A - Accept the pending friend request<br>R - Reject the pending friend request<br>U - Unfriend",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/F1": {
+        "en-US": "<strong><u>Modify friendship</u><br>Press return to apply change of friendship status</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/B": {
+        "en-US": "<strong><u>Block this user</u><br>Press return to confirm</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/U": {
+        "en-US": "<strong><u>Unblock this user</u><br>Press return to confirm</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
     }
-
 }

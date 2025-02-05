@@ -8,7 +8,7 @@ export const buttonObjects = {
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "DELETE",
-        Url: "user/relationship/", 
+        Url: "user/relationship/",
         action: "remove",
     },
     // users are not friends 1

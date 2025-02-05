@@ -2,6 +2,7 @@ import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
 import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { translate } from '../../locale/locale.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -306,6 +307,7 @@ export function loadMessages(conversationId) {
     // Return a Promise for better flow control
     return call(`chat/load/conversation/${conversationId}/messages/?msgid=${messageContainer.getAttribute("last-message-id")}`, 'PUT')
         .then(data => {
+            console.log("Messages loaded:", data);
             const elapsedTime = Date.now() - startTime;
             const delay = Math.max(200 - elapsedTime, 0);
             return new Promise(resolve => {
@@ -420,5 +422,55 @@ export function updateConversationUnreadCounter(conversationId, value) {
     }
 }
 
+// When a user inputs a chat message, this function will be called to update
+// the helper text for message cmds like /F
+export function createHelpMessage(input){
+    // Check if input supports a help message
+    const cmds = ["/G", "/F", "/B", "/U"];
+    input = input.toUpperCase();
+    let htmlContent = ""
+    if (input == "/" || cmds.some(prefix => input.startsWith(prefix))) {
+        console.log("Input:", input);
+        // We need more options for /G and /F
+        if(input.startsWith("/G")) {
+            // Count the typed "," to determine the step of the game creation
+            const commaCount = input.split(",").length - 1;
+            if (commaCount < 4)
+                htmlContent = translate("chat", "helpMessage/G" + commaCount);
+        } else if(input.startsWith("/F")) {
+            if (input.length == 2)
+                htmlContent = translate("chat", "helpMessage/F");
+            else if (input.length == 3)
+                htmlContent = translate("chat", "helpMessage/F1");
+        } else
+            htmlContent = translate("chat", "helpMessage" + input)
+    }
+    updateHelpMessage(htmlContent);
+}
 
+export function updateHelpMessage(htmlContent="") {
+    console.log("Update help message:", htmlContent);
+    let helpContainer = $id("message-help");
+    if (htmlContent){
+        // Show the help message
+        if (!helpContainer){
+            // Create node from template
+            console.log("Create help message node");
+            let template = $id("chat-view-help-message-template").content.cloneNode(true);
+            helpContainer = template.querySelector(".chat-view-help-message-container");
+            helpContainer.id = "message-help";
+            // Append it to chat view
+            const container = $id("chat-view-messages-container");
+            container.appendChild(helpContainer);
+        }
+        helpContainer.innerHTML = htmlContent;
+        // Scroll to bottom
+        let scrollContainer = $id("chat-view-messages-container");
+        scrollContainer.scrollTop = scrollContainer.scrollHeight + scrollContainer.clientHeight;
+    } else {
+        // Hide the help message
+        if (helpContainer)
+            helpContainer.remove();
+    }
+}
 
