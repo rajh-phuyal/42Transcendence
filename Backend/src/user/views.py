@@ -1,18 +1,23 @@
-from core.decorators import barely_handle_exceptions
-from core.authentication import BaseAuthenticatedView
-from core.response import success_response, error_response
+# Django
 from django.utils.translation import gettext as _, activate
 from django.db import transaction
 from rest_framework import status
 from django.db.models import Q
-from user.models import User, IsCoolWith, NoCoolWith
-from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
-from core.exceptions import BarelyAnException
-from user.exceptions import ValidationException, BlockingException, RelationshipException
 from django.core.exceptions import ObjectDoesNotExist
-from .utils_img import process_avatar
-from .utils_relationship import is_blocking, block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
-from user.constants import USER_ID_OVERLORDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
+# Core
+from core.decorators import barely_handle_exceptions
+from core.authentication import BaseAuthenticatedView
+from core.response import success_response, error_response
+from core.exceptions import BarelyAnException
+# Authentication
+from authentication.utils import validate_username
+# User
+from user.constants import NO_OF_USERS_TO_LOAD
+from user.models import User, IsCoolWith
+from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
+from user.exceptions import ValidationException
+from user.utils_img import process_avatar
+from user.utils_relationship import is_blocking, block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
@@ -44,7 +49,6 @@ class ProfileView(BaseAuthenticatedView):
         user = User.objects.get(id=id)
         serializer = ProfileSerializer(user, context={'request': request})
         return success_response(_("User profile loaded"), **serializer.data)
-
 
 # =============================================================================
 # ModifyFriendshipView for changing the relationship status between the
@@ -125,7 +129,7 @@ class RelationshipView(BaseAuthenticatedView):
         if not target_id:
             raise ValidationException(_("key 'target_id' must be provided!"))
         target = User.objects.get(id=target_id)
-        if not target:
+        if not target: # #TODO: @alex change this to a function call: get_user_by_id()
             raise ValidationException(_("user with 'target_id' not found"))
         if user.id == target.id:
             raise ValidationException(_("cannot perform action on yourself"))
@@ -177,7 +181,12 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
 
         # Check if the new username is valid
-        # TODO: Wait for issue #108
+       # Validate new username
+        try:
+            validate_username(new_username)
+        except BarelyAnException as e:
+            return error_response(str(e))
+
         if new_username != user.username:
             if User.objects.filter(username=new_username).exists():
                 raise BarelyAnException((_("Username '{username}' already exists").format(username=new_username)))
