@@ -444,7 +444,17 @@ export function createHelpMessage(input){
                 htmlContent = translate("chat", "helpMessage/F1");
         } else
             htmlContent = translate("chat", "helpMessage" + input)
+    } else {
+        if (input.includes("@"))
+            htmlContent += translate("chat", "helpMessage/mention-username");
+        if (input.includes("#"))
+            htmlContent += translate("chat", "helpMessage/mention-tournament-game");
     }
+
+
+
+
+
     updateHelpMessage(htmlContent);
 }
 

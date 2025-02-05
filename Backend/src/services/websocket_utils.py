@@ -18,7 +18,7 @@ from game.utils_ws import init_game, update_game_state
 from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
 
 # Services
-from services.chat_service import broadcast_message
+from services.chat_service import broadcast_chat_message
 
 ## HANDLER FOR MAIN WEBSOCKET CONNECTION
 ## ------------------------------------------------------------------------------------------------
@@ -38,9 +38,8 @@ class WebSocketMessageHandlersMain:
 
     @staticmethod
     async def handle_chat(consumer, user, message):
-        message = await process_incoming_chat_message(consumer, user, message)
+        await process_incoming_chat_message(consumer, user, message)
         logging.info(f"Parsed backend object: {message}")
-        await broadcast_message(message)
 
     @staticmethod
     async def handle_seen(consumer, user, message):
@@ -74,7 +73,7 @@ class WebSocketMessageHandlersGame:
 
     @staticmethod
     async def handle_playerInput(consumer, user, message):
-        message = parse_message(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
+        message = check_message_keys(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
         if consumer.local_game or consumer.isLeftPlayer:
             cache.set(f'game_{consumer.game_id}_playerLeft', message.get("playerLeft"), timeout=3000)
         if consumer.local_game or not consumer.isLeftPlayer:
@@ -110,7 +109,7 @@ async def send_message_to_user_sync(user_id, **message):
 # For all incoming messages we should use this function to parse the message
 # therefore we can validate if the message has all the required fields
 # and if not, raise an exception
-def parse_message(text: str, mandatory_keys: list[str] = None) -> dict:
+def check_message_keys(text: str, mandatory_keys: list[str] = None) -> dict:
     _message = json.loads(text)
 
     message_type = _message.get('messageType', None)

@@ -23,7 +23,7 @@ from game.utils_ws import update_game_state, update_game_points
 from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished
 
 # Services
-from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
+from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_message_keys
 from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.tournament_service import setup_all_tournament_channels
 
@@ -63,7 +63,7 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
             await self.close()
             raise BarelyAnException(_("User is not authenticated."))
         # Parse the message (only the messageType is required at this point)
-        self.message_type = parse_message(text_data, mandatory_keys=[
+        self.message_type = check_message_keys(text_data, mandatory_keys=[
                                           'messageType']).get('messageType')
         # logging.info(f"Received Websocket Message type: {self.message_type}")
 

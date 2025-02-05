@@ -10,7 +10,7 @@ from chat.serializers import ConversationSerializer, ConversationMemberSerialize
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
 from django.utils import timezone
-from .utils import create_conversation, get_conversation, mark_all_messages_as_seen_sync
+from .utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync
 from core.exceptions import BarelyAnException
 from rest_framework import status
 from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
@@ -260,7 +260,7 @@ class CreateConversationView(BaseAuthenticatedView):
             if is_blocked(user.id, other_user.id):
                 return error_response(_("You are blocked by the user"), status_code=status.HTTP_403_FORBIDDEN)
             # Check if the conversation already exists
-            conversation_id = get_conversation(user, other_user)
+            conversation_id = get_conversation_id(user, other_user)
             if conversation_id:
                 return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
         elif len(userIds) > 1:

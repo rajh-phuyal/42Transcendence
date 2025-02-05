@@ -15,7 +15,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 
-
 def mark_all_messages_as_seen_sync(user_id, conversation_id):
     try:
         with transaction.atomic():
@@ -40,8 +39,6 @@ def mark_all_messages_as_seen_sync(user_id, conversation_id):
 def mark_all_messages_as_seen_async(user_id, conversation_id):
     mark_all_messages_as_seen_sync(user_id, conversation_id)
 
-
-
 def get_conversation_name(user, conversation):
     if conversation.name:
         return conversation.name
@@ -57,8 +54,7 @@ def get_conversation_name(user, conversation):
     # Fallback to "Top Secret"
     return _("top secret")
 
-
-def get_conversation(user1, user2):
+def get_conversation_id(user1, user2):
     user_conversations = ConversationMember.objects.filter(
         user=user1.id,
         conversation__is_group_conversation=False,
@@ -74,7 +70,6 @@ def get_conversation(user1, user2):
     if common_conversations:
         return common_conversations.pop()
     return None
-
 
 # Create a conversation between two users
     # create a conversation
@@ -104,6 +99,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
             creator = overloards
         initialMessageObject = Message.objects.create(user=creator, conversation=new_conversation, content=initialMessage)
 
+    # TODO: need to send the **S,userIdStarter** message to the user aka the beginning of the conversation thing
     # Adding the conversation to the user's WebSocket groups (if they are logged in)
     group_name = f"conversation_{new_conversation.id}"
     channel_name_user1 = cache.get(f'user_channel_{user1.id}', None)
@@ -112,6 +108,8 @@ def create_conversation(user1, user2, initialMessage, creator = None):
     channel_name_user2 =  cache.get(f'user_channel_{user2.id}', None)
     if channel_name_user2:
         async_to_sync(channel_layer.group_add)(group_name, channel_name_user2)
+
+    # TODO: this should be done by create_message
     # Sending a message to user1
     message={
         "messageType": "newConversation",
@@ -144,6 +142,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
     }
     send_message_to_user_sync(user2.id, **message)
 
+    # TODO: THIS also will be done by create_message
     if creator == user1:
         async_to_sync(send_total_unread_counter)(user2.id)
         async_to_sync(send_conversation_unread_counter)(user2.id, new_conversation.id)

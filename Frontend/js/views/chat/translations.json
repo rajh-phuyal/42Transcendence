@@ -24,12 +24,12 @@
         "ne-NP": "विषय: "
     },
     "textAreaPlaceHolder": {
-        "en-US": "write a message... Just don’t forget that they see everything...\n(I wonder what happens if u start a message with **",
-        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\n(Será que algo acontece se você começar uma mensagem com **",
-        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\n(Será que algo acontece se você começar uma mensagem com **",
-        "de-DE": "schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\n(Ich frage mich, was passiert, wenn du eine Nachricht mit ** beginnst",
-        "uk-UA": "напиши повідомлення... Тільки не забувай, що вони все бачать...\n(Цікаво, що станеться, якщо почати повідомлення з **",
-        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नबिर्सनुहोस् कि उनीहरूले सबै कुरा देख्छन्...\n(मलाई चासो छ, यदि तपाईं सन्देश ** बाट सुरु गर्नुहुन्छ भने के हुन्छ"
+        "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / #",
+        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / #",
+        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais demoníacos: @ / #",
+        "de-DE": "Schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\nProbiere die folgenden teuflischen Zeichen aus: @ / #",
+        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони все бачать...\nСпробуйте такі диявольські знаки: @ / #",
+        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नभुल्नुहोस् कि उनीहरू सबै हेर्छन्...\nयी दानवी चिन्हहरू प्रयास गर्नुहोस्: @ / #"
     },
     "sendButton": {
         "en-US": "Send",
@@ -121,6 +121,22 @@
     },
     "helpMessage/U": {
         "en-US": "<strong><u>Unblock this user</u><br>Press return to confirm</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/mention-username": {
+        "en-US": "<strong>FORMAT HINT:</strong> @username<br>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/mention-tournament-game": {
+        "en-US": "<strong>FORMAT HINT:</strong> #T#tournamentName#tournamentId#<br><strong>FORMAT HINT:</strong> #G#gameId#",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",

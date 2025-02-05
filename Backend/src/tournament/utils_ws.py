@@ -9,7 +9,7 @@ from .serializer import TournamentMemberSerializer
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from chat.models import Message
-from services.chat_service import broadcast_message
+from services.chat_service import broadcast_chat_message
 
 
 def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **json_details):
@@ -49,15 +49,16 @@ def join_tournament_channel(user, tournament_id, activate=True):
         async_to_sync(channel_layer.group_discard)(tournament_id_name, channel_name_user)
 
 def send_tournament_invites_via_pm(tournament_id):
-    from chat.utils import create_conversation, get_conversation
+    from chat.utils import create_conversation, get_conversation_id
     # Get all users that are invited to the tournament
     tournament_admin = TournamentMember.objects.get(tournament_id=tournament_id, is_admin=True)
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
     tournament = Tournament.objects.get(id=tournament_id)
 
     for member in tournament_members:
+        # TODO: use the new function: create_overloards_pm()
         # Check if there's a private conversation between the user and the admin
-        conversation = get_conversation(tournament_admin, member)
+        conversation = get_conversation_id(tournament_admin, member)
         invite_message = _("The overloads spectace that the holly @{admin_username}@{admin_id}@ has invited @{guest_username}@{guest_id}@ to the fantastic tournament #T#{tournament_name}#{tournament_id}#"
             ).format(
                 admin_username=tournament_admin.user.username,
@@ -79,7 +80,7 @@ def send_tournament_invites_via_pm(tournament_id):
         newMessage.save()
 
         # Send a message to an existing conversation
-        broadcast_message(newMessage)
+        broadcast_chat_message(newMessage)
 
 def send_tournament_invites_via_ws(tournament_id):
     from services.websocket_utils import send_message_to_user_sync

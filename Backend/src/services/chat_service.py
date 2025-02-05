@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.db.models import F
+
 from asgiref.sync import sync_to_async
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -23,7 +25,7 @@ def setup_all_conversations(user, channel_name, intialize=True):
             async_to_sync(channel_layer.group_discard)(group_name, channel_name)
             logging.info(f"\tRemoved user {user} from group {group_name}")
 
-async def broadcast_message(message):
+async def broadcast_chat_message(message):
     group_name = f"conversation_{message.conversation.id}"
     logging.info(f"Broadcasting to group {group_name} from user {message.user}: {message.content}")
     await channel_layer.group_send(
@@ -42,6 +44,12 @@ async def broadcast_message(message):
         }
     )
 
+    # Update the badges on db
+    await sync_to_async(ConversationMember.objects.filter(conversation=message.conversation).update)(unread_counter=F('unread_counter') + 1)
+
+    await send_conversation_unread_counter(other_user_member.id, conversation_id)
+    await send_total_unread_counter(other_user_member.id)
+
 @sync_to_async
 def send_total_unread_counter(user_id):
     from services.websocket_utils import send_message_to_user
@@ -55,7 +63,7 @@ def send_total_unread_counter(user_id):
         "what": "all",
         "value": chat_unread_counter
     }
-    logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
+    #logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
     async_to_sync(send_message_to_user)(user_id, **msg_data)
 
 @sync_to_async
@@ -69,5 +77,5 @@ def send_conversation_unread_counter(user_id, conversation_id):
         "id": conversation_id,
         "value": unread_count
     }
-    logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
+    #logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
     async_to_sync(send_message_to_user)(user_id, **msg_data)
