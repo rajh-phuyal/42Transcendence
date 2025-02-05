@@ -1,8 +1,16 @@
 export const gameObject = {
+    gameId: undefined,
     state: undefined,
+    frameTime: undefined,
     lastFrameTime: undefined,
     animationId: undefined,
-    playerInput: {
+    playerInputLeft: {
+        paddleMovement: undefined,
+        powerupFast: undefined,
+        powerupSlow: undefined,
+        powerupBig: undefined,
+    },
+    playerInputRight: {
         paddleMovement: undefined,
         powerupFast: undefined,
         powerupSlow: undefined,

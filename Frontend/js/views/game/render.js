@@ -182,7 +182,7 @@ const getSegments = (playerScore) => {
 
 const drawScore = (ctx, gameField, playerScore, boardSide) => {
 	const segments = getSegments(playerScore);
-	const digitSeparator = boardSide === "left" ? -15 : 15;
+	const digitSeparator = boardSide === "right" ? -15 : 15;
 	const digit = { ...segmentDisplaySettings };
 
 	digit.top.x = gameField.width / 2 - digit.top.width + (digitSeparator < 0 ? -20 : 20);
@@ -201,7 +201,7 @@ const drawScore = (ctx, gameField, playerScore, boardSide) => {
 	digit.bottomLeft.x = digit.topLeft.x;
 	digit.bottomLeft.y = digit.bottomRight.y;
 
-	if (boardSide === "right")
+	if (boardSide === "left")
 		segments.reverse();
 
 	segments.forEach((segment, index) => {
@@ -281,9 +281,9 @@ const drawField = (gameField, ctx, normalizedGameObject) => {
 	drawBorders(gameField, ctx);
 	drawPaddles(gameField, ctx, normalizedGameObject);
 	drawBall(ctx, normalizedGameObject);
-	drawScore(ctx, gameField, normalizedGameObject.playerLeft.score, "left");
-	drawScore(ctx, gameField, normalizedGameObject.playerRight.score, "right");
-}	
+	drawScore(ctx, gameField, normalizedGameObject.playerLeft.points, "left");
+	drawScore(ctx, gameField, normalizedGameObject.playerRight.points, "right");
+}
 
 
 export function gameRender () {

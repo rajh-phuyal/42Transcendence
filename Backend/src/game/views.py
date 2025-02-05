@@ -67,8 +67,16 @@ class LobbyView(BaseAuthenticatedView):
         opponent_member = GameMember.objects.filter(game=game).exclude(user=user).first()
         if not opponent_member:
             return error_response(_("Opponent not found"))
-        if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
-            return error_response(_("Game can't be played since it's either finished or quited"))
+        # Removed this since u can see a lobby even if the game is finished
+        #if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
+        #    return error_response(_("Game can't be played since it's either finished or quited"))
+
+        # TODO: ISSUE #312
+        # Check if the game is local, than only the admin can fetch the lobby
+        if user_member.local_game and not user_member.admin:
+            return error_response(_("Only the admin @{admin_username} can fetch the lobby for local games. You have to go to his computer and play there together")
+                .format(admin_username=opponent_member.user.username))
+
         tournament_name = None
         if (game.tournament):
             tournament_name = game.tournament.name
@@ -89,12 +97,14 @@ class LobbyView(BaseAuthenticatedView):
                 'username': playerLeft.username,
                 'avatar': playerLeft.avatar_path,
                 'points': memberLeft.points,
+                'ready': game.get_player_ready(playerLeft.id),
             },
             'playerRight':{
                 'userId': playerRight.id,
                 'username': playerRight.username,
                 'avatar': playerRight.avatar_path,
                 'points': memberRight.points,
+                'ready': game.get_player_ready(playerRight.id),
             },
             'gameData': {
                 'state': game.state,

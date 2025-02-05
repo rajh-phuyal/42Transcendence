@@ -1,32 +1,34 @@
-import asyncio
-import random
-from game.models import Game
-from asgiref.sync import sync_to_async
-import json
-from django.utils import timezone
-from channels.generic.websocket import AsyncWebsocketConsumer
-from rest_framework_simplejwt.tokens import AccessToken
-from django.contrib.auth.models import AnonymousUser
-import logging
-from chat.models import ConversationMember
+# Basics
+import logging, asyncio, random, json
 
-from django.core.cache import cache
+# Python stuff
+from django.utils import timezone
 from django.utils.translation import gettext as _
-from asgiref.sync import async_to_sync
+from datetime import datetime, timedelta
+from copy import deepcopy
+from asgiref.sync import sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
+from django.contrib.auth.models import AnonymousUser
+from django.core.cache import cache
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
-from services.chat_service import setup_all_conversations, send_total_unread_counter
-from services.tournament_service import setup_all_tournament_channels
-from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, send_player_ready_state, parse_message
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
-from game.constants import GAME_FPS, PADDLE_OFFSET
-from game.utils_ws import init_game
-from game.utils_ws import update_game_state_db
 
+# Game stuff
+from game.constants import GAME_FPS, GAME_STATE, GAME_PLAYER_INPUT
+from game.models import Game
+from game.utils import is_left_player, get_game_data, set_game_data, get_user_of_game
+from game.utils_ws import update_game_state, update_game_points
+from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished
 
+# Services
+from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
+from services.chat_service import setup_all_conversations, send_total_unread_counter
+from services.tournament_service import setup_all_tournament_channels
+
+# Channels
 channel_layer = get_channel_layer()
-
 
 # Basic Connect an Disconnet functions for the WebSockets
 class CustomWebSocketLogic(AsyncWebsocketConsumer):
@@ -70,8 +72,6 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         user.save(update_fields=['last_seen'])
 
 # Manages the WebSocket connection for all pages after login
-
-
 class MainConsumer(CustomWebSocketLogic):
     @barely_handle_ws_exceptions
     async def connect(self):
@@ -149,50 +149,106 @@ class MainConsumer(CustomWebSocketLogic):
         await self.send(text_data=json.dumps({**event}))
 
 # Manages the temporary WebSocket connection for a single game
-
-
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
-    # @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
     async def connect(self):
-        # TODO: check if the user is in the game
         await super().connect()
-        # Add client to the channel layer group
+
+        # Set self vars for consumer
+        self.user_id = self.scope['user'].id
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        logging.info(
-            f"Opening WebSocket connection for game {self.game_id} and user {self.scope['user']} ...")
+        self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
+        self.local_game = await database_sync_to_async(lambda: self.game.game_members.first().local_game)()
+        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user_id)
+        self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
+        self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
+        self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
+        self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
+        self.group_name = f"game_{self.game_id}"
+        logging.info("Initialiazing consumer self vars: user_id %s, game_id: %s, local_game: %s, isLeftPlayer: %s", self.user_id, self.game_id, self.local_game, self.isLeftPlayer)
 
-        # Set the player ready
-        game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
-        game.set_player_ready(self.scope['user'].id, True)
+        # TODO: check if the user is a game member if not close the connection
+        # Also keeP in mind local games!  issue #312
 
-        game_name = f"game_{self.game_id}"
-        await channel_layer.group_add(game_name, self.channel_name)
+        # If the game is not in the right state, close the connection
+        if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:
+            await self.close()
+            logging.info(f"Game {self.game_id} is not in the right state to be played. CONNECTION CLOSED.")
+
+        # Add client to the channel layer group
+        await channel_layer.group_add(self.group_name, self.channel_name)
 
         # Accept the connection
         await self.accept()
 
-        can_start_game, start_time = await send_player_ready_state(game, channel_layer)
+        # Init game on cache
+        await self.init_game_on_cache()
 
-        logging.info(
-            f"WebSocket connection for game {self.game_id} and user {self.scope['user']} opened.")
-        if can_start_game:
-            await init_game(game)
-            GameConsumer.game_loops[self.game_id] = asyncio.create_task(
-                GameConsumer.run_game_loop(self.game_id, start_time))
+        # Set the player(s) ready
+        if self.local_game:
+            # On local games just set both players to ready #TODO: this works and is related to issue #312
+            self.game.set_player_ready(self.leftUser.id, True)
+            self.game.set_player_ready(self.rightUser.id, True)
+        else:
+            self.game.set_player_ready(self.user_id, True)
+        # Send the player ready message and the game data
+        await self.send_update_players_ready_msg()
+        await self.send_update_game_data_msg()
+
+        # If both users are ready start the loop
+        left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
+        right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
+        if left_ready and right_ready:
+            # Start / Continue the loop
+            # 1. Set start time and send it to channel
+            start_time = datetime.now() + timedelta(seconds=5)
+            start_time_formated = start_time.isoformat()
+            logging.info(f"Game will start at: {start_time_formated}")
+            await self.send_update_players_ready_msg(start_time_formated)
+
+            # Updates the state to ongoing
+            #TODO: this should be done only if the game loop actually starts but than
+            # the frontend loops stops so maybe its fine here since it works
+            await update_game_state(self.game_id, Game.GameState.ONGOING)
+
+            # 2. Calculate the delay so the game loop start not before the start time
+            delay = (start_time - datetime.now()).total_seconds()
+            if delay > 0:
+                await asyncio.sleep(delay)  # Wait until the start time
+
+            # 3. Start the game loop
+            GameConsumer.game_loops[self.game_id] = asyncio.create_task(GameConsumer.run_game_loop(self.game_id))
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
-        # Set the player ready to false
-        self.game_id = self.scope['url_route']['kwargs']['game_id']
-        game = await sync_to_async(Game.objects.get)(id=self.game_id)
-        game.set_player_ready(self.scope['user'].id, False)
 
-        await send_player_ready_state(game, channel_layer)
+        # Remove client from the channel layer group
+        await channel_layer.group_discard(self.group_name, self.channel_name)
 
-        await update_game_state_db(game, Game.GameState.PAUSED)
+        # Set the player NOT ready
+        self.game.set_player_ready(self.user_id, False)
+        await self.send_update_players_ready_msg()
+
+        # If the game was ongoing, pause it
+        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+        if game_state_data['gameData']['state'] == 'ongoing':
+            # # TODO: issue#307
+            # Set deadline to reconnection time
+
+            # Set game to paused
+            await update_game_state(self.game_id, Game.GameState.PAUSED)
+
+            # Other player scores that point
+            user_id_for_point = self.leftUser.id
+            if self.user_id == self.leftUser.id:
+                user_id_for_point = self.rightUser.id
+            await update_game_points(self.game_id, user_id_for_point)
+
+            # Send the updated game state to FE
+            self.send_update_game_data_msg()
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
@@ -203,177 +259,159 @@ class GameConsumer(CustomWebSocketLogic):
         # Process the message
         await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
 
-    @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def update_players_ready(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
     async def update_game_state(self, event):
         await self.send(text_data=json.dumps({**event}))
 
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
+    async def game_finished(self, event):
+        # This is triggerd by the end of the game loop to close the connection
+        await self.close()
+
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
+    async def send_update_players_ready_msg(self, start_time = None):
+        left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
+        right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
+        await channel_layer.group_send(
+            f"game_{self.game_id}",
+            {
+                "type": "update_players_ready",
+                "messageType": "playersReady",
+                "playerLeft": left_ready,
+                "playerRight": right_ready,
+                "startTime": start_time
+            }
+        )
+
+    @barely_handle_ws_exceptions # TODO: Not sure if all the functions need this since the function calling this already has it
+    async def send_update_game_data_msg(self):
+        game_state_data = cache.get(f'game_{self.game_id}_state', {})
+        if not game_state_data:
+            logging.error(f"Game state not found for game {self.game_id} so it can't be send as a ws message!")
+            return
+        game_name = f"game_{self.game_id}"
+        await channel_layer.group_send(
+            game_name,
+            {
+                "type": "update_game_state",
+                "messageType": "gameState",
+                **game_state_data
+            }
+        )
+        logging.info(f"Game state sent to group {game_name}")
+
+
+    # Just for making sure all the game data is initialized on cache
+    async def init_game_on_cache(self):
+        # TODO: this here should already be working but is realted to issue #308
+        # Need to compare if the game has powerups or not
+        # to if the users still has powerups left to set state to:
+        # available / using / used / unavailable
+        async def init_powerup(self, value, key1, key2):
+            if self.game.powerups:
+                if value:
+                    set_game_data(self.game_id, key1, key2, 'available')
+                else:
+                    set_game_data(self.game_id, key1, key2, 'used')
+            else:
+                set_game_data(self.game_id, key1, key2, 'unavailable')
+
+        game_state_data = get_game_data (self.game_id)
+        if not game_state_data:
+            logging.info(f"Init game on cache: game_{self.game_id}_state")
+            cache.set(f'game_{self.game_id}_state', deepcopy(GAME_STATE), timeout=3000)
+            # Initialize the game data to match the db:
+            set_game_data(self.game_id, 'gameData', 'state', self.game.state)
+            set_game_data(self.game_id, 'playerLeft', 'points', self.leftMember.points)
+            set_game_data(self.game_id, 'playerRight', 'points', self.rightMember.points)
+            await init_powerup(self, self.leftMember.powerup_big, 'playerLeft', 'powerupBig')
+            await init_powerup(self, self.leftMember.powerup_slow, 'playerLeft', 'powerupSlow')
+            await init_powerup(self, self.leftMember.powerup_fast, 'playerLeft', 'powerupFast')
+            await init_powerup(self, self.rightMember.powerup_big, 'playerRight', 'powerupBig')
+            await init_powerup(self, self.rightMember.powerup_slow, 'playerRight', 'powerupSlow')
+            await init_powerup(self, self.rightMember.powerup_fast, 'playerRight', 'powerupFast')
+
+            # Randomize serving player
+            if random.randint(0, 1) == 0:
+                set_game_data(self.game_id, 'gameData', 'playerServes', 'playerLeft')
+                set_game_data(self.game_id, 'gameData', 'ballDirectionX', -1)
+            else:
+                set_game_data(self.game_id, 'gameData', 'playerServes', 'playerRight')
+                set_game_data(self.game_id, 'gameData', 'ballDirectionX', 1)
+            # Add a minimal random direction to the ball so it won't be stuck horizontally
+            set_game_data(self.game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
+
+        # CREATE LEFT PLAYER INPUT ON CACHE IF DOESNT EXIST
+        cache_key = f'game_{self.game_id}_playerLeft'
+        input_player_left = cache.get(cache_key, {})
+        if not input_player_left:
+            logging.info(f"Init game on cache: {cache_key}")
+            cache.set(cache_key, deepcopy(GAME_PLAYER_INPUT), timeout=3000)
+
+        # CREATE RIGHT PLAYER INPUT ON CACHE IF DOESNT EXIST
+        cache_key = f'game_{self.game_id}_playerRight'
+        input_player_right = cache.get(cache_key, {})
+        if not input_player_right:
+            logging.info(f"Init game on cache: {cache_key}")
+            cache.set(cache_key, deepcopy(GAME_PLAYER_INPUT), timeout=3000)
+
     @staticmethod
-    async def run_game_loop(game_id, start_time):
-        while True:
+    async def run_game_loop(game_id):
+        # Start the game loop
+        logging.info(f"Game loop starts now: {game_id}")
+        while get_game_data(game_id, 'gameData', 'state') == 'ongoing':
             try:
-                # Fetches user desires from cache
-                left_player_input = cache.get(f'game_{game_id}_player_left', {})
-                right_player_input = cache.get(f'game_{game_id}_player_right', {})
-
-                # Fetches game state from cache
-                game_state_data = cache.get(f'game_{game_id}_state', {})
-
-                # Extract user state from game state
-                game_state_data_left = game_state_data['playerLeft']
-                game_state_data_right = game_state_data['playerRight']
-
-                # Change postions of both paddles if requested and allowed
-                game_state_data_left = move_paddle(left_player_input, game_state_data_left)
-                game_state_data_right = move_paddle(right_player_input, game_state_data_right)
-
-                # Update game state with new paddle positions
-                game_state_data['playerLeft'] = game_state_data_left
-                game_state_data['playerRight'] = game_state_data_right
-
-                # Then calculate ball movement
-                game_state_data = move_ball(game_state_data)
-
+                # Activate PowerUps (if requested and allowed)
+                await activate_power_ups(game_id, 'playerLeft')
+                await activate_power_ups(game_id, 'playerRight')
+                # Change postions of both paddles (if requested and allowed)
+                await move_paddle(game_id, 'playerLeft')
+                await move_paddle(game_id, 'playerRight')
+                # Calculate ball movement
+                await move_ball(game_id)
+                await apply_wall_bonce(game_id)
+                await check_paddle_bounce(game_id)
                 # Send the updated game state to FE
-                game_name = f"game_{game_id}"
-                await channel_layer.group_send(
-                    game_name,
-                    {
-                        "type": "update_game_state",
-                        "messageType": "gameState",
-                        **game_state_data
-                    }
-                )
+                game_name = f"game_{game_id}"           # TODO: this should go in  a function!
+                await channel_layer.group_send(         #
+                    game_name,                          #
+                    {                                   #
+                        "type": "update_game_state",    #
+                        "messageType": "gameState",     #
+                        **get_game_data(game_id)        #
+                    }                                   #
+                )                                       #
 
-                # Store the updated game state in cache
-                cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
-
-                # Check if the game is over and exit the loop
-                if game_state_data['gameData']['state'] == 'finished':
-                    break
-
+                # Check if the game is finished (this will set the state to finished -> so the loop will end)
+                await check_if_game_is_finished(game_id)
                 # Await for next frame render
                 await asyncio.sleep(1 / GAME_FPS)
             except Exception as e:
                 logging.error(f"Error in game loop: {e}")
                 break
-        logging.info(f"Game finished: {game_id}")
+        logging.info(f"Game loop ended: {game_id}")
+        # To make sure the client has got the most up to date game state send it again
+        # Send the updated game state to FE
 
+        game_name = f"game_{game_id}"       # TODO: this should go in  a function!
+        await channel_layer.group_send(
+            game_name,
+            {
+                "type": "update_game_state",
+                "messageType": "gameState",
+                **get_game_data(game_id)
+            }
+        )
 
-def move_paddle(player, game_state_data_player):
-    # logging.info(f"paddlePos for {player['movePaddle']}: {game_state_data_player['paddlePos']}")
-
-    if player['movePaddle'] == '0':
-        return game_state_data_player
-
-    logging.info(f"player['movePaddle']: player['movePaddle']")
-
-    new_paddle_pos = game_state_data_player['paddlePos']
-    if player['movePaddle'] == '+':
-        new_paddle_pos += game_state_data_player['paddleSpeed']
-    elif player['movePaddle'] == '-':
-        new_paddle_pos -= game_state_data_player['paddleSpeed']
-
-    if (new_paddle_pos - (game_state_data_player['paddleSize'] / 2)) < 0:
-        new_paddle_pos = game_state_data_player['paddleSize'] / 2
-
-    elif (new_paddle_pos + (game_state_data_player['paddleSize'] / 2)) > 100:
-        new_paddle_pos = 100 - (game_state_data_player['paddleSize'] / 2)
-    game_state_data_player['paddlePos'] = new_paddle_pos
-    return game_state_data_player
-
-
-def move_ball(game_state_data):
-    #logging.info(f"ballPos:\t x --> {game_state_data['gameData']['ballPosX']} \t y --> {game_state_data['gameData']['ballPosY']} \t Players pos: left --> {game_state_data['playerLeft']['paddlePos']} {game_state_data['playerRight']['paddlePos']}")
-
-    # Move the ball
-    game_state_data['gameData']['ballPosX'] += game_state_data['gameData']['ballDirectionX'] * game_state_data['gameData']['ballSpeed']
-    game_state_data['gameData']['ballPosY'] += game_state_data['gameData']['ballDirectionY'] * game_state_data['gameData']['ballSpeed']
-
-    # Check if the ball is hitting the left or right paddle(point was scored)
-    if game_state_data['gameData']['ballPosX'] <= PADDLE_OFFSET + game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosX'] = PADDLE_OFFSET + game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionX'] *= -1
-        game_state_data = check_padlle_hit(game_state_data, 'playerLeft')
-    elif game_state_data['gameData']['ballPosX'] >= 100 - PADDLE_OFFSET - game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosX'] = 100 - PADDLE_OFFSET - game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionX'] *= -1
-        game_state_data = check_padlle_hit(game_state_data, 'playerRight')
-
-    # Calculate if the upper or lower wall was hit
-    if game_state_data['gameData']['ballPosY'] <= game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosY'] = game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionY'] *= -1
-    elif game_state_data['gameData']['ballPosY'] >= 100 - game_state_data['gameData']['ballRadius']:
-        game_state_data['gameData']['ballPosY'] = 100 - game_state_data['gameData']['ballRadius']
-        game_state_data['gameData']['ballDirectionY'] *= -1
-
-    return game_state_data
-
-def check_padlle_hit(game_state_data, player_side):
-    # Check if a point was scored
-    # if ballPos < paddlePos
-    if game_state_data['gameData']['ballPosY'] < game_state_data[player_side]['paddlePos']:
-    #     if ballPos + ballRadius < paddlePos - paddleSize / 2
-        if game_state_data['gameData']['ballPosY'] + game_state_data['gameData']['ballRadius'] < game_state_data[player_side]['paddlePos'] - game_state_data[player_side]['paddleSize'] / 2:
-    #         score a point
-            game_state_data = score_point(game_state_data, player_side)
-        else:
-            # Ball should bounce off up
-    #         distance_paddle_ball = paddlePos - ballPos
-            distance_paddle_ball = game_state_data[player_side]['paddlePos'] - game_state_data['gameData']['ballPosY']
-    #         percentage_y = distance_paddle_ball / (paddleSize / 2 + ballRadius)
-            percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
-    #         ballDirectionY = -percentage_y
-            game_state_data['gameData']['ballDirectionY'] = -percentage_y
-    else:
-    #     if ballPos - ballRadius > paddlePos + paddleSize / 2
-        if game_state_data['gameData']['ballPosY'] - game_state_data['gameData']['ballRadius'] > game_state_data[player_side]['paddlePos'] + game_state_data[player_side]['paddleSize'] / 2:
-    #         score a point
-            game_state_data = score_point(game_state_data, player_side)
-        else:
-    #         # Ball should bounce off down
-    #         distance_paddle_ball = ballPos - paddlePos
-            distance_paddle_ball = game_state_data['gameData']['ballPosY'] - game_state_data[player_side]['paddlePos']
-    #         percentage_y = distance_paddle_ball / (paddleSize / 2 + ballRadius)
-            percentage_y = distance_paddle_ball / (game_state_data[player_side]['paddleSize'] / 2 + game_state_data['gameData']['ballRadius'])
-    #         ballDirectionY = percentage_y
-            game_state_data['gameData']['ballDirectionY'] = percentage_y
-
-    return game_state_data
-
-
-def score_point(game_state_data, player_side):
-    game_state_data['gameData']['ballPosX'] = 50
-    game_state_data['gameData']['ballPosY'] = 50
-    game_state_data['gameData']['ballSpeed'] = 1
-
-    if (game_state_data['gameData']['remainingServes'] > 0):
-        game_state_data['gameData']['remainingServes'] -= 1
-    else:
-        game_state_data['gameData']['remainingServes'] = 2
-        if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
-            game_state_data['gameData']['playerServes'] = 'playerRight'
-        else:
-            game_state_data['gameData']['playerServes'] = 'playerLeft'
-
-    if (game_state_data['gameData']['playerServes'] == 'playerLeft'):
-        game_state_data['gameData']['ballDirectionX'] = -1
-    else:
-        game_state_data['gameData']['ballDirectionX'] = 1
-    # Setting dir to a random value
-    game_state_data['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
-
-    # Update the score
-    if (player_side == 'playerLeft'):
-        game_state_data['playerLeft']['points'] += 1 # TODO: HACKATHON Update db
-    else:
-        game_state_data['playerRight']['points'] += 1 # TODO: HACKATHON Update db
-
-    if (game_state_data['playerLeft']['points'] >= 11 or game_state_data['playerRight']['points'] >= 11):
-        game_state_data['gameData']['state'] = 'finished' # TODO: HACKATHON Update db
-
-    return game_state_data
+        if(get_game_data(game_id, 'gameData', 'state') == 'finished'):
+            # Clear the game data on cache
+            cache.delete(f'game_{game_id}_state')
+            cache.delete(f'game_{game_id}_player_left')
+            cache.delete(f'game_{game_id}_player_right')
+            logging.info(f"Game was finished and cache cleared: {game_id}")
+            # Inform both consumers to close their connection
+            await channel_layer.group_send(game_name, {"type": "game_finished"})
