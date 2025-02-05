@@ -13,6 +13,7 @@ import logging
 from django.db import models
 from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm, send_tournament_invites_via_ws
 from rest_framework import status
+import re
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -88,18 +89,30 @@ class CreateTournamentView(BaseAuthenticatedView):
         logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
+        tournament_name = request.data.get('name')
+
+        # Check if tournament name is not empty
+        if not tournament_name:
+            raise BarelyAnException(_("Tournament name cannot be empty"))
+
+        # Validate tournament name using regex
+        if not re.match(r'^[a-zA-Z0-9\-_]+$', tournament_name):
+            raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
+
         tournament = create_tournament(
             creator_id=user.id,
-            name=request.data.get('name'),
+            name=tournament_name,
             local_tournament=request.data.get('localTournament'),
             public_tournament=request.data.get('publicTournament'),
             map_number=request.data.get('mapNumber'),
             powerups=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')
         )
+
         if not tournament.public_tournament:
             send_tournament_invites_via_ws(tournament.id)
             send_tournament_invites_via_pm(tournament.id)
+
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})
 
 class DeleteTournamentView(BaseAuthenticatedView):
