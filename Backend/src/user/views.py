@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .utils_img import process_avatar
 from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
+from authentication.utils import validate_username
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
@@ -256,7 +257,12 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
 
         # Check if the new username is valid
-        # TODO: Wait for issue #108
+       # Validate new username
+        try:
+            validate_username(new_username)
+        except BarelyAnException as e:
+            return error_response(str(e))
+
         if new_username != user.username:
             if User.objects.filter(username=new_username).exists():
                 raise BarelyAnException((_("Username '{username}' already exists").format(username=new_username)))

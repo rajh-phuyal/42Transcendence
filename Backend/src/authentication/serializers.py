@@ -35,15 +35,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'password')
 
-    def validate_username(self, value):
-        if not value:
-            raise BarelyAnException(_("Username cannot be empty"))
-
-        if User.objects.filter(username=value).exists():
-            raise BarelyAnException((_("Username '{username}' already exists").format(username=value)))
-
-        return value
-
     def validate_password(self, value):
         if not value:
             raise BarelyAnException(_("Password cannot be empty"))
