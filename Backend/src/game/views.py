@@ -1,13 +1,14 @@
+# Django
+from django.utils.translation import gettext as _
+# Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
-from user.models import User
-from game.models import Game, GameMember
-from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
+# User
+from user.models import User
+# Game
+from game.models import Game, GameMember
 from game.utils import create_game, delete_game
-from user.constants import USER_ID_AI
-import logging
-# from django.db.models import Q
 
 class CreateGameView(BaseAuthenticatedView):
     @barely_handle_exceptions

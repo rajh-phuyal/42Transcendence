@@ -1,6 +1,9 @@
+# Basics
 import os
+# Django
 from django.core.files.storage import default_storage
 from django.conf import settings
+# User
 from user.models import User
 from user.exceptions import UserNotFound
 
