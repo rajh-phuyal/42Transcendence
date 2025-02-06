@@ -22,7 +22,7 @@ GAME_STATE = {
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
-        "paddleSpeed": 1.5
+        "paddleSpeed": 5
     },
     "playerRight" : {
         "points": 0,
@@ -31,7 +31,7 @@ GAME_STATE = {
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
-        "paddleSpeed": 1.5
+        "paddleSpeed": 5
     },
     "gameData" : {
         "ballPosX": 50,

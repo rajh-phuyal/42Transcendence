@@ -5,17 +5,18 @@ import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { endGameLoop, changeGameState, showPowerupStatus } from './methods.js';
 import { gameRender } from './render.js';
 import { gameObject } from './objects.js';
+import AudioPlayer from '../../abstracts/audio.js';
 
 export default {
     attributes: {
         gameId: null,
-        map: undefined,
+        mapId: undefined,
 
         maps: {
-            "ufo": 1,
-            "lizard-people": 2,
-            "snowman": 3,
-            "lochness": 4,
+            1: "ufo",
+            2: "lizard-people",
+            3: "snowman",
+            4: "lochness",
         },
     },
 
@@ -72,7 +73,7 @@ export default {
                     // Set game data
                     gameObject.playerLeft.points = data.playerLeft.points;
                     gameObject.playerRight.points = data.playerRight.points;
-                    this.map = this.maps[data.gameData.mapNumber];
+                    this.mapId = data.gameData.mapNumber;
 
                     // I send the ready state also via REST NOW
                     // TODO: but i guess this could go in a function thath is also called by the WSManager
@@ -92,6 +93,9 @@ export default {
                         this.domManip.$id("player-right-state-spinner").style.display = "block";
                         this.domManip.$id("player-right-state").style.display = "none";
                     }
+
+                    // Set the map image
+                    this.setMapImage();
 
                     // Set game state
                     changeGameState(data.gameData.state);
@@ -134,6 +138,21 @@ export default {
             gameObject.playerLeft.powerups.fast = "unavailable";
             gameObject.playerRight.powerups.fast = "unavailable";
         },
+
+        setMapImage() {
+            const mapName = this.maps[this.mapId];
+            console.log("mapId:", this.mapId, "mapName:", mapName);
+            const filePath = window.location.origin + '/assets/game/maps/' + mapName + '.png';
+            const gameViewImageContainer = this.domManip.$id("game-view-image-container");
+            const gameImageContainer = this.domManip.$id("game-view-map-image");
+            const gameImage = gameImageContainer.children[0];
+            const gameField = this.domManip.$id("game-field");
+            gameField.style.display = "block";
+            gameImage.src = filePath;
+            gameViewImageContainer.style.backgroundImage = "none";
+            gameViewImageContainer.style.width= "100%";
+            gameImage.style.display = "block";
+        }
     },
 
     hooks: {
@@ -142,6 +161,7 @@ export default {
         },
 
         beforeRouteLeave() {
+            AudioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
             endGameLoop();
@@ -173,17 +193,11 @@ export default {
 
             //TODO: I uncommented the button so that for debung we always see the game field
             // related to issue: #304
-			//const goToGameButton = this.domManip.$id("go-to-game");
-			//goToGameButton.addEventListener('click', () => {
-				const gameViewImageContainer = this.domManip.$id("game-view-image-container");
-				const gameImageContainer = this.domManip.$id("game-view-map-image");
-				const gameImage = gameImageContainer.children[0];
-				gameField.style.display = "block";
-				gameImage.src = window.location.origin + '/assets/game/maps/lizard-people.png';
-				gameViewImageContainer.style.backgroundImage = "none";
-				gameViewImageContainer.style.width= "100%";
-				gameImage.style.display = "block";
-			//});
+			const goToGameButton = this.domManip.$id("go-to-game");
+			goToGameButton.addEventListener('click', () => {
+                // Start audio
+                AudioPlayer.play(this.mapId);
+            });
 		},
     }
 }
