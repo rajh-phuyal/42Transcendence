@@ -3,7 +3,7 @@ import logging
 # Django
 from django.utils.translation import gettext as _
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, F
 from channels.db import database_sync_to_async
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 # Core
@@ -41,37 +41,28 @@ def get_other_user_member(user, conversation_id):
         ).user
     return other_user_member
 
-def create_chat_message(user, other_user_member, conversation_id, content):
-    logging.info("Creating a message in conversation %s from user %s to user %s: '%s'", conversation_id, user, other_user_member, content)
-    # Validate conversation exists & user is a member of the conversation
-    validate_user_is_member_of_conversation(user, conversation_id)
-    conversation = Conversation.objects.get(id=conversation_id)
+def get_conversation_users(conversation_id):
+    return ConversationMember.objects.filter(conversation_id=conversation_id).values_list('user', flat=True)
 
+def create_chat_message(sender, conversation_id, content):
+    # Validate conversation exists & user is a member of the conversation
+    logging.info(f"Creating a message in conversation {conversation_id} from {sender.username}: '{content}'")
+    validate_user_is_member_of_conversation(sender, conversation_id)
+    conversation = Conversation.objects.get(id=conversation_id)
+    logging.info(f"Conversation {conversation_id} found: {conversation}")
     try:
         with transaction.atomic():
             # Create message
             message = Message.objects.create(
-                user=user,
+                user=sender,
                 conversation=conversation,
                 content=content,
             )
-
-            # Update unread message count for the other user
-            unread_messages_count = Message.objects.filter(
-                conversation=conversation,
-                user=user,
-                seen_at__isnull=True
-            ).count()
-            other_user_member = (
-                ConversationMember.objects
-                    .select_for_update()
-                    .filter(conversation=conversation)
-                    .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLORDS))
-                    .first()
-                )
-            other_user_member.unread_counter = unread_messages_count
-            other_user_member.save(update_fields=['unread_counter'])
-            logging.info("Setting unread messages count for user %s to %s", other_user_member.user, unread_messages_count)
+            logging.info(f"Message created: {message}")
+            # Update unread message count for users (except the sender)
+            ConversationMember.objects.filter(
+                conversation=conversation
+            ).exclude(user=sender).update(unread_counter=F('unread_counter') + 1)
 
             broadcast_chat_message(message)
     except Exception as e:
@@ -133,11 +124,10 @@ async def process_incoming_seen_message(self, user, text):
 # NOTE: If the conversation does not exist it will be created
 def create_overloards_pm(userA, userB, content, sendIt=True):
     logging.info(f"Creating a overloards message in conversation of {userA.username} and {userB.username}: '{content}'")
-    # TODO: Check if we need a conversation object here...
     conversation_id = get_conversation_id(userA, userB)
-    conversation = None
     if conversation_id:
         conversation = Conversation.objects.get(id=conversation_id)
     else:
-        conversation = create_conversation(userA, userB, content)
-    create_chat_message(userA, userB, conversation.id, content)
+        conversation = create_conversation(userA, userB, content).id
+    overloards = User.objects.get(id=USER_ID_OVERLORDS)
+    create_chat_message(overloards, conversation.id, content)

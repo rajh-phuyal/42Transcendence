@@ -1,5 +1,5 @@
 # Basics
-import logging
+import logging, re
 # Django
 from rest_framework import status
 from django.db.models import Q
@@ -18,12 +18,12 @@ from core.exceptions import BarelyAnException
 # User
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
-from user.utils_relationship import is_blocking, is_blocked
+from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
 # Chat
 from chat.constants import NO_OF_MSG_TO_LOAD
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
-from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync
+from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync, generate_template_msg
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -43,7 +43,6 @@ class LoadConversationsView(BaseAuthenticatedView):
 class LoadConversationView(BaseAuthenticatedView):
     #@barely_handle_exceptions TODO: remove comment
     def put(self, request, conversation_id=None):
-        from services.websocket_utils import send_message_to_user
         user = request.user
         msgid = int(request.GET.get('msgid', 0))
         if(msgid < 0):
@@ -53,22 +52,54 @@ class LoadConversationView(BaseAuthenticatedView):
         self.validate_conversation_membership(conversation, user)
 
         # Determine blocking status
-        other_user = self.get_other_user(conversation, user, the_overloards)
-        is_blocking = is_blocking(user.id, other_user.id)
-        is_blocked = is_blocked(user.id, other_user.id)
-
-        # Fetch and process messages
-        messages_queryset = self.get_messages_queryset(conversation, msgid)
-        messages, last_seen_msg, unseen_messages = self.process_messages(user, messages_queryset)
         the_overloards = User.objects.get(id=USER_ID_OVERLORDS)
+        other_user = self.get_other_user(conversation, user, the_overloards)
+        is_blocking = user_is_blocking(user.id, other_user.id)
+        is_blocked = user_is_blocked(user.id, other_user.id)
+
+        # Fetch Messages
+        queryset = Message.objects.filter(conversation=conversation)
+        if msgid:
+            if not queryset.filter(id=msgid).exists():
+                raise BarelyAnException(_('Message not found'), status_code=status.HTTP_404_NOT_FOUND)
+            queryset = queryset.filter(id__lt=msgid)
+        queryset = queryset.order_by('-created_at')
+
+        last_seen_msg = queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
+        # Exclude the user from unseen messages because they can't miss their own messages.
+        unseen_messages = queryset.filter(seen_at__isnull=True).exclude(user=user)
+        messages = queryset[:NO_OF_MSG_TO_LOAD]
+
+
+        # Add separator messages if needed (if there are unseen messages)
+        messages = self.add_separator_message(messages, last_seen_msg, unseen_messages)
 
         if not messages:
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
 
         # Transform messages to list
         messages = list(messages)
+        i = 0
+        length = len(messages)
+        while i < length:
+            message = messages[i]
+            # If needed add separator message
+            if unseen_messages.exists() and last_seen_msg and message.id == last_seen_msg.id:
+                    # Add separator message
+                    # Here we create a fake message wich is not stored in the db
+                    # It is really important to keep the structure of this
+                    # message the same as the Message Model so that the
+                    # MessageSerializer can serialize it correctly
+                    messages.insert(i, {
+                        "id": None,
+                        "user": the_overloards,
+                        "created_at": last_seen_msg.created_at,
+                        "seen_at": None,
+                        "content": _("We know that you haven't seen the messages below...")
+                    })
+                    i += 1
+                    length += 1
 
-        for message in messages:
             # Blackout messages if blocking
             if is_blocking and message.user == other_user:
                 message.content = _('**This message is hidden because you are blocking the user**')
@@ -76,8 +107,24 @@ class LoadConversationView(BaseAuthenticatedView):
                 # There are two parsings that need to be done in this order:
                 # 1. translate template messages e.g:
                 #   **B,requester,requestee** -> User @{requester_id} has blocked @{requestee_id}."
+                if message.content.startswith('**') and message.content.endswith('**'):
+                    message.content = generate_template_msg(message.content)
                 # 2. @{user_id} -> @{user_name}@{user_id}@
-                ...
+                if '@' in message.content:
+                    numbers_found = []
+
+                    def replacer(match):
+                        id_value = match.group(1)
+                        numbers_found.append(id_value)
+                        try:
+                            user = User.objects.get(id=id_value)
+                            return f'@{user.username}@{id_value}@'
+                        except User.DoesNotExist:
+                            return match.group(0)
+
+                    message.content = re.sub(r'@(\d+)', replacer, message.content)
+            i += 1
+
                 #TODO:
                 #for message in messages:
                 #    if message.content.startswith('**invite/') and message.content.endswith('**'):
@@ -101,8 +148,6 @@ class LoadConversationView(BaseAuthenticatedView):
                 #        except Exception as e:
                 #            logging.error(f'Error parsing invite message ({message.content}): {e}')
 
-            # Add separator messages if needed (if there are unseen messages)
-            messages = self.add_separator_message(messages, last_seen_msg, unseen_messages)
 
         # Mark as seen
         if not is_blocking:
@@ -167,6 +212,8 @@ class LoadConversationView(BaseAuthenticatedView):
         return messages, last_seen_msg, unseen_messages
 
     def add_separator_message(self, messages, last_seen_msg, unseen_messages):
+        if not messages:
+            return messages
         if unseen_messages.exists():
             messages_with_separator = []
             for message in messages:
@@ -240,7 +287,7 @@ class CreateConversationView(BaseAuthenticatedView):
                 other_user = User.objects.get(id=other_user_id)
             except User.DoesNotExist:
                 return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
-
+            # TODO: somewehre here create the message: **S,requester,requestee**
             # Check if the user blocked client
             if is_blocked(user.id, other_user.id):
                 return error_response(_("You are blocked by the user"), status_code=status.HTTP_403_FORBIDDEN)
