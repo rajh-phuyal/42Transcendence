@@ -1,4 +1,9 @@
 <div id="game-view">
+	<div id="game-view-map-image">
+		<img src='' alt="Game Map">
+		<canvas id="game-field"></canvas>
+	</div>
+
     <!-- Image container to maintain aspect ratio -->
     <div id="game-view-image-container">
         <!-- Left Section -->
@@ -12,16 +17,25 @@
                     <div id="player-left-state-spinner" class="spinner-grow" role="status">
                         <span class="sr-only"></span>
                     </div>
+                    <div id="player-left-powerups-status" class="player-powerup-status" >
+                        <h5 id="player-left-powerups-slow" class="powerup-status">S</h5>
+                        <h5 id="player-left-powerups-fast" class="powerup-status">N</h5>
+                        <h5 id="player-left-powerups-big" class="powerup-status">B</h5>
+                    </div>
                 </div>
             </div>
-            <div class="game-view-left-side-container-bottom">Left Bottom</div>
+            <div id="game-view-left-side-container-bottom" class="game-view-left-side-container-bottom">Left Bottom</div>
         </div>
 
         <!-- Middle Section -->
         <div id="game-view-middle-side-container">
-            <div class="game-view-middle-side-container-top">Middle Content</div>
+            <div class="game-view-middle-side-container-top">
+                <img id="game-countdown-image" src="" alt="Game countdown" width="150px" height="150px">
+			</div>
             <div class="game-view-middle-side-container-bottom">
-                <barely-a-button id="button-leave-lobby"></barely-a-button>
+				<barely-a-button id="button-leave-lobby"></barely-a-button>
+                <!-- <button id="go-to-game" class="btn btn-primary">Start Game</button>  #TODO: issue #304 -->
+                go-to-game
             </div>
         </div>
 
@@ -34,6 +48,11 @@
                     <h3 id="player-right-state" class="user-state">READY!</h3>
                     <div id="player-right-state-spinner" class="spinner-grow" role="status">
                         <span class="sr-only"></span>
+                    </div>
+                    <div id="player-right-powerups-status" class="player-powerup-status" >
+                        <h5 id="player-right-powerups-slow" class="powerup-status">S</h5>
+                        <h5 id="player-right-powerups-fast" class="powerup-status">N</h5>
+                        <h5 id="player-right-powerups-big" class="powerup-status">B</h5>
                     </div>
                 </div>
             </div>
@@ -84,9 +103,23 @@
 }
 
 /* Sidebar Widths */
-#game-view-left-side-container   { background-color: rgba(255, 0, 0, 0.3); width: 20%;}
-#game-view-middle-side-container { background-color: rgba(0, 255, 0, 0.3); width: 60%;}
-#game-view-right-side-container  { background-color: rgba(0, 0, 255, 0.3); width: 20%;}
+#game-view-left-side-container   {
+	background-color: rgba(0, 0, 0, 1);
+	width: 20%;
+	max-width: 200px;
+}
+
+#game-view-middle-side-container {
+	/* background-color: rgba(0, 255, 0, 0.3); */
+	width: 60%;
+}
+
+#game-view-right-side-container  {
+	background-color: rgba(0, 0, 0, 1);
+	width: 20%;
+	max-width: 200px;
+}
+
 
 /* Top Containers Take Most of the Space */
 .game-view-left-side-container-top,
@@ -139,6 +172,17 @@
     border: 2px solid white;
 }
 
+.player-powerup-status {
+    display: flex;
+    flex: row;
+    width: 80%;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    background-color: rgba(136, 21, 21, 0.2);
+}
+
 /* User State Styling */
 .user-state {
     font-size: 20px;
@@ -147,4 +191,61 @@
     display: none;
 }
 
+/* Game Field Styling */
+
+#game-view-map-image {
+	position: absolute;
+	width: 65%;
+	height: 90%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#game-view-map-image > img {
+	display: none;
+	height: 100%;
+	max-width: 1080px;
+	aspect-ratio: 16 / 9;
+	background-size: 100% 100%;
+	position: relative;
+}
+
+
+#game-field {
+	display: none;
+	height: 42%;
+	width: 42%;
+	margin-bottom: 3%;
+	/* aspect-ratio: 19 / 12; */
+	background-color: black;
+	position: absolute;
+}
+
+#game-countdown-image {
+    position: absolute;
+	width: 150px;
+	height: 150px;
+    display: none;
+	justify-content: center;
+	align-items: center;
+}
+
+@keyframes pulsate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeout {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
 </style>
+

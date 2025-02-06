@@ -4,7 +4,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 from tournament.models import Tournament, TournamentMember
-from services.websocket_utils import send_message_to_user_sync
 import logging
 from .serializer import TournamentMemberSerializer
 from user.constants import USER_ID_OVERLOARDS
@@ -83,6 +82,7 @@ def send_tournament_invites_via_pm(tournament_id):
         broadcast_message(newMessage)
 
 def send_tournament_invites_via_ws(tournament_id):
+    from services.websocket_utils import send_message_to_user_sync
     # Get all users that are invited to the tournament
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
 
