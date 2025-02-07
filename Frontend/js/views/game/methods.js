@@ -2,22 +2,34 @@ import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { gameRender } from './render.js';
+import AudioPlayer from '../../abstracts/audio.js';
 import router from '../../navigation/router.js';
+import { translate } from '../../locale/locale.js';
 
 export function changeGameState(state) {
+    gameObject.state = state;
+
     // For debug TODO: remove
     $id("game-view-left-side-container-bottom").innerText = "GAME STATE: " + state;
+
     switch (state) {
         case "ongoing": // transition lobby to game
             $id("button-quit-game").style.display = "none";
+            $id("game-view-middle-side-container-top-text").innerText ="";
             return;
         case "paused": // transition game to lobby
             $id("button-quit-game").style.display = "none";
+            $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused");
+            return;
+        case "pending":
+            $id("button-quit-game").style.display = "none";
+            $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending7");
             return;
         case "finished": // transition game to lobby
             $id("button-quit-game").style.display = "none";
             $id("player-left-state-spinner").style.display = "none";
             $id("player-right-state-spinner").style.display = "none";
+            $id("game-view-middle-side-container-top-text").innerText = "";
             return;
     }
     console.warn("FE doen't know what to do with this state:", state);
@@ -58,6 +70,9 @@ function gameLoop(currentTime) {
         updatePlayerInput();
         updatePowerupStatus();
         gameRender();
+        if (gameObject.playSounds && gameObject.sound)
+            AudioPlayer.playSound(gameObject.sound);
+
         // Check if the game is ongoing
         if (gameObject.state !== "ongoing") {
             console.log("Game is not ongoing anymore: ending game loop");
@@ -150,6 +165,7 @@ export function updateGameObjects(gameState) {
     const gameField = $id("game-field");
 
     gameObject.state = gameState?.gameData?.state;
+    gameObject.sound = gameState?.gameData?.sound;
     gameObject.playerLeft.points = gameState?.playerLeft?.points;
     gameObject.playerRight.points = gameState?.playerRight?.points;
 

@@ -6,5 +6,21 @@
         "de-DE": "",
         "uk-UA": "",
         "ne-NP": ""
+    },
+    "paused": {
+        "en-US": "Game is paused. Press space to continue.",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "pending": {
+        "en-US": "Game is pending. Press space to continue.",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
     }
 }

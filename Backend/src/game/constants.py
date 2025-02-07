@@ -22,7 +22,7 @@ GAME_STATE = {
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
-        "paddleSpeed": 5
+        "paddleSpeed": 2
     },
     "playerRight" : {
         "points": 0,
@@ -31,7 +31,7 @@ GAME_STATE = {
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
-        "paddleSpeed": 5
+        "paddleSpeed": 2
     },
     "gameData" : {
         "ballPosX": 50,
@@ -43,7 +43,8 @@ GAME_STATE = {
         "ballDirectionY": 0,
         "playerServes": "playerLeft",
         "remainingServes": 2,
-        "extendingGameMode": False
+        "extendingGameMode": False,
+        "sound": "none",
     }
 }
 

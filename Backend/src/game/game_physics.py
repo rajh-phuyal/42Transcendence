@@ -67,9 +67,11 @@ async def apply_wall_bonce(game_id):
     if ball_pos_y <= ball_radius:
         set_game_data(game_id, 'gameData', 'ballPosY', ball_radius)
         set_game_data(game_id, 'gameData', 'ballDirectionY', ball_direction_y * -1)
+        set_game_data(game_id, 'gameData', 'sound', 'wall')
     elif ball_pos_y >= 100 - ball_radius:
         set_game_data(game_id, 'gameData', 'ballPosY', 100 - ball_radius)
         set_game_data(game_id, 'gameData', 'ballDirectionY', ball_direction_y * -1)
+        set_game_data(game_id, 'gameData', 'sound', 'wall')
     else:
         # No wall bounce happend
         ...
@@ -107,6 +109,7 @@ async def apply_padlle_hit(game_id, player_side):
             percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_radius)
             set_game_data(game_id, 'gameData', 'ballDirectionX', -1 * get_game_data(game_id, 'gameData', 'ballDirectionX'))
             set_game_data(game_id, 'gameData', 'ballDirectionY', -percentage_y)
+            set_game_data(game_id, 'gameData', 'sound', 'paddle')
     else:
         if ball_pos_y - ball_radius > paddle_pos + paddle_size / 2:
             await apply_point(game_id, player_side)
@@ -116,16 +119,21 @@ async def apply_padlle_hit(game_id, player_side):
             percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_radius)
             set_game_data(game_id, 'gameData', 'ballDirectionX', -1 * get_game_data(game_id, 'gameData', 'ballDirectionX'))
             set_game_data(game_id, 'gameData', 'ballDirectionY', percentage_y)
+            set_game_data(game_id, 'gameData', 'sound', 'paddle')
 
 async def apply_point(game_id, player_side):
     # update_score_points in cache and db
     await update_game_points(game_id, player_side=player_side)
+    set_game_data(game_id, 'gameData', 'sound', 'score')
 
     # Reset the ball
     set_game_data(game_id, 'gameData', 'ballPosX', 50)
     set_game_data(game_id, 'gameData', 'ballPosY', 50)
     set_game_data(game_id, 'gameData', 'ballSpeed', INIT_BALL_SPEED)
     set_game_data(game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
+    # Reset the paddles
+    set_game_data(game_id, 'playerLeft', 'paddlePos', 50)
+    set_game_data(game_id, 'playerRight', 'paddlePos', 50)
 
     # Check if extende mode should be activated (on the score of 10:10)
     if not get_game_data(game_id, 'gameData', 'extendingGameMode'):
@@ -163,7 +171,9 @@ async def check_if_game_is_finished(game_id):
         # One player needs to points ahead
         if abs(score_left - score_right) >= 2:
             await update_game_state(game_id, Game.GameState.FINISHED)
+            set_game_data(game_id, 'gameData', 'sound', 'gameover')
     else:
         # One player needs to score 11 points
         if score_left >= 11 or score_right >= 11:
             await update_game_state(game_id, Game.GameState.FINISHED)
+            set_game_data(game_id, 'gameData', 'sound', 'gameover')

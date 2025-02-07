@@ -31,6 +31,39 @@ export default {
                 router('/');
             })
         },
+        menuKeysCallback(event) {
+            switch (event.key) {
+                case " ":
+                    // Only if game state is pending, ongoing or paused, open the WS connection
+                    if (gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused") {
+                        AudioPlayer.play(0);
+                        this.domManip.$id("game-view-middle-side-container-top-text").innerText="";
+                        WebSocketManagerGame.connect(this.gameId);
+                    }
+                    break;
+
+                case "m":
+                    // Mute the game music
+                    AudioPlayer.playSound("toggle");
+                    gameObject.playMusic = !gameObject.playMusic;
+                    if (gameObject.playMusic)
+                        AudioPlayer.play(gameObject.mapId);
+                    else
+                        AudioPlayer.stop();
+                    break;
+                case "n":
+                    // Mute the game sounds
+                    AudioPlayer.playSound("toggle");
+                    gameObject.playSounds = !gameObject.playSounds;
+                    break;
+                case "Escape":
+                    // Quit the game
+                    router('/');
+
+                default:
+                    return;
+            }
+        },
 
         initListeners(init = true) {
             const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
@@ -100,10 +133,6 @@ export default {
                     // Set game state
                     changeGameState(data.gameData.state);
 
-                    // Only if game state is pending, ongoing or paused, open the WS connection
-                    if (data.gameData.state === "pending" || data.gameData.state === "ongoing" || data.gameData.state === "paused")
-                        WebSocketManagerGame.connect(this.gameId);
-
                 })
                 .catch(error => {
                     router('/');
@@ -164,6 +193,7 @@ export default {
             AudioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
+            this.domManip.$off(document, 'keydown', this.menuKeysCallback);
             endGameLoop();
         },
 
@@ -184,7 +214,7 @@ export default {
             this.initObjects();
             showPowerupStatus(false);
             await this.loadDetails()
-
+            this.domManip.$on(document, 'keydown', this.menuKeysCallback);
 			const gameField = this.domManip.$id("game-field");
 			const ctx = gameField.getContext('2d');
 			ctx.clearRect(0, 0, gameField.width, gameField.height);
@@ -193,11 +223,11 @@ export default {
 
             //TODO: I uncommented the button so that for debung we always see the game field
             // related to issue: #304
-			const goToGameButton = this.domManip.$id("go-to-game");
-			goToGameButton.addEventListener('click', () => {
-                // Start audio
-                AudioPlayer.play(this.mapId);
-            });
+			//const goToGameButton = this.domManip.$id("go-to-game");
+			//goToGameButton.addEventListener('click', () => {
+
+
+//            });
 		},
     }
 }

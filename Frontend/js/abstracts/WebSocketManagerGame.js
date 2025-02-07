@@ -3,6 +3,7 @@ import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import router from '../navigation/router.js';
 import { updateReadyState, updateGameObjects, endGameLoop } from '../views/game/methods.js';
+import { gameObject } from '../views/game/objects.js';
 
 
 
@@ -62,6 +63,7 @@ class WebSocketManagerGame {
         this.socket.onerror = (error) => {
             console.error("GAME WebSocket error:", error);
         };
+        gameObject.wsConnection = true;
     }
 
     // Allowd types are:
@@ -92,6 +94,8 @@ class WebSocketManagerGame {
     }
 
     disconnect() {
+        gameObject.wsConnection = false;
+        endGameLoop();
         this.gameId = null;
         if (this.socket) {
             this.socket.close();
@@ -100,7 +104,6 @@ class WebSocketManagerGame {
         } else {
             console.log("GAME WebSocket is not connected.");
         }
-        endGameLoop();
     }
 
     // TODO: do we use this?

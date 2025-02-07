@@ -1,9 +1,13 @@
 export const gameObject = {
     gameId: undefined,
+    wsConnection: false,
     state: undefined,
     frameTime: undefined,
     lastFrameTime: undefined,
     animationId: undefined,
+    playMusic: true,
+    playSounds: true,
+    sound: undefined,
     playerInputLeft: {
         paddleMovement: undefined,
         powerupFast: undefined,

@@ -240,6 +240,7 @@ class GameConsumer(CustomWebSocketLogic):
 
             # Set game to paused
             await update_game_state(self.game_id, Game.GameState.PAUSED)
+            set_game_data(self.game_id, 'gameData', 'sound', 'pause')
 
             # Other player scores that point
             user_id_for_point = self.leftUser.id
@@ -248,7 +249,8 @@ class GameConsumer(CustomWebSocketLogic):
             await update_game_points(self.game_id, user_id_for_point)
 
             # Send the updated game state to FE
-            self.send_update_game_data_msg()
+            await self.send_update_game_data_msg()
+            set_game_data(self.game_id, 'gameData', 'sound', 'none')
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
@@ -365,6 +367,8 @@ class GameConsumer(CustomWebSocketLogic):
         logging.info(f"Game loop starts now: {game_id}")
         while get_game_data(game_id, 'gameData', 'state') == 'ongoing':
             try:
+                # Reset sound
+                set_game_data(game_id, 'gameData', 'sound', 'none')
                 # Activate PowerUps (if requested and allowed)
                 await activate_power_ups(game_id, 'playerLeft')
                 await activate_power_ups(game_id, 'playerRight')
