@@ -1,3 +1,5 @@
+import { gameObject } from "./objects.js";
+
 export function keyPressCallback(event) {
     switch (event.key) {
         // Player LEFT

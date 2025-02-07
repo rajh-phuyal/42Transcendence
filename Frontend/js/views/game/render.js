@@ -1,6 +1,7 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
 import AudioPlayer from '../../abstracts/audio.js';
+import { percentageToPixels } from './methods.js';
 
 // ############## VARIABLES ##############
 const borders = {
@@ -185,8 +186,8 @@ const drawScore = (ctx, gameField, playerScore, boardSide) => {
 	const digitSeparator = boardSide === "right" ? -15 : 15;
 	const digit = { ...segmentDisplaySettings };
 
-	digit.top.x = gameField.width / 2 - digit.top.width + (digitSeparator < 0 ? -20 : 20);
-	digit.top.y = digit.top.height;
+	digit.top.x = gameField.width / 2 - digit.top.width/2 + (digitSeparator < 0 ? -20 : 20);
+	digit.top.y = digit.top.height + 2;
 	digit.topRight.x = digit.top.x + digit.top.width + 1;
 	digit.topRight.y = digit.top.y;
 	digit.middle.x = digit.top.x;
@@ -220,72 +221,73 @@ const drawScore = (ctx, gameField, playerScore, boardSide) => {
 }
 
 // ############## FUNCTIONS ##############
-const percentageToPixels = (percentage, edgeSize) => {
-    return (edgeSize / 100) * percentage;
+const drawPaddle = (gameField, ctx, side) => {
+    const gameFieldHeight = gameField.height;
+    const gameFieldWidth = gameField.width;
+    let posX, posY, width, height, paddleSpacing;
+    width = percentageToPixels('x', gameObject.paddleWidth);
+    paddleSpacing = percentageToPixels('x', gameObject.paddleSpacing);
+    if (side === "left") {
+        height = gameObject.playerLeft.size;
+        posX = gameObject.borderStrokeWidth + paddleSpacing;
+        posY = gameObject.playerLeft.pos
+    }
+    else if (side === "right") {
+        height = gameObject.playerRight.size;
+        posX = gameField.width - gameObject.borderStrokeWidth - paddleSpacing - width;
+        posY = gameObject.playerRight.pos
+    } else {
+        console.error("Invalid side to draw paddle");
+        return;
+    }
+    ctx.fillStyle = 'white';
+	ctx.fillRect(posX, posY, width, height);
 }
 
-const drawPaddles = (gameField, ctx, normalizedGameObject) => {
-	ctx.fillStyle = 'white';
-	ctx.fillRect(10, normalizedGameObject.playerLeft.pos - (normalizedGameObject.playerLeft.size / 2), 4, normalizedGameObject.playerLeft.size);
-	ctx.fillRect(gameField.width - 4 - 10, normalizedGameObject.playerRight.pos - (normalizedGameObject.playerRight.size / 2), 4, normalizedGameObject.playerRight.size);
-}
-
-const drawBall = (ctx, normalizedGameObject) => {
-	const ballStartPosX = normalizedGameObject.ball.posX - (normalizedGameObject.ball.size / 2);
-	const ballStartPosY = normalizedGameObject.ball.posY - (normalizedGameObject.ball.size / 2);
+const drawBall = (ctx) => {
+    console.log("Drawing ball");
+	const ballStartPosX = gameObject.ball.posX - (gameObject.ball.width / 2);
+	const ballStartPosY = gameObject.ball.posY - (gameObject.ball.height / 2);
 	ctx.beginPath();
-	ctx.fillRect(ballStartPosX, ballStartPosY, normalizedGameObject.ball.size, normalizedGameObject.ball.size);
+	ctx.fillRect(ballStartPosX, ballStartPosY, gameObject.ball.width, gameObject.ball.height);
 	ctx.fill();
 	ctx.closePath();
 }
 
-const drawBorders = (gameField, ctx) => {
-	ctx.strokeStyle = 'white';
-	ctx.beginPath();
-	ctx.moveTo(0, 0);
-	borders.rightUpperCorner.x = gameField.width;
-	borders.rightLowerCorner.x = gameField.width;
-	borders.rightLowerCorner.y = gameField.height;
-	borders.leftLowerCorner.y = gameField.height;
-	ctx.lineTo(borders.leftLowerCorner.x, borders.leftLowerCorner.y);
-	ctx.lineTo(borders.rightLowerCorner.x, borders.rightLowerCorner.y);
-	ctx.lineTo(borders.rightUpperCorner.x, borders.rightUpperCorner.y);
-	ctx.lineTo(borders.leftUpperCorner.x, borders.leftUpperCorner.y);
-	ctx.stroke();
-	ctx.closePath();
-}
-
-const drawFieldSeparator = (gameField, ctx) => {
-	ctx.strokeStyle = 'white';
-	ctx.beginPath();
-	let high = 0;
-	while (high < gameField.height){
-		ctx.rect((gameField.width / 2) - 1, high, 2, 15);
-		ctx.fillStyle = '#ffffff';
-		ctx.fill();
-		high += 21;
-	}
-	ctx.closePath();
-}
-
-const drawField = (gameField, ctx, normalizedGameObject) => {
-	ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+const drawField = (gameField, ctx) => {
+    // Black Background
+    ctx.setLineDash([]);
+	ctx.fillStyle = 'rgba(131, 127, 127, 0.2)';
 	ctx.fillRect(0, 0, gameField.width, gameField.height);
-	drawFieldSeparator(gameField, ctx);
-	drawBorders(gameField, ctx);
-	drawPaddles(gameField, ctx, normalizedGameObject);
-	drawBall(ctx, normalizedGameObject);
-	drawScore(ctx, gameField, normalizedGameObject.playerLeft.points, "left");
-	drawScore(ctx, gameField, normalizedGameObject.playerRight.points, "right");
+    // Middle line
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = gameObject.borderStrokeWidth;
+    ctx.setLineDash([7, 10]);
+    const middleX = (gameField.width /2);
+    const middleY = (gameField.height /2);
+	ctx.beginPath();
+    ctx.moveTo(middleX, middleY);
+    ctx.lineTo(middleX, 0);
+    ctx.moveTo(middleX, middleY);
+    ctx.lineTo(middleX, gameField.height);
+    ctx.stroke();
+    // Outlines
+    ctx.setLineDash([]);
+    ctx.strokeRect(0, 0, gameField.width, gameField.height);
+    // Draw the rest
+	drawPaddle(gameField, ctx, "left");
+    drawPaddle(gameField, ctx, "right");
+	drawBall(ctx);
+	drawScore(ctx, gameField, gameObject.playerLeft.points, "left");
+	drawScore(ctx, gameField, gameObject.playerRight.points, "right");
 }
 
 export function gameRender () {
-    console.log("Rendering game");
 	const gameField = $id("game-field");
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
-	drawField(gameField, ctx, gameObject);
-    if (gameObject.playSounds && gameObject.sound)
+	drawField(gameField, ctx);
+    if (gameObject.playSounds && gameObject.sound && gameObject.sound !== "none")
         AudioPlayer.playSound(gameObject.sound);
 }
 

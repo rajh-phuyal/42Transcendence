@@ -1,9 +1,9 @@
 import $store from '../store/store.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
+import { endGameLoop } from '../views/game/loop.js';
 import router from '../navigation/router.js';
-//import { updateReadyState, updateGameObjects, endGameLoop } from '../views/game/methods.js';
-import { updateReadyState } from '../views/game/methods.js';
+import { updateReadyState, updateGameObjects } from '../views/game/methods.js';
 import { gameObject } from '../views/game/objects.js';
 
 
@@ -67,15 +67,10 @@ class WebSocketManagerGame {
         gameObject.wsConnection = true;
     }
 
-    // Allowd types are:
-    // - TODO: !!!
     sendMessage(message) {
-        //console.log("GAME: FE -> BE:", message);
         this.socket.send(JSON.stringify(message));
     }
 
-    // The backend send:
-    // - TODO: !!!
     receiveMessage(message) {
         console.log("GAME: BE -> FE:", message);
 
@@ -85,9 +80,8 @@ class WebSocketManagerGame {
                 return ;
             case "gameState":
                 //console.log("got game state", message);
-                //updateGameObjects(message); TODO: UNNCOMMENT THIS
+                updateGameObjects(message);
                 return;
-
         }
 
         console.warn("WS GAME: FE doen't know what to do with this type:", message);
@@ -96,7 +90,7 @@ class WebSocketManagerGame {
 
     disconnect() {
         gameObject.wsConnection = false;
-        //endGameLoop(); TODO: UNNCOMMENT THIS
+        endGameLoop();
         this.gameId = null;
         if (this.socket) {
             this.socket.close();

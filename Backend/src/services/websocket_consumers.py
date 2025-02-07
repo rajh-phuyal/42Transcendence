@@ -15,7 +15,7 @@ from game.constants import GAME_FPS, GAME_STATE, GAME_PLAYER_INPUT, PADDLE_OFFSE
 from game.models import Game
 from game.utils import is_left_player, get_game_data, set_game_data, get_user_of_game
 from game.utils_ws import update_game_state, update_game_points
-from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished
+from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished, apply_point
 # Services
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
 from services.chat_service import setup_all_conversations, send_total_unread_counter
@@ -178,6 +178,7 @@ class GameConsumer(CustomWebSocketLogic):
 
         # Accept the connection
         await self.accept()
+        await self.send_update_game_data_msg()
 
         # Init game on cache
         await self.init_game_on_cache()
@@ -242,7 +243,11 @@ class GameConsumer(CustomWebSocketLogic):
             user_id_for_point = self.leftUser.id
             if self.user_id == self.leftUser.id:
                 user_id_for_point = self.rightUser.id
-            await update_game_points(self.game_id, user_id_for_point)
+            if self.isLeftPlayer:
+                player_side = 'playerLeft'
+            else:
+                player_side = 'playerRight'
+            await apply_point(self.game_id, player_side)
 
             # Send the updated game state to FE
             await self.send_update_game_data_msg()

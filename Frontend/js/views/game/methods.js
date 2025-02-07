@@ -6,9 +6,19 @@ import { endGameLoop } from './loop.js';
 import AudioPlayer from '../../abstracts/audio.js';
 import { startGameLoop} from './loop.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-//import { gameRender } from './render.js';
+import { gameRender } from './render.js';
 //import AudioPlayer from '../../abstracts/audio.js';
 //import router from '../../navigation/router.js';
+
+export const percentageToPixels = (side, percentage) => {
+    const gameField = $id("game-field");
+    if (side === "x")
+        return (gameField.width - 2 * gameObject.borderStrokeWidth ) * percentage / 100;
+    else if (side === "y")
+        return (gameField.height - 2 * gameObject.borderStrokeWidth ) * percentage / 100;
+    else
+        return undefined;
+}
 
 export function changeGameState(state) {
     console.log("changeGameState", state);
@@ -24,8 +34,15 @@ export function changeGameState(state) {
             break;
         case "paused": // transition game to lobby
             showPowerupStatus(false);
+            if (gameObject.playMusic)
+                AudioPlayer.play(0); // Lobby music
             $id("button-quit-game").style.display = "none";
-            $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused");
+            if (gameObject.wsConnection){
+                $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-waiting");
+                AudioPlayer.playSound("pause");
+            }
+            else
+                $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
         case "pending":
             showPowerupStatus(false);
@@ -115,6 +132,9 @@ export function showPowerupStatus(visible) {
 export function updateReadyState(readyStateObject) {
     let gameCountdownIntervalId = undefined;
 
+    // Remove paused banner:
+    $id("game-view-middle-side-container-top-text").innerText = "";
+
     // To stop a potential ongoing game we need to:
     endGameLoop();
 
@@ -127,6 +147,8 @@ export function updateReadyState(readyStateObject) {
         // Change music
         if (gameObject.playMusic)
             AudioPlayer.play(gameObject.mapId);
+        if (gameObject.state === "paused")
+            AudioPlayer.playSound("unpause");
         animateImage("game-countdown-image", "pulsate", "1s", "infinite");
         gameCountdownIntervalId = setInterval((startTime) => {
             let diff = Math.floor((startTime - new Date()) / 1000);
@@ -153,29 +175,29 @@ export function updateReadyState(readyStateObject) {
 
 export function updateGameObjects(beMessage) {
     console.log("Updating game objects");
-    const gameField = $id("game-field");
     gameObject.state = beMessage?.gameData?.state;
     gameObject.sound = beMessage?.gameData?.sound;
     gameObject.playerLeft.points = beMessage?.playerLeft?.points;
-    gameObject.playerLeft.pos = percentageToPixels(beMessage?.playerLeft?.paddlePos, gameField?.height);
-    gameObject.playerLeft.size = percentageToPixels(beMessage?.playerLeft?.paddleSize, gameField?.height);
+    gameObject.playerLeft.size = percentageToPixels('y', beMessage?.playerLeft?.paddleSize);
+    gameObject.playerLeft.pos = percentageToPixels('y', beMessage?.playerLeft?.paddlePos) - gameObject.playerLeft.size / 2; // Center the paddle
     gameObject.playerLeft.powerupBig = beMessage?.playerLeft?.powerupBig;
     gameObject.playerLeft.powerupSlow = beMessage?.playerLeft?.powerupSlow;
     gameObject.playerLeft.powerupFast = beMessage?.playerLeft?.powerupFast;
     gameObject.playerRight.points = beMessage?.playerRight?.points;
-    gameObject.playerRight.pos = percentageToPixels(beMessage?.playerRight?.paddlePos, gameField?.height);
-    gameObject.playerRight.size = percentageToPixels(beMessage?.playerRight?.paddleSize, gameField?.height);
+    gameObject.playerRight.size = percentageToPixels('y', beMessage?.playerRight?.paddleSize);
+    gameObject.playerRight.pos = percentageToPixels('y', beMessage?.playerRight?.paddlePos) - gameObject.playerRight.size / 2; // Center the paddle
     gameObject.playerRight.powerupBig = beMessage?.playerRight?.powerupBig;
     gameObject.playerRight.powerupSlow = beMessage?.playerRight?.powerupSlow;
     gameObject.playerRight.powerupFast = beMessage?.playerRight?.powerupFast;
-    gameObject.ball.posX = percentageToPixels(beMessage?.ball?.posX, gameField?.width);
-    gameObject.ball.posY = percentageToPixels(beMessage?.ball?.posY, gameField?.height);
-    gameObject.ball.height = percentageToPixels(beMessage?.ball?.height, gameField?.height);
-    gameObject.ball.width = percentageToPixels(beMessage?.ball?.width, gameField?.height);
+    gameObject.ball.posX = percentageToPixels('x', beMessage?.ball?.posX);
+    gameObject.ball.posY = percentageToPixels('y', beMessage?.ball?.posY);
+    gameObject.ball.height = percentageToPixels('y', beMessage?.ball?.height);
+    gameObject.ball.width = percentageToPixels('x', beMessage?.ball?.width);
     // If the state is not ongoing we should render manually!
     // So when establishing a connection we can render the game state
     if (gameObject.state !== "ongoing")
         console.log("Rendering game state manually");
+        changeGameState(gameObject.state);
         gameRender();
 }
 

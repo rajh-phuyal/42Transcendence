@@ -157,13 +157,14 @@ async def apply_point(game_id, player_side):
     # Reset the ball
     # X: Direction & Postion depends on the serving player
     if get_game_data(game_id, 'gameData', 'playerServes') == 'playerLeft':
+        set_game_data(game_id, 'ball', 'directionX', 1)
+        set_game_data(game_id, 'ball', 'posX', PADDLE_OFFSET)
+    else:
         set_game_data(game_id, 'ball', 'directionX', -1)
         set_game_data(game_id, 'ball', 'posX', 100 - PADDLE_OFFSET)
-    else:
-        set_game_data(game_id, 'ball', 'directionX', 1)
-        set_game_data(game_id, 'ball', 'posY', PADDLE_OFFSET)
     # Y: Random direction (to avoid the same ball movement and stuck in a loop)
     set_game_data(game_id, 'ball', 'directionY', random.uniform(-0.01, 0.01))
+    set_game_data(game_id, 'ball', 'posY', 50)
     # Speed: Reset to initial speed
     set_game_data(game_id, 'ball', 'speed', INIT_BALL_SPEED)
 
