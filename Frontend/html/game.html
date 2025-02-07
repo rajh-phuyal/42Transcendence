@@ -24,7 +24,10 @@
                     </div>
                 </div>
             </div>
-            <div id="game-view-left-side-container-bottom" class="game-view-left-side-container-bottom">Left Bottom</div>
+            <div id="game-view-left-side-container-bottom" class="game-view-left-side-container-bottom">
+                <img id="game-music-icon" src="" width="50px" height="50px">
+                <img id="game-sound-icon" src="" width="50px" height="50px">
+            </div>
         </div>
 
         <!-- Middle Section -->
@@ -84,7 +87,7 @@
     width: 80%;
     height: calc(100vh - 100px);
     aspect-ratio: 16 / 9; /* Ensures the image maintains ratio */
-    background: url('../assets/game/gameWaitingRoom.png') no-repeat center center;
+    background: url('../assets/game/lobby.png') no-repeat center center;
     background-size: 100% 100%;
 }
 
@@ -101,6 +104,12 @@
     position: relative;
 }
 
+#game-view-middle-side-container-top-text{
+    /*Background color for text-align: ;*/
+    background-color: rgba(194, 182, 182, 0.815);
+    /*Text color*/
+    color: rgb(0, 0, 0);
+}
 /* Sidebar Widths */
 #game-view-left-side-container   {
 	background-color: rgba(0, 0, 0, 1);
@@ -187,7 +196,6 @@
     font-size: 20px;
     font-weight: bold;
     margin-top: 5px;
-    display: none;
 }
 
 /* Game Field Styling */

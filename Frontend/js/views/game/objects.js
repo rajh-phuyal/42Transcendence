@@ -43,5 +43,5 @@ export const gameObject = {
         posY: 50,
         height: 1,
         width: 1
-    },
+    }
 }

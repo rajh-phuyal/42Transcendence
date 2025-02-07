@@ -8,7 +8,7 @@
         "ne-NP": ""
     },
     "paused": {
-        "en-US": "Game is paused. Press space to continue.",
+        "en-US": "Game is paused\nPress space to connect",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
@@ -16,7 +16,23 @@
         "ne-NP": ""
     },
     "pending": {
-        "en-US": "Game is pending. Press space to continue.",
+        "en-US": "Game is pending\nPress space to connect",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "ready": {
+        "en-US": "READY",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "finished": {
+        "en-US": "Game is over",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",

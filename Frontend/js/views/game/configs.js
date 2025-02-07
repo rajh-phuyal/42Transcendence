@@ -2,8 +2,8 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { endGameLoop, changeGameState } from './methods.js';
-import { gameRender } from './render.js';
+import { changeGameState, updateReadyStateNodes, toggleMusic, toggleSound } from './methods.js';
+//import { gameRender } from './render.js';
 import { gameObject } from './objects.js';
 import AudioPlayer from '../../abstracts/audio.js';
 
@@ -34,26 +34,29 @@ export default {
         menuKeysCallback(event) {
             switch (event.key) {
                 case " ":
-                    // Only if game state is pending, ongoing or paused, open the WS connection
-                    if (gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused") {
+                    // Only if no connection exists and
+                    // game state is pending, ongoing or paused, open the WS connection
+                    if (!gameObject.wsConnection && gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused") {
+                        gameObject.wsConnection = true;
+                        gameObject.playerLeft.state = "waiting";
+                        gameObject.playerRight.state = "waiting";
+                        updateReadyStateNodes();
                         AudioPlayer.play(0);
                         this.domManip.$id("game-view-middle-side-container-top-text").innerText="";
                         WebSocketManagerGame.connect(this.gameId);
+                        // TODO #304 this should be done by the animaion
+                        const gameViewImageContainer = this.domManip.$id("game-view-image-container");
+                        gameViewImageContainer.style.backgroundImage = "none";
+                        gameViewImageContainer.style.width= "100%";
                     }
                     break;
                 case "m":
                     // Mute the game music
-                    AudioPlayer.playSound("toggle");
-                    gameObject.playMusic = !gameObject.playMusic;
-                    if (gameObject.playMusic)
-                        AudioPlayer.play(gameObject.mapId);
-                    else
-                        AudioPlayer.stop();
+                    toggleMusic();
                     break;
                 case "n":
                     // Mute the game sounds
-                    AudioPlayer.playSound("toggle");
-                    gameObject.playSounds = !gameObject.playSounds;
+                   toggleSound();
                     break;
                 case "Escape":
                     // Quit the game
@@ -76,6 +79,8 @@ export default {
                 this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
                 this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
                 this.domManip.$on(document, 'keydown', this.menuKeysCallback);
+                this.domManip.$on(this.domManip.$id("game-music-icon"), "click", toggleMusic);
+                this.domManip.$on(this.domManip.$id("game-sound-icon"), "click", toggleSound);
                 return ;
             }
 
@@ -88,6 +93,10 @@ export default {
                         this.domManip.$off(buttonQuitGame, "click");
                     if (document.eventListeners)
                         this.domManip.$on(document, 'keydown', this.menuKeysCallback);
+                    if (this.domManip.$id("game-music-icon").eventListeners)
+                        this.domManip.$off(this.domManip.$id("game-music-icon"), "click");
+                    if (this.domManip.$id("game-sound-icon").eventListeners)
+                        this.domManip.$off(this.domManip.$id("game-sound-icon"), "click");
                 }
             }
         },
@@ -107,33 +116,15 @@ export default {
                     // Set game data
                     gameObject.playerLeft.points = data.playerLeft.points;
                     gameObject.playerRight.points = data.playerRight.points;
+                    gameObject.mapId = data.gameData.mapNumber;
                     this.mapId = data.gameData.mapNumber;
 
                     // I send the ready state also via REST NOW
                     // TODO: but i guess this could go in a function thath is also called by the WSManager
-                    if (data.playerLeft.ready) {
-                        this.domManip.$id("player-left-state-spinner").style.display = "none";
-                        this.domManip.$id("player-left-state").style.display = "block";
-                    }
-                    else {
-                        this.domManip.$id("player-left-state-spinner").style.display = "block";
-                        this.domManip.$id("player-left-state").style.display = "none";
-                    }
-                    if (data.playerRight.ready) {
-                        this.domManip.$id("player-right-state-spinner").style.display = "none";
-                        this.domManip.$id("player-right-state").style.display = "block";
-                    }
-                    else {
-                        this.domManip.$id("player-right-state-spinner").style.display = "block";
-                        this.domManip.$id("player-right-state").style.display = "none";
-                    }
+                    gameObject.playerRight.state = data.playerRight.ready ? "ready" : "waiting";
+                    gameObject.playerLeft.state = data.playerLeft.ready ? "ready" : "waiting";
 
-                    // Set the map image
-                    this.setMapImage();
-
-                    // Set game state
                     changeGameState(data.gameData.state);
-
                 })
                 .catch(error => {
                     router('/');
@@ -182,21 +173,19 @@ export default {
             // Before loading sed the game avatars to default avatar:
             this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
             this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
+            // Sound icons
+            this.domManip.$id("game-music-icon").src = window.origin + '/assets/game/icons/sound-on.png';
+            this.domManip.$id("game-sound-icon").src = window.origin + '/assets/game/icons/music-on.png';
         },
 
         setMapImage() {
             const mapName = this.maps[this.mapId];
-            console.log("mapId:", this.mapId, "mapName:", mapName);
-            const filePath = window.location.origin + '/assets/game/maps/' + mapName + '.png';
-            const gameViewImageContainer = this.domManip.$id("game-view-image-container");
-            const gameImageContainer = this.domManip.$id("game-view-map-image");
-            const gameImage = gameImageContainer.children[0];
+            const gameImage = this.domManip.$id("game-view-map-image").children[0];
             const gameField = this.domManip.$id("game-field");
-            gameField.style.display = "block";
+            const filePath = window.location.origin + '/assets/game/maps/' + mapName + '.png';
             gameImage.src = filePath;
-            gameViewImageContainer.style.backgroundImage = "none";
-            gameViewImageContainer.style.width= "100%";
             gameImage.style.display = "block";
+            gameField.style.display = "block";
         }
     },
 
@@ -208,7 +197,7 @@ export default {
         beforeRouteLeave() {
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
-            endGameLoop();
+            //endGameLoop(); //TODO: uncomment this!
             AudioPlayer.stop();
         },
 
@@ -228,14 +217,15 @@ export default {
             // Initialize the game object
             this.initObjects();
             // Initialize the first view (before loading actuall game data)
-            changeGameState("loading");
+            changeGameState(undefined);
             // REST call to load the game details
-            //await this.loadDetails()
+            await this.loadDetails()
+            this.setMapImage();
 
 //			const gameField = this.domManip.$id("game-field");
 //			const ctx = gameField.getContext('2d');
 //			ctx.clearRect(0, 0, gameField.width, gameField.height);
 //			gameRender(gameField, ctx);
-		},
+		}
     }
 }
