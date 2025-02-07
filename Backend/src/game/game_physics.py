@@ -9,6 +9,8 @@ async def activate_power_ups(game_id, playerSide):
     # TODO Implement Powerups issue #308
     # I guess it should be done by just changeing the game state data on cache
     # The calculation of ball move and paddle move should be done with the new game state data
+    # TODO: ALSO SET THE SOUND WHEN ACTIVATING A POWERUP LIKE:
+    # set_game_data(game_id, 'gameData', 'sound', 'powerup')
     if get_player_input(game_id, playerSide, 'activatePowerupBig') == 'true':
         logging.info(f"PowerUp BIG tried to activate by: {playerSide}")
     if get_player_input(game_id, playerSide, 'activatePowerupSlow') == 'true':

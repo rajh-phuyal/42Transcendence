@@ -9,10 +9,14 @@ import { translate } from '../../locale/locale.js';
 export function changeGameState(state) {
     gameObject.state = state;
 
-    // For debug TODO: remove
+   /*  // For debug TODO: remove
     $id("game-view-left-side-container-bottom").innerText = "GAME STATE: " + state;
 
     switch (state) {
+        case undefined:
+            updateReadyStateNodes();
+            showPowerupStatus(false);
+            return;
         case "ongoing": // transition lobby to game
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText ="";
@@ -32,20 +36,10 @@ export function changeGameState(state) {
             $id("game-view-middle-side-container-top-text").innerText = "";
             return;
     }
-    console.warn("FE doen't know what to do with this state:", state);
+    console.warn("FE doen't know what to do with this state:", state); */
 }
 
-// function logTimeWithMilliseconds() {
-//     const now = new Date();
-//     const hours = now.getHours().toString().padStart(2, '0');
-//     const minutes = now.getMinutes().toString().padStart(2, '0');
-//     const seconds = now.getSeconds().toString().padStart(2, '0');
-//     const milliseconds = now.getMilliseconds().toString().padStart(3, '0');
-
-//     console.log(`${hours}:${minutes}:${seconds}.${milliseconds}`);
-// }
-
-function updatePlayerInput() {
+function sendPlayerInput() {
     // Send the ws message to the server
     const message = {
         messageType: "playerInput",
@@ -67,19 +61,16 @@ function updatePlayerInput() {
 
 function gameLoop(currentTime) {
     if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
-        updatePlayerInput();
+        sendPlayerInput();
         updatePowerupStatus();
         gameRender();
-        if (gameObject.playSounds && gameObject.sound)
-            AudioPlayer.playSound(gameObject.sound);
-
-        // Check if the game is ongoing
+        gameObject.lastFrameTime = currentTime;
+        // Check if the game is  still ongoing
         if (gameObject.state !== "ongoing") {
             console.log("Game is not ongoing anymore: ending game loop");
             cancelAnimationFrame(gameObject.animationId);
             return;
         }
-        gameObject.lastFrameTime = currentTime;
     }
     gameObject.animationId = requestAnimationFrame(gameLoop);
 }
@@ -131,7 +122,6 @@ function keyPressCallback(event) {
         default:
             return;
     }
-    updatePlayerInput();
 }
 
 function keyReleaseCallback(event) {
@@ -154,42 +144,35 @@ function keyReleaseCallback(event) {
             gameObject.playerInputRight.paddleMovement = "0";
             break;
     }
-    updatePlayerInput();
 }
 
 const percentageToPixels = (percentage, edgeSize) => {
     return (edgeSize / 100) * percentage;
 }
 
-export function updateGameObjects(gameState) {
+export function updateGameObjects(beMessage) {
     const gameField = $id("game-field");
 
-    gameObject.state = gameState?.gameData?.state;
-    gameObject.sound = gameState?.gameData?.sound;
-    gameObject.playerLeft.points = gameState?.playerLeft?.points;
-    gameObject.playerRight.points = gameState?.playerRight?.points;
-
-    // TODO: remove only for debugging:
-    $id("game-view-left-side-container-bottom").innerHTML = "GAME STATE: " + gameObject.state + "<br>(" + gameObject.playerLeft.points +":" + gameObject.playerRight.points + ")";
-
-    gameObject.playerLeft.pos = percentageToPixels(gameState?.playerLeft?.paddlePos, gameField?.height);
-    gameObject.playerRight.pos = percentageToPixels(gameState?.playerRight?.paddlePos, gameField?.height);
-    gameObject.playerLeft.size = percentageToPixels(gameState?.playerLeft?.paddleSize, gameField?.height);
-    gameObject.playerRight.size = percentageToPixels(gameState?.playerRight?.paddleSize, gameField?.height);
-    gameObject.ball.posX = percentageToPixels(gameState?.gameData?.ballPosX, gameField?.width);
-    gameObject.ball.posY = percentageToPixels(gameState?.gameData?.ballPosY, gameField?.height);
-    gameObject.ball.size = 4;
-
-    gameObject.playerLeft.powerups.big = gameState?.playerLeft?.powerupBig;
-    gameObject.playerLeft.powerups.slow = gameState?.playerLeft?.powerupSlow;
-    gameObject.playerLeft.powerups.fast = gameState?.playerLeft?.powerupFast;
-    gameObject.playerRight.powerups.big = gameState?.playerRight?.powerupBig;
-    gameObject.playerRight.powerups.slow = gameState?.playerRight?.powerupSlow;
-    gameObject.playerRight.powerups.fast = gameState?.playerRight?.powerupFast;
-
+    gameObject.state = beMessage?.gameData?.state;
+    gameObject.sound = beMessage?.gameData?.sound;
+    gameObject.playerLeft.points = beMessage?.playerLeft?.points;
+    gameObject.playerLeft.pos = percentageToPixels(beMessage?.playerLeft?.paddlePos, gameField?.height);
+    gameObject.playerLeft.size = percentageToPixels(beMessage?.playerLeft?.paddleSize, gameField?.height);
+    gameObject.playerLeft.powerupBig = beMessage?.playerLeft?.powerupBig;
+    gameObject.playerLeft.powerupSlow = beMessage?.playerLeft?.powerupSlow;
+    gameObject.playerLeft.powerupFast = beMessage?.playerLeft?.powerupFast;
+    gameObject.playerRight.points = beMessage?.playerRight?.points;
+    gameObject.playerRight.pos = percentageToPixels(beMessage?.playerRight?.paddlePos, gameField?.height);
+    gameObject.playerRight.size = percentageToPixels(beMessage?.playerRight?.paddleSize, gameField?.height);
+    gameObject.playerRight.powerupBig = beMessage?.playerRight?.powerupBig;
+    gameObject.playerRight.powerupSlow = beMessage?.playerRight?.powerupSlow;
+    gameObject.playerRight.powerupFast = beMessage?.playerRight?.powerupFast;
+    gameObject.ball.posX = percentageToPixels(beMessage?.ball?.posX, gameField?.width);
+    gameObject.ball.posY = percentageToPixels(beMessage?.ball?.posY, gameField?.height);
+    gameObject.ball.height = percentageToPixels(beMessage?.ball?.height, gameField?.height);
+    gameObject.ball.width = percentageToPixels(beMessage?.ball?.width, gameField?.height);
     // If the state is not ongoing we should render manually!
     // So when establishing a connection we can render the game state
-    console.log("GAME STATE: ", gameObject.state);
     if (gameObject.state !== "ongoing")
         console.log("Rendering game state manually");
         gameRender();
@@ -208,38 +191,47 @@ function colorPowerupStatus(element, state) {
         element.style.color = "gray";
 }
 
-function updatePowerupStatus() {
-    colorPowerupStatus($id('player-left-powerups-big'), gameObject.playerLeft.powerups.big);
-    colorPowerupStatus($id('player-left-powerups-fast'), gameObject.playerLeft.powerups.fast);
-    colorPowerupStatus($id('player-left-powerups-slow'), gameObject.playerLeft.powerups.slow);
-    colorPowerupStatus($id('player-right-powerups-big'), gameObject.playerRight.powerups.big);
-    colorPowerupStatus($id('player-right-powerups-fast'), gameObject.playerRight.powerups.fast);
-    colorPowerupStatus($id('player-right-powerups-slow'), gameObject.playerRight.powerups.slow);
+export function updateReadyStateNodes() {
+    // Hide the ready message and the spinner (for finished, ongoing games)
+    if (gameObject.playerLeft.state === undefined){
+        $id("player-left-state").innerHTML = "";
+        $id("player-left-state-spinner").style.display = "none";
+    }
+    if (gameObject.playerRight.state === undefined){
+        $id("player-right-state").innerHTML = "";
+        $id("player-right-state-spinner").style.display = "none";
+    }
+    // Show the spinner and remove the text
+    if (gameObject.playerLeft.state === "waiting"){
+        $id("player-left-state").innerHTML = "";
+        $id("player-left-state-spinner").style.display = "block";
+    }
+    if (gameObject.playerRight.state === "waiting"){
+        $id("player-right-state").innerHTML = "";
+        $id("player-right-state-spinner").style.display = "block";
+    }
+    // Show the message and remove the spinner
+    if (gameObject.playerLeft.state === "ready"){
+        $id("player-left-state").innerHTML = translate("game", "ready");
+        $id("player-left-state-spinner").style.display = "none";
+    }
+    if (gameObject.playerRight.state === "ready"){
+        $id("player-right-state").innerHTML = translate("game", "ready");
+        $id("player-right-state-spinner").style.display = "none";
+    }
 }
 
 export function showPowerupStatus(value) {
-        let elements = $class('user-state')
-        for (let element of elements)
-            value ? element.style.display = "none" : element.style.display = "flex";
-
-        $id("player-left-state-spinner").style.display = value ? "none" : "block";
-        $id("player-right-state-spinner").style.display = value ? "none" : "block";
-
-        elements = $class('player-powerup-status')
-
+        let elements = $class('player-powerup-status')
         for (let element of elements)
             element.style.display = value ? element.style.display = "flex" : element.style.display = "none";
 
-        updatePowerupStatus();
-}
-
-export function endGameLoop() {
-    console.log("Ending game loop");
-    cancelAnimationFrame(gameObject.animationId);
-    $off(document, 'keydown', keyPressCallback);
-    $off(document, 'keyup', keyReleaseCallback);
-    showPowerupStatus(false); // TO show the spinners again
-    gameRender(); // One last render to show the final state
+        colorPowerupStatus($id('player-left-powerups-big'), gameObject.playerLeft.powerupBig);
+        colorPowerupStatus($id('player-left-powerups-slow'), gameObject.playerLeft.powerupSlow);
+        colorPowerupStatus($id('player-left-powerups-fast'), gameObject.playerLeft.powerupFast);
+        colorPowerupStatus($id('player-right-powerups-big'), gameObject.playerRight.powerupBig);
+        colorPowerupStatus($id('player-right-powerups-slow'), gameObject.playerRight.powerupSlow);
+        colorPowerupStatus($id('player-right-powerups-fast'), gameObject.playerRight.powerupFast);
 }
 
 export function startGameLoop() {
@@ -259,6 +251,15 @@ export function startGameLoop() {
     // }
     gameObject.animationId = requestAnimationFrame(gameLoop);
     showPowerupStatus(true);
+}
+
+export function endGameLoop() {
+    console.log("Ending game loop");
+    cancelAnimationFrame(gameObject.animationId);
+    $off(document, 'keydown', keyPressCallback);
+    $off(document, 'keyup', keyReleaseCallback);
+    showPowerupStatus(false); // TO show the spinners again
+    gameRender(); // One last render to show the final state
 }
 
 const animateImage = (
@@ -281,7 +282,6 @@ const removeImageAnimation = (id) => {
     //image.style.animationName = "";
     //image.style.animationIterationCount = "0";
 }
-
 
 const showGame = () => {
     const gameField = $id("game-field");

@@ -21,27 +21,27 @@ export const gameObject = {
         powerupBig: undefined,
     },
     playerLeft: {
+        state: undefined,
         points: undefined,
         pos: undefined,
         size: undefined,
-        powerups: {
-            big: undefined,
-            slow: undefined,
-            fast: undefined,
-        }
+        powerupBig: "unavailable",
+        powerupSlow: "unavailable",
+        powerupFast: "unavailable"
     },
     playerRight: {
+        state: undefined,
         points: undefined,
         pos: undefined,
         size: undefined,
-        powerups: {
-            big: undefined,
-            slow: undefined,
-            fast: undefined,
-        }
+        powerupBig: "unavailable",
+        powerupSlow: "unavailable",
+        powerupFast: "unavailable"
     },
     ball: {
-        posX: undefined,
-        posY: undefined,
+        posX: 50,
+        posY: 50,
+        height: 1,
+        width: 1
     },
 }

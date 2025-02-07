@@ -33,18 +33,20 @@ GAME_STATE = {
         "powerupFast": "unavailable",
         "paddleSpeed": 2
     },
+    "ball" : {
+        "posX": 50,
+        "posY": 50,
+        "height": 1,
+        "width": 1,
+        "speed": INIT_BALL_SPEED,
+        "directionX": -1,
+        "directionY": 0
+    },
     "gameData" : {
-        "ballPosX": 50,
-        "ballPosY": 50,
         "state": "pending",
-        "ballSpeed": INIT_BALL_SPEED,
-        "ballRadius": 1,
-        "ballDirectionX": -1,
-        "ballDirectionY": 0,
         "playerServes": "playerLeft",
         "remainingServes": 2,
         "extendingGameMode": False,
         "sound": "none",
     }
 }
-

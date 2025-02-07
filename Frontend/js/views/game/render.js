@@ -1,5 +1,6 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
+import { AudioPlayer } from '../../abstracts/AudioPlayer.js';
 
 // ############## VARIABLES ##############
 
@@ -291,4 +292,6 @@ export function gameRender () {
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx, gameObject);
+    if (gameObject.playSounds && gameObject.sound)
+        AudioPlayer.playSound(gameObject.sound);
 }

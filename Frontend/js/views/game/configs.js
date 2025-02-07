@@ -2,7 +2,7 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { endGameLoop, changeGameState, showPowerupStatus } from './methods.js';
+import { endGameLoop, changeGameState } from './methods.js';
 import { gameRender } from './render.js';
 import { gameObject } from './objects.js';
 import AudioPlayer from '../../abstracts/audio.js';
@@ -41,7 +41,6 @@ export default {
                         WebSocketManagerGame.connect(this.gameId);
                     }
                     break;
-
                 case "m":
                     // Mute the game music
                     AudioPlayer.playSound("toggle");
@@ -59,7 +58,6 @@ export default {
                 case "Escape":
                     // Quit the game
                     router('/');
-
                 default:
                     return;
             }
@@ -77,6 +75,7 @@ export default {
                 buttonQuitGame.render();
                 this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
                 this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
+                this.domManip.$on(document, 'keydown', this.menuKeysCallback);
                 return ;
             }
 
@@ -87,6 +86,8 @@ export default {
                         this.domManip.$off(buttonLeaveLobby, "click");
                     if (buttonQuitGame.eventListeners)
                         this.domManip.$off(buttonQuitGame, "click");
+                    if (document.eventListeners)
+                        this.domManip.$on(document, 'keydown', this.menuKeysCallback);
                 }
             }
         },
@@ -146,26 +147,41 @@ export default {
             // If a game is finished we will never opene a connection just show this default stuff
             // but with an updated score!
             gameObject.gameId = this.gameId;
+            gameObject.wsConnection = false;
+            gameObject.state = undefined;
             gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
-            gameObject.state = "ongoing";
-            gameObject.playerLeft.points = 0;
-            gameObject.playerRight.points = 0;
-
+            gameObject.lastFrameTime = 0;
+            gameObject.animationId = null;
+            gameObject.playMusic = true;
+            gameObject.playSounds = true;
+            gameObject.sound = null;
+            gameObject.playerInputLeft.paddleMovement = 0;
+            gameObject.playerInputLeft.powerupFast = false;
+            gameObject.playerInputLeft.powerupSlow = false;
+            gameObject.playerInputLeft.powerupBig = false;
+            gameObject.playerInputRight.paddleMovement = 0;
+            gameObject.playerInputRight.powerupFast = false;
+            gameObject.playerInputRight.powerupSlow = false;
+            gameObject.playerInputRight.powerupBig = false;
+            gameObject.playerLeft.state = undefined;
+            gameObject.playerLeft.points = 0
             gameObject.playerLeft.pos = 50;
-            gameObject.playerRight.pos = 50;
-
             gameObject.playerLeft.size = 10;
-			gameObject.playerRight.size = 10;
-
+            gameObject.playerLeft.powerupBig = "unavailable";
+            gameObject.playerLeft.powerupSlow = "unavailable";
+            gameObject.playerLeft.powerupFast = "unavailable";
+            gameObject.playerLeft.points = 0
+            gameObject.playerRight.state = undefined;
+            gameObject.playerRight.pos = 50;
+            gameObject.playerRight.size = 10;
+            gameObject.playerRight.powerupBig = "unavailable";
+            gameObject.playerRight.powerupSlow = "unavailable";
+            gameObject.playerRight.powerupFast = "unavailable";
 			gameObject.ball.posX = 50;
 			gameObject.ball.posY = 50;
-
-            gameObject.playerLeft.powerups.big = "unavailable";  // available / using / used / unavailable
-            gameObject.playerRight.powerups.big = "unavailable";
-            gameObject.playerLeft.powerups.slow = "unavailable";
-            gameObject.playerRight.powerups.slow = "unavailable";
-            gameObject.playerLeft.powerups.fast = "unavailable";
-            gameObject.playerRight.powerups.fast = "unavailable";
+            // Before loading sed the game avatars to default avatar:
+            this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
+            this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
         },
 
         setMapImage() {
@@ -190,11 +206,10 @@ export default {
         },
 
         beforeRouteLeave() {
-            AudioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
-            this.domManip.$off(document, 'keydown', this.menuKeysCallback);
             endGameLoop();
+            AudioPlayer.stop();
         },
 
         beforeDomInsertion() {
@@ -203,31 +218,24 @@ export default {
 
         async afterDomInsertion() {
             this.initListeners();
-
-            // Checking game id
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
                 console.warn("Invalid game id '%s' from routeParams?.id -> redir to home", this.routeParams.id);
                 router('/');
                 return;
             }
+            // Setting the gameId from the route params
             this.gameId = this.routeParams.id;
+            // Initialize the game object
             this.initObjects();
-            showPowerupStatus(false);
-            await this.loadDetails()
-            this.domManip.$on(document, 'keydown', this.menuKeysCallback);
-			const gameField = this.domManip.$id("game-field");
-			const ctx = gameField.getContext('2d');
-			ctx.clearRect(0, 0, gameField.width, gameField.height);
+            // Initialize the first view (before loading actuall game data)
+            changeGameState("loading");
+            // REST call to load the game details
+            //await this.loadDetails()
 
-			gameRender(gameField, ctx);
-
-            //TODO: I uncommented the button so that for debung we always see the game field
-            // related to issue: #304
-			//const goToGameButton = this.domManip.$id("go-to-game");
-			//goToGameButton.addEventListener('click', () => {
-
-
-//            });
+//			const gameField = this.domManip.$id("game-field");
+//			const ctx = gameField.getContext('2d');
+//			ctx.clearRect(0, 0, gameField.width, gameField.height);
+//			gameRender(gameField, ctx);
 		},
     }
 }
