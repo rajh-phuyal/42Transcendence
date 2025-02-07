@@ -1,16 +1,18 @@
-from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
-import random
-from game.models import Game, GameMember
-from core.exceptions import BarelyAnException
-from game.constants import GAME_STATE, GAME_PLAYER_INPUT
-from django.core.cache import cache
+# Basics
+import random, logging
 from copy import deepcopy
+# Django
+from django.core.cache import cache
 from django.utils.translation import gettext as _
-import logging
+from django.db import transaction
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
-from django.db import transaction
-from game.utils import is_left_player, finish_game, get_user_of_game
+# Core
+from core.exceptions import BarelyAnException
+# Game
+from game.constants import GAME_STATE, GAME_PLAYER_INPUT, PADDLE_OFFSET
+from game.models import Game, GameMember
+from game.utils import is_left_player, get_game_data, set_game_data, get_user_of_game, finish_game
 
 @database_sync_to_async
 def update_game_state(game_id, state):
@@ -107,12 +109,14 @@ async def init_game(game):
     # Randomize serving player
     if random.randint(0, 1) == 0:
         new_game_state["gameData"]["playerServes"] = "playerLeft"
-        new_game_state["gameData"]["ballDirectionX"] = -1
+        new_game_state["ball"]["directionX"] = -1
+        new_game_state["ball"]["posY"] = 100 - PADDLE_OFFSET
     else:
         new_game_state["gameData"]["playerServes"] = "playerRight"
-        new_game_state["gameData"]["ballDirectionX"] = 1
+        new_game_state["ball"]["directionX"] = 1
+        new_game_state["ball"]["posY"] = PADDLE_OFFSET
     logging.info(f"Game state 3: {game.state}")
-    new_game_state['gameData']['ballDirectionY'] = random.uniform(-0.01, 0.01)
+    new_game_state['ball']['directionY'] = random.uniform(-0.01, 0.01)
 
     # Check if the game is a local game
     logging.info(f"Game state 4: {game.state}")

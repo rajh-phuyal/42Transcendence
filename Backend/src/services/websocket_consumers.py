@@ -1,33 +1,29 @@
 # Basics
 import logging, asyncio, random, json
-
 # Python stuff
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from datetime import datetime, timedelta
 from copy import deepcopy
 from asgiref.sync import sync_to_async
-from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
-from channels.layers import get_channel_layer
-from channels.db import database_sync_to_async
-
 # Game stuff
-from game.constants import GAME_FPS, GAME_STATE, GAME_PLAYER_INPUT
+from game.constants import GAME_FPS, GAME_STATE, GAME_PLAYER_INPUT, PADDLE_OFFSET
 from game.models import Game
 from game.utils import is_left_player, get_game_data, set_game_data, get_user_of_game
 from game.utils_ws import update_game_state, update_game_points
 from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished
-
 # Services
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, parse_message
 from services.chat_service import setup_all_conversations, send_total_unread_counter
 from services.tournament_service import setup_all_tournament_channels
-
 # Channels
+from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.layers import get_channel_layer
+from channels.db import database_sync_to_async
 channel_layer = get_channel_layer()
 
 # Basic Connect an Disconnet functions for the WebSockets
@@ -340,12 +336,14 @@ class GameConsumer(CustomWebSocketLogic):
             # Randomize serving player
             if random.randint(0, 1) == 0:
                 set_game_data(self.game_id, 'gameData', 'playerServes', 'playerLeft')
-                set_game_data(self.game_id, 'gameData', 'ballDirectionX', -1)
+                set_game_data(self.game_id, 'ball', 'directionX', -1)
+                set_game_data(self.game_id, 'ball', 'posX', 100 - PADDLE_OFFSET)
             else:
                 set_game_data(self.game_id, 'gameData', 'playerServes', 'playerRight')
-                set_game_data(self.game_id, 'gameData', 'ballDirectionX', 1)
+                set_game_data(self.game_id, 'ball', 'directionX', 1)
+                set_game_data(self.game_id, 'ball', 'posX', PADDLE_OFFSET)
             # Add a minimal random direction to the ball so it won't be stuck horizontally
-            set_game_data(self.game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
+            set_game_data(self.game_id, 'ball', 'directionY', random.uniform(-0.01, 0.01))
 
         # CREATE LEFT PLAYER INPUT ON CACHE IF DOESNT EXIST
         cache_key = f'game_{self.game_id}_playerLeft'

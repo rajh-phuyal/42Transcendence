@@ -46,11 +46,11 @@ async def move_paddle(game_id, playerSide):
 async def move_ball(game_id):
 
     # Get from cache
-    ball_pos_x = get_game_data(game_id, 'gameData', 'ballPosX')
-    ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
-    ball_direction_x = get_game_data(game_id, 'gameData', 'ballDirectionX')
-    ball_direction_y = get_game_data(game_id, 'gameData', 'ballDirectionY')
-    ball_speed = get_game_data(game_id, 'gameData', 'ballSpeed')
+    ball_pos_x = get_game_data(game_id, 'ball', 'posX')
+    ball_pos_y = get_game_data(game_id, 'ball', 'posY')
+    ball_direction_x = get_game_data(game_id, 'ball', 'directionX')
+    ball_direction_y = get_game_data(game_id, 'ball', 'directionY')
+    ball_speed = get_game_data(game_id, 'ball', 'speed')
 
     # Move the ball
     ball_pos_x += ball_direction_x * ball_speed
@@ -58,35 +58,34 @@ async def move_ball(game_id):
     # TODO: change ball speed issue #311
 
     # Save the new ball position
-    set_game_data(game_id, 'gameData', 'ballPosX', ball_pos_x)
-    set_game_data(game_id, 'gameData', 'ballPosY', ball_pos_y)
+    set_game_data(game_id, 'ball', 'posX', ball_pos_x)
+    set_game_data(game_id, 'ball', 'posY', ball_pos_y)
 
 async def apply_wall_bonce(game_id):
-    ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
-    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
-    ball_direction_y = get_game_data(game_id, 'gameData', 'ballDirectionY')
+    ball_pos_y = get_game_data(game_id, 'ball', 'posY')
+    ball_height = get_game_data(game_id, 'ball', 'height')
+    ball_direction_y = get_game_data(game_id, 'ball', 'directionY')
     # Apply wall bounce (Calculate if the upper or lower wall was hit)
-    if ball_pos_y <= ball_radius:
-        set_game_data(game_id, 'gameData', 'ballPosY', ball_radius)
-        set_game_data(game_id, 'gameData', 'ballDirectionY', ball_direction_y * -1)
+    if ball_pos_y <= ball_height:
+        set_game_data(game_id, 'ball', 'posY', ball_height)
+        set_game_data(game_id, 'ball', 'directionY', ball_direction_y * -1)
         set_game_data(game_id, 'gameData', 'sound', 'wall')
-    elif ball_pos_y >= 100 - ball_radius:
-        set_game_data(game_id, 'gameData', 'ballPosY', 100 - ball_radius)
-        set_game_data(game_id, 'gameData', 'ballDirectionY', ball_direction_y * -1)
+    elif ball_pos_y >= 100 - ball_height:
+        set_game_data(game_id, 'ball', 'posY', 100 - ball_height)
+        set_game_data(game_id, 'ball', 'directionY', ball_direction_y * -1)
         set_game_data(game_id, 'gameData', 'sound', 'wall')
     else:
         # No wall bounce happend
         ...
 
 async def check_paddle_bounce(game_id):
-    ball_pos_x = get_game_data(game_id, 'gameData', 'ballPosX')
-    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
-    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
+    ball_pos_x = get_game_data(game_id, 'ball', 'posX')
+    ball_width = get_game_data(game_id, 'ball', 'width')
 
     # Check if the ball is hitting the left or right paddle(point was scored)
-    if ball_pos_x <= PADDLE_OFFSET + ball_radius:
+    if ball_pos_x <= PADDLE_OFFSET + ball_width:
         await apply_padlle_hit(game_id, 'playerLeft')
-    elif ball_pos_x >= 100 - PADDLE_OFFSET - ball_radius:
+    elif ball_pos_x >= 100 - PADDLE_OFFSET - ball_width:
         await apply_padlle_hit(game_id, 'playerRight')
     else:
         # No paddle bounce happend
@@ -95,32 +94,32 @@ async def check_paddle_bounce(game_id):
 # Only called when the x pos of ball is on the x of the paddle
 # TODO: In this function we need to normalize the ball direction so the speed is always the same issue #311
 async def apply_padlle_hit(game_id, player_side):
-    ball_pos_y = get_game_data(game_id, 'gameData', 'ballPosY')
+    ball_pos_y = get_game_data(game_id, 'ball', 'posY')
     paddle_pos = get_game_data(game_id, player_side, 'paddlePos')
     paddle_size = get_game_data(game_id, player_side, 'paddleSize')
-    ball_radius = get_game_data(game_id, 'gameData', 'ballRadius')
+    ball_height = get_game_data(game_id, 'ball', 'height')
     # logging.info(f"Ball pos y: {ball_pos_y}, paddle pos: {paddle_pos}, paddle size: {paddle_size}")
 
     # Check if a point was scored
     if ball_pos_y < paddle_pos:
-        if ball_pos_y + ball_radius < paddle_pos - paddle_size / 2:
+        if ball_pos_y + ball_height < paddle_pos - paddle_size / 2:
             await apply_point(game_id, player_side)
         else:
             # Ball should bounce off up
             distance_paddle_ball = paddle_pos - ball_pos_y
-            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_radius)
-            set_game_data(game_id, 'gameData', 'ballDirectionX', -1 * get_game_data(game_id, 'gameData', 'ballDirectionX'))
-            set_game_data(game_id, 'gameData', 'ballDirectionY', -percentage_y)
+            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_height)
+            set_game_data(game_id, 'ball', 'directionX', -1 * get_game_data(game_id, 'ball', 'directionX'))
+            set_game_data(game_id, 'ball', 'directionY', -percentage_y)
             set_game_data(game_id, 'gameData', 'sound', 'paddle')
     else:
-        if ball_pos_y - ball_radius > paddle_pos + paddle_size / 2:
+        if ball_pos_y - ball_height > paddle_pos + paddle_size / 2:
             await apply_point(game_id, player_side)
         else:
             # Ball should bounce off down
             distance_paddle_ball = ball_pos_y - paddle_pos
-            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_radius)
-            set_game_data(game_id, 'gameData', 'ballDirectionX', -1 * get_game_data(game_id, 'gameData', 'ballDirectionX'))
-            set_game_data(game_id, 'gameData', 'ballDirectionY', percentage_y)
+            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_height)
+            set_game_data(game_id, 'ball', 'directionX', -1 * get_game_data(game_id, 'ball', 'directionX'))
+            set_game_data(game_id, 'ball', 'directionY', percentage_y)
             set_game_data(game_id, 'gameData', 'sound', 'paddle')
 
 async def apply_point(game_id, player_side):
@@ -128,11 +127,6 @@ async def apply_point(game_id, player_side):
     await update_game_points(game_id, player_side=player_side)
     set_game_data(game_id, 'gameData', 'sound', 'score')
 
-    # Reset the ball
-    set_game_data(game_id, 'gameData', 'ballPosX', 50)
-    set_game_data(game_id, 'gameData', 'ballPosY', 50)
-    set_game_data(game_id, 'gameData', 'ballSpeed', INIT_BALL_SPEED)
-    set_game_data(game_id, 'gameData', 'ballDirectionY', random.uniform(-0.01, 0.01))
     # Reset the paddles
     set_game_data(game_id, 'playerLeft', 'paddlePos', 50)
     set_game_data(game_id, 'playerRight', 'paddlePos', 50)
@@ -160,10 +154,18 @@ async def apply_point(game_id, player_side):
                 set_game_data(game_id, 'gameData', 'playerServes', 'playerRight')
             else:
                 set_game_data(game_id, 'gameData', 'playerServes', 'playerLeft')
+    # Reset the ball
+    # X: Direction & Postion depends on the serving player
     if get_game_data(game_id, 'gameData', 'playerServes') == 'playerLeft':
-        set_game_data(game_id, 'gameData', 'ballDirectionX', -1)
+        set_game_data(game_id, 'ball', 'directionX', -1)
+        set_game_data(game_id, 'ball', 'posX', 100 - PADDLE_OFFSET)
     else:
-        set_game_data(game_id, 'gameData', 'ballDirectionX', 1)
+        set_game_data(game_id, 'ball', 'directionX', 1)
+        set_game_data(game_id, 'ball', 'posY', PADDLE_OFFSET)
+    # Y: Random direction (to avoid the same ball movement and stuck in a loop)
+    set_game_data(game_id, 'ball', 'directionY', random.uniform(-0.01, 0.01))
+    # Speed: Reset to initial speed
+    set_game_data(game_id, 'ball', 'speed', INIT_BALL_SPEED)
 
 
 async def check_if_game_is_finished(game_id):
