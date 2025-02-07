@@ -1,9 +1,8 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
-import { AudioPlayer } from '../../abstracts/AudioPlayer.js';
+import AudioPlayer from '../../abstracts/audio.js';
 
 // ############## VARIABLES ##############
-
 const borders = {
 	rightUpperCorner: {
 		x: 0,
@@ -220,16 +219,10 @@ const drawScore = (ctx, gameField, playerScore, boardSide) => {
 	});
 }
 
-// const scale = window.devicePixelRatio || 1;
-// gameField.width = gameField.width * scale;
-// gameField.height = gameField.height * scale;
-
-
-// ctx.scale(scale, scale);
-
-
 // ############## FUNCTIONS ##############
-
+const percentageToPixels = (percentage, edgeSize) => {
+    return (edgeSize / 100) * percentage;
+}
 
 const drawPaddles = (gameField, ctx, normalizedGameObject) => {
 	ctx.fillStyle = 'white';
@@ -286,12 +279,28 @@ const drawField = (gameField, ctx, normalizedGameObject) => {
 	drawScore(ctx, gameField, normalizedGameObject.playerRight.points, "right");
 }
 
-
 export function gameRender () {
+    console.log("Rendering game");
 	const gameField = $id("game-field");
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx, gameObject);
     if (gameObject.playSounds && gameObject.sound)
         AudioPlayer.playSound(gameObject.sound);
+}
+
+export function toggleGamefieldVisible(visible) {
+    // TODO:
+    if(visible) {
+        // Show the game field
+        const gameField = $id("game-field");
+        const ctx = gameField.getContext('2d');
+        ctx.clearRect(0, 0, gameField.width, gameField.height);
+        gameRender(gameField, ctx);
+        // Play the game music
+    } else {
+        console.log("TODO");
+        // Hide the game field
+        // Play the lobby music
+    }
 }

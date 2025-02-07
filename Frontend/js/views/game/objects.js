@@ -5,8 +5,8 @@ export const gameObject = {
     frameTime: undefined,
     lastFrameTime: undefined,
     animationId: undefined,
-    playMusic: true,
-    playSounds: true,
+    playMusic: false,
+    playSounds: false,
     sound: undefined,
     playerInputLeft: {
         paddleMovement: undefined,

@@ -4,7 +4,8 @@ import { translate } from '../../locale/locale.js';
 import { animateImage, removeImageAnimation, showGame } from './loop.js';
 import { endGameLoop } from './loop.js';
 import AudioPlayer from '../../abstracts/audio.js';
-//import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
+import { startGameLoop} from './loop.js';
+import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 //import { gameRender } from './render.js';
 //import AudioPlayer from '../../abstracts/audio.js';
 //import router from '../../navigation/router.js';
@@ -17,18 +18,22 @@ export function changeGameState(state) {
             showPowerupStatus(false);
             break;
         case "ongoing": // transition lobby to game
+            showPowerupStatus(true);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText ="";
             break;
         case "paused": // transition game to lobby
+            showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused");
             break;
         case "pending":
+            showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
             break;
         case "finished": // transition game to lobby
+            showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText = "";
             $id("game-view-middle-side-container-top-text").innerText = translate("game", "finished");
@@ -42,7 +47,7 @@ export function changeGameState(state) {
 }
 
 export function updateReadyStateNodes() {
-    console.log("Updating ready state nodes");
+    console.log("Updating ready state nodes with:", gameObject.playerLeft.state, gameObject.playerRight.state);
         // Hide the ready message and the spinner (for finished, ongoing games)
         if (gameObject.playerLeft.state === undefined){
             $id("player-left-state").innerHTML = "";
@@ -94,11 +99,11 @@ function colorPowerupStatus(element, state) {
         element.style.color = "gray";
 }
 
-export function showPowerupStatus(value) {
+export function showPowerupStatus(visible) {
     console.log("Showing powerup status");
     let elements = $class('player-powerup-status')
     for (let element of elements)
-        element.style.display = value ? element.style.display = "flex" : element.style.display = "none";
+        element.style.display = visible ? element.style.display = "flex" : element.style.display = "none";
     colorPowerupStatus($id('player-left-powerups-big'), gameObject.playerLeft.powerupBig);
     colorPowerupStatus($id('player-left-powerups-slow'), gameObject.playerLeft.powerupSlow);
     colorPowerupStatus($id('player-left-powerups-fast'), gameObject.playerLeft.powerupFast);
@@ -146,9 +151,42 @@ export function updateReadyState(readyStateObject) {
     }
 }
 
-export function toggleMusic() {
-    AudioPlayer.playSound("toggle");
-    gameObject.playMusic = !gameObject.playMusic;
+export function updateGameObjects(beMessage) {
+    console.log("Updating game objects");
+    const gameField = $id("game-field");
+    gameObject.state = beMessage?.gameData?.state;
+    gameObject.sound = beMessage?.gameData?.sound;
+    gameObject.playerLeft.points = beMessage?.playerLeft?.points;
+    gameObject.playerLeft.pos = percentageToPixels(beMessage?.playerLeft?.paddlePos, gameField?.height);
+    gameObject.playerLeft.size = percentageToPixels(beMessage?.playerLeft?.paddleSize, gameField?.height);
+    gameObject.playerLeft.powerupBig = beMessage?.playerLeft?.powerupBig;
+    gameObject.playerLeft.powerupSlow = beMessage?.playerLeft?.powerupSlow;
+    gameObject.playerLeft.powerupFast = beMessage?.playerLeft?.powerupFast;
+    gameObject.playerRight.points = beMessage?.playerRight?.points;
+    gameObject.playerRight.pos = percentageToPixels(beMessage?.playerRight?.paddlePos, gameField?.height);
+    gameObject.playerRight.size = percentageToPixels(beMessage?.playerRight?.paddleSize, gameField?.height);
+    gameObject.playerRight.powerupBig = beMessage?.playerRight?.powerupBig;
+    gameObject.playerRight.powerupSlow = beMessage?.playerRight?.powerupSlow;
+    gameObject.playerRight.powerupFast = beMessage?.playerRight?.powerupFast;
+    gameObject.ball.posX = percentageToPixels(beMessage?.ball?.posX, gameField?.width);
+    gameObject.ball.posY = percentageToPixels(beMessage?.ball?.posY, gameField?.height);
+    gameObject.ball.height = percentageToPixels(beMessage?.ball?.height, gameField?.height);
+    gameObject.ball.width = percentageToPixels(beMessage?.ball?.width, gameField?.height);
+    // If the state is not ongoing we should render manually!
+    // So when establishing a connection we can render the game state
+    if (gameObject.state !== "ongoing")
+        console.log("Rendering game state manually");
+        gameRender();
+}
+
+export function toggleMusic(value=undefined) {
+    // If not defined toggle the music, else set the value
+    if (value === undefined)
+        gameObject.playMusic = !gameObject.playMusic;
+    else
+        gameObject.playMusic = value;
+    if (gameObject.playSounds)
+        AudioPlayer.playSound("toggle");
     if(gameObject.playMusic)
         $id("game-music-icon").src = window.origin + '/assets/game/icons/sound-on.png';
     else
@@ -163,11 +201,76 @@ export function toggleMusic() {
         AudioPlayer.stop();
 }
 
-export function toggleSound() {
-    AudioPlayer.playSound("toggle");
-    gameObject.playSounds = !gameObject.playSounds;
+export function toggleSound(value=undefined) {
+    // If not defined toggle the sounds, else set the value
+    if (value === undefined)
+        gameObject.playSounds = !gameObject.playSounds;
+    else
+        gameObject.playSounds = value;
+    if (gameObject.playSounds)
+        AudioPlayer.playSound("toggle");
     if(gameObject.playSounds)
         $id("game-sound-icon").src = window.origin + '/assets/game/icons/music-on.png';
     else
         $id("game-sound-icon").src = window.origin + '/assets/game/icons/music-off.png';
+}
+
+export function sendPlayerInput() {
+    console.log("Sending player input");
+    //Send the ws message to the server
+    const message = {
+        messageType: "playerInput",
+        playerLeft: {
+            movePaddle: gameObject.playerInputLeft.paddleMovement || "0",
+            activatePowerupBig: gameObject.playerInputLeft.powerupBig || false,
+            activatePowerupSlow: gameObject.playerInputLeft.powerupSlow || false,
+            activatePowerupFast: gameObject.playerInputLeft.powerupFast || false
+        },
+        playerRight: {
+            movePaddle: gameObject.playerInputRight.paddleMovement || "0",
+            activatePowerupBig: gameObject.playerInputRight.powerupBig || false,
+            activatePowerupSlow: gameObject.playerInputRight.powerupSlow || false,
+            activatePowerupFast: gameObject.playerInputRight.powerupFast || false
+        }
+    }
+    WebSocketManagerGame.sendMessage(message);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO: do we need the stuff below? #304
+const countdownImageObject = {
+    0: "",
+    1: `${window.origin}/assets/game/countdown/countdown1.png`,
+    2: `${window.origin}/assets/game/countdown/countdown2.png`,
+    3: `${window.origin}/assets/game/countdown/countdown3.png`,
+    4: `${window.origin}/assets/game/countdown/countdown4.png`,
+    5: `${window.origin}/assets/game/countdown/countdown5.png`,
+    6: `${window.origin}/assets/game/countdown/countdown6.png`,
+    7: `${window.origin}/assets/game/countdown/countdown7.png`,
+    8: `${window.origin}/assets/game/countdown/countdown8.png`,
+    9: `${window.origin}/assets/game/countdown/countdown9.png`,
+}
+
+// TODO: do we need the stuff below? #304
+const gameCountdownImage = (currentTime) => {
+    const gameCountdownImage = $id("game-countdown-image");
+    gameCountdownImage.src = countdownImageObject[currentTime];
+    gameCountdownImage.style.display = "block";
+
+    if (!currentTime) {
+        gameCountdownImage.style.display = "none";
+    }
 }

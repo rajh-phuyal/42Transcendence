@@ -1,24 +1,43 @@
 import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
+import { gameObject } from './objects.js';
+import { keyPressCallback, keyReleaseCallback } from './callbacks.js';
+import { showPowerupStatus, sendPlayerInput } from './methods.js';
+import { gameRender } from './render.js';
+
+function gameLoop(currentTime) {
+    console.log("Game loop");
+    if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
+        sendPlayerInput();
+        gameRender();
+        gameObject.lastFrameTime = currentTime;
+        // Check if the game is  still ongoing
+        if (gameObject.state !== "ongoing") {
+            console.log("Game is not ongoing anymore: ending game loop");
+            cancelAnimationFrame(gameObject.animationId);
+            return;
+        }
+    }
+    gameObject.animationId = requestAnimationFrame(gameLoop);
+}
 
 export function startGameLoop() {
     console.log("Starting game loop");
     //Just in case we have an ongoing game loop end it
-    // endGameLoop();
-    // console.log("Starting game loop");
-    // $on(document, 'keydown', keyPressCallback);
-    // $on(document, 'keyup', keyReleaseCallback);
-    // gameObject.lastFrameTime = performance.now();
-    // gameObject.animationId = requestAnimationFrame(gameLoop);
-    // showPowerupStatus(true);
+    endGameLoop();
+    console.log("Starting game loop");
+    $on(document, 'keydown', keyPressCallback);
+    $on(document, 'keyup', keyReleaseCallback);
+    gameObject.lastFrameTime = performance.now();
+    gameObject.animationId = requestAnimationFrame(gameLoop);
+    showPowerupStatus(true);
 }
 
 export function endGameLoop() {
     console.log("Ending game loop");
-    //cancelAnimationFrame(gameObject.animationId);
-    //$off(document, 'keydown', keyPressCallback);
-    //$off(document, 'keyup', keyReleaseCallback);
-    //showPowerupStatus(false); // TO show the spinners again
-    //gameRender(); // One last render to show the final state
+    cancelAnimationFrame(gameObject.animationId);
+    $off(document, 'keydown', keyPressCallback);
+    $off(document, 'keyup', keyReleaseCallback);
+    gameRender(); // One last render to show the final state
 }
 
 export const animateImage = (

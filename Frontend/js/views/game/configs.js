@@ -3,7 +3,7 @@ import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { changeGameState, updateReadyStateNodes, toggleMusic, toggleSound } from './methods.js';
-//import { gameRender } from './render.js';
+import { toggleGamefieldVisible, gameRender } from './render.js';
 import { gameObject } from './objects.js';
 import AudioPlayer from '../../abstracts/audio.js';
 
@@ -41,7 +41,9 @@ export default {
                         gameObject.playerLeft.state = "waiting";
                         gameObject.playerRight.state = "waiting";
                         updateReadyStateNodes();
-                        AudioPlayer.play(0);
+                        // Since chrome doesn't allow autoplay we need to start the music here
+                        toggleMusic(true);
+                        toggleSound(true);
                         this.domManip.$id("game-view-middle-side-container-top-text").innerText="";
                         WebSocketManagerGame.connect(this.gameId);
                         // TODO #304 this should be done by the animaion
@@ -121,8 +123,8 @@ export default {
 
                     // I send the ready state also via REST NOW
                     // TODO: but i guess this could go in a function thath is also called by the WSManager
-                    gameObject.playerRight.state = data.playerRight.ready ? "ready" : "waiting";
-                    gameObject.playerLeft.state = data.playerLeft.ready ? "ready" : "waiting";
+                    gameObject.playerRight.state = data.playerRight.ready ? "ready" : undefined;
+                    gameObject.playerLeft.state = data.playerLeft.ready ? "ready" : undefined;
 
                     changeGameState(data.gameData.state);
                 })
@@ -143,8 +145,6 @@ export default {
             gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
             gameObject.lastFrameTime = 0;
             gameObject.animationId = null;
-            gameObject.playMusic = true;
-            gameObject.playSounds = true;
             gameObject.sound = null;
             gameObject.playerInputLeft.paddleMovement = 0;
             gameObject.playerInputLeft.powerupFast = false;
@@ -174,8 +174,8 @@ export default {
             this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
             this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
             // Sound icons
-            this.domManip.$id("game-music-icon").src = window.origin + '/assets/game/icons/sound-on.png';
-            this.domManip.$id("game-sound-icon").src = window.origin + '/assets/game/icons/music-on.png';
+            this.domManip.$id("game-music-icon").src = window.origin + '/assets/game/icons/sound-off.png';
+            this.domManip.$id("game-sound-icon").src = window.origin + '/assets/game/icons/music-off.png';
         },
 
         setMapImage() {
@@ -221,11 +221,8 @@ export default {
             // REST call to load the game details
             await this.loadDetails()
             this.setMapImage();
-
-//			const gameField = this.domManip.$id("game-field");
-//			const ctx = gameField.getContext('2d');
-//			ctx.clearRect(0, 0, gameField.width, gameField.height);
-//			gameRender(gameField, ctx);
+            // Show filed TODO: this should not happen right away!
+            toggleGamefieldVisible(true);
 		}
     }
 }

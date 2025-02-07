@@ -33,6 +33,7 @@ export default class AudioPlayer {
 
     // Static method to play a song
     static play(mapId) {
+        // TODO: check if its the same song than don't restart it
         console.log('Starting:', mapId);
         const song = this.songs.find(song => song.mapId === mapId);
         if (!song) {
