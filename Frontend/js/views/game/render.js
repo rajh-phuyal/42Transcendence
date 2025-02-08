@@ -1,6 +1,5 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
-import AudioPlayer from '../../abstracts/audio.js';
 import { percentageToPixels } from './methods.js';
 
 // ############## VARIABLES ##############
@@ -288,7 +287,7 @@ export function gameRender () {
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx);
     if (gameObject.playSounds && gameObject.sound && gameObject.sound !== "none")
-        AudioPlayer.playSound(gameObject.sound);
+        audioPlayer.playSound(gameObject.sound);
 }
 
 export function toggleGamefieldVisible(visible) {

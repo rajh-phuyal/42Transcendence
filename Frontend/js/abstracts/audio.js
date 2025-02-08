@@ -1,112 +1,160 @@
 export default class AudioPlayer {
-    // Static property to store songs
-    static songs = [
-        { mapId: 0, audio: new Audio("../assets/audio/lobby.mp3") },
-        { mapId: 1, audio: new Audio("../assets/audio/ufo.mp3") },
-        { mapId: 2, audio: new Audio("../assets/audio/lizard-people.mp3") },
-        { mapId: 3, audio: new Audio("../assets/audio/snowman.mp3") },
-        { mapId: 4, audio: new Audio("../assets/audio/lochness.mp3") }
-    ];
+    static instance = null;
 
-    static sounds = [
-        { name: "beep1", audio: new Audio("../assets/audio/beep1.mp3") },
-        { name: "beep2", audio: new Audio("../assets/audio/beep2.mp3") },
-        { name: "paddle", audio: new Audio("../assets/audio/paddle.mp3") },
-        { name: "powerup", audio: new Audio("../assets/audio/powerup.mp3") },
-        { name: "wall", audio: new Audio("../assets/audio/wall.mp3") },
-        { name: "gameover", audio: new Audio("../assets/audio/gameover.mp3") },
-        { name: "pause", audio: new Audio("../assets/audio/pause.mp3") },
-        { name: "unpause", audio: new Audio("../assets/audio/unpause.mp3") },
-        { name: "score", audio: new Audio("../assets/audio/score.mp3") },
-        { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") }
-    ];
+    constructor() {
+        if (AudioPlayer.instance) {
+            return AudioPlayer.instance;
+        }
 
-    static currentSong = null; // Track the currently playing song
+        this.soundsEnabled = true;
+        this.musicEnabled = true;
+        this.currentSong = null;
+        this.songs = [
+            { mapId: 0, audio: new Audio("../assets/audio/lobby.mp3") },
+            { mapId: 1, audio: new Audio("../assets/audio/ufo.mp3") },
+            { mapId: 2, audio: new Audio("../assets/audio/lizard-people.mp3") },
+            { mapId: 3, audio: new Audio("../assets/audio/snowman.mp3") },
+            { mapId: 4, audio: new Audio("../assets/audio/lochness.mp3") }
+        ];
 
-    static playSound(name) {
-        const sound = this.sounds.find(sound => sound.name === name);
-        if (sound)
-            sound.audio.play();
-        else
-            console.error('Sound not found:', name);
+        this.sounds = [
+            { name: "beep1", audio: new Audio("../assets/audio/beep1.mp3") },
+            { name: "beep2", audio: new Audio("../assets/audio/beep2.mp3") },
+            { name: "paddle", audio: new Audio("../assets/audio/paddle.mp3") },
+            { name: "powerup", audio: new Audio("../assets/audio/powerup.mp3") },
+            { name: "wall", audio: new Audio("../assets/audio/wall.mp3") },
+            { name: "gameover", audio: new Audio("../assets/audio/gameover.mp3") },
+            { name: "pause", audio: new Audio("../assets/audio/pause.mp3") },
+            { name: "unpause", audio: new Audio("../assets/audio/unpause.mp3") },
+            { name: "score", audio: new Audio("../assets/audio/score.mp3") },
+            { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") }
+        ];
+
+        AudioPlayer.instance = this;
     }
 
-    // Static method to play a song
-    static play(mapId) {
-        console.log('Starting:', mapId);
+    static getInstance() {
+        if (!AudioPlayer.instance) {
+            AudioPlayer.instance = new AudioPlayer();
+        }
+        return AudioPlayer.instance;
+    }
+
+    toggleMusic() {
+        this.playSound("toggle");
+        this.musicEnabled = !this.musicEnabled;
+        if (!this.musicEnabled) {
+            this.stop();
+        }
+    }
+
+    toggleSound() {
+        this.soundsEnabled = !this.soundsEnabled;
+        this.playSound("toggle");
+    }
+
+    setAudioPreferences({ music = this.musicEnabled, sounds = this.soundsEnabled }) {
+        this.musicEnabled = music;
+        this.soundsEnabled = sounds;
+
+        if (!this.musicEnabled && this.currentSong) {
+            this.stop();
+        }
+    }
+
+    playSound(name) {
+        if (!this.soundsEnabled) return;
+
+        const sound = this.sounds.find(sound => sound.name === name);
+        if (sound) {
+            sound.audio.play();
+        } else {
+            console.error("Sound not found:", name);
+        }
+    }
+
+    play(mapId) {
+        if (!this.musicEnabled) return;
+
+        console.log("Starting:", mapId);
         const newSong = this.songs.find(song => song.mapId === mapId);
         if (!newSong) {
-            console.error('Song not found:', mapId);
+            console.error("Song not found:", mapId);
             return;
         }
 
-        // Dont restart the song if it is already playing
         if (this.currentSong === newSong) {
-            console.log('Song is already playing:', newSong);
+            console.log("Song is already playing:", newSong);
             return;
         }
 
-        // Crossfade to the new song (if there is one currently playing)
         if (this.currentSong) {
             this.crossfade(this.currentSong, newSong);
         } else {
-            // No song currently playing, start immediately
-            newSong.audio.volume = 1; // Ensure full volume
-            newSong.audio.play();
-            this.currentSong = newSong;
+            this.startFadeIn(newSong, 1000);
         }
     }
 
-    static crossfade(oldSong, newSong) {
-        const fadeOutDuration = 1000; // 1 seconds
-        const fadeInDuration = 1000; // 1 seconds
-        const interval = 100; // How often to update volume (ms)
-        const steps = fadeOutDuration / interval;
+    crossfade(oldSong, newSong) {
+        if (!this.musicEnabled) return;
 
+        this.startFadeOut(oldSong, 1000, () => {
+            oldSong.audio.pause();
+            oldSong.audio.currentTime = 0;
+            oldSong.audio.volume = 1;
+        });
+
+        this.startFadeIn(newSong, 1000);
+    }
+
+    startFadeOut(song, duration, callback) {
+        const interval = 100;
+        const steps = duration / interval;
         let step = 0;
-        this.startFadeIn(newSong, fadeInDuration);
+
         const fadeOut = setInterval(() => {
             if (step >= steps) {
                 clearInterval(fadeOut);
-                oldSong.audio.pause(); // Stop old song
-                oldSong.audio.currentTime = 0; // Reset position
-                oldSong.audio.volume = 1; // Reset volume for future plays
-
+                if (callback) callback();
             } else {
-                oldSong.audio.volume = 1 - (step / steps);
+                song.audio.volume = 1 - step / steps;
                 step++;
             }
         }, interval);
     }
 
-    static startFadeIn(newSong, duration) {
-        newSong.audio.volume = 0;
-        newSong.audio.play();
+    startFadeIn(song, duration) {
+        song.audio.volume = 0;
+        song.audio.play();
 
-        const interval = 100; // How often to update volume (ms)
+        const interval = 100;
         const steps = duration / interval;
-
         let step = 0;
 
         const fadeIn = setInterval(() => {
             if (step >= steps) {
                 clearInterval(fadeIn);
-                newSong.audio.volume = 1; // Ensure full volume
+                song.audio.volume = 1;
             } else {
-                newSong.audio.volume = step / steps;
+                song.audio.volume = step / steps;
                 step++;
             }
         }, interval);
 
-        this.currentSong = newSong;
+        this.currentSong = song;
     }
 
-    // Static method to stop playing
-    static stop() {
+    stop() {
         if (this.currentSong) {
-            this.currentSong.audio.pause();
-            this.currentSong.audio.currentTime = 0; // Reset audio to start
-            this.currentSong = null; // Clear reference
+            this.startFadeOut(this.currentSong, 1000, () => {
+                this.currentSong.audio.pause();
+                this.currentSong.audio.currentTime = 0;
+                this.currentSong = null;
+            });
         }
     }
 }
+
+// Create and export a single instance
+const audioPlayer = AudioPlayer.getInstance();
+export { audioPlayer };

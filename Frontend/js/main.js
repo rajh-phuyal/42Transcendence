@@ -7,6 +7,7 @@ import $store from './store/store.js';
 import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
 import { translate } from './locale/locale.js';
+import { audioPlayer } from './abstracts/audio.js';
 setViewLoading(true);
 
 try {
@@ -18,6 +19,13 @@ try {
     console.error('Error importing web components:', error);
 }
 
+window.addEventListener("click", (event) => {
+    const target = event.target.closest(".sound-button");
+    console.log("Wanna play sound", target);
+    if (target) {
+        audioPlayer.playSound("toggle"); // Replace with actual sound name
+    }
+});
 
 window.addEventListener('popstate', () => {
     router(window.location.pathname)

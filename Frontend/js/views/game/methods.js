@@ -3,12 +3,9 @@ import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
 import { animateImage, removeImageAnimation, showGame } from './loop.js';
 import { endGameLoop } from './loop.js';
-import AudioPlayer from '../../abstracts/audio.js';
 import { startGameLoop} from './loop.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { gameRender } from './render.js';
-//import AudioPlayer from '../../abstracts/audio.js';
-//import router from '../../navigation/router.js';
 
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
@@ -43,19 +40,19 @@ export function changeGameState(state) {
         case "paused":
             showPowerupStatus(false);
             if (gameObject.playMusic)
-                AudioPlayer.play(0); // Lobby music
+                //TODO: audioPlayer.play(0); // Lobby music
             $id("button-quit-game").style.display = "none";
             if (gameObject.wsConnection){
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-waiting");
                 if(gameObject.playSounds)
-                    AudioPlayer.playSound("pause");
+                    audioPlayer.playSound("pause");
             }
             else
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
         case "finished":
             if (gameObject.playMusic)
-                AudioPlayer.play(0); // Lobby music
+                //TODO: audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText = "";
@@ -152,9 +149,9 @@ export function updateReadyState(readyStateObject) {
     if (readyStateObject.startTime) {
         // Change music
         if (gameObject.playMusic)
-            AudioPlayer.play(gameObject.mapId);
+            //TODO: audioPlayer.play(gameObject.mapId);
         if (gameObject.state === "paused" || gameObject.playSounds)
-            AudioPlayer.playSound("unpause");
+            audioPlayer.playSound("unpause");
         animateImage("game-countdown-image", "pulsate", "1s", "infinite");
         changeGameState("countdown");
         startGameLoop();
@@ -208,6 +205,7 @@ export function updateGameObjects(beMessage) {
         gameRender();
 }
 
+// TODO: move to audio player file
 export function toggleMusic(value=undefined) {
     // If not defined toggle the music, else set the value
     if (value === undefined)
@@ -215,7 +213,7 @@ export function toggleMusic(value=undefined) {
     else
         gameObject.playMusic = value;
     if (gameObject.playSounds)
-        AudioPlayer.playSound("toggle");
+        audioPlayer.playSound("toggle");
     if(gameObject.playMusic)
         $id("game-music-icon").src = window.origin + '/assets/game/icons/sound-on.png';
     else
@@ -223,13 +221,14 @@ export function toggleMusic(value=undefined) {
 
     console.log("playMusic", gameObject.mapId);
     if (gameObject.playMusic && gameObject.state === "ongoing")
-        AudioPlayer.play(gameObject.mapId);
+        //TODO: audioPlayer.play(gameObject.mapId);
     else if (gameObject.playMusic && gameObject.state !== "ongoing")
-        AudioPlayer.play(0); // Lobby music
+        //TODO: audioPlayer.play(0); // Lobby music
     else
-        AudioPlayer.stop();
+        audioPlayer.stop();
 }
 
+// TODO: move to audio player file
 export function toggleSound(value=undefined) {
     // If not defined toggle the sounds, else set the value
     if (value === undefined)
@@ -237,7 +236,7 @@ export function toggleSound(value=undefined) {
     else
         gameObject.playSounds = value;
     if (gameObject.playSounds)
-        AudioPlayer.playSound("toggle");
+        audioPlayer.playSound("toggle");
     if(gameObject.playSounds)
         $id("game-sound-icon").src = window.origin + '/assets/game/icons/music-on.png';
     else

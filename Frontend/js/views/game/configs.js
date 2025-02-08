@@ -5,7 +5,6 @@ import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { changeGameState, updateReadyStateNodes, toggleMusic, toggleSound } from './methods.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
 import { gameObject } from './objects.js';
-import AudioPlayer from '../../abstracts/audio.js';
 
 export default {
     attributes: {
@@ -173,9 +172,7 @@ export default {
             // Before loading sed the game avatars to default avatar:
             this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
             this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
-            // Sound icons
-            this.domManip.$id("game-music-icon").src = window.origin + '/assets/game/icons/sound-off.png';
-            this.domManip.$id("game-sound-icon").src = window.origin + '/assets/game/icons/music-off.png';
+
         },
 
         setMapImage() {
@@ -198,7 +195,7 @@ export default {
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
             //endGameLoop(); //TODO: uncomment this!
-            AudioPlayer.stop();
+            audioPlayer.stop();
         },
 
         beforeDomInsertion() {
