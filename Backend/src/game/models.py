@@ -5,6 +5,7 @@ from django.core.cache import cache
 class Game(models.Model):
     class GameState(models.TextChoices):
         PENDING = 'pending', 'Pending'
+        COUNTDOWN = 'countdown', 'Countdown'
         ONGOING = 'ongoing', 'Ongoing'
         PAUSED = 'paused', 'Paused'
         FINISHED = 'finished', 'Finished'

@@ -28,7 +28,7 @@ export function AIModalCallback(){
 }
 
 export function battleModalCallback(){
-    
+
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
 
@@ -59,7 +59,7 @@ function createTournamentCard(element) {
     const template = $id("tournament-modal-tournament-template").content.cloneNode(true);
 
     template.querySelector("tournament-modal-tournament-name").textContent = element.name; // Check if this is the keyword name
-    
+
 }
 
 function createJoinTournamentList() {
@@ -76,7 +76,7 @@ function createJoinTournamentList() {
 export function tournamentModalCallback(){
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
-    
+
     hideModalElements();
     // modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
     modalBody.style.height = '90vh';
@@ -94,7 +94,7 @@ export function tournamentModalCallback(){
 }
 
 export function chatRoomModalCallback(){
-    
+
     router("/chat");
 
 }

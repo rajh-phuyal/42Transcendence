@@ -1,8 +1,10 @@
 import $store from '../store/store.js';
 import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
+import { endGameLoop } from '../views/game/loop.js';
 import router from '../navigation/router.js';
-import { updateReadyState, updateGameObjects, endGameLoop } from '../views/game/methods.js';
+import { updateReadyStatefromWS, updateGameObjects } from '../views/game/methods.js';
+import { gameObject } from '../views/game/objects.js';
 
 
 
@@ -62,29 +64,24 @@ class WebSocketManagerGame {
         this.socket.onerror = (error) => {
             console.error("GAME WebSocket error:", error);
         };
+        gameObject.wsConnection = true;
     }
 
-    // Allowd types are:
-    // - TODO: !!!
     sendMessage(message) {
-        //console.log("GAME: FE -> BE:", message);
         this.socket.send(JSON.stringify(message));
     }
 
-    // The backend send:
-    // - TODO: !!!
     receiveMessage(message) {
-        console.log("GAME: BE -> FE:", message);
+        //console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
             case "playersReady":
-                updateReadyState(message);
+                updateReadyStatefromWS(message);
                 return ;
             case "gameState":
                 //console.log("got game state", message);
                 updateGameObjects(message);
                 return;
-
         }
 
         console.warn("WS GAME: FE doen't know what to do with this type:", message);
@@ -92,6 +89,8 @@ class WebSocketManagerGame {
     }
 
     disconnect() {
+        gameObject.wsConnection = false;
+        endGameLoop();
         this.gameId = null;
         if (this.socket) {
             this.socket.close();
@@ -100,7 +99,6 @@ class WebSocketManagerGame {
         } else {
             console.log("GAME WebSocket is not connected.");
         }
-        endGameLoop();
     }
 
     // TODO: do we use this?
