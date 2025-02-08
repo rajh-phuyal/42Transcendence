@@ -5,7 +5,6 @@ import { showPowerupStatus, sendPlayerInput, changeGameState } from './methods.j
 import { gameRender } from './render.js';
 
 function gameLoop(currentTime) {
-    console.log("Game loop");
     if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
         gameObject.lastFrameTime = currentTime;
         if (gameObject.state === "ongoing")
@@ -22,10 +21,9 @@ function gameLoop(currentTime) {
 }
 
 export function startGameLoop() {
-    console.log("Starting game loop");
     //Just in case we have an ongoing game loop end it
     endGameLoop();
-    console.log("Starting game loop");
+    //console.log("Starting game loop");
     $on(document, 'keydown', keyPressCallback);
     $on(document, 'keyup', keyReleaseCallback);
     gameObject.lastFrameTime = performance.now();
@@ -34,7 +32,7 @@ export function startGameLoop() {
 }
 
 export function endGameLoop() {
-    console.log("Ending game loop");
+    //console.log("Ending game loop");
     cancelAnimationFrame(gameObject.animationId);
     $off(document, 'keydown', keyPressCallback);
     $off(document, 'keyup', keyReleaseCallback);

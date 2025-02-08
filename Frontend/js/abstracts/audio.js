@@ -6,6 +6,8 @@ export default class AudioPlayer {
             return AudioPlayer.instance;
         }
 
+        this.maxVolumeMusic = 0.5;
+        this.maxVolumeSounds = 0.75;
         this.soundsEnabled = true;
         this.musicEnabled = true;
         this.currentSong = null;
@@ -109,7 +111,7 @@ export default class AudioPlayer {
         this.startFadeOut(oldSong, 1000, () => {
             oldSong.audio.pause();
             oldSong.audio.currentTime = 0;
-            oldSong.audio.volume = 1;
+            oldSong.audio.volume = this.maxVolumeMusic;
         });
 
         this.startFadeIn(newSong, 1000);
@@ -125,7 +127,7 @@ export default class AudioPlayer {
                 clearInterval(fadeOut);
                 if (callback) callback();
             } else {
-                song.audio.volume = 1 - step / steps;
+                song.audio.volume = this.maxVolumeMusic - step / steps;
                 step++;
             }
         }, interval);
@@ -142,7 +144,7 @@ export default class AudioPlayer {
         const fadeIn = setInterval(() => {
             if (step >= steps) {
                 clearInterval(fadeIn);
-                song.audio.volume = 1;
+                song.audio.volume = this.maxVolumeMusic;
             } else {
                 song.audio.volume = step / steps;
                 step++;

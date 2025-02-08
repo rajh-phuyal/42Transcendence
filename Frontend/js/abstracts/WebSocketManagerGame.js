@@ -72,7 +72,7 @@ class WebSocketManagerGame {
     }
 
     receiveMessage(message) {
-        console.log("GAME: BE -> FE:", message);
+        //console.log("GAME: BE -> FE:", message);
 
         switch (message.messageType) {
             case "playersReady":

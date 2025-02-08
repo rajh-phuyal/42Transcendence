@@ -74,7 +74,7 @@ export function changeGameState(state) {
 }
 
 export function updateReadyStateNodes() {
-    console.log("Updating ready state nodes with:", gameObject.playerLeft.state, gameObject.playerRight.state);
+    //console.log("Updating ready state nodes with:", gameObject.playerLeft.state, gameObject.playerRight.state);
         // Hide the ready message and the spinner (for finished, ongoing games)
         if (gameObject.playerLeft.state === undefined){
             $id("player-left-state").innerHTML = "";
@@ -149,7 +149,7 @@ export function updateReadyStatefromWS(readyStateObject) {
 
     gameObject.playerLeft.state = readyStateObject.playerLeft ? "ready" : "waiting";
     gameObject.playerRight.state = readyStateObject.playerRight ? "ready" : "waiting";
-    console.log("updateReadyState", gameObject.playerLeft.state, gameObject.playerRight.state);
+    //console.log("updateReadyState", gameObject.playerLeft.state, gameObject.playerRight.state);
     updateReadyStateNodes();
 
     if (readyStateObject.startTime) {
@@ -203,14 +203,12 @@ export function updateGameObjects(beMessage) {
     // If the state is not ongoing we should render manually!
     // So when establishing a connection we can render the game state
     if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
-        console.log("Rendering game state manually because it's not ongoing");
         changeGameState(gameObject.state);
         gameRender();
     }
 }
 
 export function sendPlayerInput() {
-    console.log("Sending player input");
     //Send the ws message to the server
     const message = {
         messageType: "playerInput",

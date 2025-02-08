@@ -277,8 +277,8 @@ const drawField = (gameField, ctx) => {
 	drawPaddle(gameField, ctx, "left");
     drawPaddle(gameField, ctx, "right");
 	drawBall(ctx);
-	drawScore(ctx, gameField, gameObject.playerLeft.points, "left");
-	drawScore(ctx, gameField, gameObject.playerRight.points, "right");
+	drawScore(ctx, gameField, gameObject.playerLeft.points, "right");
+	drawScore(ctx, gameField, gameObject.playerRight.points, "left");
 }
 
 export function gameRender () {
