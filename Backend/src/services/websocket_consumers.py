@@ -208,7 +208,8 @@ class GameConsumer(CustomWebSocketLogic):
             # Updates the state to ongoing
             #TODO: this should be done only if the game loop actually starts but than
             # the frontend loops stops so maybe its fine here since it works
-            await update_game_state(self.game_id, Game.GameState.ONGOING)
+            await update_game_state(self.game_id, Game.GameState.COUNTDOWN)
+            await self.send_update_game_data_msg()
 
             # 2. Calculate the delay so the game loop start not before the start time
             delay = (start_time - datetime.now()).total_seconds()
@@ -368,6 +369,8 @@ class GameConsumer(CustomWebSocketLogic):
     async def run_game_loop(game_id):
         # Start the game loop
         logging.info(f"Game loop starts now: {game_id}")
+        # Set state to ongoing
+        await update_game_state(game_id, Game.GameState.ONGOING)
         while get_game_data(game_id, 'gameData', 'state') == 'ongoing':
             try:
                 # Reset sound

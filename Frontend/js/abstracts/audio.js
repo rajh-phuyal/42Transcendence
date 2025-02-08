@@ -33,21 +33,72 @@ export default class AudioPlayer {
 
     // Static method to play a song
     static play(mapId) {
-        // TODO: check if its the same song than don't restart it
         console.log('Starting:', mapId);
-        const song = this.songs.find(song => song.mapId === mapId);
-        if (!song) {
+        const newSong = this.songs.find(song => song.mapId === mapId);
+        if (!newSong) {
             console.error('Song not found:', mapId);
             return;
         }
 
-        // Stop the currently playing song if there is one
-        this.stop();
+        // Dont restart the song if it is already playing
+        if (this.currentSong === newSong) {
+            console.log('Song is already playing:', newSong);
+            return;
+        }
 
-        // Play the new song
-        song.audio.play();
-        this.currentSong = song; // Store reference to currently playing song
-        console.log('Playing:', song);
+        // Crossfade to the new song (if there is one currently playing)
+        if (this.currentSong) {
+            this.crossfade(this.currentSong, newSong);
+        } else {
+            // No song currently playing, start immediately
+            newSong.audio.volume = 1; // Ensure full volume
+            newSong.audio.play();
+            this.currentSong = newSong;
+        }
+    }
+
+    static crossfade(oldSong, newSong) {
+        const fadeOutDuration = 1000; // 1 seconds
+        const fadeInDuration = 1000; // 1 seconds
+        const interval = 100; // How often to update volume (ms)
+        const steps = fadeOutDuration / interval;
+
+        let step = 0;
+        this.startFadeIn(newSong, fadeInDuration);
+        const fadeOut = setInterval(() => {
+            if (step >= steps) {
+                clearInterval(fadeOut);
+                oldSong.audio.pause(); // Stop old song
+                oldSong.audio.currentTime = 0; // Reset position
+                oldSong.audio.volume = 1; // Reset volume for future plays
+
+            } else {
+                oldSong.audio.volume = 1 - (step / steps);
+                step++;
+            }
+        }, interval);
+    }
+
+    static startFadeIn(newSong, duration) {
+        newSong.audio.volume = 0;
+        newSong.audio.play();
+
+        const interval = 100; // How often to update volume (ms)
+        const steps = duration / interval;
+
+        let step = 0;
+
+        const fadeIn = setInterval(() => {
+            if (step >= steps) {
+                clearInterval(fadeIn);
+                newSong.audio.volume = 1; // Ensure full volume
+            } else {
+                newSong.audio.volume = step / steps;
+                step++;
+            }
+        }, interval);
+
+        this.currentSong = newSong;
     }
 
     // Static method to stop playing

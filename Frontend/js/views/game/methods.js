@@ -27,29 +27,35 @@ export function changeGameState(state) {
         case undefined:
             showPowerupStatus(false);
             break;
-        case "ongoing": // transition lobby to game
-            showPowerupStatus(true);
+        case "pending":
+            showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
-            $id("game-view-middle-side-container-top-text").innerText ="";
+            $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
             break;
-        case "paused": // transition game to lobby
+        case "countdown":
+            showPowerupStatus(true);
+            $id("game-view-middle-side-container-top-text").innerText = "TODO: COUNTDOWN 5,4,3,2,1,0";
+            break;
+        case "ongoing":
+            $id("game-view-middle-side-container-top-text").innerText ="";
+            $id("button-quit-game").style.display = "none";
+            break;
+        case "paused":
             showPowerupStatus(false);
             if (gameObject.playMusic)
                 AudioPlayer.play(0); // Lobby music
             $id("button-quit-game").style.display = "none";
             if (gameObject.wsConnection){
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-waiting");
-                AudioPlayer.playSound("pause");
+                if(gameObject.playSounds)
+                    AudioPlayer.playSound("pause");
             }
             else
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
-        case "pending":
-            showPowerupStatus(false);
-            $id("button-quit-game").style.display = "none";
-            $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
-            break;
-        case "finished": // transition game to lobby
+        case "finished":
+            if (gameObject.playMusic)
+                AudioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText = "";
@@ -147,15 +153,16 @@ export function updateReadyState(readyStateObject) {
         // Change music
         if (gameObject.playMusic)
             AudioPlayer.play(gameObject.mapId);
-        if (gameObject.state === "paused")
+        if (gameObject.state === "paused" || gameObject.playSounds)
             AudioPlayer.playSound("unpause");
         animateImage("game-countdown-image", "pulsate", "1s", "infinite");
+        changeGameState("countdown");
+        startGameLoop();
         gameCountdownIntervalId = setInterval((startTime) => {
             let diff = Math.floor((startTime - new Date()) / 1000);
             if (diff <= 0) {
                 clearInterval(gameCountdownIntervalId);
                 gameCountdownImage(0);
-                startGameLoop();
                 return;
             }
 
