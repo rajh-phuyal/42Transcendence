@@ -7,7 +7,7 @@ export default class AudioPlayer {
         }
 
         this.maxVolumeMusic = 0.5;
-        this.maxVolumeSounds = 0.75;
+        this.maxVolumeSounds = 0.75; // TODO: implement this
         this.soundsEnabled = true;
         this.musicEnabled = true;
         this.currentSong = null;
