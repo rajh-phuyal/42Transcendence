@@ -5,8 +5,6 @@ export const gameObject = {
     frameTime: undefined,
     lastFrameTime: undefined,
     animationId: undefined,
-    playMusic: false,
-    playSounds: false,
     sound: undefined,
     paddleWidth: 1, //  This means 1% of the game field width. If changed, also change the BE: PADDLE_OFFSET
     paddleSpacing: 2, //  This means 1% of the game field width is keept as a distance btween wall and paddle. If changed, also change the BE: PADDLE_OFFSET

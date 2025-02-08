@@ -6,6 +6,7 @@ import { endGameLoop } from './loop.js';
 import { startGameLoop} from './loop.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { gameRender } from './render.js';
+import { audioPlayer } from '../../abstracts/audio.js';
 
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
@@ -22,37 +23,43 @@ export function changeGameState(state) {
     gameObject.state = state;
     switch (state) {
         case undefined:
+            audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             break;
         case "pending":
+            audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
-            $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
+            if (gameObject.wsConnection)
+                $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
+            else
+                $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
             break;
         case "countdown":
+            audioPlayer.play(gameObject.mapId);
+            audioPlayer.playSound("unpause");
             showPowerupStatus(true);
             $id("game-view-middle-side-container-top-text").innerText = "TODO: COUNTDOWN 5,4,3,2,1,0";
             break;
         case "ongoing":
+            audioPlayer.playSound("beep2");
             $id("game-view-middle-side-container-top-text").innerText ="";
             $id("button-quit-game").style.display = "none";
             break;
         case "paused":
+            audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
-            if (gameObject.playMusic)
-                //TODO: audioPlayer.play(0); // Lobby music
             $id("button-quit-game").style.display = "none";
             if (gameObject.wsConnection){
-                $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-waiting");
-                if(gameObject.playSounds)
-                    audioPlayer.playSound("pause");
+                $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
+                audioPlayer.playSound("pause");
             }
             else
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
         case "finished":
-            if (gameObject.playMusic)
-                //TODO: audioPlayer.play(0); // Lobby music
+            audioPlayer.playSound("gameover");
+            audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
             $id("game-view-middle-side-container-top-text").innerText = "";
@@ -120,7 +127,6 @@ function colorPowerupStatus(element, state) {
 }
 
 export function showPowerupStatus(visible) {
-    console.log("Showing powerup status");
     let elements = $class('player-powerup-status')
     for (let element of elements)
         element.style.display = visible ? element.style.display = "flex" : element.style.display = "none";
@@ -132,7 +138,7 @@ export function showPowerupStatus(visible) {
     colorPowerupStatus($id('player-right-powerups-fast'), gameObject.playerRight.powerupFast);
 }
 
-export function updateReadyState(readyStateObject) {
+export function updateReadyStatefromWS(readyStateObject) {
     let gameCountdownIntervalId = undefined;
 
     // Remove paused banner:
@@ -147,11 +153,6 @@ export function updateReadyState(readyStateObject) {
     updateReadyStateNodes();
 
     if (readyStateObject.startTime) {
-        // Change music
-        if (gameObject.playMusic)
-            //TODO: audioPlayer.play(gameObject.mapId);
-        if (gameObject.state === "paused" || gameObject.playSounds)
-            audioPlayer.playSound("unpause");
         animateImage("game-countdown-image", "pulsate", "1s", "infinite");
         changeGameState("countdown");
         startGameLoop();
@@ -178,7 +179,9 @@ export function updateReadyState(readyStateObject) {
 }
 
 export function updateGameObjects(beMessage) {
-    console.log("Updating game objects");
+    // The first time we get the state ongoing we need to set it
+    if ( beMessage?.gameData?.state === "ongoing" && gameObject.state !== "ongoing")
+        changeGameState("ongoing");
     gameObject.state = beMessage?.gameData?.state;
     gameObject.sound = beMessage?.gameData?.sound;
     gameObject.playerLeft.points = beMessage?.playerLeft?.points;
@@ -199,48 +202,11 @@ export function updateGameObjects(beMessage) {
     gameObject.ball.width = percentageToPixels('x', beMessage?.ball?.width);
     // If the state is not ongoing we should render manually!
     // So when establishing a connection we can render the game state
-    if (gameObject.state !== "ongoing")
-        console.log("Rendering game state manually");
+    if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
+        console.log("Rendering game state manually because it's not ongoing");
         changeGameState(gameObject.state);
         gameRender();
-}
-
-// TODO: move to audio player file
-export function toggleMusic(value=undefined) {
-    // If not defined toggle the music, else set the value
-    if (value === undefined)
-        gameObject.playMusic = !gameObject.playMusic;
-    else
-        gameObject.playMusic = value;
-    if (gameObject.playSounds)
-        audioPlayer.playSound("toggle");
-    if(gameObject.playMusic)
-        $id("game-music-icon").src = window.origin + '/assets/game/icons/sound-on.png';
-    else
-        $id("game-music-icon").src = window.origin + '/assets/game/icons/sound-off.png';
-
-    console.log("playMusic", gameObject.mapId);
-    if (gameObject.playMusic && gameObject.state === "ongoing")
-        //TODO: audioPlayer.play(gameObject.mapId);
-    else if (gameObject.playMusic && gameObject.state !== "ongoing")
-        //TODO: audioPlayer.play(0); // Lobby music
-    else
-        audioPlayer.stop();
-}
-
-// TODO: move to audio player file
-export function toggleSound(value=undefined) {
-    // If not defined toggle the sounds, else set the value
-    if (value === undefined)
-        gameObject.playSounds = !gameObject.playSounds;
-    else
-        gameObject.playSounds = value;
-    if (gameObject.playSounds)
-        audioPlayer.playSound("toggle");
-    if(gameObject.playSounds)
-        $id("game-sound-icon").src = window.origin + '/assets/game/icons/music-on.png';
-    else
-        $id("game-sound-icon").src = window.origin + '/assets/game/icons/music-off.png';
+    }
 }
 
 export function sendPlayerInput() {

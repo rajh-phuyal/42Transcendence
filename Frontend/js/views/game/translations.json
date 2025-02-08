@@ -15,7 +15,7 @@
         "uk-UA": "",
         "ne-NP": ""
     },
-    "paused-waiting": {
+    "connected-waiting": {
         "en-US": "Connected\nWaiting for other player to connect",
         "pt-PT": "",
         "pt-BR": "",
@@ -41,6 +41,14 @@
     },
     "finished": {
         "en-US": "Game is over",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "connection-error": {
+        "en-US": "Could not connect to server\nPress space to try again",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",

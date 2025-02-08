@@ -176,9 +176,7 @@ async def check_if_game_is_finished(game_id):
         # One player needs to points ahead
         if abs(score_left - score_right) >= 2:
             await update_game_state(game_id, Game.GameState.FINISHED)
-            set_game_data(game_id, 'gameData', 'sound', 'gameover')
     else:
         # One player needs to score 11 points
         if score_left >= 11 or score_right >= 11:
             await update_game_state(game_id, Game.GameState.FINISHED)
-            set_game_data(game_id, 'gameData', 'sound', 'gameover')

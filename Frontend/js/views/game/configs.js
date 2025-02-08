@@ -2,9 +2,10 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { changeGameState, updateReadyStateNodes, toggleMusic, toggleSound } from './methods.js';
+import { changeGameState, updateReadyStateNodes } from './methods.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
 import { gameObject } from './objects.js';
+import { endGameLoop } from './loop.js';
 
 export default {
     attributes: {
@@ -35,29 +36,23 @@ export default {
                 case " ":
                     // Only if no connection exists and
                     // game state is pending, ongoing or paused, open the WS connection
-                    if (!gameObject.wsConnection && gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused") {
-                        gameObject.wsConnection = true;
-                        gameObject.playerLeft.state = "waiting";
-                        gameObject.playerRight.state = "waiting";
-                        updateReadyStateNodes();
-                        // Since chrome doesn't allow autoplay we need to start the music here
-                        toggleMusic(true);
-                        toggleSound(true);
-                        this.domManip.$id("game-view-middle-side-container-top-text").innerText="";
-                        WebSocketManagerGame.connect(this.gameId);
-                        // TODO #304 this should be done by the animaion
-                        const gameViewImageContainer = this.domManip.$id("game-view-image-container");
-                        gameViewImageContainer.style.backgroundImage = "none";
-                        gameViewImageContainer.style.width= "100%";
+                    if (!gameObject.wsConnection && gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused" || gameObject.state === "countdown") {
+                        try {
+                            this.domManip.$id("game-view-middle-side-container-top-text").innerText="";
+                            gameObject.playerLeft.state = "waiting";
+                            gameObject.playerRight.state = "waiting";
+                            updateReadyStateNodes();
+                            WebSocketManagerGame.connect(this.gameId);
+                            gameObject.wsConnection = true;
+                            // TODO #304 this should be done by the animaion
+                            const gameViewImageContainer = this.domManip.$id("game-view-image-container");
+                            gameViewImageContainer.style.backgroundImage = "none";
+                            gameViewImageContainer.style.width= "100%";
+                        }
+                        catch (error) {
+                            this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
+                        }
                     }
-                    break;
-                case "m":
-                    // Mute the game music
-                    toggleMusic();
-                    break;
-                case "n":
-                    // Mute the game sounds
-                   toggleSound();
                     break;
                 case "Escape":
                     // Quit the game
@@ -80,8 +75,6 @@ export default {
                 this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
                 this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
                 this.domManip.$on(document, 'keydown', this.menuKeysCallback);
-                this.domManip.$on(this.domManip.$id("game-music-icon"), "click", toggleMusic);
-                this.domManip.$on(this.domManip.$id("game-sound-icon"), "click", toggleSound);
                 return ;
             }
 
@@ -94,10 +87,6 @@ export default {
                         this.domManip.$off(buttonQuitGame, "click");
                     if (document.eventListeners)
                         this.domManip.$on(document, 'keydown', this.menuKeysCallback);
-                    if (this.domManip.$id("game-music-icon").eventListeners)
-                        this.domManip.$off(this.domManip.$id("game-music-icon"), "click");
-                    if (this.domManip.$id("game-sound-icon").eventListeners)
-                        this.domManip.$off(this.domManip.$id("game-sound-icon"), "click");
                 }
             }
         },
@@ -194,8 +183,8 @@ export default {
         beforeRouteLeave() {
             WebSocketManagerGame.disconnect(this.gameId);
             this.initListeners(false);
-            //endGameLoop(); //TODO: uncomment this!
-            audioPlayer.stop();
+            endGameLoop();
+            this.audioPlayer.stop();
         },
 
         beforeDomInsertion() {

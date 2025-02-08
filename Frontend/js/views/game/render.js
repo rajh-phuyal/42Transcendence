@@ -1,6 +1,7 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
 import { percentageToPixels } from './methods.js';
+import { audioPlayer } from '../../abstracts/audio.js';
 
 // ############## VARIABLES ##############
 const borders = {
@@ -244,7 +245,6 @@ const drawPaddle = (gameField, ctx, side) => {
 }
 
 const drawBall = (ctx) => {
-    console.log("Drawing ball");
 	const ballStartPosX = gameObject.ball.posX - (gameObject.ball.width / 2);
 	const ballStartPosY = gameObject.ball.posY - (gameObject.ball.height / 2);
 	ctx.beginPath();
@@ -286,8 +286,9 @@ export function gameRender () {
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx);
-    if (gameObject.playSounds && gameObject.sound && gameObject.sound !== "none")
-        audioPlayer.playSound(gameObject.sound);
+    // This will only play wall, paddle, score, powerup sounds since the are triggered/send by the be
+    // All other sounds are state realated and therfore should be playe by fe function: changeGameState()
+    audioPlayer.playSound(gameObject.sound);
 }
 
 export function toggleGamefieldVisible(visible) {

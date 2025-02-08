@@ -3,7 +3,7 @@ import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import { endGameLoop } from '../views/game/loop.js';
 import router from '../navigation/router.js';
-import { updateReadyState, updateGameObjects } from '../views/game/methods.js';
+import { updateReadyStatefromWS, updateGameObjects } from '../views/game/methods.js';
 import { gameObject } from '../views/game/objects.js';
 
 
@@ -76,7 +76,7 @@ class WebSocketManagerGame {
 
         switch (message.messageType) {
             case "playersReady":
-                updateReadyState(message);
+                updateReadyStatefromWS(message);
                 return ;
             case "gameState":
                 //console.log("got game state", message);

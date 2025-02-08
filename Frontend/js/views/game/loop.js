@@ -7,12 +7,13 @@ import { gameRender } from './render.js';
 function gameLoop(currentTime) {
     console.log("Game loop");
     if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
-        sendPlayerInput();
-        gameRender();
         gameObject.lastFrameTime = currentTime;
+        if (gameObject.state === "ongoing")
+            sendPlayerInput();
+        gameRender();
         // Check if the game is  still ongoing
-        if (gameObject.state !== "ongoing" || gameObject.state !== "countdown") {
-            console.log("Game is not ongoing anymore: ending game loop");
+        if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
+            console.log("Game is not ongoing/coutdown anymore: ending game loop");
             cancelAnimationFrame(gameObject.animationId);
             return;
         }

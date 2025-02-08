@@ -9,6 +9,7 @@ export default class AudioPlayer {
         this.soundsEnabled = true;
         this.musicEnabled = true;
         this.currentSong = null;
+        this.playing = false;
         this.songs = [
             { mapId: 0, audio: new Audio("../assets/audio/lobby.mp3") },
             { mapId: 1, audio: new Audio("../assets/audio/ufo.mp3") },
@@ -45,6 +46,9 @@ export default class AudioPlayer {
         this.musicEnabled = !this.musicEnabled;
         if (!this.musicEnabled) {
             this.stop();
+        } else {
+            if (this.currentSong)
+                this.play(this.currentSong.mapId);
         }
     }
 
@@ -64,6 +68,8 @@ export default class AudioPlayer {
 
     playSound(name) {
         if (!this.soundsEnabled) return;
+        if (!name) return;
+        if (name === "none") return;
 
         const sound = this.sounds.find(sound => sound.name === name);
         if (sound) {
@@ -75,22 +81,24 @@ export default class AudioPlayer {
 
     play(mapId) {
         if (!this.musicEnabled) return;
-
-        console.log("Starting:", mapId);
         const newSong = this.songs.find(song => song.mapId === mapId);
         if (!newSong) {
             console.error("Song not found:", mapId);
             return;
         }
 
-        if (this.currentSong === newSong) {
+        // Make sure the song is looped
+        newSong.audio.loop = true;
+
+        if (this.playing && this.currentSong === newSong) {
             console.log("Song is already playing:", newSong);
             return;
         }
 
-        if (this.currentSong) {
+        if (this.playing) {
             this.crossfade(this.currentSong, newSong);
         } else {
+            this.playing = true;
             this.startFadeIn(newSong, 1000);
         }
     }
@@ -145,11 +153,11 @@ export default class AudioPlayer {
     }
 
     stop() {
-        if (this.currentSong) {
+        if (this.playing) {
             this.startFadeOut(this.currentSong, 1000, () => {
                 this.currentSong.audio.pause();
                 this.currentSong.audio.currentTime = 0;
-                this.currentSong = null;
+                this.playing = false;
             });
         }
     }
