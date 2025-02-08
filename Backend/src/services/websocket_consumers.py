@@ -225,15 +225,16 @@ class GameConsumer(CustomWebSocketLogic):
             await update_game_state(self.game_id, Game.GameState.PAUSED)
             set_game_data(self.game_id, 'gameData', 'sound', 'pause')
 
-            # Other player scores that point
-            user_id_for_point = self.leftUser.id
-            if self.user_id == self.leftUser.id:
-                user_id_for_point = self.rightUser.id
-            if self.isLeftPlayer:
-                player_side = 'playerLeft'
-            else:
-                player_side = 'playerRight'
-            await apply_point(self.game_id, player_side)
+            # Other player scores that point (if not local game)
+            if not self.local_game:
+                user_id_for_point = self.leftUser.id
+                if self.user_id == self.leftUser.id:
+                    user_id_for_point = self.rightUser.id
+                if self.isLeftPlayer:
+                    player_side = 'playerLeft'
+                else:
+                    player_side = 'playerRight'
+                await apply_point(self.game_id, player_side)
 
             # Send the updated game state to FE
             await send_update_game_data_msg(self.game_id)
