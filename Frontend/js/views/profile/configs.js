@@ -326,7 +326,7 @@ export default {
         createConversation() {
             const message = this.domManip.$id("new-chat-modal-textarea").value;
             this.hideModal("new-chat-modal");
-            call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message}).then(data => {
+            call("chat/create/conversation/", "POST", {"userId": this.result.id, "initialMessage": message}).then(data => {
                 $callToast("success", data.message);
                 router(`/profile`, {id: this.result.id});
             })

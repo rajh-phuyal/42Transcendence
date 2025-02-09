@@ -30,7 +30,9 @@ export default class AudioPlayer {
             { name: "pause", audio: new Audio("../assets/audio/pause.mp3") },
             { name: "unpause", audio: new Audio("../assets/audio/unpause.mp3") },
             { name: "score", audio: new Audio("../assets/audio/score.mp3") },
-            { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") }
+            { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") },
+            { name: "chat", audio: new Audio("../assets/audio/chat.mp3") },
+            { name: "toast", audio: new Audio("../assets/audio/toast.mp3") }
         ];
 
         AudioPlayer.instance = this;
