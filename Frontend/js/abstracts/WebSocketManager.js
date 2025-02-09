@@ -3,7 +3,7 @@ import { $id } from './dollars.js';
 import $callToast from './callToast.js';
 import { updateParticipantsCard, createGameList } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
-
+import { audioPlayer } from '../abstracts/audio.js';
 const { hostname } = window.location;
 
 class WebSocketManager {
@@ -82,6 +82,7 @@ class WebSocketManager {
 
         switch (message.messageType) {
             case "chat":
+                audioPlayer.playSound("toast");
                 if (this.currentRoute == "chat")
                     processIncomingWsChatMessage(message);
                 else

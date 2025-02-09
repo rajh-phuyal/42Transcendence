@@ -6,8 +6,8 @@ export default class AudioPlayer {
             return AudioPlayer.instance;
         }
 
-        this.maxVolumeMusic = 0.5;
-        this.maxVolumeSounds = 0.75; // TODO: implement this
+        this.maxVolumeMusic = 0.3;
+        this.maxVolumeSounds = 0.5;
         this.soundsEnabled = true;
         this.musicEnabled = true;
         this.currentSong = null;
@@ -77,6 +77,7 @@ export default class AudioPlayer {
 
         const sound = this.sounds.find(sound => sound.name === name);
         if (sound) {
+            sound.audio.volume = this.maxVolumeSounds;
             sound.audio.play();
         } else {
             console.error("Sound not found:", name);
@@ -129,7 +130,7 @@ export default class AudioPlayer {
                 clearInterval(fadeOut);
                 if (callback) callback();
             } else {
-                song.audio.volume = this.maxVolumeMusic - step / steps;
+                song.audio.volume = Math.max(0, this.maxVolumeMusic * (1 - step / steps));
                 step++;
             }
         }, interval);
@@ -148,7 +149,7 @@ export default class AudioPlayer {
                 clearInterval(fadeIn);
                 song.audio.volume = this.maxVolumeMusic;
             } else {
-                song.audio.volume = step / steps;
+                song.audio.volume = (step / steps) * this.maxVolumeMusic;
                 step++;
             }
         }, interval);
