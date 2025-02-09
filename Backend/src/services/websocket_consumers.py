@@ -102,7 +102,7 @@ class MainConsumer(CustomWebSocketLogic):
         # Remove the user from all their toruanemnt groups
         await setup_all_tournament_channels(user, self.channel_name, intialize=False)
 
-    @barely_handle_ws_exceptions
+    #@barely_handle_ws_exceptions TODO: uncomment this
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)

@@ -77,6 +77,7 @@ export default class AudioPlayer {
 
         const sound = this.sounds.find(sound => sound.name === name);
         if (sound) {
+            sound.audio.currentTime = 0;
             sound.audio.volume = this.maxVolumeSounds;
             sound.audio.play();
         } else {

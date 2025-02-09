@@ -26,6 +26,7 @@ def setup_all_conversations(user, channel_name, intialize=True):
             logging.info(f"\tRemoved user {user} from group {group_name}")
 
 async def broadcast_chat_message(message):
+    # TODO: here we need to parse the message maybe via serializer?
     group_name = f"conversation_{message.conversation.id}"
     logging.info(f"Broadcasting to group {group_name} from user {message.user}: {message.content}")
     await channel_layer.group_send(
@@ -44,11 +45,9 @@ async def broadcast_chat_message(message):
         }
     )
 
-    # Update the badges on db
-    await sync_to_async(ConversationMember.objects.filter(conversation=message.conversation).update)(unread_counter=F('unread_counter') + 1)
-
-    await send_conversation_unread_counter(other_user_member.id, conversation_id)
-    await send_total_unread_counter(other_user_member.id)
+    # TODO: check if still needed
+    #await send_conversation_unread_counter(other_user_member.id, conversation_id)
+    #await send_total_unread_counter(other_user_member.id)
 
 @sync_to_async
 def send_total_unread_counter(user_id):

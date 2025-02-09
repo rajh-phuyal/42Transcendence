@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.models import Q, F
 from channels.db import database_sync_to_async
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
+from asgiref.sync import async_to_sync, sync_to_async
 # Core
 from core.exceptions import BarelyAnException
 # Services
@@ -32,14 +33,14 @@ def validate_user_is_member_of_conversation(user, conversation_id):
     return
 
 @database_sync_to_async
-def get_other_user_member(user, conversation_id):
-    other_user_member = (
+def get_other_user(user, conversation_id):
+    other_user = (
         ConversationMember.objects
             .filter(conversation=conversation_id)
             .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLORDS))
             .first()
         ).user
-    return other_user_member
+    return other_user
 
 def get_conversation_users(conversation_id):
     return ConversationMember.objects.filter(conversation_id=conversation_id).values_list('user', flat=True)
@@ -64,7 +65,7 @@ def create_chat_message(sender, conversation_id, content):
                 conversation=conversation
             ).exclude(user=sender).update(unread_counter=F('unread_counter') + 1)
 
-            broadcast_chat_message(message)
+            async_to_sync(broadcast_chat_message)(message)
     except Exception as e:
         logging.error(f"TODO: eeror msg is shit Error updating unread messages count for user {other_user_member.user}: {e}")
     return message
@@ -76,33 +77,29 @@ async def process_incoming_chat_message(consumer, user, text):
     message = check_message_keys(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
     content = message.get('content', '').strip()
-    other_user_member = await get_other_user_member(user, conversation_id)
+    other_user = await get_other_user(user, conversation_id)
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
 
     # Content cant be empty
     if not content:
-        send_temporary_info_msg(user.id, conversation_id, _("Message content cannot be empty"))
+        await send_temporary_info_msg(user.id, conversation_id, _("Message content cannot be empty"))
         return
 
     # Check if content starts with a "/"
     # This means that the message was a command and therefore was handled
-    if await check_if_msg_is_cmd(user, other_user_member, conversation_id, content):
+    if await check_if_msg_is_cmd(user, other_user, conversation_id, content):
         return
 
     # Check if user is blocked by other member
-    if is_blocked(user, other_user_member):
-        send_temporary_info_msg(user.id, conversation_id, _("You have been blocked by this user"))
+    if await sync_to_async(is_blocked)(user, other_user):
+        await send_temporary_info_msg(user.id, conversation_id, _("You have been blocked by this user"))
         return
 
     # Check if the message contains an @username
-    await check_if_msg_contains_username(user, other_user_member, conversation_id, content)
+    await check_if_msg_contains_username(user, other_user, conversation_id, content)
 
-    # Do db operations
-    # TODO: change since the function is now sync
-    #new_message = await create_chat_message(user, other_user_member, conversation_id, content)
-
-    # TODO: here we need to parse the message maybe via serializer?
-    await broadcast_chat_message(new_message)
+    # Do db operations and send it
+    await sync_to_async(create_chat_message)(user, conversation_id, content)
 
 # FE tells backend that user has seen a conversation
 async def process_incoming_seen_message(self, user, text):

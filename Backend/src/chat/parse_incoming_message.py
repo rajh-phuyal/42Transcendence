@@ -1,14 +1,11 @@
 # Basics
 import logging
-
 # Django stuff
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from asgiref.sync import sync_to_async
-
 # Core stuff
 from core.exceptions import BarelyAnException
-
 # User stuff
 from user.constants import USER_ID_OVERLORDS, AVATAR_OVERLORDS, USERNAME_OVERLORDS
 from user.models import User
@@ -48,7 +45,9 @@ async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
             #await sync_to_async(create_game)(user.id, other_user.id, map_number, values["powerups"], False)
         else:
             raise BarelyAnException(_("Invalid command"))
+        logging.info("Command found and executed: %s", content)
         return True
+    logging.info("Message does not start with / not a cmd. Full message: %s", content)
     return False
 
 # - find all '@' in message
@@ -67,17 +66,17 @@ async def check_if_msg_contains_username(user, other_user, conversation_id, cont
 # This functions allows us to send a message to the user which won't persist
 # in the database and therfore is gone after the user reloads the page
 async def send_temporary_info_msg(user_id, conversation_id, content):
-    from services.websocket_utils import send_response_message
+    from services.websocket_utils import send_message_to_user
     message = {
+        "messageType": "chat",
+        "type": "chat_message",
         "avatar": AVATAR_OVERLORDS,
         "content": content,
         "conversationId": conversation_id,
-        "createdAt": timezone.now(),  # TODO: Issue #193
+        "createdAt": timezone.now().isoformat(),  # TODO: Issue #193
         "messageId": 1,
-        "messageType": "chat",
         "seenAt": None,
-        "type": "message",
         "userId": USER_ID_OVERLORDS,
         "username": USERNAME_OVERLORDS
     }
-    await send_response_message(user_id, conversation_id, **message)
+    await send_message_to_user(user_id, **message)

@@ -82,7 +82,7 @@ class WebSocketManager {
 
         switch (message.messageType) {
             case "chat":
-                audioPlayer.playSound("toast");
+                audioPlayer.playSound("chat");
                 if (this.currentRoute == "chat")
                     processIncomingWsChatMessage(message);
                 else
