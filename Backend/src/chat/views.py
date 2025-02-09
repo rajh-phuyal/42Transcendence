@@ -18,6 +18,7 @@ from core.exceptions import BarelyAnException
 # User
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
+from user.utils import get_user_by_id
 from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
 # Chat
 from chat.constants import NO_OF_MSG_TO_LOAD
@@ -270,35 +271,26 @@ class CreateConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
         user = request.user
-        userIds = request.data.get('userIds', [])
-        initialMessage = request.data.get('initialMessage', '').strip()
-        conversation_name = request.data.get('name', None)
-        if not userIds:
-           return error_response(_("No 'userIds' provided"), status_code=status.HTTP_400_BAD_REQUEST)
-        if not initialMessage:
+        other_user_id = request.data.get('userId', None)
+        initial_message = request.data.get('initialMessage', '').strip()
+        if not other_user_id:
+           return error_response(_("No 'userId' provided"), status_code=status.HTTP_400_BAD_REQUEST)
+        if not initial_message:
            return error_response(_("No 'initialMessage' provided"), status_code=status.HTTP_400_BAD_REQUEST)
-        if len(userIds) == 0:
-            return error_response(_("No 'userIds' provided"), status_code=status.HTTP_400_BAD_REQUEST)
-        if len(userIds) == 1:
-            # A PM conversation
-            is_group_conversation = False
-            other_user_id = userIds[0]
-            try:
-                other_user = User.objects.get(id=other_user_id)
-            except User.DoesNotExist:
-                return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
-            # TODO: somewehre here create the message: **S,requester,requestee**
-            # Check if the user blocked client
-            if is_blocked(user.id, other_user.id):
-                return error_response(_("You are blocked by the user"), status_code=status.HTTP_403_FORBIDDEN)
-            # Check if the conversation already exists
-            conversation_id = get_conversation_id(user, other_user)
-            if conversation_id:
-                return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
-        elif len(userIds) > 1:
-            error_response(_("Group chats are not supported (yet)"), status_code=status.HTTP_400_BAD_REQUEST)
+
+        # A PM conversation (Since we don't support group chats in MVP)
+        other_user = get_user_by_id(other_user_id)
+
+        # TODO: somewehre here create the message: **S,requester,requestee**
+        # Check if the user blocked client
+        if user_is_blocked(user.id, other_user.id):
+            return error_response(_("You are blocked by the user"), status_code=status.HTTP_403_FORBIDDEN)
+        # Check if the conversation already exists
+        conversation_id = get_conversation_id(user, other_user)
+        if conversation_id:
+            return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
 
         # Create the conversation
-        new_conversation = create_conversation(user, other_user, initialMessage, user)
+        new_conversation = create_conversation(user, other_user, initial_message, user)
 
         return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})

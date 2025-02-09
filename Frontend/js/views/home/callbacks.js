@@ -91,7 +91,10 @@ export function tournamentModalCallback(){
     // done so that the client can create a tournament without having to type
     // a name. This "fast button" is mandatory from subject
     $id("tournament-modal-create-form-name-container-input").value = generateTournamentName();
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     modal.show();
 }
 
@@ -100,6 +103,7 @@ export function chatRoomModalCallback(){
     router("/chat");
 
 }
+
 export function leaderboardModalCallback(){
     let modalBody = $id('home-modal-body');
     let modalElement = $id('home-modal');
