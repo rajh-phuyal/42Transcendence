@@ -1,7 +1,9 @@
 GAME_FPS = 15
 RECONNECT_TIMEOUT = 2 # Minutes
 POWERUP_DURATION = 10 # Seconds
-INIT_BALL_SPEED = 3
+INIT_BALL_SPEED = 1.5
+LAST_BALL_SPEED = None
+BALL_SPEED_STEP = 0.1
 INIT_PADDLE_SIZE = 10
 
 # This should be a percentage of the screen where the paddel hit surface is.
@@ -13,8 +15,7 @@ PADDLE_OFFSET = 4
 GAME_PLAYER_INPUT = {
     "movePaddle": "0",
     "activatePowerupBig": False,
-    "activatePowerupSlow": False,
-    "activatePowerupFast": False
+    "activatePowerupSpeed": False,
 }
 
 GAME_STATE = {
