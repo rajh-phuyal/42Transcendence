@@ -18,6 +18,7 @@ from user.models import User
 from chat.models import Conversation, Message, ConversationMember
 channel_layer = get_channel_layer()
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def mark_all_messages_as_seen_sync(user_id, conversation_id):
     try:
         with transaction.atomic():
@@ -38,10 +39,12 @@ def mark_all_messages_as_seen_sync(user_id, conversation_id):
     except Exception as e:
         logging.error(f"Error marking messages as seen: {e}")
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 @database_sync_to_async
 def mark_all_messages_as_seen_async(user_id, conversation_id):
     mark_all_messages_as_seen_sync(user_id, conversation_id)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def get_conversation_name(user, conversation):
     if conversation.name:
         return conversation.name
@@ -57,6 +60,7 @@ def get_conversation_name(user, conversation):
     # Fallback to "Top Secret"
     return _("top secret")
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def get_conversation_id(user1, user2):
     user_conversations = ConversationMember.objects.filter(
         user=user1.id,
@@ -80,6 +84,7 @@ def get_conversation_id(user1, user2):
     # create a message
     # add the conversation to the user's WebSocket groups
     # send a message to the user's WebSocket group
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def create_conversation(user1, user2, initialMessage, creator = None):
     from services.websocket_utils import send_message_to_user_sync
 
@@ -155,6 +160,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
 
     return new_conversation
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def generate_template_msg(message):
     message = message[2:-2]
     parts = message.split(',')

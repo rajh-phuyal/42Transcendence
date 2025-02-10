@@ -26,6 +26,7 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationSerializer, ConversationMemberSerializer, MessageSerializer
 from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync, generate_template_msg
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):
@@ -41,6 +42,7 @@ class LoadConversationsView(BaseAuthenticatedView):
             return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class LoadConversationView(BaseAuthenticatedView):
     #@barely_handle_exceptions TODO: remove comment
     def put(self, request, conversation_id=None):
@@ -267,6 +269,7 @@ class LoadConversationView(BaseAuthenticatedView):
             "data": serialized_messages.data,
         }
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class CreateConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):

@@ -20,6 +20,7 @@ from chat.models import Message, ConversationMember, Conversation
 from chat.parse_incoming_message import check_if_msg_is_cmd, check_if_msg_contains_username, send_temporary_info_msg
 from chat.utils import mark_all_messages_as_seen_async, get_conversation_id, create_conversation
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 @database_sync_to_async
 def validate_user_is_member_of_conversation(user, conversation_id):
     # Validate conversation exists & user is a member of the conversation
@@ -32,6 +33,7 @@ def validate_user_is_member_of_conversation(user, conversation_id):
         raise BarelyAnException(_("Conversation not found or user is not a member of the conversation"))
     return
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 @database_sync_to_async
 def get_other_user(user, conversation_id):
     other_user = (
@@ -42,9 +44,11 @@ def get_other_user(user, conversation_id):
         ).user
     return other_user
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def get_conversation_users(conversation_id):
     return ConversationMember.objects.filter(conversation_id=conversation_id).values_list('user', flat=True)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def create_chat_message(sender, conversation_id, content):
     # Validate conversation exists & user is a member of the conversation
     logging.info(f"Creating a message in conversation {conversation_id} from {sender.username}: '{content}'")
@@ -71,6 +75,7 @@ def create_chat_message(sender, conversation_id, content):
     return message
 
 # Main fucntion of incoming chat message via WS
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def process_incoming_chat_message(consumer, user, text):
     from services.websocket_utils import check_message_keys
     from user.utils_relationship import is_blocked
@@ -102,6 +107,7 @@ async def process_incoming_chat_message(consumer, user, text):
     await sync_to_async(create_chat_message)(user, conversation_id, content)
 
 # FE tells backend that user has seen a conversation
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def process_incoming_seen_message(self, user, text):
     from services.websocket_utils import check_message_keys
     message = check_message_keys(text, mandatory_keys=['conversationId'])
@@ -119,6 +125,7 @@ async def process_incoming_seen_message(self, user, text):
 #   - profile page -> send message to user
 #
 # NOTE: If the conversation does not exist it will be created
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def create_overloards_pm(userA, userB, content, sendIt=True):
     logging.info(f"Creating a overloards message in conversation of {userA.username} and {userB.username}: '{content}'")
     conversation_id = get_conversation_id(userA, userB)

@@ -330,8 +330,6 @@ export default {
                 $callToast("success", data.message);
                 router(`/profile`, {id: this.result.id});
             })
-
-
         },
 
         openChatModal() {
@@ -342,7 +340,6 @@ export default {
         },
 
         messageMethod() {
-
             if (this.result.chatId)
                 router(`/chat`, {id: this.result.chatId});
             else

@@ -17,9 +17,10 @@ from game.utils import is_left_player, get_game_data, set_game_data, get_user_of
 from game.utils_ws import update_game_state, update_game_points, send_update_game_data_msg, send_update_players_ready_msg
 from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished, apply_point
 # Services
+from services.constants import PRE_USER_CHANNEL
 from services.websocket_utils import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_message_keys
-from services.chat_service import setup_all_conversations, send_total_unread_counter
-from services.tournament_service import setup_all_tournament_channels
+from services.chat_service import send_total_unread_counter
+from services.channel_groups import update_client_in_all_conversation_groups, update_client_in_all_tournament_groups
 # Channels
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -69,24 +70,26 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
-    @barely_handle_ws_exceptions
+    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+    #@barely_handle_ws_exceptions TODO: unccomment
     async def connect(self):
         await super().connect()
         user = self.scope['user']
         # Setting the user's online status in cache
         user.set_online_status(True)
         # Store the WebSocket channel to the cache with the user ID as the key
-        cache.set(f'user_channel_{user.id}', self.channel_name, timeout=3000)
+        cache.set(f'{PRE_USER_CHANNEL}{user.id}', self.channel_name, timeout=3000)
         # Add the user to all their conversation groups
-        await setup_all_conversations(user, self.channel_name, intialize=True)
+        await update_client_in_all_conversation_groups(user, True)
         # Add the user to all their toruanemnt groups
-        await setup_all_tournament_channels(user, self.channel_name, intialize=True)
+        await update_client_in_all_tournament_groups(user, True)
         # Accept the connection
         await self.accept()
         # Send the inizial badge nummer
-        await send_total_unread_counter(user.id)
+        # TODO: activate this again: await send_total_unread_counter(user.id)
 
-    @barely_handle_ws_exceptions
+    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+    #@barely_handle_ws_exceptions TODO: uncomment
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         user = self.scope['user']
@@ -94,14 +97,15 @@ class MainConsumer(CustomWebSocketLogic):
         await sync_to_async(user.update_last_seen)()
         # Remove the user's online status from cache
         user.set_online_status(False)
+        # Remove the user from all their conversation groups
+        await update_client_in_all_conversation_groups(user, False)
+        # Remove the user from all their toruanemnt groups
+        await update_client_in_all_tournament_groups(user, False)
         # Remove the user's WebSocket channel from cache
         cache.delete(f'user_channel_{user.id}')
         logging.info(f"User {user.username} marked as offline.")
-        # Remove the user from all their conversation groups
-        await setup_all_conversations(user, self.channel_name, intialize=False)
-        # Remove the user from all their toruanemnt groups
-        await setup_all_tournament_channels(user, self.channel_name, intialize=False)
 
+    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
     #@barely_handle_ws_exceptions TODO: uncomment this
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)

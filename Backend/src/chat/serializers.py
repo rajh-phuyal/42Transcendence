@@ -10,6 +10,8 @@ from user.models import User
 from django.utils.translation import gettext as _
 from .utils import get_conversation_name
 from django.db.models import Q
+
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class ConversationSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isGroupChat = serializers.BooleanField(source='is_group_conversation')
@@ -81,11 +83,13 @@ class ConversationSerializer(serializers.ModelSerializer):
     def get_isEmpty(self, obj):
         return obj.messages.count() == 0
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class ConversationMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConversationMember
         fields = ('__all__')
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class MessageSerializer(serializers.ModelSerializer):
     userId = serializers.IntegerField(source='user.id', required=False)
     username = serializers.CharField(source='user.username', required=False)

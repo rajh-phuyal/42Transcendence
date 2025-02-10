@@ -2,7 +2,7 @@ import { $id } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
 
 function populateUserInfo(res) {
-    let username = $id("username");   
+    let username = $id("username");
     username.textContent = translate("profile", "subject") + res.username;
     let birthName =$id("birth-name");
     birthName.textContent = translate("profile", "birthName") + res.lastName + ", " + res.firstName;
@@ -10,8 +10,8 @@ function populateUserInfo(res) {
     let lastSeenImg =$id("last-seen-image");
 
     if (res.online)
-        lastSeenImg.src = "../../../../assets/onlineIcon.png"; 
-    else 
+        lastSeenImg.src = "../../../../assets/onlineIcon.png";
+    else
         lastSeenImg.src = "../../../../assets/offlineIcon.png";
     lastSeenText.textContent = translate("profile", "lastSeen") + res.lastLogin;
     let language =$id("language");

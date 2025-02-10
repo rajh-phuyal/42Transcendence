@@ -13,6 +13,7 @@ from user.models import User
 
 # This will be called on a incoming chat message and has to do:
 # - check if message starts with '/'
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
     from user.utils_relationship import block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
     if content.startswith("/"):
@@ -58,6 +59,7 @@ async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
 #          -> so if a user changes the username the @<username> will update to new username - we are so smart ;)
 #        if username does not exist: ignore
 # - Patterns for game and tournament will be done by fe
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def check_if_msg_contains_username(user, other_user, conversation_id, content):
     if "@" in content:
         logging.info("Message contains @ expecting username(s). Full message: %s", content)
@@ -65,6 +67,7 @@ async def check_if_msg_contains_username(user, other_user, conversation_id, cont
 
 # This functions allows us to send a message to the user which won't persist
 # in the database and therfore is gone after the user reloads the page
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def send_temporary_info_msg(user_id, conversation_id, content):
     from services.websocket_utils import send_message_to_user
     message = {

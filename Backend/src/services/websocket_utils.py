@@ -36,16 +36,19 @@ class WebSocketMessageHandlersMain:
             return method
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
 
+    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
     @staticmethod
     async def handle_chat(consumer, user, message):
         await process_incoming_chat_message(consumer, user, message)
         logging.info(f"Parsed backend object: {message}")
 
+    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
     @staticmethod
     async def handle_seen(consumer, user, message):
         logging.info("Received seen message")
         await process_incoming_seen_message(consumer, user, message)
 
+    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
     @staticmethod
     async def handle_relationship(consumer, user, message):
         logging.info("Received relationship message - TODO: issue #206 implement")
@@ -82,6 +85,7 @@ class WebSocketMessageHandlersGame:
 ## UTILS
 ## ------------------------------------------------------------------------------------------------
 # To send by consumer
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def send_response_message(client_consumer, type, message):
     logging.info(f"Sending message to connection {client_consumer}: {message}")
     message_dict = {
@@ -92,6 +96,7 @@ async def send_response_message(client_consumer, type, message):
     await client_consumer.send(text_data=json_message)
 
 # To send by user id
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def send_message_to_user(user_id, **message):
     channel_name =  cache.get(f'user_channel_{user_id}', None)
     if channel_name:
@@ -102,12 +107,14 @@ async def send_message_to_user(user_id, **message):
         logging.warning(f"No active WebSocket connection found for user ID {user_id}.")
 
 @async_to_sync
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def send_message_to_user_sync(user_id, **message):
     await send_message_to_user(user_id, **message)
 
 # For all incoming messages we should use this function to parse the message
 # therefore we can validate if the message has all the required fields
 # and if not, raise an exception
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def check_message_keys(text: str, mandatory_keys: list[str] = None) -> dict:
     _message = json.loads(text)
 

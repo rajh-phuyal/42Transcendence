@@ -9,22 +9,8 @@ import logging
 User = get_user_model()
 channel_layer = get_channel_layer()
 
-# channel_name is the WebSocket connection ID for a user
-# group_name is the conversation ID
-@sync_to_async
-def setup_all_conversations(user, channel_name, intialize=True):
-    logging.info("MODE: %d, Configuring conversations for user: %s with channel_name: %s", intialize, user, channel_name)
-    # Get all conversation IDs where the user is a member
-    conversation_memberships = ConversationMember.objects.filter(user=user)
-    for membership in conversation_memberships:
-        group_name = f"conversation_{membership.conversation.id}"
-        if intialize:
-            async_to_sync(channel_layer.group_add)(group_name, channel_name)
-            logging.info(f"\tAdded user {user} to group {group_name}")
-        else:
-            async_to_sync(channel_layer.group_discard)(group_name, channel_name)
-            logging.info(f"\tRemoved user {user} from group {group_name}")
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def broadcast_chat_message(message):
     # TODO: here we need to parse the message maybe via serializer?
     group_name = f"conversation_{message.conversation.id}"
@@ -49,6 +35,7 @@ async def broadcast_chat_message(message):
     #await send_conversation_unread_counter(other_user_member.id, conversation_id)
     #await send_total_unread_counter(other_user_member.id)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 @sync_to_async
 def send_total_unread_counter(user_id):
     from services.websocket_utils import send_message_to_user
@@ -65,6 +52,7 @@ def send_total_unread_counter(user_id):
     #logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
     async_to_sync(send_message_to_user)(user_id, **msg_data)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 @sync_to_async
 def send_conversation_unread_counter(user_id, conversation_id):
     from services.websocket_utils import send_message_to_user

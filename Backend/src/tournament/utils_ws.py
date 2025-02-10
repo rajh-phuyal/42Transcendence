@@ -11,7 +11,6 @@ from user.models import User
 from chat.models import Message
 from services.chat_service import broadcast_chat_message
 
-
 def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **json_details):
     tournament_id_name = f"tournament_{tournament_id}"
     async_to_sync(channel_layer.group_send)(
@@ -34,6 +33,7 @@ def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **jso
 # Tournament is over
 # Also if a user connets to the websocket, the user should be added to the group
 # and if the user disconnects, the user should be removed from the group
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def join_tournament_channel(user, tournament_id, activate=True):
     tournament_id_name = f"tournament_{tournament_id}"
     channel_name_user =  cache.get(f'user_channel_{user.id}', None)
@@ -48,6 +48,7 @@ def join_tournament_channel(user, tournament_id, activate=True):
         # Remove the user from the tournament channel
         async_to_sync(channel_layer.group_discard)(tournament_id_name, channel_name_user)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def send_tournament_invites_via_pm(tournament_id):
     from chat.utils import create_conversation, get_conversation_id
     # Get all users that are invited to the tournament
@@ -82,6 +83,7 @@ def send_tournament_invites_via_pm(tournament_id):
         # Send a message to an existing conversation
         broadcast_chat_message(newMessage)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def send_tournament_invites_via_ws(tournament_id):
     from services.websocket_utils import send_message_to_user_sync
     # Get all users that are invited to the tournament
@@ -96,6 +98,7 @@ def send_tournament_invites_via_ws(tournament_id):
     for member in tournament_members:
         send_message_to_user_sync(member.user_id, **message)
 
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def delete_tournament_channel(tournament_id):
     # Remove all users from the tournament channel
     tournament_id_name = f"tournament_{tournament_id}"
