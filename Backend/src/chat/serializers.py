@@ -12,6 +12,55 @@ from .utils import get_conversation_name
 from django.db.models import Q
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+class MessageSerializer(serializers.ModelSerializer):
+    userId = serializers.IntegerField(source='user.id', required=False)
+    username = serializers.CharField(source='user.username', required=False)
+    avatar = serializers.SerializerMethodField()
+    createdAt = serializers.DateTimeField(source='created_at', required=False)
+    seenAt = serializers.DateTimeField(source='seen_at', allow_null=True, required=False)
+    content = serializers.CharField()
+
+    class Meta:
+        model = Message
+        fields = ['id', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_blocked = None  # Cache block status
+
+    # We need this to be able to hide messages from blocked user
+    def set_blocked(self):
+        request_user = self.context.get('request').user if 'request' in self.context else None
+
+        if request_user and self.instance:
+            # If self.instance is a queryset, get the first message to determine the conversation
+            first_instance = self.instance[0] if isinstance(self.instance, list) else self.instance
+            conversation = first_instance.conversation if isinstance(first_instance, Message) else None
+
+            if conversation:
+                self.user_blocked = self.is_blocked(request_user, conversation)
+
+    def get_avatar(self, obj):
+        if isinstance(obj, dict):  # Custom separator message
+            return obj.get('user').avatar_path if obj.get('user') else AVATAR_DEFAULT
+        return obj.user.avatar_path if obj.user.avatar_path else AVATAR_DEFAULT
+
+    def format_content(self, content):
+
+    def to_representation(self, instance):
+        if isinstance(instance, dict):  # Handle custom dictionary data
+            return {
+                "id": instance.get("id"),
+                "userId": instance["user"].id if instance.get("user") else None,
+                "username": instance["user"].username if instance.get("user") else _("System"),
+                "avatar": self.get_avatar(instance),
+                "content": instance.get("content"),
+                "createdAt": instance.get("created_at"),
+                "seenAt": instance.get("seen_at"),
+            }
+        return super().to_representation(instance)
+
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class ConversationSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isGroupChat = serializers.BooleanField(source='is_group_conversation')
@@ -88,34 +137,3 @@ class ConversationMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConversationMember
         fields = ('__all__')
-
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-class MessageSerializer(serializers.ModelSerializer):
-    userId = serializers.IntegerField(source='user.id', required=False)
-    username = serializers.CharField(source='user.username', required=False)
-    avatar = serializers.SerializerMethodField()
-    createdAt = serializers.DateTimeField(source='created_at', required=False)
-    seenAt = serializers.DateTimeField(source='seen_at', allow_null=True, required=False)
-    content = serializers.CharField()
-
-    class Meta:
-        model = Message
-        fields = ['id', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt']
-
-    def get_avatar(self, obj):
-        if isinstance(obj, dict):  # Custom separator message
-            return obj.get('user').avatar_path if obj.get('user') else AVATAR_DEFAULT
-        return obj.user.avatar_path if obj.user.avatar_path else AVATAR_DEFAULT
-
-    def to_representation(self, instance):
-        if isinstance(instance, dict):  # Handle custom dictionary data
-            return {
-                "id": instance.get("id"),
-                "userId": instance["user"].id if instance.get("user") else None,
-                "username": instance["user"].username if instance.get("user") else _("System"),
-                "avatar": self.get_avatar(instance),
-                "content": instance.get("content"),
-                "createdAt": instance.get("created_at"),
-                "seenAt": instance.get("seen_at"),
-            }
-        return super().to_representation(instance)
