@@ -215,24 +215,20 @@ export function sendPlayerInput() {
         playerLeft: {
             movePaddle: gameObject.playerInputLeft.paddleMovement || "0",
             activatePowerupBig: gameObject.playerInputLeft.powerupBig || false,
-            activatePowerupSlow: gameObject.playerInputLeft.powerupSlow || false,
-            activatePowerupFast: gameObject.playerInputLeft.powerupFast || false
+            activatePowerupSpeed: gameObject.playerInputLeft.powerupSpeed || false
         },
         playerRight: {
             movePaddle: gameObject.playerInputRight.paddleMovement || "0",
             activatePowerupBig: gameObject.playerInputRight.powerupBig || false,
-            activatePowerupSlow: gameObject.playerInputRight.powerupSlow || false,
-            activatePowerupFast: gameObject.playerInputRight.powerupFast || false
+            activatePowerupSpeed: gameObject.playerInputRight.powerupSpeed || false
         }
     }
     WebSocketManagerGame.sendMessage(message);
     // Reset powerup states
     gameObject.playerInputLeft.powerupBig = false;
-    gameObject.playerInputLeft.powerupSlow = false;
-    gameObject.playerInputLeft.powerupFast = false;
+    gameObject.playerInputLeft.powerupSpeed = false;
     gameObject.playerInputRight.powerupBig = false;
-    gameObject.playerInputRight.powerupSlow = false;
-    gameObject.playerInputRight.powerupFast = false;
+    gameObject.playerInputRight.powerupSpeed = false;
 }
 
 

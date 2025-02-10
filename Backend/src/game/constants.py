@@ -2,7 +2,6 @@ GAME_FPS = 15
 RECONNECT_TIMEOUT = 2 # Minutes
 POWERUP_DURATION = 10 # Seconds
 INIT_BALL_SPEED = 1.5
-LAST_BALL_SPEED = None
 BALL_SPEED_STEP = 0.1
 INIT_PADDLE_SIZE = 10
 
@@ -15,7 +14,7 @@ PADDLE_OFFSET = 4
 GAME_PLAYER_INPUT = {
     "movePaddle": "0",
     "activatePowerupBig": False,
-    "activatePowerupSpeed": False,
+    "activatePowerupSpeed": False
 }
 
 GAME_STATE = {
@@ -43,6 +42,7 @@ GAME_STATE = {
         "height": 1,
         "width": 1,
         "speed": INIT_BALL_SPEED,
+        "lastSpeed": 0,
         "directionX": -1,
         "directionY": 0
     },
