@@ -38,4 +38,4 @@ def update_client_in_all_tournament_groups(user, add = True):
     tournament_memberships = list(TournamentMember.objects.filter(user=user, tournament__state__in=['setup', 'ongoing']))
     logging.info(f"Adding/removing user ({user}) to all their tournament groups. Adding: {add}. Total: {len(tournament_memberships)}")
     for membership in tournament_memberships:
-        async_to_sync(update_client_in_group)(user.id, membership.conversation.id, PRE_TOURNAMENT, add)
+        async_to_sync(update_client_in_group)(user.id, membership.tournament.id, PRE_TOURNAMENT, add)
