@@ -2,6 +2,7 @@ import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
 import { percentageToPixels } from './methods.js';
 import { audioPlayer } from '../../abstracts/audio.js';
+import { updateReadyStateNodes } from './methods.js';
 
 // ############## VARIABLES ##############
 const borders = {
@@ -289,6 +290,7 @@ export function gameRender () {
     // This will only play wall, paddle, score, powerup sounds since the are triggered/send by the be
     // All other sounds are state realated and therfore should be playe by fe function: changeGameState()
     audioPlayer.playSound(gameObject.sound);
+    updateReadyStateNodes();
 }
 
 export function toggleGamefieldVisible(visible) {
