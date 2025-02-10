@@ -2,6 +2,7 @@ GAME_FPS = 15
 RECONNECT_TIMEOUT = 2 # Minutes
 POWERUP_DURATION = 10 # Seconds
 INIT_BALL_SPEED = 3
+INIT_PADDLE_SIZE = 10
 
 # This should be a percentage of the screen where the paddel hit surface is.
 # It should be decieed in the render of the frontend game field and then set here.
@@ -20,7 +21,7 @@ GAME_STATE = {
     "playerLeft" : {
         "points": 0,
         "paddlePos": 50,
-        "paddleSize": 10,
+        "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
@@ -29,7 +30,7 @@ GAME_STATE = {
     "playerRight" : {
         "points": 0,
         "paddlePos": 50,
-        "paddleSize": 10,
+        "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",

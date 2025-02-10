@@ -226,7 +226,15 @@ export function sendPlayerInput() {
         }
     }
     WebSocketManagerGame.sendMessage(message);
+    // Reset powerup states
+    gameObject.playerInputLeft.powerupBig = false;
+    gameObject.playerInputLeft.powerupSlow = false;
+    gameObject.playerInputLeft.powerupFast = false;
+    gameObject.playerInputRight.powerupBig = false;
+    gameObject.playerInputRight.powerupSlow = false;
+    gameObject.playerInputRight.powerupFast = false;
 }
+
 
 
 

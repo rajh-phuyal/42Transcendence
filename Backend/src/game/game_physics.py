@@ -1,5 +1,5 @@
 import logging, random
-from game.constants import PADDLE_OFFSET, INIT_BALL_SPEED
+from game.constants import PADDLE_OFFSET, INIT_BALL_SPEED, INIT_PADDLE_SIZE
 from game.models import Game
 from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
 from game.utils_ws import update_game_state, update_game_points
@@ -11,11 +11,14 @@ async def activate_power_ups(game_id, playerSide):
     # The calculation of ball move and paddle move should be done with the new game state data
     # TODO: ALSO SET THE SOUND WHEN ACTIVATING A POWERUP LIKE:
     # set_game_data(game_id, 'gameData', 'sound', 'powerup')
-    if get_player_input(game_id, playerSide, 'activatePowerupBig') == 'true':
+    logging.info(f"PowerUp activation for: {playerSide}")
+    if get_player_input(game_id, playerSide, 'activatePowerupBig') == True:
         logging.info(f"PowerUp BIG tried to activate by: {playerSide}")
-    if get_player_input(game_id, playerSide, 'activatePowerupSlow') == 'true':
+        set_game_data(game_id, playerSide, 'paddleSize', 22)
+
+    if get_player_input(game_id, playerSide, 'activatePowerupSlow') == True:
         logging.info(f"PowerUp SLOW tried to activate by: {playerSide}")
-    if get_player_input(game_id, playerSide, 'activatePowerupFast') == 'true':
+    if get_player_input(game_id, playerSide, 'activatePowerupFast') == True:
         logging.info(f"PowerUp FAST tried to activate by: {playerSide}")
 
 # Player side needs to be 'playerLeft' or 'playerRight'
@@ -121,6 +124,13 @@ async def apply_padlle_hit(game_id, player_side):
             set_game_data(game_id, 'ball', 'directionX', -1 * get_game_data(game_id, 'ball', 'directionX'))
             set_game_data(game_id, 'ball', 'directionY', percentage_y)
             set_game_data(game_id, 'gameData', 'sound', 'paddle')
+    # if power up BIG is active, decrease the size of the paddle
+    current_paddle_size = get_game_data(game_id, player_side, 'paddleSize')
+    if (current_paddle_size > INIT_PADDLE_SIZE):
+        current_paddle_size -= 4
+        if (current_paddle_size < INIT_PADDLE_SIZE):
+            current_paddle_size = INIT_PADDLE_SIZE
+        set_game_data(game_id, player_side, 'paddleSize', current_paddle_size)
 
 async def apply_point(game_id, player_side):
     # update_score_points in cache and db
@@ -130,6 +140,8 @@ async def apply_point(game_id, player_side):
     # Reset the paddles
     set_game_data(game_id, 'playerLeft', 'paddlePos', 50)
     set_game_data(game_id, 'playerRight', 'paddlePos', 50)
+    set_game_data(game_id, 'playerLeft', 'paddleSize', INIT_PADDLE_SIZE)
+    set_game_data(game_id, 'playerRight', 'paddleSize', INIT_PADDLE_SIZE)
 
     # Check if extende mode should be activated (on the score of 10:10)
     if not get_game_data(game_id, 'gameData', 'extendingGameMode'):
