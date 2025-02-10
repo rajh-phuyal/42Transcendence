@@ -18,31 +18,48 @@ from user.exceptions import BlockingException
 # Chat
 from chat.models import Message, ConversationMember, Conversation
 from chat.parse_incoming_message import check_if_msg_is_cmd, check_if_msg_contains_username, send_temporary_info_msg
-from chat.utils import mark_all_messages_as_seen_async, get_conversation_id, create_conversation
+from chat.utils import mark_all_messages_as_seen_async, get_conversation_id, create_conversation,validate_conversation_membership, get_other_user
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: NEW SHOULD BE USED EVERYWHERE
 @database_sync_to_async
-def validate_user_is_member_of_conversation(user, conversation_id):
-    # Validate conversation exists & user is a member of the conversation
-    conversation = Conversation.objects.get(id=conversation_id) # This will raise an exception if the conversation does not exist
-    # If the user is the overlord, he can access all conversations
-    if user.id == USER_ID_OVERLORDS:
-        return
-    conversation_member_entry =  ConversationMember.objects.filter(conversation_id=conversation_id, user=user).first()
-    if not conversation_member_entry:
-        raise BarelyAnException(_("Conversation not found or user is not a member of the conversation"))
-    return
+def validate_conversation_membership_async(user, conversation):
+    """ Accepts user and conversation instances or IDs """
+    validate_conversation_membership(user, conversation)
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: NEW SHOULD BE USED EVERYWHERE
 @database_sync_to_async
-def get_other_user(user, conversation_id):
-    other_user = (
-        ConversationMember.objects
-            .filter(conversation=conversation_id)
-            .exclude(Q(user=user) | Q(user_id=USER_ID_OVERLORDS))
-            .first()
-        ).user
-    return other_user
+def get_other_user_async(user, conversation):
+    """ Accepts user and conversation instances or IDs """
+    return get_other_user(user, conversation)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def get_conversation_users(conversation_id):
@@ -52,7 +69,7 @@ def get_conversation_users(conversation_id):
 def create_chat_message(sender, conversation_id, content):
     # Validate conversation exists & user is a member of the conversation
     logging.info(f"Creating a message in conversation {conversation_id} from {sender.username}: '{content}'")
-    validate_user_is_member_of_conversation(sender, conversation_id)
+    validate_conversation_membership_async(sender, conversation_id)
     conversation = Conversation.objects.get(id=conversation_id)
     logging.info(f"Conversation {conversation_id} found: {conversation}")
     try:
@@ -82,7 +99,7 @@ async def process_incoming_chat_message(consumer, user, text):
     message = check_message_keys(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
     content = message.get('content', '').strip()
-    other_user = await get_other_user(user, conversation_id)
+    other_user = await get_other_user_async(user, conversation_id)
     logging.info(f"User {user} to conversation {conversation_id}: '{content}'")
 
     # Content cant be empty
@@ -112,7 +129,7 @@ async def process_incoming_seen_message(self, user, text):
     from services.websocket_utils import check_message_keys
     message = check_message_keys(text, mandatory_keys=['conversationId'])
     conversation_id = message.get('conversationId')
-    await validate_user_is_member_of_conversation(user, conversation_id)
+    await validate_conversation_membership_async(user, conversation_id)
     await mark_all_messages_as_seen_async(user.id, conversation_id)
     await send_conversation_unread_counter(user.id, conversation_id)
     await send_total_unread_counter(user.id)

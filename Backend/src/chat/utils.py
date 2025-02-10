@@ -9,6 +9,7 @@ from django.core.cache import cache
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
+from rest_framework import status
 # Services
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 # User
@@ -16,24 +17,75 @@ from user.constants import USER_ID_OVERLORDS
 from user.models import User
 # Chat
 from chat.models import Conversation, Message, ConversationMember
+from core.exceptions import BarelyAnException
 channel_layer = get_channel_layer()
 
+class LastSeenMessage:
+    def __init__(self, created_at, sender):
+        self.id = None
+        self.user = sender
+        self.created_at = created_at
+        self.seen_at = None
+        self.content = _("We know that you haven't seen the messages below...")
+
+# TODO: NEW SHOULD BE USED EVERYWHERE
+def validate_conversation_membership(user, conversation):
+    """ Accepts user and conversation instances or IDs """
+    if isinstance(user, int):
+        user = User.objects.get(id=user)
+    if isinstance(conversation, int):
+        conversation = Conversation.objects.get(id=conversation)
+    if user.id == USER_ID_OVERLORDS:
+        return
+    try:
+        return ConversationMember.objects.get(conversation=conversation, user=user)
+    except ConversationMember.DoesNotExist:
+        raise BarelyAnException(_('You are not a member of this conversation'), status_code=status.HTTP_403_FORBIDDEN)
+
+# TODO: NEW SHOULD BE USED EVERYWHERE
+def get_other_user(user, conversation):
+    """ Accepts user and conversation instances or IDs
+        Returns the other user instance in the conversation """
+    if isinstance(user, int):
+        user = User.objects.get(id=user)
+    if isinstance(conversation, int):
+        conversation = Conversation.objects.get(id=conversation)
+    if user.id == USER_ID_OVERLORDS:
+        logging.error("get_other_user() doesnt work with account overlords!")
+        return
+
+    other_user = ConversationMember.objects.filter(conversation=conversation).exclude(user=user).first().user
+    return other_user
+
+
+
+
+
+# TODO old stuff below!!!
+
+
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def mark_all_messages_as_seen_sync(user_id, conversation_id):
+def mark_all_messages_as_seen_sync(user, conversation):
+    """ Accepts user and conversation instances or IDs """
+    if not isinstance(user, int):
+        user = user.id
+    if not isinstance(conversation, int):
+        conversation = conversation.id
+
     try:
         with transaction.atomic():
             unread_messages = (
                 Message.objects
                 .select_for_update()
-                .filter(conversation_id=conversation_id, seen_at__isnull=True)
-                .exclude(user=user_id)
+                .filter(conversation_id=conversation, seen_at__isnull=True)
+                .exclude(user=user)
             )
 
             # Update messages
             unread_messages.update(seen_at=timezone.now()) #TODO: Issue #193
-            logging.info(f"Marked {len(unread_messages)} messages as seen by user {user_id} in conversation {conversation_id}")
+            logging.info(f"Marked {len(unread_messages)} messages as seen by user {user} in conversation {conversation}")
             # Update unread counter
-            conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation_id, user=user_id)
+            conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation, user=user)
             conversation_member.unread_counter = 0
             conversation_member.save(update_fields=['unread_counter'])
     except Exception as e:
@@ -44,21 +96,7 @@ def mark_all_messages_as_seen_sync(user_id, conversation_id):
 def mark_all_messages_as_seen_async(user_id, conversation_id):
     mark_all_messages_as_seen_sync(user_id, conversation_id)
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def get_conversation_name(user, conversation):
-    if conversation.name:
-        return conversation.name
 
-    try:
-        overlords = User.objects.get(id=USER_ID_OVERLORDS)
-        other_member = conversation.members.exclude(Q(user=user) | Q(user=overlords)).first()
-        if other_member and other_member.user.username:
-            return other_member.user.username
-    except Exception:
-        pass
-
-    # Fallback to "Top Secret"
-    return _("top secret")
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def get_conversation_id(user1, user2):
@@ -161,29 +199,3 @@ def create_conversation(user1, user2, initialMessage, creator = None):
     return new_conversation
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def generate_template_msg(message):
-    message = message[2:-2]
-    parts = message.split(',')
-    cmd_type = parts[0]
-    params = parts[1:]
-
-    message_templates = {
-        "G": _("Game with ID {gameid} has been created."),
-        "GL": _("Local game with ID {gameid} has been created."),
-        "FS": _("User @{requester} has sent a friend request to @{requestee}."),
-        "FA": _("User @{requester} has accepted the friend request from @{requestee}."),
-        "FC": _("User @{requester} has canceled the friend request to @{requestee}."),
-        "FR": _("User @{requester} has rejected the friend request from @{requestee}."),
-        "FU": _("User @{requester} has removed @{requestee} from their friends list."),
-        "B": _("User @{requester} has blocked @{requestee}."),
-        "U": _("User @{requester} has unblocked @{requestee}."),
-        "S": _("User @{requester} has started a conversation with @{requestee}."),
-    }
-
-    if cmd_type in message_templates:
-        if cmd_type in ["G", "GL"]:
-            return message_templates[cmd_type].format(gameid=params[0])
-        else:
-            return message_templates[cmd_type].format(requester=params[0], requestee=params[1])
-
-    return _("Unknown command.")

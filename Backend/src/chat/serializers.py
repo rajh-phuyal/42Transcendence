@@ -8,10 +8,37 @@ from user.constants import AVATAR_DEFAULT
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from django.utils.translation import gettext as _
-from .utils import get_conversation_name
+from .utils import get_other_user
 from django.db.models import Q
+import re
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+def generate_template_msg(message):
+    message = message[2:-2]
+    parts = message.split(',')
+    cmd_type = parts[0]
+    params = parts[1:]
+
+    message_templates = {
+        "G": _("Game with ID {gameid} has been created."),
+        "GL": _("Local game with ID {gameid} has been created."),
+        "FS": _("User @{requester} has sent a friend request to @{requestee}."),
+        "FA": _("User @{requester} has accepted the friend request from @{requestee}."),
+        "FC": _("User @{requester} has canceled the friend request to @{requestee}."),
+        "FR": _("User @{requester} has rejected the friend request from @{requestee}."),
+        "FU": _("User @{requester} has removed @{requestee} from their friends list."),
+        "B": _("User @{requester} has blocked @{requestee}."),
+        "U": _("User @{requester} has unblocked @{requestee}."),
+        "S": _("User @{requester} has started a conversation with @{requestee}."),
+    }
+
+    if cmd_type in message_templates:
+        if cmd_type in ["G", "GL"]:
+            return message_templates[cmd_type].format(gameid=params[0])
+        else:
+            return message_templates[cmd_type].format(requester=params[0], requestee=params[1])
+
+    return _("Unknown command.: {message}").format(message=message)
+
 class MessageSerializer(serializers.ModelSerializer):
     userId = serializers.IntegerField(source='user.id', required=False)
     username = serializers.CharField(source='user.username', required=False)
@@ -24,28 +51,61 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ['id', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt']
 
+    def replace_mentions(self, content):
+        """
+        This will transform @10 to @astein@10@ so that the frontend can display a clickable username
+        """
+        if '@' not in content:
+            return content  # Skip processing if no mentions
+
+        def replacer(match):
+            user_id = match.group(1)
+            try:
+                user = User.objects.get(id=user_id)
+                return f'@{user.username}@{user_id}@'
+            except User.DoesNotExist:
+                return match.group(0)  # Keep original if user not found
+
+        return re.sub(r'@(\d+)', replacer, content)
+
+    def parse_template_messages(self, content):
+        """
+        This will create a template message if the content is wrapped in ** **
+        """
+        if content.startswith('**') and content.endswith('**'):
+            return generate_template_msg(content)
+        return content
+
     def get_avatar(self, obj):
         if isinstance(obj, dict):  # Custom separator message
             return obj.get('user').avatar_path if obj.get('user') else AVATAR_DEFAULT
         return obj.user.avatar_path if obj.user.avatar_path else AVATAR_DEFAULT
 
     def to_representation(self, instance):
+        if isinstance(instance, dict):  # Handle custom messages (LastSeenMessage)
+            content = instance.get("content", "")
+        else:
+            content = instance.content
+        content = self.parse_template_messages(content)
+        content = self.replace_mentions(content)
+
         if isinstance(instance, dict):  # Handle custom dictionary data
             return {
                 "id": instance.get("id"),
                 "userId": instance["user"].id if instance.get("user") else None,
                 "username": instance["user"].username if instance.get("user") else _("System"),
                 "avatar": self.get_avatar(instance),
-                "content": instance.get("content"),
+                "content": content,
                 "createdAt": instance.get("created_at"),
                 "seenAt": instance.get("seen_at"),
             }
-        return super().to_representation(instance)
+        data = super().to_representation(instance)
+        data["content"] = content
+        return data
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-class ConversationSerializer(serializers.ModelSerializer):
+class ConversationsSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
-    isGroupChat = serializers.BooleanField(source='is_group_conversation')
     isEditable = serializers.BooleanField(source='is_editable')
     conversationName = serializers.SerializerMethodField()
     conversationAvatar = serializers.SerializerMethodField()
@@ -56,28 +116,13 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Conversation
-        fields = [
-            'conversationId',
-            'isGroupChat',
-            'isEditable',
-            'conversationName',
-            'conversationAvatar',
-            'unreadCounter',
-            'online',
-            'lastUpdate',
-            'isEmpty',
-        ]
+        fields = ['conversationId', 'isEditable', 'conversationName', 'conversationAvatar', 'unreadCounter', 'online', 'lastUpdate', 'isEmpty']
     def get_conversationName(self, obj):
-        return get_conversation_name(self.context['request'].user, obj)
+        return get_other_user(self.context['request'].user, obj).username
 
     def get_conversationAvatar(self, obj):
-        if obj.is_group_conversation:
-            return CHAT_AVATAR_GROUP_DEFAULT
-        else:
-            current_user = self.context.get('request').user
-            overlords = User.objects.get(id=USER_ID_OVERLORDS)
-            other_members = obj.members.exclude(Q(user=current_user) | Q(user=overlords))
-
+        current_user = self.context.get('request').user
+        other_members = obj.members.exclude(user=current_user)
         if other_members.exists():
             other_user = other_members.first().user
             return other_user.avatar_path if other_user.avatar_path else 'CHAT_AVATAR_DEFAULT'

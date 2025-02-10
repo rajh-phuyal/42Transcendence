@@ -168,5 +168,5 @@ def unblock_user(user, target):
         except ObjectDoesNotExist:
             raise BlockingException(_('You have not blocked this user'))
         no_cool.delete()
-    pm = "**u,{blocker_id},{blocked_id}**".format(blocker_id=user.id, blocked_id=target.id)
+    pm = "**U,{blocker_id},{blocked_id}**".format(blocker_id=user.id, blocked_id=target.id)
     create_overloards_pm(user, target, pm)
