@@ -12,6 +12,7 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 // import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
+import { audioPlayer } from '../abstracts/audio.js';
 
 const simpleObjectToBind = () => {
     return {
@@ -24,6 +25,7 @@ const simpleObjectToBind = () => {
         webSocketManager: WebSocketManager,
         translate: translate,
         domManip: dollars,
+        audioPlayer: audioPlayer,
     }
 }
 

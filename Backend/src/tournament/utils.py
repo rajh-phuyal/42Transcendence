@@ -13,6 +13,7 @@ from rest_framework import status
 from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from .serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
+from user.utils import get_user_by_id
 
 def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
@@ -24,10 +25,7 @@ def validate_tournament_creation(name, map_number):
 
 def validate_tournament_users(creator_id, opponent_ids, local_tournament, public_tournament):
     # Get creator of the tournament
-    try:
-        creator = User.objects.get(id=creator_id)
-    except User.DoesNotExist:
-        raise BarelyAnException(_("Creator not found"))
+    creator = get_user_by_id(creator_id)
 
     # Check if the creator is already in a tournament which is not finished
     if TournamentMember.objects.filter(

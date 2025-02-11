@@ -133,10 +133,16 @@ h1 {
 
 #nav-right-side {
 	height: 80%;
+    gap: 5px;
 }
 
 #nav-mid-side {
 
+}
+
+#nav-music-icon, #nav-sound-icon {
+    height: 80%;
+    padding: 0.2rem !important;
 }
 
 #profile-nav-avatar {
