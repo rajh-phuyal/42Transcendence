@@ -1,5 +1,6 @@
 import { $id } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
+import $store from '../../store/store.js';
 
 function populateUserInfo(res) {
     let username = $id("username");   
@@ -42,6 +43,7 @@ function populateProgress(res, identity) {
 }
 
 function populateInfoAndStats(res) {
+	console.log("trans before:", $store.state);
     populateUserInfo(res);
     populateStats(res);
     populateProgress(res.stats.score.skill, "score-skill-");

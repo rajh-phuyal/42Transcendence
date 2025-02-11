@@ -573,7 +573,7 @@ export default {
         },
 
         afterDomInsertion() {
-            call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
+			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log(res);
                 this.insertAvatar();
