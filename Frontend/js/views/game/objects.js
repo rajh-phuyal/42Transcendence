@@ -11,14 +11,12 @@ export const gameObject = {
     borderStrokeWidth: 2,
     playerInputLeft: {
         paddleMovement: undefined,
-        powerupFast: undefined,
-        powerupSlow: undefined,
+        powerupSpeed: undefined,
         powerupBig: undefined,
     },
     playerInputRight: {
         paddleMovement: undefined,
-        powerupFast: undefined,
-        powerupSlow: undefined,
+        powerupSpeed: undefined,
         powerupBig: undefined,
     },
     playerLeft: {

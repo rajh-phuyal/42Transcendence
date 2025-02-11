@@ -1,7 +1,8 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
-import { percentageToPixels } from './methods.js';
+import { percentageToPixels, showPowerupStatus } from './methods.js';
 import { audioPlayer } from '../../abstracts/audio.js';
+import { updateReadyStateNodes } from './methods.js';
 
 // ############## VARIABLES ##############
 const borders = {
