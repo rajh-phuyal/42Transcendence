@@ -68,18 +68,3 @@ async def check_if_msg_contains_username(user, other_user, conversation_id, cont
 # This functions allows us to send a message to the user which won't persist
 # in the database and therfore is gone after the user reloads the page
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-async def send_temporary_info_msg(user_id, conversation_id, content):
-    from services.websocket_handler_main import send_message_to_user
-    message = {
-        "messageType": "chat",
-        "type": "chat_message",
-        "avatar": AVATAR_OVERLORDS,
-        "content": content,
-        "conversationId": conversation_id,
-        "createdAt": timezone.now().isoformat(),  # TODO: Issue #193
-        "messageId": 1,
-        "seenAt": None,
-        "userId": USER_ID_OVERLORDS,
-        "username": USERNAME_OVERLORDS
-    }
-    await send_message_to_user(user_id, **message)

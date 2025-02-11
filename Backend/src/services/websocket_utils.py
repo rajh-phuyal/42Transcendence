@@ -8,15 +8,7 @@ from asgiref.sync import sync_to_async
 from asgiref.sync import async_to_sync
 from chat.models import ConversationMember
 
-# To send by user id
-async def send_ws_msg_to_user(user_id, **message):
-    channel_name =  cache.get(f'{PRE_USER_CHANNEL}{user_id}')
-    if channel_name:
-        channel_layer = get_channel_layer()
-        # Send the message to the WebSocket connection associated with that channel name
-        await channel_layer.send(channel_name, message)
-    else:
-        logging.warning(f"No active WebSocket connection found for user ID {user_id}.")
+
 
 @sync_to_async
 def send_ws_msg_unread_total(user_id):
