@@ -6,15 +6,11 @@ from game.utils_ws import update_game_state, update_game_points, update_player_p
 
 # Player side needs to be 'playerLeft' or 'playerRight'
 async def activate_power_ups(game_id, player_side):
-    # TODO Implement Powerups issue #308
-    # I guess it should be done by just changeing the game state data on cache
-    # The calculation of ball move and paddle move should be done with the new game state data
-    # TODO: ALSO SET THE SOUND WHEN ACTIVATING A POWERUP LIKE:
-    # set_game_data(game_id, 'gameData', 'sound', 'powerup')
     if get_player_input(game_id, player_side, 'activatePowerupBig') == True:
         if get_game_data(game_id, player_side, 'powerupBig') == 'available':
             logging.info(f"activating PowerUp BIG for: {player_side}")
             await update_player_powerup(game_id, player_side, 'powerupBig')
+            set_game_data(game_id, 'gameData', 'sound', 'powerup')
             set_game_data(game_id, player_side, 'powerupBig', 'using')
             set_game_data(game_id, player_side, 'paddleSize', 22)
 
@@ -27,6 +23,7 @@ async def activate_power_ups(game_id, player_side):
                 if get_game_data(game_id, player_side, 'powerupSlow') == 'available':
                     logging.info(f"activating PowerUp SLOW for: {player_side}")
                     await update_player_powerup(game_id, player_side, 'powerupSlow')
+                    set_game_data(game_id, 'gameData', 'sound', 'powerup')
                     set_game_data(game_id, player_side, 'powerupSlow', 'using')
                     last_ball_speed = get_game_data(game_id, 'ball', 'speed')
                     set_game_data(game_id, 'ball', 'lastSpeed', last_ball_speed)
@@ -36,6 +33,7 @@ async def activate_power_ups(game_id, player_side):
                 if get_game_data(game_id, player_side, 'powerupFast') == 'available':
                     logging.info(f"activating PowerUp FAST for: {player_side}")
                     await update_player_powerup(game_id, player_side, 'powerupFast')
+                    set_game_data(game_id, 'gameData', 'sound', 'powerup')
                     set_game_data(game_id, player_side, 'powerupFast', 'using')
                     last_ball_speed = get_game_data(game_id, 'ball', 'speed')
                     set_game_data(game_id, 'ball', 'lastSpeed', last_ball_speed)
@@ -78,7 +76,6 @@ async def move_ball(game_id):
     # Move the ball
     ball_pos_x += ball_direction_x * ball_speed
     ball_pos_y += ball_direction_y * ball_speed
-    # TODO: change ball speed issue #311
 
     # Save the new ball position
     set_game_data(game_id, 'ball', 'posX', ball_pos_x)
@@ -122,7 +119,6 @@ async def normalize_ball_direction(new_dir_x, new_dir_y):
     return new_dir_x, new_dir_y
 
 # Only called when the x pos of ball is on the x of the paddle
-# TODO: In this function we need to normalize the ball direction so the speed is always the same issue #311
 async def apply_padlle_hit(game_id, player_side):
     ball_pos_y = get_game_data(game_id, 'ball', 'posY')
     paddle_pos = get_game_data(game_id, player_side, 'paddlePos')

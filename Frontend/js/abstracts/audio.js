@@ -75,6 +75,7 @@ export default class AudioPlayer {
 
         const sound = this.sounds.find(sound => sound.name === name);
         if (sound) {
+            sound.audio.loop = false;
             sound.audio.play();
         } else {
             console.error("Sound not found:", name);
