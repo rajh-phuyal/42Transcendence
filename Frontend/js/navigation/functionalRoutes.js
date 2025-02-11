@@ -1,3 +1,4 @@
+import { $id } from '../abstracts/dollars.js';
 import { routes } from "../navigation/routes.js";
 
 const functionalRoutes = [
@@ -20,7 +21,9 @@ const functionalRoutes = [
 
                 // load the translations again
                 this.$store.dispatch('loadTranslations', routes.map(route => route.view));
-
+				const nav = $id("navigator");
+				nav.classList.remove("d-flex", "flex-row", "justify-content-center");
+				nav.style.display = 'none';
                 this.router("/auth");
             }
         },
