@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.utils.timezone import localtime
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
@@ -15,25 +16,29 @@ from django.utils.translation import gettext as _
 from user.constants import USER_ID_AI
 import logging
 from tournament.ranking import update_tournament_member_stats
+from user.utils import get_user_by_id
 
-def create_game(user_id, opponent_id, map_number, powerups, local_game):
+def create_game(user, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
-        try:
-            user = User.objects.get(id=user_id)
-            opponent = User.objects.get(id=opponent_id)
-        except User.DoesNotExist:
-            raise UserNotFound()
+        opponent = get_user_by_id(opponent_id)
         # Check if opponent isn't urself, is ur friend and not blocking you
-        if user_id == opponent_id:
+        if user.id == opponent_id:
             raise BarelyAnException(_("You can't play against yourself"))
         if not are_friends(user, opponent):
             raise RelationshipException(_("You can only play against your friends"))
         if is_blocking(opponent, user):
             raise BlockingException(_("Opponent is blocking you"))
+        if not map_number in [1, 2, 3, 4]:
+            raise BarelyAnException(_("Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"))
+        if not opponent_id:
+            raise BarelyAnException(_("Missing key 'opponentId'"))
+
         # Check if opponent is AI
         if opponent.id == USER_ID_AI:
+            if local_game:
+                raise BarelyAnException(_("AI is above all, you can't play against it in a local game"))
             # TODO: issue #210
-            logging.error("Playing against AI is not supported yet")
+            raise BarelyAnException(_("Playing against AI is not supported yet"))
         # Check if there is already a direct game between the user and the opponent
         user_games = GameMember.objects.filter(
             user=user.id,
@@ -63,7 +68,8 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
                 local_game=local_game,
                 powerup_big = powerups,
                 powerup_fast = powerups,
-                powerup_slow = powerups
+                powerup_slow = powerups,
+                admin=True
             )
             game_member_opponent = GameMember.objects.create(
                 game=game,
@@ -71,7 +77,8 @@ def create_game(user_id, opponent_id, map_number, powerups, local_game):
                 local_game=local_game,
                 powerup_big = powerups,
                 powerup_fast = powerups,
-                powerup_slow = powerups
+                powerup_slow = powerups,
+                admin=False
             )
             game.save()
             game_member_user.save()
@@ -103,7 +110,7 @@ def delete_game(user_id, game_id):
         game.delete()
     return True
 
-def finish_game(game, message):
+def finish_game(game, message=None):
     logging.info(f"Finishing game {game.id}")
     game_members = GameMember.objects.filter(game=game.id)
     if not message:
@@ -118,6 +125,20 @@ def finish_game(game, message):
         game.state = Game.GameState.FINISHED
         game.finish_time = timezone.now() #TODO: Issue #193
         game.save()
+        if game_members.count() != 2:
+            logging.error(f"Game {game.id} has not 2 members")
+            return
+        # Update the game members
+        game_member_1 = GameMember.objects.select_for_update().get(id=game_members.first().id)
+        game_member_2 = GameMember.objects.select_for_update().get(id=game_members.last().id)
+        if game_member_1.points > game_member_2.points:
+            game_member_1.result = GameMember.GameResult.WON
+            game_member_2.result = GameMember.GameResult.LOST
+        else:
+            game_member_1.result = GameMember.GameResult.LOST
+            game_member_2.result = GameMember.GameResult.WON
+        game_member_1.save()
+        game_member_2.save()
 
     # For tournament games only:
     if not game.tournament_id:
@@ -175,9 +196,78 @@ def update_deadline_of_game(game_id):
         logging.info(f"ERROR: Game {game_id} not found in function call update_deadline_of_game")
         return
 
+def is_left_player(game_id, user_id):
+    game_members = GameMember.objects.filter(game_id=game_id)
+    if max(game_members.values_list('user_id', flat=True)) == user_id:
+        return True
+    else:
+        return False
+
+def get_user_of_game(game_id, side):
+    game_members = GameMember.objects.filter(game_id=game_id)
+    if side == "playerLeft":
+        user_id_left = max(game_members.values_list('user_id', flat=True))
+        return User.objects.get(id=user_id_left)
+    elif side == "playerRight":
+        user_id_right = min(game_members.values_list('user_id', flat=True))
+        return User.objects.get(id=user_id_right)
+    else:
+        logging.error(f"! Side '{side}' is not valid has to be 'playerLeft' or 'playerRight'")
+        return None
+
+def set_game_data(game_id, key1, key2, new_value, timeout=3000):
+    cache_key = f'game_{game_id}_state'
+    if (game_state_data := cache.get(cache_key)):
+        if key1 in game_state_data and key2 in game_state_data[key1]:
+            game_state_data[key1][key2] = new_value
+            cache.set(cache_key, game_state_data, timeout=timeout)
+            return True
+        logging.error(f"! Key '{key1}' or '{key2}' does not exist in game {game_id} cache!")
+    else:
+        logging.error(f"! Can't update game state because game {game_id} is not in cache!")
+    return False
+
+def get_game_data(game_id, key1=None, key2=None):
+    cache_key = f'game_{game_id}_state'
+    if (game_state_data := cache.get(cache_key)):
+        if not key1:
+            return game_state_data
+        elif key1 not in game_state_data:
+            logging.error(f"! Key '{key1}' does not exist in game {game_id} cache!")
+            return None
+        if game_state_data_key1 := game_state_data[key1]:
+            if not key2:
+                return game_state_data_key1
+            elif key2 not in game_state_data_key1:
+                logging.error(f"! Key '{key2}' does not exist in game {game_id} cache!")
+                return None
+            return game_state_data_key1[key2]
+    else:
+        logging.error(f"! Can't get game state because game {game_id} is not in cache!")
+
+# def set_player_input_cache_value(game_id, key, new_value, timeout=3000):
+#     cache_key = f'game_{game_id}_player_left'
+#     if (input_player := cache.get(cache_key)):
+#         if key in input_player
+#             input_player[key][key2] = new_value
+#             cache.set(cache_key, input_player, timeout=timeout)
+#             return True
+#         logging.error(f"! Key '{key}' or '{key2}' does not exist in game {game_id} cache!")
+#     else:
+#         logging.error(f"! Can't update game state because game {game_id} is not in cache!")
+#     return False
 
 
-
+# SIDE: needs to be playerLeft or playerRight
+def get_player_input(game_id, side, key1):
+    cache_key = f'game_{game_id}_{side}'
+    if (input_player := cache.get(cache_key)):
+        if key1 not in input_player:
+            logging.error(f"! Key '{key1}' does not exist in " + cache_key + " cache!")
+            return None
+        return input_player[key1]
+    else:
+        logging.error("! Can't get game player input because game " +  cache_key + " is not in cache!")
 
 
 # OLD:

@@ -35,6 +35,7 @@ export default {
         gameSettings: {
             map: parseInt(Math.random() * (4 - 1) + 1),
             powerups: false,
+            localGame: false,
         },
 
         result: undefined,
@@ -417,9 +418,9 @@ export default {
 
             const data = {
                 "mapNumber": this.maps[this.gameSettings.map],
-                "powerups": JSON.stringify(this.gameSettings.powerups),
+                "powerups": this.gameSettings.powerups,
                 "opponentId": this.routeParams.id,
-                "localGame": JSON.stringify(false),
+                "localGame": this.gameSettings.localGame,
             }
             call('game/create/', 'POST', data).then(data => {
                 this.hideModal("invite-for-game-modal");
@@ -512,6 +513,9 @@ export default {
         powerupsAction() {
             this.gameSettings.powerups = !this.gameSettings.powerups;
         },
+        localGameAction() {
+            this.gameSettings.localGame = !this.gameSettings.localGame;
+        }
     },
 
 
@@ -550,6 +554,8 @@ export default {
                 this.domManip.$off(individualElement, "click", this.selectMap);
             element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
             this.domManip.$off(element, "change", this.powerupsAction);
+            element = this.domManip.$id("invite-for-game-modal-local-game-checkbox");
+            this.domManip.$off(element, "change", this.localGameAction);
             element = this.domManip.$id("invite-for-game-modal-start-button");
             this.domManip.$off(element, "click", this.submitInvitation);
             element = this.domManip.$id("friendship-modal-friendship-secondary-button");
@@ -617,6 +623,8 @@ export default {
                     this.domManip.$on(individualElement, "click", this.selectMap);
                 element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
                 this.domManip.$on(element, "change", this.powerupsAction);
+                element = this.domManip.$id("invite-for-game-modal-local-game-checkbox");
+                this.domManip.$on(element, "change", this.localGameAction);
                 element = this.domManip.$id("invite-for-game-modal-start-button");
                 this.domManip.$on(element, "click", this.submitInvitation);
                 element = this.domManip.$id("friendship-modal-friendship-secondary-button");

@@ -1,44 +1,25 @@
+# Django
+from django.utils.translation import gettext as _
+# Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
-from user.models import User
-from game.models import Game, GameMember
-from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
+# User
+from user.models import User
+# Game
+from game.models import Game, GameMember
 from game.utils import create_game, delete_game
-import logging
-# from django.db.models import Q
 
 class CreateGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
         # Get the user from the request
         user = request.user
-        # Parse the input
-        map_number = request.data.get('mapNumber')
-        if not map_number in [1, 2, 3, 4]:
-            return error_response(_("Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"))
         powerups = request.data.get('powerups')
-        if not powerups in ['true', 'false']:
-            return error_response(_("Invalid value for key 'powerups' (must be 'true' or 'false')"))
-        if powerups == 'true':
-            powerups = True
-        else:
-            powerups = False
         local_game = request.data.get('localGame')
-        if not local_game in ['true', 'false']:
-            return error_response(_("Invalid value for key 'localGame' (must be 'true' or 'false')"))
-        if local_game == 'true':
-            local_game = True
-        else:
-            local_game = False
-        if local_game:
-            # TODO: issue #211
-            logging.error("Local games are not supported yet")
         opponent_id = request.data.get('opponentId')
-        if not opponent_id:
-            return error_response(_("Missing key 'opponentId'"))
-
-        game_id, success = create_game(user.id, opponent_id, map_number, powerups, local_game)
+        map_number = request.data.get('mapNumber')
+        game_id, success = create_game(user, opponent_id, map_number, powerups, local_game)
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game_id})
         return success_response(_('Game already exists'), **{'gameId': game_id})
@@ -67,8 +48,16 @@ class LobbyView(BaseAuthenticatedView):
         opponent_member = GameMember.objects.filter(game=game).exclude(user=user).first()
         if not opponent_member:
             return error_response(_("Opponent not found"))
-        if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
-            return error_response(_("Game can't be played since it's either finished or quited"))
+        # Removed this since u can see a lobby even if the game is finished
+        #if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
+        #    return error_response(_("Game can't be played since it's either finished or quited"))
+
+        # TODO: ISSUE #312
+        # Check if the game is local, than only the admin can fetch the lobby
+        if user_member.local_game and not user_member.admin:
+            return error_response(_("Only the admin @{admin_username} can fetch the lobby for local games. You have to go to his computer and play there together")
+                .format(admin_username=opponent_member.user.username))
+
         tournament_name = None
         if (game.tournament):
             tournament_name = game.tournament.name
@@ -89,12 +78,14 @@ class LobbyView(BaseAuthenticatedView):
                 'username': playerLeft.username,
                 'avatar': playerLeft.avatar_path,
                 'points': memberLeft.points,
+                'ready': game.get_player_ready(playerLeft.id),
             },
             'playerRight':{
                 'userId': playerRight.id,
                 'username': playerRight.username,
                 'avatar': playerRight.avatar_path,
                 'points': memberRight.points,
+                'ready': game.get_player_ready(playerRight.id),
             },
             'gameData': {
                 'state': game.state,

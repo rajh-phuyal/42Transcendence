@@ -7,7 +7,7 @@
 \c ${DB_NAME}
 
 \! echo -e "creating the enum type: 'barelyaschema.game_state'..."
-CREATE TYPE barelyaschema.game_state AS ENUM ('pending', 'ongoing', 'paused', 'finished', 'quited');
+CREATE TYPE barelyaschema.game_state AS ENUM ('pending', 'countdown', 'ongoing', 'paused', 'finished', 'quited');
 
 \! echo -e "creating the table: 'barelyaschema.game'..."
 CREATE TABLE IF NOT EXISTS barelyaschema.game

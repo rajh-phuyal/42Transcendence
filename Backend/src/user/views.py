@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .utils_img import process_avatar
 from .utils_relationship import is_blocking, is_blocked, check_blocking, are_friends, is_request_sent, is_request_received
 from user.constants import USER_ID_OVERLOARDS, USER_ID_AI, NO_OF_USERS_TO_LOAD
+from authentication.utils import validate_username
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
@@ -125,7 +126,7 @@ class RelationshipView(BaseAuthenticatedView):
         if not target_id:
             raise ValidationException(_("key 'target_id' must be provided!"))
         target = User.objects.get(id=target_id)
-        if not target:
+        if not target: # #TODO: @alex change this to a function call: get_user_by_id()
             raise ValidationException(_("user with 'target_id' not found"))
         if user.id == target.id:
             raise ValidationException(_("cannot perform action on yourself"))
@@ -256,10 +257,8 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
 
         # Check if the new username is valid
-        # TODO: Wait for issue #108
         if new_username != user.username:
-            if User.objects.filter(username=new_username).exists():
-                raise BarelyAnException((_("Username '{username}' already exists").format(username=new_username)))
+            validate_username(new_username)
 
         # Check if the language is valid
         valid_languages = ['en-US', 'pt-PT', 'pt-BR', 'de-DE', 'uk-UA', 'ne-NP']
