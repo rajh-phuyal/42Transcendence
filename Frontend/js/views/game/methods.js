@@ -114,28 +114,23 @@ export function updateReadyStateNodes() {
 }
 
 // available / using / used / unavailable
-// TODO: @xico I guess we have to choose prettier colors later on :D
-function colorPowerupStatus(element, state) {
-    if (state == "available")
-        element.style.color = "green";
-    else if (state == "using")
-        element.style.color = "orange";
-    else if (state == "used")
-        element.style.color = "red";
-    else
-        element.style.color = "gray";
+function setPowerupImg(element, powerupName, state) {
+    let filename = `${window.origin}/assets/game/icons/powerup-` + state + `-` + powerupName + `.png`;
+        element.src = filename;
 }
 
 export function showPowerupStatus(visible) {
     let elements = $class('player-powerup-status')
     for (let element of elements)
         element.style.display = visible ? element.style.display = "flex" : element.style.display = "none";
-    colorPowerupStatus($id('player-left-powerups-big'), gameObject.playerLeft.powerupBig);
-    colorPowerupStatus($id('player-left-powerups-slow'), gameObject.playerLeft.powerupSlow);
-    colorPowerupStatus($id('player-left-powerups-fast'), gameObject.playerLeft.powerupFast);
-    colorPowerupStatus($id('player-right-powerups-big'), gameObject.playerRight.powerupBig);
-    colorPowerupStatus($id('player-right-powerups-slow'), gameObject.playerRight.powerupSlow);
-    colorPowerupStatus($id('player-right-powerups-fast'), gameObject.playerRight.powerupFast);
+    if (!visible)
+        return;
+    setPowerupImg($id('player-left-powerups-big'), 'big',  gameObject.playerLeft.powerupBig);
+    setPowerupImg($id('player-left-powerups-slow'), 'slow',  gameObject.playerLeft.powerupSlow);
+    setPowerupImg($id('player-left-powerups-fast'), 'fast',  gameObject.playerLeft.powerupFast);
+    setPowerupImg($id('player-right-powerups-big'), 'big',  gameObject.playerRight.powerupBig);
+    setPowerupImg($id('player-right-powerups-slow'), 'slow',  gameObject.playerRight.powerupSlow);
+    setPowerupImg($id('player-right-powerups-fast'), 'fast',  gameObject.playerRight.powerupFast);
 }
 
 export function updateReadyStatefromWS(readyStateObject) {

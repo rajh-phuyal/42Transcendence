@@ -9,6 +9,7 @@ function gameLoop(currentTime) {
         gameObject.lastFrameTime = currentTime;
         if (gameObject.state === "ongoing")
             sendPlayerInput();
+            showPowerupStatus(true);
         gameRender();
         // Check if the game is  still ongoing
         if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
