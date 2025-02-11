@@ -1,7 +1,8 @@
 GAME_FPS = 15
 RECONNECT_TIMEOUT = 2 # Minutes
-POWERUP_DURATION = 10 # Seconds
-INIT_BALL_SPEED = 3
+INIT_BALL_SPEED = 1.5
+BALL_SPEED_STEP = 0.1
+INIT_PADDLE_SIZE = 10
 
 MAPNAME_TO_MAPNUMBER = {
     "ufo": 1,
@@ -19,28 +20,27 @@ PADDLE_OFFSET = 4
 GAME_PLAYER_INPUT = {
     "movePaddle": "0",
     "activatePowerupBig": False,
-    "activatePowerupSlow": False,
-    "activatePowerupFast": False
+    "activatePowerupSpeed": False
 }
 
 GAME_STATE = {
     "playerLeft" : {
         "points": 0,
         "paddlePos": 50,
-        "paddleSize": 10,
+        "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
-        "paddleSpeed": 2.5
+        "paddleSpeed": 3.5
     },
     "playerRight" : {
         "points": 0,
         "paddlePos": 50,
-        "paddleSize": 10,
+        "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",
         "powerupSlow": "unavailable",
         "powerupFast": "unavailable",
-        "paddleSpeed": 2.5
+        "paddleSpeed": 3.5
     },
     "ball" : {
         "posX": 50,
@@ -48,6 +48,7 @@ GAME_STATE = {
         "height": 1,
         "width": 1,
         "speed": INIT_BALL_SPEED,
+        "lastSpeed": 0,
         "directionX": -1,
         "directionY": 0
     },

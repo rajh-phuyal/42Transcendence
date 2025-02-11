@@ -268,7 +268,6 @@ class GameConsumer(CustomWebSocketLogic):
 
     # Just for making sure all the game data is initialized on cache
     async def init_game_on_cache(self):
-        # TODO: this here should already be working but is realted to issue #308
         # Need to compare if the game has powerups or not
         # to if the users still has powerups left to set state to:
         # available / using / used / unavailable

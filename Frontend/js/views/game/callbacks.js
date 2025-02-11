@@ -17,11 +17,7 @@ export function keyPressCallback(event) {
             break;
         case "2":
             // Activate the powerup
-            gameObject.playerInputLeft.powerupSlow = true;
-            break;
-        case "3":
-            // Activate the powerup
-            gameObject.playerInputLeft.powerupFast = true;
+            gameObject.playerInputLeft.powerupSpeed = true;
             break;
 
         // Player RIGHT
@@ -37,11 +33,7 @@ export function keyPressCallback(event) {
             break;
         case "9":
             // Activate the powerup
-            gameObject.playerInputRight.powerupSlow = true;
-            break;
-        case "0":
-            // Activate the powerup
-            gameObject.playerInputRight.powerupFast = true;
+            gameObject.playerInputRight.powerupSpeed = true;
             break;
 
         default:

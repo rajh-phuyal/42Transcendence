@@ -18,9 +18,9 @@
                         <span class="sr-only"></span>
                     </div>
                     <div id="player-left-powerups-status" class="player-powerup-status" >
-                        <h5 id="player-left-powerups-slow" class="powerup-status">S</h5>
-                        <h5 id="player-left-powerups-fast" class="powerup-status">N</h5>
-                        <h5 id="player-left-powerups-big" class="powerup-status">B</h5>
+                        <img id="player-left-powerups-slow" class="powerup-status" src=""></img>
+                        <img id="player-left-powerups-fast" class="powerup-status" src=""></img>
+                        <img id="player-left-powerups-big" class="powerup-status" src=""></img>
                     </div>
                 </div>
             </div>
@@ -49,9 +49,9 @@
                         <span class="sr-only"></span>
                     </div>
                     <div id="player-right-powerups-status" class="player-powerup-status" >
-                        <h5 id="player-right-powerups-slow" class="powerup-status">S</h5>
-                        <h5 id="player-right-powerups-fast" class="powerup-status">N</h5>
-                        <h5 id="player-right-powerups-big" class="powerup-status">B</h5>
+                        <img id="player-right-powerups-slow" class="powerup-status" src=""></img>
+                        <img id="player-right-powerups-fast" class="powerup-status" src=""></img>
+                        <img id="player-right-powerups-big" class="powerup-status" src=""></img>
                     </div>
                 </div>
             </div>
@@ -186,6 +186,13 @@
     align-items: center;
     margin-top: 5px;
     background-color: rgba(136, 21, 21, 0.2);
+    border-radius: 5px;
+}
+
+.powerup-status {
+    margin: 5px;
+    border-radius: 5px;
+    width: 30%
 }
 
 /* User State Styling */

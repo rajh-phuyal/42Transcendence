@@ -80,6 +80,23 @@ def update_game_points(game_id, player_id=None, player_side=None):
     points_right = get_game_data(game_id, 'playerRight', 'points')
     logging.info(f"Game {game_id} points/score updated (cache and db) to: {points_left}/{points_right}")
 
+@database_sync_to_async
+def update_player_powerup(game_id, player_side, powerup):
+    # Update db
+    with transaction.atomic():
+        user = get_user_of_game(game_id, player_side)
+        game = Game.objects.get(id=game_id)
+        game_member = GameMember.objects.select_for_update().get(game_id=game, user_id=user)
+        if powerup == 'powerupBig':
+            game_member.powerup_big = False
+        elif powerup == 'powerupFast':
+            game_member.powerup_fast = False
+        elif powerup == 'powerupSlow':
+            game_member.powerup_slow = False
+        else:
+            logging.error(f"Powerup {powerup} not found")
+        game_member.save()
+
 async def send_update_players_ready_msg(game_id, left_ready, right_ready, start_time = None):
     await channel_layer.group_send(
         f"game_{game_id}",

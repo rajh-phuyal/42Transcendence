@@ -135,13 +135,11 @@ export default {
             gameObject.animationId = null;
             gameObject.sound = null;
             gameObject.playerInputLeft.paddleMovement = 0;
-            gameObject.playerInputLeft.powerupFast = false;
-            gameObject.playerInputLeft.powerupSlow = false;
+            gameObject.playerInputLeft.powerupSpeed = false;
             gameObject.playerInputLeft.powerupBig = false;
             gameObject.playerInputRight.paddleMovement = 0;
             gameObject.playerInputRight.powerupFast = false;
-            gameObject.playerInputRight.powerupSlow = false;
-            gameObject.playerInputRight.powerupBig = false;
+            gameObject.playerInputRight.powerupSpeed = false;
             gameObject.playerLeft.state = undefined;
             gameObject.playerLeft.points = 0
             gameObject.playerLeft.pos = 50;

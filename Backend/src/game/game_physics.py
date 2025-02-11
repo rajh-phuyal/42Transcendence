@@ -1,32 +1,53 @@
-import logging, random
-from game.constants import PADDLE_OFFSET, INIT_BALL_SPEED
+import logging, random, math
+from game.constants import INIT_BALL_SPEED, BALL_SPEED_STEP, INIT_PADDLE_SIZE, PADDLE_OFFSET
 from game.models import Game
 from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
-from game.utils_ws import update_game_state, update_game_points
+from game.utils_ws import update_game_state, update_game_points, update_player_powerup
 
 # Player side needs to be 'playerLeft' or 'playerRight'
-async def activate_power_ups(game_id, playerSide):
-    # TODO Implement Powerups issue #308
-    # I guess it should be done by just changeing the game state data on cache
-    # The calculation of ball move and paddle move should be done with the new game state data
-    # TODO: ALSO SET THE SOUND WHEN ACTIVATING A POWERUP LIKE:
-    # set_game_data(game_id, 'gameData', 'sound', 'powerup')
-    if get_player_input(game_id, playerSide, 'activatePowerupBig') == 'true':
-        logging.info(f"PowerUp BIG tried to activate by: {playerSide}")
-    if get_player_input(game_id, playerSide, 'activatePowerupSlow') == 'true':
-        logging.info(f"PowerUp SLOW tried to activate by: {playerSide}")
-    if get_player_input(game_id, playerSide, 'activatePowerupFast') == 'true':
-        logging.info(f"PowerUp FAST tried to activate by: {playerSide}")
+async def activate_power_ups(game_id, player_side):
+    if get_player_input(game_id, player_side, 'activatePowerupBig') == True:
+        if get_game_data(game_id, player_side, 'powerupBig') == 'available':
+            logging.info(f"activating PowerUp BIG for: {player_side}")
+            await update_player_powerup(game_id, player_side, 'powerupBig')
+            set_game_data(game_id, 'gameData', 'sound', 'powerup')
+            set_game_data(game_id, player_side, 'powerupBig', 'using')
+            set_game_data(game_id, player_side, 'paddleSize', 22)
+
+    # to prevent both users activating a powerup at the same time
+    if get_game_data(game_id, 'ball', 'lastSpeed') == 0:
+        if get_player_input(game_id, player_side, 'activatePowerupSpeed') == True:
+            if (player_side == 'playerLeft' and get_game_data(game_id, 'ball', 'directionX') < 0) or \
+                (player_side == 'playerRight' and get_game_data(game_id, 'ball', 'directionX') >= 0):
+                # the ball is moving towards the player: activate powerup SLOW
+                if get_game_data(game_id, player_side, 'powerupSlow') == 'available':
+                    logging.info(f"activating PowerUp SLOW for: {player_side}")
+                    await update_player_powerup(game_id, player_side, 'powerupSlow')
+                    set_game_data(game_id, 'gameData', 'sound', 'powerup')
+                    set_game_data(game_id, player_side, 'powerupSlow', 'using')
+                    last_ball_speed = get_game_data(game_id, 'ball', 'speed')
+                    set_game_data(game_id, 'ball', 'lastSpeed', last_ball_speed)
+                    set_game_data(game_id, 'ball', 'speed', 1)
+            else:
+                # the ball is moving away from the player: activate powerup FAST
+                if get_game_data(game_id, player_side, 'powerupFast') == 'available':
+                    logging.info(f"activating PowerUp FAST for: {player_side}")
+                    await update_player_powerup(game_id, player_side, 'powerupFast')
+                    set_game_data(game_id, 'gameData', 'sound', 'powerup')
+                    set_game_data(game_id, player_side, 'powerupFast', 'using')
+                    last_ball_speed = get_game_data(game_id, 'ball', 'speed')
+                    set_game_data(game_id, 'ball', 'lastSpeed', last_ball_speed)
+                    set_game_data(game_id, 'ball', 'speed', last_ball_speed + 2)
 
 # Player side needs to be 'playerLeft' or 'playerRight'
-async def move_paddle(game_id, playerSide):
-    movePaddle = get_player_input(game_id, playerSide, 'movePaddle')
+async def move_paddle(game_id, player_side):
+    movePaddle = get_player_input(game_id, player_side, 'movePaddle')
     if  movePaddle == '0':
         return
 
-    new_paddle_pos = get_game_data(game_id, playerSide, 'paddlePos')
-    paddle_speed = get_game_data(game_id, playerSide, 'paddleSpeed')
-    paddle_size = get_game_data(game_id, playerSide, 'paddleSize')
+    new_paddle_pos = get_game_data(game_id, player_side, 'paddlePos')
+    paddle_speed = get_game_data(game_id, player_side, 'paddleSpeed')
+    paddle_size = get_game_data(game_id, player_side, 'paddleSize')
 
     # Trying the player input
     if movePaddle == '+':
@@ -41,7 +62,7 @@ async def move_paddle(game_id, playerSide):
         new_paddle_pos = 100 - (paddle_size / 2)
 
     # Save the new paddle position
-    set_game_data(game_id, playerSide, 'paddlePos', new_paddle_pos)
+    set_game_data(game_id, player_side, 'paddlePos', new_paddle_pos)
 
 async def move_ball(game_id):
 
@@ -55,7 +76,6 @@ async def move_ball(game_id):
     # Move the ball
     ball_pos_x += ball_direction_x * ball_speed
     ball_pos_y += ball_direction_y * ball_speed
-    # TODO: change ball speed issue #311
 
     # Save the new ball position
     set_game_data(game_id, 'ball', 'posX', ball_pos_x)
@@ -91,8 +111,14 @@ async def check_paddle_bounce(game_id):
         # No paddle bounce happend
         ...
 
+async def normalize_ball_direction(new_dir_x, new_dir_y):
+    magnitude = math.sqrt(new_dir_x ** 2 + new_dir_y ** 2)
+    if magnitude != 0:
+        new_dir_x /= magnitude
+        new_dir_y /= magnitude
+    return new_dir_x, new_dir_y
+
 # Only called when the x pos of ball is on the x of the paddle
-# TODO: In this function we need to normalize the ball direction so the speed is always the same issue #311
 async def apply_padlle_hit(game_id, player_side):
     ball_pos_y = get_game_data(game_id, 'ball', 'posY')
     paddle_pos = get_game_data(game_id, player_side, 'paddlePos')
@@ -107,9 +133,11 @@ async def apply_padlle_hit(game_id, player_side):
         else:
             # Ball should bounce off up
             distance_paddle_ball = paddle_pos - ball_pos_y
-            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_height)
-            set_game_data(game_id, 'ball', 'directionX', -1 * get_game_data(game_id, 'ball', 'directionX'))
-            set_game_data(game_id, 'ball', 'directionY', -percentage_y)
+            new_dir_y = -(distance_paddle_ball / (paddle_size / 2 + ball_height))
+            new_dir_x = -1 * get_game_data(game_id, 'ball', 'directionX')
+            new_dir_x, new_dir_y = await normalize_ball_direction(new_dir_x, new_dir_y)
+            set_game_data(game_id, 'ball', 'directionX', new_dir_x)
+            set_game_data(game_id, 'ball', 'directionY', new_dir_y)
             set_game_data(game_id, 'gameData', 'sound', 'paddle')
     else:
         if ball_pos_y - ball_height > paddle_pos + paddle_size / 2:
@@ -117,10 +145,33 @@ async def apply_padlle_hit(game_id, player_side):
         else:
             # Ball should bounce off down
             distance_paddle_ball = ball_pos_y - paddle_pos
-            percentage_y = distance_paddle_ball / (paddle_size / 2 + ball_height)
-            set_game_data(game_id, 'ball', 'directionX', -1 * get_game_data(game_id, 'ball', 'directionX'))
-            set_game_data(game_id, 'ball', 'directionY', percentage_y)
+            new_dir_y = distance_paddle_ball / (paddle_size / 2 + ball_height)
+            new_dir_x = -1 * get_game_data(game_id, 'ball', 'directionX')
+            new_dir_x, new_dir_y = await normalize_ball_direction(new_dir_x, new_dir_y)
+            set_game_data(game_id, 'ball', 'directionX', new_dir_x)
+            set_game_data(game_id, 'ball', 'directionY', new_dir_y)
             set_game_data(game_id, 'gameData', 'sound', 'paddle')
+    # if power up BIG is active, decrease the size of the paddle
+    current_paddle_size = get_game_data(game_id, player_side, 'paddleSize')
+    if (current_paddle_size > INIT_PADDLE_SIZE):
+        current_paddle_size -= 4
+        if (current_paddle_size <= INIT_PADDLE_SIZE):
+            set_game_data(game_id, player_side, 'powerupBig', 'used')
+            current_paddle_size = INIT_PADDLE_SIZE
+        set_game_data(game_id, player_side, 'paddleSize', current_paddle_size)
+    # speed up the ball or reset power up SLOW and FAST
+    last_speed_ball = get_game_data(game_id, 'ball', 'lastSpeed')
+    if (last_speed_ball > 0):
+        set_game_data(game_id, 'ball', 'speed', last_speed_ball)
+        set_game_data(game_id, 'ball', 'lastSpeed', 0)
+        if get_game_data(game_id, player_side, 'powerupSlow') == 'using':
+            set_game_data(game_id, player_side, 'powerupSlow', 'used')
+        elif get_game_data(game_id, player_side, 'powerupFast') == 'using':
+            set_game_data(game_id, player_side, 'powerupFast', 'used')
+    else:
+        current_ball_speed = get_game_data(game_id, 'ball', 'speed')
+        current_ball_speed += BALL_SPEED_STEP
+        set_game_data(game_id, 'ball', 'speed', current_ball_speed)
 
 async def apply_point(game_id, player_side):
     # update_score_points in cache and db
@@ -130,6 +181,8 @@ async def apply_point(game_id, player_side):
     # Reset the paddles
     set_game_data(game_id, 'playerLeft', 'paddlePos', 50)
     set_game_data(game_id, 'playerRight', 'paddlePos', 50)
+    set_game_data(game_id, 'playerLeft', 'paddleSize', INIT_PADDLE_SIZE)
+    set_game_data(game_id, 'playerRight', 'paddleSize', INIT_PADDLE_SIZE)
 
     # Check if extende mode should be activated (on the score of 10:10)
     if not get_game_data(game_id, 'gameData', 'extendingGameMode'):
@@ -167,6 +220,20 @@ async def apply_point(game_id, player_side):
     set_game_data(game_id, 'ball', 'posY', 50)
     # Speed: Reset to initial speed
     set_game_data(game_id, 'ball', 'speed', INIT_BALL_SPEED)
+    # Reset all powerups
+    set_game_data(game_id, 'ball', 'lastSpeed', 0)
+    if get_game_data(game_id, 'playerLeft', 'powerupBig') == 'using':
+        set_game_data(game_id, 'playerLeft', 'powerupBig', 'used')
+    if get_game_data(game_id, 'playerLeft', 'powerupFast') == 'using':
+        set_game_data(game_id, 'playerLeft', 'powerupFast', 'used')
+    if get_game_data(game_id, 'playerLeft', 'powerupSlow') == 'using':
+        set_game_data(game_id, 'playerLeft', 'powerupSlow', 'used')
+    if get_game_data(game_id, 'playerRight', 'powerupBig') == 'using':
+        set_game_data(game_id, 'playerRight', 'powerupBig', 'used')
+    if get_game_data(game_id, 'playerRight', 'powerupFast') == 'using':
+        set_game_data(game_id, 'playerRight', 'powerupFast', 'used')
+    if get_game_data(game_id, 'playerRight', 'powerupSlow') == 'using':
+        set_game_data(game_id, 'playerRight', 'powerupSlow', 'used')
 
 
 async def check_if_game_is_finished(game_id):

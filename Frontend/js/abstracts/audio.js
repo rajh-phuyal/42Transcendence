@@ -79,6 +79,7 @@ export default class AudioPlayer {
         if (sound) {
             sound.audio.currentTime = 0;
             sound.audio.volume = this.maxVolumeSounds;
+            sound.audio.loop = false;
             sound.audio.play();
         } else {
             console.error("Sound not found:", name);
