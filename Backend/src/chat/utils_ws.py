@@ -18,7 +18,7 @@ from user.exceptions import BlockingException
 # Chat
 from chat.models import Message, ConversationMember, Conversation
 from chat.parse_incoming_message import check_if_msg_is_cmd, check_if_msg_contains_username, send_temporary_info_msg
-from chat.utils import mark_all_messages_as_seen_async, get_conversation_id, create_conversation,validate_conversation_membership, get_other_user
+from chat.utils import mark_all_messages_as_seen_async, create_conversation,validate_conversation_membership, get_other_user
 
 # TODO: NEW SHOULD BE USED EVERYWHERE
 @database_sync_to_async
@@ -60,11 +60,6 @@ def get_other_user_async(user, conversation):
 
 
 
-
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def get_conversation_users(conversation_id):
-    return ConversationMember.objects.filter(conversation_id=conversation_id).values_list('user', flat=True)
-
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def create_chat_message(sender, conversation_id, content):
     # Validate conversation exists & user is a member of the conversation
@@ -94,7 +89,7 @@ def create_chat_message(sender, conversation_id, content):
 # Main fucntion of incoming chat message via WS
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def process_incoming_chat_message(consumer, user, text):
-    from services.websocket_utils import check_message_keys
+    from Backend.src.services.websocket_handler_main import check_message_keys
     from user.utils_relationship import is_blocked
     message = check_message_keys(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
@@ -126,7 +121,7 @@ async def process_incoming_chat_message(consumer, user, text):
 # FE tells backend that user has seen a conversation
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def process_incoming_seen_message(self, user, text):
-    from services.websocket_utils import check_message_keys
+    from Backend.src.services.websocket_handler_main import check_message_keys
     message = check_message_keys(text, mandatory_keys=['conversationId'])
     conversation_id = message.get('conversationId')
     await validate_conversation_membership_async(user, conversation_id)

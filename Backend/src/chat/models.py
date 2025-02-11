@@ -3,15 +3,21 @@ from django.db import models
 # Conversation Model
 class Conversation(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
-    is_group_conversation = models.BooleanField(default=False)
-    is_editable = models.BooleanField(default=False)
+    name = models.CharField(max_length=255, null=True, blank=True)  # NOTE: NOT USED IN MVP!
+    is_group_conversation = models.BooleanField(default=False)      # NOTE: NOT USED IN MVP!
+    is_editable = models.BooleanField(default=False)                # NOTE: NOT USED IN MVP!
 
     def __str__(self):
         return f'id:{self.id} name: {self.name} is_group_conversation: {self.is_group_conversation} is_editable: {self.is_editable}'
 
     class Meta:
         db_table = '"barelyaschema"."conversation"'
+
+    async def broadcast_message(self, message):
+        # Importing here to avoid circular imports
+        from chat.utils_ws import broadcast_chat_message
+        await broadcast_message_to_conversation(self, message)
+
 
 # ConversationMember Model
 class ConversationMember(models.Model):
@@ -21,8 +27,8 @@ class ConversationMember(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='members')
     unread_counter = models.IntegerField(default=0)
 
-    #def __str__(self):
-    #    return f'{self.user_id.username} in {self.chat_id.name}'
+    def __str__(self):
+        return f'{self.user_id.username} in {self.chat_id.name}'
 
     class Meta:
         db_table = '"barelyaschema"."conversation_member"'

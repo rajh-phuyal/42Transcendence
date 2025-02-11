@@ -9,7 +9,7 @@ from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 # Services
 from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
-from services.websocket_utils import send_message_to_user_sync
+from Backend.src.services.websocket_handler_main import send_message_to_user_sync
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
@@ -26,7 +26,6 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationsSerializer, ConversationMemberSerializer, MessageSerializer
 from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync, LastSeenMessage, validate_conversation_membership, get_other_user
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):
@@ -35,8 +34,7 @@ class LoadConversationsView(BaseAuthenticatedView):
         # Get all conversations where the user is a member
         conversation_memberships = ConversationMember.objects.filter(user=user)
         conversations = [membership.conversation for membership in conversation_memberships]
-
-        # Serialize only the conversation id and name
+        # Serialize the conversations
         serializer = ConversationsSerializer(conversations, many=True, context={'request': request})
         if not serializer.data or len(serializer.data) == 0:
             return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
@@ -90,7 +88,7 @@ class LoadConversationView(BaseAuthenticatedView):
 
             # Blackout messages if blocking
             if is_blocking and message.user == other_user:
-                message.content = _('**This message is hidden because you are blocking the user**')
+                message.content = _('This message is hidden because you are blocking the user')
             i += 1
 
         # Mark as seen
@@ -104,7 +102,7 @@ class LoadConversationView(BaseAuthenticatedView):
         serialized_messages = MessageSerializer(messages, many=True)
 
         # Get the conversation avatar and name
-        conversation_avatar = self.get_conversation_avatar(conversation, other_user)
+        conversation_avatar = other_user.avatar_path
         conversation_name = other_user.username
 
         # Prepare the response
@@ -138,12 +136,7 @@ class LoadConversationView(BaseAuthenticatedView):
         return messages, last_seen_msg, unseen_messages
 
 
-    def get_conversation_avatar(self, conversation, other_user):
-        if conversation.is_group_conversation:
-            return 'CHAT_AVATAR_GROUP_DEFAULT'
-        if other_user.avatar_path:
-            return other_user.avatar_path
-        return 'AVATAR_DEFAULT'
+
 
     def prepare_response(self, conversation, user, serialized_messages, other_user, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
         members = conversation.members.all()

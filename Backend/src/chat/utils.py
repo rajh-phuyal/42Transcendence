@@ -61,6 +61,8 @@ def get_other_user(user, conversation):
 
 
 
+
+
 # TODO old stuff below!!!
 
 
@@ -99,22 +101,7 @@ def mark_all_messages_as_seen_async(user_id, conversation_id):
 
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def get_conversation_id(user1, user2):
-    user_conversations = ConversationMember.objects.filter(
-        user=user1.id,
-        conversation__is_group_conversation=False,
-    ).values_list('conversation_id', flat=True)
 
-    other_user_conversations = ConversationMember.objects.filter(
-        user=user2.id,
-        conversation__is_group_conversation=False
-    ).values_list('conversation_id', flat=True)
-
-    common_conversations = set(user_conversations).intersection(other_user_conversations)
-
-    if common_conversations:
-        return common_conversations.pop()
-    return None
 
 # Create a conversation between two users
     # create a conversation
@@ -124,7 +111,7 @@ def get_conversation_id(user1, user2):
     # send a message to the user's WebSocket group
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def create_conversation(user1, user2, initialMessage, creator = None):
-    from services.websocket_utils import send_message_to_user_sync
+    from Backend.src.services.websocket_handler_main import send_message_to_user_sync
 
     # Start a transaction to make sure all database operations happen together
     with transaction.atomic():
@@ -167,8 +154,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         "conversationAvatar": user2.avatar_path,
         "unreadCounter": 1,
         "online": True,
-        "lastUpdate": initialMessageObject.created_at.isoformat(), #TODO: Issue #193
-        "isEmpty": False
+        "lastUpdate": initialMessageObject.created_at.isoformat() #TODO: Issue #193
     }
     send_message_to_user_sync(user1.id, **message)
 
@@ -183,8 +169,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         "conversationAvatar": user1.avatar_path,
         "unreadCounter": 1,
         "online": True,
-        "lastUpdate": initialMessageObject.created_at.isoformat(), #TODO: Issue #193
-        "isEmpty": False
+        "lastUpdate": initialMessageObject.created_at.isoformat() #TODO: Issue #193
     }
     send_message_to_user_sync(user2.id, **message)
 

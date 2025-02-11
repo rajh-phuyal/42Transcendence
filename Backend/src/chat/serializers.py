@@ -1,17 +1,21 @@
-from rest_framework import serializers
-from chat.models import Conversation, ConversationMember, Message
-from django.core.cache import cache
-from rest_framework import serializers
-from .models import Conversation, Message, ConversationMember
-from .constants import CHAT_AVATAR_GROUP_DEFAULT
-from user.constants import AVATAR_DEFAULT
-from user.constants import USER_ID_OVERLORDS
-from user.models import User
-from django.utils.translation import gettext as _
-from .utils import get_other_user
-from django.db.models import Q
+# Basics
 import re
+# Django
+from rest_framework import serializers
+from django.core.cache import cache
+from django.utils.translation import gettext as _
+from django.db.models import Q
+# User
+from user.constants import USER_ID_OVERLORDS, AVATAR_DEFAULT
+from user.models import User
+# Chat
+from chat.models import Conversation, Message, ConversationMember
+from chat.constants import CHAT_AVATAR_GROUP_DEFAULT
+from chat.utils import get_other_user
 
+# This is used to transform a db message.content into a translated string
+# Will be used by the MessageSerializer. e.g:
+# **B,12,42** -> User @12 has blocked @42
 def generate_template_msg(message):
     message = message[2:-2]
     parts = message.split(',')
@@ -103,7 +107,6 @@ class MessageSerializer(serializers.ModelSerializer):
         data["content"] = content
         return data
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class ConversationsSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isEditable = serializers.BooleanField(source='is_editable')
@@ -112,23 +115,15 @@ class ConversationsSerializer(serializers.ModelSerializer):
     unreadCounter = serializers.SerializerMethodField()
     online = serializers.SerializerMethodField()
     lastUpdate = serializers.SerializerMethodField()
-    isEmpty = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ['conversationId', 'isEditable', 'conversationName', 'conversationAvatar', 'unreadCounter', 'online', 'lastUpdate', 'isEmpty']
+        fields = ['conversationId', 'isEditable', 'conversationName', 'conversationAvatar', 'unreadCounter', 'online', 'lastUpdate']
     def get_conversationName(self, obj):
         return get_other_user(self.context['request'].user, obj).username
 
     def get_conversationAvatar(self, obj):
-        current_user = self.context.get('request').user
-        other_members = obj.members.exclude(user=current_user)
-        if other_members.exists():
-            other_user = other_members.first().user
-            return other_user.avatar_path if other_user.avatar_path else 'CHAT_AVATAR_DEFAULT'
-
-        # Default avatar in case no other members exist (which should never happen)
-        return AVATAR_DEFAULT
+        return get_other_user(self.context['request'].user, obj).avatar_path
 
     def get_unreadCounter(self, obj):
         current_user = self.context['request'].user
@@ -139,25 +134,12 @@ class ConversationsSerializer(serializers.ModelSerializer):
             return 0
 
     def get_online(self, obj):
-        current_user = self.context['request'].user
-        if obj.is_group_conversation:
-            return False
-        else:
-            try:
-                other_member = obj.members.exclude(user=current_user).first()
-                if other_member and other_member.user.get_online_status():
-                    return True
-                return False
-            except Exception:
-                return False
+        return get_other_user(self.context['request'].user, obj).get_online_status()
 
     def get_lastUpdate(self, obj):
         # Fetch the timestamp of the last message in the conversation
         last_message = obj.messages.order_by('-created_at').first()
         return last_message.created_at if last_message else None
-
-    def get_isEmpty(self, obj):
-        return obj.messages.count() == 0
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 class ConversationMemberSerializer(serializers.ModelSerializer):

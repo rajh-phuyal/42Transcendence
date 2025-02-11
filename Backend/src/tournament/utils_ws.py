@@ -85,7 +85,7 @@ def send_tournament_invites_via_pm(tournament_id):
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def send_tournament_invites_via_ws(tournament_id):
-    from services.websocket_utils import send_message_to_user_sync
+    from Backend.src.services.websocket_handler_main import send_message_to_user_sync
     # Get all users that are invited to the tournament
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
 

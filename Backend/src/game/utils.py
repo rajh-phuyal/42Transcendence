@@ -230,6 +230,7 @@ def get_user_of_game(game_id, side):
         logging.error(f"! Side '{side}' is not valid has to be 'playerLeft' or 'playerRight'")
         return None
 
+# TODO: move to file game_cache.py
 def set_game_data(game_id, key1, key2, new_value, timeout=3000):
     cache_key = f'game_{game_id}_state'
     if (game_state_data := cache.get(cache_key)):
@@ -242,6 +243,7 @@ def set_game_data(game_id, key1, key2, new_value, timeout=3000):
         logging.error(f"! Can't update game state because game {game_id} is not in cache!")
     return False
 
+# TODO: move to file game_cache.py
 def get_game_data(game_id, key1=None, key2=None):
     cache_key = f'game_{game_id}_state'
     if (game_state_data := cache.get(cache_key)):
@@ -274,6 +276,7 @@ def get_game_data(game_id, key1=None, key2=None):
 
 
 # SIDE: needs to be playerLeft or playerRight
+# TODO: move to file game_cache.py
 def get_player_input(game_id, side, key1):
     cache_key = f'game_{game_id}_{side}'
     if (input_player := cache.get(cache_key)):

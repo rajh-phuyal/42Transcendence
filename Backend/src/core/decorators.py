@@ -5,7 +5,7 @@ from core.exceptions import BarelyAnException
 from core.response import error_response
 from django.utils.translation import gettext as _
 import logging
-from services.websocket_utils import send_response_message
+from Backend.src.services.websocket_handler_main import send_response_message
 
 # This decorator is used to catch exceptions and return a generic error response
 # we should use it for all http requests like post, get, put, delete

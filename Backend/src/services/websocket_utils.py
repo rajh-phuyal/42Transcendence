@@ -1,104 +1,17 @@
 # Basics
-import logging, json
-
-# Python stuff
-from datetime import datetime, timedelta
-from django.core.cache import cache
-from django.utils.translation import gettext as _
-from core.exceptions import BarelyAnException
+import logging
+# Django
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync, sync_to_async
-from channels.db import database_sync_to_async
-
-# Game stuff
-from game.models import Game
-from game.utils_ws import init_game, update_game_state
-
-# Chat stuff
-from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
-
-# Services
-from services.chat_service import broadcast_chat_message
-
-## HANDLER FOR MAIN WEBSOCKET CONNECTION
-## ------------------------------------------------------------------------------------------------
-class WebSocketMessageHandlersMain:
-
-    """If u wanna handle a new message type, add a new static method with the name handle_{message_type}"""
-    def __getitem__(self, key):
-        method_name = f"handle_{key}"
-
-        # Use getattr to fetch the static method
-        method = getattr(self, method_name, None)
-
-        # If the method exists, return it, otherwise raise an error
-        if callable(method):
-            return method
-        raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
-
-    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-    @staticmethod
-    async def handle_chat(consumer, user, message):
-        await process_incoming_chat_message(consumer, user, message)
-        logging.info(f"Parsed backend object: {message}")
-
-    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-    @staticmethod
-    async def handle_seen(consumer, user, message):
-        logging.info("Received seen message")
-        await process_incoming_seen_message(consumer, user, message)
-
-    # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-    @staticmethod
-    async def handle_relationship(consumer, user, message):
-        logging.info("Received relationship message - TODO: issue #206 implement")
-
-## HANDLER FOR GAME WEBSOCKET CONNECTION
-## ------------------------------------------------------------------------------------------------
-class WebSocketMessageHandlersGame:
-
-    """If u wanna handle a new message type, add a new static method with the name handle_{message_type}"""
-    def __getitem__(self, key):
-        method_name = f"handle_{key}"
-
-        # Use getattr to fetch the static method
-        method = getattr(self, method_name, None)
-
-        # If the method exists, return it, otherwise raise an error
-        if callable(method):
-            return method
-        raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
-
-    @staticmethod
-    async def handle_game(consumer, user, message):
-        ...
-        logging.info(f"Hanlding game message: {message}. tbd!")
-
-    @staticmethod
-    async def handle_playerInput(consumer, user, message):
-        message = check_message_keys(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
-        if consumer.local_game or consumer.isLeftPlayer:
-            cache.set(f'game_{consumer.game_id}_playerLeft', message.get("playerLeft"), timeout=3000)
-        if consumer.local_game or not consumer.isLeftPlayer:
-            cache.set(f'game_{consumer.game_id}_playerRight', message.get("playerRight"), timeout=3000)
-
-## UTILS
-## ------------------------------------------------------------------------------------------------
-# To send by consumer
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-async def send_response_message(client_consumer, type, message):
-    logging.info(f"Sending message to connection {client_consumer}: {message}")
-    message_dict = {
-        "messageType": type,
-        "message": message
-    }
-    json_message = json.dumps(message_dict)
-    await client_consumer.send(text_data=json_message)
+import asyncio
+from django.core.cache import cache
+from services.constants import PRE_USER_CHANNEL
+from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync
+from chat.models import ConversationMember
 
 # To send by user id
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-async def send_message_to_user(user_id, **message):
-    channel_name =  cache.get(f'user_channel_{user_id}', None)
+async def send_ws_msg_to_user(user_id, **message):
+    channel_name =  cache.get(f'{PRE_USER_CHANNEL}{user_id}')
     if channel_name:
         channel_layer = get_channel_layer()
         # Send the message to the WebSocket connection associated with that channel name
@@ -106,27 +19,32 @@ async def send_message_to_user(user_id, **message):
     else:
         logging.warning(f"No active WebSocket connection found for user ID {user_id}.")
 
-@async_to_sync
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-async def send_message_to_user_sync(user_id, **message):
-    await send_message_to_user(user_id, **message)
+@sync_to_async
+def send_ws_msg_unread_total(user_id):
+    from Backend.src.services.websocket_handler_main import send_message_to_user
+    conversation_memberships = ConversationMember.objects.filter(user=user_id)
+    chat_unread_counter = 0
+    for membership in conversation_memberships:
+        chat_unread_counter += membership.unread_counter
+    msg_data = {
+        "type": "update_badge",
+        "messageType": "updateBadge",
+        "what": "all",
+        "value": chat_unread_counter
+    }
+    #logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
+    async_to_sync(send_ws_msg_to_user)(user_id, **msg_data)
 
-# For all incoming messages we should use this function to parse the message
-# therefore we can validate if the message has all the required fields
-# and if not, raise an exception
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def check_message_keys(text: str, mandatory_keys: list[str] = None) -> dict:
-    _message = json.loads(text)
-
-    message_type = _message.get('messageType', None)
-    if not message_type:
-        raise BarelyAnException(_("messageType is required"))
-
-    if not mandatory_keys:
-        return _message
-
-    for key in mandatory_keys:
-        if key not in _message:
-            raise BarelyAnException(_("key '{key}' is required in message type '{message_type}'").format(key=key, message_type=message_type))
-
-    return _message
+@sync_to_async
+def send_ws_msg_unread_conversation(user_id, conversation_id):
+    from Backend.src.services.websocket_handler_main import send_message_to_user
+    unread_count = ConversationMember.objects.get(user=user_id, conversation=conversation_id).unread_counter
+    msg_data = {
+        "type": "update_badge",
+        "messageType": "updateBadge",
+        "what": "conversation",
+        "id": conversation_id,
+        "value": unread_count
+    }
+    #logging.info("Sending the '%s' message for '%s' to the user '%s' with value '%s'", msg_data['type'], msg_data['what'], user_id, msg_data['value'])
+    async_to_sync(send_ws_msg_to_user)(user_id, **msg_data)

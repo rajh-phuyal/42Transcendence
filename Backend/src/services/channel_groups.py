@@ -24,12 +24,9 @@ async def update_client_in_group(user_id, object_id, group_pre, add = True):
 @sync_to_async
 def update_client_in_all_conversation_groups(user, add = True):
     # Get all conversation IDs where the user is a member
-    logging.info("now")
     conversation_memberships = list(ConversationMember.objects.filter(user=user))
     logging.info(f"Adding/removing user ({user}) to all their conversation groups. Adding: {add}. Total: {len(conversation_memberships)}")
-    logging.info("then")
     for membership in conversation_memberships:
-        logging.info("loop")
         async_to_sync(update_client_in_group)(user.id, membership.conversation.id, PRE_CONVERSATION, add)
 
 @sync_to_async
