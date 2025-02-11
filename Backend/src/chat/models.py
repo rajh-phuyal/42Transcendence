@@ -13,12 +13,6 @@ class Conversation(models.Model):
     class Meta:
         db_table = '"barelyaschema"."conversation"'
 
-    async def broadcast_message(self, message):
-        # Importing here to avoid circular imports
-        from chat.utils_ws import broadcast_chat_message
-        await broadcast_message_to_conversation(self, message)
-
-
 # ConversationMember Model
 class ConversationMember(models.Model):
     id = models.AutoField(primary_key=True)

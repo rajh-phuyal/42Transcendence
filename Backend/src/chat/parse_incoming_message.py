@@ -69,7 +69,7 @@ async def check_if_msg_contains_username(user, other_user, conversation_id, cont
 # in the database and therfore is gone after the user reloads the page
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def send_temporary_info_msg(user_id, conversation_id, content):
-    from Backend.src.services.websocket_handler_main import send_message_to_user
+    from services.websocket_handler_main import send_message_to_user
     message = {
         "messageType": "chat",
         "type": "chat_message",

@@ -8,8 +8,6 @@ from django.utils.translation import gettext as _
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 # Services
-from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
-from Backend.src.services.websocket_handler_main import send_message_to_user_sync
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
@@ -24,7 +22,9 @@ from user.utils_relationship import is_blocking as user_is_blocking, is_blocked 
 from chat.constants import NO_OF_MSG_TO_LOAD
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationsSerializer, ConversationMemberSerializer, MessageSerializer
-from chat.utils import create_conversation, get_conversation_id, mark_all_messages_as_seen_sync, LastSeenMessage, validate_conversation_membership, get_other_user
+from chat.utils import create_conversation, mark_all_messages_as_seen_sync, LastSeenMessage, validate_conversation_membership, get_other_user
+from chat.get_conversation import get_conversation_id
+
 
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions

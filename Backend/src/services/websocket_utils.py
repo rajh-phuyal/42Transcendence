@@ -2,7 +2,6 @@
 import logging
 # Django
 from channels.layers import get_channel_layer
-import asyncio
 from django.core.cache import cache
 from services.constants import PRE_USER_CHANNEL
 from asgiref.sync import sync_to_async
@@ -21,7 +20,7 @@ async def send_ws_msg_to_user(user_id, **message):
 
 @sync_to_async
 def send_ws_msg_unread_total(user_id):
-    from Backend.src.services.websocket_handler_main import send_message_to_user
+    from services.websocket_handler_main import send_message_to_user
     conversation_memberships = ConversationMember.objects.filter(user=user_id)
     chat_unread_counter = 0
     for membership in conversation_memberships:
@@ -37,7 +36,7 @@ def send_ws_msg_unread_total(user_id):
 
 @sync_to_async
 def send_ws_msg_unread_conversation(user_id, conversation_id):
-    from Backend.src.services.websocket_handler_main import send_message_to_user
+    from services.websocket_handler_main import send_message_to_user
     unread_count = ConversationMember.objects.get(user=user_id, conversation=conversation_id).unread_counter
     msg_data = {
         "type": "update_badge",

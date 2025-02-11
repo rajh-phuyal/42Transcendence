@@ -11,7 +11,6 @@ from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from rest_framework import status
 # Services
-from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
 # User
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
@@ -111,7 +110,6 @@ def mark_all_messages_as_seen_async(user_id, conversation_id):
     # send a message to the user's WebSocket group
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def create_conversation(user1, user2, initialMessage, creator = None):
-    from Backend.src.services.websocket_handler_main import send_message_to_user_sync
 
     # Start a transaction to make sure all database operations happen together
     with transaction.atomic():
@@ -156,7 +154,7 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         "online": True,
         "lastUpdate": initialMessageObject.created_at.isoformat() #TODO: Issue #193
     }
-    send_message_to_user_sync(user1.id, **message)
+    # TODO: unccoment later: send_message_to_user_sync(user1.id, **message)
 
     # Sending a message to user2
     message={
@@ -171,15 +169,17 @@ def create_conversation(user1, user2, initialMessage, creator = None):
         "online": True,
         "lastUpdate": initialMessageObject.created_at.isoformat() #TODO: Issue #193
     }
-    send_message_to_user_sync(user2.id, **message)
+    # TODO: unccoment later: send_message_to_user_sync(user2.id, **message)
 
     # TODO: THIS also will be done by create_message
     if creator == user1:
-        async_to_sync(send_total_unread_counter)(user2.id)
-        async_to_sync(send_conversation_unread_counter)(user2.id, new_conversation.id)
+        ...
+        # TODO: uncomment: async_to_sync(send_total_unread_counter)(user2.id)
+        # TODO: uncomment: async_to_sync(send_conversation_unread_counter)(user2.id, new_conversation.id)
     elif creator == user2:
-        async_to_sync(send_total_unread_counter)(user1.id)
-        async_to_sync(send_conversation_unread_counter)(user1.id, new_conversation.id)
+        ...
+        # TODO: uncomment: async_to_sync(send_total_unread_counter)(user1.id)
+        # TODO: uncomment: async_to_sync(send_conversation_unread_counter)(user1.id, new_conversation.id)
 
     return new_conversation
 

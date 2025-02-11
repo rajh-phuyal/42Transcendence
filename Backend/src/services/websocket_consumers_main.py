@@ -1,29 +1,14 @@
 # Basics
-import logging, asyncio, random, json
+import logging, json
 # Python stuff
-from django.utils import timezone
 from django.utils.translation import gettext as _
-from datetime import datetime, timedelta
-from copy import deepcopy
 from asgiref.sync import sync_to_async
-from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
-from core.exceptions import BarelyAnException
-from core.decorators import barely_handle_ws_exceptions
-# Game stuff
-from game.constants import GAME_FPS, GAME_STATE, GAME_PLAYER_INPUT, PADDLE_OFFSET
-from game.models import Game
-from game.utils import is_left_player, get_game_data, set_game_data, get_user_of_game
-from game.utils_ws import update_game_state, update_game_points, send_update_game_data_msg, send_update_players_ready_msg
-from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished, apply_point
 # Services
 from services.constants import PRE_USER_CHANNEL
-from Backend.src.services.websocket_handler_main import WebSocketMessageHandlersMain, WebSocketMessageHandlersGame, check_message_keys
-from services.chat_service import send_total_unread_counter
+from services.websocket_handler_main import WebSocketMessageHandlersMain
 from services.channel_groups import update_client_in_all_conversation_groups, update_client_in_all_tournament_groups
 # Channels
-from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 from services.websocket_consumers_base import CustomWebSocketLogic

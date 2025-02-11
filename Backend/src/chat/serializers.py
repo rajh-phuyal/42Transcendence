@@ -4,13 +4,11 @@ import re
 from rest_framework import serializers
 from django.core.cache import cache
 from django.utils.translation import gettext as _
-from django.db.models import Q
 # User
-from user.constants import USER_ID_OVERLORDS, AVATAR_DEFAULT
+from user.constants import AVATAR_DEFAULT
 from user.models import User
 # Chat
 from chat.models import Conversation, Message, ConversationMember
-from chat.constants import CHAT_AVATAR_GROUP_DEFAULT
 from chat.utils import get_other_user
 
 # This is used to transform a db message.content into a translated string

@@ -5,11 +5,9 @@ from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 from tournament.models import Tournament, TournamentMember
 import logging
-from .serializer import TournamentMemberSerializer
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from chat.models import Message
-from services.chat_service import broadcast_chat_message
 
 def send_tournament_ws_msg(tournament_id, type_camel, type_snake, message, **json_details):
     tournament_id_name = f"tournament_{tournament_id}"
@@ -50,7 +48,9 @@ def join_tournament_channel(user, tournament_id, activate=True):
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def send_tournament_invites_via_pm(tournament_id):
-    from chat.utils import create_conversation, get_conversation_id
+    from chat.utils import create_conversation
+    from chat.get_conversation import get_conversation_id
+
     # Get all users that are invited to the tournament
     tournament_admin = TournamentMember.objects.get(tournament_id=tournament_id, is_admin=True)
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
@@ -81,11 +81,10 @@ def send_tournament_invites_via_pm(tournament_id):
         newMessage.save()
 
         # Send a message to an existing conversation
-        broadcast_chat_message(newMessage)
+        # TODO: unccoment: broadcast_chat_message(newMessage)
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def send_tournament_invites_via_ws(tournament_id):
-    from Backend.src.services.websocket_handler_main import send_message_to_user_sync
     # Get all users that are invited to the tournament
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
 
@@ -96,7 +95,8 @@ def send_tournament_invites_via_ws(tournament_id):
         "message": _("You have been invited to a tournament check it out in the join tournament modal"),
     }
     for member in tournament_members:
-        send_message_to_user_sync(member.user_id, **message)
+        ...
+        # TODO: unccoment later: send_message_to_user_sync(member.user_id, **message)
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def delete_tournament_channel(tournament_id):

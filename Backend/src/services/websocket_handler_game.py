@@ -2,23 +2,11 @@
 import logging, json
 
 # Python stuff
-from datetime import datetime, timedelta
 from django.core.cache import cache
 from django.utils.translation import gettext as _
-from core.exceptions import BarelyAnException
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync, sync_to_async
-from channels.db import database_sync_to_async
-
-# Game stuff
-from game.models import Game
-from game.utils_ws import init_game, update_game_state
-
-# Chat stuff
-from chat.utils_ws import process_incoming_chat_message, process_incoming_seen_message
+from services.websocket_handler_main import check_message_keys
 
 # Services
-from services.chat_service import broadcast_chat_message
 
 ## HANDLER FOR GAME WEBSOCKET CONNECTION
 ## ------------------------------------------------------------------------------------------------

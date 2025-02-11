@@ -3,19 +3,18 @@ import logging
 # Django
 from django.utils.translation import gettext as _
 from django.db import transaction
-from django.db.models import Q, F
+from django.db.models import F
 from channels.db import database_sync_to_async
-from services.chat_service import send_conversation_unread_counter, send_total_unread_counter
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import sync_to_async
 # Core
 from core.exceptions import BarelyAnException
 # Services
-from services.chat_service import broadcast_chat_message
 # User
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from user.exceptions import BlockingException
 # Chat
+from chat.get_conversation import get_conversation_id
 from chat.models import Message, ConversationMember, Conversation
 from chat.parse_incoming_message import check_if_msg_is_cmd, check_if_msg_contains_username, send_temporary_info_msg
 from chat.utils import mark_all_messages_as_seen_async, create_conversation,validate_conversation_membership, get_other_user
@@ -81,7 +80,7 @@ def create_chat_message(sender, conversation_id, content):
                 conversation=conversation
             ).exclude(user=sender).update(unread_counter=F('unread_counter') + 1)
 
-            async_to_sync(broadcast_chat_message)(message)
+            # TODO: unccoment: async_to_sync(broadcast_chat_message)(message)
     except Exception as e:
         logging.error(f"TODO: eeror msg is shit Error updating unread messages count for user {other_user_member.user}: {e}")
     return message
@@ -89,7 +88,7 @@ def create_chat_message(sender, conversation_id, content):
 # Main fucntion of incoming chat message via WS
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def process_incoming_chat_message(consumer, user, text):
-    from Backend.src.services.websocket_handler_main import check_message_keys
+    from services.websocket_handler_main import check_message_keys
     from user.utils_relationship import is_blocked
     message = check_message_keys(text, mandatory_keys=['conversationId', 'content'])
     conversation_id = message.get('conversationId')
@@ -121,13 +120,13 @@ async def process_incoming_chat_message(consumer, user, text):
 # FE tells backend that user has seen a conversation
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 async def process_incoming_seen_message(self, user, text):
-    from Backend.src.services.websocket_handler_main import check_message_keys
+    from services.websocket_handler_main import check_message_keys
     message = check_message_keys(text, mandatory_keys=['conversationId'])
     conversation_id = message.get('conversationId')
     await validate_conversation_membership_async(user, conversation_id)
     await mark_all_messages_as_seen_async(user.id, conversation_id)
-    await send_conversation_unread_counter(user.id, conversation_id)
-    await send_total_unread_counter(user.id)
+    # TODO: uncomment: await send_conversation_unread_counter(user.id, conversation_id)
+    # TODO: uncomment: await send_total_unread_counter(user.id)
 
 # This will be used to create a message in db.
 # Shoulf be used by:
