@@ -43,7 +43,6 @@ function populateProgress(res, identity) {
 }
 
 function populateInfoAndStats(res) {
-	console.log("trans before:", $store.state);
     populateUserInfo(res);
     populateStats(res);
     populateProgress(res.stats.score.skill, "score-skill-");
