@@ -24,7 +24,7 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationsSerializer, ConversationMemberSerializer, MessageSerializer
 from chat.utils import create_conversation, mark_all_messages_as_seen_sync, validate_conversation_membership, get_other_user
 from services.send_ws_msg import TempConversationMessage
-from chat.get_conversation import get_conversation_id
+from chat.conversation_utils import get_conversation_id
 
 
 class LoadConversationsView(BaseAuthenticatedView):

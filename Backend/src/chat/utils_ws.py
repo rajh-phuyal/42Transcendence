@@ -14,7 +14,6 @@ from user.constants import USER_ID_OVERLORDS
 from user.models import User
 from user.exceptions import BlockingException
 # Chat
-from chat.get_conversation import get_conversation_id
 from chat.models import Message, ConversationMember, Conversation
 from chat.utils import mark_all_messages_as_seen_async, create_conversation,validate_conversation_membership, get_other_user
 
@@ -72,21 +71,3 @@ async def process_incoming_seen_message(self, user, text):
     # TODO: uncomment: await send_conversation_unread_counter(user.id, conversation_id)
     # TODO: uncomment: await send_total_unread_counter(user.id)
 
-# This will be used to create a message in db.
-# Shoulf be used by:
-#   - creating game invites
-#   - creating tournament invites
-#   - changeing of friend requests
-#   - profile page -> send message to user
-#
-# NOTE: If the conversation does not exist it will be created
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def create_overloards_pm(userA, userB, content, sendIt=True):
-    logging.info(f"Creating a overloards message in conversation of {userA.username} and {userB.username}: '{content}'")
-    conversation_id = get_conversation_id(userA, userB)
-    if conversation_id:
-        conversation = Conversation.objects.get(id=conversation_id)
-    else:
-        conversation = create_conversation(userA, userB, content).id
-    overloards = User.objects.get(id=USER_ID_OVERLORDS)
-    create_chat_message(overloards, conversation.id, content)

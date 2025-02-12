@@ -4,6 +4,9 @@
 from user.models import User
 # Chat
 from chat.models import Conversation, ConversationMember, Message
+from django.utils.translation import gettext as _
+from services.channel_groups import update_client_in_group
+from services.constants import PRE_CONVERSATION
 
 # TODO: NEW AND REVIESD
 def get_conversation_id(user1, user2):
@@ -35,7 +38,7 @@ def get_conversation_id(user1, user2):
 # this function will always return a valid conversation between two users
 # it not exists, it will create a new one and add the "start of conversation" message
 # TODO: NEW AND REVIESD
-def get_conversation(user1, user2):
+def get_or_create_conversation(user1, user2):
     """ Accepts user  instances or IDs """
     if isinstance(user1, int):
         user1 = User.objects.get(id=user1)
@@ -49,9 +52,13 @@ def get_conversation(user1, user2):
 
 # Should only be called from function 'get_conversation'
 def create_conversation(user1, user2):
-    # TODO: thisfunction is not done!
+    from chat.message_utils import create_and_send_overloards_pm
+    # Create conversation and Members
     conversation = Conversation.objects.create(is_group_conversation=False)
     ConversationMember.objects.create(conversation=conversation, user=user1)
     ConversationMember.objects.create(conversation=conversation, user=user2)
-    Message.objects.create(user=user1, conversation=conversation, content=_('Start of conversation'))
+    # Add the members to the channel
+    update_client_in_group(user1.id, conversation.id, PRE_CONVERSATION, add=True)
+    # Create the start of conversation message
+    create_and_send_overloards_pm(user1, user2, f"**S,{user1.id},{user2.id}**")
     return conversation

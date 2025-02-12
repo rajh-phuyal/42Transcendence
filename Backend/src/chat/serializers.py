@@ -31,11 +31,14 @@ def generate_template_msg(message):
         "B": _("User @{requester} has blocked @{requestee}."),
         "U": _("User @{requester} has unblocked @{requestee}."),
         "S": _("User @{requester} has started a conversation with @{requestee}."),
+        "TI": _("User @{requester} has invited @{requestee} to the tournament: {tournament}."),
     }
 
     if cmd_type in message_templates:
         if cmd_type in ["G", "GL"]:
             return message_templates[cmd_type].format(gameid=params[0])
+        elif cmd_type == "TI":
+            return message_templates[cmd_type].format(requester=params[0], requestee=params[1], tournament=params[2])
         else:
             return message_templates[cmd_type].format(requester=params[0], requestee=params[1])
 

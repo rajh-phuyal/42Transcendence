@@ -10,6 +10,10 @@ from chat.models import Conversation, ConversationMember, Message
 from chat.utils import validate_conversation_membership, get_other_user
 from chat.serializers import MessageSerializer
 from services.constants import PRE_CONVERSATION
+from chat.conversation_utils import get_or_create_conversation
+from services.send_ws_msg import send_ws_badge, send_ws_badge_all, send_ws_chat
+from user.constants import USER_ID_OVERLORDS
+from asgiref.sync import async_to_sync
 
 def create_msg_db(sender, conversation, content):
     try:
@@ -28,6 +32,15 @@ def create_msg_db(sender, conversation, content):
     except Exception as e:
         logging.error(f"Error creating message on db: {e}")
     return message
+
+def create_and_send_overloards_pm(userA, userB, content):
+    conversation = get_or_create_conversation(userA, userB)
+    message = create_msg_db(User.objects.get(id=USER_ID_OVERLORDS), conversation, content)
+    async_to_sync(send_ws_badge)(userA.id, conversation.id)
+    async_to_sync(send_ws_badge)(userB.id, conversation.id)
+    async_to_sync(send_ws_badge_all)(userA.id)
+    async_to_sync(send_ws_badge_all)(userB.id)
+    async_to_sync(send_ws_chat)(message)
 
 
 

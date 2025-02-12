@@ -11,7 +11,7 @@ from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
 from django.db import models
-from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm, send_tournament_invites_via_ws
+from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm
 from rest_framework import status
 import re
 
@@ -110,7 +110,6 @@ class CreateTournamentView(BaseAuthenticatedView):
         )
 
         if not tournament.public_tournament:
-            send_tournament_invites_via_ws(tournament.id)
             send_tournament_invites_via_pm(tournament.id)
 
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})

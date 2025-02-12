@@ -46,10 +46,8 @@ def join_tournament_channel(user, tournament_id, activate=True):
         # Remove the user from the tournament channel
         async_to_sync(channel_layer.group_discard)(tournament_id_name, channel_name_user)
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def send_tournament_invites_via_pm(tournament_id):
-    from chat.utils import create_conversation
-    from chat.get_conversation import get_conversation_id
+    from chat.message_utils import create_and_send_overloards_pm
 
     # Get all users that are invited to the tournament
     tournament_admin = TournamentMember.objects.get(tournament_id=tournament_id, is_admin=True)
@@ -58,45 +56,10 @@ def send_tournament_invites_via_pm(tournament_id):
 
     for member in tournament_members:
         # TODO: use the new function: create_overloards_pm()
-        # Check if there's a private conversation between the user and the admin
-        conversation = get_conversation_id(tournament_admin, member)
-        invite_message = _("The overloads spectace that the holly @{admin_username}@{admin_id}@ has invited @{guest_username}@{guest_id}@ to the fantastic tournament #T#{tournament_name}#{tournament_id}#"
-            ).format(
-                admin_username=tournament_admin.user.username,
-                admin_id=tournament_admin.user.id,
-                guest_username=member.user.username,
-                guest_id=member.user.id,
-                tournament_name=tournament.name,
-                tournament_id=tournament.id
-            )
-
-        # If not, create one
-        if not conversation:
-            conversation = create_conversation(tournament_admin.user, member.user, invite_message)
-            continue
-
-        # Create overloards message in the DB
-        overlords = User.objects.get(id=USER_ID_OVERLORDS)
-        newMessage = Message.objects.create(user=overlords, conversation=conversation, content=invite_message)
-        newMessage.save()
-
-        # Send a message to an existing conversation
-        # TODO: unccoment: broadcast_chat_message(newMessage)
-
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-def send_tournament_invites_via_ws(tournament_id):
-    # Get all users that are invited to the tournament
-    tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
-
-    # Also send an info message that will show as a toast message
-    message={
-        "messageType": "info",
-        "type": "info",
-        "message": _("You have been invited to a tournament check it out in the join tournament modal"),
-    }
-    for member in tournament_members:
-        ...
-        # TODO: unccoment later: send_message_to_user_sync(member.user_id, **message)
+        create_and_send_overloards_pm(
+            tournament_admin.user,
+            member.user,
+            f"**TI,{tournament_admin.id},{member.id},#T#{tournament.name}#{tournament.id}#**")
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
 def delete_tournament_channel(tournament_id):
