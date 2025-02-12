@@ -8,6 +8,7 @@ from django.core.cache import cache
 from services.constants import PRE_USER_CHANNEL
 from services.websocket_handler_main import WebSocketMessageHandlersMain
 from services.channel_groups import update_client_in_all_conversation_groups, update_client_in_all_tournament_groups
+from services.send_ws_msg import send_ws_badge_all
 # Channels
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
@@ -31,7 +32,7 @@ class MainConsumer(CustomWebSocketLogic):
         # Accept the connection
         await self.accept()
         # Send the inizial badge nummer
-        # TODO: activate this again: await send_total_unread_counter(user.id)
+        await send_ws_badge_all(user.id)
 
     # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
     #@barely_handle_ws_exceptions TODO: uncomment

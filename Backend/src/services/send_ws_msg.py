@@ -43,7 +43,7 @@ async def send_ws_chat_temporary(user_id, conversation_id, content):
         return
     message = TempConversationMessage(overlords_instance=overloards, conversation=conversation, created_at=timezone.now().isoformat(), content=content) # TODO: Issue #193
     logging.info(f"created temp message: {message}")
-    serialized_message = MessageSerializer(instance=message).data
+    serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message).data)()
     logging.info(f"serialized temp message: {serialized_message}")
     await send_ws_msg_to_user(user_id, **serialized_message)
     logging.info(f"sent temp message: {serialized_message}")
@@ -84,7 +84,9 @@ def send_ws_badge_all(user_id):
     async_to_sync(send_ws_msg_to_user)(user_id, **msg_data)
 
 async def send_ws_chat(message_object):
-    serialized_message = MessageSerializer(instance=message_object).data
+    logging.info(f"start to serialize message: {message_object}")
+    serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message_object).data)()
+    logging.info(f"serialized message: {serialized_message}")
     # Send to conversation channel
     group_name = f"{PRE_CONVERSATION}{message_object.conversation.id}"
     await channel_layer.group_send(group_name, serialized_message)
