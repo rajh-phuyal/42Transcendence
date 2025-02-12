@@ -48,10 +48,13 @@ class MessageSerializer(serializers.ModelSerializer):
     createdAt = serializers.DateTimeField(source='created_at', required=False)
     seenAt = serializers.DateTimeField(source='seen_at', allow_null=True, required=False)
     content = serializers.CharField()
+    conversationId = serializers.IntegerField(source='conversation.id', required=False)
+    type = serializers.CharField(default="chat_message")
+    messageType = serializers.CharField(default="chat")
 
     class Meta:
         model = Message
-        fields = ['id', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt']
+        fields = ['id', 'conversationId', 'userId', 'username', 'avatar', 'content', 'createdAt', 'seenAt', 'type', 'messageType']
 
     def replace_mentions(self, content):
         """

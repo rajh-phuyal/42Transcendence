@@ -22,7 +22,8 @@ from user.utils_relationship import is_blocking as user_is_blocking, is_blocked 
 from chat.constants import NO_OF_MSG_TO_LOAD
 from chat.models import Conversation, ConversationMember, Message
 from chat.serializers import ConversationsSerializer, ConversationMemberSerializer, MessageSerializer
-from chat.utils import create_conversation, mark_all_messages_as_seen_sync, LastSeenMessage, validate_conversation_membership, get_other_user
+from chat.utils import create_conversation, mark_all_messages_as_seen_sync, validate_conversation_membership, get_other_user
+from services.send_ws_msg import TempConversationMessage
 from chat.get_conversation import get_conversation_id
 
 
@@ -82,7 +83,11 @@ class LoadConversationView(BaseAuthenticatedView):
             message = messages[i]
             # If needed add separator message
             if unseen_messages.exists() and last_seen_msg and message.id == last_seen_msg.id:
-                    messages.insert(i, LastSeenMessage(last_seen_msg.created_at, the_overloards))
+                    messages.insert(i, TempConversationMessage(overlords_instance=the_overloards,
+                                                               conversation=conversation,
+                                                               created_at=last_seen_msg.created_at,
+                                                               content= _("We know that you haven't seen the messages below..."))
+                                                               )
                     i += 1
                     length += 1
 

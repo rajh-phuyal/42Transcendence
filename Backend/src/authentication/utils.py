@@ -16,5 +16,5 @@ def validate_username(value):
     # Check if user already exists
     if User.objects.filter(username=value).exists():
         raise BarelyAnException((_("Username '{username}' already exists").format(username=value)))
-    
+
     return value

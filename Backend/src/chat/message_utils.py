@@ -9,8 +9,38 @@ import logging
 from chat.models import Conversation, ConversationMember, Message
 from chat.utils import validate_conversation_membership, get_other_user
 from chat.serializers import MessageSerializer
-from services.websocket_utils import send_ws_msg_unread_conversation, send_ws_msg_unread_total
 from services.constants import PRE_CONVERSATION
+
+def create_msg_db(sender, conversation, content):
+    try:
+        with transaction.atomic():
+            # Create message
+            message = Message.objects.create(
+                user=sender,
+                conversation=conversation,
+                content=content,
+            )
+            logging.info(f"Message created: {message}")
+            # Update unread message count for users (except the sender)
+            ConversationMember.objects.filter(
+                conversation=conversation
+            ).exclude(user=sender).update(unread_counter=F('unread_counter') + 1)
+    except Exception as e:
+        logging.error(f"Error creating message on db: {e}")
+    return message
+
+
+
+
+
+
+
+
+
+
+# TODO: OLD CODE BLOW
+
+
 
 
 # This is the main function for processing a message
@@ -25,8 +55,11 @@ from services.constants import PRE_CONVERSATION
 # - Create the message insance and save it to the database
 # - Send the update badge count to all users in the conversation (except the sender)
 # - Serialize the message and send it to the frontend
-def outgoing_chat_msg_main(sender, conversation_id, parsedContent):
-    """ Accepts sender instances or IDs """
+
+
+# TODO this is already old again
+""" def outgoing_chat_msg_main(sender, conversation_id, parsedContent):
+
     if isinstance(sender, int):
         sender = User.objects.get(id=sender)
 
@@ -63,6 +96,4 @@ def outgoing_chat_msg_main(sender, conversation_id, parsedContent):
         logging.error(f"Failed to serialize message: {serializer.errors}")
         return
 
-    group_name = f"{PRE_CONVERSATION}{message.conversation.id}"
-    logging.info(f"Broadcasting to group {group_name} from user {message.user}: {message.content}")
-    await channel_layer.group_send(group_name, message)
+ """

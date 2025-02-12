@@ -19,13 +19,7 @@ from chat.models import Conversation, Message, ConversationMember
 from core.exceptions import BarelyAnException
 channel_layer = get_channel_layer()
 
-class LastSeenMessage:
-    def __init__(self, created_at, sender):
-        self.id = None
-        self.user = sender
-        self.created_at = created_at
-        self.seen_at = None
-        self.content = _("We know that you haven't seen the messages below...")
+
 
 # TODO: NEW SHOULD BE USED EVERYWHERE
 def validate_conversation_membership(user, conversation):

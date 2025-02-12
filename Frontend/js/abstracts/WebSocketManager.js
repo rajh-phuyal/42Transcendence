@@ -174,33 +174,6 @@ class WebSocketManager {
         $id("chat-nav-badge").textContent = value || "";
     }
 
-//    createConversationCard(message) {
-//        let conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
-//        let container = conversation.querySelector(".chat-view-conversation-card");
-//        container.id = "chat-view-conversation-card-" +  message.conversationId;
-//        container.setAttribute("conversation_id", message.conversationId);
-//        container.setAttribute("last-message-time", message.lastUpdate);
-//
-//        // Avatar
-//        conversation.querySelector(".chat-view-conversation-card-avatar").src = window.origin + '/media/avatars/' + message.conversationAvatar;
-//
-//        // User
-//        conversation.querySelector(".chat-view-conversation-card-username").textContent = message.conversationName;
-//
-//        // Seen container
-//        let unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
-//        if (message.unreadCounter == 0)
-//            unseenContainer.style.display = "none";
-//        else {
-//            unseenContainer.style = "flex";
-//            unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.unreadCounter;
-//        }
-//        let conversationsContainer = $id('chat-view-conversations-container');
-//        conversationsContainer.prepend(conversation);
-//        // TODO: issue #121 This doens't work sinc the router is not getting the chat it same bug than for profile
-//        $on(container, "click", () => router("chat", {id: message.conversationId}))
-//    }
-
     updateTournamentMemberCard(message) {
         console.log("TODO: Implement updateTournamentMemberCard", message);
     }
