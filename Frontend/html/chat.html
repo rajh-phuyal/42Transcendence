@@ -273,25 +273,29 @@
 
   .chat-view-messages-message-overlords-box{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     height: auto;
     width: 100%;
-    min-height: initial;
-    border:  3px solid  yellow;
+    max-width: 100%;
+    border:  3px solid yellow;
     background-color: black;
     padding: 1% 2% !important;
     box-sizing: border-box;
-    word-wrap: break-word;
-    overflow: visible;
+    overflow: hidden;
     color: yellow;
+    gap: 5px;
+    white-space: nowrap;
   }
 
   .mention-user {
       color: rgb(159, 144, 144) !important;
       cursor: pointer !important;
       text-decoration: underline !important;
-      display: inline;
+      display: inline-flex;
+      white-space: nowrap;
   }
   .mention-user:hover {
       text-decoration: none !important;
@@ -301,6 +305,7 @@
       cursor: pointer !important;
       text-decoration: underline !important;
       display: inline;
+      white-space: nowrap;
   }
   .mention-game:hover {
       text-decoration: none !important;
@@ -310,6 +315,7 @@
       cursor: pointer !important;
       text-decoration: underline !important;
       display: inline;
+      white-space: nowrap;
   }
   .mention-tournament:hover {
       text-decoration: none !important;
