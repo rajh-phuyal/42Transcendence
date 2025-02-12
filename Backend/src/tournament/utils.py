@@ -10,7 +10,7 @@ from user.constants import USER_ID_AI
 from user.utils_relationship import are_friends, is_blocking, is_blocked
 import logging
 from rest_framework import status
-from tournament.utils_ws import send_tournament_ws_msg, delete_tournament_channel
+from services.send_ws_msg import send_ws_tournament_msg
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from .serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
 from user.utils import get_user_by_id
@@ -139,7 +139,7 @@ def delete_tournament(user, tournament_id):
         tournament_members.delete()
         tournament.delete()
     # inform users and delete the channel
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament_id,
         "tournamentState",
         "tournament_state",
@@ -170,7 +170,7 @@ def join_tournament(user, tournament_id):
             tournament_member.save()
             data = TournamentMemberSerializer(tournament_member).data
             # Send message via websocket
-            send_tournament_ws_msg(
+            send_ws_tournament_msg(
                 tournament_id,
                 "tournamentSubscription",
                 "tournament_subscription",
@@ -195,7 +195,7 @@ def join_tournament(user, tournament_id):
         )
         tournament_member.save()
     # Send message via websocket
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament_id,
         "tournamentSubscription",
         "tournament_subscription",
@@ -232,7 +232,7 @@ def leave_tournament(user, tournament_id):
     else:
         message=_("User {username} declined the tournament invitation").format(username=user.username)
         data = TournamentMemberSerializer(tournament_member).data
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament_id,
         "tournamentSubscription",
         "tournament_subscription",
@@ -275,7 +275,7 @@ def start_tournament(user, tournament_id):
         tournament_members.filter(accepted=False).delete()
         tournament_members_after_start = TournamentMember.objects.filter(tournament_id=tournament_id)
     # Send websocket update message to all members to start the game
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament_id,
         "tournamentState",
         "tournament_state",
@@ -296,7 +296,7 @@ def finish_tournament(tournament):
         tournament.finish_time = timezone.now()
         tournament.save()
     # - send the websocket message
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament.id,
         "tournamentState",
         "tournament_state",

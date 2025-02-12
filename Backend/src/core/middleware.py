@@ -7,7 +7,6 @@ from core.cookies import CookieJWTAuthentication
 from django.utils.translation import gettext as _gt
 from core.exceptions import BarelyAnException
 
-
 class FailedWebSocketAuthentication(BarelyAnException):
     status_code = 403
     default_detail = _gt("Failed to authenticate user via WebSocket")
@@ -15,7 +14,6 @@ class FailedWebSocketAuthentication(BarelyAnException):
         super().__init__(detail)
         self.detail = detail
         self.status_code = status_code
-
 
 class WebSocketAuthMiddleware(BaseMiddleware):
     """

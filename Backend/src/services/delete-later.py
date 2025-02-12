@@ -20,3 +20,5 @@ async def send_message_to_user_sync(user_id, **message):
     await send_message_to_user(user_id, **message)
 
  """
+
+# TODO: REMOVE WHEN FINISHED #284

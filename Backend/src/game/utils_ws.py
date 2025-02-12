@@ -20,11 +20,12 @@ channel_layer = get_channel_layer()
 @database_sync_to_async
 def update_game_state(game_id, state):
     # Update cache
-    game_state_data = cache.get(f'game_{game_id}_state', {})
+    game_state_data = cache.get(f'game_{game_id}_state', {}) # TODO: REMOVE WHEN FINISHED #284
     if not game_state_data:
         logging.error(f"! can't update game state to{state} because game {game_id} is not in cache!")
     else:
         game_state_data['gameData']['state'] = state
+        # TODO: REMOVE WHEN FINISHED #284
         cache.set(f'game_{game_id}_state', game_state_data, timeout=3000)
 
     # Update db
@@ -97,6 +98,7 @@ def update_player_powerup(game_id, player_side, powerup):
             logging.error(f"Powerup {powerup} not found")
         game_member.save()
 
+# TODO: REMOVE WHEN FINISHED #284
 async def send_update_players_ready_msg(game_id, left_ready, right_ready, start_time = None):
     await channel_layer.group_send(
         f"game_{game_id}",
@@ -109,6 +111,7 @@ async def send_update_players_ready_msg(game_id, left_ready, right_ready, start_
         }
     )
 
+# TODO: REMOVE WHEN FINISHED #284
 async def send_update_game_data_msg(game_id):
     game_state_data = cache.get(f'game_{game_id}_state', {})
     if not game_state_data:

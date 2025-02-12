@@ -27,6 +27,7 @@ from services.send_ws_msg import TempConversationMessage
 from chat.conversation_utils import get_conversation_id
 
 
+# TODO: REMOVE WHEN FINISHED #284
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):
@@ -41,7 +42,7 @@ class LoadConversationsView(BaseAuthenticatedView):
             return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 class LoadConversationView(BaseAuthenticatedView):
     #@barely_handle_exceptions TODO: remove comment
     def put(self, request, conversation_id=None):
@@ -162,7 +163,7 @@ class LoadConversationView(BaseAuthenticatedView):
             "data": serialized_messages.data,
         }
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 class CreateConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):

@@ -5,7 +5,7 @@ from tournament.models import Tournament, TournamentMember
 from game.models import Game, GameMember
 from core.exceptions import BarelyAnException
 from tournament.utils import finish_tournament
-from tournament.utils_ws import send_tournament_ws_msg
+from services.send_ws_msg import send_ws_tournament_msg
 from tournament.serializer import TournamentGameSerializer
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from django.utils import timezone
@@ -58,7 +58,7 @@ def create_initial_games(tournament, tournament_members):
     data = TournamentGameSerializer(games_created, many=True).data
     for item in data:
         item['gameType'] = 'normal' # since its not a semifinal or final or third place game
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament.id,
         "gameCreate",
         "game_create",
@@ -140,7 +140,7 @@ def start_semi_finals(tournament, semi_finals):
     data = TournamentGameSerializer(semi_finals, many=True).data
     for item in data:
         item['gameType'] = 'semi-final'
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament.id,
         "gameCreate",
         "game_create",
@@ -218,7 +218,7 @@ def start_finals(tournament, all_finals):
             item['gameType'] = 'third-place'
         else:
             item['gameType'] = 'final'
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament.id,
         "gameCreate",
         "game_create",
@@ -256,7 +256,7 @@ def check_final_games_with_3_members(tournament, final_game):
     data = TournamentGameSerializer([final_game], many=True).data
     for item in data:
         item['gameType'] = 'final'
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament.id,
         "gameCreate",
         "game_create",
@@ -479,7 +479,7 @@ def update_tournament_ranks(tournament_id):
     ]
 
     # Send the ranking to the tournament channel
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         tournament_id,
         "gameUpdateRank",
         "game_update_rank",

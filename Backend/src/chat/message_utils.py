@@ -15,6 +15,7 @@ from services.send_ws_msg import send_ws_badge, send_ws_badge_all, send_ws_chat
 from user.constants import USER_ID_OVERLORDS
 from asgiref.sync import async_to_sync
 
+# TODO: REMOVE WHEN FINISHED #284
 def create_msg_db(sender, conversation, content):
     try:
         with transaction.atomic():
@@ -33,6 +34,7 @@ def create_msg_db(sender, conversation, content):
         logging.error(f"Error creating message on db: {e}")
     return message
 
+# TODO: REMOVE WHEN FINISHED #284
 def create_and_send_overloards_pm(userA, userB, content):
     conversation = get_or_create_conversation(userA, userB)
     message = create_msg_db(User.objects.get(id=USER_ID_OVERLORDS), conversation, content)

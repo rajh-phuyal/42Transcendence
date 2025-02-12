@@ -21,7 +21,7 @@ channel_layer = get_channel_layer()
 
 
 
-# TODO: NEW SHOULD BE USED EVERYWHERE
+# TODO: NEW SHOULD BE USED EVERYWHERE # TODO: REMOVE WHEN FINISHED #284
 def validate_conversation_membership(user, conversation):
     """ Accepts user and conversation instances or IDs """
     if isinstance(user, int):
@@ -35,7 +35,7 @@ def validate_conversation_membership(user, conversation):
     except ConversationMember.DoesNotExist:
         raise BarelyAnException(_('You are not a member of this conversation'), status_code=status.HTTP_403_FORBIDDEN)
 
-# TODO: NEW SHOULD BE USED EVERYWHERE
+# TODO: NEW SHOULD BE USED EVERYWHERE # TODO: REMOVE WHEN FINISHED #284
 def get_other_user(user, conversation):
     """ Accepts user and conversation instances or IDs
         Returns the other user instance in the conversation """
@@ -59,7 +59,7 @@ def get_other_user(user, conversation):
 # TODO old stuff below!!!
 
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 def mark_all_messages_as_seen_sync(user, conversation):
     """ Accepts user and conversation instances or IDs """
     if not isinstance(user, int):
@@ -86,14 +86,14 @@ def mark_all_messages_as_seen_sync(user, conversation):
     except Exception as e:
         logging.error(f"Error marking messages as seen: {e}")
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 @database_sync_to_async
 def mark_all_messages_as_seen_async(user_id, conversation_id):
     mark_all_messages_as_seen_sync(user_id, conversation_id)
 
 
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 
 
 # Create a conversation between two users
@@ -102,7 +102,7 @@ def mark_all_messages_as_seen_async(user_id, conversation_id):
     # create a message
     # add the conversation to the user's WebSocket groups
     # send a message to the user's WebSocket group
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 def create_conversation(user1, user2, initialMessage, creator = None):
 
     # Start a transaction to make sure all database operations happen together
@@ -177,4 +177,4 @@ def create_conversation(user1, user2, initialMessage, creator = None):
 
     return new_conversation
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284

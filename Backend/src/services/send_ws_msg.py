@@ -7,13 +7,12 @@ from asgiref.sync import sync_to_async
 from django.utils import timezone
 from chat.serializers import MessageSerializer
 from django.core.cache import cache
-from services.constants import PRE_USER_CHANNEL
+from services.constants import PRE_USER_CHANNEL, PRE_TOURNAMENT
 import logging, json
 from chat.models import ConversationMember, Message, Conversation
 from asgiref.sync import async_to_sync
 from user.models import User
-
-
+# TODO: REMOVE WHEN FINISHED #284
 class TempConversationMessage:
     def __init__(self, overlords_instance, conversation, created_at, content):
         self.id = None
@@ -56,6 +55,20 @@ async def send_ws_info_msg(user_id, content):
     }
     json_message = json.dumps(message_dict)
     await send_ws_msg_to_user(user_id, **json_message)
+
+# before: send_tournament_ws_msg
+def send_ws_tournament_msg(tournament_id, type_camel, type_snake, message, **json_details):
+    tournament_id_name = f"{PRE_TOURNAMENT}{tournament_id}"
+    async_to_sync(channel_layer.group_send)(
+    tournament_id_name,
+    {
+        "messageType": type_camel,
+        "type": type_snake,
+        "tournamentId": tournament_id,
+        "message": message,
+        **json_details
+    })
+    logging.info(f"Message sent to tournament {tournament_id} channel ({tournament_id_name}): {message}")
 
 @sync_to_async
 def send_ws_badge(user_id, conversation_id):

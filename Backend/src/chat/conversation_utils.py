@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 from services.channel_groups import update_client_in_group
 from services.constants import PRE_CONVERSATION
 
-# TODO: NEW AND REVIESD
+# TODO: NEW AND REVIESD # TODO: REMOVE WHEN FINISHED #284
 def get_conversation_id(user1, user2):
     """ Accepts user  instances or IDs """
     if isinstance(user1, int):
@@ -37,7 +37,7 @@ def get_conversation_id(user1, user2):
 
 # this function will always return a valid conversation between two users
 # it not exists, it will create a new one and add the "start of conversation" message
-# TODO: NEW AND REVIESD
+# TODO: NEW AND REVIESD # TODO: REMOVE WHEN FINISHED #284
 def get_or_create_conversation(user1, user2):
     """ Accepts user  instances or IDs """
     if isinstance(user1, int):
@@ -51,6 +51,7 @@ def get_or_create_conversation(user1, user2):
         return create_conversation(user1, user2)
 
 # Should only be called from function 'get_conversation'
+# TODO: REMOVE WHEN FINISHED #284
 def create_conversation(user1, user2):
     from chat.message_utils import create_and_send_overloards_pm
     # Create conversation and Members

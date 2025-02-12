@@ -111,6 +111,7 @@ class MessageSerializer(serializers.ModelSerializer):
         data["content"] = content
         return data
 
+# TODO: REMOVE WHEN FINISHED #284
 class ConversationsSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     isEditable = serializers.BooleanField(source='is_editable')
@@ -146,6 +147,7 @@ class ConversationsSerializer(serializers.ModelSerializer):
         return last_message.created_at if last_message else None
 
 # TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
+# TODO: REMOVE WHEN FINISHED #284
 class ConversationMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConversationMember

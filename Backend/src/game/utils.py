@@ -26,7 +26,7 @@ from game.models import Game, GameMember
 # TOURNAMENT STUFF
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
-from tournament.utils_ws import send_tournament_ws_msg
+from services.send_ws_msg import send_ws_tournament_msg
 from tournament.ranking import update_tournament_member_stats
 from user.utils import get_user_by_id
 
@@ -161,7 +161,7 @@ def finish_game(game, message=None):
     # - inform everyone that the game finished
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
-    send_tournament_ws_msg(
+    send_ws_tournament_msg(
         game.tournament_id,
         "gameUpdateState",
         "game_update_state",
@@ -193,7 +193,7 @@ def update_deadline_of_game(game_id):
             game.save()
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Inform all users of the tournament
-        send_tournament_ws_msg(
+        send_ws_tournament_msg(
             game.tournament.id,
             "gameSetDeadline",
             "game_set_deadline",

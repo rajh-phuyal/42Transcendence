@@ -12,6 +12,7 @@ from user.models import User
 
 # This will be called on a incoming chat message and has to do:
 # - check if message starts with '/'
+# TODO: REMOVE WHEN FINISHED #284
 async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
     from user.utils_relationship import block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
     if content.startswith("/"):
@@ -57,6 +58,7 @@ async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
 #          -> so if a user changes the username the @<username> will update to new username - we are so smart ;)
 #        if username does not exist: ignore
 # - Patterns for game and tournament will be done by fe
+# TODO: REMOVE WHEN FINISHED #284
 async def check_if_msg_contains_username(message):
     if "@" in message:
         logging.info("Message contains @ expecting username(s). Full message: %s", message)

@@ -17,13 +17,13 @@ from user.exceptions import BlockingException
 from chat.models import Message, ConversationMember, Conversation
 from chat.utils import mark_all_messages_as_seen_async, create_conversation,validate_conversation_membership, get_other_user
 
-# TODO: NEW SHOULD BE USED EVERYWHERE
+# TODO: NEW SHOULD BE USED EVERYWHERE # TODO: REMOVE WHEN FINISHED #284
 @database_sync_to_async
 def validate_conversation_membership_async(user, conversation):
     """ Accepts user and conversation instances or IDs """
     validate_conversation_membership(user, conversation)
 
-# TODO: NEW SHOULD BE USED EVERYWHERE
+# TODO: NEW SHOULD BE USED EVERYWHERE # TODO: REMOVE WHEN FINISHED #284
 @database_sync_to_async
 def get_other_user_async(user, conversation):
     """ Accepts user and conversation instances or IDs """

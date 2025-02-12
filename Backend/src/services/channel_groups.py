@@ -7,6 +7,7 @@ from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
 from .constants import PRE_USER_CHANNEL, PRE_CONVERSATION, PRE_TOURNAMENT
 channel_layer = get_channel_layer()
+# TODO: REMOVE WHEN FINISHED #284
 
 # GROUP PRE SHOULD BE PRE_CONVERSATION, PRE_TOURNAMENT or PRE_GAME (TODO: implement PRE_GAME use)
 # This is the only function which should use 'channel_layer.group_...'
@@ -36,3 +37,14 @@ def update_client_in_all_tournament_groups(user, add = True):
     logging.info(f"Adding/removing user ({user}) to all their tournament groups. Adding: {add}. Total: {len(tournament_memberships)}")
     for membership in tournament_memberships:
         async_to_sync(update_client_in_group)(user.id, membership.tournament.id, PRE_TOURNAMENT, add)
+
+def delete_tournament_group(tournament_id):
+    # Remove all users from the tournament channel
+    tournament_id_name = f"{PRE_TOURNAMENT}{tournament_id}"
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id)
+    for member in tournament_members:
+        update_client_in_group(member.user.id, tournament_id, PRE_TOURNAMENT, False)
+        channel_name_user =  cache.get(f'{PRE_USER_CHANNEL}{member.user.id}', None)
+    logging.info(f"Removed all users from tournament {tournament_id} channel ({tournament_id_name})")
+    # Remove the tournament channel itself is not needed since the channel
+    # will be removed automatically by the channel layer
