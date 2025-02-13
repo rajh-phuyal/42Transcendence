@@ -2,7 +2,6 @@
 import re
 # Django
 from rest_framework import serializers
-from django.core.cache import cache
 from django.utils.translation import gettext as _
 # User
 from user.constants import AVATAR_DEFAULT
@@ -11,40 +10,79 @@ from user.models import User
 from chat.models import Conversation, Message, ConversationMember
 from chat.utils import get_other_user
 
-# This is used to transform a db message.content into a translated string
-# Will be used by the MessageSerializer. e.g:
-# **B,12,42** -> User @12 has blocked @42
 def generate_template_msg(message):
+    """
+    This is used to transform a db message.content into a translated string
+    Will be only used by the MessageSerializer. e.g:
+    **B,12,42** -> User @12 has blocked @42
+    """
     message = message[2:-2]
     parts = message.split(',')
     cmd_type = parts[0]
     params = parts[1:]
 
     message_templates = {
-        "G": _("Game with ID {gameid} has been created."),
-        "GL": _("Local game with ID {gameid} has been created."),
-        "FS": _("User @{requester} has sent a friend request to @{requestee}."),
-        "FA": _("User @{requester} has accepted the friend request from @{requestee}."),
-        "FC": _("User @{requester} has canceled the friend request to @{requestee}."),
-        "FR": _("User @{requester} has rejected the friend request from @{requestee}."),
-        "FU": _("User @{requester} has removed @{requestee} from their friends list."),
-        "B": _("User @{requester} has blocked @{requestee}."),
-        "U": _("User @{requester} has unblocked @{requestee}."),
-        "S": _("User @{requester} has started a conversation with @{requestee}."),
-        "TI": _("User @{requester} has invited @{requestee} to the tournament: {tournament}."),
+        "G": {
+            "message": _("Game with ID {1} has been created."),
+            "count": 1
+        },
+        "GL": {
+            "message": _("Local game with ID {1} has been created."),
+            "count": 1
+        },
+        "FS": {
+            "message": _("User @{1} has sent a friend request to @{2}."),
+            "count": 2
+        },
+        "FA": {
+            "message": _("User @{1} has accepted the friend request from @{2}."),
+            "count": 2
+        },
+        "FC": {
+            "message": _("User @{1} has canceled the friend request to @{2}."),
+            "count": 2
+        },
+        "FR": {
+            "message": _("User @{1} has rejected the friend request from @{2}."),
+            "count": 2
+        },
+        "FU": {
+            "message": _("User @{1} has removed @{2} from their friends list."),
+            "count": 2
+        },
+        "B": {
+            "message": _("User @{1} has blocked @{2}."),
+            "count": 2
+        },
+        "U": {
+            "message": _("User @{1} has unblocked @{2}."),
+            "count": 2
+        },
+        "S": {
+            "message": _("User @{1} has started a conversation with @{2}."),
+            "count": 2
+        },
+        "TI": {
+            "message": _("User @{1} has invited @{2} to the tournament: {3}."),
+            "count": 3
+        },
     }
 
-    if cmd_type in message_templates:
-        if cmd_type in ["G", "GL"]:
-            return message_templates[cmd_type].format(gameid=params[0])
-        elif cmd_type == "TI":
-            return message_templates[cmd_type].format(requester=params[0], requestee=params[1], tournament=params[2])
-        else:
-            return message_templates[cmd_type].format(requester=params[0], requestee=params[1])
+    if cmd_type not in message_templates:
+        raise ValueError(f"Invalid template key: {cmd_type}")
 
-    return _("Unknown command.: {message}").format(message=message)
-
+    template = message_templates[cmd_type]
+    if len(params) != template["count"]:
+        raise ValueError(f"Expected {template['count']} parameters, but got {len(params)}")
 class MessageSerializer(serializers.ModelSerializer):
+    """
+    This is the most powerful serializer in this project. Each chat message
+    should be serialized with this class before sending it to the frontend.
+    The serializer will first create template messages
+        e.g.: **FS,12,42** -> User @12 has sent a friend request to @42:
+    and than replace mentions
+        e.g: User @12 has sent a friend request to @42 -> User @astein@12@ has sent a friend request to @fdaestr@42@
+    """
     userId = serializers.IntegerField(source='user.id', required=False)
     username = serializers.CharField(source='user.username', required=False)
     avatar = serializers.SerializerMethodField()
@@ -63,7 +101,7 @@ class MessageSerializer(serializers.ModelSerializer):
         """
         This will transform @10 to @astein@10@ so that the frontend can display a clickable username
         """
-        if '@' not in content:
+        if not content or '@' not in content:
             return content  # Skip processing if no mentions
 
         def replacer(match):
@@ -114,7 +152,6 @@ class MessageSerializer(serializers.ModelSerializer):
 # TODO: REMOVE WHEN FINISHED #284
 class ConversationsSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
-    isEditable = serializers.BooleanField(source='is_editable')
     conversationName = serializers.SerializerMethodField()
     conversationAvatar = serializers.SerializerMethodField()
     unreadCounter = serializers.SerializerMethodField()
@@ -123,15 +160,15 @@ class ConversationsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Conversation
-        fields = ['conversationId', 'isEditable', 'conversationName', 'conversationAvatar', 'unreadCounter', 'online', 'lastUpdate']
+        fields = ['conversationId', 'conversationName', 'conversationAvatar', 'unreadCounter', 'online', 'lastUpdate']
     def get_conversationName(self, obj):
-        return get_other_user(self.context['request'].user, obj).username
+        return get_other_user(self.context['user'], obj).username
 
     def get_conversationAvatar(self, obj):
-        return get_other_user(self.context['request'].user, obj).avatar_path
+        return get_other_user(self.context['user'], obj).avatar_path
 
     def get_unreadCounter(self, obj):
-        current_user = self.context['request'].user
+        current_user = self.context['user']
         try:
             conversation_member = obj.members.get(user=current_user)
             return conversation_member.unread_counter
@@ -139,16 +176,9 @@ class ConversationsSerializer(serializers.ModelSerializer):
             return 0
 
     def get_online(self, obj):
-        return get_other_user(self.context['request'].user, obj).get_online_status()
+        return get_other_user(self.context['user'], obj).get_online_status()
 
     def get_lastUpdate(self, obj):
         # Fetch the timestamp of the last message in the conversation
         last_message = obj.messages.order_by('-created_at').first()
         return last_message.created_at if last_message else None
-
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED!
-# TODO: REMOVE WHEN FINISHED #284
-class ConversationMemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ConversationMember
-        fields = ('__all__')

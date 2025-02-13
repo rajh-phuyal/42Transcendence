@@ -1,23 +1,24 @@
 # Basics
 import logging, re
-# Django stuff
-from django.utils import timezone
+# Django
 from django.utils.translation import gettext as _
 from asgiref.sync import sync_to_async
-# Core stuff
+# Core
 from core.exceptions import BarelyAnException
-# User stuff
-from user.constants import USER_ID_OVERLORDS, AVATAR_OVERLORDS, USERNAME_OVERLORDS
+# User
 from user.models import User
 
-# This will be called on a incoming chat message and has to do:
-# - check if message starts with '/'
-# TODO: REMOVE WHEN FINISHED #284
-async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
+async def check_if_msg_is_cmd(user, other_user, content):
+    """
+    A incoming ws chat message could be also a cmd. If so this function will
+    call the appropriate function to handle the cmd and return True.
+    Therefore the normal message will not be send to the conversation.
+    The cmd handle function e.g. 'send_request' will create a template message
+    e.g. **FS,12,42**store it in the db and send it to the conversation.
+    """
     from user.utils_relationship import block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
     if content.startswith("/"):
         content_upper = content.upper()
-        logging.info("Message starts with / expecting a cmd. Full message: %s", content)
         if content_upper == "/FS":
             await sync_to_async(send_request)(user, other_user)
         elif content_upper == "/FA":
@@ -50,16 +51,19 @@ async def check_if_msg_is_cmd(user, other_user, conversation_id, content):
         return True
     return False
 
-# - find all '@' in message
-#    - check if the user exists
-#        if exists: replace username with userid
-#          -> so we can get the id when sending it to the fe and format it as @<username>@<userid>@
-#          -> this ensures, that the username<->userid mapping is done only by delivery
-#          -> so if a user changes the username the @<username> will update to new username - we are so smart ;)
-#        if username does not exist: ignore
-# - Patterns for game and tournament will be done by fe
-# TODO: REMOVE WHEN FINISHED #284
 async def check_if_msg_contains_username(message):
+    """
+    A incoming ws chat message could contain a username mention like @astein
+    Since usernames can be changed we need to replace the username by the userid
+    @astein -> @42
+    The MessageSerializer will then format the message to @<username>@<userid>@
+    when delivering the Message back to the frontend always with the updated username
+    The frontend will then create a clickable @username hyperlink to /profile/<userid>
+
+    NOTE: Mentioned Games and Tournaments don't need to be replaced here because:
+    - Games don't have names                #G#<gameid>#
+    - Tournament names can't be changed     #T#<tournamentName>#<tournamentId>#
+    """
     if "@" in message:
         logging.info("Message contains @ expecting username(s). Full message: %s", message)
         parts = message.split("@")
@@ -70,9 +74,6 @@ async def check_if_msg_contains_username(message):
                 username = match.group()
                 try:
                     user = await sync_to_async(User.objects.get)(username=username)
-                    # So here we replace the username by the userid
-                    # So in Case the user changes the username the message will be updated
-                    # The MessageSerializer will then format the message to @<username>@<userid>@
                     message = message.replace(f"@{username}", f"@{user.id}")
                 except User.DoesNotExist:
                     logging.info("Username not found: %s", username)

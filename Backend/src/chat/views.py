@@ -1,13 +1,11 @@
-# Basics
-import logging, re
 # Django
 from rest_framework import status
-from django.db.models import Q
-from django.db.models import Sum
 from django.utils.translation import gettext as _
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
 # Services
+from services.send_ws_msg import TempConversationMessage, send_ws_badge, send_ws_badge_all, send_ws_chat
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
@@ -16,18 +14,15 @@ from core.exceptions import BarelyAnException
 # User
 from user.constants import USER_ID_OVERLORDS
 from user.models import User
-from user.utils import get_user_by_id
 from user.utils_relationship import is_blocking as user_is_blocking, is_blocked as user_is_blocked
 # Chat
 from chat.constants import NO_OF_MSG_TO_LOAD
 from chat.models import Conversation, ConversationMember, Message
-from chat.serializers import ConversationsSerializer, ConversationMemberSerializer, MessageSerializer
-from chat.utils import create_conversation, mark_all_messages_as_seen_sync, validate_conversation_membership, get_other_user
-from services.send_ws_msg import TempConversationMessage
-from chat.conversation_utils import get_conversation_id
+from chat.serializers import ConversationsSerializer, MessageSerializer
+from chat.utils import validate_conversation_membership, get_other_user
+from chat.message_utils import mark_all_messages_as_seen, create_msg_db
+from chat.conversation_utils import get_or_create_conversation
 
-
-# TODO: REMOVE WHEN FINISHED #284
 class LoadConversationsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request):
@@ -37,29 +32,31 @@ class LoadConversationsView(BaseAuthenticatedView):
         conversation_memberships = ConversationMember.objects.filter(user=user)
         conversations = [membership.conversation for membership in conversation_memberships]
         # Serialize the conversations
-        serializer = ConversationsSerializer(conversations, many=True, context={'request': request})
+        serializer = ConversationsSerializer(conversations, many=True, context={'user': user})
         if not serializer.data or len(serializer.data) == 0:
             return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 class LoadConversationView(BaseAuthenticatedView):
+    """
+    This function fetches the last X messages from a conversation togehter with
+    details about the conversation. It also marks all messages as seen and blackouts
+    messages if the user is blocking the other user. This function is not ideal
+    I guess using a new Serializer for the conversation would be better...
+    """
     #@barely_handle_exceptions TODO: remove comment
     def put(self, request, conversation_id=None):
         user = request.user
         msgid = int(request.GET.get('msgid', 0))
         if(msgid < 0):
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
-
         conversation =  Conversation.objects.get(id=conversation_id)
         validate_conversation_membership(user, conversation)
-
         # Determine blocking status
         the_overloards = User.objects.get(id=USER_ID_OVERLORDS)
         other_user = get_other_user(user, conversation)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
-
         # Fetch Messages
         queryset = Message.objects.filter(conversation=conversation)
         if msgid:
@@ -67,15 +64,12 @@ class LoadConversationView(BaseAuthenticatedView):
                 raise BarelyAnException(_('Message not found'), status_code=status.HTTP_404_NOT_FOUND)
             queryset = queryset.filter(id__lt=msgid)
         queryset = queryset.order_by('-created_at')
-
         last_seen_msg = queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
         # Exclude the user from unseen messages because they can't miss their own messages.
         unseen_messages = queryset.filter(seen_at__isnull=True).exclude(user=user)
         messages = queryset[:NO_OF_MSG_TO_LOAD]
-
         if not messages:
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
-
         # Transform messages to list
         messages = list(messages)
         i = 0
@@ -85,70 +79,25 @@ class LoadConversationView(BaseAuthenticatedView):
             # If needed add separator message
             if unseen_messages.exists() and last_seen_msg and message.id == last_seen_msg.id:
                     messages.insert(i, TempConversationMessage(overlords_instance=the_overloards,
-                                                               conversation=conversation,
-                                                               created_at=last_seen_msg.created_at,
-                                                               content= _("We know that you haven't seen the messages below..."))
-                                                               )
+                       conversation=conversation,
+                       created_at=last_seen_msg.created_at,
+                       content= _("We know that you haven't seen the messages below..."))
+                       )
                     i += 1
                     length += 1
-
             # Blackout messages if blocking
             if is_blocking and message.user == other_user:
                 message.content = _('This message is hidden because you are blocking the user')
             i += 1
-
         # Mark as seen
-        if not is_blocking:
-            mark_all_messages_as_seen_sync(user.id, conversation.id)
-
-        new_unread_counter = ConversationMember.objects.get(conversation=conversation, user=user).unread_counter
-        new_unread_counter_total = ConversationMember.objects.filter(user=user).aggregate(total_unread_counter=Sum('unread_counter'))['total_unread_counter']
-
+        mark_all_messages_as_seen(user, conversation)
         # Serialize messages
         serialized_messages = MessageSerializer(messages, many=True)
-
         # Get the conversation avatar and name
         conversation_avatar = other_user.avatar_path
         conversation_name = other_user.username
-
         # Prepare the response
-        response_data = self.prepare_response(conversation,
-                                              user,
-                                              serialized_messages,
-                                              other_user,
-                                              is_blocking,
-                                              is_blocked,
-                                              conversation_avatar,
-                                              conversation_name,
-                                              new_unread_counter,
-                                              new_unread_counter_total)
-
-        return success_response(_('Messages loaded successfully'), **response_data)
-
-    def get_messages_queryset(self, conversation, msgid):
-        queryset = Message.objects.filter(conversation=conversation)
-        if msgid:
-            if not queryset.filter(id=msgid).exists():
-                raise BarelyAnException(_('Message not found'), status_code=status.HTTP_404_NOT_FOUND)
-            queryset = queryset.filter(id__lt=msgid)
-        queryset = queryset.order_by('-created_at')
-        return queryset
-
-    def process_messages(self, user, messages_queryset):
-        last_seen_msg = messages_queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
-        # Exclude the user from unseen messages because they can't miss their own messages.
-        unseen_messages = messages_queryset.filter(seen_at__isnull=True).exclude(user=user)
-        messages = messages_queryset[:NO_OF_MSG_TO_LOAD]
-        return messages, last_seen_msg, unseen_messages
-
-
-
-
-    def prepare_response(self, conversation, user, serialized_messages, other_user, is_blocking, is_blocked, conversation_avatar, conversation_name, new_unread_counter, new_unread_counter_total):
-        members = conversation.members.all()
-        member_ids = members.values_list('id', flat=True)
-
-        return {
+        response_data = {
             "conversationId": conversation.id,
             "isBlocked": is_blocked,
             "isBlocking": is_blocking,
@@ -158,12 +107,10 @@ class LoadConversationView(BaseAuthenticatedView):
             "conversationAvatar": conversation_avatar,
             "online": other_user.get_online_status(),
             "userId": other_user.id,
-            "conversationUnreadCounter": new_unread_counter,
-            "totalUnreadCounter": new_unread_counter_total,
             "data": serialized_messages.data,
         }
+        return success_response(_('Messages loaded successfully'), **response_data)
 
-# TODO: refactor chat/ ws: THIS FUNCTION NEEDS TO BE REVIESED! # TODO: REMOVE WHEN FINISHED #284
 class CreateConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
@@ -175,19 +122,17 @@ class CreateConversationView(BaseAuthenticatedView):
         if not initial_message:
            return error_response(_("No 'initialMessage' provided"), status_code=status.HTTP_400_BAD_REQUEST)
 
-        # A PM conversation (Since we don't support group chats in MVP)
-        other_user = get_user_by_id(other_user_id)
-
-        # TODO: somewehre here create the message: **S,requester,requestee**
-        # Check if the user blocked client
-        if user_is_blocked(user.id, other_user.id):
+        if user_is_blocked(user.id, other_user_id):
             return error_response(_("You are blocked by the user"), status_code=status.HTTP_403_FORBIDDEN)
-        # Check if the conversation already exists
-        conversation_id = get_conversation_id(user, other_user)
-        if conversation_id:
-            return error_response(_('Conversation already exists'), **{'conversationId': conversation_id})
 
-        # Create the conversation
-        new_conversation = create_conversation(user, other_user, initial_message, user)
+        # Get / Create conversation
+        conversation = get_or_create_conversation(user, other_user_id)
+        # Create message
+        message_object = create_msg_db(user, conversation, initial_message)
+        # Send update badge count of other user
+        async_to_sync(send_ws_badge)(other_user_id, conversation.id)
+        async_to_sync(send_ws_badge_all)(other_user_id)
+        # Send the message to the channel
+        async_to_sync(send_ws_chat)(message_object)
 
-        return success_response(_('Conversation created successfully'), **{'conversationId': new_conversation.id})
+        return success_response(_('Conversation created (or found) and delivered initial message.'), **{'conversationId': conversation.id})

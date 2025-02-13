@@ -5,15 +5,16 @@ from chat.models import ConversationMember
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
-from .constants import PRE_USER_CHANNEL, PRE_CONVERSATION, PRE_TOURNAMENT
+from .constants import PRE_CHANNEL_USER, PRE_GROUP_CONVERSATION, PRE_GROUP_TOURNAMENT
 channel_layer = get_channel_layer()
-# TODO: REMOVE WHEN FINISHED #284
 
-# GROUP PRE SHOULD BE PRE_CONVERSATION, PRE_TOURNAMENT or PRE_GAME (TODO: implement PRE_GAME use)
-# This is the only function which should use 'channel_layer.group_...'
 async def update_client_in_group(user_id, object_id, group_pre, add = True):
+    """
+    This function should be the only one using group_add and group_discard
+    It will add/remove a user to/from a group
+    """
     group_name = f"{group_pre}{object_id}"
-    channel_name_user = await sync_to_async(cache.get)(f"{PRE_USER_CHANNEL}{user_id}")
+    channel_name_user = await sync_to_async(cache.get)(f"{PRE_CHANNEL_USER}{user_id}")
     if not channel_name_user:
         # User is not online
         return
@@ -28,7 +29,7 @@ def update_client_in_all_conversation_groups(user, add = True):
     conversation_memberships = list(ConversationMember.objects.filter(user=user))
     logging.info(f"Adding/removing user ({user}) to all their conversation groups. Adding: {add}. Total: {len(conversation_memberships)}")
     for membership in conversation_memberships:
-        async_to_sync(update_client_in_group)(user.id, membership.conversation.id, PRE_CONVERSATION, add)
+        async_to_sync(update_client_in_group)(user.id, membership.conversation.id, PRE_GROUP_CONVERSATION, add)
 
 @sync_to_async
 def update_client_in_all_tournament_groups(user, add = True):
@@ -36,15 +37,14 @@ def update_client_in_all_tournament_groups(user, add = True):
     tournament_memberships = list(TournamentMember.objects.filter(user=user, tournament__state__in=['setup', 'ongoing']))
     logging.info(f"Adding/removing user ({user}) to all their tournament groups. Adding: {add}. Total: {len(tournament_memberships)}")
     for membership in tournament_memberships:
-        async_to_sync(update_client_in_group)(user.id, membership.tournament.id, PRE_TOURNAMENT, add)
+        async_to_sync(update_client_in_group)(user.id, membership.tournament.id, PRE_GROUP_TOURNAMENT, add)
 
 def delete_tournament_group(tournament_id):
     # Remove all users from the tournament channel
-    tournament_id_name = f"{PRE_TOURNAMENT}{tournament_id}"
+    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament_id}"
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id)
     for member in tournament_members:
-        update_client_in_group(member.user.id, tournament_id, PRE_TOURNAMENT, False)
-        channel_name_user =  cache.get(f'{PRE_USER_CHANNEL}{member.user.id}', None)
+        update_client_in_group(member.user.id, tournament_id, PRE_GROUP_TOURNAMENT, False)
     logging.info(f"Removed all users from tournament {tournament_id} channel ({tournament_id_name})")
     # Remove the tournament channel itself is not needed since the channel
     # will be removed automatically by the channel layer

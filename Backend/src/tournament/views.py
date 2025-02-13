@@ -1,3 +1,6 @@
+from services.constants import PRE_GROUP_TOURNAMENT
+from asgiref.sync import async_to_sync
+from services.channel_groups import update_client_in_group
 from core.authentication import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
@@ -11,7 +14,7 @@ from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
 from django.db import models
-from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm
+from tournament.utils_ws import send_tournament_invites_via_pm
 from rest_framework import status
 import re
 
@@ -150,7 +153,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
 
         # Add client to websocket group if tournament is not finished
         if tournament.state != Tournament.TournamentState.FINISHED:
-            join_tournament_channel(user, tournament.id)
+            async_to_sync(update_client_in_group)(user.id, tournament.id, PRE_GROUP_TOURNAMENT, add=True)
 
         response_json=prepare_tournament_data_json(user, tournament)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)

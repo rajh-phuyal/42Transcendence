@@ -203,20 +203,24 @@ export function createMessage(element, prepend = true) {
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
-    let parsedContent = element.content.replace(
-        /@([^@]+)@([^@]+)@/g,
-        `<span class="mention-user" data-userid="$2">@$1</span>`
-    );
-    // Match #T#<tournamentName>#<tournamentId># pattern
-    parsedContent = parsedContent.replace(
-        /#T#([^#]+)#([^#]+)#/g,
-        '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
-    );
-    // Match #G#<gameId># pattern
-    parsedContent = parsedContent.replace(
-        /#G#([^#]+)#/g,
-        '<span class="mention-game" data-gameid="$1">#$1</span>'
-    );
+    let parsedContent = element.content;
+    if (element.content != null) {
+        parsedContent = element.content.replace(
+            /@([^@]+)@([^@]+)@/g,
+            `<span class="mention-user" data-userid="$2">@$1</span>`
+        );
+        // Match #T#<tournamentName>#<tournamentId># pattern
+        parsedContent = parsedContent.replace(
+            /#T#([^#]+)#([^#]+)#/g,
+            '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
+        );
+        // Match #G#<gameId># pattern
+        parsedContent = parsedContent.replace(
+            /#G#([^#]+)#/g,
+            '<span class="mention-game" data-gameid="$1">#$1</span>'
+        );
+    }
+
     // Set the content of the message
     if (element.userId == 1)
         template.querySelector(".chat-view-messages-message-overlords-box").innerHTML = parsedContent;

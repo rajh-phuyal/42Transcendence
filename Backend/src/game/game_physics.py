@@ -1,7 +1,8 @@
 import logging, random, math
 from game.constants import INIT_BALL_SPEED, BALL_SPEED_STEP, INIT_PADDLE_SIZE, PADDLE_OFFSET
 from game.models import Game
-from game.utils import is_left_player, get_game_data, set_game_data, get_player_input, get_user_of_game
+from game.utils import get_user_of_game
+from game.game_cache import get_game_data, set_game_data, get_player_input
 from game.utils_ws import update_game_state, update_game_points, update_player_powerup
 
 # Player side needs to be 'playerLeft' or 'playerRight'

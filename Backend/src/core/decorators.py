@@ -5,6 +5,7 @@ from core.exceptions import BarelyAnException
 from core.response import error_response
 from django.utils.translation import gettext as _
 import logging
+from services.send_ws_msg import send_ws_error_msg
 
 # This decorator is used to catch exceptions and return a generic error response
 # we should use it for all http requests like post, get, put, delete
@@ -32,14 +33,14 @@ def barely_handle_ws_exceptions(func):
             return await func(self, *args, **kwargs)
         except BarelyAnException as e:
             logging.info(f"BarelyAnException occurred: {str(e.detail)} | Status code: {e.status_code}")
-            # TODO: UNCOMMENT LATER: await send_response_message(self, "error", str(e.detail))
+            await send_ws_error_msg(self.user_id, str(e.detail))
         except ObjectDoesNotExist as e:
             model_name = getattr(e, 'model', None)
             model_name = model_name.__name__ if model_name else _("Object")
             logging.info(f"{model_name} entry not found: {str(e)}")
-            # TODO: UNCOMMENT LATER: await send_response_message(self, "error", _("{model_name} entry not found").format(model_name=model_name))
+            await send_ws_error_msg(self.user_id, _("{model_name} entry not found").format(model_name=model_name))
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
             logging.info(f"Unexpected error occurred in WebSocket: {str(e)}")
-            # TODO: UNCOMMENT LATER: await send_response_message(self, "error", _("An unexpected error occurred"))
+            await send_ws_error_msg(self.user_id, _("An unexpected error occurred"))
     return wrapper

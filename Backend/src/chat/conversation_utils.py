@@ -1,16 +1,21 @@
-# Basics
 # Django
+from django.utils.translation import gettext as _
+# Servies
+from services.channel_groups import update_client_in_group
+from services.constants import PRE_GROUP_CONVERSATION
 # User
 from user.models import User
+# Services
+from services.send_ws_msg import send_ws_new_conversation
 # Chat
-from chat.models import Conversation, ConversationMember, Message
-from django.utils.translation import gettext as _
-from services.channel_groups import update_client_in_group
-from services.constants import PRE_CONVERSATION
+from chat.models import Conversation, ConversationMember
 
-# TODO: NEW AND REVIESD # TODO: REMOVE WHEN FINISHED #284
 def get_conversation_id(user1, user2):
-    """ Accepts user  instances or IDs """
+    """
+    This function will return the conversation ID between two users.
+    If no conversation exists, it will return None.
+    Argumuments can be instances or IDs of the users.
+    """
     if isinstance(user1, int):
         user1 = User.objects.get(id=user1)
     if isinstance(user2, int):
@@ -35,11 +40,12 @@ def get_conversation_id(user1, user2):
         return common_conversations.pop()
     return None
 
-# this function will always return a valid conversation between two users
-# it not exists, it will create a new one and add the "start of conversation" message
-# TODO: NEW AND REVIESD # TODO: REMOVE WHEN FINISHED #284
 def get_or_create_conversation(user1, user2):
-    """ Accepts user  instances or IDs """
+    """
+    This function will always return a valid conversation between two users.
+    If it not exists, it will create a new
+    Argumuments can be instances or IDs of the users.
+    """
     if isinstance(user1, int):
         user1 = User.objects.get(id=user1)
     if isinstance(user2, int):
@@ -50,16 +56,24 @@ def get_or_create_conversation(user1, user2):
     else:
         return create_conversation(user1, user2)
 
-# Should only be called from function 'get_conversation'
-# TODO: REMOVE WHEN FINISHED #284
+
 def create_conversation(user1, user2):
+    """
+    This function will create a conversation between two users.
+    Should only be called from function 'get_or_create_conversation'
+    Note: This function does NOT check if a conversation already exists.
+    """
     from chat.message_utils import create_and_send_overloards_pm
     # Create conversation and Members
-    conversation = Conversation.objects.create(is_group_conversation=False)
+    conversation = Conversation.objects.create()
     ConversationMember.objects.create(conversation=conversation, user=user1)
     ConversationMember.objects.create(conversation=conversation, user=user2)
     # Add the members to the channel
-    update_client_in_group(user1.id, conversation.id, PRE_CONVERSATION, add=True)
+    update_client_in_group(user1.id, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    update_client_in_group(user2.id, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    # Send the new conversation ws message (in case the user has chat view open)
+    send_ws_new_conversation(user1, conversation)
+    send_ws_new_conversation(user2, conversation)
     # Create the start of conversation message
     create_and_send_overloards_pm(user1, user2, f"**S,{user1.id},{user2.id}**")
     return conversation

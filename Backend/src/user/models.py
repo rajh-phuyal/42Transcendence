@@ -6,7 +6,7 @@ from asgiref.sync import sync_to_async
 from django.utils.translation import gettext as _
 from .constants import AVATAR_DEFAULT
 from django.core.cache import cache
-from services.constants import PRE_USER_ONLINE
+from services.constants import PRE_DATA_USER_ONLINE, PRE_CHANNEL_USER
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -24,16 +24,19 @@ class User(AbstractUser):
         self.last_login = timezone.now() #TODO: Issue #193
         self.save(update_fields=['last_login'])
 
-    def set_online_status(self, status):
+    def set_online_status(self, status, channel_name=None):
         if status:
-            cache.set(f'{PRE_USER_ONLINE}{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
+            cache.set(f'{PRE_DATA_USER_ONLINE}{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
+            cache.set(f'{PRE_CHANNEL_USER}{self.id}', channel_name, timeout=3000)
             # TODO:should be matched with the JWT token expiration time
             # And refresh if the client is still active or is calling an enpoint
         else:
-            cache.delete(f'{PRE_USER_ONLINE}{self.id}')
+            cache.delete(f'{PRE_DATA_USER_ONLINE}{self.id}')
+            cache.delete(f'{PRE_CHANNEL_USER}{self.id}')
+            self.update_last_seen()
 
     def get_online_status(self):
-        return cache.get(f'{PRE_USER_ONLINE}{self.id}', default=False)
+        return cache.get(f'{PRE_DATA_USER_ONLINE}{self.id}', default=False)
 
     def __str__(self):
         return f"id:{self.id}({self.username})"

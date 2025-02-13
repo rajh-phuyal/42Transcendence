@@ -1,19 +1,27 @@
-from django.utils import timezone
-from tournament.models import Tournament, TournamentMember
-from core.exceptions import BarelyAnException
-from user.exceptions import RelationshipException, BlockingException
-from user.models import User
-from game.models import Game, GameMember
-from django.db import transaction
-from django.utils.translation import gettext as _
-from user.constants import USER_ID_AI
-from user.utils_relationship import are_friends, is_blocking, is_blocked
+# Basics
 import logging
 from rest_framework import status
+# Django
+from django.utils import timezone
+from django.utils.translation import gettext as _
+from django.db import transaction
+# Core
+from core.exceptions import BarelyAnException
+# Services
 from services.send_ws_msg import send_ws_tournament_msg
-from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
-from .serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
+from services.channel_groups import delete_tournament_group
+# User
+from user.constants import USER_ID_AI
+from user.models import User
+from user.exceptions import BlockingException
 from user.utils import get_user_by_id
+from user.utils_relationship import are_friends, is_blocking, is_blocked
+# Game
+from game.models import Game
+# Tournament
+from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
+from tournament.models import Tournament, TournamentMember
+from tournament.serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
 
 def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
@@ -146,7 +154,7 @@ def delete_tournament(user, tournament_id):
         _("The admin has deleted the tournament!"),
         **{"state": "delete"}
     )
-    delete_tournament_channel(tournament_id)
+    delete_tournament_group(tournament_id)
 
 def join_tournament(user, tournament_id):
     with transaction.atomic():
@@ -303,9 +311,8 @@ def finish_tournament(tournament):
         _("The tournament has finished!"),
         **{"state": "finished"}
     )
-    # - closse the channel
-    delete_tournament_channel(tournament.id)
-    logging.info(f"Tournament {tournament.id} has finished!")
+    # - close the channel
+    delete_tournament_group(tournament.id)
 
 def prepare_tournament_data_json(user, tournament):
     role = ""

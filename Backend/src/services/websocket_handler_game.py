@@ -1,13 +1,11 @@
-# TODO: REMOVE WHEN FINISHED #284
 # Basics
-import logging, json
-
-# Python stuff
-from django.core.cache import cache
+import logging
+# Django
 from django.utils.translation import gettext as _
-from services.websocket_handler_main import check_message_keys
-
+# Game
+from game.game_cache import set_player_input
 # Services
+from services.websocket_handler_main import check_message_keys
 
 ## HANDLER FOR GAME WEBSOCKET CONNECTION
 ## ------------------------------------------------------------------------------------------------
@@ -26,14 +24,9 @@ class WebSocketMessageHandlersGame:
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
 
     @staticmethod
-    async def handle_game(consumer, user, message):
-        ...
-        logging.info(f"Hanlding game message: {message}. tbd!")
-
-    @staticmethod
     async def handle_playerInput(consumer, user, message):
         message = check_message_keys(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
         if consumer.local_game or consumer.isLeftPlayer:
-            cache.set(f'game_{consumer.game_id}_playerLeft', message.get("playerLeft"), timeout=3000)
+            set_player_input(consumer.game_id, 'playerLeft', message.get("playerLeft"))
         if consumer.local_game or not consumer.isLeftPlayer:
-            cache.set(f'game_{consumer.game_id}_playerRight', message.get("playerRight"), timeout=3000)
+            set_player_input(consumer.game_id, 'playerRight', message.get("playerRight"))
