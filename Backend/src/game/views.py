@@ -97,3 +97,35 @@ class LobbyView(BaseAuthenticatedView):
         return success_response(_('Lobby details'), **response_message)
         # The frontend will use this response to show the lobby details and
         # establish the WebSocket connection for this specific game
+
+class PlayAgainView(BaseAuthenticatedView):
+    # TODO:
+    @barely_handle_exceptions
+    def post(self, request, id):
+        """
+        This endpoint will be linked to a "Play Again" button in the frontend.
+        The first user to click the button will create a new game with the same
+        settings as the previous game. The other user will be notified about the
+        new game via chat. If the second user clicks the "Play Again" button
+        this endpoint will be called again and just return the game id.
+        """
+        # Get the user from the request
+        user = request.user
+        old_game = Game.objects.get(id=id)
+        # User nedds to be a member of the game
+        try:
+            GameMember.objects.get(game=old_game, user=user)
+        except GameMember.DoesNotExist:
+            return error_response(_('You are not a member of this game'))
+        # Game needs to be finished or quited
+        if not old_game.state == Game.GameState.FINISHED or old_game.state == Game.GameState.QUITED:
+            return success_response(_('Game is not finished yet!'), **{'gameId': old_game.id})
+        # Game can't be a tournament game
+        if old_game.tournament:
+            return error_response(_('Tournament games can not be played again'))
+        opponent_id = GameMember.objects.filter(game=old_game).exclude(user=user).first().user.id
+        local_game = GameMember.objects.filter(game=old_game, user=user).first().local_game
+        game_id, success = create_game(user, opponent_id, old_game.map_number, old_game.powerups, local_game)
+        if success:
+            return success_response(_('Game created successfully'), **{'gameId': game_id})
+        return success_response(_('Game already exists'), **{'gameId': game_id})

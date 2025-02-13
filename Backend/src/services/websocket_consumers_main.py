@@ -15,41 +15,37 @@ channel_layer = get_channel_layer()
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
-    @barely_handle_ws_exceptions
+    # TODO: remove this comment @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
-        user = self.scope['user']
         # Setting the user's online status in cache
-        user.set_online_status(True, self.channel_name)
+        self.user.set_online_status(True, self.channel_name)
         # Add the user to all their conversation groups
-        await update_client_in_all_conversation_groups(user, True)
+        await update_client_in_all_conversation_groups(self.user, True)
         # Add the user to all their toruanemnt groups
-        await update_client_in_all_tournament_groups(user, True)
+        await update_client_in_all_tournament_groups(self.user, True)
         # Accept the connection
         await self.accept()
         # Send the inizial badge nummer
-        await send_ws_badge_all(user.id)
+        await send_ws_badge_all(self.user.id)
 
-    @barely_handle_ws_exceptions
+    # TODO: remove this comment @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
-        user = self.scope['user']
         # Remove the user's online status from cache
-        user.set_online_status(False)
+        self.user.set_online_status(False)
         # Remove the user from all their conversation groups
-        await update_client_in_all_conversation_groups(user, False)
+        await update_client_in_all_conversation_groups(self.user, False)
         # Remove the user from all their toruanemnt groups
-        await update_client_in_all_tournament_groups(user, False)
-        logging.info(f"User {user.username} marked as offline.")
+        await update_client_in_all_tournament_groups(self.user, False)
+        logging.info(f"User {self.user.username} marked as offline.")
 
-    @barely_handle_ws_exceptions
+    # TODO: remove this comment @barely_handle_ws_exceptions
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-        # Setting the user
-        user = self.scope['user']
         # Process the message
-        await WebSocketMessageHandlersMain()[f"{self.message_type}"](self, user, text_data)
+        await WebSocketMessageHandlersMain()[f"{self.message_type}"](self, text_data)
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({**event}))

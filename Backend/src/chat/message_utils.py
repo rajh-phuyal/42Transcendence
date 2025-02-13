@@ -33,7 +33,6 @@ def create_msg_db(sender, conversation, content):
                 conversation=conversation,
                 content=content
             )
-            logging.info(f"Message created: {message}")
             # Update unread message count for users (except the sender)
             ConversationMember.objects.filter(
                 conversation=conversation

@@ -21,14 +21,16 @@ from user.models import User
 # ==============================================================================
 #     BASIC FUNCTIONS
 # ==============================================================================
-async def send_ws_msg_to_user(user_id, **message):
+async def send_ws_msg_to_user(user, **message):
     """ Basic function to send a message to a user via WebSocket """
-    channel_name =  cache.get(f'{PRE_CHANNEL_USER}{user_id}')
+    if isinstance(user, int):
+        user = await sync_to_async(User.objects.get)(id=user)
+    channel_name =  await sync_to_async(user.get_ws_channel_name)()
     if channel_name:
         channel_layer = get_channel_layer()
         await channel_layer.send(channel_name, message)
     else:
-        logging.warning(f"No active WebSocket connection found for user ID {user_id}.")
+        logging.warning(f"No active WebSocket connection found for user ID {user}.")
 
 async def send_ws_info_msg(user_id, content):
     message_dict = {
@@ -118,7 +120,7 @@ async def send_ws_new_conversation(user, conversation):
     # Add the messageType and type
     serialized_conversation['messageType'] = "newConversation"
     serialized_conversation['type'] = "new_conversation"
-    await send_ws_msg_to_user(user.id, **serialized_conversation)
+    await send_ws_msg_to_user(user, **serialized_conversation)
 
 # ==============================================================================
 #     TOURNAMENT FUNCTIONS

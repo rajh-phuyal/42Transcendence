@@ -23,10 +23,12 @@ export function changeGameState(state) {
     gameObject.state = state;
     switch (state) {
         case undefined:
+            $id("button-play-again").style.display = "none";
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             break;
         case "pending":
+            $id("button-play-again").style.display = "none";
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
@@ -36,17 +38,20 @@ export function changeGameState(state) {
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
             break;
         case "countdown":
+            $id("button-play-again").style.display = "none";
             audioPlayer.play(gameObject.mapId);
             audioPlayer.playSound("unpause");
             showPowerupStatus(true);
             $id("game-view-middle-side-container-top-text").innerText = "TODO: COUNTDOWN 5,4,3,2,1,0";
             break;
         case "ongoing":
+            $id("button-play-again").style.display = "none";
             audioPlayer.playSound("beep2");
             $id("game-view-middle-side-container-top-text").innerText ="";
             $id("button-quit-game").style.display = "none";
             break;
         case "paused":
+            $id("button-play-again").style.display = "none";
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
             $id("button-quit-game").style.display = "none";
@@ -58,6 +63,7 @@ export function changeGameState(state) {
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
         case "finished":
+            $id("button-play-again").style.display = "block";
             audioPlayer.playSound("gameover");
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);

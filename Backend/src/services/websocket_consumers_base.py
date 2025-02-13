@@ -20,32 +20,32 @@ class CustomWebSocketLogic(AsyncWebsocketConsumer):
         if self.scope['user'] == AnonymousUser():
             logging.error("CustomWebSocketLogic: Opening WebSocket connection: User is not authenticated.")
             await self.close()
-            self.user_id = 0
+            self.user = None
             raise BarelyAnException(_("User is not authenticated."))
         else:
             logging.info("CustomWebSocketLogic: Opening WebSocket connection: for user: %s", self.scope['user'])
-            self.user_id = self.scope['user'].id
+            self.user = self.scope['user']
             return True
 
     # Don't add a decorator here, it will be added in the child classes
     async def disconnect(self, close_code):
         # Ensure user is authenticated
         if self.scope['user'] == AnonymousUser():
-            logging.error("CustomWebSocketLogic: Opening WebSocket connection: User is not authenticated.")
+            logging.error("CustomWebSocketLogic: Closing WebSocket connection: User is not authenticated.")
             await self.close()
-            self.user_id = 0
+            self.user = None
             raise BarelyAnException(_("User is not authenticated."))
         else:
-            self.user_id = self.scope['user'].id
-            logging.info("CustomWebSocketLogic: Opening WebSocket connection: for user: %s", self.scope['user'])
+            self.user = self.scope['user']
+            logging.info("CustomWebSocketLogic: Closing WebSocket connection: for user: %s", self.scope['user'])
 
     # Don't add a decorator here, it will be added in the child classes
     async def receive(self, text_data):
         # Check again if authenticated
         if not self.scope['user'].is_authenticated:
             await self.close()
-            self.user_id = 0
+            self.user = None
             raise BarelyAnException(_("User is not authenticated."))
         # Parse the message (only the messageType is required at this point)
-        self.user_id = self.scope['user'].id
+        self.user = self.scope['user']
         self.message_type = check_message_keys(text_data, mandatory_keys=['messageType']).get('messageType')

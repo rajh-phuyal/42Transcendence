@@ -22,7 +22,7 @@ class ConversationMember(models.Model):
     unread_counter = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.user_id.username} in {self.chat_id.name}'
+        return f'{self.user.username} in {self.conversation}'
 
     class Meta:
         db_table = '"barelyaschema"."conversation_member"'

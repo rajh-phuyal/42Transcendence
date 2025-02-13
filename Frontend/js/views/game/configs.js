@@ -31,6 +31,15 @@ export default {
                 router('/');
             })
         },
+        playAgainCallback() {
+            call(`game/play-again/${this.gameId}/`, 'POST').then(data => {
+                console.log("data:", data);
+                if (data.status === "success" && data.gameId) {
+                    // Reload the game
+                    router(`/game`, {id: data.gameId});
+                }
+            })
+        },
         menuKeysCallback(event) {
             switch (event.key) {
                 case " ":
@@ -61,10 +70,10 @@ export default {
                     return;
             }
         },
-
         initListeners(init = true) {
             const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
             const buttonQuitGame = this.domManip.$id("button-quit-game");
+            const buttonPlayAgain = this.domManip.$id("button-play-again");
 
             if (init) {
                 // TODO: translation for buttons should be done in with the abstraction tool TBC
@@ -72,8 +81,11 @@ export default {
                 buttonLeaveLobby.render();
                 buttonQuitGame.name = translate("game", "button-quit-game");
                 buttonQuitGame.render();
+                buttonPlayAgain.name = translate("game", "button-play-again");
+                buttonPlayAgain.render();
                 this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
                 this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
+                this.domManip.$on(buttonPlayAgain, "click", this.playAgainCallback);
                 this.domManip.$on(document, 'keydown', this.menuKeysCallback);
                 return ;
             }
@@ -85,6 +97,8 @@ export default {
                         this.domManip.$off(buttonLeaveLobby, "click");
                     if (buttonQuitGame.eventListeners)
                         this.domManip.$off(buttonQuitGame, "click");
+                    if (buttonPlayAgain.eventListeners)
+                        this.domManip.$off(buttonPlayAgain, "click");
                     if (document.eventListeners)
                         this.domManip.$on(document, 'keydown', this.menuKeysCallback);
                 }

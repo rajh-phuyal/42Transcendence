@@ -97,14 +97,12 @@ export default class AudioPlayer {
         // Make sure the song is looped
         newSong.audio.loop = true;
 
-        if (this.playing && this.currentSong === newSong) {
-            console.log("Song is already playing:", newSong);
+        if (this.playing && this.currentSong === newSong)
             return;
-        }
 
-        if (this.playing) {
+        if (this.playing)
             this.crossfade(this.currentSong, newSong);
-        } else {
+        else {
             this.playing = true;
             this.startFadeIn(newSong, 1000);
         }

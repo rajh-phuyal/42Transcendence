@@ -38,6 +38,9 @@ class User(AbstractUser):
     def get_online_status(self):
         return cache.get(f'{PRE_DATA_USER_ONLINE}{self.id}', default=False)
 
+    def get_ws_channel_name(self):
+        return cache.get(f'{PRE_CHANNEL_USER}{self.id}')
+
     def __str__(self):
         return f"id:{self.id}({self.username})"
 

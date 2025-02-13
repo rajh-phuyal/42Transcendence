@@ -34,7 +34,6 @@ export function processIncomingWsChatMessage(message) {
 // This will be called by:
 //    - WebsocketManager if updateBadge messaage is received
 //    - by createConversationCard to initialize the badge
-//    - when loading the messages from a conversation (set to 0)
 export function updateConversationBadge(conversationId, value) {
     const element = $id("chat-view-conversation-card-" +  conversationId);
     if(!element){
@@ -43,7 +42,7 @@ export function updateConversationBadge(conversationId, value) {
     }
     const seenCouterContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
     seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = value;
-    if (value == "0")
+    if (value == 0)
         seenCouterContainer.style.display = "none";
     else
         seenCouterContainer.style.display = "flex";
@@ -203,7 +202,6 @@ export function createMessage(element, prepend = true) {
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
-    console.log("Element content2:", element.content);
     let parsedContent = element.content;
     if (element.content != null) {
         parsedContent = element.content.replace(
@@ -312,18 +310,11 @@ export function loadMessages(conversationId) {
     // Return a Promise for better flow control
     return call(`chat/load/conversation/${conversationId}/messages/?msgid=${messageContainer.getAttribute("last-message-id")}`, 'PUT')
         .then(data => {
-            console.log("Messages loaded:", data);
             const elapsedTime = Date.now() - startTime;
             const delay = Math.max(200 - elapsedTime, 0);
             return new Promise(resolve => {
                 setTimeout(() => {
                     spinner.remove();
-
-                    // Update UI with new messages
-                    $id("chat-nav-badge").textContent = data.totalUnreadCounter || "";
-                    updateConversationBadge(conversationId, data.conversationUnreadCounter);
-                    $id("chat-view-conversation-card-" + conversationId).querySelector(".chat-view-conversation-card-unseen-counter").textContent = data.unreadCounter || "";
-
                     // Update conversation header
                     //$id("chat-view-header-subject").textContent = "@" + data.conversationName;
                     $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">@${data.conversationName}</a>`;
@@ -332,10 +323,8 @@ export function loadMessages(conversationId) {
                     $id("chat-view-header-online-icon").src = data.online ? "../assets/onlineIcon.png" : "../assets/offlineIcon.png";
 
                     // Load messages (prepend as they are in reverse order)
-                    for (let element of data.data) {
-                        console.log("Element content:", element.content);
+                    for (let element of data.data)
                         createMessage(element, true);
-                    }
 
                     // Reset loading state
                     messageContainer.setAttribute("loading", "false");
@@ -437,7 +426,6 @@ export function createHelpMessage(input){
     input = input.toUpperCase();
     let htmlContent = ""
     if (input == "/" || cmds.some(prefix => input.startsWith(prefix))) {
-        console.log("Input:", input);
         // We need more options for /G and /F
         if(input.startsWith("/G")) {
             // Count the typed "," to determine the step of the game creation
@@ -466,13 +454,11 @@ export function createHelpMessage(input){
 }
 
 export function updateHelpMessage(htmlContent="") {
-    console.log("Update help message:", htmlContent);
     let helpContainer = $id("message-help");
     if (htmlContent){
         // Show the help message
         if (!helpContainer){
             // Create node from template
-            console.log("Create help message node");
             let template = $id("chat-view-help-message-template").content.cloneNode(true);
             helpContainer = template.querySelector(".chat-view-help-message-container");
             helpContainer.id = "message-help";

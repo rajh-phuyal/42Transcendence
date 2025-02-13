@@ -69,8 +69,8 @@ def create_conversation(user1, user2):
     ConversationMember.objects.create(conversation=conversation, user=user1)
     ConversationMember.objects.create(conversation=conversation, user=user2)
     # Add the members to the channel
-    update_client_in_group(user1.id, conversation.id, PRE_GROUP_CONVERSATION, add=True)
-    update_client_in_group(user2.id, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    update_client_in_group(user1, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    update_client_in_group(user2, conversation.id, PRE_GROUP_CONVERSATION, add=True)
     # Send the new conversation ws message (in case the user has chat view open)
     send_ws_new_conversation(user1, conversation)
     send_ws_new_conversation(user2, conversation)

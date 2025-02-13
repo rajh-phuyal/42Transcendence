@@ -28,6 +28,7 @@ async def init_game_on_cache(game, leftMember, rightMember):
     game_state_data = get_game_data (game.id)
     if not game_state_data:
         cache_key = f'{PRE_DATA_GAME}{game.id}'
+        logging.info(f"Init game on cache: game_data: {cache_key}")
         cache.set(cache_key, deepcopy(GAME_STATE), timeout=3000)
         # Initialize the game data to match the db:
         set_game_data(game.id, 'gameData', 'state', game.state)
@@ -56,14 +57,14 @@ async def init_game_on_cache(game, leftMember, rightMember):
     input_player_left = get_player_input(game.id, 'playerLeft')
     if not input_player_left:
         cache_key = f'{PRE_DATA_GAME}{game.id}_input_playerLeft'
-        logging.info(f"Init game on cache: {cache_key}")
+        logging.info(f"Init game on cache: playerLeft Input: {cache_key}")
         cache.set(cache_key, deepcopy(GAME_PLAYER_INPUT), timeout=3000)
 
     # CREATE RIGHT PLAYER INPUT ON CACHE IF DOESNT EXIST
     input_player_right = get_player_input(game.id, 'playerRight')
     if not input_player_right:
         cache_key = f'{PRE_DATA_GAME}{game.id}_input_playerRight'
-        logging.info(f"Init game on cache: {cache_key}")
+        logging.info(f"Init game on cache: playerRight Input: {cache_key}")
         cache.set(cache_key, deepcopy(GAME_PLAYER_INPUT), timeout=3000)
 
 def set_player_input(game_id, side, playerInfo):
@@ -74,7 +75,7 @@ def set_player_input(game_id, side, playerInfo):
     cache_key = f'{PRE_DATA_GAME}{game_id}_input_{side}'
     cache.set(cache_key, playerInfo, timeout=3000)
 
-def get_player_input(game_id, side, key1):
+def get_player_input(game_id, side, key1=None):
     """
     Helper function to get the player data from cache e.g:
     get_player_input(1, 'playerLeft', 'up') -> returns the value of playerLeft['up']
@@ -88,7 +89,7 @@ def get_player_input(game_id, side, key1):
             return None
         return input_player[key1]
     else:
-        logging.error("! Can't get game player input because game " +  cache_key + " is not in cache!")
+        logging.error("! Can't get game player input because " +  cache_key + " is not in cache!")
 
 def set_game_data(game_id, key1, key2, new_value, timeout=3000):
     """

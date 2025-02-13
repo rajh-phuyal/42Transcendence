@@ -28,12 +28,9 @@ class TextField extends HTMLElement {
     startSendingMessage(){
         const inputElement = this.shadow.getElementById("text-field");
         const value = inputElement.value;
-
         // Reset text box & hide the help message when the user sends a message
         inputElement.value = '';
-        console.log("Try to remove help message");
         updateHelpMessage();
-
         // Send the message to the server
         WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
         // If the message is a cmd we need to reload the view.

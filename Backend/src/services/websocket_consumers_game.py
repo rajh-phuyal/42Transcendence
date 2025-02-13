@@ -16,7 +16,6 @@ from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_
 from services.constants import PRE_GROUP_GAME
 from services.websocket_consumers_base import CustomWebSocketLogic
 from services.websocket_handler_game import WebSocketMessageHandlersGame
-from services.channel_groups import update_client_in_group
 from services.send_ws_msg import send_ws_game_data_msg, send_ws_game_players_ready_msg, send_ws_game_finished
 # Channels
 from channels.db import database_sync_to_async
@@ -34,12 +33,11 @@ class GameConsumer(CustomWebSocketLogic):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
         self.local_game = await database_sync_to_async(lambda: self.game.game_members.first().local_game)()
-        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user_id)
+        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
         self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
         self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
         self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
         self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
-        logging.info("Initialiazing consumer self vars: user_id %s, game_id: %s, local_game: %s, isLeftPlayer: %s", self.user_id, self.game_id, self.local_game, self.isLeftPlayer)
         # TODO: check if the user is a game member if not close the connection
         # Also keeP in mind local games!  issue #312
 
@@ -48,7 +46,9 @@ class GameConsumer(CustomWebSocketLogic):
             await self.close()
             logging.info(f"Game {self.game_id} is not in the right state to be played. CONNECTION CLOSED.")
         # Add client to the channel layer group
-        await update_client_in_group(self.user_id, self.game_id, PRE_GROUP_GAME, True)
+        # Note: here i can't use update_client_in_group since this always uses the main ws connection!
+        group_name = f"{PRE_GROUP_GAME}{self.game_id}"
+        await channel_layer.group_add(group_name, self.channel_name)
         # Accept the connection
         await self.accept()
         # Init game on cache and send the game data
@@ -60,7 +60,7 @@ class GameConsumer(CustomWebSocketLogic):
             self.game.set_player_ready(self.leftUser.id, True)
             self.game.set_player_ready(self.rightUser.id, True)
         else:
-            self.game.set_player_ready(self.user_id, True)
+            self.game.set_player_ready(self.user.id, True)
         # Send the player ready message and the game data
         left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
         right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
@@ -74,9 +74,11 @@ class GameConsumer(CustomWebSocketLogic):
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         # Remove client from the channel layer group
-        update_client_in_group(self.user_id, self.game_id, PRE_GROUP_GAME, add=False)
+        # Note: here i can't use update_client_in_group since this always uses the main ws connection!
+        group_name = f"{PRE_GROUP_GAME}{self.game_id}"
+        await channel_layer.group_discard(group_name, self.channel_name)
         # Set the player NOT ready
-        self.game.set_player_ready(self.user_id, False)
+        self.game.set_player_ready(self.user.id, False)
         left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
         right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
         await send_ws_game_players_ready_msg(self.game_id, left_ready, right_ready)
@@ -92,7 +94,7 @@ class GameConsumer(CustomWebSocketLogic):
             # Other player scores that point (if not local game)
             if not self.local_game:
                 user_id_for_point = self.leftUser.id
-                if self.user_id == self.leftUser.id:
+                if self.user.id == self.leftUser.id:
                     user_id_for_point = self.rightUser.id
                 if self.isLeftPlayer:
                     player_side = 'playerLeft'
@@ -108,14 +110,11 @@ class GameConsumer(CustomWebSocketLogic):
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
-        # Setting the user
-        user = self.scope['user']
         # Process the message
-        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, user, text_data)
+        await WebSocketMessageHandlersGame()[f"{self.message_type}"](self, text_data)
 
     async def update_players_ready(self, event):
         await self.send(text_data=json.dumps({**event}))
-
     async def update_game_state(self, event):
         await self.send(text_data=json.dumps({**event}))
 

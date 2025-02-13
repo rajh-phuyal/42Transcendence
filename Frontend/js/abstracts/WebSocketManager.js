@@ -76,10 +76,7 @@ class WebSocketManager {
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
     receiveMessage(message) {
-
         console.log("BE -> FE:", message);
-        console.log("Current route:", this.currentRoute);
-
         switch (message.messageType) {
             case "chat":
                 audioPlayer.playSound("chat");

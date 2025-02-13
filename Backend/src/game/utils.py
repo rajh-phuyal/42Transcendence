@@ -1,7 +1,6 @@
 # Basics
 import logging
-
-# DJANGO STUFF
+# DJANGO
 from rest_framework import status
 from django.db import transaction
 from django.db.models import Q
@@ -9,26 +8,24 @@ from django.core.cache import cache
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.utils.timezone import localtime
-
-# CORE STUFF
+# CORE
 from core.exceptions import BarelyAnException
-
-# USER STUFF
+# USER
 from user.constants import USER_ID_AI
 from user.models import User
 from user.exceptions import UserNotFound, RelationshipException, BlockingException
 from user.utils_relationship import is_blocking, are_friends
-
-# GAME STUFF
+# GAME
 from game.constants import MAPNAME_TO_MAPNUMBER
 from game.models import Game, GameMember
-
-# TOURNAMENT STUFF
+# TOURNAMENT
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
 from services.send_ws_msg import send_ws_tournament_msg
 from tournament.ranking import update_tournament_member_stats
 from user.utils import get_user_by_id
+# CHAT
+from chat.message_utils import create_and_send_overloards_pm
 
 def map_name_to_number(map_name):
     return MAPNAME_TO_MAPNUMBER.get(map_name.lower(), None)
@@ -57,11 +54,13 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
         # Check if there is already a direct game between the user and the opponent
         user_games = GameMember.objects.filter(
             user=user.id,
+            local_game=local_game,
             game__tournament_id=None,
             game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
         ).values_list('game_id', flat=True)
         opponent_games = GameMember.objects.filter(
             user=opponent.id,
+            local_game=local_game,
             game__tournament_id=None,
             game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
         ).values_list('game_id', flat=True)
@@ -98,8 +97,8 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             game.save()
             game_member_user.save()
             game_member_opponent.save()
-
-        # TODO: send a chat message inviting the opponent to the game like #G#<game_id>#
+        invite_msg = f"**G,{user.id},{opponent.id},{game.id}**"
+        create_and_send_overloards_pm(user, opponent, invite_msg)
         return game.id, True
 
 def delete_game(user_id, game_id):

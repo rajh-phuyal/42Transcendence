@@ -24,7 +24,7 @@ class WebSocketMessageHandlersGame:
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
 
     @staticmethod
-    async def handle_playerInput(consumer, user, message):
+    async def handle_playerInput(consumer, message):
         message = check_message_keys(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
         if consumer.local_game or consumer.isLeftPlayer:
             set_player_input(consumer.game_id, 'playerLeft', message.get("playerLeft"))

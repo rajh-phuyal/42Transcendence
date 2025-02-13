@@ -30,33 +30,33 @@ class WebSocketMessageHandlersMain:
         raise AttributeError(f"'{self.__class__.__name__}' object has no method '{method_name}'")
 
     @staticmethod
-    async def handle_chat(consumer, user, message):
+    async def handle_chat(consumer, message):
         from services.websocket_handler_main import check_message_keys
         from user.utils_relationship import is_blocked
         message = await sync_to_async(check_message_keys)(message, mandatory_keys=['conversationId', 'content'])
         conversation_id = message.get('conversationId')
         # Check if user is a member of the conversation
-        await validate_conversation_membership_async(user, conversation_id)
+        await validate_conversation_membership_async(consumer.user, conversation_id)
         conversation = await sync_to_async(Conversation.objects.get)(id=conversation_id)
         content = message.get('content', '').strip()
         content = content.strip('*') # Messages are not allowed to start or end with a "*" because it's used for template messages
-        other_user = await get_other_user_async(user, conversation_id)
+        other_user = await get_other_user_async(consumer.user, conversation_id)
         # Content can't be empty
         if not content:
-            await send_ws_chat_temporary(user.id, conversation_id, _("Message content cannot be empty"))
+            await send_ws_chat_temporary(consumer.user.id, conversation_id, _("Message content cannot be empty"))
             return
         # Check if content starts with a "/"
         # This means that the message was a command and therefore was handled
-        if await check_if_msg_is_cmd(user, other_user, content):
+        if await check_if_msg_is_cmd(consumer.user, consumer.user, content):
             return
         # Check if user is blocked by other member
-        if await sync_to_async(is_blocked)(user, other_user):
-            await send_ws_chat_temporary(user.id, conversation_id, _("You have been blocked by this user"))
+        if await sync_to_async(is_blocked)(consumer.user, other_user):
+            await send_ws_chat_temporary(consumer.user.id, conversation_id, _("You have been blocked by this user"))
             return
         # Check if the message contains an @username
         content = await check_if_msg_contains_username(content)
         # Do db operations
-        message_object = await sync_to_async(create_msg_db)(user, conversation, content)
+        message_object = await sync_to_async(create_msg_db)(consumer.user, conversation, content)
         # Send update badge count of other user
         await send_ws_badge(other_user.id, conversation_id)
         await send_ws_badge_all(other_user.id)
@@ -64,12 +64,12 @@ class WebSocketMessageHandlersMain:
         await send_ws_chat(message_object)
 
     @staticmethod
-    async def handle_seen(consumer, user, message):
+    async def handle_seen(consumer, message):
         from services.websocket_handler_main import check_message_keys
         message = check_message_keys(message, mandatory_keys=['conversationId'])
         conversation_id = message.get('conversationId')
-        await validate_conversation_membership_async(user, conversation_id)
-        await mark_all_messages_as_seen_async(user.id, conversation_id)
+        await validate_conversation_membership_async(consumer.user, conversation_id)
+        await mark_all_messages_as_seen_async(consumer.user.id, conversation_id)
 
 def check_message_keys(text: str, mandatory_keys: list[str] = None) -> dict:
     """

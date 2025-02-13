@@ -24,8 +24,8 @@ def generate_template_msg(message):
     params = parts[1:]
     message_templates = {
         "G": {
-            "message": _("Game with ID {0} has been created."),
-            "count": 1
+            "message": _("@{0} has invited @{1} to play a friendly match: #G#{2}#."),
+            "count": 3
         },
         "GL": {
             "message": _("Local game with ID {0} has been created."),
@@ -120,7 +120,10 @@ class MessageSerializer(serializers.ModelSerializer):
         This will create a template message if the content is wrapped in ** **
         """
         if content.startswith('**') and content.endswith('**'):
-            return generate_template_msg(content)
+            try:
+                return generate_template_msg(content)
+            except ValueError as e:
+                logging.error(f"Error parsing template message: {e}")
         return content
 
     def get_avatar(self, obj):

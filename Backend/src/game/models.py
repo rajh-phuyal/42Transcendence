@@ -63,7 +63,7 @@ class GameMember(models.Model):
     admin = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"GameMember {self.id} - User: {self.user_id} - Game: {self.game_id} - Result: {self.result}"
+        return f"GameMember {self.id} - User: {self.user} - Game: {self.game} - Result: {self.result}"
 
     class Meta:
         db_table = '"barelyaschema"."game_member"'

@@ -153,7 +153,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
 
         # Add client to websocket group if tournament is not finished
         if tournament.state != Tournament.TournamentState.FINISHED:
-            async_to_sync(update_client_in_group)(user.id, tournament.id, PRE_GROUP_TOURNAMENT, add=True)
+            async_to_sync(update_client_in_group)(user, tournament.id, PRE_GROUP_TOURNAMENT, add=True)
 
         response_json=prepare_tournament_data_json(user, tournament)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)

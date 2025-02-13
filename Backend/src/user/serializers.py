@@ -82,7 +82,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             members__user=requester
         ).filter(members__user=requested
         ).values_list('id', flat=True).first()
-        logging.info(f'conversation_id: {conversation_id}')
         return conversation_id
 
 # This will prepare the data for endpoint '/user/friend/list/<int:id>/'

@@ -25,8 +25,6 @@ class WebSocketAuthMiddleware(BaseMiddleware):
         try:
             headers = dict(scope['headers'])
             cookie_header = headers.get(b'cookie', b'').decode()
-            logging.info(f"WebSocket connection attempt with cookies: {cookie_header}")
-
             # Parse cookies
             cookies = {}
             if cookie_header:

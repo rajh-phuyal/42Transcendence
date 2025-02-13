@@ -384,7 +384,6 @@ export default {
                             console.warn("Invalid conversation id '%s' from routeParams?.id will be ignored!", this.routeParams.id);
                             return ;
                         }
-                        console.log("this.routeParams.id:", this.routeParams.id);
                         selectConversation(this.routeParams.id);
                     }
                 })
