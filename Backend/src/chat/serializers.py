@@ -1,5 +1,5 @@
 # Basics
-import re
+import re, logging
 # Django
 from rest_framework import serializers
 from django.utils.translation import gettext as _
@@ -16,57 +16,60 @@ def generate_template_msg(message):
     Will be only used by the MessageSerializer. e.g:
     **B,12,42** -> User @12 has blocked @42
     """
-    message = message[2:-2]
+    message = message.strip('*')
     parts = message.split(',')
+    if not parts:
+        raise ValueError(f"Invalid message format: {message}")
     cmd_type = parts[0]
     params = parts[1:]
-
     message_templates = {
         "G": {
-            "message": _("Game with ID {1} has been created."),
+            "message": _("Game with ID {0} has been created."),
             "count": 1
         },
         "GL": {
-            "message": _("Local game with ID {1} has been created."),
+            "message": _("Local game with ID {0} has been created."),
             "count": 1
         },
         "FS": {
-            "message": _("User @{1} has sent a friend request to @{2}."),
+            "message": _("User @{0} has sent a friend request to @{1}."),
             "count": 2
         },
         "FA": {
-            "message": _("User @{1} has accepted the friend request from @{2}."),
+            "message": _("User @{0} has accepted the friend request from @{1}."),
             "count": 2
         },
         "FC": {
-            "message": _("User @{1} has canceled the friend request to @{2}."),
+            "message": _("User @{0} has canceled the friend request to @{1}."),
             "count": 2
         },
         "FR": {
-            "message": _("User @{1} has rejected the friend request from @{2}."),
+            "message": _("User @{0} has rejected the friend request from @{1}."),
             "count": 2
         },
         "FU": {
-            "message": _("User @{1} has removed @{2} from their friends list."),
+            "message": _("User @{0} has removed @{1} from their friends list."),
             "count": 2
         },
         "B": {
-            "message": _("User @{1} has blocked @{2}."),
+            "message": _("User @{0} has blocked @{1}."),
             "count": 2
         },
         "U": {
-            "message": _("User @{1} has unblocked @{2}."),
+            "message": _("User @{0} has unblocked @{1}."),
             "count": 2
         },
         "S": {
-            "message": _("User @{1} has started a conversation with @{2}."),
+            "message": _("User @{0} has started a conversation with @{1}."),
             "count": 2
         },
         "TI": {
-            "message": _("User @{1} has invited @{2} to the tournament: {3}."),
+            "message": _("User @{0} has invited @{1} to the tournament: {2}."),
             "count": 3
         },
     }
+
+    logging.info(f"Template message:\ntype:\t{cmd_type}\nparams:\t{params}")
 
     if cmd_type not in message_templates:
         raise ValueError(f"Invalid template key: {cmd_type}")
@@ -74,6 +77,7 @@ def generate_template_msg(message):
     template = message_templates[cmd_type]
     if len(params) != template["count"]:
         raise ValueError(f"Expected {template['count']} parameters, but got {len(params)}")
+    return template["message"].format(*params)
 class MessageSerializer(serializers.ModelSerializer):
     """
     This is the most powerful serializer in this project. Each chat message

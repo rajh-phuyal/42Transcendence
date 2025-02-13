@@ -203,6 +203,7 @@ export function createMessage(element, prepend = true) {
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
+    console.log("Element content2:", element.content);
     let parsedContent = element.content;
     if (element.content != null) {
         parsedContent = element.content.replace(
@@ -331,8 +332,10 @@ export function loadMessages(conversationId) {
                     $id("chat-view-header-online-icon").src = data.online ? "../assets/onlineIcon.png" : "../assets/offlineIcon.png";
 
                     // Load messages (prepend as they are in reverse order)
-                    for (let element of data.data)
+                    for (let element of data.data) {
+                        console.log("Element content:", element.content);
                         createMessage(element, true);
+                    }
 
                     // Reset loading state
                     messageContainer.setAttribute("loading", "false");

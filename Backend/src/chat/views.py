@@ -1,3 +1,5 @@
+# Basics
+import logging
 # Django
 from rest_framework import status
 from django.utils.translation import gettext as _
@@ -92,7 +94,9 @@ class LoadConversationView(BaseAuthenticatedView):
         # Mark as seen
         mark_all_messages_as_seen(user, conversation)
         # Serialize messages
+        logging.info(f"Messages before serialization: {messages}")
         serialized_messages = MessageSerializer(messages, many=True)
+        logging.info(f"Messages after serialization: {serialized_messages.data}")
         # Get the conversation avatar and name
         conversation_avatar = other_user.avatar_path
         conversation_name = other_user.username
@@ -117,6 +121,9 @@ class CreateConversationView(BaseAuthenticatedView):
         user = request.user
         other_user_id = request.data.get('userId', None)
         initial_message = request.data.get('initialMessage', '').strip()
+        initial_message = initial_message.strip('*') # Messages are not allowed to start or end with a "*" because it's used for template messages
+        if initial_message.startswith('/'):
+            raise BarelyAnException(_("You can't use commands in the initial message"), status_code=status.HTTP_400_BAD_REQUEST)
         if not other_user_id:
            return error_response(_("No 'userId' provided"), status_code=status.HTTP_400_BAD_REQUEST)
         if not initial_message:
