@@ -94,9 +94,7 @@ class LoadConversationView(BaseAuthenticatedView):
         # Mark as seen
         mark_all_messages_as_seen(user, conversation)
         # Serialize messages
-        logging.info(f"Messages before serialization: {messages}")
         serialized_messages = MessageSerializer(messages, many=True)
-        logging.info(f"Messages after serialization: {serialized_messages.data}")
         # Get the conversation avatar and name
         conversation_avatar = other_user.avatar_path
         conversation_name = other_user.username

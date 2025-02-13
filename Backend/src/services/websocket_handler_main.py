@@ -39,7 +39,7 @@ class WebSocketMessageHandlersMain:
         await validate_conversation_membership_async(user, conversation_id)
         conversation = await sync_to_async(Conversation.objects.get)(id=conversation_id)
         content = message.get('content', '').strip()
-        content = message.strip('*') # Messages are not allowed to start or end with a "*" because it's used for template messages
+        content = content.strip('*') # Messages are not allowed to start or end with a "*" because it's used for template messages
         other_user = await get_other_user_async(user, conversation_id)
         # Content can't be empty
         if not content:

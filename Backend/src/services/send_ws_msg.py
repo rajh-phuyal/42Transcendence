@@ -36,16 +36,15 @@ async def send_ws_info_msg(user_id, content):
         "type": "info",
         "message": content
     }
-    json_message = json.dumps(message_dict)
-    await send_ws_msg_to_user(user_id, **json_message)
+    await send_ws_msg_to_user(user_id, **message_dict)
 
 async def send_ws_error_msg(user_id, content):
     message_dict = {
         "messageType": "error",
+        "type": "error",
         "message": content
     }
-    json_message = json.dumps(message_dict)
-    await send_ws_msg_to_user(user_id, **json_message)
+    await send_ws_msg_to_user(user_id, **message_dict)
 
 @sync_to_async
 def send_ws_badge(user_id, conversation_id):
@@ -86,9 +85,7 @@ class TempConversationMessage:
         self.content = content
 
 async def send_ws_chat(message_object):
-    logging.info(f"start to serialize message: {message_object}")
     serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message_object).data)()
-    logging.info(f"serialized message: {serialized_message}")
     # Send to conversation channel
     group_name = f"{PRE_GROUP_CONVERSATION}{message_object.conversation.id}"
     await channel_layer.group_send(group_name, serialized_message)
@@ -121,7 +118,7 @@ async def send_ws_new_conversation(user, conversation):
     # Add the messageType and type
     serialized_conversation['messageType'] = "newConversation"
     serialized_conversation['type'] = "new_conversation"
-    send_ws_msg_to_user(user.id, **serialized_conversation)
+    await send_ws_msg_to_user(user.id, **serialized_conversation)
 
 # ==============================================================================
 #     TOURNAMENT FUNCTIONS

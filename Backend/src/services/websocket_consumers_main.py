@@ -69,6 +69,9 @@ class MainConsumer(CustomWebSocketLogic):
     async def info(self, event):
         await self.send(text_data=json.dumps({**event}))
 
+    async def error(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
     async def game_create(self, event):
         await self.send(text_data=json.dumps({**event}))
 

@@ -68,9 +68,6 @@ def generate_template_msg(message):
             "count": 3
         },
     }
-
-    logging.info(f"Template message:\ntype:\t{cmd_type}\nparams:\t{params}")
-
     if cmd_type not in message_templates:
         raise ValueError(f"Invalid template key: {cmd_type}")
 

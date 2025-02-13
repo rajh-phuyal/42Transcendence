@@ -2,6 +2,7 @@ import { createMessage, createHelpMessage, updateHelpMessage } from '../views/ch
 import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
+import router from '../navigation/router.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class TextField extends HTMLElement {
@@ -35,6 +36,12 @@ class TextField extends HTMLElement {
 
         // Send the message to the server
         WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
+        // If the message is a cmd we need to reload the view.
+        // This is because the cmd might have changed the blocking state of the users
+        const valueUpper = value.toUpperCase();
+        if (valueUpper.startsWith("/B") || valueUpper.startsWith("/U")) {
+            router('/chat', { id: this.conversationId });
+        }
     }
 
     buttonclick(){
