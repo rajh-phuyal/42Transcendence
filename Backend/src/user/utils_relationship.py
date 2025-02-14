@@ -1,16 +1,19 @@
-from django.db.models import Q
-from django.utils.translation import gettext as _
+# Basics
+import logging
+# Django
 from django.core.exceptions import ObjectDoesNotExist
-import os
-from django.core.files.base import ContentFile
-from django.core.files.storage import default_storage
-from django.conf import settings
-from user.models import User, IsCoolWith, NoCoolWith
-from user.exceptions import BlockingException
-from user.constants import USER_ID_OVERLORDS, USER_ID_AI
+from django.utils.translation import gettext as _
+from django.db.models import Q
 from django.db import transaction
-from user.exceptions import ValidationException, BlockingException, RelationshipException
+# User
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI
+from user.models import IsCoolWith, NoCoolWith
+from user.exceptions import BlockingException
+from user.exceptions import BlockingException, RelationshipException
+# Chat
 from chat.message_utils import create_and_send_overloards_pm
+# Services
+from services.send_ws_msg import send_ws_update_relationship
 
 def is_blocking(doer, target):
     return NoCoolWith.objects.filter(blocker=doer, blocked=target).exists()
@@ -88,6 +91,7 @@ def send_request(user, target):
         cool_status = IsCoolWith(requester=user, requestee=target)
         cool_status.save()
     pm = "**FS,{requester_id},{requestee_id}**".format(requester_id=user.id, requestee_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)
 
 # Logic for accepting a friend request:
@@ -102,6 +106,7 @@ def accept_request(user, target):
         cool_status.status = IsCoolWith.CoolStatus.ACCEPTED
         cool_status.save()
     pm = "**FA,{requester_id},{requestee_id}**".format(requester_id=user.id, requestee_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)
 
 # Logic for cancelling a friend request:
@@ -115,6 +120,7 @@ def cancel_request(user, target):
             raise RelationshipException(_('Friend request not found'))
         cool_status.delete()
     pm = "**FC,{requester_id},{requestee_id}**".format(requester_id=user.id, requestee_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)
 
 # Logic for rejecting a friend request:
@@ -128,6 +134,7 @@ def reject_request(user, target):
             raise RelationshipException(_('Friend request not found'))
         cool_status.delete()
     pm = "**FR,{requester_id},{requestee_id}**".format(requester_id=user.id, requestee_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)
 
 # Logic for removing a friend:
@@ -144,6 +151,7 @@ def unfriend(user, target):
             raise RelationshipException(_('You are not friends with this user'))
         cool_status.delete()
     pm = "**FU,{requester_id},{requestee_id}**".format(requester_id=user.id, requestee_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)
 
 # Logic for blocking a user:
@@ -158,6 +166,7 @@ def block_user(user, target):
         new_no_cool = NoCoolWith(blocker=user, blocked=target)
         new_no_cool.save()
     pm = "**B,{blocker_id},{blocked_id}**".format(blocker_id=user.id, blocked_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)
 
 # Logic for unblocking a user:
@@ -169,4 +178,5 @@ def unblock_user(user, target):
             raise BlockingException(_('You have not blocked this user'))
         no_cool.delete()
     pm = "**U,{blocker_id},{blocked_id}**".format(blocker_id=user.id, blocked_id=target.id)
+    send_ws_update_relationship(user, target)
     create_and_send_overloards_pm(user, target, pm)

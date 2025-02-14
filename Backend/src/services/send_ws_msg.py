@@ -1,20 +1,24 @@
+# Basics
+import logging
+# Django
+from django.utils import timezone
+from django.db.models import Sum
+from django.utils.translation import gettext as _
+# Asgiref
+from asgiref.sync import sync_to_async, async_to_sync
+# Channels
 from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
+# Services
+from services.constants import PRE_GROUP_CONVERSATION, PRE_GROUP_GAME, PRE_GROUP_TOURNAMENT
+# User
 from user.constants import AVATAR_OVERLORDS, USERNAME_OVERLORDS, USER_ID_OVERLORDS
-from services.constants import PRE_GROUP_CONVERSATION
-from channels.layers import get_channel_layer
-from asgiref.sync import sync_to_async
-from django.utils import timezone
-from chat.serializers import MessageSerializer
-from game.game_cache import get_game_data
-from django.core.cache import cache
-from django.db.models import Sum
-from services.constants import PRE_CHANNEL_USER, PRE_GROUP_GAME, PRE_GROUP_TOURNAMENT
-import logging, json
-from chat.models import ConversationMember, Message, Conversation
-from asgiref.sync import async_to_sync
 from user.models import User
-# TODO: REMOVE WHEN FINISHED #284
+# Chat
+from chat.models import ConversationMember, Message, Conversation
+from chat.serializers import MessageSerializer
+# Game
+from game.game_cache import get_game_data
 
 """ All WS Message should be send to the FE using one of the following functions:"""
 
@@ -72,6 +76,23 @@ def send_ws_badge_all(user_id):
     }
     async_to_sync(send_ws_msg_to_user)(user_id, **msg_data)
 
+# ==============================================================================
+#     PROFILE FUNCTIONS
+# ==============================================================================
+def send_ws_update_relationship(user_changed, user_viewer):
+    """
+    This function is send if user_changed changes his relationship status to
+    user_viewer. If the user_viewer is online, he will receive this message. The
+    fe checks it user_viewer is watching the profile of the user_changed and
+    only then reloads the profile view.
+    """
+    message_dict = {
+        "messageType": "reloadProfile",
+        "type": "reload_profile",
+        "message": _("Relationship status has changed."),
+        "userId": user_changed.id
+    }
+    async_to_sync(send_ws_msg_to_user)(user_viewer, **message_dict)
 # ==============================================================================
 #     CHAT FUNCTIONS
 # ==============================================================================

@@ -50,6 +50,9 @@ class MainConsumer(CustomWebSocketLogic):
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({**event}))
 
+    async def reload_profile(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
     async def update_badge(self, event):
         await self.send(text_data=json.dumps({**event}))
 

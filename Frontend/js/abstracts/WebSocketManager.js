@@ -3,6 +3,7 @@ import { $id } from './dollars.js';
 import $callToast from './callToast.js';
 import { updateParticipantsCard, createGameList } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
+import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
 const { hostname } = window.location;
 
@@ -89,7 +90,7 @@ class WebSocketManager {
             case "updateBadge":
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
-                else if (message.what == "conversation")
+                else if (message.what == "conversation" && this.currentRoute == "chat")
                     updateConversationBadge(message.id, message.value);
                 return ;
 
@@ -147,6 +148,10 @@ class WebSocketManager {
                 $callToast("sucess", message.message);
                 return ;
 
+            case "reloadProfile":
+                if (this.currentRoute.startsWith("profile"))
+                    processIncomingReloadMsg(message, this.currentRoute);
+                return ;
         }
 
         console.warn("FE doen't know what to do with this type:", message);

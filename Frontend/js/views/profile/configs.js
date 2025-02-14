@@ -8,6 +8,7 @@ import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
 import { translate } from '../../locale/locale.js';
 import { $id } from '../../abstracts/dollars.js';
+import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 export default {
     attributes: {
@@ -529,6 +530,7 @@ export default {
         },
 
         beforeRouteLeave() {
+            WebSocketManager.setCurrentRoute(undefined);
             let element = this.domManip.$id("button-top-left");
             this.domManip.$off(element, "click", this.buttonTopLeft.method);
             element = this.domManip.$id("button-top-middle");
@@ -581,8 +583,10 @@ export default {
         },
 
         afterDomInsertion() {
+            WebSocketManager.setCurrentRoute("profile");
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
+                WebSocketManager.setCurrentRoute("profile-" + this.result.id);
                 console.log(res);
                 this.insertAvatar();
                 populateInfoAndStats(res);
