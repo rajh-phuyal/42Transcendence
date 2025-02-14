@@ -160,7 +160,7 @@ class GameConsumer(CustomWebSocketLogic):
                 await apply_wall_bonce(game_id)
                 await check_paddle_bounce(game_id)
                 # Send the updated game state to FE
-                send_ws_game_data_msg(game_id)
+                await send_ws_game_data_msg(game_id)
                 # Check if the game is finished (this will set the state to finished -> so the loop will end)
                 await check_if_game_is_finished(game_id)
                 # Await for next frame render

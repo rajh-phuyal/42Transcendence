@@ -17,7 +17,7 @@ class SearchBar extends HTMLElement {
 
     reRenderAndAttach() {
         this.render();
-        this.shadow.getElementById("input-bar").addEventListener('input', this.handleKeyPress.bind(this));
+        this.shadow.getElementById("input-bar").addEventListener('keydown', this.handleKeyPress.bind(this));
     }
 
     connectedCallback() {
@@ -44,6 +44,14 @@ class SearchBar extends HTMLElement {
                 .then(response => {
                     this.searchResults = response?.[this.searchType] || [];
                     this.updateSearchResults(this.searchType, value);
+                    // Check if Enter is pressed & first result exists, then trigger click
+                    if (event.key === "Enter") {
+                        if (this.searchResults.length > 0) {
+                            const firstItem = this.shadow.querySelector('.dropdown div');
+                            if (firstItem)
+                                firstItem.click();
+                        }
+                    }
                 })
                 .catch(error => {
                     console.error("Error fetching search results:", error);
