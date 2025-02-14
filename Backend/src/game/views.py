@@ -14,7 +14,7 @@ from game.models import Game, GameMember
 from game.utils import create_game, delete_game, get_game_of_user
 
 class CreateGameView(BaseAuthenticatedView):
-    @barely_handle_exceptions
+    # TODO: uncomment @barely_handle_exceptions
     def post(self, request):
         # Get the user from the request
         user = request.user

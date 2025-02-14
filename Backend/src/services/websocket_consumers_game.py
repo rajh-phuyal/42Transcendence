@@ -33,13 +33,16 @@ class GameConsumer(CustomWebSocketLogic):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
         self.local_game = await database_sync_to_async(lambda: self.game.game_members.first().local_game)()
+        # Check if the user is a game member if not close the connection
+        if not self.game.game_members.filter(user=self.user).exists():
+            logging.info(f"User {self.user.id} is not a member of game {self.game_id}. CONNECTION CLOSED.")
+            await self.close()
         self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
         self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
         self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
         self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
         self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
-        # TODO: check if the user is a game member if not close the connection
-        # Also keeP in mind local games!  issue #312
+        # TODO: Keep in mind local games!  issue #312
 
         # If the game is not in the right state, close the connection
         if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:

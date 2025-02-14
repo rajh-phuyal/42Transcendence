@@ -53,7 +53,7 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
         # Check if there is already a direct game between the user and the opponent
         old_game = get_game_of_user(user, opponent)
         if old_game:
-            return old_game.id, False
+            return old_game, False
 
         # Create the game and the game members in a transaction
         with transaction.atomic():
@@ -82,7 +82,7 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             game.save()
             game_member_user.save()
             game_member_opponent.save()
-        if game.local_game:
+        if local_game:
             invite_msg = f"**GL,{game.as_clickable()}**"
         else:
             invite_msg = f"**G,{user.id},{opponent.id},{game.as_clickable()}**"
