@@ -352,8 +352,9 @@ export default {
 
         changeFrendshipPrimaryMethod() {
             const object = buttonObjects[this.result.relationship.state];
+            const fullUrl = object.Url + this.result.id + "/";
 
-            call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
+            call(fullUrl, object.method).then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
@@ -363,7 +364,7 @@ export default {
         },
 
         changeFrendshipSecondaryMethod() {
-            call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
+            call(`user/relationship/reject/${this.result.id}/`, "DELETE").then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
@@ -380,8 +381,8 @@ export default {
                 object = buttonObjects["blocked"];
             else
                 object = buttonObjects["unblocked"];
-
-            call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
+            const fullUrl = object.Url + this.result.id + "/";
+            call(fullUrl, object.method).then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});

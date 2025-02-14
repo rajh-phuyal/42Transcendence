@@ -46,7 +46,7 @@ class LoadConversationView(BaseAuthenticatedView):
     messages if the user is blocking the other user. This function is not ideal
     I guess using a new Serializer for the conversation would be better...
     """
-    #@barely_handle_exceptions TODO: remove comment
+    @barely_handle_exceptions
     def put(self, request, conversation_id=None):
         user = request.user
         msgid = int(request.GET.get('msgid', 0))
