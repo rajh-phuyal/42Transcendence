@@ -11,5 +11,9 @@ class BarelyAnException(APIException):
 class NotAuthenticated(BarelyAnException):
     def __init__(self, detail=None, status_code=status.HTTP_401_UNAUTHORIZED):
         super().__init__(detail)
-        self.detail = detail or _("Authentication credentials were not provided.")
         self.status_code = status_code
+        self.detail = {
+            "status": "error",
+            "statusCode": self.status_code,
+            "message": detail or _("Authentication credentials were not provided.")
+        }
