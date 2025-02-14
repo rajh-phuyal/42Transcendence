@@ -9,7 +9,7 @@ class ValidationException(BarelyAnException):
         self.status_code = status_code
 
 class UserNotFound(BarelyAnException):
-    def __init__(self, detail=None, status_code=status.HTTP_400_BAD_REQUEST):
+    def __init__(self, detail=None, status_code=status.HTTP_404_NOT_FOUND):
         super().__init__(detail, status_code)
         self.detail = detail or _('User not found')
         self.status_code = status_code

@@ -55,42 +55,42 @@ class RelationshipView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request, action, targetUserId):
         """ Handles POST requests: send and block """
-        user, target = self.validate_not_urself(request, targetUserId)
         action_map = {
-            'send': lambda: (send_request(user, target), _("Friend request sent")),
-            'block': lambda: (block_user(user, target), _("User blocked")),
+            'send': lambda user, target: (send_request(user, target), _("Friend request sent")),
+            'block': lambda user, target: (block_user(user, target), _("User blocked")),
         }
         if action not in action_map:
             return error_response(self.return_unvalid_action_msg(request, action_map.keys()), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
-        result, message = action_map[action]()
+        user, target = self.validate_not_urself(request, targetUserId)
+        result, message = action_map[action](user, target)
         return success_response(message, status_code=status.HTTP_201_CREATED)
 
     @barely_handle_exceptions
     def put(self, request, action, targetUserId):
         """ Handles PUT requests: accept """
-        user, target = self.validate_not_urself(request, targetUserId)
         action_map = {
-            'accept': lambda: (send_request(user, target), _("Friend request sent")),
+            'accept': lambda user, target: (accept_request(user, target), _("Friend request accepted")),
         }
         if action not in action_map:
             return error_response(self.return_unvalid_action_msg(request, action_map.keys()), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
-        accept_request(user, target)
-        return success_response(_("Friend request accepted"), status_code=status.HTTP_200_OK)
+        user, target = self.validate_not_urself(request, targetUserId)
+        result, message = action_map[action](user, target)
+        return success_response(message, status_code=status.HTTP_200_OK)
 
     @barely_handle_exceptions
     def delete(self, request, action, targetUserId):
         """ Handles DELETE requests: unblock, reject, cancel, remove """
-        user, target = self.validate_not_urself(request, targetUserId)
         action_map = {
-            'unblock': lambda: (unblock_user(user, target), _("User unblocked")),
-            'reject': lambda: (reject_request(user, target), _("Friend request rejected")),
-            'cancel': lambda: (cancel_request(user, target), _("Friend request cancelled")),
-            'remove': lambda: (unfriend(user, target), _("Friend removed")),
+            'unblock': lambda user, target: (unblock_user(user, target), _("User unblocked")),
+            'reject': lambda user, target: (reject_request(user, target), _("Friend request rejected")),
+            'cancel': lambda user, target: (cancel_request(user, target), _("Friend request cancelled")),
+            'remove': lambda user, target: (unfriend(user, target), _("Friend removed")),
         }
         if action not in action_map:
             return error_response(self.return_unvalid_action_msg(request, action_map.keys()), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
-        result, message = action_map[action]()
-        return success_response(message, status_code=status.HTTP_201_CREATED)
+        user, target = self.validate_not_urself(request, targetUserId)
+        result, message = action_map[action](user, target)
+        return success_response(message, status_code=status.HTTP_200_OK)
 
     def validate_not_urself(self, request, target_user_id):
         user = request.user

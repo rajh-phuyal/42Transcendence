@@ -31,7 +31,8 @@ AUTH_USER_MODEL = 'user.User'
 
 # DEBUG MODE
 local_deploy = os.getenv('LOCAL_DEPLOY', 'True')
-DEBUG = local_deploy.lower() == 'true'
+#DEBUG = local_deploy.lower() == 'true'
+DEBUG = False
 print(f"DEBUG is set to: {DEBUG}")
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
