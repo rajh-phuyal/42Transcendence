@@ -32,7 +32,7 @@ export default {
             })
         },
         playAgainCallback() {
-            call(`game/play-again/${this.gameId}/`, 'POST').then(data => {
+            call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
                 console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game

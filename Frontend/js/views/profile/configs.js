@@ -391,14 +391,18 @@ export default {
         },
 
         openInviteForGameModal() {
-
-            this.domManip.$id("invite-for-game-modal-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
-            this.domManip.$id("invite-for-game-modal-opponent-name").textContent = this.result.username;
-
-            let modalElement = this.domManip.$id("invite-for-game-modal");
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-
+            // Check if the user is already in a game -> redir to game
+            call(`game/get-game/${this.routeParams.id}/`, 'GET').then(data => {
+                if (data.gameId)
+                    router('/game', {"id": data.gameId});
+                else {
+                    this.domManip.$id("invite-for-game-modal-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
+                    this.domManip.$id("invite-for-game-modal-opponent-name").textContent = this.result.username;
+                    let modalElement = this.domManip.$id("invite-for-game-modal");
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            });
         },
         selectMap(chosenMap) {
             const maps = this.domManip.$class("invite-for-game-modal-maps-button");

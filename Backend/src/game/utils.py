@@ -4,7 +4,6 @@ import logging
 from rest_framework import status
 from django.db import transaction
 from django.db.models import Q
-from django.core.cache import cache
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.utils.timezone import localtime
@@ -52,23 +51,9 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             # TODO: issue #210
             raise BarelyAnException(_("Playing against AI is not supported yet"))
         # Check if there is already a direct game between the user and the opponent
-        user_games = GameMember.objects.filter(
-            user=user.id,
-            local_game=local_game,
-            game__tournament_id=None,
-            game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
-        ).values_list('game_id', flat=True)
-        opponent_games = GameMember.objects.filter(
-            user=opponent.id,
-            local_game=local_game,
-            game__tournament_id=None,
-            game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
-        ).values_list('game_id', flat=True)
-        if user_games or opponent_games:
-            common_games = set(user_games).intersection(opponent_games)
-            if common_games:
-                game_id = common_games.pop()
-                return game_id, False
+        old_game = get_game_of_user(user, opponent)
+        if old_game:
+            return old_game.id, False
 
         # Create the game and the game members in a transaction
         with transaction.atomic():
@@ -100,6 +85,31 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
         invite_msg = f"**G,{user.id},{opponent.id},{game.id}**"
         create_and_send_overloards_pm(user, opponent, invite_msg)
         return game.id, True
+
+def get_game_of_user(user1, user2):
+    """
+    This function returns the game between user1 and user2 if it exists.
+    The game:
+     - must be in a pending, ongoing or paused state.
+     - can't be a tournament game.
+    """
+    user1_games = GameMember.objects.filter(
+        user=user1.id,
+        game__tournament_id=None,
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+    ).values_list('game_id', flat=True)
+    user2_games = GameMember.objects.filter(
+        user=user2.id,
+        game__tournament_id=None,
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+    ).values_list('game_id', flat=True)
+    if user1_games and user2_games:
+        common_games = set(user1_games).intersection(user2_games)
+        if common_games:
+            game_id = common_games.pop()
+            game = Game.objects.get(id=game_id)
+            return game
+    return None
 
 def delete_game(user_id, game_id):
     # Check if the game exists

@@ -1,3 +1,5 @@
+# Basic
+import logging
 # Django
 from django.utils.translation import gettext as _
 # Core
@@ -6,9 +8,10 @@ from core.response import success_response, error_response
 from core.decorators import barely_handle_exceptions
 # User
 from user.models import User
+from user.utils import get_user_by_id
 # Game
 from game.models import Game, GameMember
-from game.utils import create_game, delete_game
+from game.utils import create_game, delete_game, get_game_of_user
 
 class CreateGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -23,6 +26,22 @@ class CreateGameView(BaseAuthenticatedView):
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game_id})
         return success_response(_('Game already exists'), **{'gameId': game_id})
+
+class GetGameView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, userid):
+        """
+        This endpoint should be called by the frontend before the user want's
+        to create a new game. If this call returns a game id, the user will be
+        redirected to the game page. If not, the frontend will show the "Create
+        Game" Modal.
+        """
+        user = request.user
+        opponent = get_user_by_id(userid)
+        game = get_game_of_user(user, opponent)
+        if game:
+            return success_response(_('Game found'), **{'gameId': game.id})
+        return success_response(_('No game found'), **{'gameId': None})
 
 class DeleteGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -101,7 +120,7 @@ class LobbyView(BaseAuthenticatedView):
 class PlayAgainView(BaseAuthenticatedView):
     # TODO:
     @barely_handle_exceptions
-    def post(self, request, id):
+    def put(self, request, id):
         """
         This endpoint will be linked to a "Play Again" button in the frontend.
         The first user to click the button will create a new game with the same
