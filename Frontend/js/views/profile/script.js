@@ -1,5 +1,6 @@
 import { $id } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
+import $store from '../../store/store.js';
 
 function populateUserInfo(res) {
     let username = $id("username");
