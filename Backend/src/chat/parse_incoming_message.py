@@ -59,9 +59,9 @@ async def check_if_msg_is_cmd(user, other_user, content):
             if temp[3] == "yes":
                 powerups = True
             logging.info(f"User/Opponent: %s/%s", user.id, other_user.id)
-            game_id, sucess = await sync_to_async(create_game)(user, other_user.id, map_number, powerups, local_game)
+            game, sucess = await sync_to_async(create_game)(user, other_user.id, map_number, powerups, local_game)
             if not sucess:
-                raise BarelyAnException(_("Game already exists: #G#{id}#").format(id=game_id))
+                raise BarelyAnException(_("Game already exists: {link_game}").format(link_game=game.as_clickable()))
         else:
             raise BarelyAnException(_("Invalid conversation command"))
         logging.info(f"Command found and executed: %s", content)

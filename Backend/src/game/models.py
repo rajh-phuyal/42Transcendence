@@ -26,6 +26,9 @@ class Game(models.Model):
     def __str__(self):
         return f"Game {self.id} - State: {self.state}"
 
+    def as_clickable(self):
+        return f"#G#{self.id}#"
+
     class Meta:
         db_table = '"barelyaschema"."game"'
 

@@ -380,7 +380,6 @@ def update_deadline_local_tournament(tournament, pending_games):
         logging.info(f"No pending games found - that is strange!")
     update_deadline_of_game(random.choice(pending_games).id)
 
-
 def update_deadlines(tournament, pending_games):
     logging.info(f"Updating deadlines for tournament {tournament.id} with {len(pending_games)} pending games")
 

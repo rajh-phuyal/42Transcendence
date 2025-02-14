@@ -82,9 +82,12 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             game.save()
             game_member_user.save()
             game_member_opponent.save()
-        invite_msg = f"**G,{user.id},{opponent.id},{game.id}**"
+        if game.local_game:
+            invite_msg = f"**GL,{game.as_clickable()}**"
+        else:
+            invite_msg = f"**G,{user.id},{opponent.id},{game.as_clickable()}**"
         create_and_send_overloards_pm(user, opponent, invite_msg)
-        return game.id, True
+        return game, True
 
 def get_game_of_user(user1, user2):
     """

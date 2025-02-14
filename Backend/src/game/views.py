@@ -22,10 +22,10 @@ class CreateGameView(BaseAuthenticatedView):
         local_game = request.data.get('localGame')
         opponent_id = request.data.get('opponentId')
         map_number = request.data.get('mapNumber')
-        game_id, success = create_game(user, opponent_id, map_number, powerups, local_game)
+        game, success = create_game(user, opponent_id, map_number, powerups, local_game)
         if success:
-            return success_response(_('Game created successfully'), **{'gameId': game_id})
-        return success_response(_('Game already exists'), **{'gameId': game_id})
+            return success_response(_('Game created successfully'), **{'gameId': game.id})
+        return success_response(_('Game already exists'), **{'gameId': game.id})
 
 class GetGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -143,7 +143,7 @@ class PlayAgainView(BaseAuthenticatedView):
             return error_response(_('Tournament games can not be played again'))
         opponent_id = GameMember.objects.filter(game=old_game).exclude(user=user).first().user.id
         local_game = GameMember.objects.filter(game=old_game, user=user).first().local_game
-        game_id, success = create_game(user, opponent_id, old_game.map_number, old_game.powerups, local_game)
+        game, success = create_game(user, opponent_id, old_game.map_number, old_game.powerups, local_game)
         if success:
-            return success_response(_('Game created successfully'), **{'gameId': game_id})
-        return success_response(_('Game already exists'), **{'gameId': game_id})
+            return success_response(_('Game created successfully'), **{'gameId': game.id})
+        return success_response(_('Game already exists'), **{'gameId': game.id})

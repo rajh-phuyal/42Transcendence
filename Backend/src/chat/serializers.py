@@ -24,49 +24,69 @@ def generate_template_msg(message):
     params = parts[1:]
     message_templates = {
         "G": {
-            "message": _("@{0} has invited @{1} to play a friendly match: #G#{2}#."),
+            "message": _("@{0} has invited @{1} to play a friendly match: {2}"),
             "count": 3
         },
         "GL": {
-            "message": _("Local game with ID {0} has been created."),
+            "message": _("Local game has been created: {0}"),
             "count": 1
         },
         "FS": {
-            "message": _("User @{0} has sent a friend request to @{1}."),
+            "message": _("User @{0} has sent a friend request to @{1}"),
             "count": 2
         },
         "FA": {
-            "message": _("User @{0} has accepted the friend request from @{1}."),
+            "message": _("User @{0} has accepted the friend request from @{1}"),
             "count": 2
         },
         "FC": {
-            "message": _("User @{0} has canceled the friend request to @{1}."),
+            "message": _("User @{0} has canceled the friend request to @{1}"),
             "count": 2
         },
         "FR": {
-            "message": _("User @{0} has rejected the friend request from @{1}."),
+            "message": _("User @{0} has rejected the friend request from @{1}"),
             "count": 2
         },
         "FU": {
-            "message": _("User @{0} has removed @{1} from their friends list."),
+            "message": _("User @{0} has removed @{1} from their friends list"),
             "count": 2
         },
         "B": {
-            "message": _("User @{0} has blocked @{1}."),
+            "message": _("User @{0} has blocked @{1}"),
             "count": 2
         },
         "U": {
-            "message": _("User @{0} has unblocked @{1}."),
+            "message": _("User @{0} has unblocked @{1}"),
             "count": 2
         },
         "S": {
-            "message": _("User @{0} has started a conversation with @{1}."),
+            "message": _("User @{0} has started a conversation with @{1}"),
             "count": 2
         },
         "TI": {
-            "message": _("User @{0} has invited @{1} to the tournament: {2}."),
+            "message": _("User @{0} has invited @{1} to the tournament: {2}"),
             "count": 3
         },
+        "TL": {
+            "message": _("User @{0} has left the tournament: {1}"),
+            "count": 2
+        },
+        "TJ": {
+            "message": _("User @{0} has joined the tournament: {1}"),
+            "count": 2
+        },
+        "TS": {
+            "message": _("The tournament: {0} has started"),
+            "count": 1
+        },
+        "TDA": {
+            "message": _("The tournament: {0} has been deleted by the creator"),
+            "count": 1
+        },
+        "TDO": {
+            "message": _("The overloards have deleted the tournament: {0} because there are not enough players left!"),
+            "count": 1
+        }
     }
     if cmd_type not in message_templates:
         raise ValueError(f"Invalid template key: {cmd_type}")

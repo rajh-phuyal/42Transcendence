@@ -136,6 +136,24 @@ def send_ws_tournament_msg(tournament_id, type_camel, type_snake, message, **jso
     })
     logging.info(f"Message sent to tournament {tournament_id} channel ({tournament_id_name}): {message}")
 
+def send_ws_tournament_pm(tournament_id, message):
+    """
+    This function sends a PM Chat Message to all users in a tournament.
+    if the message contains <userid> it will be replaced with the actual user id.
+    """
+    from tournament.models import TournamentMember, Tournament
+    from chat.message_utils import create_and_send_overloards_pm
+     # Get all users that are invited to the tournament
+    tournament_admin = TournamentMember.objects.get(tournament_id=tournament_id, is_admin=True)
+    tournament_members = TournamentMember.objects.filter(tournament_id=tournament_id).exclude(is_admin=True)
+
+    for member in tournament_members:
+        #if message contains <userid> replace it with the actual user id
+        temp = message
+        if "<userid>" in temp:
+            temp = temp.replace("<userid>", str(member.user.id))
+        create_and_send_overloards_pm(tournament_admin.user, member.user, temp)
+
 # ==============================================================================
 #     GAME FUNCTIONS
 # ==============================================================================

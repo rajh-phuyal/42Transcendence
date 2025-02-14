@@ -8,7 +8,7 @@ from django.db import transaction
 # Core
 from core.exceptions import BarelyAnException
 # Services
-from services.send_ws_msg import send_ws_tournament_msg
+from services.send_ws_msg import send_ws_tournament_msg, send_ws_tournament_pm
 from services.channel_groups import delete_tournament_group
 # User
 from user.constants import USER_ID_AI
@@ -22,6 +22,8 @@ from game.models import Game
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from tournament.models import Tournament, TournamentMember
 from tournament.serializer import TournamentGameSerializer, TournamentMemberSerializer, TournamentRankSerializer
+# Chat
+from chat.message_utils import create_and_send_overloards_pm
 
 def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
@@ -125,35 +127,47 @@ def create_tournament(creator_id, name, local_tournament, public_tournament, map
             tournament_member.save()
     return tournament
 
-def delete_tournament(user, tournament_id):
-    with transaction.atomic():
-        tournament = Tournament.objects.select_for_update().get(id=tournament_id)
-        # Check if already a member
-        tournament_member = None
-        tournament_members = None
+def delete_tournament(user, tournament_id, to_less_players=False):
+    """
+    This function is called by the endpoint to delete a tournament and by the
+    leave_tournament function to delete a tournament if there are not enough
+    players left. The to less players flag is set to True in the latter case.
+    """
+    tournament = Tournament.objects.get(id=tournament_id)
+    if not to_less_players:
         try:
-            tournament_member = TournamentMember.objects.select_for_update().get(user_id=user.id, tournament_id=tournament_id)
-            tournament_members = TournamentMember.objects.select_for_update().filter(tournament_id=tournament_id)
+            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament_id)
         except TournamentMember.DoesNotExist:
             raise BarelyAnException(_("You are not a member of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
-
-        # Check if the user is the admin of the tournament
         if not tournament_member.is_admin:
             raise BarelyAnException(_("You are not the admin of the tournament"), status_code=status.HTTP_403_FORBIDDEN)
-        # Check if the tournament has already started
         if not tournament.state == Tournament.TournamentState.SETUP:
             raise BarelyAnException(_("Tournament can only be deleted if it is in setup state"))
-        # Delete the tournament
-        tournament_members.delete()
-        tournament.delete()
+
+    # First inform the users, then delete everything so that the functions still have the tournament object
     # inform users and delete the channel
     send_ws_tournament_msg(
         tournament_id,
         "tournamentState",
         "tournament_state",
-        _("The admin has deleted the tournament!"),
+        _("The tournament has been deleted"),
         **{"state": "delete"}
     )
+    # And also send as PM
+    if to_less_players:
+        send_ws_tournament_pm(tournament_id, f"**TDO,{tournament.as_clickable()}**")
+    else:
+        send_ws_tournament_pm(tournament_id, f"**TDA,{tournament.as_clickable()}**")
+
+    with transaction.atomic():
+        tournament = Tournament.objects.select_for_update().get(id=tournament_id)
+        try:
+            tournament_members = TournamentMember.objects.select_for_update().filter(tournament_id=tournament_id)
+            tournament_members.delete()
+        except TournamentMember.DoesNotExist:
+            logging.info("No members found for the tournament - this is strange :D")
+        tournament.delete()
+
     delete_tournament_group(tournament_id)
 
 def join_tournament(user, tournament_id):
@@ -177,7 +191,7 @@ def join_tournament(user, tournament_id):
             tournament_member.accepted = True
             tournament_member.save()
             data = TournamentMemberSerializer(tournament_member).data
-            # Send message via websocket
+            # Send message via websocket # TODO: same than some lines down!
             send_ws_tournament_msg(
                 tournament_id,
                 "tournamentSubscription",
@@ -185,6 +199,8 @@ def join_tournament(user, tournament_id):
                 _("{username} accepted the tournament invitation").format(username=user.username),
                 **data
             )
+            message = f"**TJ,{tournament_member.user.id},{tournament_member.tournament.as_clickable()}**"
+            create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)
             return
 
         # In case we don't have an entry:
@@ -202,19 +218,21 @@ def join_tournament(user, tournament_id):
             accepted=True
         )
         tournament_member.save()
-    # Send message via websocket
-    send_ws_tournament_msg(
-        tournament_id,
-        "tournamentSubscription",
-        "tournament_subscription",
-        _("{username} joined the tournament").format(username=user.username),
-        **{
-            "userId": user.id,
-            "state": "join",
-            "username": user.username,
-            "userAvatar": user.avatar_path,
-            "userState": "accepted" # TO match the serializer
-        }
+        message = f"**TJ,{tournament_member.user.id},{tournament_member.tournament.as_clickable()}**"
+        create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)
+        # Send message via websocket
+        send_ws_tournament_msg( # TODO: same than some lines up!
+            tournament_id,
+            "tournamentSubscription",
+            "tournament_subscription",
+            _("{username} joined the tournament").format(username=user.username),
+            **{
+                "userId": user.id,
+                "state": "join",
+                "username": user.username,
+                "userAvatar": user.avatar_path,
+                "userState": "accepted" # TO match the serializer
+            }
     )
 
 def leave_tournament(user, tournament_id):
@@ -233,7 +251,6 @@ def leave_tournament(user, tournament_id):
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
         # Delete the tournament member
         tournament_member.delete()
-        # TODO: issue #281 check if there are enough players left and cancel the tournament if not (only for private tournaments)
     # Send websocket update message to admin to update the lobby
     if tournament_member.accepted:
         message=_("User {username} left the tournament").format(username=user.username)
@@ -250,6 +267,15 @@ def leave_tournament(user, tournament_id):
             "state": "leave"
         }
     )
+    message = f"**TL,{user.id},{tournament.as_clickable()}**"
+    create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)
+    # Check if there are enough players left and cancel the tournament if not (only for private tournaments)
+    if tournament.public_tournament:
+        return
+    members_left = TournamentMember.objects.filter(tournament_id=tournament_id).count()
+    if members_left < 3:
+        logging.info(f"Only {members_left} players left in the tournament. Deleting the tournament")
+        delete_tournament(user, tournament_id, to_less_players=True)
     return
 
 def start_tournament(user, tournament_id):
@@ -290,6 +316,8 @@ def start_tournament(user, tournament_id):
         _("{username} started the tournament '{name}'! Go to lobby to not miss a game!").format(username=user.username, name=tournament.name),
         **{"state": "start"}
     )
+    message = f"**TS,{tournament.as_clickable()}**"
+    send_ws_tournament_pm(tournament_id, message)
     # create the games
     create_initial_games(tournament, tournament_members_after_start)
 

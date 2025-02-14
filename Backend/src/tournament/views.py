@@ -14,9 +14,10 @@ from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
 from django.db import models
-from tournament.utils_ws import send_tournament_invites_via_pm
+from services.send_ws_msg import send_ws_tournament_pm
 from rest_framework import status
 import re
+from services.send_ws_msg import send_ws_tournament_pm
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -113,7 +114,7 @@ class CreateTournamentView(BaseAuthenticatedView):
         )
 
         if not tournament.public_tournament:
-            send_tournament_invites_via_pm(tournament.id)
+            send_ws_tournament_pm(tournament.id, f"**TI,{user.id},<userid>,{tournament.as_clickable()}**")
 
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})
 
@@ -131,7 +132,7 @@ class JoinTournamentView(BaseAuthenticatedView):
         return success_response(_("Tournament joined successfully"))
 
 class LeaveTournamentView(BaseAuthenticatedView):
-    @barely_handle_exceptions
+    # TODO: remove comment @barely_handle_exceptions
     def delete(self, request, id):
         user = request.user
         leave_tournament(user, id)
