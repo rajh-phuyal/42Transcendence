@@ -26,6 +26,7 @@ GAME_PLAYER_INPUT = {
 GAME_STATE = {
     "playerLeft" : {
         "points": 0,
+        "result": "pending",
         "paddlePos": 50,
         "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",
@@ -35,6 +36,7 @@ GAME_STATE = {
     },
     "playerRight" : {
         "points": 0,
+        "result": "pending",
         "paddlePos": 50,
         "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",

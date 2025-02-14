@@ -11,9 +11,9 @@ import { audioPlayer } from '../../abstracts/audio.js';
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
     if (side === "x")
-        return (gameField.width - 2 * gameObject.borderStrokeWidth ) * percentage / 100;
+        return ((gameField.width - 2 * gameObject.borderStrokeWidth ) * percentage / 100);
     else if (side === "y")
-        return (gameField.height - 2 * gameObject.borderStrokeWidth ) * percentage / 100;
+        return ((gameField.height - 2 * gameObject.borderStrokeWidth ) * percentage / 100);
     else
         return undefined;
 }
@@ -113,6 +113,7 @@ export function updateReadyStateNodes() {
         if (gameObject.playerLeft.state === "finished"){
             $id("player-left-state").innerText = gameObject.playerLeft.points;
             $id("player-left-state-spinner").style.display = "none";
+            console.log("result", gameObject.playerLeft.result);
             if (gameObject.playerLeft.result === "won") {
                 $id("user-card-player-left").classList.remove("user-card-looser");
                 $id("user-card-player-left").classList.add("user-card-winner");
@@ -124,6 +125,7 @@ export function updateReadyStateNodes() {
         if (gameObject.playerRight.state === "finished"){
             $id("player-right-state").innerText = gameObject.playerRight.points;
             $id("player-right-state-spinner").style.display = "none";
+            console.log("result", gameObject.playerRight.result);
             if (gameObject.playerRight.result === "won") {
                 $id("user-card-player-right").classList.remove("user-card-looser");
                 $id("user-card-player-right").classList.add("user-card-winner");
@@ -201,19 +203,21 @@ export function updateGameObjects(beMessage) {
     gameObject.state = beMessage?.gameData?.state;
     gameObject.sound = beMessage?.gameData?.sound;
     gameObject.playerLeft.points = beMessage?.playerLeft?.points;
+    gameObject.playerLeft.result = beMessage?.playerLeft?.result;
     gameObject.playerLeft.size = percentageToPixels('y', beMessage?.playerLeft?.paddleSize);
-    gameObject.playerLeft.pos = percentageToPixels('y', beMessage?.playerLeft?.paddlePos) - gameObject.playerLeft.size / 2; // Center the paddle
+    gameObject.playerLeft.pos = percentageToPixels('y', beMessage?.playerLeft?.paddlePos) - gameObject.playerLeft.size / 2 + gameObject.borderStrokeWidth; // Center the paddle
     gameObject.playerLeft.powerupBig = beMessage?.playerLeft?.powerupBig;
     gameObject.playerLeft.powerupSlow = beMessage?.playerLeft?.powerupSlow;
     gameObject.playerLeft.powerupFast = beMessage?.playerLeft?.powerupFast;
     gameObject.playerRight.points = beMessage?.playerRight?.points;
+    gameObject.playerRight.result = beMessage?.playerRight?.result;
     gameObject.playerRight.size = percentageToPixels('y', beMessage?.playerRight?.paddleSize);
-    gameObject.playerRight.pos = percentageToPixels('y', beMessage?.playerRight?.paddlePos) - gameObject.playerRight.size / 2; // Center the paddle
+    gameObject.playerRight.pos = percentageToPixels('y', beMessage?.playerRight?.paddlePos) - gameObject.playerRight.size / 2 + gameObject.borderStrokeWidth; // Center the paddle
     gameObject.playerRight.powerupBig = beMessage?.playerRight?.powerupBig;
     gameObject.playerRight.powerupSlow = beMessage?.playerRight?.powerupSlow;
     gameObject.playerRight.powerupFast = beMessage?.playerRight?.powerupFast;
-    gameObject.ball.posX = percentageToPixels('x', beMessage?.ball?.posX);
-    gameObject.ball.posY = percentageToPixels('y', beMessage?.ball?.posY);
+    gameObject.ball.posX = percentageToPixels('x', beMessage?.ball?.posX) + gameObject.borderStrokeWidth;
+    gameObject.ball.posY = percentageToPixels('y', beMessage?.ball?.posY) + gameObject.borderStrokeWidth;
     gameObject.ball.height = percentageToPixels('y', beMessage?.ball?.height);
     gameObject.ball.width = percentageToPixels('x', beMessage?.ball?.width);
     // If the state is not ongoing we should render manually!

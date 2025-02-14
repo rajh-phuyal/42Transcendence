@@ -34,6 +34,8 @@ async def init_game_on_cache(game, leftMember, rightMember):
         set_game_data(game.id, 'gameData', 'state', game.state)
         set_game_data(game.id, 'playerLeft', 'points', leftMember.points)
         set_game_data(game.id, 'playerRight', 'points', rightMember.points)
+        set_game_data(game.id, 'playerLeft', 'result', leftMember.result)
+        set_game_data(game.id, 'playerRight', 'result', rightMember.result)
         await init_powerup(game, leftMember.powerup_big, 'playerLeft', 'powerupBig')
         await init_powerup(game, leftMember.powerup_slow, 'playerLeft', 'powerupSlow')
         await init_powerup(game, leftMember.powerup_fast, 'playerLeft', 'powerupFast')

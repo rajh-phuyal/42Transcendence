@@ -26,7 +26,7 @@ channel_layer = get_channel_layer()
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
-    @barely_handle_ws_exceptions
+    # TODO: uncommnt @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
         # Set self vars for consumer
@@ -34,7 +34,7 @@ class GameConsumer(CustomWebSocketLogic):
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
         self.local_game = await database_sync_to_async(lambda: self.game.game_members.first().local_game)()
         # Check if the user is a game member if not close the connection
-        if not self.game.game_members.filter(user=self.user).exists():
+        if not await database_sync_to_async(lambda: self.game.game_members.filter(user=self.user).exists())():
             logging.info(f"User {self.user.id} is not a member of game {self.game_id}. CONNECTION CLOSED.")
             await self.close()
         self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
@@ -60,10 +60,10 @@ class GameConsumer(CustomWebSocketLogic):
         # Set the player(s) ready
         if self.local_game:
             # On local games just set both players to ready #TODO: this works and is related to issue #312
-            self.game.set_player_ready(self.leftUser.id, True)
-            self.game.set_player_ready(self.rightUser.id, True)
+            await database_sync_to_async(self.game.set_player_ready)(self.leftUser.id, True)
+            await database_sync_to_async(self.game.set_player_ready)(self.rightUser.id, True)
         else:
-            self.game.set_player_ready(self.user.id, True)
+            await database_sync_to_async(self.game.set_player_ready)(self.user.id, True)
         # Send the player ready message and the game data
         left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
         right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)

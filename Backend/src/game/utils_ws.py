@@ -27,7 +27,13 @@ def update_game_state(game_id, state):
         game = Game.objects.select_for_update().get(id=game_id)
         if (state == Game.GameState.FINISHED):
             # Use my finish_game function to deal with everything
-            finish_game(game)
+            winner, looser = finish_game(game)
+            if is_left_player(game_id, winner.user_id):
+                set_game_data(game_id, 'playerLeft', 'result', GameMember.GameResult.WON)
+                set_game_data(game_id, 'playerRight', 'result', GameMember.GameResult.LOST)
+            else:
+                set_game_data(game_id, 'playerLeft', 'result', GameMember.GameResult.LOST)
+                set_game_data(game_id, 'playerRight', 'result', GameMember.GameResult.WON)
         else:
             game.state = state
             if(state == Game.GameState.ONGOING):

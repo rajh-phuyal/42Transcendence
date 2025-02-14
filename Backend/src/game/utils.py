@@ -167,12 +167,12 @@ def finish_game(game, message=None):
         game_member_1.save()
         game_member_2.save()
 
-    # For tournament games only:
-    if not game.tournament_id:
-        return
-    # - inform everyone that the game finished
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
+    # For tournament games only:
+    if not game.tournament_id:
+        return winner, looser
+    # - inform everyone that the game finished
     send_ws_tournament_msg(
         game.tournament_id,
         "gameUpdateState",
@@ -187,6 +187,7 @@ def finish_game(game, message=None):
     update_tournament_member_stats(game, winner, looser)
     update_tournament_ranks(game.tournament_id)
     check_tournament_routine(game.tournament_id)
+    return winner, looser
 
 def update_deadline_of_game(game_id):
     try:
