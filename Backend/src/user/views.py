@@ -1,7 +1,7 @@
 # Django
 from django.utils.translation import gettext as _, activate
 from django.db import transaction
-from rest_framework import status
+from rest_framework import status, viewsets
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 # Core
@@ -46,93 +46,58 @@ class SearchView(BaseAuthenticatedView):
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def get(self, request, id):
-        user = User.objects.get(id=id)
+    def get(self, request, targetUserId):
+        user = User.objects.get(id=targetUserId)
         serializer = ProfileSerializer(user, context={'request': request})
         return success_response(_("User profile loaded"), **serializer.data)
 
-# =============================================================================
-# ModifyFriendshipView for changing the relationship status between the
-# authenticated user and another user ('target_id')
-#
-# Endpoint: /api/user/relationship/
-#
-# The possible actions are:
-#  | METHOD    | ACTION    | ARGUMENTS             | USE CASE                 |
-#  |-----------|-----------|-----------------------|--------------------------|
-#  | POST      | 'send'    | 'action', 'target_id' | Send a friend request    |
-#  | POST      | 'block'   | 'action', 'target_id' | Block a user             |
-#  |           |           |                       |                          |
-#  | PUT       | 'accept'  | 'action', 'target_id' | Accept a friend request  |
-#  |           |           |                       |                          |
-#  | DELETE    | 'cancel'  | 'action', 'target_id' | Cancel a friend request  |
-#  | DELETE    | 'reject'  | 'action', 'target_id' | Reject a friend request  |
-#  | DELETE    | 'remove'  | 'action', 'target_id' | Remove a friend          |
-#  | DELETE    | 'unblock' | 'action', 'target_id' | Unblock a user           |
-#
-# =============================================================================
 class RelationshipView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def post(self, request):
-        allowed_actions = {'send', 'block'}
-        user, target, action = self.validate_data(request, allowed_actions)
-        if action == 'send':
-            send_request(user, target)
-            return success_response(_("Friend request sent"), status.HTTP_201_CREATED)
-        elif action == 'block':
-            block_user(user, target)
-            return success_response(_("User blocked"), status.HTTP_201_CREATED)
-        else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def post(self, request, action, targetUserId):
+        """ Handles POST requests: send and block """
+        user, target = self.validate_not_urself(request, targetUserId)
+        action_map = {
+            'send': lambda: (send_request(user, target), _("Friend request sent")),
+            'block': lambda: (block_user(user, target), _("User blocked")),
+        }
+        if action not in action_map:
+            return error_response(self.return_unvalid_action_msg(request, action_map.keys()), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+        result, message = action_map[action]()
+        return success_response(message, status_code=status.HTTP_201_CREATED)
 
     @barely_handle_exceptions
-    def put(self, request):
-        allowed_actions = {'accept'}
-        user, target, action = self.validate_data(request, allowed_actions)
-        if action == 'accept':
-            accept_request(user, target)
-            return success_response(_("Friend request accepted"))
-        else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def put(self, request, action, targetUserId):
+        """ Handles PUT requests: accept """
+        user, target = self.validate_not_urself(request, targetUserId)
+        action_map = {
+            'accept': lambda: (send_request(user, target), _("Friend request sent")),
+        }
+        if action not in action_map:
+            return error_response(self.return_unvalid_action_msg(request, action_map.keys()), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+        accept_request(user, target)
+        return success_response(_("Friend request accepted"), status_code=status.HTTP_200_OK)
 
     @barely_handle_exceptions
-    def delete(self, request):
-        allowed_actions = {'cancel', 'reject', 'remove', 'unblock'}
-        user, target, action = self.validate_data(request, allowed_actions)
-        if action == 'cancel':
-            cancel_request(user, target)
-            return success_response(_("Friend request cancelled"))
-        elif action == 'reject':
-            reject_request(user, target)
-            return success_response(_("Friend request rejected"))
-        elif action == 'remove':
-            unfriend(user, target)
-            return success_response(_("Friend removed"))
-        elif action == 'unblock':
-            unblock_user(user, target)
-            return success_response(_("User unblocked"))
-        else:
-            return error_response(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def delete(self, request, action, targetUserId):
+        """ Handles DELETE requests: unblock, reject, cancel, remove """
+        user, target = self.validate_not_urself(request, targetUserId)
+        action_map = {
+            'unblock': lambda: (unblock_user(user, target), _("User unblocked")),
+            'reject': lambda: (reject_request(user, target), _("Friend request rejected")),
+            'cancel': lambda: (cancel_request(user, target), _("Friend request cancelled")),
+            'remove': lambda: (unfriend(user, target), _("Friend removed")),
+        }
+        if action not in action_map:
+            return error_response(self.return_unvalid_action_msg(request, action_map.keys()), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+        result, message = action_map[action]()
+        return success_response(message, status_code=status.HTTP_201_CREATED)
 
-    # Utility function to validate that:
-    # - the request data contains the required fields
-    # - the action is one of the allowed actions
-    # - the target user exists
-    # - the target user is not the same as the authenticated user
-    def validate_data(self, request, allowed_actions):
+    def validate_not_urself(self, request, target_user_id):
         user = request.user
-        action = request.data.get('action')
-        target_id = request.data.get('target_id')
-        if not action:
-            raise ValidationException(_("key 'action' must be provided!"))
-        if action not in allowed_actions:
-            raise ValidationException(self.return_unvalid_action_msg(request, allowed_actions), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
-        if not target_id:
-            raise ValidationException(_("key 'target_id' must be provided!"))
-        target = get_user_by_id(target_id) # This will trigger an exception if the user does not exist
+        target = get_user_by_id(target_user_id)
         if user.id == target.id:
             raise ValidationException(_("cannot perform action on yourself"))
-        return user, target, action
+        return user, target
 
     def return_unvalid_action_msg(self, request, allowed_actions):
         return _(
@@ -145,9 +110,9 @@ class RelationshipView(BaseAuthenticatedView):
 
 class ListFriendsView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def get(self, request, id):
+    def get(self, request, targetUserId):
         user = request.user
-        target_user = get_user_by_id(id)
+        target_user = get_user_by_id(targetUserId)
         if is_blocking(target_user, user):
             return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))

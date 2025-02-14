@@ -8,8 +8,7 @@ from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 
 class FailedWebSocketAuthentication(BarelyAnException):
-    status_code = status.HTTP_403_FORBIDDEN
-    def __init__(self, detail, status_code=status.HTTP_403_FORBIDDEN):
+    def __init__(self, detail=None, status_code=status.HTTP_403_FORBIDDEN):
         super().__init__(detail)
         self.detail = detail or _("Failed to authenticate user via WebSocket")
         self.status_code = status_code
