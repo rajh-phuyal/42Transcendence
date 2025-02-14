@@ -4,15 +4,14 @@ from asgiref.sync import sync_to_async
 import logging
 from rest_framework import status
 from core.cookies import CookieJWTAuthentication
-from django.utils.translation import gettext as _gt
+from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
 
 class FailedWebSocketAuthentication(BarelyAnException):
-    status_code = 403
-    default_detail = _gt("Failed to authenticate user via WebSocket")
+    status_code = status.HTTP_403_FORBIDDEN
     def __init__(self, detail, status_code=status.HTTP_403_FORBIDDEN):
         super().__init__(detail)
-        self.detail = detail
+        self.detail = detail or _("Failed to authenticate user via WebSocket")
         self.status_code = status_code
 
 class WebSocketAuthMiddleware(BaseMiddleware):

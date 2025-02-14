@@ -147,7 +147,7 @@ class ListFriendsView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
         user = request.user
-        target_user = User.objects.get(id=id)
+        target_user = get_user_by_id(id)
         if is_blocking(target_user, user):
             return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
