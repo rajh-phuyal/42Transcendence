@@ -67,6 +67,7 @@ class LobbyView(BaseAuthenticatedView):
         opponent_member = GameMember.objects.filter(game=game).exclude(user=user).first()
         if not opponent_member:
             return error_response(_("Opponent not found"))
+
         # Removed this since u can see a lobby even if the game is finished
         #if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
         #    return error_response(_("Game can't be played since it's either finished or quited"))
@@ -81,30 +82,26 @@ class LobbyView(BaseAuthenticatedView):
         if (game.tournament):
             tournament_name = game.tournament.name
         # User with lower id will be playerRight
-        if user.id < opponent_member.user.id:
-            playerLeft = opponent_member.user
+        if user_member.user.id < opponent_member.user.id:
             memberLeft = opponent_member
-            playerRight = user
             memberRight = user_member
         else:
-            playerLeft = user
             memberLeft = user_member
-            playerRight = opponent_member.user
             memberRight = opponent_member
         response_message = {
             'playerLeft':{
-                'userId': playerLeft.id,
-                'username': playerLeft.username,
-                'avatar': playerLeft.avatar_path,
+                'userId': memberLeft.user.id,
+                'username': memberLeft.user.username,
+                'avatar': memberLeft.user.avatar_path,
                 'points': memberLeft.points,
-                'ready': game.get_player_ready(playerLeft.id),
+                'ready': game.get_player_ready(memberLeft.user.id),
             },
             'playerRight':{
-                'userId': playerRight.id,
-                'username': playerRight.username,
-                'avatar': playerRight.avatar_path,
+                'userId': memberRight.user.id,
+                'username': memberRight.user.username,
+                'avatar': memberRight.user.avatar_path,
                 'points': memberRight.points,
-                'ready': game.get_player_ready(playerRight.id),
+                'ready': game.get_player_ready(memberRight.user.id),
             },
             'gameData': {
                 'state': game.state,

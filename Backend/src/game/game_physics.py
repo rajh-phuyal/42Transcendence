@@ -163,9 +163,12 @@ async def apply_padlle_hit(game_id, player_side):
 
 async def apply_point(game_id, player_side):
     # update_score_points in cache and db
-    await update_game_points(game_id, player_side=player_side)
+    # If the side is left, the right player scored
+    if player_side == 'playerLeft':
+        await update_game_points(game_id, player_side='playerRight')
+    else:
+        await update_game_points(game_id, player_side='playerLeft')
     set_game_data(game_id, 'gameData', 'sound', 'score')
-
     # Reset the paddles
     set_game_data(game_id, 'playerLeft', 'paddlePos', 50)
     set_game_data(game_id, 'playerRight', 'paddlePos', 50)
