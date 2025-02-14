@@ -47,7 +47,12 @@ class WebSocketMessageHandlersMain:
             return
         # Check if content starts with a "/"
         # This means that the message was a command and therefore was handled
-        if await check_if_msg_is_cmd(consumer.user, consumer.user, content):
+        try:
+            if await check_if_msg_is_cmd(consumer.user, other_user, content):
+                return
+        except BarelyAnException as e:
+            # If the command was not valid, send an error message as a temporary chat message
+            await send_ws_chat_temporary(consumer.user.id, conversation_id, str(e))
             return
         # Check if user is blocked by other member
         if await sync_to_async(is_blocked)(consumer.user, other_user):

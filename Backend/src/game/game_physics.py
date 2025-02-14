@@ -16,16 +16,14 @@ async def activate_power_ups(game_id, player_side):
             if (player_side == 'playerLeft' and get_game_data(game_id, 'ball', 'directionX') < 0) or \
                 (player_side == 'playerRight' and get_game_data(game_id, 'ball', 'directionX') >= 0):
                 # the ball is moving towards the player: activate powerup SLOW
-                if update_player_powerup(game_id, player_side, 'powerupSlow', 'using'):
-                    last_ball_speed = get_game_data(game_id, 'ball', 'speed')
-                    set_game_data(game_id, 'ball', 'lastSpeed', last_ball_speed)
+                if await update_player_powerup(game_id, player_side, 'powerupSlow', 'using'):
+                    set_game_data(game_id, 'ball', 'lastSpeed', get_game_data(game_id, 'ball', 'speed'))
                     set_game_data(game_id, 'ball', 'speed', 1)
             else:
                 # the ball is moving away from the player: activate powerup FAST
-                if update_player_powerup(game_id, player_side, 'powerupFast', 'using'):
-                    last_ball_speed = get_game_data(game_id, 'ball', 'speed')
-                    set_game_data(game_id, 'ball', 'lastSpeed', last_ball_speed)
-                    set_game_data(game_id, 'ball', 'speed', last_ball_speed + 2)
+                if await update_player_powerup(game_id, player_side, 'powerupFast', 'using'):
+                    set_game_data(game_id, 'ball', 'lastSpeed', get_game_data(game_id, 'ball', 'speed'))
+                    set_game_data(game_id, 'ball', 'speed', get_game_data(game_id, 'ball', 'speed') + 2)
 
 # Player side needs to be 'playerLeft' or 'playerRight'
 async def move_paddle(game_id, player_side):
@@ -144,7 +142,7 @@ async def apply_padlle_hit(game_id, player_side):
     if (current_paddle_size > INIT_PADDLE_SIZE):
         current_paddle_size -= 4
         if (current_paddle_size <= INIT_PADDLE_SIZE):
-            update_player_powerup(game_id, player_side, 'powerupBig', 'used')
+            await update_player_powerup(game_id, player_side, 'powerupBig', 'used')
             current_paddle_size = INIT_PADDLE_SIZE
         set_game_data(game_id, player_side, 'paddleSize', current_paddle_size)
     # speed up the ball or reset power up SLOW and FAST
@@ -152,10 +150,11 @@ async def apply_padlle_hit(game_id, player_side):
     if (last_speed_ball > 0):
         set_game_data(game_id, 'ball', 'speed', last_speed_ball)
         set_game_data(game_id, 'ball', 'lastSpeed', 0)
-        if get_game_data(game_id, player_side, 'powerupSlow') == 'using':
-            update_player_powerup(game_id, player_side, 'powerupSlow', 'used')
-        elif get_game_data(game_id, player_side, 'powerupFast') == 'using':
-            update_player_powerup(game_id, player_side, 'powerupFast', 'used')
+        # We don't need to check here since update_player_powerup will only deactivate the powerup if it is active
+        await update_player_powerup(game_id, 'playerLeft', 'powerupSlow', 'used')
+        await update_player_powerup(game_id, 'playerLeft', 'powerupFast', 'used')
+        await update_player_powerup(game_id, 'playerRight', 'powerupSlow', 'used')
+        await update_player_powerup(game_id, 'playerRight', 'powerupFast', 'used')
     else:
         current_ball_speed = get_game_data(game_id, 'ball', 'speed')
         current_ball_speed += BALL_SPEED_STEP
@@ -213,12 +212,12 @@ async def apply_point(game_id, player_side):
     set_game_data(game_id, 'ball', 'speed', INIT_BALL_SPEED)
     # Reset all powerups
     set_game_data(game_id, 'ball', 'lastSpeed', 0)
-    update_player_powerup(game_id, 'playerLeft', 'powerupBig', 'used')
-    update_player_powerup(game_id, 'playerLeft', 'powerupFast', 'used')
-    update_player_powerup(game_id, 'playerLeft', 'powerupSlow', 'used')
-    update_player_powerup(game_id, 'playerRight', 'powerupBig', 'used')
-    update_player_powerup(game_id, 'playerRight', 'powerupFast', 'used')
-    update_player_powerup(game_id, 'playerRight', 'powerupSlow', 'used')
+    await update_player_powerup(game_id, 'playerLeft', 'powerupBig', 'used')
+    await update_player_powerup(game_id, 'playerLeft', 'powerupFast', 'used')
+    await update_player_powerup(game_id, 'playerLeft', 'powerupSlow', 'used')
+    await update_player_powerup(game_id, 'playerRight', 'powerupBig', 'used')
+    await update_player_powerup(game_id, 'playerRight', 'powerupFast', 'used')
+    await update_player_powerup(game_id, 'playerRight', 'powerupSlow', 'used')
 
 async def check_if_game_is_finished(game_id):
     score_left = get_game_data(game_id, 'playerLeft', 'points')

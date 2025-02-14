@@ -71,7 +71,7 @@
         "uk-UA": "",
         "ne-NP": ""
     },
-    "helpMessage/G1": {
+    "helpMessage/G2": {
         "en-US": "<strong><u>(1/3) Create a game</u><br>Choose type</strong> e.g. /Gufo,remote,<br>remote<br>local",
         "pt-PT": "",
         "pt-BR": "",
@@ -79,7 +79,7 @@
         "uk-UA": "",
         "ne-NP": ""
     },
-    "helpMessage/G2": {
+    "helpMessage/G3": {
         "en-US": "<strong><u>(2/3) Create a game</u><br>Wanna play with powerups?</strong> e.g. /Gufo,remote,yes,<br>yes<br>no",
         "pt-PT": "",
         "pt-BR": "",
@@ -87,7 +87,7 @@
         "uk-UA": "",
         "ne-NP": ""
     },
-    "helpMessage/G3": {
+    "helpMessage/G4": {
         "en-US": "<strong><u>(3/3) Create a game</u><br>Press return to create the game</strong>",
         "pt-PT": "",
         "pt-BR": "",

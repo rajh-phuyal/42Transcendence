@@ -100,11 +100,8 @@ async def send_ws_chat_temporary(user_id, conversation_id, content):
         logging.error(f"Conversation with ID {conversation_id} not found.")
         return
     message = TempConversationMessage(overlords_instance=overloards, conversation=conversation, created_at=timezone.now().isoformat(), content=content) # TODO: Issue #193
-    logging.info(f"created temp message: {message}")
     serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message).data)()
-    logging.info(f"serialized temp message: {serialized_message}")
     await send_ws_msg_to_user(user_id, **serialized_message)
-    logging.info(f"sent temp message: {serialized_message}")
 
 async def send_ws_new_conversation(user, conversation):
     """

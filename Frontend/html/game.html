@@ -32,10 +32,9 @@
             <div class="game-view-middle-side-container-top">
                 <img id="game-countdown-image" src="" alt="Game countdown" width="150px" height="150px">
                 <h2 id="game-view-middle-side-container-top-text"></h2>
-                <barely-a-button id="button-play-again"></barely-a-button>
+                <barely-a-button buttonclass="rect-button" id="button-play-again"></barely-a-button>
 			</div>
             <div class="game-view-middle-side-container-bottom">
-				<barely-a-button id="button-leave-lobby"></barely-a-button>
             </div>
         </div>
 
@@ -57,7 +56,8 @@
                 </div>
             </div>
             <div class="game-view-right-side-container-bottom">
-                <barely-a-button id="button-quit-game"></barely-a-button>
+                <barely-a-button buttonclass="rect-button"id="button-leave-lobby"></barely-a-button>
+                <barely-a-button buttonclass="rect-button"id="button-quit-game"></barely-a-button>
             </div>
         </div>
     </div>
@@ -154,9 +154,11 @@
 .game-view-right-side-container-bottom {
     height: 20%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
+
     text-align: center;
     display: flex;
+    flex-direction: column;
+    gap: 10px;
     align-items: center;
     justify-content: center;
 }
@@ -166,12 +168,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: black;
+    background-color: rgb(63, 62, 18);
     color: white;
+    border: 2px solid white;
     padding: 10px;
     border-radius: 8px;
     width: 50%;
     text-align: center;
+}
+
+.user-card-winner {
+    border: 2px solid rgb(5, 92, 24);
+}
+
+.user-card-looser {
+    border: 2px solid rgb(119, 15, 15);
 }
 
 /* Username Styling */

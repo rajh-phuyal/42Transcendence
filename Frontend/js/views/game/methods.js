@@ -26,12 +26,13 @@ export function changeGameState(state) {
             $id("button-play-again").style.display = "none";
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
+            $id("button-quit-game").style.display = "none";
             break;
         case "pending":
             $id("button-play-again").style.display = "none";
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
-            $id("button-quit-game").style.display = "none";
+            $id("button-quit-game").style.display = "block";
             if (gameObject.wsConnection)
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
             else
@@ -112,10 +113,24 @@ export function updateReadyStateNodes() {
         if (gameObject.playerLeft.state === "finished"){
             $id("player-left-state").innerText = gameObject.playerLeft.points;
             $id("player-left-state-spinner").style.display = "none";
+            if (gameObject.playerLeft.result === "won") {
+                $id("user-card-player-left").classList.remove("user-card-looser");
+                $id("user-card-player-left").classList.add("user-card-winner");
+            } else {
+                $id("user-card-player-left").classList.remove("user-card-winner");
+                $id("user-card-player-left").classList.add("user-card-looser");
+            }
         }
         if (gameObject.playerRight.state === "finished"){
             $id("player-right-state").innerText = gameObject.playerRight.points;
             $id("player-right-state-spinner").style.display = "none";
+            if (gameObject.playerRight.result === "won") {
+                $id("user-card-player-right").classList.remove("user-card-looser");
+                $id("user-card-player-right").classList.add("user-card-winner");
+            } else {
+                $id("user-card-player-right").classList.remove("user-card-winner");
+                $id("user-card-player-right").classList.add("user-card-looser");
+            }
         }
 }
 

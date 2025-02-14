@@ -430,8 +430,18 @@ export function createHelpMessage(input){
         if(input.startsWith("/G")) {
             // Count the typed "," to determine the step of the game creation
             const commaCount = input.split(",").length - 1;
-            if (commaCount < 4)
-                htmlContent = translate("chat", "helpMessage/G" + commaCount);
+            console.log("Comma count:", commaCount);
+            if (commaCount < 2)
+                htmlContent = translate("chat", "helpMessage/G0");
+            else if (commaCount == 2)
+                htmlContent = translate("chat", "helpMessage/G2");
+            else if (commaCount == 3) {
+                // check if it ends on yes or no
+                if (input.endsWith("YES") || input.endsWith("NO"))
+                    htmlContent = translate("chat", "helpMessage/G4");
+                else
+                    htmlContent = translate("chat", "helpMessage/G3");
+            }
         } else if(input.startsWith("/F")) {
             if (input.length == 2)
                 htmlContent = translate("chat", "helpMessage/F");

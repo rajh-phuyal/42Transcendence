@@ -112,14 +112,23 @@ export default {
                     console.log("data:", data);
 
                     // Set user cards
-                    this.domManip.$id("player-left-username").innerText = "@" + data.playerLeft.username
+                    // If username has more than 10 characters, cut it off and add "..."
+                    let leftUsername = "@" + data.playerLeft.username;
+                    let rightUsername = "@" + data.playerRight.username;
+                    if (leftUsername.length > 10)
+                        leftUsername = leftUsername.substring(0, 7) + "...";
+                    if (rightUsername.length > 10)
+                        rightUsername = rightUsername.substring(0, 7) + "...";
+                    this.domManip.$id("player-left-username").innerText = leftUsername;
                     this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/' + data.playerLeft.avatar
-                    this.domManip.$id("player-right-username").innerText = "@" + data.playerRight.username
+                    this.domManip.$id("player-right-username").innerText = rightUsername;
                     this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
                     // Set game data
                     gameObject.playerLeft.points = data.playerLeft.points;
+                    gameObject.playerLeft.result = data.playerLeft.result;
                     gameObject.playerRight.points = data.playerRight.points;
+                    gameObject.playerRight.result = data.playerRight.result;
                     gameObject.mapId = data.gameData.mapNumber;
                     this.mapId = data.gameData.mapNumber;
 
@@ -131,8 +140,8 @@ export default {
                     changeGameState(data.gameData.state);
                 })
                 .catch(error => {
-                    router('/');
-                    console.error('Error occurred:', error);
+                        const msg = "404 | " + error.message;
+                        router('/404', {msg: msg});
                 });
         },
         initObjects() {

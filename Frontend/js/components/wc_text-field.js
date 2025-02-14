@@ -121,16 +121,20 @@ class TextField extends HTMLElement {
                 }
 
                 button {
-                    font-family: 'Courier';
-                    font-size: 16px;
-                    font-weight: 700;
                     margin: 5% 0% 0% 0%;
                     width: 12%;
                     height: 40%;
-                    border: 3px solid  black;
+                    font-family: 'Courier';
+                    font-size: ${this.fontSize}vh;
+                    vertical-align: middle;
+                    text-align: center;
+                    align-items: justify;
+                    font-weight: 700;
+                    color: #FFFCE6;
+                    background-color: #000000;
                     cursor: pointer;
-                    background-color: black;
-                    color: white;
+                    padding: 2px 4px;
+                    border: 2px solid #968503;
                 }
 
                 button:hover {

@@ -83,12 +83,16 @@ def update_player_powerup(game_id, player_side, powerup, new_value):
 
     The function will return if the powerup was updated successfully
     """
+    logging.info(f"Updating powerup {powerup} for player {player_side} to {new_value}")
     # Deactivate the powerup if currently in use
     if new_value == 'used' and get_game_data(game_id, player_side, powerup) == 'using':
         set_game_data(game_id, player_side, powerup, new_value)
     elif new_value == 'using' and get_game_data(game_id, player_side, powerup) == 'available':
         set_game_data(game_id, player_side, powerup, 'using')
         set_game_data(game_id, 'gameData', 'sound', 'powerup')
+    elif new_value == 'using':
+        set_game_data(game_id, 'gameData', 'sound', 'no')
+        return False
     else:
         logging.error(f"Powerup {powerup} not updated! Current value: {get_game_data(game_id, player_side, powerup)}; New value: {new_value}")
         return False

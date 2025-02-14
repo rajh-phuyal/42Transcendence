@@ -40,7 +40,7 @@ class MainConsumer(CustomWebSocketLogic):
         await update_client_in_all_tournament_groups(self.user, False)
         logging.info(f"User {self.user.username} marked as offline.")
 
-    # TODO: remove this comment @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
     async def receive(self, text_data):
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
