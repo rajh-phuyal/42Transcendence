@@ -45,6 +45,8 @@ async def send_ws_info_msg(user_id, content):
     await send_ws_msg_to_user(user_id, **message_dict)
 
 async def send_ws_error_msg(user_id, content):
+    if not user_id or not content:
+        return
     message_dict = {
         "messageType": "error",
         "type": "error",

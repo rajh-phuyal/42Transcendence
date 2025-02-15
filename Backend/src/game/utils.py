@@ -43,7 +43,6 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             raise BarelyAnException(_("Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"))
         if not opponent_id:
             raise BarelyAnException(_("Missing key 'opponentId'"))
-
         # Check if opponent is AI
         if opponent.id == USER_ID_AI:
             if local_game:

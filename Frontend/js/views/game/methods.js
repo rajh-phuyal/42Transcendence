@@ -52,6 +52,7 @@ export function changeGameState(state) {
             $id("button-quit-game").style.display = "none";
             break;
         case "paused":
+            //showGame(false); TODO: when this function works we should use it here
             $id("button-play-again").style.display = "none";
             audioPlayer.play(0); // Lobby music
             showPowerupStatus(false);
@@ -64,6 +65,7 @@ export function changeGameState(state) {
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
         case "finished":
+            //showGame(false);  TODO: when this function works we should use it here
             $id("button-play-again").style.display = "block";
             audioPlayer.playSound("gameover");
             audioPlayer.play(0); // Lobby music
@@ -184,7 +186,7 @@ export function updateReadyStatefromWS(readyStateObject) {
 
             if (diff == 3) {
                 console.log("Fading in map image");
-                showGame();
+                showGame(true);
                 setTimeout(() => {
                     removeImageAnimation("game-view-map-image");
                 }, 3000);
