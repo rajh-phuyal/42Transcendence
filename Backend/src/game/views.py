@@ -117,7 +117,6 @@ class LobbyView(BaseAuthenticatedView):
         # establish the WebSocket connection for this specific game
 
 class PlayAgainView(BaseAuthenticatedView):
-    # TODO:
     @barely_handle_exceptions
     def put(self, request, id):
         """

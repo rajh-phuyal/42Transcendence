@@ -132,7 +132,7 @@ class JoinTournamentView(BaseAuthenticatedView):
         return success_response(_("Tournament joined successfully"))
 
 class LeaveTournamentView(BaseAuthenticatedView):
-    # TODO: remove comment @barely_handle_exceptions
+    @barely_handle_exceptions
     def delete(self, request, id):
         user = request.user
         leave_tournament(user, id)

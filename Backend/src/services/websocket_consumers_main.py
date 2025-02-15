@@ -15,7 +15,7 @@ channel_layer = get_channel_layer()
 
 # Manages the WebSocket connection for all pages after login
 class MainConsumer(CustomWebSocketLogic):
-    # TODO: remove this comment @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
         # Setting the user's online status in cache
@@ -29,7 +29,7 @@ class MainConsumer(CustomWebSocketLogic):
         # Send the inizial badge nummer
         await send_ws_badge_all(self.user.id)
 
-    # TODO: remove this comment @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         # Remove the user's online status from cache

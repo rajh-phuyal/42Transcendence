@@ -173,7 +173,6 @@ class MessageSerializer(serializers.ModelSerializer):
         data["content"] = content
         return data
 
-# TODO: REMOVE WHEN FINISHED #284
 class ConversationsSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source='id')
     conversationName = serializers.SerializerMethodField()

@@ -9,7 +9,7 @@ class Game(models.Model):
         ONGOING = 'ongoing', 'Ongoing'
         PAUSED = 'paused', 'Paused'
         FINISHED = 'finished', 'Finished'
-        QUITED = 'quited', 'Quited' # TODO: I guess we don't use this state anymore, right?
+        QUITED = 'quited', 'Quited'
 
     id = models.AutoField(primary_key=True)
     state = models.CharField(

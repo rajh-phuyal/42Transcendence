@@ -26,7 +26,7 @@ channel_layer = get_channel_layer()
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
 
-    # TODO: uncommnt @barely_handle_ws_exceptions
+    @barely_handle_ws_exceptions
     async def connect(self):
         await super().connect()
         # Set self vars for consumer
