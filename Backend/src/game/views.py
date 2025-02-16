@@ -18,10 +18,12 @@ class CreateGameView(BaseAuthenticatedView):
     def post(self, request):
         # Get the user from the request
         user = request.user
-        powerups = request.data.get('powerups')
-        local_game = request.data.get('localGame')
         opponent_id = request.data.get('opponentId')
         map_number = request.data.get('mapNumber')
+        powerups = request.data.get('powerups', False)
+        local_game = request.data.get('localGame', False)
+        if not opponent_id or not map_number:
+            return error_response(_('Missing one of the required fields: opponentId, mapNumber'))
         game, success = create_game(user, opponent_id, map_number, powerups, local_game)
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game.id})
