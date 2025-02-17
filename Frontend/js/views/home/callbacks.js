@@ -1,6 +1,7 @@
 import { $id } from '../../abstracts/dollars.js';
 import router from '../../navigation/router.js';
 import call from '../../abstracts/call.js'
+import data from './data.js';
 import { generateTournamentName } from './methods.js';
 
 function hideModalElements(){

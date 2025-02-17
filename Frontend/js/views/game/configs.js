@@ -31,6 +31,15 @@ export default {
                 router('/');
             })
         },
+        playAgainCallback() {
+            call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
+                console.log("data:", data);
+                if (data.status === "success" && data.gameId) {
+                    // Reload the game
+                    router(`/game`, {id: data.gameId});
+                }
+            })
+        },
         menuKeysCallback(event) {
             switch (event.key) {
                 case " ":
@@ -61,10 +70,10 @@ export default {
                     return;
             }
         },
-
         initListeners(init = true) {
             const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
             const buttonQuitGame = this.domManip.$id("button-quit-game");
+            const buttonPlayAgain = this.domManip.$id("button-play-again");
 
             if (init) {
                 // TODO: translation for buttons should be done in with the abstraction tool TBC
@@ -72,8 +81,11 @@ export default {
                 buttonLeaveLobby.render();
                 buttonQuitGame.name = translate("game", "button-quit-game");
                 buttonQuitGame.render();
+                buttonPlayAgain.name = translate("game", "button-play-again");
+                buttonPlayAgain.render();
                 this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
                 this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
+                this.domManip.$on(buttonPlayAgain, "click", this.playAgainCallback);
                 this.domManip.$on(document, 'keydown', this.menuKeysCallback);
                 return ;
             }
@@ -85,6 +97,8 @@ export default {
                         this.domManip.$off(buttonLeaveLobby, "click");
                     if (buttonQuitGame.eventListeners)
                         this.domManip.$off(buttonQuitGame, "click");
+                    if (buttonPlayAgain.eventListeners)
+                        this.domManip.$off(buttonPlayAgain, "click");
                     if (document.eventListeners)
                         this.domManip.$on(document, 'keydown', this.menuKeysCallback);
                 }
@@ -98,14 +112,23 @@ export default {
                     console.log("data:", data);
 
                     // Set user cards
-                    this.domManip.$id("player-left-username").innerText = "@" + data.playerLeft.username
+                    // If username has more than 10 characters, cut it off and add "..."
+                    let leftUsername = "@" + data.playerLeft.username;
+                    let rightUsername = "@" + data.playerRight.username;
+                    if (leftUsername.length > 10)
+                        leftUsername = leftUsername.substring(0, 7) + "...";
+                    if (rightUsername.length > 10)
+                        rightUsername = rightUsername.substring(0, 7) + "...";
+                    this.domManip.$id("player-left-username").innerText = leftUsername;
                     this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/' + data.playerLeft.avatar
-                    this.domManip.$id("player-right-username").innerText = "@" + data.playerRight.username
+                    this.domManip.$id("player-right-username").innerText = rightUsername;
                     this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
 
                     // Set game data
                     gameObject.playerLeft.points = data.playerLeft.points;
+                    gameObject.playerLeft.result = data.playerLeft.result;
                     gameObject.playerRight.points = data.playerRight.points;
+                    gameObject.playerRight.result = data.playerRight.result;
                     gameObject.mapId = data.gameData.mapNumber;
                     this.mapId = data.gameData.mapNumber;
 
@@ -117,8 +140,8 @@ export default {
                     changeGameState(data.gameData.state);
                 })
                 .catch(error => {
-                    router('/');
-                    console.error('Error occurred:', error);
+                        const msg = "404 | " + error.message;
+                        router('/404', {msg: msg});
                 });
         },
         initObjects() {

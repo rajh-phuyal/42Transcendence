@@ -120,60 +120,36 @@ insert_dummy "$TABLE_NAME"                          \
 		(7,     5,              6),                 \
 		(8,     6,              5);"
 
-# Conversation 1: 1-2
-# Conversation 2: 1-3
-# Conversation 3: Group 1-2-3 name "barely a tournament chat" (not editable)
-# Conversation 4: Group 1-2-3-4-5 name "barely ascrum room"
+# Conversation 1: 3-4
+# Conversation 2: 3-5
 TABLE_NAME="barelyaschema.conversation"
 insert_dummy "$TABLE_NAME"                                                                  \
 	"INSERT INTO $TABLE_NAME                                                                \
         (id,    name,                       is_group_conversation,  is_editable) VALUES     \
 		(1,     NULL,                       FALSE,                  TRUE),                  \
-		(2,     NULL,                       FALSE,                  TRUE),                  \
-		(3,     'barely a tournament chat', TRUE,                   FALSE),                 \
-		(4,     'barely a scrum room',      TRUE,                   TRUE);"
+		(2,     NULL,                       FALSE,                  TRUE);"
 
 TABLE_NAME="barelyaschema.conversation_member"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME \
         (id,    user_id,        conversation_id,    unread_counter) VALUES  \
-		(1,     $ID_OVERLOARDS, 1,                  0),                     \
-		(2,     $ID_OVERLOARDS, 2,                  0),                     \
-		(3,     $ID_OVERLOARDS, 3,                  0),                     \
-		(4,     $ID_OVERLOARDS, 4,                  0),                     \
-		(5,     3,              1,                  0),                     \
-		(6,     4,              1,                  1),                     \
-		(7,     3,              2,                  0),                     \
-		(8,     5,              2,                  1),                     \
-		(9,     3,              3,                  0),                     \
-		(10,    4,              3,                  3),                     \
-		(11,    5,              3,                  3),                     \
-		(12,    3,              4,                  0),                     \
-		(13,    4,              4,                  0),                     \
-		(14,    5,              4,                  0),                     \
-		(15,    6,              4,                  0),                     \
-		(16,    7,              4,                  0);"
+		(1,     3,              1,                  0),                     \
+		(2,     4,              1,                  1),                     \
+		(3,     3,              2,                  0),                     \
+		(4,     5,              2,                  1);"
 
 TABLE_NAME="barelyaschema.message"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME \
-        (id,    user_id,    conversation_id, created_at,                seen_at,                    content) VALUES                                     \
-		(1,     3,          1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   'Hi Alex, how are you?'),                           \
-		(2,     4,          1,               '2024-01-01 10:42:01+00',  '2024-01-01 10:42:01+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
-		(3,     3,          1,               '2024-01-01 10:42:02+00',   NULL,                      'I am fine too, thank you.'),                       \
-		(4,     3,          2,               '2024-01-01 10:42:03+00',  '2024-01-01 10:42:03+00',   'Hi Anatolii, how are you?'),                       \
-		(5,     5,          2,               '2024-01-01 10:42:04+00',  '2024-01-01 10:42:04+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
-		(6,     3,          2,               '2024-01-01 10:42:05+00',   NULL,                      'I am fine too, thank you.'),                       \
-		(7,     3,          3,               '2024-01-01 10:42:06+00',   NULL,                      'Lets play this tournament'),                       \
-		(8,     3,          3,               '2024-01-01 10:45:06+00',   NULL,                      'Someone in this conversation???'),                 \
-		(9,     3,          3,               '2024-01-01 10:55:06+00',   NULL,                      'Booooriiiiinnggg!!!'),                             \
-		(10,    4,          4,               '2024-01-01 10:42:06+00',   NULL,                      'This is the scrum roooooom!! Are u guys here?'),   \
-		(11,    3,          4,               '2024-01-01 10:43:06+00',   NULL,                      'Hello :)'),                                        \
-		(12,    5,          4,               '2024-01-01 10:44:06+00',   NULL,                      'Yes, I am here'),                                  \
-		(13,    6,          4,               '2024-01-01 10:44:10+00',   NULL,                      'I am here too'),                                   \
-		(14,    4,          4,               '2024-01-01 10:50:06+00',   NULL,                      'Oye oye, what about u @rphuyal?'),                 \
-		(15,    7,          4,               '2024-01-01 10:51:06+00',   NULL,                      'Me as well'),                                      \
-		(16,    3,          4,               '2024-01-01 10:52:56+00',   NULL,                      'Ok lets do this!');"
+        (id,    user_id,                conversation_id, created_at,                seen_at,                    content) VALUES                                     \
+		(1,     $ID_OVERLOARDS,         1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   '**S,3,4**'),                                       \
+		(2,     3,                      1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   'Hi Alex, how are you?'),                           \
+		(3,     4,                      1,               '2024-01-01 10:42:01+00',  '2024-01-01 10:42:01+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
+		(4,     3,                      1,               '2024-01-01 10:42:02+00',   NULL,                      'I am fine too, thank you.'),                       \
+		(5,     $ID_OVERLOARDS,         2,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   '**S,3,5**'),                                       \
+		(6,     3,                      2,               '2024-01-01 10:42:03+00',  '2024-01-01 10:42:03+00',   'Hi Anatolii, how are you?'),                       \
+		(7,     5,                      2,               '2024-01-01 10:42:04+00',  '2024-01-01 10:42:04+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
+		(8,     3,                      2,               '2024-01-01 10:42:05+00',   NULL,                      'I am fine too, thank you.');"
 
 print_header "RESETING SEQUENCES..."
 for table in "${ALL_TABLES[@]}"; do

@@ -8,8 +8,7 @@ export const buttonObjects = {
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "DELETE",
-        Url: "user/relationship/", 
-        action: "remove",
+        Url: "user/relationship/remove/",
     },
     // users are not friends 1
     "noFriend": {
@@ -18,8 +17,7 @@ export const buttonObjects = {
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "POST",
-        Url: "user/relationship/",
-        action: "send",
+        Url: "user/relationship/send/",
     },
     // friend request received 2
     "requestReceived": {
@@ -28,9 +26,7 @@ export const buttonObjects = {
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "PUT",
-        Url: "user/relationship/",
-        action: "accept",
-        // DELETE cancel
+        Url: "user/relationship/accept/",
     },
     // friend request sent 3
     "requestSent": {
@@ -39,23 +35,20 @@ export const buttonObjects = {
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "DELETE",
-        Url: "user/relationship/",
-        action: "cancel",
+        Url: "user/relationship/cancel/",
     },
     // block user 4
     "unblocked": {
         text: translate("profile", "blockUser"),
         leftButtonMethod: undefined,
         method: "POST",
-        Url: "user/relationship/",
-        action: "block",
+        Url: "user/relationship/block/",
     },
     // unblock user 5
     "blocked": {
         text: translate("profile", "unblockUser"),
         leftButtonMethod: undefined,
         method: "DELETE",
-        Url: "user/relationship/",
-        action: "unblock",
+        Url: "user/relationship/unblock/",
     }
 }

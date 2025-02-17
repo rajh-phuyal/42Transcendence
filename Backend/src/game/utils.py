@@ -1,22 +1,33 @@
-from django.core.cache import cache
-from django.utils.timezone import localtime
-from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
-from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
-from tournament.utils_ws import send_tournament_ws_msg
+# Basics
+import logging
+# DJANGO
 from rest_framework import status
 from django.db import transaction
-from django.utils import timezone
-from .models import Game, GameMember
 from django.db.models import Q
-from user.models import User
+from django.utils import timezone
+from django.utils.translation import gettext as _
+from django.utils.timezone import localtime
+# CORE
 from core.exceptions import BarelyAnException
+# USER
+from user.constants import USER_ID_AI
+from user.models import User
 from user.exceptions import UserNotFound, RelationshipException, BlockingException
 from user.utils_relationship import is_blocking, are_friends
-from django.utils.translation import gettext as _
-from user.constants import USER_ID_AI
-import logging
+# GAME
+from game.constants import MAPNAME_TO_MAPNUMBER
+from game.models import Game, GameMember
+# TOURNAMENT
+from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
+from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
+from services.send_ws_msg import send_ws_tournament_msg
 from tournament.ranking import update_tournament_member_stats
 from user.utils import get_user_by_id
+# CHAT
+from chat.message_utils import create_and_send_overloards_pm
+
+def map_name_to_number(map_name):
+    return MAPNAME_TO_MAPNUMBER.get(map_name.lower(), None)
 
 def create_game(user, opponent_id, map_number, powerups, local_game):
         # Check if opponent exist
@@ -32,7 +43,6 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             raise BarelyAnException(_("Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"))
         if not opponent_id:
             raise BarelyAnException(_("Missing key 'opponentId'"))
-
         # Check if opponent is AI
         if opponent.id == USER_ID_AI:
             if local_game:
@@ -40,21 +50,9 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             # TODO: issue #210
             raise BarelyAnException(_("Playing against AI is not supported yet"))
         # Check if there is already a direct game between the user and the opponent
-        user_games = GameMember.objects.filter(
-            user=user.id,
-            game__tournament_id=None,
-            game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
-        ).values_list('game_id', flat=True)
-        opponent_games = GameMember.objects.filter(
-            user=opponent.id,
-            game__tournament_id=None,
-            game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
-        ).values_list('game_id', flat=True)
-        if user_games or opponent_games:
-            common_games = set(user_games).intersection(opponent_games)
-            if common_games:
-                game_id = common_games.pop()
-                return game_id, False
+        old_game = get_game_of_user(user, opponent)
+        if old_game:
+            return old_game, False
 
         # Create the game and the game members in a transaction
         with transaction.atomic():
@@ -83,9 +81,37 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             game.save()
             game_member_user.save()
             game_member_opponent.save()
+        if local_game:
+            invite_msg = f"**GL,{game.as_clickable()}**"
+        else:
+            invite_msg = f"**G,{user.id},{opponent.id},{game.as_clickable()}**"
+        create_and_send_overloards_pm(user, opponent, invite_msg)
+        return game, True
 
-        # TODO: send a chat message inviting the opponent to the game like #G#<game_id>#
-        return game.id, True
+def get_game_of_user(user1, user2):
+    """
+    This function returns the game between user1 and user2 if it exists.
+    The game:
+     - must be in a pending, ongoing or paused state.
+     - can't be a tournament game.
+    """
+    user1_games = GameMember.objects.filter(
+        user=user1.id,
+        game__tournament_id=None,
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+    ).values_list('game_id', flat=True)
+    user2_games = GameMember.objects.filter(
+        user=user2.id,
+        game__tournament_id=None,
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+    ).values_list('game_id', flat=True)
+    if user1_games and user2_games:
+        common_games = set(user1_games).intersection(user2_games)
+        if common_games:
+            game_id = common_games.pop()
+            game = Game.objects.get(id=game_id)
+            return game
+    return None
 
 def delete_game(user_id, game_id):
     # Check if the game exists
@@ -140,13 +166,13 @@ def finish_game(game, message=None):
         game_member_1.save()
         game_member_2.save()
 
-    # For tournament games only:
-    if not game.tournament_id:
-        return
-    # - inform everyone that the game finished
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
-    send_tournament_ws_msg(
+    # For tournament games only:
+    if not game.tournament_id:
+        return winner, looser
+    # - inform everyone that the game finished
+    send_ws_tournament_msg(
         game.tournament_id,
         "gameUpdateState",
         "game_update_state",
@@ -160,6 +186,7 @@ def finish_game(game, message=None):
     update_tournament_member_stats(game, winner, looser)
     update_tournament_ranks(game.tournament_id)
     check_tournament_routine(game.tournament_id)
+    return winner, looser
 
 def update_deadline_of_game(game_id):
     try:
@@ -178,7 +205,7 @@ def update_deadline_of_game(game_id):
             game.save()
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Inform all users of the tournament
-        send_tournament_ws_msg(
+        send_ws_tournament_msg(
             game.tournament.id,
             "gameSetDeadline",
             "game_set_deadline",
@@ -214,167 +241,3 @@ def get_user_of_game(game_id, side):
     else:
         logging.error(f"! Side '{side}' is not valid has to be 'playerLeft' or 'playerRight'")
         return None
-
-def set_game_data(game_id, key1, key2, new_value, timeout=3000):
-    cache_key = f'game_{game_id}_state'
-    if (game_state_data := cache.get(cache_key)):
-        if key1 in game_state_data and key2 in game_state_data[key1]:
-            game_state_data[key1][key2] = new_value
-            cache.set(cache_key, game_state_data, timeout=timeout)
-            return True
-        logging.error(f"! Key '{key1}' or '{key2}' does not exist in game {game_id} cache!")
-    else:
-        logging.error(f"! Can't update game state because game {game_id} is not in cache!")
-    return False
-
-def get_game_data(game_id, key1=None, key2=None):
-    cache_key = f'game_{game_id}_state'
-    if (game_state_data := cache.get(cache_key)):
-        if not key1:
-            return game_state_data
-        elif key1 not in game_state_data:
-            logging.error(f"! Key '{key1}' does not exist in game {game_id} cache!")
-            return None
-        if game_state_data_key1 := game_state_data[key1]:
-            if not key2:
-                return game_state_data_key1
-            elif key2 not in game_state_data_key1:
-                logging.error(f"! Key '{key2}' does not exist in game {game_id} cache!")
-                return None
-            return game_state_data_key1[key2]
-    else:
-        logging.error(f"! Can't get game state because game {game_id} is not in cache!")
-
-# def set_player_input_cache_value(game_id, key, new_value, timeout=3000):
-#     cache_key = f'game_{game_id}_player_left'
-#     if (input_player := cache.get(cache_key)):
-#         if key in input_player
-#             input_player[key][key2] = new_value
-#             cache.set(cache_key, input_player, timeout=timeout)
-#             return True
-#         logging.error(f"! Key '{key}' or '{key2}' does not exist in game {game_id} cache!")
-#     else:
-#         logging.error(f"! Can't update game state because game {game_id} is not in cache!")
-#     return False
-
-
-# SIDE: needs to be playerLeft or playerRight
-def get_player_input(game_id, side, key1):
-    cache_key = f'game_{game_id}_{side}'
-    if (input_player := cache.get(cache_key)):
-        if key1 not in input_player:
-            logging.error(f"! Key '{key1}' does not exist in " + cache_key + " cache!")
-            return None
-        return input_player[key1]
-    else:
-        logging.error("! Can't get game player input because game " +  cache_key + " is not in cache!")
-
-
-# OLD:
-# def start_game(map_number, powerups, tournament_id=None, deadline=None):
-#     """
-#     Initializes a new game in the 'pending' state.
-
-#     :param map_number: Integer representing the map number for the game
-#     :param powerups: Boolean, whether powerups are enabled
-#     :param tournament_id: Optional integer, ID of the tournament this game is part of
-#     :param deadline: Optional datetime, the deadline for the game
-#     :return: The created Game instance
-#     """
-#     game = Game.objects.create(
-#         map_number=map_number,
-#         powerups=powerups,
-#         tournament_id=tournament_id,
-#         deadline=deadline
-#     )
-#     return game
-
-
-# def get_active_games():
-#     """
-#     Retrieves all active games (i.e., those with state 'ongoing').
-
-#     :return: QuerySet of active Game instances
-#     """
-#     return Game.objects.filter(state=Game.GameState.ONGOING)
-
-
-# def get_game_by_id(game_id):
-#     """
-#     Retrieves a game by its ID.
-
-#     :param game_id: Integer ID of the game
-#     :return: Game instance if found, None otherwise
-#     """
-#     try:
-#         return Game.objects.get(id=game_id)
-#     except Game.DoesNotExist:
-#         return None
-
-
-# def add_game_member(game, user, local_game=False):
-#     """
-#     Adds a new member to a game.
-
-#     :param game: Game instance
-#     :param user: User instance representing the player
-#     :param local_game: Boolean indicating if this is a local game
-#     :return: The created GameMember instance
-#     """
-#     game_member = GameMember.objects.create(
-#         game=game,
-#         user=user,
-#         local_game=local_game
-#     )
-#     return game_member
-
-
-# def get_game_members(game_id):
-#     """
-#     Retrieves all members of a specific game.
-
-#     :param game_id: Integer ID of the game
-#     :return: QuerySet of GameMember instances
-#     """
-#     return GameMember.objects.filter(game_id=game_id)
-
-
-# def update_game_state(game_id, new_state):
-#     """
-#     Updates the state of a game.
-
-#     :param game_id: Integer ID of the game
-#     :param new_state: New state to set for the game
-#     :return: Boolean indicating if the update was successful
-#     """
-#     game = get_game_by_id(game_id)
-#     if game and new_state in Game.GameState.values:
-#         game.state = new_state
-#         game.save()
-#         return True
-#     return False
-
-
-# def finish_game(game_id):
-#     """
-#     Marks a game as finished and sets the finish time to the current time.
-
-#     :param game_id: Integer ID of the game
-#     :return: Boolean indicating if the game was successfully finished
-#     """
-#     game = get_game_by_id(game_id)
-#     if game:
-#         game.state = Game.GameState.FINISHED
-#         game.finish_time = timezone.now()
-#         game.save()
-#         return True
-#     return False
-
-
-# def get_games_with_deadlines():
-#     """
-#     Retrieves games that have deadlines set.
-
-#     :return: QuerySet of Game instances with deadlines
-#     """
-#     return Game.objects.filter(deadline__isnull=False)

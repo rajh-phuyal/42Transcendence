@@ -1,17 +1,16 @@
 import $store from '../store/store.js';
-import { createMessage } from '../views/chat/methods.js';
-import { $id, $on } from './dollars.js';
+import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import router from '../navigation/router.js';
-import { updateParticipantsCard, createParticipantCard, createGameList } from '../views/tournament/methods.js';
-
+import { updateParticipantsCard, createGameList } from '../views/tournament/methods.js';
+import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
+import { processIncomingReloadMsg } from '../views/profile/methods.js';
+import { audioPlayer } from '../abstracts/audio.js';
 const { hostname } = window.location;
 
 class WebSocketManager {
     constructor() {
         this.socket = null;
         this.currentRoute = undefined;
-        this.currentConversation = undefined;
     }
 
     // Connect to WebSocket with the provided token
@@ -78,14 +77,12 @@ class WebSocketManager {
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
     receiveMessage(message) {
-
         console.log("BE -> FE:", message);
-        console.log("Current route:", this.currentRoute);
-
         switch (message.messageType) {
             case "chat":
+                audioPlayer.playSound("chat");
                 if (this.currentRoute == "chat")
-                    this.processIncomingChatMessageChatView(message);
+                    processIncomingWsChatMessage(message);
                 else
                     $callToast("error", "Need to implement the notification for chat as toast! issue #217");
                 return ;
@@ -93,12 +90,12 @@ class WebSocketManager {
             case "updateBadge":
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
-                else if (message.what == "conversation")
-                    this.updateConversationBadge(message);
+                else if (message.what == "conversation" && this.currentRoute == "chat")
+                    updateConversationBadge(message.id, message.value);
                 return ;
 
             case "newConversation":
-                this.createConversationCard(message);
+                createConversationCard(message, false);
                 return ;
 
             case "tournamentFan":
@@ -151,6 +148,10 @@ class WebSocketManager {
                 $callToast("sucess", message.message);
                 return ;
 
+            case "reloadProfile":
+                if (this.currentRoute.startsWith("profile"))
+                    processIncomingReloadMsg(message, this.currentRoute);
+                return ;
         }
 
         console.warn("FE doen't know what to do with this type:", message);
@@ -169,58 +170,10 @@ class WebSocketManager {
         // this.socket.removeEventListner("message", this.receiveMessage);
     }
 
-    processIncomingChatMessageChatView(message) {
-        if (this.currentConversation == message.conversationId) {
-            $id("chat-view-messages-container").prepend(createMessage(message));
-
-            // send seen message if it is not ur own message
-            if (message.userId != $store.fromState("user").id)
-                this.sendMessage({messageType: "seen", conversationId: this.currentConversation});
-        }
-        $id("chat-view-conversations-container").prepend($id("chat-view-conversation-card-" +  message.conversationId));
-    }
-
-    updateConversationBadge(message) {
-        const element = $id("chat-view-conversation-card-" +  message.id);
-        const seenCouterContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
-        seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.value;
-        if (message.value == "0")
-            seenCouterContainer.style.display = "none";
-        else
-            seenCouterContainer.style.display = "flex";
-    }
-
     updateNavBarBadge(value) {
 		if (value > 99)
 			value = "99+";
         $id("chat-nav-badge").textContent = value || "";
-    }
-
-    createConversationCard(message) {
-        let conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
-        let container = conversation.querySelector(".chat-view-conversation-card");
-        container.id = "chat-view-conversation-card-" +  message.conversationId;
-        container.setAttribute("conversation_id", message.conversationId);
-        container.setAttribute("last-message-time", message.lastUpdate);
-
-        // Avatar
-        conversation.querySelector(".chat-view-conversation-card-avatar").src = window.origin + '/media/avatars/' + message.conversationAvatar;
-
-        // User
-        conversation.querySelector(".chat-view-conversation-card-username").textContent = message.conversationName;
-
-        // Seen container
-        let unseenContainer = conversation.querySelector(".chat-view-conversation-card-unseen-container");
-        if (message.unreadCounter == 0)
-            unseenContainer.style.display = "none";
-        else {
-            unseenContainer.style = "flex";
-            unseenContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = message.unreadCounter;
-        }
-        let conversationsContainer = $id('chat-view-conversations-container');
-        conversationsContainer.prepend(conversation);
-        // TODO: issue #121 This doens't work sinc the router is not getting the chat it same bug than for profile
-        $on(container, "click", () => router("chat", {id: message.conversationId}))
     }
 
     updateTournamentMemberCard(message) {
@@ -250,10 +203,6 @@ class WebSocketManager {
 
     setCurrentRoute(route) {
         this.currentRoute = route;
-    }
-
-    setCurrentConversation(conversationId) {
-        this.currentConversation = conversationId;
     }
 
     reconnect() {

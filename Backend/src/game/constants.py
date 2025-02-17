@@ -4,6 +4,13 @@ INIT_BALL_SPEED = 1.5
 BALL_SPEED_STEP = 0.1
 INIT_PADDLE_SIZE = 10
 
+MAPNAME_TO_MAPNUMBER = {
+    "ufo": 1,
+    "lizard-people": 2,
+    "snowman": 3,
+    "lochness": 4
+}
+
 # This should be a percentage of the screen where the paddel hit surface is.
 # It should be decieed in the render of the frontend game field and then set here.
 # The paddle is drawn 1% of the screen width and the paddle width is 1% of the screen width.
@@ -19,6 +26,7 @@ GAME_PLAYER_INPUT = {
 GAME_STATE = {
     "playerLeft" : {
         "points": 0,
+        "result": "pending",
         "paddlePos": 50,
         "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",
@@ -28,6 +36,7 @@ GAME_STATE = {
     },
     "playerRight" : {
         "points": 0,
+        "result": "pending",
         "paddlePos": 50,
         "paddleSize": INIT_PADDLE_SIZE,
         "powerupBig": "unavailable",

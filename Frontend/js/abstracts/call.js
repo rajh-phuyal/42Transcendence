@@ -9,19 +9,19 @@ async function call(url, method, data = null, showToast = true) {
         'Content-Type': 'application/json'
     };
 
-    console.log("data:", data);
+    console.log("data to send:", data);
 
     let payload = {
         method: method,
         headers: headers,
         credentials: 'include',
-        // TODO: fix with issue: #147
-        ...(url == "user/relationship/" || (data && method !== 'GET' && method !== 'DELETE')) ? {
+        ...(data && method !== 'GET' && method !== 'DELETE') ? {
             body: JSON.stringify(data),
         } : {},
     };
 
     const response = await fetch(fullUrl, payload);
+    console.log("response:", response);
 
     if (!response.ok) {
         let errorMessage;

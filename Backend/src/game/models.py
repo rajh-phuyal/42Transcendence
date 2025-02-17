@@ -9,7 +9,7 @@ class Game(models.Model):
         ONGOING = 'ongoing', 'Ongoing'
         PAUSED = 'paused', 'Paused'
         FINISHED = 'finished', 'Finished'
-        QUITED = 'quited', 'Quited' # TODO: I guess we don't use this state anymore, right?
+        QUITED = 'quited', 'Quited'
 
     id = models.AutoField(primary_key=True)
     state = models.CharField(
@@ -25,6 +25,9 @@ class Game(models.Model):
 
     def __str__(self):
         return f"Game {self.id} - State: {self.state}"
+
+    def as_clickable(self):
+        return f"#G#{self.id}#"
 
     class Meta:
         db_table = '"barelyaschema"."game"'
@@ -63,7 +66,7 @@ class GameMember(models.Model):
     admin = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"GameMember {self.id} - User: {self.user_id} - Game: {self.game_id} - Result: {self.result}"
+        return f"GameMember {self.id} - User: {self.user} - Game: {self.game} - Result: {self.result}"
 
     class Meta:
         db_table = '"barelyaschema"."game_member"'
