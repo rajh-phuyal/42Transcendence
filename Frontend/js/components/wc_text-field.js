@@ -1,7 +1,8 @@
-import { createMessage } from '../views/chat/methods.js';
+import { createMessage, createHelpMessage, updateHelpMessage } from '../views/chat/methods.js';
 import { $id } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
+import router from '../navigation/router.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
 class TextField extends HTMLElement {
@@ -21,16 +22,27 @@ class TextField extends HTMLElement {
         inputElement.addEventListener('click', this.buttonclick.bind(this));
         const inputElement2 = this.shadow.getElementById("text-field");
         inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
+        inputElement2.addEventListener('input', this.handleMessageInput.bind(this));
     }
 
-
-    buttonclick(){
+    startSendingMessage(){
         const inputElement = this.shadow.getElementById("text-field");
         const value = inputElement.value;
-
-        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
-
+        // Reset text box & hide the help message when the user sends a message
         inputElement.value = '';
+        updateHelpMessage();
+        // Send the message to the server
+        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
+        // If the message is a cmd we need to reload the view.
+        // This is because the cmd might have changed the blocking state of the users
+        const valueUpper = value.toUpperCase();
+        if (valueUpper.startsWith("/B") || valueUpper.startsWith("/U")) {
+            router('/chat', { id: this.conversationId });
+        }
+    }
+
+    buttonclick(){
+        this.startSendingMessage();
     }
 
     handleKeyPress(event){
@@ -39,14 +51,11 @@ class TextField extends HTMLElement {
         if (event.shiftKey)
             return ;
         event.preventDefault();
-        const inputElement = event.target;
-        const value = inputElement.value;
+        this.startSendingMessage();
+    }
 
-        WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
-
-        if (this.clear){
-            inputElement.value = '';
-        }
+    handleMessageInput(event){
+        createHelpMessage(event.target.value)
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -112,16 +121,20 @@ class TextField extends HTMLElement {
                 }
 
                 button {
-                    font-family: 'Courier';
-                    font-size: 16px;
-                    font-weight: 700;
                     margin: 5% 0% 0% 0%;
                     width: 12%;
                     height: 40%;
-                    border: 3px solid  black;
+                    font-family: 'Courier';
+                    font-size: ${this.fontSize}vh;
+                    vertical-align: middle;
+                    text-align: center;
+                    align-items: justify;
+                    font-weight: 700;
+                    color: #FFFCE6;
+                    background-color: #000000;
                     cursor: pointer;
-                    background-color: black;
-                    color: white;
+                    padding: 2px 4px;
+                    border: 2px solid #968503;
                 }
 
                 button:hover {

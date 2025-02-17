@@ -25,8 +25,6 @@ class BaseAuthenticatedView(APIView):
         if isinstance(request.user, AnonymousUser):
             raise NotAuthenticated(_("User is not authenticated"), status_code=status.HTTP_401_UNAUTHORIZED)
 
-        logging.info(f"User {request.user} has preferred language {preferred_language}")
-
     def initialize_request(self, request, *args, **kwargs):
         request = super().initialize_request(request, *args, **kwargs)
         return request

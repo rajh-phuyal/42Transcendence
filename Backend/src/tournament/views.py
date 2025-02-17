@@ -1,3 +1,6 @@
+from services.constants import PRE_GROUP_TOURNAMENT
+from asgiref.sync import async_to_sync
+from services.channel_groups import update_client_in_group
 from core.authentication import BaseAuthenticatedView
 from django.db import transaction
 from core.response import success_response, error_response
@@ -11,8 +14,10 @@ from core.exceptions import BarelyAnException
 from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
 import logging
 from django.db import models
-from tournament.utils_ws import join_tournament_channel, send_tournament_invites_via_pm, send_tournament_invites_via_ws
+from services.send_ws_msg import send_ws_tournament_pm
 from rest_framework import status
+import re
+from services.send_ws_msg import send_ws_tournament_pm
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -88,18 +93,29 @@ class CreateTournamentView(BaseAuthenticatedView):
         logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
+        tournament_name = request.data.get('name')
+
+        # Check if tournament name is not empty
+        if not tournament_name:
+            raise BarelyAnException(_("Tournament name cannot be empty"))
+
+        # Validate tournament name using regex
+        if not re.match(r'^[a-zA-Z0-9\-_]+$', tournament_name):
+            raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
+
         tournament = create_tournament(
             creator_id=user.id,
-            name=request.data.get('name'),
+            name=tournament_name,
             local_tournament=request.data.get('localTournament'),
             public_tournament=request.data.get('publicTournament'),
             map_number=request.data.get('mapNumber'),
             powerups=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')
         )
+
         if not tournament.public_tournament:
-            send_tournament_invites_via_ws(tournament.id)
-            send_tournament_invites_via_pm(tournament.id)
+            send_ws_tournament_pm(tournament.id, f"**TI,{user.id},<userid>,{tournament.as_clickable()}**")
+
         return success_response(_("Tournament created successfully"), **{'tournamentId': tournament.id})
 
 class DeleteTournamentView(BaseAuthenticatedView):
@@ -138,7 +154,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
 
         # Add client to websocket group if tournament is not finished
         if tournament.state != Tournament.TournamentState.FINISHED:
-            join_tournament_channel(user, tournament.id)
+            async_to_sync(update_client_in_group)(user, tournament.id, PRE_GROUP_TOURNAMENT, add=True)
 
         response_json=prepare_tournament_data_json(user, tournament)
         return success_response(_("Tournament lobby fetched successfully"), **response_json)

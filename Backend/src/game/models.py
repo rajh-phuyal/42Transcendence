@@ -1,8 +1,11 @@
+import logging
 from django.db import models
+from django.core.cache import cache
 
 class Game(models.Model):
     class GameState(models.TextChoices):
         PENDING = 'pending', 'Pending'
+        COUNTDOWN = 'countdown', 'Countdown'
         ONGOING = 'ongoing', 'Ongoing'
         PAUSED = 'paused', 'Paused'
         FINISHED = 'finished', 'Finished'
@@ -23,8 +26,22 @@ class Game(models.Model):
     def __str__(self):
         return f"Game {self.id} - State: {self.state}"
 
+    def as_clickable(self):
+        return f"#G#{self.id}#"
+
     class Meta:
         db_table = '"barelyaschema"."game"'
+
+    def set_player_ready(self, userId, status):
+        if status:
+            cache.set(f'game_{self.id}_user_{userId}_ready', status, timeout=3000)  # 3000 seconds = 50 minutes
+            logging.info(f"User {userId} marked as ready for game {self.id}.")
+        else:
+            cache.delete(f'game_{self.id}_user_{userId}_ready')
+            logging.info(f"User {userId} marked as not ready for game {self.id}.")
+
+    def get_player_ready(self, userId):
+        return cache.get(f'game_{self.id}_user_{userId}_ready', default=False)
 
 
 class GameMember(models.Model):
@@ -46,9 +63,10 @@ class GameMember(models.Model):
     powerup_big = models.BooleanField(default=False)
     powerup_fast = models.BooleanField(default=False)
     powerup_slow = models.BooleanField(default=False)
+    admin = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"GameMember {self.id} - User: {self.user_id} - Game: {self.game_id} - Result: {self.result}"
+        return f"GameMember {self.id} - User: {self.user} - Game: {self.game} - Result: {self.result}"
 
     class Meta:
         db_table = '"barelyaschema"."game_member"'

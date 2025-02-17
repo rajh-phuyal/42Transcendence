@@ -24,12 +24,12 @@
         "ne-NP": "विषय: "
     },
     "textAreaPlaceHolder": {
-        "en-US": "write a message... Just don’t forget that they see everything",
-        "pt-PT": "escreve uma mensagem... Apenas não te equeças de que eles vêm tudo",
-        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo",
-        "de-DE": "schreiben Sie eine Nachricht... Vergessen Sie nicht, dass die da oben alles sehen",
-        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони бачать усе",
-        "ne-NP": "सन्देश लेख्नुहोस्... बस यसलाई नबिर्सनुहोस् कि उनीहरूले सबै कुरा देख्छन्"
+        "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / #",
+        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / #",
+        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais demoníacos: @ / #",
+        "de-DE": "Schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\nProbiere die folgenden teuflischen Zeichen aus: @ / #",
+        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони все бачать...\nСпробуйте такі диявольські знаки: @ / #",
+        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नभुल्नुहोस् कि उनीहरू सबै हेर्छन्...\nयी दानवी चिन्हहरू प्रयास गर्नुहोस्: @ / #"
     },
     "sendButton": {
         "en-US": "Send",
@@ -54,6 +54,93 @@
         "de-DE": "filtern...",
         "uk-UA": "фільтрувати...",
         "ne-NP": "फिल्टर गर्नुहोस्..."
+    },
+    "helpMessage/": {
+        "en-US": "<strong><u>Use one of those cmds:</u></strong><br>/G - create a new Game<br>/F - change friendship status<br>/B - block user<br>/U - unblock user",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G0": {
+        "en-US": "<strong><u>(0/3) Create a game</u><br>Choose a map</strong> e.g. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G2": {
+        "en-US": "<strong><u>(1/3) Create a game</u><br>Choose type</strong> e.g. /G,ufo,remote,<br>remote<br>local",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G3": {
+        "en-US": "<strong><u>(2/3) Create a game</u><br>Wanna play with powerups?</strong> e.g. /G,ufo,remote,yes,<br>yes<br>no",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/G4": {
+        "en-US": "<strong><u>(3/3) Create a game</u><br>Press return to create the game</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/F": {
+        "en-US": "<strong><u>Modify friendship</u><br>Choose an option</strong> e.g. /FS<br>S - Send a friend request<br>C - Cancel the pending friend request<br>A - Accept the pending friend request<br>R - Reject the pending friend request<br>U - Unfriend",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/F1": {
+        "en-US": "<strong><u>Modify friendship</u><br>Press return to apply change of friendship status</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/B": {
+        "en-US": "<strong><u>Block this user</u><br>Press return to confirm</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/U": {
+        "en-US": "<strong><u>Unblock this user</u><br>Press return to confirm</strong>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/mention-username": {
+        "en-US": "<strong>FORMAT HINT:</strong> @username<br>",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "helpMessage/mention-tournament-game": {
+        "en-US": "<strong>FORMAT HINT:</strong> #T#tournamentName#tournamentId#<br><strong>FORMAT HINT:</strong> #G#gameId#",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
     }
-
 }

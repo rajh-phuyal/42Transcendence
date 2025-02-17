@@ -25,6 +25,8 @@ class Tournament(models.Model):
     def __str__(self):
         return f"{self.name} ({self.state})"
 
+    def as_clickable(self):
+        return f"#T#{self.name}#{self.id}#"
     class Meta:
         db_table = '"barelyaschema"."tournament"'
 

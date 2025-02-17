@@ -7,6 +7,7 @@ import callToast from '../../abstracts/callToast.js'
 export default {
     attributes: {
 
+        //TODO: place this map in the store
         maps: {
             "ufo": 1,
             "lizard-people": 2,
@@ -164,7 +165,17 @@ export default {
 
             this.domManip.$on(container, "click", this.redirectTournamentLobby);
             this.domManip.$id("tournament-modal-join-tournament-cards-container").appendChild(container);
-        }
+        },
+
+		escapeCallback(event) {
+			console.log("key pressed", event.key);
+			if (event.key === "Escape") {
+				const modal = this.domManip.$id("home-modal");
+				if (modal) {
+					modal.classList.add("custom-modal");
+				}
+			}
+		}
     },
 
     hooks: {
@@ -179,13 +190,17 @@ export default {
             if (tournamentModal) {
                 tournamentModal.hide();
             }
+			const homeModal = this.domManip.$id("home-modal");
+			if (homeModal)
+				homeModal.classList.add("custom-modal");
 
             $off(document, "click", mouseClick);
             $off(document, "mousemove", isHovering);
+			$off(this.domManip.$id('home-view'), "keydown", this.escapeCallback);
             let element = this.domManip.$id("tournament-modal-create-form-create-button");
             if (element)
                 this.domManip.$off(element, "click", this.createTournament);
-            console.log("off create tournament", element);
+
             element = this.domManip.$class("tournament-modal-create-maps-button");
             for (let individualElement of element)
                 this.domManip.$off(individualElement, "click", this.selectMap);
@@ -224,6 +239,9 @@ export default {
 
             // build thexport e first frame
             buildCanvas();
+
+			const homeView = $id('home-view');
+			$on(homeView, "keydown", this.escapeCallback);
 
             // for (let element of this.users)
                 // this.createInviteUserCard(element);

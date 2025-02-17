@@ -75,6 +75,8 @@ class BarelyAButton extends HTMLElement
                     width: ${this.width}vw;
                     background-color: ${this.color};
                     cursor: pointer;
+                    padding: 2px 4px;
+                    border: 2px solid #968503;
                 }
 
                 button:hover {

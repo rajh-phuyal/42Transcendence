@@ -3,7 +3,8 @@ import { $id } from './dollars.js';
 import $callToast from './callToast.js';
 import { buildView, updateParticipantsCard, createGameList, updateGameCardScore, gameUpdateState, updateTournamentRank } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
-
+import { processIncomingReloadMsg } from '../views/profile/methods.js';
+import { audioPlayer } from '../abstracts/audio.js';
 const { hostname } = window.location;
 
 class WebSocketManager {
@@ -76,12 +77,10 @@ class WebSocketManager {
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
     receiveMessage(message) {
-
         console.log("BE -> FE:", message);
-        console.log("Current route:", this.currentRoute);
-
         switch (message.messageType) {
             case "chat":
+                audioPlayer.playSound("chat");
                 if (this.currentRoute == "chat")
                     processIncomingWsChatMessage(message);
                 else
@@ -91,12 +90,16 @@ class WebSocketManager {
             case "updateBadge":
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
-                else if (message.what == "conversation")
+                else if (message.what == "conversation" && this.currentRoute == "chat")
                     updateConversationBadge(message.id, message.value);
                 return ;
 
             case "newConversation":
                 createConversationCard(message, false);
+                return ;
+
+            case "tournamentFan":
+                console.warn("TODO!")
                 return ;
 
             case "tournamentState":
@@ -147,6 +150,10 @@ class WebSocketManager {
                 $callToast("sucess", message.message);
                 return ;
 
+            case "reloadProfile":
+                if (this.currentRoute.startsWith("profile"))
+                    processIncomingReloadMsg(message, this.currentRoute);
+                return ;
         }
 
         console.warn("FE doen't know what to do with this type:", message);
@@ -170,10 +177,6 @@ class WebSocketManager {
 			value = "99+";
         $id("chat-nav-badge").textContent = value || "";
     }
-
-    // updateTournamentMemberCard(message) {
-    //     console.log("TODO: Implement updateTournamentMemberCard", message);
-    // }
 
     setCurrentRoute(route) {
         this.currentRoute = route;

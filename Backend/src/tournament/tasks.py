@@ -7,7 +7,7 @@ import logging
 from django.db import transaction
 import random
 from tournament.tournament_manager import check_tournament_routine
-from tournament.utils_ws import send_tournament_ws_msg
+from services.send_ws_msg import send_ws_tournament_msg
 from game.utils import finish_game
 
 @shared_task(ignore_result=True)
@@ -40,15 +40,13 @@ def check_overdue_tournament_games():
                 game=Game.objects.select_for_update().get(id=game.id)
                 looser=GameMember.objects.select_for_update().get(id=looser.id)
                 winner=GameMember.objects.select_for_update().get(id=winner.id)
-                looser.result = GameMember.GameResult.LOST
                 looser.points = 0
                 looser.save()
-                winner.result = GameMember.GameResult.WON
                 winner.points = 11
                 winner.save()
             logging.info(f"Game {game.id} has passed its deadline. Decided: Winner is {winner.user_id} and looser is {looser.user_id}")
             # Send websocket notification
-            send_tournament_ws_msg(
+            send_ws_tournament_msg(
                 game.tournament_id,
                 "gameUpdateScore",
                 "game_update_score",

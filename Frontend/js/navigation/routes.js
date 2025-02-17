@@ -34,6 +34,11 @@ const routes = [
         view: "auth",
         requireAuth: false,
     },
+    { // TODO: @rajh: not sure if I should add 404 here but without the translation wasn't working
+        path: "/404",
+        view: "404",
+        requireAuth: false,
+    },
 ];
 
 export { routes };

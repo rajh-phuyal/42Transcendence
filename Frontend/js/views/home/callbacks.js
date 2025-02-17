@@ -2,6 +2,7 @@ import { $id } from '../../abstracts/dollars.js';
 import router from '../../navigation/router.js';
 import call from '../../abstracts/call.js'
 import data from './data.js';
+import { generateTournamentName } from './methods.js';
 
 function hideModalElements(){
     let modalContent = $id("AI-modal");
@@ -28,7 +29,7 @@ export function AIModalCallback(){
 }
 
 export function battleModalCallback(){
-    
+
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
 
@@ -59,7 +60,7 @@ function createTournamentCard(element) {
     const template = $id("tournament-modal-tournament-template").content.cloneNode(true);
 
     template.querySelector("tournament-modal-tournament-name").textContent = element.name; // Check if this is the keyword name
-    
+
 }
 
 function createJoinTournamentList() {
@@ -73,12 +74,10 @@ function createJoinTournamentList() {
 
 }
 
-
-
 export function tournamentModalCallback(){
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
-    
+
     hideModalElements();
     // modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
     modalBody.style.height = '90vh';
@@ -88,15 +87,19 @@ export function tournamentModalCallback(){
     // modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
     $id("tournament-modal").style.display = 'flex';
     const modal = new bootstrap.Modal(modalElement);
-
+    // Adding a "random name" to the tournament name input. That needs to be
+    // done so that the client can create a tournament without having to type
+    // a name. This "fast button" is mandatory from subject
+    $id("tournament-modal-create-form-name-container-input").value = generateTournamentName();
     modal.show();
 }
 
 export function chatRoomModalCallback(){
-    
+
     router("/chat");
 
 }
+
 export function leaderboardModalCallback(){
     let modalBody = $id('home-modal-body');
     let modalElement = $id('home-modal');

@@ -6,5 +6,77 @@
         "de-DE": "",
         "uk-UA": "",
         "ne-NP": ""
+    },
+    "paused-connect": {
+        "en-US": "Game is paused\nPress space to connect",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "connected-waiting": {
+        "en-US": "Connected\nWaiting for other player to connect",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "pending": {
+        "en-US": "Game is pending\nPress space to connect",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "ready": {
+        "en-US": "READY",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "finished": {
+        "en-US": "Game is over",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "connection-error": {
+        "en-US": "Could not connect to server\nPress space to try again",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "button-leave-lobby": {
+        "en-US": "Leave the lobby",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "button-quit-game": {
+        "en-US": "Quit this game",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "button-play-again": {
+        "en-US": "Create same game again",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
     }
 }

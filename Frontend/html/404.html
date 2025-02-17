@@ -1,12 +1,24 @@
 <div id="404-view">´
-    <h1>
-        404 view
+    <h1 id="404-title">
+        404
     </h1>
-</div>
+    <div id="button-container">
+        <barely-a-button buttonclass="rect-button" id="home-button" route="back" method="get" buttonclass="go-home-button"></barely-a-button>
+    </div>
 
 <style>
     #404-view {
         height: 100%;
         background-color: #ff00006c;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #button-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
 </style>

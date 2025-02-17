@@ -1,9 +1,19 @@
 import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id, $on, $off } from './dollars.js';
+import { audioPlayer } from '../abstracts/audio.js';
 
 function updateUserInfo() {
     $id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
+    // Music Sound icons
+    // Update icons based on initial settings
+    $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
+        ? '/assets/game/icons/music-on.png'
+        : '/assets/game/icons/music-off.png');
+
+    $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
+        ? '/assets/game/icons/sound-on.png'
+        : '/assets/game/icons/sound-off.png');
 }
 
 const styleUpdateMap = {
@@ -36,9 +46,7 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
  * @param {Object} navigationPathParams - an object that contains the path and the new params
  * @example {
  *     path: "/some-path",
- *     params: {
- *         id: 1
- *     }
+ *     params: { id: 1 }
  * }
  */
 export default function $nav(navigationPathParams = null) {
@@ -52,7 +60,23 @@ export default function $nav(navigationPathParams = null) {
         { id: 'logout-nav', path: '/logout' },
         { id: 'profile-nav-avatar', path: '/profile' },
         { id: 'login-nav', path: '/auth' },
-        { id: 'register-nav', path: '/auth' }
+        { id: 'register-nav', path: '/auth' },
+        { id: 'nav-music-icon',
+            callback: () => {
+                audioPlayer.toggleMusic();
+                $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
+                    ? '/assets/game/icons/music-on.png'
+                    : '/assets/game/icons/music-off.png');
+            }
+         },
+        { id: 'nav-sound-icon',
+            callback: () => {
+                audioPlayer.toggleSound();
+                $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
+                    ? '/assets/game/icons/sound-on.png'
+                    : '/assets/game/icons/sound-off.png');
+            }
+        }
     ];
 
     // only update the route params if the navigationPathParams is provided
@@ -77,7 +101,18 @@ export default function $nav(navigationPathParams = null) {
         const navbarObject = $id(route.id);
         if (!navbarObject) continue;
 
-        navbarObject._clickHandler = () => router(route.path, route?.params);
+        // Remove previous handlers
+        if (navbarObject._clickHandler) {
+            $off(navbarObject, 'click', navbarObject._clickHandler);
+        }
+
+        // Set up new event listener
+        if (route.callback) {
+            navbarObject._clickHandler = route.callback;
+        } else if (route.path) {
+            navbarObject._clickHandler = () => router(route.path, route?.params);
+        }
+
         $on(navbarObject, 'click', navbarObject._clickHandler);
     }
 }

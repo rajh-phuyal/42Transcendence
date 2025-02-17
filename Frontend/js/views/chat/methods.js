@@ -1,7 +1,8 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { translate } from '../../locale/locale.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -33,7 +34,6 @@ export function processIncomingWsChatMessage(message) {
 // This will be called by:
 //    - WebsocketManager if updateBadge messaage is received
 //    - by createConversationCard to initialize the badge
-//    - when loading the messages from a conversation (set to 0)
 export function updateConversationBadge(conversationId, value) {
     const element = $id("chat-view-conversation-card-" +  conversationId);
     if(!element){
@@ -42,7 +42,7 @@ export function updateConversationBadge(conversationId, value) {
     }
     const seenCouterContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
     seenCouterContainer.querySelector(".chat-view-conversation-card-unseen-counter").textContent = value;
-    if (value == "0")
+    if (value == 0)
         seenCouterContainer.style.display = "none";
     else
         seenCouterContainer.style.display = "flex";
@@ -83,7 +83,7 @@ export function createConversationCard(element, highlight = false) {
     card.setAttribute("last-message-time", element.lastUpdate);
     card.querySelector(".chat-view-conversation-card-avatar").src = window.origin + "/media/avatars/" + element.conversationAvatar;
     card.querySelector(".chat-view-conversation-card-username").textContent = element.conversationName;
-    card.addEventListener("click", coversationCardClickListener);
+    $on(card, "click", coversationCardClickListener);
 
     // Prepend the card to the container
     container.prepend(card);
@@ -158,7 +158,7 @@ export function sortConversationCardsByTimestamp() {
 export function deleteAllConversationCards() {
     const cards = $queryAll(".chat-view-conversation-card");
     for (let card of cards) {
-        card.removeEventListener("click", coversationCardClickListener);
+        $off(card, "click", coversationCardClickListener);
         card.remove();
     }
 }
@@ -202,20 +202,24 @@ export function createMessage(element, prepend = true) {
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
-    let parsedContent = element.content.replace(
-        /@([^@]+)@([^@]+)@/g,
-        `<span class="mention-user" data-userid="$2">@$1</span>`
-    );
-    // Match #T#<tournamentName>#<tournamentId># pattern
-    parsedContent = parsedContent.replace(
-        /#T#([^#]+)#([^#]+)#/g,
-        '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
-    );
-    // Match #G#<gameId># pattern
-    parsedContent = parsedContent.replace(
-        /#G#([^#]+)#/g,
-        '<span class="mention-game" data-gameid="$1">#$1</span>'
-    );
+    let parsedContent = element.content;
+    if (element.content != null) {
+        parsedContent = element.content.replace(
+            /@([^@]+)@([^@]+)@/g,
+            `<span class="mention-user" data-userid="$2">@$1</span>`
+        );
+        // Match #T#<tournamentName>#<tournamentId># pattern
+        parsedContent = parsedContent.replace(
+            /#T#([^#]+)#([^#]+)#/g,
+            '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
+        );
+        // Match #G#<gameId># pattern
+        parsedContent = parsedContent.replace(
+            /#G#([^#]+)#/g,
+            '<span class="mention-game" data-gameid="$1">#$1</span>'
+        );
+    }
+
     // Set the content of the message
     if (element.userId == 1)
         template.querySelector(".chat-view-messages-message-overlords-box").innerHTML = parsedContent;
@@ -311,12 +315,6 @@ export function loadMessages(conversationId) {
             return new Promise(resolve => {
                 setTimeout(() => {
                     spinner.remove();
-
-                    // Update UI with new messages
-                    $id("chat-nav-badge").textContent = data.totalUnreadCounter || "";
-                    updateConversationBadge(conversationId, data.conversationUnreadCounter);
-                    $id("chat-view-conversation-card-" + conversationId).querySelector(".chat-view-conversation-card-unseen-counter").textContent = data.unreadCounter || "";
-
                     // Update conversation header
                     //$id("chat-view-header-subject").textContent = "@" + data.conversationName;
                     $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">@${data.conversationName}</a>`;
@@ -379,36 +377,6 @@ export function createLoadingSpinner() {
     return spinnerContainer;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export function updateConversationUnreadCounter(conversationId, value) {
     let element = $id("chat-view-conversation-card-" +  conversationId);
     let unseenContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
@@ -420,5 +388,72 @@ export function updateConversationUnreadCounter(conversationId, value) {
     }
 }
 
+// When a user inputs a chat message, this function will be called to update
+// the helper text for message cmds like /F
+export function createHelpMessage(input){
+    // Check if input supports a help message
+    const cmds = ["/G", "/F", "/B", "/U"];
+    input = input.toUpperCase();
+    let htmlContent = ""
+    if (input == "/" || cmds.some(prefix => input.startsWith(prefix))) {
+        // We need more options for /G and /F
+        if(input.startsWith("/G")) {
+            // Count the typed "," to determine the step of the game creation
+            const commaCount = input.split(",").length - 1;
+            console.log("Comma count:", commaCount);
+            if (commaCount < 2)
+                htmlContent = translate("chat", "helpMessage/G0");
+            else if (commaCount == 2)
+                htmlContent = translate("chat", "helpMessage/G2");
+            else if (commaCount == 3) {
+                // check if it ends on yes or no
+                if (input.endsWith("YES") || input.endsWith("NO"))
+                    htmlContent = translate("chat", "helpMessage/G4");
+                else
+                    htmlContent = translate("chat", "helpMessage/G3");
+            }
+        } else if(input.startsWith("/F")) {
+            if (input.length == 2)
+                htmlContent = translate("chat", "helpMessage/F");
+            else if (input.length == 3)
+                htmlContent = translate("chat", "helpMessage/F1");
+        } else
+            htmlContent = translate("chat", "helpMessage" + input)
+    } else {
+        if (input.includes("@"))
+            htmlContent += translate("chat", "helpMessage/mention-username");
+        if (input.includes("#"))
+            htmlContent += translate("chat", "helpMessage/mention-tournament-game");
+    }
 
+
+
+
+
+    updateHelpMessage(htmlContent);
+}
+
+export function updateHelpMessage(htmlContent="") {
+    let helpContainer = $id("message-help");
+    if (htmlContent){
+        // Show the help message
+        if (!helpContainer){
+            // Create node from template
+            let template = $id("chat-view-help-message-template").content.cloneNode(true);
+            helpContainer = template.querySelector(".chat-view-help-message-container");
+            helpContainer.id = "message-help";
+            // Append it to chat view
+            const container = $id("chat-view-messages-container");
+            container.appendChild(helpContainer);
+        }
+        helpContainer.innerHTML = htmlContent;
+        // Scroll to bottom
+        let scrollContainer = $id("chat-view-messages-container");
+        scrollContainer.scrollTop = scrollContainer.scrollHeight + scrollContainer.clientHeight;
+    } else {
+        // Hide the help message
+        if (helpContainer)
+            helpContainer.remove();
+    }
+}
 

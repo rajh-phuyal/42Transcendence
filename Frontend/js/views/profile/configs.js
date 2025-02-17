@@ -8,6 +8,7 @@ import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
 import { translate } from '../../locale/locale.js';
 import { $id } from '../../abstracts/dollars.js';
+import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 export default {
     attributes: {
@@ -24,9 +25,18 @@ export default {
             method: undefined,
         },
 
+        //TODO: place this map in the store
+        maps: {
+            "ufo": 1,
+            "lizard-people": 2,
+            "snowman": 3,
+            "lochness": 4,
+        },
+
         gameSettings: {
-            map: "random",
+            map: parseInt(Math.random() * (4 - 1) + 1),
             powerups: false,
+            localGame: false,
         },
 
         result: undefined,
@@ -317,12 +327,10 @@ export default {
         createConversation() {
             const message = this.domManip.$id("new-chat-modal-textarea").value;
             this.hideModal("new-chat-modal");
-            call("chat/create/conversation/", "POST", {"userIds": [this.result.id], "initialMessage": message}).then(data => {
+            call("chat/create/conversation/", "POST", {"userId": this.result.id, "initialMessage": message}).then(data => {
                 $callToast("success", data.message);
                 router(`/profile`, {id: this.result.id});
             })
-
-
         },
 
         openChatModal() {
@@ -333,7 +341,6 @@ export default {
         },
 
         messageMethod() {
-
             if (this.result.chatId)
                 router(`/chat`, {id: this.result.chatId});
             else
@@ -346,8 +353,9 @@ export default {
 
         changeFrendshipPrimaryMethod() {
             const object = buttonObjects[this.result.relationship.state];
+            const fullUrl = object.Url + this.result.id + "/";
 
-            call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
+            call(fullUrl, object.method).then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
@@ -357,7 +365,7 @@ export default {
         },
 
         changeFrendshipSecondaryMethod() {
-            call("user/relationship/", "DELETE", { action: "reject", target_id: this.result.id }).then(data =>{
+            call(`user/relationship/reject/${this.result.id}/`, "DELETE").then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
@@ -374,8 +382,8 @@ export default {
                 object = buttonObjects["blocked"];
             else
                 object = buttonObjects["unblocked"];
-
-            call(object.Url, object.method, { action: object.action, target_id: this.result.id }).then(data =>{
+            const fullUrl = object.Url + this.result.id + "/";
+            call(fullUrl, object.method).then(data =>{
                 this.hideModal("friendship-modal");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
@@ -385,14 +393,18 @@ export default {
         },
 
         openInviteForGameModal() {
-
-            this.domManip.$id("invite-for-game-modal-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
-            this.domManip.$id("invite-for-game-modal-opponent-name").textContent = this.result.username;
-
-            let modalElement = this.domManip.$id("invite-for-game-modal");
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-
+            // Check if the user is already in a game -> redir to game
+            call(`game/get-game/${this.routeParams.id}/`, 'GET').then(data => {
+                if (data.gameId)
+                    router('/game', {"id": data.gameId});
+                else {
+                    this.domManip.$id("invite-for-game-modal-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
+                    this.domManip.$id("invite-for-game-modal-opponent-name").textContent = this.result.username;
+                    let modalElement = this.domManip.$id("invite-for-game-modal");
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                }
+            });
         },
         selectMap(chosenMap) {
             const maps = this.domManip.$class("invite-for-game-modal-maps-button");
@@ -406,6 +418,17 @@ export default {
         },
         submitInvitation() {
             console.log(this.gameSettings);
+
+            const data = {
+                "mapNumber": this.maps[this.gameSettings.map],
+                "powerups": this.gameSettings.powerups,
+                "opponentId": this.routeParams.id,
+                "localGame": this.gameSettings.localGame,
+            }
+            call('game/create/', 'POST', data).then(data => {
+                this.hideModal("invite-for-game-modal");
+                router('/game', {"id": data.gameId});
+            })
         },
 
         cancelButton() {
@@ -493,6 +516,9 @@ export default {
         powerupsAction() {
             this.gameSettings.powerups = !this.gameSettings.powerups;
         },
+        localGameAction() {
+            this.gameSettings.localGame = !this.gameSettings.localGame;
+        }
     },
 
 
@@ -504,6 +530,7 @@ export default {
         },
 
         beforeRouteLeave() {
+            WebSocketManager.setCurrentRoute(undefined);
             let element = this.domManip.$id("button-top-left");
             this.domManip.$off(element, "click", this.buttonTopLeft.method);
             element = this.domManip.$id("button-top-middle");
@@ -531,6 +558,8 @@ export default {
                 this.domManip.$off(individualElement, "click", this.selectMap);
             element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
             this.domManip.$off(element, "change", this.powerupsAction);
+            element = this.domManip.$id("invite-for-game-modal-local-game-checkbox");
+            this.domManip.$off(element, "change", this.localGameAction);
             element = this.domManip.$id("invite-for-game-modal-start-button");
             this.domManip.$off(element, "click", this.submitInvitation);
             element = this.domManip.$id("friendship-modal-friendship-secondary-button");
@@ -554,8 +583,10 @@ export default {
         },
 
         afterDomInsertion() {
-            call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
+            WebSocketManager.setCurrentRoute("profile");
+			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
+                WebSocketManager.setCurrentRoute("profile-" + this.result.id);
                 console.log(res);
                 this.insertAvatar();
                 populateInfoAndStats(res);
@@ -598,6 +629,8 @@ export default {
                     this.domManip.$on(individualElement, "click", this.selectMap);
                 element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
                 this.domManip.$on(element, "change", this.powerupsAction);
+                element = this.domManip.$id("invite-for-game-modal-local-game-checkbox");
+                this.domManip.$on(element, "change", this.localGameAction);
                 element = this.domManip.$id("invite-for-game-modal-start-button");
                 this.domManip.$on(element, "click", this.submitInvitation);
                 element = this.domManip.$id("friendship-modal-friendship-secondary-button");
