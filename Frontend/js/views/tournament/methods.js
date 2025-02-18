@@ -124,16 +124,10 @@ export function gameUpdateState(gameObject) {
 
     gameCard.querySelector(".tournament-game-card-spinner").style.display = "none";
 
-    
-    // TODO: make sure that the ongoing state is only sent from the be once it starts
     if (gameObject.state === "ongoing")
         gameCard.querySelector(".tournament-game-card-score").textContent = "0 - 0";
-    //TODO: it would be cool to mention which of the players (player1 or player2) is having the connection issues so that we can show the spinner on his side
     else if (gameObject.state === "paused")
         gameCard.querySelector(".tournament-game-card-spinner").style.display = "flex";
-    else if (gameObject.state === "quitted") {
-        //TODO: what does the ws message contain? does the "finished" message comes after?
-    }
     else if (gameObject.state === "finished") {
         console.log("FINIIIIISHH HIIIIIIIM!!!!!");
         //TODO: the winner value should be player1/2 instead of player id
@@ -247,6 +241,7 @@ export function createGameList(games) {
 export function updateParticipantsCard(userData) {
 
     console.log("user data:", userData);
+
 
     
     // TODO:    a) on "accepted" the keyword is data.userState and on the others is data.state
