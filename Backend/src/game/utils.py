@@ -3,10 +3,8 @@ import logging
 # DJANGO
 from rest_framework import status
 from django.db import transaction
-from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.utils.timezone import localtime
 # CORE
 from core.exceptions import BarelyAnException
 # USER
@@ -171,7 +169,7 @@ def finish_game(game, message=None):
         return winner, looser
     # Below is for tournament games only:
     send_ws_tournament_game_msg(game)
-    # TODO: ???
+    # TODO: ??? #issue #339
     update_tournament_member_stats(game, winner, looser)
     update_tournament_ranks(game.tournament_id)
     check_tournament_routine(game.tournament_id)
