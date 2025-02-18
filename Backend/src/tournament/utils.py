@@ -268,11 +268,17 @@ def start_tournament(user, tournament_id):
         tournament_members_count = tournament_members.filter(accepted=True).count()
         if tournament_members_count < 3:
             raise BarelyAnException(_("You need at least 3 members to start the tournament"))
-        # Check if all members who accepted the invitation are online
+        # Split into accepted and not accepted members
         accepted_members = tournament_members.filter(accepted=True)
         not_accepted_members = tournament_members.filter(accepted=False)
+        # Check if all members who accepted the invitation are online
         if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
             raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
+        # Just randomly asign the ranks:
+        for rank, member in enumerate(accepted_members, start=1):
+            member.rank = rank
+            member.save(update_fields=['rank'])
+            send_ws_tournament_member_msg(member)
         # Start the tournament
         tournament.state = Tournament.TournamentState.ONGOING
         tournament.save()

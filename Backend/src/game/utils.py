@@ -17,9 +17,11 @@ from game.constants import MAPNAME_TO_MAPNUMBER
 from game.models import Game, GameMember
 # TOURNAMENT
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
-from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
-from services.send_ws_msg import send_ws_tournament_game_msg
-from tournament.ranking import update_tournament_member_stats
+from tournament.models import TournamentMember
+from tournament.serializer import TournamentMemberSerializer
+from tournament.tournament_manager import check_tournament_routine
+from services.send_ws_msg import send_ws_tournament_game_msg, send_ws_tournament_member_msg
+from tournament.ranking import db_update_tournament_member_stats, db_update_tournament_ranks
 from user.utils import get_user_by_id
 # CHAT
 from chat.message_utils import create_and_send_overloards_pm
@@ -165,13 +167,16 @@ def finish_game(game, message=None):
 
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
-    if not game.tournament_id:
-        return winner, looser
     # Below is for tournament games only:
+    if not game.tournament:
+        return winner, looser
     send_ws_tournament_game_msg(game)
-    # TODO: ??? #issue #339
-    update_tournament_member_stats(game, winner, looser)
-    update_tournament_ranks(game.tournament_id)
+    db_update_tournament_member_stats(game, winner, looser)
+    db_update_tournament_ranks(game.tournament)
+    # Send the updated tournament ranking to all users of the tournament
+    tournament_members = TournamentMember.objects.filter(tournament_id=game.tournament.id)
+    for member in tournament_members:
+        send_ws_tournament_member_msg(member)
     check_tournament_routine(game.tournament_id)
     return winner, looser
 
