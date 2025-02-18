@@ -13,8 +13,12 @@ def validate_username(value):
     if not re.match(r'^[a-zA-Z0-9\-_]+$', value):
         raise BarelyAnException(_("Username can only contain letters, numbers, hyphens (-), and underscores (_)"))
 
+    # Check for length
+    if len(value) > 8:
+        raise BarelyAnException(_("Username cannot be longer than 8 characters"))
+
     # Check if user already exists
     if User.objects.filter(username=value).exists():
         raise BarelyAnException((_("Username '{username}' already exists").format(username=value)))
-    
+
     return value

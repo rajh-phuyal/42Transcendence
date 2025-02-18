@@ -24,6 +24,7 @@ export const gameObject = {
         points: undefined,
         pos: undefined,
         size: undefined,
+        result: undefined,
         powerupBig: "unavailable",
         powerupSlow: "unavailable",
         powerupFast: "unavailable"
@@ -33,6 +34,7 @@ export const gameObject = {
         points: undefined,
         pos: undefined,
         size: undefined,
+        result: undefined,
         powerupBig: "unavailable",
         powerupSlow: "unavailable",
         powerupFast: "unavailable"

@@ -6,8 +6,8 @@ export default class AudioPlayer {
             return AudioPlayer.instance;
         }
 
-        this.maxVolumeMusic = 0.5;
-        this.maxVolumeSounds = 0.75; // TODO: implement this
+        this.maxVolumeMusic = 0.3;
+        this.maxVolumeSounds = 0.5;
         this.soundsEnabled = true;
         this.musicEnabled = true;
         this.currentSong = null;
@@ -30,7 +30,10 @@ export default class AudioPlayer {
             { name: "pause", audio: new Audio("../assets/audio/pause.mp3") },
             { name: "unpause", audio: new Audio("../assets/audio/unpause.mp3") },
             { name: "score", audio: new Audio("../assets/audio/score.mp3") },
-            { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") }
+            { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") },
+            { name: "chat", audio: new Audio("../assets/audio/chat.mp3") },
+            { name: "toast", audio: new Audio("../assets/audio/toast.mp3") },
+            { name: "no", audio: new Audio("../assets/audio/no.mp3") }
         ];
 
         AudioPlayer.instance = this;
@@ -75,6 +78,8 @@ export default class AudioPlayer {
 
         const sound = this.sounds.find(sound => sound.name === name);
         if (sound) {
+            sound.audio.currentTime = 0;
+            sound.audio.volume = this.maxVolumeSounds;
             sound.audio.loop = false;
             sound.audio.play();
         } else {
@@ -93,14 +98,12 @@ export default class AudioPlayer {
         // Make sure the song is looped
         newSong.audio.loop = true;
 
-        if (this.playing && this.currentSong === newSong) {
-            console.log("Song is already playing:", newSong);
+        if (this.playing && this.currentSong === newSong)
             return;
-        }
 
-        if (this.playing) {
+        if (this.playing)
             this.crossfade(this.currentSong, newSong);
-        } else {
+        else {
             this.playing = true;
             this.startFadeIn(newSong, 1000);
         }
@@ -128,7 +131,7 @@ export default class AudioPlayer {
                 clearInterval(fadeOut);
                 if (callback) callback();
             } else {
-                song.audio.volume = this.maxVolumeMusic - step / steps;
+                song.audio.volume = Math.max(0, this.maxVolumeMusic * (1 - step / steps));
                 step++;
             }
         }, interval);
@@ -147,7 +150,7 @@ export default class AudioPlayer {
                 clearInterval(fadeIn);
                 song.audio.volume = this.maxVolumeMusic;
             } else {
-                song.audio.volume = step / steps;
+                song.audio.volume = (step / steps) * this.maxVolumeMusic;
                 step++;
             }
         }, interval);

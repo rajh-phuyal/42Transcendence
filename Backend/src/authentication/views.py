@@ -14,8 +14,6 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from django.conf import settings
 from core.exceptions import BarelyAnException
 from authentication.utils import validate_username
-    
-
 
 class RegisterView(APIView):
     serializer_class = RegisterSerializer

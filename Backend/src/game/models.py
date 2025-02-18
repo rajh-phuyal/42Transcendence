@@ -9,7 +9,13 @@ class Game(models.Model):
         ONGOING = 'ongoing', 'Ongoing'
         PAUSED = 'paused', 'Paused'
         FINISHED = 'finished', 'Finished'
-        QUITED = 'quited', 'Quited' # TODO: I guess we don't use this state anymore, right?
+        QUITED = 'quited', 'Quited'
+
+    class GameType(models.TextChoices):
+        NORMAL = 'normal', 'Normal'
+        SEMI_FINAL = 'semifinal', 'Semifinal'
+        THIRD_PLACE = 'thirdplace', 'Third Place'
+        FINAL = 'final', 'Final'
 
     id = models.AutoField(primary_key=True)
     state = models.CharField(
@@ -17,6 +23,12 @@ class Game(models.Model):
         choices=GameState.choices,
         default=GameState.PENDING
     )
+    type = models.CharField(
+        max_length=11,
+        choices=GameType.choices,
+        default=GameType.NORMAL
+    )
+
     map_number = models.IntegerField()
     powerups = models.BooleanField()
     tournament = models.ForeignKey('tournament.Tournament', null=True, blank=True, on_delete=models.SET_NULL, related_name='games')
@@ -25,6 +37,9 @@ class Game(models.Model):
 
     def __str__(self):
         return f"Game {self.id} - State: {self.state}"
+
+    def as_clickable(self):
+        return f"#G#{self.id}#"
 
     class Meta:
         db_table = '"barelyaschema"."game"'
@@ -63,7 +78,7 @@ class GameMember(models.Model):
     admin = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"GameMember {self.id} - User: {self.user_id} - Game: {self.game_id} - Result: {self.result}"
+        return f"GameMember {self.id} - User: {self.user} - Game: {self.game} - Result: {self.result}"
 
     class Meta:
         db_table = '"barelyaschema"."game_member"'

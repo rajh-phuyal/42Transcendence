@@ -7,6 +7,7 @@ import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import $callToast from '../abstracts/callToast.js';
 import call from '../abstracts/call.js';
+import { routes } from '../navigation/routes.js';
 
 // TODO put the css styling in a css file (for all web components)
 
@@ -55,6 +56,7 @@ class AuthCard extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
 		this.displayMode = "home";
+		console.log("trans:", $store.fromState("translations"));
         this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
         this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
         this.passwordConfirmationPlaceholder = translate("auth", "passwordConfirmationPlaceholder")
@@ -213,8 +215,11 @@ class AuthCard extends HTMLElement {
 			// broadcast login to other tabs
 			$syncer.broadcast("authentication-state", { login: true });
 
-            // Add small delay to ensure store updates are processed
-            router("/home");
+			$store.dispatch('loadTranslations', routes.map(route => route.view));
+			$store.addMutationListener("setTranslations", (e) => {
+				console.log("in auth state", e);
+				router("/home");
+			});
         })
         .catch(error => {
 			$callToast("error", error.message);

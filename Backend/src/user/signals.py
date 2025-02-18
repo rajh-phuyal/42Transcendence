@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User, NoCoolWith, IsCoolWith
-from user.constants import USER_ID_OVERLOARDS, USER_ID_AI
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI
 
 @receiver(post_save, sender=User)
 def set_default_relationships(sender, instance, created, **kwargs):
@@ -10,7 +10,7 @@ def set_default_relationships(sender, instance, created, **kwargs):
         try:
             # Block the new user by 'overloards'
             print("Creating default relationships for new user with id: ", instance.id)
-            NoCoolWith.objects.create(blocker_id=USER_ID_OVERLOARDS, blocked_id=instance.id)
+            NoCoolWith.objects.create(blocker_id=USER_ID_OVERLORDS, blocked_id=instance.id)
             # Add AI Opponent as a friend with the new user
             IsCoolWith.objects.create(requester_id=USER_ID_AI, requestee_id=instance.id, status=IsCoolWith.CoolStatus.ACCEPTED)
         except ObjectDoesNotExist as e:

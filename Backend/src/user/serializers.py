@@ -3,7 +3,7 @@ from user.models import User, IsCoolWith
 from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
-from user.constants import AVATAR_DEFAULT, USER_ID_OVERLOARDS, USER_ID_AI
+from user.constants import AVATAR_DEFAULT, USER_ID_OVERLORDS, USER_ID_AI
 from chat.models import Conversation
 import logging
 
@@ -38,7 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_online(self, user):
         # AI Opponent and Overlords are always online
-        if user.id == USER_ID_OVERLOARDS or user.id == USER_ID_AI:
+        if user.id == USER_ID_OVERLORDS or user.id == USER_ID_AI:
             return True
         # Check if the user's online status is in the cache
         return user.get_online_status()
@@ -82,7 +82,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             members__user=requester
         ).filter(members__user=requested
         ).values_list('id', flat=True).first()
-        logging.info(f'conversation_id: {conversation_id}')
         return conversation_id
 
 # This will prepare the data for endpoint '/user/friend/list/<int:id>/'

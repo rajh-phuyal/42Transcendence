@@ -1,8 +1,5 @@
 from django.db import models
 
-from django.db import models
-
-
 class Tournament(models.Model):
     class   TournamentState(models.TextChoices):
         SETUP = 'setup', 'Setup'
@@ -25,6 +22,8 @@ class Tournament(models.Model):
     def __str__(self):
         return f"{self.name} ({self.state})"
 
+    def as_clickable(self):
+        return f"#T#{self.name}#{self.id}#"
     class Meta:
         db_table = '"barelyaschema"."tournament"'
 

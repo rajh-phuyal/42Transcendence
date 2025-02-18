@@ -24,7 +24,10 @@ export default {
 
         afterDomInsertion() {
             // Translate the page
-            this.domManip.$id("404-title").innerText = translate("404", "title");
+            if (this.routeParams.msg)
+                this.domManip.$id("404-title").innerText = this.routeParams.msg;
+            else
+                this.domManip.$id("404-title").innerText = translate("404", "title");
             let homeButton = this.domManip.$id("home-button");
             console.log("homebutton:",homeButton);
             // TODO: @rajh is this the correct way to translate the button?
