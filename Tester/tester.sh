@@ -103,8 +103,8 @@ create_dummy(){
     bash "$(dirname "$(realpath "$0")")/dummy2.0.sh"
     sleep 1
     source $ENV_FILE
-    # TODO: uncomment! echo -e "${BLUE}Running dummy2.0.sh...${GREEN}done${RESET}"
-    # TODO: uncomment! bash "$LIVE_DUMMY_FILE"
+    echo -e "${BLUE}Running dummy2.0.sh...${GREEN}done${RESET}"
+    bash "$LIVE_DUMMY_FILE"
     check_for_envs
 }
 
