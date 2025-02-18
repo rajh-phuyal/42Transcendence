@@ -16,37 +16,49 @@ const eventListenersConfig = [
 		id: "login-button",
 		event: "click",
 		callback: "loginButtonClick",
+		translationParam: "loginButton"
 	},
 	{
 		id: "register-button",
 		event: "click",
-		callback: "registerButtonClick"
+		callback: "registerButtonClick",
+		translationParam: "registerButton"
 	},
 	{
 		class: ".submit-button",
 		event: "click",
-		callback: "submitClick"
+		callback: "submitClick",
+		translationParam: "submitButton"
 	},
 	{
 		class: ".back-to-main-button",
 		event: "click",
-		callback: "backButtonClick"
+		callback: "backButtonClick",
+		translationParam: "backButton"
 	},
 	{
 		class: ".show-password-button",
 		event: "click",
-		callback: "togglePasswordVisibility"
+		callback: "togglePasswordVisibility",
+		translationParam: "displayPassword"
 	},
 	{
 		class: ".usernameInput",
 		event: "keypress",
-		callback: "handleKeyPress"
+		callback: "handleKeyPress",
+		translationParam: "usernamePlaceholder"
 	},
 	{
 		class: ".passwordInput",
 		event: "keypress",
 		callback: "handleKeyPress",
-		keyUp: "passwordMathcCheck"
+		keyUp: "passwordMatchCheck",
+		translationParam: "passwordPlaceholder"
+	},
+	{
+		id: "auth-language-selector",
+		event: "change",
+		callback: "selectLanguage"
 	}
 ];
 
@@ -56,7 +68,6 @@ class AuthCard extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
 		this.displayMode = "home";
-		console.log("trans:", $store.fromState("translations"));
         this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
         this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
         this.passwordConfirmationPlaceholder = translate("auth", "passwordConfirmationPlaceholder")
@@ -66,6 +77,7 @@ class AuthCard extends HTMLElement {
 		this.backButton = translate("auth", "backButton");
 		this.passwordVisibilityButton = translate("auth", "displayPassword");
 		this.transitionTime = 300;
+		this.selectedLanguage = "en-US";
     }
 
     static get observedAttributes() {
@@ -184,7 +196,7 @@ class AuthCard extends HTMLElement {
         // passwordField.blur();
 
         const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
-        $auth?.[authAction](usernameField?.value, passwordField?.value)
+        $auth?.[authAction](usernameField?.value, passwordField?.value, this.selectLanguage)
         .then((response) => {
             // Initialize the store
             $store.initializer();
@@ -200,7 +212,7 @@ class AuthCard extends HTMLElement {
             $store.commit('setUser', {
                 id: response.userId,
                 username: response.username,
-				avatar: response.userAvatar,
+				avatar: response.userAvatar
             });
 
             // update the profile route params
@@ -217,17 +229,11 @@ class AuthCard extends HTMLElement {
 
 			$store.dispatch('loadTranslations', routes.map(route => route.view));
 			$store.addMutationListener("setTranslations", (e) => {
-				console.log("in auth state", e);
 				router("/home");
 			});
         })
         .catch(error => {
-			$callToast("error", error.message);
-            // console.error(error);
-        })
-        .finally(() => {
-            // usernameField.value = "";
-            // passwordField.value = "";
+			$callToast("error", error.message); // TODO translate
         });
     }
 
@@ -308,7 +314,7 @@ class AuthCard extends HTMLElement {
 			translate("auth", "hidePassword") : translate("auth", "displayPassword");
 	}
 
-	passwordMathcCheck() {
+	passwordMatchCheck() {
 		const passwordField = this.shadow.querySelectorAll(".password-register");
 		if (passwordField[0].value === passwordField[1].value) {
 			passwordField[0].style.border = "3px solid #FFF6D4";
@@ -316,6 +322,27 @@ class AuthCard extends HTMLElement {
 		} else {
 			passwordField[0].style.border = "3px solid red";
 			passwordField[1].style.border = "3px solid red";
+		}
+	}
+
+	selectLanguage(e) {
+		$store.state.locale = e?.target?.value;
+		this.selectLanguage = e?.target?.value;
+		for (let config of eventListenersConfig) {
+			if (config?.id && config?.translationParam) {
+				const element = this.shadow.getElementById(config.id);
+				element.innerText = translate("auth", config?.translationParam);
+			} else if (config?.class && config?.translationParam) {
+				const elements = this.shadow.querySelectorAll(config.class);
+				elements.forEach((element) => {
+					if (config.class == ".passwordInput" && element.classList.contains("password-confirmation-input"))
+						element.placeholder = translate("auth", "passwordConfirmationPlaceholder");
+					else if (config.event == "keypress")
+						element.placeholder = translate("auth", config?.translationParam);
+					else
+						element.innerText = translate("auth", config?.translationParam);
+				});
+			}
 		}
 	}
 
@@ -464,9 +491,38 @@ class AuthCard extends HTMLElement {
 				right: calc(10% - 1.5rem);
 				top: calc(54% - 1rem);
 			}
+
+			#auth-language-selector-container {
+				position: absolute;
+				top: 0.5rem;
+				right: 0.8rem;
+			}
+
+			#auth-language-selector {
+				font-size: 1.3rem;
+				padding: 0.1rem 0.2rem;
+			}
+
+			#auth-language-selector > option {
+				font-size: 5rem;
+				height: 5rem;
+				width: 5rem;
+				background-color: red;
+			}
+
             </style>
 
             <div class="main-container">
+				<div id="auth-language-selector-container">
+					<select name="language" id="auth-language-selector">
+						<option class="auth-language" value="en-US">🇺🇸</option>
+                        <option class="auth-language" value="de-DE">🇩🇪</option>
+                        <option class="auth-language" value="ne-NP">🇳🇵</option>
+                        <option class="auth-language" value="pt-BR">🇧🇷</option>
+                        <option class="auth-language" value="pt-PT">🇵🇹</option>
+                        <option class="auth-language" value="uk-UA">🇺🇦</option>
+					</select>
+				</div>
 
 				<button id="login-button">${this.loginButton}</button>
 				<button id="register-button">${this.registerButton}</button>
