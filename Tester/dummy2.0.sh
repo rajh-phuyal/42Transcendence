@@ -112,13 +112,10 @@ send_friend_request() {
     local access_token=${!access_token_var}
     local target_id_var="$(echo "${target_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local target_id=${!target_id_var}
-    local payload="{\"action\": \"send\", \"target_id\": $target_id}"
 
-    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT/send/$target_id/" \
         -H "Content-Type: application/json" \
-        --cookie "access_token=$access_token" \
-        -d "$payload")
-
+        --cookie "access_token=$access_token")
     if [ "$HTTP_CODE" -eq 201 ]; then
         echo -e "Sending friend request from $sender to $target_username: ${GREEN}ok${RESET}"
     else
@@ -136,13 +133,9 @@ accept_friend_request() {
     local sender_id_var="$(echo "${sender_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local sender_id=${!sender_id_var}
 
-    local payload="{\"action\": \"accept\", \"target_id\": $sender_id}"
-
-    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X PUT "$BASE_URL$RELATIONSHIP_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X PUT "$BASE_URL$RELATIONSHIP_ENDPOINT/accept/$sender_id/" \
         -H "Content-Type: application/json" \
-        --cookie "access_token=$access_token" \
-        -d "$payload")
-
+        --cookie "access_token=$access_token")
     if [ "$HTTP_CODE" -eq 200 ]; then
         echo -e "Accepting friend request from $sender_username to $receiver: ${GREEN}ok${RESET}"
     else
@@ -160,13 +153,9 @@ block_user() {
     local target_id_var="$(echo "${target_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local target_id=${!target_id_var}
 
-    local payload="{\"action\": \"block\", \"target_id\": $target_id}"
-
-    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT" \
+    HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$RELATIONSHIP_ENDPOINT/block/$target_id/" \
         -H "Content-Type: application/json" \
-        --cookie "access_token=$access_token" \
-        -d "$payload")
-
+        --cookie "access_token=$access_token")
     if [ "$HTTP_CODE" -eq 201 ]; then
         echo -e "Blocking user $target_username by $blocker: ${GREEN}ok${RESET}"
     else
@@ -185,7 +174,7 @@ create_chat() {
     local target_id_var="$(echo "${target_username}_ID" | tr '[:lower:]' '[:upper:]')"
     local target_id=${!target_id_var}
 
-    local payload="{\"userIds\": [$target_id], \"initialMessage\": \"$message\"}"
+    local payload="{\"userId\": $target_id, \"initialMessage\": \"$message\"}"
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$CREATE_CHAT_ENDPOINT" \
         -H "Content-Type: application/json" \

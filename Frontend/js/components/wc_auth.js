@@ -68,6 +68,7 @@ class AuthCard extends HTMLElement {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
 		this.displayMode = "home";
+		console.log("trans:", $store.fromState("translations"));
         this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
         this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
         this.passwordConfirmationPlaceholder = translate("auth", "passwordConfirmationPlaceholder")

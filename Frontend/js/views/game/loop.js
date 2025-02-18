@@ -61,17 +61,21 @@ export const removeImageAnimation = (id) => {
     //image.style.animationIterationCount = "0";
 }
 
-export const showGame = () => {
+export const showGame = (show) => {
     const gameField = $id("game-field");
     const gameViewImageContainer = $id("game-view-image-container");
     const gameImageContainer = $id("game-view-map-image");
-
     const gameImage = gameImageContainer.children[0];
-
-    gameViewImageContainer.style.backgroundImage = "none";
-    gameViewImageContainer.style.width = "100%";
-    gameField.style.display = "block";
-
-    gameImage.style.display = "block";
-    animateImage("game-view-map-image", "fadein", "3s");
+    if (show) {
+        gameViewImageContainer.style.backgroundImage = "none";
+        gameViewImageContainer.style.width = "100%";
+        gameField.style.display = "block";
+        gameImage.style.display = "block";
+        animateImage("game-view-map-image", "fadein", "3s");
+    } else {
+        // TODO: this doesn't work yet
+        gameViewImageContainer.style.backgroundImage = `${window.location.origin}/assets/game/lobby.png`;
+        gameImage.style.display = "none";
+        gameField.style.display = "none";
+    }
 }

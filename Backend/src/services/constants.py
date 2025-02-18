@@ -1,0 +1,6 @@
+PRE_GROUP_CONVERSATION = "conversation_"
+PRE_GROUP_TOURNAMENT = "tournament_"
+PRE_GROUP_GAME = "game_"
+PRE_CHANNEL_USER = "user_channel_"
+PRE_DATA_USER_ONLINE = "user_online_"
+PRE_DATA_GAME = "data_game_"

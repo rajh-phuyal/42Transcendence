@@ -54,5 +54,29 @@
         "de-DE": "",
         "uk-UA": "",
         "ne-NP": ""
+    },
+    "button-leave-lobby": {
+        "en-US": "Leave the lobby",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "button-quit-game": {
+        "en-US": "Quit this game",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "button-play-again": {
+        "en-US": "Create same game again",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
     }
 }

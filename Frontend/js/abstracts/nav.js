@@ -89,7 +89,9 @@ export default function $nav(navigationPathParams = null) {
     const routeFinder = (path) => navigationBarMap.find(route => route.path === path);
 
     routeFinder('/profile').params = { id: $store.fromState("user").id };
-    routeFinder('/chat').params = { id: undefined };
+    // TODO: @astein: I guess we don't need this line below since
+    // clickig on chat in navbar should not have any params
+    // routeFinder('/chat').params = { id: undefined };
 
     // additional data and styles
     styleUpdateMap?.[routeFinder('/profile').path]?.();

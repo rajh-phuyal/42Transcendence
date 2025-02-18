@@ -1,17 +1,22 @@
-from django.utils.timezone import localtime
+# Basic
 from itertools import combinations
-from django.db import transaction
-from tournament.models import Tournament, TournamentMember
-from game.models import Game, GameMember
-from core.exceptions import BarelyAnException
-from tournament.utils import finish_tournament
-from tournament.utils_ws import send_tournament_ws_msg
-from tournament.serializer import TournamentGameSerializer
-from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
+import random, logging
+# Django
 from django.utils import timezone
+from django.utils.timezone import localtime
 from django.utils.translation import gettext as _
-import random
-import logging
+from django.db import transaction
+# Core
+from core.exceptions import BarelyAnException
+# Services
+from services.send_ws_msg import send_ws_tournament_game_msg
+# Tournament
+from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
+from tournament.models import Tournament, TournamentMember
+from tournament.utils import finish_tournament
+from tournament.serializer import TournamentGameSerializer
+# Game
+from game.models import Game, GameMember
 
 # This creates the games for everyone against everyone in the tournament
 # The deadline will be set later!
@@ -22,7 +27,6 @@ def create_initial_games(tournament, tournament_members):
 
     # Generate all unique pairs of members
     member_pairs = combinations(tournament_members, 2)
-    games_created = []
 
     # Wrap the creation process in a transaction to ensure atomicity
     with transaction.atomic():
@@ -51,21 +55,8 @@ def create_initial_games(tournament, tournament_members):
                 powerup_fast=tournament.powerups,
                 powerup_slow=tournament.powerups
             )
-
-            games_created.append(game)
-
-    # Send websocket notifications to all tournament members
-    data = TournamentGameSerializer(games_created, many=True).data
-    for item in data:
-        item['gameType'] = 'normal' # since its not a semifinal or final or third place game
-    send_tournament_ws_msg(
-        tournament.id,
-        "gameCreate",
-        "game_create",
-        f"Game {game.id} has been created.",
-        games=data
-    )
-
+            # Send a ws message to tournament members
+            send_ws_tournament_game_msg(game)
     # Set the deadline for the games
     check_tournament_routine(tournament.id)
 
@@ -75,18 +66,33 @@ def create_initial_games(tournament, tournament_members):
 # Note: this is only creating the games not the game members!
 def create_final_games(tournament):
     logging.info(f"Creating final games for tournament {tournament.id}")
-    amount_of_finals = 4
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
     if tournament_members.count() == 3:
-        amount_of_finals = 1
-    for i in range(amount_of_finals):
-        # Create the final game(s)
+        # Only one final
         final_game = Game.objects.create(
             map_number=tournament.map_number,
             powerups=tournament.powerups,
-            tournament_id=tournament.id
+            tournament_id=tournament.id,
+            type=Game.GameType.FINAL
         )
         final_game.save()
+    else:
+        # Create the 4 last games:
+        lastGames = [None] * 4
+        for i in range(4):  # Correct loop syntax
+            lastGames[i] = Game.objects.create(
+                map_number=tournament.map_number,
+                powerups=tournament.powerups,
+                tournament_id=tournament.id
+            )
+        # Set the type of the games
+        lastGames[0].type = Game.GameType.SEMI_FINAL
+        lastGames[1].type = Game.GameType.SEMI_FINAL
+        lastGames[2].type = Game.GameType.THIRD_PLACE
+        lastGames[3].type = Game.GameType.FINAL
+        # Save the games
+        for game in lastGames:
+            game.save()
 
 def start_semi_finals(tournament, semi_finals):
     logging.info(f"Starting semi-finals for tournament {tournament.id}")
@@ -137,16 +143,9 @@ def start_semi_finals(tournament, semi_finals):
         game_member2.save()
         game_member3.save()
         game_member4.save()
-    data = TournamentGameSerializer(semi_finals, many=True).data
-    for item in data:
-        item['gameType'] = 'semi-final'
-    send_tournament_ws_msg(
-        tournament.id,
-        "gameCreate",
-        "game_create",
-        f"Semi-Final Games have been created.",
-        games=data
-    )
+    # Send the ws message to tournament channel group to update the lobby
+    send_ws_tournament_game_msg(semi_finals[0])
+    send_ws_tournament_game_msg(semi_finals[1])
     # Set the deadlines for the games
     update_deadlines(tournament, semi_finals)
 
@@ -211,20 +210,9 @@ def start_finals(tournament, all_finals):
         game_member2.save()
         game_member3.save()
         game_member4.save()
-    # Send websocket notifications to all tournament members
-    data = TournamentGameSerializer([all_finals[2], all_finals[3]], many=True).data
-    for item in data:
-        if item['gameId'] == all_finals[2].id:
-            item['gameType'] = 'third-place'
-        else:
-            item['gameType'] = 'final'
-    send_tournament_ws_msg(
-        tournament.id,
-        "gameCreate",
-        "game_create",
-        f"Final Games have been created.",
-        games=data
-    )
+    # Send websocket notifications to all tournament members to update the lobby
+    send_ws_tournament_game_msg(all_finals[2])
+    send_ws_tournament_game_msg(all_finals[3])
     #Set the deadlines for the games
     update_deadlines(tournament, all_finals[2:])
 
@@ -253,16 +241,7 @@ def check_final_games_with_3_members(tournament, final_game):
         game_member1.save()
         game_member2.save()
     # Send websocket notifications to all tournament members
-    data = TournamentGameSerializer([final_game], many=True).data
-    for item in data:
-        item['gameType'] = 'final'
-    send_tournament_ws_msg(
-        tournament.id,
-        "gameCreate",
-        "game_create",
-        f"Final Game {final_game.id} has been created.",
-        games=data
-    )
+    send_ws_tournament_game_msg(final_game)
     # Set the deadline for the game
     update_deadlines(tournament, [final_game])
 
@@ -380,7 +359,6 @@ def update_deadline_local_tournament(tournament, pending_games):
         logging.info(f"No pending games found - that is strange!")
     update_deadline_of_game(random.choice(pending_games).id)
 
-
 def update_deadlines(tournament, pending_games):
     logging.info(f"Updating deadlines for tournament {tournament.id} with {len(pending_games)} pending games")
 
@@ -424,7 +402,7 @@ def check_tournament_routine(tournament_id):
             check_tournament_routine(tournament_id)
 
 # This will be called when a game is finished
-# It will update the ranks of the tournament members and sned it as a sorted
+# It will update the ranks of the tournament members and send it as a sorted
 # json list via ws to the tournament channel
 def update_tournament_ranks(tournament_id):
     logging.info(f"Updating tournament ranks for tournament {tournament_id}")
@@ -479,12 +457,13 @@ def update_tournament_ranks(tournament_id):
     ]
 
     # Send the ranking to the tournament channel
-    send_tournament_ws_msg(
-        tournament_id,
-        "gameUpdateRank",
-        "game_update_rank",
-        _("The tournament ranking has been updated."),
-        **{
-            "ranking": ranking_json
-        }
-    )
+    # TODO: !!!
+    #send_ws_tournament_msg(
+    #    tournament_id,
+    #    "gameUpdateRank",
+    #    "game_update_rank",
+    #    _("The tournament ranking has been updated."),
+    #    **{
+    #        "ranking": ranking_json
+    #    }
+    #)
