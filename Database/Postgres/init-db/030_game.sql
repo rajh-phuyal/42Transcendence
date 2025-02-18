@@ -8,12 +8,14 @@
 
 \! echo -e "creating the enum type: 'barelyaschema.game_state'..."
 CREATE TYPE barelyaschema.game_state AS ENUM ('pending', 'countdown', 'ongoing', 'paused', 'finished', 'quited');
-
+\! echo -e "creating the enum type: 'barelyaschema.game_type'..."
+CREATE TYPE barelyaschema.game_type AS ENUM ('normal', 'semifinal', 'thirdplace', 'final');
 \! echo -e "creating the table: 'barelyaschema.game'..."
 CREATE TABLE IF NOT EXISTS barelyaschema.game
 (
 	id SERIAL PRIMARY KEY,
 	state barelyaschema.game_state NOT NULL DEFAULT 'pending',
+    type barelyaschema.game_type NOT NULL DEFAULT 'normal',
 	map_number INT NOT NULL,
 	powerups BOOLEAN NOT NULL,
 	tournament_id INT,

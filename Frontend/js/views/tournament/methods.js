@@ -17,18 +17,18 @@ export function buildView(tournamentState) {
         divs2 = $class("tournament-setup")
     }
 
-    
+
     for (let element of divs1) {
         console.log("flexing:", element.getAttribute("id"));
         element.style.display = 'flex';
     }
     for (let element of divs2) {
         console.log("noning:", element.getAttribute("id"));
-        element.style.display = 'none';
+        element.style.display = 'flex';
     }
 
-    $id("tournament-rank-container").style.display = "none"; 
-    $id("tournament-history-container").style.display = "none"; 
+    $id("tournament-rank-container").style.display = "none";
+    $id("tournament-history-container").style.display = "none";
 }
 
 export function createPlayerCard(playerObject) {

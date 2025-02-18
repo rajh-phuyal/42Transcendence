@@ -18,7 +18,11 @@ from user.models import User
 from chat.models import ConversationMember, Message, Conversation
 from chat.serializers import MessageSerializer
 # Game
+from game.models import Game
 from game.game_cache import get_game_data
+# Tournament
+from tournament.models import Tournament, TournamentMember
+from tournament.serializer import TournamentInfoSerializer, TournamentMemberSerializer, TournamentGameSerializer
 
 """ All WS Message should be send to the FE using one of the following functions:"""
 
@@ -145,19 +149,70 @@ async def send_ws_new_conversation(user, conversation):
 # ==============================================================================
 #     TOURNAMENT FUNCTIONS
 # ==============================================================================
-def send_ws_tournament_msg(tournament_id, type_camel, type_snake, message, **json_details):
-    """ Those messages will be send to the tournament channel to update the tournament lobby """
-    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament_id}"
+def send_ws_tournament_info_msg(tournament, deleted=False):
+    """
+    Since a deleted tournament is not in the db anymore we need to call this
+    function right before we delete the entry. In this case we set the deleted
+    flag to True.
+    """
+    if isinstance(tournament, int):
+        tournament = Tournament.objects.get(id=tournament)
+
+    serializerInfo = TournamentInfoSerializer(tournament)
+    if deleted:
+        # Since the return is read only we need to make a copy to change the state
+        info_data = serializerInfo.data.copy()
+        info_data['state'] = "deleted"
+    else:
+        info_data = serializerInfo.data
+    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament.id}"
     async_to_sync(channel_layer.group_send)(
     tournament_id_name,
     {
-        "messageType": type_camel,
-        "type": type_snake,
-        "tournamentId": tournament_id,
-        "message": message,
-        **json_details
+        "messageType": "tournamentInfo",
+        "type": "tournament_info",
+        "tournamentInfo": info_data
     })
-    logging.info(f"Message sent to tournament {tournament_id} channel ({tournament_id_name}): {message}")
+
+def send_ws_tournament_member_msg(tournament_member, leave=False):
+    """
+    Since a player who has left a tournament is not in the db table
+    tournament_member anymore we need to call this function right before we
+    delete the entry. In this case we set the leave flag to True.
+    """
+    if isinstance(tournament_member, int):
+        tournament_member = TournamentMember.objects.get(id=tournament_member)
+
+    serializer_member = TournamentMemberSerializer(tournament_member)
+    if leave:
+        # Since the return is read only we need to make a copy
+        member_data = serializer_member.data.copy()
+        member_data['state'] = "left"
+    else:
+        member_data = serializer_member.data
+    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament_member.tournament.id}"
+    async_to_sync(channel_layer.group_send)(
+    tournament_id_name,
+    {
+        "messageType": "tournamentMember",
+        "type": "tournament_member",
+        "tournamentMember": member_data
+    })
+
+def send_ws_tournament_game_msg(game):
+    if isinstance(game, int):
+        game = Game.objects.get(id=game)
+    if game.tournament_id is None:
+        return
+    serializerGame = TournamentGameSerializer(game)
+    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{game.tournament.id}"
+    async_to_sync(channel_layer.group_send)(
+    tournament_id_name,
+    {
+        "messageType": "tournamentGame",
+        "type": "tournament_game",
+        "TournamentGame": serializerGame.data
+    })
 
 def send_ws_tournament_pm(tournament_id, message):
     """

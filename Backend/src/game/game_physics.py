@@ -1,9 +1,11 @@
 import logging, random, math
+from asgiref.sync import sync_to_async
 from game.constants import INIT_BALL_SPEED, BALL_SPEED_STEP, INIT_PADDLE_SIZE, PADDLE_OFFSET
 from game.models import Game
 from game.utils import get_user_of_game
 from game.game_cache import get_game_data, set_game_data, get_player_input
 from game.utils_ws import update_game_state, update_game_points, update_player_powerup
+from services.send_ws_msg import send_ws_tournament_game_msg
 
 # Player side needs to be 'playerLeft' or 'playerRight'
 async def activate_power_ups(game_id, player_side):

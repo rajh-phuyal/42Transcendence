@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 # Servies
 from services.channel_groups import update_client_in_group
 from services.constants import PRE_GROUP_CONVERSATION
+from asgiref.sync import async_to_sync
 # User
 from user.models import User
 # Services
@@ -69,8 +70,8 @@ def create_conversation(user1, user2):
     ConversationMember.objects.create(conversation=conversation, user=user1)
     ConversationMember.objects.create(conversation=conversation, user=user2)
     # Add the members to the channel
-    update_client_in_group(user1, conversation.id, PRE_GROUP_CONVERSATION, add=True)
-    update_client_in_group(user2, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    async_to_sync(update_client_in_group)(user1, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    async_to_sync(update_client_in_group)(user2, conversation.id, PRE_GROUP_CONVERSATION, add=True)
     # Send the new conversation ws message (in case the user has chat view open)
     send_ws_new_conversation(user1, conversation)
     send_ws_new_conversation(user2, conversation)
