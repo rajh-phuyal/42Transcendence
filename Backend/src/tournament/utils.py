@@ -201,7 +201,7 @@ def join_tournament(user, tournament_id):
     else:
         # Need to be invited
         if not tournament_member:
-            raise BarelyAnException(_("You are not invited to this tournament"))
+            raise BarelyAnException(_("You are not invited to this tournament"), status_code=status.HTTP_403_FORBIDDEN)
         with transaction.atomic():
             tournament_member = TournamentMember.objects.select_for_update().get(user_id=user.id, tournament_id=tournament_id)
             tournament_member.accepted = True
