@@ -21,9 +21,8 @@ def debug_task(self):
     print(f'Request: {self.request!r}')
 
 app.conf.beat_schedule = {
-    'hello-world-every-minute': {
+    'check-for-overdue-games': {
         'task': 'tournament.tasks.check_overdue_tournament_games',
-        # 'schedule': timedelta(seconds=10),  # Runs every 20 seconds
-        'schedule': crontab(minute='*'),  # Runs every minute TODO: Reset to 1 minute
+        'schedule': crontab(minute='*/5'),  # Runs every 5 minutes TODO: Reset to 1 minute
     },
 }

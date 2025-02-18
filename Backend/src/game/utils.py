@@ -3,16 +3,14 @@ import logging
 # DJANGO
 from rest_framework import status
 from django.db import transaction
-from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.utils.timezone import localtime
 # CORE
 from core.exceptions import BarelyAnException
 # USER
 from user.constants import USER_ID_AI
 from user.models import User
-from user.exceptions import UserNotFound, RelationshipException, BlockingException
+from user.exceptions import RelationshipException, BlockingException
 from user.utils_relationship import is_blocking, are_friends
 # GAME
 from game.constants import MAPNAME_TO_MAPNUMBER
@@ -20,7 +18,7 @@ from game.models import Game, GameMember
 # TOURNAMENT
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.tournament_manager import check_tournament_routine, update_tournament_ranks
-from services.send_ws_msg import send_ws_tournament_msg
+from services.send_ws_msg import send_ws_tournament_game_msg
 from tournament.ranking import update_tournament_member_stats
 from user.utils import get_user_by_id
 # CHAT
@@ -146,7 +144,6 @@ def finish_game(game, message=None):
                     user1=game_members.first().user.username,
                     user2=game_members.last().user.username
                 )
-    ...
     with transaction.atomic():
         game.state = Game.GameState.FINISHED
         game.finish_time = timezone.now() #TODO: Issue #193
@@ -168,21 +165,11 @@ def finish_game(game, message=None):
 
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
-    # For tournament games only:
     if not game.tournament_id:
         return winner, looser
-    # - inform everyone that the game finished
-    send_ws_tournament_msg(
-        game.tournament_id,
-        "gameUpdateState",
-        "game_update_state",
-        message,
-        **{
-            "gameId": game.id,
-            "state": "finished",
-            "winnerId": winner.user_id,
-        }
-    )
+    # Below is for tournament games only:
+    send_ws_tournament_game_msg(game)
+    # TODO: ??? #issue #339
     update_tournament_member_stats(game, winner, looser)
     update_tournament_ranks(game.tournament_id)
     check_tournament_routine(game.tournament_id)
@@ -205,20 +192,7 @@ def update_deadline_of_game(game_id):
             game.save()
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Inform all users of the tournament
-        send_ws_tournament_msg(
-            game.tournament.id,
-            "gameSetDeadline",
-            "game_set_deadline",
-            _("Game {game_id} has been set to pending. The deadline is {deadline}"
-                ).format(
-                    game_id=game.id,
-                    deadline=localtime(game.deadline).isoformat()
-                ),
-            **{
-                "gameId": game.id,
-                "deadline": localtime(game.deadline).isoformat()
-            }
-        )
+        send_ws_tournament_game_msg(game)
     except Game.DoesNotExist:
         logging.info(f"ERROR: Game {game_id} not found in function call update_deadline_of_game")
         return

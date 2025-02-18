@@ -13,6 +13,8 @@ from game.constants import GAME_STATE, GAME_PLAYER_INPUT, PADDLE_OFFSET
 from game.models import Game, GameMember
 from game.utils import is_left_player, get_user_of_game, finish_game
 from game.game_cache import get_game_data, set_game_data
+# Services
+from services.send_ws_msg import send_ws_tournament_info_msg, send_ws_tournament_game_msg
 # Channels
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
@@ -40,9 +42,9 @@ def update_game_state(game_id, state):
                 game.deadline = None # So the recconection deadline is gone
         game.save()
 
-    # TODO: tournament game issue #309
-    # if tournament game
-    #      inform tournament guys (gameUpdateState)
+    # If the game is finished the finish_game function already sends the ws with send_ws_tournament_game_msg
+    if game.tournament and game.state != Game.GameState.FINISHED:
+        send_ws_tournament_game_msg(game)
     logging.info(f"Game state updated (cache and db) to: {state}")
 
 @database_sync_to_async
@@ -73,13 +75,13 @@ def update_game_points(game_id, player_id=None, player_side=None):
         gameMember.points += 1
         gameMember.save()
 
-    # TODO: tournament game # issue #309
-    # if tournament game
-    #      inform tournament guys (gameUpdateScore)
-
     points_left = get_game_data(game_id, 'playerLeft', 'points')
     points_right = get_game_data(game_id, 'playerRight', 'points')
     logging.info(f"Game {game_id} points/score updated (cache and db) to: {points_left}/{points_right}")
+
+    # Send ws message to tournament guys if it is a tournament game
+    if gameMember.game.tournament:
+        send_ws_tournament_game_msg(gameMember.game)
 
 @database_sync_to_async
 def update_player_powerup(game_id, player_side, powerup, new_value):

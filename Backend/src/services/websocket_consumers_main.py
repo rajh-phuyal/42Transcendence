@@ -47,10 +47,16 @@ class MainConsumer(CustomWebSocketLogic):
         # Process the message
         await WebSocketMessageHandlersMain()[f"{self.message_type}"](self, text_data)
 
-    async def chat_message(self, event):
+    # BASIC MESSAGES #
+
+    async def info(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def reload_profile(self, event):
+    async def error(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
+    # FOR CHAT #
+    async def chat_message(self, event):
         await self.send(text_data=json.dumps({**event}))
 
     async def update_badge(self, event):
@@ -59,29 +65,16 @@ class MainConsumer(CustomWebSocketLogic):
     async def new_conversation(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def tournament_subscription(self, event):
+    # FOR PROFILE #
+    async def reload_profile(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def tournament_state(self, event):
+    # FOR TOURNAMENT #
+    async def tournament_info(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def info(self, event):
+    async def tournament_member(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def error(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_create(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_set_deadline(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_update_score(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_update_state(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_update_rank(self, event):
+    async def tournament_game(self, event):
         await self.send(text_data=json.dumps({**event}))

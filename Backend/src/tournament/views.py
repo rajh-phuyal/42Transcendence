@@ -9,9 +9,9 @@ from game.models import Game, GameMember
 from tournament.models import Tournament, TournamentMember
 from django.utils.translation import gettext as _
 from core.decorators import barely_handle_exceptions
-from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, prepare_tournament_data_json, start_tournament
+from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
 from core.exceptions import BarelyAnException
-from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentRankSerializer
+from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentInfoSerializer
 import logging
 from django.db import models
 from services.send_ws_msg import send_ws_tournament_pm
@@ -149,15 +149,40 @@ class TournamentLobbyView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
         user = request.user
-
         tournament = Tournament.objects.get(id=id)
-
         # Add client to websocket group if tournament is not finished
         if tournament.state != Tournament.TournamentState.FINISHED:
             async_to_sync(update_client_in_group)(user, tournament.id, PRE_GROUP_TOURNAMENT, add=True)
+        # Define the client role:
+        role = ""
+        try:
+            tournament_member = TournamentMember.objects.get(user_id=user.id, tournament_id=tournament.id)
+            if tournament_member.is_admin:
+                role = "admin"
+            else:
+                if tournament_member.accepted:
+                    role = "member"
+                else:
+                    role = "invited"
+        except TournamentMember.DoesNotExist:
+            role = "fan"
+        # Serialize the tournament info
+        serializer_info = TournamentInfoSerializer(tournament)
+        # Serialize the tournament members
+        tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
+        admin_name = tournament_members.get(is_admin=True).user.username
+        serializer_members = TournamentMemberSerializer(tournament_members, many=True)
+        # Serialize the tournament games
+        games = Game.objects.filter(tournament_id=tournament.id)
+        serializer_games = TournamentGameSerializer(games, many=True)
 
-        response_json=prepare_tournament_data_json(user, tournament)
-        return success_response(_("Tournament lobby fetched successfully"), **response_json)
+        # Send all data at once to the frontend
+        return success_response(_("Tournament lobby fetched successfully"), **{
+            'clientRole': role,
+            'tournamentInfo': serializer_info.data,
+            'tournamentMembers': serializer_members.data,
+            'tournamentGames': serializer_games.data,
+        })
 
 # If the user is in a tournament and has a pending game with a deadline set,
 # this endpoint will return the gameId so that the FE can redir to the game

@@ -11,12 +11,24 @@ class Game(models.Model):
         FINISHED = 'finished', 'Finished'
         QUITED = 'quited', 'Quited'
 
+    class GameType(models.TextChoices):
+        NORMAL = 'normal', 'Normal'
+        SEMI_FINAL = 'semifinal', 'Semifinal'
+        THIRD_PLACE = 'thirdplace', 'Third Place'
+        FINAL = 'final', 'Final'
+
     id = models.AutoField(primary_key=True)
     state = models.CharField(
         max_length=10,
         choices=GameState.choices,
         default=GameState.PENDING
     )
+    type = models.CharField(
+        max_length=11,
+        choices=GameType.choices,
+        default=GameType.NORMAL
+    )
+
     map_number = models.IntegerField()
     powerups = models.BooleanField()
     tournament = models.ForeignKey('tournament.Tournament', null=True, blank=True, on_delete=models.SET_NULL, related_name='games')

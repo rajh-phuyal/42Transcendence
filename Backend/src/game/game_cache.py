@@ -32,6 +32,7 @@ async def init_game_on_cache(game, leftMember, rightMember):
         cache.set(cache_key, deepcopy(GAME_STATE), timeout=3000)
         # Initialize the game data to match the db:
         set_game_data(game.id, 'gameData', 'state', game.state)
+        set_game_data(game.id, 'gameData', 'tournament', game.tournament)
         set_game_data(game.id, 'playerLeft', 'points', leftMember.points)
         set_game_data(game.id, 'playerRight', 'points', rightMember.points)
         set_game_data(game.id, 'playerLeft', 'result', leftMember.result)
