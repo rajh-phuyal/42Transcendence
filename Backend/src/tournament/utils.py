@@ -274,6 +274,10 @@ def start_tournament(user, tournament_id):
         # Check if all members who accepted the invitation are online
         if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
             raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
+        # Remove all persons who have not accepted the invitation
+        for member in not_accepted_members:
+            send_ws_tournament_member_msg(member, leave=True)
+            member.delete()
         # Just randomly asign the ranks:
         for rank, member in enumerate(accepted_members, start=1):
             member.rank = rank
@@ -282,10 +286,6 @@ def start_tournament(user, tournament_id):
         # Start the tournament
         tournament.state = Tournament.TournamentState.ONGOING
         tournament.save()
-        # Remove all persons who have not accepted the invitation
-        for member in not_accepted_members:
-            send_ws_tournament_member_msg(member, leave=True)
-            member.delete()
     # Send websocket update message to tournament channel group to update the lobby
     send_ws_tournament_info_msg(tournament)
     # Also send a PM to all members
