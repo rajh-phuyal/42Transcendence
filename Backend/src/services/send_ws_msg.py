@@ -199,6 +199,24 @@ def send_ws_tournament_member_msg(tournament_member, leave=False):
         "tournamentMember": member_data
     })
 
+def send_ws_all_tournament_members_msg(tournament):
+    """
+    This function sends all tournament members to the group of the tournament.
+    As a sorted list
+    """
+    if isinstance(tournament, int):
+        tournament = Tournament.objects.get(id=tournament)
+    members = TournamentMember.objects.filter(tournament=tournament).order_by('rank')
+    serializer_members = TournamentMemberSerializer(members, many=True)
+    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament.id}"
+    async_to_sync(channel_layer.group_send)(
+    tournament_id_name,
+    {
+        "messageType": "tournamentMembers",
+        "type": "tournament_members",
+        "tournamentMembers": serializer_members.data
+    })
+
 def send_ws_tournament_game_msg(game):
     if isinstance(game, int):
         game = Game.objects.get(id=game)
