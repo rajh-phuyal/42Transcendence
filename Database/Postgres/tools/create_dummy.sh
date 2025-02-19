@@ -16,6 +16,7 @@ ALL_TABLES=("barelyaschema.game_member"
 # Fixed UserIDs:
 ID_OVERLOARDS=1
 ID_AI=2
+ID_FLATMATE=3
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -101,13 +102,18 @@ insert_dummy "$TABLE_NAME"                                      \
 		(3,     $ID_AI,         6,          'accepted'),        \
 		(4,     $ID_AI,         7,          'accepted'),        \
 		(5,     $ID_AI,         8,          'accepted'),        \
-		(6,     4,              5,          'accepted'),        \
-		(7,     4,              6,          'accepted'),        \
-		(8,     4,              7,          'accepted'),        \
-		(9,     4,              8,          'accepted'),        \
-		(10,    5,              5,          'accepted'),        \
-		(11,    5,              7,          'pending'),         \
-		(12,    8,              7,          'pending');"
+        (6,     $ID_FLATMATE,   4,          'accepted'),        \
+        (7,     $ID_FLATMATE,   5,          'accepted'),        \
+        (8,     $ID_FLATMATE,   6,          'accepted'),        \
+        (9,     $ID_FLATMATE,   7,          'accepted'),        \
+        (10,    $ID_FLATMATE,   8,          'accepted'),        \
+		(11,    4,              5,          'accepted'),        \
+		(12,    4,              6,          'accepted'),        \
+		(13,    4,              7,          'accepted'),        \
+		(14,    4,              8,          'accepted'),        \
+		(15,    5,              5,          'accepted'),        \
+		(16,    5,              7,          'pending'),         \
+		(17,    8,              7,          'pending');"
 
 TABLE_NAME="barelyaschema.no_cool_with"
 insert_dummy "$TABLE_NAME"                          \
