@@ -84,44 +84,46 @@ TABLE_NAME="barelyaschema.user"
 insert_dummy "$TABLE_NAME"                                                                                                                                                                                                                                                      \
 	"INSERT INTO $TABLE_NAME                                                                                                                                                                                                                                                    \
         (id,    password,               last_login,                 is_superuser,   username,          first_name,     last_name,  email,                  is_staff,   is_active,  date_joined,                avatar_path,                                  language) VALUES   \
-        (3,     'hashed_password_1',    '2024-01-01 10:42:00+00',   FALSE,          's-ara',           'Alê',          'Guedes',   'we dont use email',    FALSE,      FALSE,      '2001-09-01 10:15:30+00',   '4d39f530-68c8-42eb-ad28-45445424da5b.png',  'pt-BR'  ),         \
-        (4,     'hashed_password_2',    '2024-02-01 11:42:01+00',   FALSE,          's-ast',           'Alex',         'Stein',    'we dont use email',    FALSE,      FALSE,      '2002-09-01 10:15:30+00',   '73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png',  'de-DE'  ),         \
-        (5,     'hashed_password_3',    '2024-03-01 12:42:02+00',   FALSE,          's-ans',           'Anatolii',     'Shovah',   'we dont use email',    FALSE,      FALSE,      '2003-09-01 10:15:30+00',   '1e3751c5-5e47-45f2-9967-111fd26a6be8.png',  'uk-UA'  ),         \
-        (6,     'hashed_password_4',    '2024-04-01 13:42:03+00',   FALSE,          's-fda',           'Francisco',    'Inácio',   'we dont use email',    FALSE,      FALSE,      '2004-09-01 10:15:30+00',   'fe468ade-12ed-4045-80a7-7d3e45be997e.png',  'pt-PT'  ),         \
-        (7,     'hashed_password_5',    '2024-05-01 14:42:04+00',   FALSE,          's-rph',           'Rajh',         'Phuyal',   'we dont use email',    FALSE,      FALSE,      '2005-09-01 10:15:30+00',   'dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png',  'ne-NP'  );"
+        (4,     'hashed_password_1',    '2024-01-01 10:42:00+00',   FALSE,          's-ara',           'Alê',          'Guedes',   'we dont use email',    FALSE,      FALSE,      '2001-09-01 10:15:30+00',   '4d39f530-68c8-42eb-ad28-45445424da5b.png',  'pt-BR'  ),         \
+        (5,     'hashed_password_2',    '2024-02-01 11:42:01+00',   FALSE,          's-ast',           'Alex',         'Stein',    'we dont use email',    FALSE,      FALSE,      '2002-09-01 10:15:30+00',   '73d3a3c0-f3ef-43a1-bdce-d798cb286f27.png',  'de-DE'  ),         \
+        (6,     'hashed_password_3',    '2024-03-01 12:42:02+00',   FALSE,          's-ans',           'Anatolii',     'Shovah',   'we dont use email',    FALSE,      FALSE,      '2003-09-01 10:15:30+00',   '1e3751c5-5e47-45f2-9967-111fd26a6be8.png',  'uk-UA'  ),         \
+        (7,     'hashed_password_4',    '2024-04-01 13:42:03+00',   FALSE,          's-fda',           'Francisco',    'Inácio',   'we dont use email',    FALSE,      FALSE,      '2004-09-01 10:15:30+00',   'fe468ade-12ed-4045-80a7-7d3e45be997e.png',  'pt-PT'  ),         \
+        (8,     'hashed_password_5',    '2024-05-01 14:42:04+00',   FALSE,          's-rph',           'Rajh',         'Phuyal',   'we dont use email',    FALSE,      FALSE,      '2005-09-01 10:15:30+00',   'dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png',  'ne-NP'  );"
+
+TODO: do we need a friendship with the flatmate?
 
 TABLE_NAME="barelyaschema.is_cool_with"
 insert_dummy "$TABLE_NAME"                                      \
 	"INSERT INTO $TABLE_NAME                                    \
         (id,    requester_id,   requestee_id, status) VALUES    \
-		(1,     $ID_AI,         3,          'accepted'),        \
-		(2,     $ID_AI,         4,          'accepted'),        \
-		(3,     $ID_AI,         5,          'accepted'),        \
-		(4,     $ID_AI,         6,          'accepted'),        \
-		(5,     $ID_AI,         7,          'accepted'),        \
-		(6,     3,              4,          'accepted'),        \
-		(7,     3,              5,          'accepted'),        \
-		(8,     3,              6,          'accepted'),        \
-		(9,     3,              7,          'accepted'),        \
-		(10,    4,              5,          'accepted'),        \
-		(11,    4,              6,          'pending'),         \
-		(12,    7,              6,          'pending');"
+		(1,     $ID_AI,         4,          'accepted'),        \
+		(2,     $ID_AI,         5,          'accepted'),        \
+		(3,     $ID_AI,         6,          'accepted'),        \
+		(4,     $ID_AI,         7,          'accepted'),        \
+		(5,     $ID_AI,         8,          'accepted'),        \
+		(6,     4,              5,          'accepted'),        \
+		(7,     4,              6,          'accepted'),        \
+		(8,     4,              7,          'accepted'),        \
+		(9,     4,              8,          'accepted'),        \
+		(10,    5,              5,          'accepted'),        \
+		(11,    5,              7,          'pending'),         \
+		(12,    8,              7,          'pending');"
 
 TABLE_NAME="barelyaschema.no_cool_with"
 insert_dummy "$TABLE_NAME"                          \
 	"INSERT INTO $TABLE_NAME                        \
         (id,    blocker_id,     blocked_id) VALUES  \
-		(1,     $ID_OVERLOARDS, 3),                 \
-		(2,     $ID_OVERLOARDS, 4),                 \
-		(3,     $ID_OVERLOARDS, 5),                 \
-		(4,     $ID_OVERLOARDS, 6),                 \
-		(5,     $ID_OVERLOARDS, 7),                 \
-		(6,     5,              3),                 \
-		(7,     5,              6),                 \
-		(8,     6,              5);"
+		(1,     $ID_OVERLOARDS, 4),                 \
+		(2,     $ID_OVERLOARDS, 5),                 \
+		(3,     $ID_OVERLOARDS, 6),                 \
+		(4,     $ID_OVERLOARDS, 7),                 \
+		(5,     $ID_OVERLOARDS, 8),                 \
+		(6,     6,              4),                 \
+		(7,     6,              7),                 \
+		(8,     7,              6);"
 
-# Conversation 1: 3-4
-# Conversation 2: 3-5
+# Conversation 1: 4-5
+# Conversation 2: 4-6
 TABLE_NAME="barelyaschema.conversation"
 insert_dummy "$TABLE_NAME"                                                                  \
 	"INSERT INTO $TABLE_NAME                                                                \
@@ -133,23 +135,23 @@ TABLE_NAME="barelyaschema.conversation_member"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME \
         (id,    user_id,        conversation_id,    unread_counter) VALUES  \
-		(1,     3,              1,                  0),                     \
-		(2,     4,              1,                  1),                     \
-		(3,     3,              2,                  0),                     \
-		(4,     5,              2,                  1);"
+		(1,     4,              1,                  0),                     \
+		(2,     5,              1,                  1),                     \
+		(3,     4,              2,                  0),                     \
+		(4,     6,              2,                  1);"
 
 TABLE_NAME="barelyaschema.message"
 insert_dummy "$TABLE_NAME" \
 	"INSERT INTO $TABLE_NAME \
         (id,    user_id,                conversation_id, created_at,                seen_at,                    content) VALUES                                     \
-		(1,     $ID_OVERLOARDS,         1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   '**S,3,4**'),                                       \
-		(2,     3,                      1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   'Hi Alex, how are you?'),                           \
-		(3,     4,                      1,               '2024-01-01 10:42:01+00',  '2024-01-01 10:42:01+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
-		(4,     3,                      1,               '2024-01-01 10:42:02+00',   NULL,                      'I am fine too, thank you.'),                       \
-		(5,     $ID_OVERLOARDS,         2,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   '**S,3,5**'),                                       \
-		(6,     3,                      2,               '2024-01-01 10:42:03+00',  '2024-01-01 10:42:03+00',   'Hi Anatolii, how are you?'),                       \
-		(7,     5,                      2,               '2024-01-01 10:42:04+00',  '2024-01-01 10:42:04+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
-		(8,     3,                      2,               '2024-01-01 10:42:05+00',   NULL,                      'I am fine too, thank you.');"
+		(1,     $ID_OVERLOARDS,         1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   '**S,4,6**'),                                       \
+		(2,     4,                      1,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   'Hi Alex, how are you?'),                           \
+		(3,     5,                      1,               '2024-01-01 10:42:01+00',  '2024-01-01 10:42:01+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
+		(4,     4,                      1,               '2024-01-01 10:42:02+00',   NULL,                      'I am fine too, thank you.'),                       \
+		(5,     $ID_OVERLOARDS,         2,               '2024-01-01 10:42:00+00',  '2024-01-01 10:42:00+00',   '**S,4,6**'),                                       \
+		(6,     4,                      2,               '2024-01-01 10:42:03+00',  '2024-01-01 10:42:03+00',   'Hi Anatolii, how are you?'),                       \
+		(7,     6,                      2,               '2024-01-01 10:42:04+00',  '2024-01-01 10:42:04+00',   'Hi Alê, I am fine, thank you. How are you?'),      \
+		(8,     4,                      2,               '2024-01-01 10:42:05+00',   NULL,                      'I am fine too, thank you.');"
 
 print_header "RESETING SEQUENCES..."
 for table in "${ALL_TABLES[@]}"; do

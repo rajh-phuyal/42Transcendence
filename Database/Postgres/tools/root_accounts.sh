@@ -1,12 +1,13 @@
 # This file will deal with our 2 root user account:
-#     1. THE OVERLORDS
-#     2. THE AI OPPONENT
+#     1. THE OVERLORDS      (ADMIN)
+#     2. THE AI OPPONENT    (AI PLAYER)
+#     3. THE FLATMATE       (LOCAL PLAYER)
 #
 # It will be called by the entrypoint script of the postgres container.
 # First it will check if the user table is empty.
-#	If it is, it will insert the 2 root accounts.
-#	If it is not, it will check if the 2 root accounts are present with the ids
-#	1 and 2. If they are not, it will throw an error.
+#	If it is, it will insert the 3 root accounts.
+#	If it is not, it will check if the 3 root accounts are present with the ids
+#	1, 2 and 3. If they are not, it will throw an error.
 #
 # VARIABLES:
 OVERLORDS_ID=1
@@ -19,6 +20,11 @@ AI_USERNAME="ai"
 AI_FIRST_NAME="The"
 AI_LAST_NAME="AI Opponent"
 AI_AVATAR="670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"
+FLATMATE_ID=3
+FLATMATE_USERNAME="flatmate"
+FLATMATE_FIRST_NAME="The"
+FLATMATE_LAST_NAME="Flatmate"
+FLATMATE_AVATAR="4ca810c2-9b38-4bc8-ab87-d478cb1739f0.png"
 # CHANGE THE VALUES ABOVE FOR ANY ADJUSTMENTS!
 ################################################################################
 # COLORS
@@ -46,9 +52,11 @@ echo "STARTING ROOT ACCOUNTS SCRIPT..."
 # Check if the user table is empty
 if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user;" | grep -q "(0 rows)"; then
 	echo "Database is empty therfore create the root accounts..."
-	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "INSERT INTO barelyaschema.user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined, avatar_path) VALUES \
-		($OVERLORDS_ID, 'hashed_password_1', '2000-01-01 00:00:00+00', TRUE, '$OVERLORDS_USERNAME', '$OVERLORDS_FIRST_NAME', '$OVERLORDS_LAST_NAME', 'we dont use email', TRUE, TRUE, '2000-01-01 00:00:00+00', '$OVERLORDS_AVATAR'), \
-		($AI_ID, 'hashed_password_2', '2000-01-01 00:00:00+00', TRUE, '$AI_USERNAME', '$AI_FIRST_NAME', '$AI_LAST_NAME', 'we dont use email', TRUE, TRUE, '2000-01-01 00:00:00+00', '$AI_AVATAR');"
+	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "INSERT INTO barelyaschema.user \
+        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar_path) VALUES     \
+		($OVERLORDS_ID      'hashed_password_1'     '2000-01-01 00:00:00+00'    TRUE          '$OVERLORDS_USERNAME' '$OVERLORDS_FIRST_NAME'     '$OVERLORDS_LAST_NAME'  'we dont use email'  TRUE      TRUE       '2000-01-01 00:00:00+00'  '$OVERLORDS_AVATAR')    \
+		($AI_ID             'hashed_password_2'     '2000-01-01 00:00:00+00'    TRUE          '$AI_USERNAME'        '$AI_FIRST_NAME'            '$AI_LAST_NAME'         'we dont use email'  TRUE      TRUE       '2000-01-01 00:00:00+00'  '$AI_AVATAR')           \
+        ($FLATMATE_ID       'hashed_password_3'     '2000-01-01 00:00:00+00'    TRUE          '$FLATMATE_USERNAME'  '$FLATMATE_FIRST_NAME'      '$FLATMATE_LAST_NAME'   'we dont use email'  TRUE      TRUE       '2000-01-01 00:00:00+00'  '$FLATMATE_AVATAR');"
 	echo -e "Database is empty therfore create the root accounts..."$GR" DONE" $NC
 	echo "Now resetting the sequences..."
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT setval('barelyaschema.user_id_seq', COALESCE((SELECT MAX(id) FROM barelyaschema.user), 1) + 1, false);"
@@ -66,6 +74,12 @@ fi
 if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user WHERE id = $AI_ID AND username = '$AI_USERNAME';" | grep -q "(0 rows)"; then
 	echo -e $RD "FATAL: Account id $AI_ID does not belong to the ai, since the username is not '$AI_USERNAME'..."  $NC
 	end_script 1
+fi
+
+# Check if account flatmate has the correct id and username
+if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user WHERE id = $FLATMATE_ID AND username = '$FLATMATE_USERNAME';" | grep -q "(0 rows)"; then
+    echo -e $RD "FATAL: Account id $FLATMATE_ID does not belong to the flatmate, since the username is not '$FLATMATE_USERNAME'..."  $NC
+    end_script 1
 fi
 
 echo -e $GR "Root accounts are correctly set up!" $NC

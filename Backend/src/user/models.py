@@ -25,6 +25,7 @@ class User(AbstractUser):
         self.save(update_fields=['last_login'])
 
     def set_online_status(self, status, channel_name=None):
+        # TODO AI OVERLOARSA ANF FLATMATE SHOULD ALWAYS BE ONLIN!
         if status:
             cache.set(f'{PRE_DATA_USER_ONLINE}{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
             cache.set(f'{PRE_CHANNEL_USER}{self.id}', channel_name, timeout=3000)
