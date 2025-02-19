@@ -21,7 +21,7 @@ from tournament.models import TournamentMember
 from tournament.serializer import TournamentMemberSerializer
 from tournament.tournament_manager import check_tournament_routine
 from services.send_ws_msg import send_ws_tournament_game_msg, send_ws_all_tournament_members_msg
-from tournament.ranking import db_update_tournament_member_stats, db_update_tournament_ranks, db_update_tournament_ranks_finals
+from tournament.ranking import db_update_tournament_member_stats, db_update_tournament_ranks
 from user.utils import get_user_by_id
 # CHAT
 from chat.message_utils import create_and_send_overloards_pm
@@ -174,10 +174,8 @@ def finish_game(game, message=None):
     db_update_tournament_member_stats(game, winner, looser)
     if game.type == Game.GameType.NORMAL:
         db_update_tournament_ranks(game.tournament)
-    else:
-        db_update_tournament_ranks_finals(game.tournament)
-    # Send the updated tournament ranking to all users of the tournament
-    send_ws_all_tournament_members_msg(game.tournament)
+        # Send the updated tournament ranking to all users of the tournament
+        send_ws_all_tournament_members_msg(game.tournament)
     check_tournament_routine(game.tournament_id)
     return winner, looser
 
