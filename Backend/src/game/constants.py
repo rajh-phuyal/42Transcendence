@@ -56,6 +56,7 @@ GAME_STATE = {
     },
     "gameData" : {
         "state": "pending",
+        "tournament": False,
         "playerServes": "playerLeft",
         "remainingServes": 2,
         "extendingGameMode": False,

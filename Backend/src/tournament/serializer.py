@@ -1,18 +1,40 @@
 from rest_framework import serializers
-from .models import TournamentMember
+from .models import TournamentMember, Tournament
 from game.models import Game, GameMember
 
+class TournamentInfoSerializer(serializers.ModelSerializer):
+    adminId = serializers.SerializerMethodField()
+    adminName = serializers.SerializerMethodField()
+    mapNumber = serializers.IntegerField(source='map_number', read_only=True)
+    public = serializers.BooleanField(source='public_tournament', read_only=True)
+    local = serializers.BooleanField(source='local_tournament', read_only=True)
+    finishTime = serializers.DateTimeField(source='finish_time', read_only=True)
+
+    class Meta:
+        model = Tournament
+        fields = ['id', 'name', 'adminId', 'adminName', 'state', 'mapNumber', 'powerups', 'public', 'local', 'finishTime']
+
+    def get_adminId(self, obj):
+        return obj.members.filter(is_admin=True).first().user.id
+
+    def get_adminName(self, obj):
+        return obj.members.filter(is_admin=True).first().user.username
+
 class TournamentMemberSerializer(serializers.ModelSerializer):
-    userId = serializers.IntegerField(source='user.id', read_only=True)
+    id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
-    userAvatar = serializers.CharField(source='user.avatar_path', read_only=True)
-    userState = serializers.SerializerMethodField()
+    avatarUrl = serializers.CharField(source='user.avatar_path', read_only=True)
+    state = serializers.SerializerMethodField()
+    playedGames = serializers.IntegerField(source='played_games', read_only=True)
+    wonGames = serializers.IntegerField(source='won_games', read_only=True)
+    winPoints = serializers.IntegerField(source='win_points', read_only=True)
+    rank = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = TournamentMember
-        fields = ['userId', 'username', 'userAvatar', 'userState']
+        fields = ['id', 'username', 'avatarUrl', 'state', 'playedGames', 'wonGames', 'winPoints', 'rank']
 
-    def get_userState(self, obj):
+    def get_state(self, obj):
         if not obj.accepted:
             return 'pending'
         return 'accepted'
@@ -20,48 +42,32 @@ class TournamentMemberSerializer(serializers.ModelSerializer):
 class TournamentGamePlayerSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
-    avatarPath = serializers.CharField(source='user.avatar_path', read_only=True)
+    avatarUrl = serializers.CharField(source='user.avatar_path', read_only=True)
 
     class Meta:
         model = GameMember
-        fields = ['id', 'username', 'avatarPath', 'points', 'result']
+        fields = ['id', 'username', 'avatarUrl', 'points', 'result']
 
 class TournamentGameSerializer(serializers.ModelSerializer):
-    gameId = serializers.IntegerField(source='id', read_only=True)
-    mapNumber = serializers.IntegerField(source='map_number', read_only=True)
-    state = serializers.CharField(read_only=True)
+    # TODO: ISSUE #193
     finishTime = serializers.DateTimeField(source='finish_time', read_only=True)
-    player1 = serializers.SerializerMethodField()
-    player2 = serializers.SerializerMethodField()
+    # TODO: ISSUE #193
+    #deadline = serializers.DateTimeField(source='deadline', read_only=True)
+    playerLeft = serializers.SerializerMethodField()
+    playerRight = serializers.SerializerMethodField()
 
     class Meta:
         model = Game
-        fields = ['gameId', 'mapNumber', 'state', 'finishTime', 'deadline', 'player1', 'player2']
+        fields = ['id', 'state', 'type', 'deadline', 'finishTime', 'playerLeft', 'playerRight']
 
-
-    def get_player1(self, obj):
-        # Get the first palyer of the game
-        game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').first()
-        if game_member is None:
-            return None
-        return TournamentGamePlayerSerializer(game_member).data
-
-    def get_player2(self, obj):
-        # Get the second player of the game
+    def get_playerLeft(self, obj):
         game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').last()
         if game_member is None:
             return None
         return TournamentGamePlayerSerializer(game_member).data
 
-class TournamentRankSerializer(serializers.Serializer):
-    userId = serializers.IntegerField(source='user.id', read_only=True)
-    username = serializers.CharField(source='user.username', read_only=True)
-    avatarPath = serializers.CharField(source='user.avatar_path', read_only=True)
-    gamesPlayed = serializers.IntegerField(source='games_played', read_only=True)
-    wonGames = serializers.IntegerField(source='won_games', read_only=True)
-    winPoints = serializers.IntegerField(source='win_points', read_only=True)
-    rank = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = TournamentMember
-        fields = ['userId', 'username', 'avatarPath', 'gamesPlayed', 'wonGames', 'winPoints', 'rank']
+    def get_playerRight(self, obj):
+        game_member = GameMember.objects.filter(game_id=obj.id).order_by('id').first()
+        if game_member is None:
+            return None
+        return TournamentGamePlayerSerializer(game_member).data

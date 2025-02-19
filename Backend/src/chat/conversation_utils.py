@@ -1,8 +1,12 @@
+# Basics
+import logging
 # Django
 from django.utils.translation import gettext as _
+from django.db import transaction
 # Servies
 from services.channel_groups import update_client_in_group
 from services.constants import PRE_GROUP_CONVERSATION
+from asgiref.sync import async_to_sync
 # User
 from user.models import User
 # Services
@@ -56,7 +60,6 @@ def get_or_create_conversation(user1, user2):
     else:
         return create_conversation(user1, user2)
 
-
 def create_conversation(user1, user2):
     """
     This function will create a conversation between two users.
@@ -65,15 +68,19 @@ def create_conversation(user1, user2):
     """
     from chat.message_utils import create_and_send_overloards_pm
     # Create conversation and Members
-    conversation = Conversation.objects.create()
-    ConversationMember.objects.create(conversation=conversation, user=user1)
-    ConversationMember.objects.create(conversation=conversation, user=user2)
+    with transaction.atomic():
+        conversation = Conversation.objects.create()
+        conversation.save()
+        member1 = ConversationMember.objects.create(conversation=conversation, user=user1)
+        member2 = ConversationMember.objects.create(conversation=conversation, user=user2)
+        member1.save()
+        member2.save()
     # Add the members to the channel
-    update_client_in_group(user1, conversation.id, PRE_GROUP_CONVERSATION, add=True)
-    update_client_in_group(user2, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    async_to_sync(update_client_in_group)(user1, conversation.id, PRE_GROUP_CONVERSATION, add=True)
+    async_to_sync(update_client_in_group)(user2, conversation.id, PRE_GROUP_CONVERSATION, add=True)
     # Send the new conversation ws message (in case the user has chat view open)
-    send_ws_new_conversation(user1, conversation)
-    send_ws_new_conversation(user2, conversation)
+    async_to_sync(send_ws_new_conversation)(user1, conversation)
+    async_to_sync(send_ws_new_conversation)(user2, conversation)
     # Create the start of conversation message
     create_and_send_overloards_pm(user1, user2, f"**S,{user1.id},{user2.id}**")
     return conversation

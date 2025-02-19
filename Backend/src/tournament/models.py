@@ -1,8 +1,5 @@
 from django.db import models
 
-from django.db import models
-
-
 class Tournament(models.Model):
     class   TournamentState(models.TextChoices):
         SETUP = 'setup', 'Setup'

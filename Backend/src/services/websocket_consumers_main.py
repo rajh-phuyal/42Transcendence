@@ -2,6 +2,7 @@
 import logging, json
 # Django
 from django.utils.translation import gettext as _
+from asgiref.sync import sync_to_async
 # Core
 from core.decorators import barely_handle_ws_exceptions
 # Services
@@ -19,7 +20,7 @@ class MainConsumer(CustomWebSocketLogic):
     async def connect(self):
         await super().connect()
         # Setting the user's online status in cache
-        self.user.set_online_status(True, self.channel_name)
+        await sync_to_async(self.user.set_online_status)(True, self.channel_name)
         # Add the user to all their conversation groups
         await update_client_in_all_conversation_groups(self.user, True)
         # Add the user to all their toruanemnt groups
@@ -33,7 +34,7 @@ class MainConsumer(CustomWebSocketLogic):
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         # Remove the user's online status from cache
-        self.user.set_online_status(False)
+        await sync_to_async(self.user.set_online_status)(False)
         # Remove the user from all their conversation groups
         await update_client_in_all_conversation_groups(self.user, False)
         # Remove the user from all their toruanemnt groups
@@ -47,10 +48,16 @@ class MainConsumer(CustomWebSocketLogic):
         # Process the message
         await WebSocketMessageHandlersMain()[f"{self.message_type}"](self, text_data)
 
-    async def chat_message(self, event):
+    # BASIC MESSAGES #
+
+    async def info(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def reload_profile(self, event):
+    async def error(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
+    # FOR CHAT #
+    async def chat_message(self, event):
         await self.send(text_data=json.dumps({**event}))
 
     async def update_badge(self, event):
@@ -59,29 +66,19 @@ class MainConsumer(CustomWebSocketLogic):
     async def new_conversation(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def tournament_subscription(self, event):
+    # FOR PROFILE #
+    async def reload_profile(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def tournament_state(self, event):
+    # FOR TOURNAMENT #
+    async def tournament_info(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def info(self, event):
+    async def tournament_member(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def error(self, event):
+    async def tournament_members(self, event):
         await self.send(text_data=json.dumps({**event}))
 
-    async def game_create(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_set_deadline(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_update_score(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_update_state(self, event):
-        await self.send(text_data=json.dumps({**event}))
-
-    async def game_update_rank(self, event):
+    async def tournament_game(self, event):
         await self.send(text_data=json.dumps({**event}))

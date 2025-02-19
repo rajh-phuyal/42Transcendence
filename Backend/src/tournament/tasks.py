@@ -1,13 +1,15 @@
-from django.utils.translation import gettext as _
+# Basics
+import logging, random
+# Celery
 from celery import shared_task
-from django.utils import timezone
-from tournament.models import Tournament
-from game.models import Game, GameMember
-import logging
+# Django
 from django.db import transaction
-import random
-from tournament.tournament_manager import check_tournament_routine
-from services.send_ws_msg import send_ws_tournament_msg
+from django.utils.translation import gettext as _
+from django.utils import timezone
+# Tournament
+from tournament.models import Tournament
+# Game
+from game.models import Game, GameMember
 from game.utils import finish_game
 
 @shared_task(ignore_result=True)
@@ -42,33 +44,12 @@ def check_overdue_tournament_games():
                 winner=GameMember.objects.select_for_update().get(id=winner.id)
                 looser.points = 0
                 looser.save()
-                winner.points = 11
+                winner.points = 0
                 winner.save()
             logging.info(f"Game {game.id} has passed its deadline. Decided: Winner is {winner.user_id} and looser is {looser.user_id}")
-            # Send websocket notification
-            send_ws_tournament_msg(
-                game.tournament_id,
-                "gameUpdateScore",
-                "game_update_score",
-                _(
-                    "Score updated game {gameId}. {usernameA} {pointsA}:{pointsB} {usernameB}")
-                .format(
-                    gameId=game.id,
-                    usernameA=looser.user.username,
-                    pointsA=looser.points,
-                    pointsB=winner.points,
-                    usernameB=winner.user.username
-                ),
-                **{
-                    "gameId": game.id,
-                    "state": None,
-                    "score":{looser.user_id: looser.points, winner.user_id: winner.points},
-                   }
-            )
-            #Set game to finished
+            #Set game to finished (this will also send the ws)
             finish_game(game, _("The overloards lost their patience. Game {gameId} has been set to finished since the deadline has passed. They randomly decided that user {username} won the game.")
                 .format(gameId=game.id, username=winner.user.username))
-    # TODO: HACKATHON: Check if we can move this up for early return
     if not found_one:
         logging.info("No overdue games found.")
 
