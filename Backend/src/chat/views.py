@@ -139,5 +139,4 @@ class CreateConversationView(BaseAuthenticatedView):
         async_to_sync(send_ws_badge_all)(other_user_id)
         # Send the message to the channel
         async_to_sync(send_ws_chat)(message_object)
-
         return success_response(_('Conversation created (or found) and delivered initial message.'), **{'conversationId': conversation.id})

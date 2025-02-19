@@ -23,6 +23,6 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'check-for-overdue-games': {
         'task': 'tournament.tasks.check_overdue_tournament_games',
-        'schedule': crontab(minute='*/5'),  # Runs every 5 minutes TODO: Reset to 1 minute
+        'schedule': crontab(minute='*'),  # Runs every 5 minutes TODO: Reset to 1 minute
     },
 }
