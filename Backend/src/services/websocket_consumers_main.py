@@ -2,6 +2,7 @@
 import logging, json
 # Django
 from django.utils.translation import gettext as _
+from asgiref.sync import sync_to_async
 # Core
 from core.decorators import barely_handle_ws_exceptions
 # Services
@@ -19,7 +20,7 @@ class MainConsumer(CustomWebSocketLogic):
     async def connect(self):
         await super().connect()
         # Setting the user's online status in cache
-        self.user.set_online_status(True, self.channel_name)
+        await sync_to_async(self.user.set_online_status)(True, self.channel_name)
         # Add the user to all their conversation groups
         await update_client_in_all_conversation_groups(self.user, True)
         # Add the user to all their toruanemnt groups
@@ -33,7 +34,7 @@ class MainConsumer(CustomWebSocketLogic):
     async def disconnect(self, close_code):
         await super().disconnect(close_code)
         # Remove the user's online status from cache
-        self.user.set_online_status(False)
+        await sync_to_async(self.user.set_online_status)(False)
         # Remove the user from all their conversation groups
         await update_client_in_all_conversation_groups(self.user, False)
         # Remove the user from all their toruanemnt groups
