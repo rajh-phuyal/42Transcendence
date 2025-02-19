@@ -78,7 +78,7 @@ class AuthCard extends HTMLElement {
 		this.backButton = translate("auth", "backButton");
 		this.passwordVisibilityButton = translate("auth", "displayPassword");
 		this.transitionTime = 300;
-		this.selectedLanguage = "en-US";
+		this.language = "en-US";
     }
 
     static get observedAttributes() {
@@ -197,7 +197,7 @@ class AuthCard extends HTMLElement {
         // passwordField.blur();
 
         const authAction = this.displayMode === "login" ? "authenticate" : "createUser";
-        $auth?.[authAction](usernameField?.value, passwordField?.value, this.selectLanguage)
+        $auth?.[authAction](usernameField?.value, passwordField?.value, this.language)
         .then((response) => {
             // Initialize the store
             $store.initializer();
@@ -327,8 +327,9 @@ class AuthCard extends HTMLElement {
 	}
 
 	selectLanguage(e) {
-		$store.state.locale = e?.target?.value;
-		this.selectLanguage = e?.target?.value;
+		const language = e?.target?.value;
+		$store.commit("setLocale", language);
+		this.language = language;
 		for (let config of eventListenersConfig) {
 			if (config?.id && config?.translationParam) {
 				const element = this.shadow.getElementById(config.id);
@@ -502,13 +503,6 @@ class AuthCard extends HTMLElement {
 			#auth-language-selector {
 				font-size: 1.3rem;
 				padding: 0.1rem 0.2rem;
-			}
-
-			#auth-language-selector > option {
-				font-size: 5rem;
-				height: 5rem;
-				width: 5rem;
-				background-color: red;
 			}
 
             </style>
