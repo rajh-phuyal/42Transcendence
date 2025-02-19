@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from .constants import AVATAR_DEFAULT
 from django.core.cache import cache
 from services.constants import PRE_DATA_USER_ONLINE, PRE_CHANNEL_USER
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE
 
 # Table: barelyaschema.user
 class User(AbstractUser):
@@ -25,7 +26,6 @@ class User(AbstractUser):
         self.save(update_fields=['last_login'])
 
     def set_online_status(self, status, channel_name=None):
-        # TODO AI OVERLOARSA ANF FLATMATE SHOULD ALWAYS BE ONLIN!
         if status:
             cache.set(f'{PRE_DATA_USER_ONLINE}{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
             cache.set(f'{PRE_CHANNEL_USER}{self.id}', channel_name, timeout=3000)
@@ -37,6 +37,8 @@ class User(AbstractUser):
             self.update_last_seen()
 
     def get_online_status(self):
+        if self.id == USER_ID_OVERLORDS or self.id == USER_ID_AI or self.id == USER_ID_FLATMATE:
+            return True
         return cache.get(f'{PRE_DATA_USER_ONLINE}{self.id}', default=False)
 
     def get_ws_channel_name(self):

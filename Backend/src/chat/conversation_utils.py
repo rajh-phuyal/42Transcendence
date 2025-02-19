@@ -8,9 +8,11 @@ from services.channel_groups import update_client_in_group
 from services.constants import PRE_GROUP_CONVERSATION
 from asgiref.sync import async_to_sync
 # User
+from user.constants import USER_ID_AI, USER_ID_FLATMATE
 from user.models import User
 # Services
 from services.send_ws_msg import send_ws_new_conversation
+from services.chat_bots import send_message_with_delay
 # Chat
 from chat.models import Conversation, ConversationMember
 
@@ -83,4 +85,7 @@ def create_conversation(user1, user2):
     async_to_sync(send_ws_new_conversation)(user2, conversation)
     # Create the start of conversation message
     create_and_send_overloards_pm(user1, user2, f"**S,{user1.id},{user2.id}**")
+    # If it is AI or Flatmate send a response
+    if user1.id in [USER_ID_AI, USER_ID_FLATMATE] or user2.id in [USER_ID_AI, USER_ID_FLATMATE]:
+        async_to_sync(send_message_with_delay)(user1, user2, 0, _("Hello there!"))
     return conversation

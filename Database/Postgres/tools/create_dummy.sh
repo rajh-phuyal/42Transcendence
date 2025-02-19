@@ -91,8 +91,6 @@ insert_dummy "$TABLE_NAME"                                                      
         (7,     'hashed_password_4',    '2024-04-01 13:42:03+00',   FALSE,          's-fda',           'Francisco',    'Inácio',   'we dont use email',    FALSE,      FALSE,      '2004-09-01 10:15:30+00',   'fe468ade-12ed-4045-80a7-7d3e45be997e.png',  'pt-PT'  ),         \
         (8,     'hashed_password_5',    '2024-05-01 14:42:04+00',   FALSE,          's-rph',           'Rajh',         'Phuyal',   'we dont use email',    FALSE,      FALSE,      '2005-09-01 10:15:30+00',   'dd6e8101-fde8-469a-97dc-6b8bb9e8296e.png',  'ne-NP'  );"
 
-TODO: do we need a friendship with the flatmate?
-
 TABLE_NAME="barelyaschema.is_cool_with"
 insert_dummy "$TABLE_NAME"                                      \
 	"INSERT INTO $TABLE_NAME                                    \

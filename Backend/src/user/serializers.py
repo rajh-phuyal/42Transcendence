@@ -37,9 +37,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         return obj.last_login.strftime("%Y-%m-%d %H:%M") #TODO: Issue #193
 
     def get_online(self, user):
-        # AI Opponent and Overlords are always online
-        if user.id == USER_ID_OVERLORDS or user.id == USER_ID_AI:
-            return True
         # Check if the user's online status is in the cache
         return user.get_online_status()
 

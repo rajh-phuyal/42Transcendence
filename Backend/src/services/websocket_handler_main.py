@@ -1,8 +1,10 @@
 # Basics
-import logging, json
+import logging, json, asyncio
 # Python stuff
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
+# User
+from user.constants import USER_ID_AI, USER_ID_FLATMATE
 # Chat stuff
 from chat.utils_ws import get_other_user_async, validate_conversation_membership_async
 from services.send_ws_msg import send_ws_chat_temporary, send_ws_info_msg, send_ws_badge, send_ws_badge_all, send_ws_chat, send_ws_error_msg
@@ -11,6 +13,7 @@ from chat.message_utils import create_msg_db, mark_all_messages_as_seen_async
 from chat.models import Conversation
 # Services
 from asgiref.sync import sync_to_async
+from services.chat_bots import send_message_with_delay
 
 ## HANDLER FOR MAIN WEBSOCKET CONNECTION
 ## ------------------------------------------------------------------------------------------------
@@ -66,6 +69,9 @@ class WebSocketMessageHandlersMain:
         await send_ws_badge_all(other_user.id)
         # Send the message to the channel
         await send_ws_chat(message_object)
+        # If the message is to the AI or the FLatmate send a response
+        if other_user.id == USER_ID_AI or other_user.id == USER_ID_FLATMATE:
+            asyncio.create_task(send_message_with_delay(other_user, consumer.user))
 
     @staticmethod
     async def handle_seen(consumer, message):
