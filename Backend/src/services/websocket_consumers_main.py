@@ -76,5 +76,8 @@ class MainConsumer(CustomWebSocketLogic):
     async def tournament_member(self, event):
         await self.send(text_data=json.dumps({**event}))
 
+    async def tournament_members(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
     async def tournament_game(self, event):
         await self.send(text_data=json.dumps({**event}))

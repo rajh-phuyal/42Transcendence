@@ -39,3 +39,27 @@ def db_update_tournament_ranks(tournament):
         for rank, member in enumerate(members, start=1):
             member.rank = rank
             member.save(update_fields=['rank'])
+
+# Different logic for the finals (last 1 or 4 games)
+def db_update_tournament_ranks_finals(tournament, game):
+    """
+    If final:
+        set winner rank 1
+        seet looaser rank2
+    if 3. place game:
+        set winner rank 3
+        set looser rank 4
+    if semi final:
+
+
+
+1       1->4
+2       2->3
+3
+4
+
+
+
+
+
+    """

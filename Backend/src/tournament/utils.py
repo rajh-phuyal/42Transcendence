@@ -8,7 +8,7 @@ from django.db import transaction
 # Core
 from core.exceptions import BarelyAnException
 # Services
-from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg
+from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg
 from services.channel_groups import delete_tournament_group
 # User
 from user.constants import USER_ID_AI
@@ -282,7 +282,7 @@ def start_tournament(user, tournament_id):
         for rank, member in enumerate(accepted_members, start=1):
             member.rank = rank
             member.save(update_fields=['rank'])
-            send_ws_tournament_member_msg(member)
+        send_ws_all_tournament_members_msg(tournament)
         # Start the tournament
         tournament.state = Tournament.TournamentState.ONGOING
         tournament.save()
