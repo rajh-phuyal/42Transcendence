@@ -15,8 +15,8 @@ from services.constants import PRE_GROUP_CONVERSATION, PRE_GROUP_GAME, PRE_GROUP
 from user.constants import AVATAR_OVERLORDS, USERNAME_OVERLORDS, USER_ID_OVERLORDS
 from user.models import User
 # Chat
-from chat.models import ConversationMember, Message, Conversation
-from chat.serializers import MessageSerializer
+from chat.models import ConversationMember, Conversation
+from chat.serializers import MessageSerializer, ConversationsSerializer
 # Game
 from game.models import Game
 from game.game_cache import get_game_data
@@ -140,7 +140,7 @@ async def send_ws_new_conversation(user, conversation):
         user = await sync_to_async(User.objects.get)(id=user)
     if isinstance(conversation, int):
         conversation = await sync_to_async(Conversation.objects.get)(id=conversation)
-    serialized_conversation = await sync_to_async(lambda: MessageSerializer(instance=conversation, context={'user': user}).data)()
+    serialized_conversation = await sync_to_async(lambda: ConversationsSerializer(instance=conversation, context={'user': user}).data)()
     # Add the messageType and type
     serialized_conversation['messageType'] = "newConversation"
     serialized_conversation['type'] = "new_conversation"
