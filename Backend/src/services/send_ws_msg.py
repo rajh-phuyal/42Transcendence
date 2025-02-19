@@ -15,8 +15,8 @@ from services.constants import PRE_GROUP_CONVERSATION, PRE_GROUP_GAME, PRE_GROUP
 from user.constants import AVATAR_OVERLORDS, USERNAME_OVERLORDS, USER_ID_OVERLORDS
 from user.models import User
 # Chat
-from chat.models import ConversationMember, Message, Conversation
-from chat.serializers import MessageSerializer
+from chat.models import ConversationMember, Conversation
+from chat.serializers import MessageSerializer, ConversationsSerializer
 # Game
 from game.models import Game
 from game.game_cache import get_game_data
@@ -140,7 +140,7 @@ async def send_ws_new_conversation(user, conversation):
         user = await sync_to_async(User.objects.get)(id=user)
     if isinstance(conversation, int):
         conversation = await sync_to_async(Conversation.objects.get)(id=conversation)
-    serialized_conversation = await sync_to_async(lambda: MessageSerializer(instance=conversation, context={'user': user}).data)()
+    serialized_conversation = await sync_to_async(lambda: ConversationsSerializer(instance=conversation, context={'user': user}).data)()
     # Add the messageType and type
     serialized_conversation['messageType'] = "newConversation"
     serialized_conversation['type'] = "new_conversation"
@@ -197,6 +197,24 @@ def send_ws_tournament_member_msg(tournament_member, leave=False):
         "messageType": "tournamentMember",
         "type": "tournament_member",
         "tournamentMember": member_data
+    })
+
+def send_ws_all_tournament_members_msg(tournament):
+    """
+    This function sends all tournament members to the group of the tournament.
+    As a sorted list
+    """
+    if isinstance(tournament, int):
+        tournament = Tournament.objects.get(id=tournament)
+    members = TournamentMember.objects.filter(tournament=tournament).order_by('rank')
+    serializer_members = TournamentMemberSerializer(members, many=True)
+    tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament.id}"
+    async_to_sync(channel_layer.group_send)(
+    tournament_id_name,
+    {
+        "messageType": "tournamentMembers",
+        "type": "tournament_members",
+        "tournamentMembers": serializer_members.data
     })
 
 def send_ws_tournament_game_msg(game):

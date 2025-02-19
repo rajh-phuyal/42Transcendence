@@ -170,7 +170,6 @@ class TournamentLobbyView(BaseAuthenticatedView):
         serializer_info = TournamentInfoSerializer(tournament)
         # Serialize the tournament members
         tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
-        admin_name = tournament_members.get(is_admin=True).user.username
         serializer_members = TournamentMemberSerializer(tournament_members, many=True)
         # Serialize the tournament games
         games = Game.objects.filter(tournament_id=tournament.id)
