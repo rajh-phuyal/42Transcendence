@@ -62,7 +62,6 @@ def create_game(user, opponent_id, map_number, powerups):
                 powerup_big = powerups,
                 powerup_fast = powerups,
                 powerup_slow = powerups,
-                admin=True
             )
             game_member_opponent = GameMember.objects.create(
                 game=game,
@@ -70,7 +69,6 @@ def create_game(user, opponent_id, map_number, powerups):
                 powerup_big = powerups,
                 powerup_fast = powerups,
                 powerup_slow = powerups,
-                admin=False
             )
             game.save()
             game_member_user.save()

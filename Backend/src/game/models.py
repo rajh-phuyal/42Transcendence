@@ -81,7 +81,6 @@ class GameMember(models.Model):
     powerup_big = models.BooleanField(default=False)
     powerup_fast = models.BooleanField(default=False)
     powerup_slow = models.BooleanField(default=False)
-    admin = models.BooleanField(default=False)
 
     def __str__(self):
         return f"GameMember {self.id} - User: {self.user} - Game: {self.game} - Result: {self.result}"

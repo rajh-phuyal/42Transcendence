@@ -27,12 +27,12 @@ class WebSocketMessageHandlersGame:
 
     @staticmethod
     async def handle_playerInput(consumer, message):
-        message = check_message_keys(message) # TODO: @Rajh implement deep json thing UPDATE:02.02.25 bot sure if still needed...
+        message = check_message_keys(message)
         # This is kind of confusing but u need to be able to stear the left paddele if:
         # - u are the left player
         # - the left player is the flatmate
         # - it is a local game and the player is not the AI (in case of a local tournament game)
-        if consumer.isLeftPlayer or consumer.leftUser.id == USER_ID_FLATMATE or (consumer.game.local_game and consumer.leftUser.id != USER_ID_AI):
+        if consumer.isLeftPlayer or consumer.leftUser.id == USER_ID_FLATMATE or (consumer.game.tournament and consumer.game.tournament.local_tournament and consumer.leftUser.id != USER_ID_AI):
             set_player_input(consumer.game_id, 'playerLeft', message.get("playerLeft"))
-        if not consumer.isLeftPlayer or consumer.rightUser.id == USER_ID_FLATMATE or (consumer.game.local_game and consumer.rightUser.id != USER_ID_AI):
+        if not consumer.isLeftPlayer or consumer.rightUser.id == USER_ID_FLATMATE or (consumer.game.tournament and consumer.game.tournament.local_tournament and consumer.rightUser.id != USER_ID_AI):
             set_player_input(consumer.game_id, 'playerRight', message.get("playerRight"))

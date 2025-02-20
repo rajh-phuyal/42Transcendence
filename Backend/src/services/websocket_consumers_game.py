@@ -32,16 +32,19 @@ class GameConsumer(CustomWebSocketLogic):
         # Set self vars for consumer
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
-        # Check if the user is a game member if not close the connection
+
+        # CHECK IF CLIENT IS ALLOWED TO CONNECT
+        # Check if the client is a game member if not close the connection
         if not await database_sync_to_async(lambda: self.game.game_members.filter(user=self.user).exists())():
             logging.info(f"User {self.user.id} is not a member of game {self.game_id}. CONNECTION CLOSED.")
             await self.close()
-        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
-        self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
-        self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
-        self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
-        self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
-
+        # Check if game is part of a local tournament...
+        if self.game.tournament and self.game.tournament.local_tournament:
+            # ... only the admin can connect to the game
+            admin = await database_sync_to_async(lambda: self.game.tournament.members.filter(is_admin=True).first())()
+            if self.user.id != admin.user.id:
+                logging.info(f"User {self.user.id} is not the admin of the local tournament game {self.game_id}. CONNECTION CLOSED.")
+                await self.close()
         # If the game is not in the right state, close the connection
         if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:
             await self.close()
@@ -52,14 +55,24 @@ class GameConsumer(CustomWebSocketLogic):
         await channel_layer.group_add(group_name, self.channel_name)
         # Accept the connection
         await self.accept()
+
+        # CLIENT IS NOW CONNECTED
+        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
+        self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
+        self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
+        self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
+        self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
         # Init game on cache and send the game data
         await init_game_on_cache(self.game, self.leftMember, self.rightMember)
         await send_ws_game_data_msg(self.game_id)
-        # Set the player(s) ready: for local game both players!
-        if self.game.local_game:
+
+        # SETTING PLAYER(S) READY
+        if self.game.tournament and self.game.tournament.local_tournament:
+            # CASE: A local tournament game: so we need to set both players ready
             await database_sync_to_async(self.game.set_player_ready)(self.leftUser.id, True)
             await database_sync_to_async(self.game.set_player_ready)(self.rightUser.id, True)
         else:
+            # NORMAL CASE: Set only the client ready
             await database_sync_to_async(self.game.set_player_ready)(self.user.id, True)
         # Send the player ready message and the game data
         left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)

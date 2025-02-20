@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS barelyaschema.game_member
 	powerup_big BOOLEAN NOT NULL DEFAULT FALSE,
 	powerup_fast BOOLEAN NOT NULL DEFAULT FALSE,
 	powerup_slow BOOLEAN NOT NULL DEFAULT FALSE,
-    admin BOOLEAN NOT NULL DEFAULT FALSE,
 	FOREIGN KEY (user_id) REFERENCES barelyaschema.user(id),
 	FOREIGN KEY (game_id) REFERENCES barelyaschema.game(id)
 );
