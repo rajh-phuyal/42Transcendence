@@ -576,7 +576,6 @@ export default {
         },
 
         afterDomInsertion() {
-            WebSocketManager.setCurrentRoute("profile");
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 WebSocketManager.setCurrentRoute("profile-" + this.result.id);

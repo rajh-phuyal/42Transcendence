@@ -8,7 +8,7 @@ from django.db import transaction
 # Core
 from core.exceptions import BarelyAnException
 # Services
-from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg
+from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg
 from services.channel_groups import delete_tournament_group
 # User
 from user.constants import USER_ID_AI, USER_ID_FLATMATE
@@ -270,18 +270,24 @@ def start_tournament(user, tournament_id):
         tournament_members_count = tournament_members.filter(accepted=True).count()
         if tournament_members_count < 3:
             raise BarelyAnException(_("You need at least 3 members to start the tournament"))
-        # Check if all members who accepted the invitation are online
+        # Split into accepted and not accepted members
         accepted_members = tournament_members.filter(accepted=True)
         not_accepted_members = tournament_members.filter(accepted=False)
+        # Check if all members who accepted the invitation are online
         if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
             raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
-        # Start the tournament
-        tournament.state = Tournament.TournamentState.ONGOING
-        tournament.save()
         # Remove all persons who have not accepted the invitation
         for member in not_accepted_members:
             send_ws_tournament_member_msg(member, leave=True)
             member.delete()
+        # Just randomly asign the ranks:
+        for rank, member in enumerate(accepted_members, start=1):
+            member.rank = rank
+            member.save(update_fields=['rank'])
+        send_ws_all_tournament_members_msg(tournament)
+        # Start the tournament
+        tournament.state = Tournament.TournamentState.ONGOING
+        tournament.save()
     # Send websocket update message to tournament channel group to update the lobby
     send_ws_tournament_info_msg(tournament)
     # Also send a PM to all members
