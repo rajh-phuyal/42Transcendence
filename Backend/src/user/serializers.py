@@ -3,7 +3,6 @@ from user.models import User, IsCoolWith
 from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
-from user.constants import AVATAR_DEFAULT, USER_ID_OVERLORDS, USER_ID_AI
 from chat.models import Conversation
 import logging
 
@@ -14,7 +13,7 @@ class SearchSerializer(serializers.ModelSerializer):
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
-    avatarUrl = serializers.CharField(source='avatar_path', default=AVATAR_DEFAULT)
+    avatarUrl = serializers.CharField(source='avatar_path')
     firstName = serializers.CharField(source='first_name', default="John")
     lastName = serializers.CharField(source='last_name', default="Doe")
     online = serializers.SerializerMethodField()

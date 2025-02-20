@@ -114,87 +114,87 @@ echo "Creating game members for the private games..."
 TABLE_NAME="barelyaschema.game_member"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
-        (id,    user_id,  game_id,  local_game, points, result, powerup_big, powerup_fast, powerup_slow) VALUES \
-        (1,      9,           1,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (2,      10,          1,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (3,      11,          2,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (4,      12,          2,    FALSE,         7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (5,      13,          3,    TRUE,          9,   'won',     FALSE,      FALSE,       FALSE), \
-        (6,      14,          3,    TRUE,          5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (7,      9,           4,    FALSE,         5,   'won',     FALSE,      FALSE,       FALSE), \
-        (8,      10,          4,    FALSE,         7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (9,      11,          5,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (10,     12,          5,    FALSE,         8,   'lost',    FALSE,      FALSE,       FALSE), \
-        (11,     13,          6,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (12,     14,          6,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (13,     9,           7,    FALSE,         8,   'won',     FALSE,      FALSE,       FALSE), \
-        (14,     10,          7,    FALSE,         6,   'lost',    FALSE,      FALSE,       FALSE), \
-        (15,     11,          8,    TRUE,         11,   'won',     FALSE,      FALSE,       FALSE), \
-        (16,     12,          8,    TRUE,          7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (17,     13,          9,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (18,     14,          9,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (19,     9,          10,    FALSE,         6,   'won',     FALSE,      FALSE,       FALSE), \
-        (20,     10,         10,    FALSE,         5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (21,     11,         11,    TRUE,          8,   'won',     FALSE,      FALSE,       FALSE), \
-        (22,     12,         11,    TRUE,          7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (23,     13,         12,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (24,     14,         12,    FALSE,         9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (25,     9,          13,    FALSE,         8,   'won',     FALSE,      FALSE,       FALSE), \
-        (26,     10,         13,    FALSE,         6,   'lost',    FALSE,      FALSE,       FALSE), \
-        (27,     11,         14,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (28,     12,         14,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (29,     13,         15,    TRUE,          8,   'won',     FALSE,      FALSE,       FALSE), \
-        (30,     14,         15,    TRUE,          7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (31,     9,          16,    FALSE,        12,   'won',     FALSE,      FALSE,       FALSE), \
-        (32,     10,         16,    FALSE,         9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (33,     11,         17,    FALSE,         6,   'won',     FALSE,      FALSE,       FALSE), \
-        (34,     12,         17,    FALSE,         5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (35,     13,         18,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (36,     14,         18,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (37,     9,          19,    FALSE,         7,   'won',     FALSE,      FALSE,       FALSE), \
-        (38,     10,         19,    FALSE,         5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (39,     11,         20,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (40,     12,         20,    FALSE,         9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (41,     13,         21,    TRUE,         17,   'won',     FALSE,      FALSE,       FALSE), \
-        (42,     14,         21,    TRUE,         15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (43,     9,          22,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (44,     10,         22,    FALSE,         9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (45,     11,         23,    FALSE,         6,   'won',     FALSE,      FALSE,       FALSE), \
-        (46,     12,         23,    FALSE,         5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (47,     13,         24,    FALSE,         8,   'won',     FALSE,      FALSE,       FALSE), \
-        (48,     14,         24,    FALSE,         6,   'lost',    FALSE,      FALSE,       FALSE), \
-        (49,     9,          25,    TRUE,         12,   'won',     FALSE,      FALSE,       FALSE), \
-        (50,     10,         25,    TRUE,          9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (51,     11,         26,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (52,     12,         26,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (53,     13,         27,    FALSE,         8,   'won',     FALSE,      FALSE,       FALSE), \
-        (54,     14,         27,    FALSE,         7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (55,     9,          28,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (56,     10,         28,    FALSE,         9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (57,     11,         29,    FALSE,         7,   'won',     FALSE,      FALSE,       FALSE), \
-        (58,     12,         29,    FALSE,         5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (59,     13,         30,    FALSE,         5,   'won',     FALSE,      FALSE,       FALSE), \
-        (60,     14,         30,    FALSE,         2,   'lost',    FALSE,      FALSE,       FALSE), \
-        (61,     11,         31,    TRUE,          8,   'won',     FALSE,      FALSE,       FALSE), \
-        (62,     12,         31,    TRUE,          7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (63,     13,         32,    FALSE,         0,   'won',     FALSE,      FALSE,       FALSE), \
-        (64,     14,         32,    FALSE,         0,   'lost',    FALSE,      FALSE,       FALSE), \
-        (65,     9,          33,    FALSE,         6,   'won',     FALSE,      FALSE,       FALSE), \
-        (66,     10,         33,    FALSE,         5,   'lost',    FALSE,      FALSE,       FALSE), \
-        (67,     11,         34,    TRUE,          8,   'won',     FALSE,      FALSE,       FALSE), \
-        (68,     12,         34,    TRUE,          7,   'lost',    FALSE,      FALSE,       FALSE), \
-        (69,     13,         35,    FALSE,        11,   'won',     FALSE,      FALSE,       FALSE), \
-        (70,     14,         35,    FALSE,         9,   'lost',    FALSE,      FALSE,       FALSE), \
-        (71,     9,          36,    FALSE,         8,   'won',     FALSE,      FALSE,       FALSE), \
-        (72,     10,         36,    FALSE,         6,   'lost',    FALSE,      FALSE,       FALSE), \
-        (73,     11,         37,    FALSE,        17,   'won',     FALSE,      FALSE,       FALSE), \
-        (74,     12,         37,    FALSE,        15,   'lost',    FALSE,      FALSE,       FALSE), \
-        (75,     9,          38,    TRUE,          0,   'pending', FALSE,      FALSE,       FALSE), \
-        (76,     10,         38,    TRUE,          0,   'pending', FALSE,      FALSE,       FALSE), \
-        (77,     11,         39,    TRUE,          7,   'pending', FALSE,      FALSE,       FALSE), \
-        (78,     12,         39,    TRUE,          5,   'pending', FALSE,      FALSE,       FALSE), \
-        (79,     13,         40,    FALSE,        17,   'pending', FALSE,      FALSE,       FALSE), \
-        (80,     14,         40,    FALSE,        15,   'pending', FALSE,      FALSE,       FALSE);"
+        (id,    user_id,  game_id, points, result, powerup_big, powerup_fast, powerup_slow) VALUES \
+        (1,      9,           1,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (2,      10,          1,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (3,      11,          2,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (4,      12,          2,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (5,      13,          3,           9,   'won',     FALSE,      FALSE,       FALSE), \
+        (6,      14,          3,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (7,      9,           4,           5,   'won',     FALSE,      FALSE,       FALSE), \
+        (8,      10,          4,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (9,      11,          5,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (10,     12,          5,           8,   'lost',    FALSE,      FALSE,       FALSE), \
+        (11,     13,          6,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (12,     14,          6,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (13,     9,           7,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (14,     10,          7,           6,   'lost',    FALSE,      FALSE,       FALSE), \
+        (15,     11,          8,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (16,     12,          8,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (17,     13,          9,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (18,     14,          9,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (19,     9,          10,           6,   'won',     FALSE,      FALSE,       FALSE), \
+        (20,     10,         10,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (21,     11,         11,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (22,     12,         11,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (23,     13,         12,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (24,     14,         12,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (25,     9,          13,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (26,     10,         13,           6,   'lost',    FALSE,      FALSE,       FALSE), \
+        (27,     11,         14,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (28,     12,         14,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (29,     13,         15,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (30,     14,         15,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (31,     9,          16,          12,   'won',     FALSE,      FALSE,       FALSE), \
+        (32,     10,         16,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (33,     11,         17,           6,   'won',     FALSE,      FALSE,       FALSE), \
+        (34,     12,         17,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (35,     13,         18,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (36,     14,         18,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (37,     9,          19,           7,   'won',     FALSE,      FALSE,       FALSE), \
+        (38,     10,         19,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (39,     11,         20,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (40,     12,         20,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (41,     13,         21,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (42,     14,         21,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (43,     9,          22,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (44,     10,         22,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (45,     11,         23,           6,   'won',     FALSE,      FALSE,       FALSE), \
+        (46,     12,         23,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (47,     13,         24,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (48,     14,         24,           6,   'lost',    FALSE,      FALSE,       FALSE), \
+        (49,     9,          25,          12,   'won',     FALSE,      FALSE,       FALSE), \
+        (50,     10,         25,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (51,     11,         26,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (52,     12,         26,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (53,     13,         27,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (54,     14,         27,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (55,     9,          28,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (56,     10,         28,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (57,     11,         29,           7,   'won',     FALSE,      FALSE,       FALSE), \
+        (58,     12,         29,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (59,     13,         30,           5,   'won',     FALSE,      FALSE,       FALSE), \
+        (60,     14,         30,           2,   'lost',    FALSE,      FALSE,       FALSE), \
+        (61,     11,         31,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (62,     12,         31,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (63,     13,         32,           0,   'won',     FALSE,      FALSE,       FALSE), \
+        (64,     14,         32,           0,   'lost',    FALSE,      FALSE,       FALSE), \
+        (65,     9,          33,           6,   'won',     FALSE,      FALSE,       FALSE), \
+        (66,     10,         33,           5,   'lost',    FALSE,      FALSE,       FALSE), \
+        (67,     11,         34,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (68,     12,         34,           7,   'lost',    FALSE,      FALSE,       FALSE), \
+        (69,     13,         35,          11,   'won',     FALSE,      FALSE,       FALSE), \
+        (70,     14,         35,           9,   'lost',    FALSE,      FALSE,       FALSE), \
+        (71,     9,          36,           8,   'won',     FALSE,      FALSE,       FALSE), \
+        (72,     10,         36,           6,   'lost',    FALSE,      FALSE,       FALSE), \
+        (73,     11,         37,          17,   'won',     FALSE,      FALSE,       FALSE), \
+        (74,     12,         37,          15,   'lost',    FALSE,      FALSE,       FALSE), \
+        (75,     9,          38,           0,   'pending', FALSE,      FALSE,       FALSE), \
+        (76,     10,         38,           0,   'pending', FALSE,      FALSE,       FALSE), \
+        (77,     11,         39,           7,   'pending', FALSE,      FALSE,       FALSE), \
+        (78,     12,         39,           5,   'pending', FALSE,      FALSE,       FALSE), \
+        (79,     13,         40,          17,   'pending', FALSE,      FALSE,       FALSE), \
+        (80,     14,         40,          15,   'pending', FALSE,      FALSE,       FALSE);"
 
 # Creating dummy chats
 echo "Creating 4 dummy conversations..."
@@ -410,90 +410,90 @@ echo -e "CREATING GAME MEMBERS\tTournament 2: Round Robin between players:4,5,6,
 TABLE_NAME="barelyaschema.game_member"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
-        (id, user_id, game_id, local_game, points, result, powerup_big, powerup_fast, powerup_slow) VALUES \
+        (id, user_id, game_id, points, result, powerup_big, powerup_fast, powerup_slow) VALUES \
         -- Game 41
-        (81,  9, 41, FALSE, 11, 'won', TRUE, FALSE, FALSE), \
-        (82, 10, 41, FALSE, 9,  'lost', FALSE, TRUE, FALSE), \
+        (81,  9, 41, 11, 'won', TRUE, FALSE, FALSE), \
+        (82, 10, 41, 9,  'lost', FALSE, TRUE, FALSE), \
         -- Game 42
-        (83,  9, 42, FALSE, 13, 'won', FALSE, FALSE, TRUE), \
-        (84, 11, 42, FALSE, 11, 'lost', TRUE, TRUE, FALSE), \
+        (83,  9, 42, 13, 'won', FALSE, FALSE, TRUE), \
+        (84, 11, 42, 11, 'lost', TRUE, TRUE, FALSE), \
         -- Game 43
-        (85,  9, 43, FALSE, 11, 'won', FALSE, TRUE, FALSE), \
-        (86, 12, 43, FALSE, 9,  'lost', TRUE, FALSE, TRUE), \
+        (85,  9, 43, 11, 'won', FALSE, TRUE, FALSE), \
+        (86, 12, 43, 9,  'lost', TRUE, FALSE, TRUE), \
         -- Game 44
-        (87, 10, 44, FALSE, 11, 'won', TRUE, FALSE, FALSE), \
-        (88, 11, 44, FALSE, 8,  'lost', FALSE, TRUE, FALSE), \
+        (87, 10, 44, 11, 'won', TRUE, FALSE, FALSE), \
+        (88, 11, 44, 8,  'lost', FALSE, TRUE, FALSE), \
         -- Game 45
-        (89, 10, 45, FALSE, 13, 'won', FALSE, TRUE, FALSE), \
-        (90, 12, 45, FALSE, 11, 'lost', TRUE, FALSE, TRUE), \
+        (89, 10, 45, 13, 'won', FALSE, TRUE, FALSE), \
+        (90, 12, 45, 11, 'lost', TRUE, FALSE, TRUE), \
         -- Game 46
-        (91, 11, 46, FALSE, 11, 'won', FALSE, FALSE, TRUE), \
-        (92, 12, 46, FALSE, 9,  'lost', TRUE, TRUE, FALSE), \
+        (91, 11, 46, 11, 'won', FALSE, FALSE, TRUE), \
+        (92, 12, 46, 9,  'lost', TRUE, TRUE, FALSE), \
         -- Semi-Finale (Game 47)
-        (93, 10, 47, FALSE, 15, 'won', TRUE, FALSE, TRUE), \
-        (94, 11, 47, FALSE, 13, 'lost', FALSE, TRUE, FALSE), \
+        (93, 10, 47, 15, 'won', TRUE, FALSE, TRUE), \
+        (94, 11, 47, 13, 'lost', FALSE, TRUE, FALSE), \
         -- Finale (Game 48)
-        (95,  9, 48, FALSE, 11, 'won', TRUE, TRUE, FALSE), \
-        (96, 10, 48, FALSE, 9,  'lost', FALSE, FALSE, TRUE), \
+        (95,  9, 48, 11, 'won', TRUE, TRUE, FALSE), \
+        (96, 10, 48, 9,  'lost', FALSE, FALSE, TRUE), \
         -- Tournament 2
         -- Round 1
-        ( 97,  4, 49, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        ( 98,  5, 49, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        ( 99,  6, 50, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (100,  7, 50, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (101,  8, 51, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (102,  9, 51, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (103, 10, 52, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (104, 11, 52, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (105,  4, 53, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (106,  6, 53, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (107,  7, 54, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (108,  8, 54, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (109,  9, 55, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (110, 10, 55, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (111, 11, 56, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (112, 12, 56, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (113,  4, 57, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (114,  7, 57, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (115,  8, 58, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (116,  9, 58, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (117, 10, 59, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (118, 11, 59, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (119,  5, 60, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (120,  6, 60, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (121,  7, 61, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (122,  8, 61, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (123,  9, 62, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (124, 10, 62, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (125, 11, 63, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (126, 12, 63, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (127,  4, 64, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (128,  9, 64, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (129, 10, 65, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (130,  5, 65, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (131,  6, 66, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (132, 11, 66, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (133, 12, 67, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (134,  7, 67, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (135,  8, 68, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (136,  4, 68, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (137,  5, 69, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (138,  6, 69, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (139,  7, 70, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (140,  8, 70, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
-        (141,  9, 71, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (142, 10, 71, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
-        (143, 11, 72, FALSE, 13, 'won', FALSE, FALSE, FALSE), \
-        (144, 12, 72, FALSE, 11, 'lost', FALSE, FALSE, FALSE), \
+        ( 97,  4, 49, 11, 'won', FALSE, FALSE, FALSE), \
+        ( 98,  5, 49, 9, 'lost', FALSE, FALSE, FALSE), \
+        ( 99,  6, 50, 13, 'won', FALSE, FALSE, FALSE), \
+        (100,  7, 50, 11, 'lost', FALSE, FALSE, FALSE), \
+        (101,  8, 51, 11, 'won', FALSE, FALSE, FALSE), \
+        (102,  9, 51, 9, 'lost', FALSE, FALSE, FALSE), \
+        (103, 10, 52, 13, 'won', FALSE, FALSE, FALSE), \
+        (104, 11, 52, 11, 'lost', FALSE, FALSE, FALSE), \
+        (105,  4, 53, 11, 'won', FALSE, FALSE, FALSE), \
+        (106,  6, 53, 9, 'lost', FALSE, FALSE, FALSE), \
+        (107,  7, 54, 13, 'won', FALSE, FALSE, FALSE), \
+        (108,  8, 54, 11, 'lost', FALSE, FALSE, FALSE), \
+        (109,  9, 55, 11, 'won', FALSE, FALSE, FALSE), \
+        (110, 10, 55, 9, 'lost', FALSE, FALSE, FALSE), \
+        (111, 11, 56, 13, 'won', FALSE, FALSE, FALSE), \
+        (112, 12, 56, 11, 'lost', FALSE, FALSE, FALSE), \
+        (113,  4, 57, 11, 'won', FALSE, FALSE, FALSE), \
+        (114,  7, 57, 9, 'lost', FALSE, FALSE, FALSE), \
+        (115,  8, 58, 13, 'won', FALSE, FALSE, FALSE), \
+        (116,  9, 58, 11, 'lost', FALSE, FALSE, FALSE), \
+        (117, 10, 59, 11, 'won', FALSE, FALSE, FALSE), \
+        (118, 11, 59, 9, 'lost', FALSE, FALSE, FALSE), \
+        (119,  5, 60, 13, 'won', FALSE, FALSE, FALSE), \
+        (120,  6, 60, 11, 'lost', FALSE, FALSE, FALSE), \
+        (121,  7, 61, 11, 'won', FALSE, FALSE, FALSE), \
+        (122,  8, 61, 9, 'lost', FALSE, FALSE, FALSE), \
+        (123,  9, 62, 13, 'won', FALSE, FALSE, FALSE), \
+        (124, 10, 62, 11, 'lost', FALSE, FALSE, FALSE), \
+        (125, 11, 63, 11, 'won', FALSE, FALSE, FALSE), \
+        (126, 12, 63, 9, 'lost', FALSE, FALSE, FALSE), \
+        (127,  4, 64, 13, 'won', FALSE, FALSE, FALSE), \
+        (128,  9, 64, 11, 'lost', FALSE, FALSE, FALSE), \
+        (129, 10, 65, 11, 'won', FALSE, FALSE, FALSE), \
+        (130,  5, 65, 9, 'lost', FALSE, FALSE, FALSE), \
+        (131,  6, 66, 13, 'won', FALSE, FALSE, FALSE), \
+        (132, 11, 66, 11, 'lost', FALSE, FALSE, FALSE), \
+        (133, 12, 67, 11, 'won', FALSE, FALSE, FALSE), \
+        (134,  7, 67, 9, 'lost', FALSE, FALSE, FALSE), \
+        (135,  8, 68, 13, 'won', FALSE, FALSE, FALSE), \
+        (136,  4, 68, 11, 'lost', FALSE, FALSE, FALSE), \
+        (137,  5, 69, 11, 'won', FALSE, FALSE, FALSE), \
+        (138,  6, 69, 9, 'lost', FALSE, FALSE, FALSE), \
+        (139,  7, 70, 13, 'won', FALSE, FALSE, FALSE), \
+        (140,  8, 70, 11, 'lost', FALSE, FALSE, FALSE), \
+        (141,  9, 71, 11, 'won', FALSE, FALSE, FALSE), \
+        (142, 10, 71, 9, 'lost', FALSE, FALSE, FALSE), \
+        (143, 11, 72, 13, 'won', FALSE, FALSE, FALSE), \
+        (144, 12, 72, 11, 'lost', FALSE, FALSE, FALSE), \
         -- Semi-Finale 1
-        (145, 4, 73, FALSE, 15, 'won', FALSE, FALSE, FALSE), \
-        (146, 5, 73, FALSE, 13, 'lost', FALSE, FALSE, FALSE), \
+        (145, 4, 73, 15, 'won', FALSE, FALSE, FALSE), \
+        (146, 5, 73, 13, 'lost', FALSE, FALSE, FALSE), \
         -- Semi-Finale 2
-        (147, 6, 74, FALSE, 11, 'won', FALSE, FALSE, FALSE), \
-        (148, 7, 74, FALSE, 9, 'lost', FALSE, FALSE, FALSE), \
+        (147, 6, 74, 11, 'won', FALSE, FALSE, FALSE), \
+        (148, 7, 74, 9, 'lost', FALSE, FALSE, FALSE), \
         -- Finale
-        (149, 4, 75, FALSE, 15, 'won', FALSE, FALSE, FALSE), \
-        (150, 6, 75, FALSE, 13, 'lost', FALSE, FALSE, FALSE);"
+        (149, 4, 75, 15, 'won', FALSE, FALSE, FALSE), \
+        (150, 6, 75, 13, 'lost', FALSE, FALSE, FALSE);"
 
 # Create the actual tournament
 echo -e "CREATING TOURNAMENTS:\tTournament 1: Round Robin between players:9,10,11,12"

@@ -33,6 +33,7 @@ def create_initial_games(tournament, tournament_members):
         for member1, member2 in member_pairs:
             # Create the game
             game = Game.objects.create(
+                local_game=tournament.local_tournament,
                 map_number=tournament.map_number,
                 powerups=tournament.powerups,
                 tournament_id=tournament.id
@@ -42,7 +43,6 @@ def create_initial_games(tournament, tournament_members):
             GameMember.objects.create(
                 user=member1.user,
                 game=game,
-                local_game=tournament.local_tournament,
                 powerup_big=tournament.powerups,
                 powerup_fast=tournament.powerups,
                 powerup_slow=tournament.powerups
@@ -50,7 +50,6 @@ def create_initial_games(tournament, tournament_members):
             GameMember.objects.create(
                 user=member2.user,
                 game=game,
-                local_game=tournament.local_tournament,
                 powerup_big=tournament.powerups,
                 powerup_fast=tournament.powerups,
                 powerup_slow=tournament.powerups
@@ -70,6 +69,7 @@ def create_final_games(tournament):
     if tournament_members.count() == 3:
         # Only one final
         final_game = Game.objects.create(
+            local_game=tournament.local_tournament,
             map_number=tournament.map_number,
             powerups=tournament.powerups,
             tournament_id=tournament.id,
@@ -81,6 +81,7 @@ def create_final_games(tournament):
         lastGames = [None] * 4
         for i in range(4):  # Correct loop syntax
             lastGames[i] = Game.objects.create(
+                local_game=tournament.local_tournament,
                 map_number=tournament.map_number,
                 powerups=tournament.powerups,
                 tournament_id=tournament.id
@@ -105,38 +106,34 @@ def start_semi_finals(tournament, semi_finals):
     with transaction.atomic():
         #   Semi-final 1:        1st vs 4th (Winner goes to final, Loser goes to third place game)
         game_member1 = GameMember.objects.create(
-            user=player_rank_1.user,
-            game=semi_finals[0],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+            user = player_rank_1.user,
+            game = semi_finals[0],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
-        game_member2 = GameMember.objects.create(
-            user=player_rank_4.user,
-            game=semi_finals[0],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+        game_member2  =  GameMember.objects.create(
+            user = player_rank_4.user,
+            game = semi_finals[0],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
 
         #   Semi-final 2:        2nd vs 3rd (Winner goes to final, Loser goes to third place game)
-        game_member3 = GameMember.objects.create(
-            user=player_rank_2.user,
-            game=semi_finals[1],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+        game_member3  =  GameMember.objects.create(
+            user = player_rank_2.user,
+            game = semi_finals[1],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
-        game_member4 = GameMember.objects.create(
-            user=player_rank_3.user,
-            game=semi_finals[1],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+        game_member4  =  GameMember.objects.create(
+            user = player_rank_3.user,
+            game = semi_finals[1],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
         # Save the game member entrys
         game_member1.save()
@@ -153,57 +150,53 @@ def start_finals(tournament, all_finals):
     # We need to generate the final and the third place game
     # By setting their members and updating the deadlines
     logging.info(f"Starting finals for tournament {tournament.id}")
-    final_player_1 =GameMember.objects.filter(
-            game=all_finals[0].id,
-            result=GameMember.GameResult.WON
+    final_player_1 = GameMember.objects.filter(
+            game = all_finals[0].id,
+            result = GameMember.GameResult.WON
         ).first().user
     final_player_2 = GameMember.objects.filter(
-            game=all_finals[1].id,
-            result=GameMember.GameResult.WON
+            game = all_finals[1].id,
+            result = GameMember.GameResult.WON
         ).first().user
     third_place_player_1 = GameMember.objects.filter(
-            game=all_finals[0].id,
+            game = all_finals[0].id,
             result=GameMember.GameResult.LOST
         ).first().user
     third_place_player_2 = GameMember.objects.filter(
-            game=all_finals[1].id,
-            result=GameMember.GameResult.LOST
+            game = all_finals[1].id,
+            result = GameMember.GameResult.LOST
         ).first().user
     with transaction.atomic():
         # Generate the third place game
         game_member1 = GameMember.objects.create(
-            user=third_place_player_1,
-            game=all_finals[2],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+            user = third_place_player_1,
+            game = all_finals[2],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
-        game_member2 = GameMember.objects.create(
-            user=third_place_player_2,
-            game=all_finals[2],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+        game_member2  =  GameMember.objects.create(
+            user = third_place_player_2,
+            game = all_finals[2],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
 
         # Generate the final game
-        game_member3 = GameMember.objects.create(
-            user=final_player_1,
-            game=all_finals[3],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+        game_member3  =  GameMember.objects.create(
+            user = final_player_1,
+            game = all_finals[3],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
         game_member4 = GameMember.objects.create(
-            user=final_player_2,
-            game=all_finals[3],
-            local_game=tournament.local_tournament,
-            powerup_big=tournament.powerups,
-            powerup_fast=tournament.powerups,
-            powerup_slow=tournament.powerups
+            user = final_player_2,
+            game = all_finals[3],
+            powerup_big = tournament.powerups,
+            powerup_fast = tournament.powerups,
+            powerup_slow = tournament.powerups
         )
         # Save the game member entrys
         game_member1.save()
@@ -225,7 +218,6 @@ def check_final_games_with_3_members(tournament, final_game):
         game_member1 = GameMember.objects.create(
             user=player_rank_1.user,
             game=final_game,
-            local_game=tournament.local_tournament,
             powerup_big=tournament.powerups,
             powerup_fast=tournament.powerups,
             powerup_slow=tournament.powerups
@@ -233,7 +225,6 @@ def check_final_games_with_3_members(tournament, final_game):
         game_member2 = GameMember.objects.create(
             user=player_rank_2.user,
             game=final_game,
-            local_game=tournament.local_tournament,
             powerup_big=tournament.powerups,
             powerup_fast=tournament.powerups,
             powerup_slow=tournament.powerups

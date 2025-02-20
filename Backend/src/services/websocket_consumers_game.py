@@ -32,7 +32,6 @@ class GameConsumer(CustomWebSocketLogic):
         # Set self vars for consumer
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
-        self.local_game = await database_sync_to_async(lambda: self.game.game_members.first().local_game)()
         # Check if the user is a game member if not close the connection
         if not await database_sync_to_async(lambda: self.game.game_members.filter(user=self.user).exists())():
             logging.info(f"User {self.user.id} is not a member of game {self.game_id}. CONNECTION CLOSED.")
@@ -42,7 +41,6 @@ class GameConsumer(CustomWebSocketLogic):
         self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
         self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
         self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
-        # TODO: Keep in mind local games!  issue #312
 
         # If the game is not in the right state, close the connection
         if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:
@@ -57,9 +55,8 @@ class GameConsumer(CustomWebSocketLogic):
         # Init game on cache and send the game data
         await init_game_on_cache(self.game, self.leftMember, self.rightMember)
         await send_ws_game_data_msg(self.game_id)
-        # Set the player(s) ready
-        if self.local_game:
-            # On local games just set both players to ready #TODO: this works and is related to issue #312
+        # Set the player(s) ready: for local game both players!
+        if self.game.local_game:
             await database_sync_to_async(self.game.set_player_ready)(self.leftUser.id, True)
             await database_sync_to_async(self.game.set_player_ready)(self.rightUser.id, True)
         else:
@@ -94,16 +91,11 @@ class GameConsumer(CustomWebSocketLogic):
             await update_game_state(self.game_id, Game.GameState.PAUSED)
             set_game_data(self.game_id, 'gameData', 'sound', 'pause')
 
-            # Other player scores that point (if not local game)
-            if not self.local_game:
-                user_id_for_point = self.leftUser.id
-                if self.user.id == self.leftUser.id:
-                    user_id_for_point = self.rightUser.id
-                if self.isLeftPlayer:
-                    player_side = 'playerLeft'
-                else:
-                    player_side = 'playerRight'
-                await apply_point(self.game_id, player_side)
+            # Other player scores that point
+            player_side = 'playerRight'
+            if self.user.id == self.leftUser.id:
+                player_side = 'playerLeft'
+            await apply_point(self.game_id, player_side)
 
             # Send the updated game state to FE
             await send_ws_game_data_msg(self.game_id)

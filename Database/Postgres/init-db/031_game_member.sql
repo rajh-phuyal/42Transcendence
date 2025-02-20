@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS barelyaschema.game_member
 	id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 	game_id INT NOT NULL,
-	local_game BOOLEAN NOT NULL,
 	points INT NOT NULL DEFAULT 0,
 	result barelyaschema.game_result NOT NULL DEFAULT 'pending',
 	powerup_big BOOLEAN NOT NULL DEFAULT FALSE,

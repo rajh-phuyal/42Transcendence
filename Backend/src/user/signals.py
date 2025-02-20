@@ -1,8 +1,14 @@
-from django.db.models.signals import post_save
+import random
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User, NoCoolWith, IsCoolWith
-from user.constants import USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE, AVATAR_DEFAULTS
+
+@receiver(pre_save, sender=User)
+def set_default_avatar(sender, instance, **kwargs):
+    if not instance.avatar_path:
+        instance.avatar_path = random.choice(AVATAR_DEFAULTS)
 
 @receiver(post_save, sender=User)
 def set_default_relationships(sender, instance, created, **kwargs):

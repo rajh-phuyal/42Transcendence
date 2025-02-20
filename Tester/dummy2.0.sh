@@ -194,14 +194,13 @@ create_game() {
     local opponent=$2
     local map_number=$3
     local powerups=$4
-    local local_game=$5
 
     local access_token_var="$(echo "${creator}_ACCESS" | tr '[:lower:]' '[:upper:]')"
     local access_token=${!access_token_var}
     local opponent_id_var="$(echo "${opponent}_ID" | tr '[:lower:]' '[:upper:]')"
     local opponent_id=${!opponent_id_var}
 
-    local payload="{\"mapNumber\": $map_number, \"powerups\": \"$powerups\", \"opponentId\": $opponent_id, \"localGame\": \"$local_game\"}"
+    local payload="{\"mapNumber\": $map_number, \"powerups\": \"$powerups\", \"opponentId\": $opponent_id}"
 
     HTTP_CODE=$(curl -s -k -o ${RESPONSE_FILE} -w "%{http_code}" -X POST "$BASE_URL$CREATE_GAME_ENDPOINT" \
         -H "Content-Type: application/json" \
@@ -275,4 +274,4 @@ create_chat "arabelo" "astein" "Hi Alex, how are you lol?"
 create_chat "arabelo" "fdaestr" "Hi Anatolii, how are you? lol"
 exit 1
 # Creating games
-create_game "astein" "anshovah" 1 true false
+create_game "astein" "anshovah" 1 true
