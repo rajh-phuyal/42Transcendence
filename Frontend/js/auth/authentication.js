@@ -74,15 +74,16 @@ class Auth {
         );
     }
 
-    createUser(username, password) {
-        return call('auth/register/', 'POST',
-            { username: username, password: password }
-        );
-    }
+	createUser(username, password, language = 'en-US') {
+		return call(`auth/register/?language=${language}`, 'POST',
+			{ username: username, password: password }
+		);
+	}
 
     async logout(broadcast = true) {
         try {
             console.log("Logging out...");
+
             const response = await call('auth/logout/', 'POST', null, true);
             console.log("Logout response", response);
 
