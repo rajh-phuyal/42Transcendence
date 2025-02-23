@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from django.db.models import Q
 from django.db import transaction
 # User
-from user.constants import USER_ID_OVERLORDS, USER_ID_AI
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE
 from user.models import IsCoolWith, NoCoolWith
 from user.exceptions import BlockingException
 from user.exceptions import BlockingException, RelationshipException
@@ -139,7 +139,7 @@ def reject_request(user, target):
 
 # Logic for removing a friend:
 def unfriend(user, target):
-    if target.id == USER_ID_AI:
+    if target.id == USER_ID_AI or target.id == USER_ID_FLATMATE:
         raise RelationshipException(_('Computer says no'))
     with transaction.atomic():
         cool_status = IsCoolWith.objects.select_for_update().filter(
@@ -158,7 +158,7 @@ def unfriend(user, target):
 def block_user(user, target):
     if target.id == USER_ID_OVERLORDS:
         raise BlockingException(_('Try harder...LOL'))
-    if target.id == USER_ID_AI:
+    if target.id == USER_ID_AI or target.id == USER_ID_FLATMATE:
         raise BlockingException(_('Computer says no'))
     if is_blocking(user, target):
         raise BlockingException(_('You have already blocked this user'))

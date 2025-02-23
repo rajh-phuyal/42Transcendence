@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.game
 	id SERIAL PRIMARY KEY,
 	state barelyaschema.game_state NOT NULL DEFAULT 'pending',
     type barelyaschema.game_type NOT NULL DEFAULT 'normal',
+    local_game BOOLEAN NOT NULL DEFAULT FALSE,
 	map_number INT NOT NULL,
 	powerups BOOLEAN NOT NULL,
 	tournament_id INT,

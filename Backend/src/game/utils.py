@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 # CORE
 from core.exceptions import BarelyAnException
 # USER
-from user.constants import USER_ID_AI
+from user.constants import USER_ID_AI, USER_ID_FLATMATE
 from user.models import User
 from user.exceptions import RelationshipException, BlockingException
 from user.utils_relationship import is_blocking, are_friends
@@ -29,7 +29,7 @@ from chat.message_utils import create_and_send_overloards_pm
 def map_name_to_number(map_name):
     return MAPNAME_TO_MAPNUMBER.get(map_name.lower(), None)
 
-def create_game(user, opponent_id, map_number, powerups, local_game):
+def create_game(user, opponent_id, map_number, powerups):
         # Check if opponent exist
         opponent = get_user_by_id(opponent_id)
         # Check if opponent isn't urself, is ur friend and not blocking you
@@ -43,48 +43,39 @@ def create_game(user, opponent_id, map_number, powerups, local_game):
             raise BarelyAnException(_("Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"))
         if not opponent_id:
             raise BarelyAnException(_("Missing key 'opponentId'"))
-        # Check if opponent is AI
-        if opponent.id == USER_ID_AI:
-            if local_game:
-                raise BarelyAnException(_("AI is above all, you can't play against it in a local game"))
-            # TODO: issue #210
-            raise BarelyAnException(_("Playing against AI is not supported yet"))
         # Check if there is already a direct game between the user and the opponent
         old_game = get_game_of_user(user, opponent)
         if old_game:
             return old_game, False
-
+        # Check if its with AI or Flatmate
+        local_game = False
+        if opponent.id in [USER_ID_AI, USER_ID_FLATMATE]:
+            local_game = True
         # Create the game and the game members in a transaction
         with transaction.atomic():
             game = Game.objects.create(
+                local_game=local_game,
                 map_number=map_number,
                 powerups=powerups,
             )
             game_member_user = GameMember.objects.create(
                 game=game,
                 user=user,
-                local_game=local_game,
                 powerup_big = powerups,
                 powerup_fast = powerups,
                 powerup_slow = powerups,
-                admin=True
             )
             game_member_opponent = GameMember.objects.create(
                 game=game,
                 user=opponent,
-                local_game=local_game,
                 powerup_big = powerups,
                 powerup_fast = powerups,
                 powerup_slow = powerups,
-                admin=False
             )
             game.save()
             game_member_user.save()
             game_member_opponent.save()
-        if local_game:
-            invite_msg = f"**GL,{game.as_clickable()}**"
-        else:
-            invite_msg = f"**G,{user.id},{opponent.id},{game.as_clickable()}**"
+        invite_msg = f"**G,{user.id},{opponent.id},{game.as_clickable()}**"
         create_and_send_overloards_pm(user, opponent, invite_msg)
         return game, True
 

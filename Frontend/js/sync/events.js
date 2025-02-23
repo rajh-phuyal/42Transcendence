@@ -12,12 +12,17 @@ export default {
             const success = await $auth.logout(false);
             if (success) {
                 // remove this to load the translations again
-                $store.removeMutationListener("setTranslations");
+				$store.removeMutationListener("setTranslations");
 
                 // load the translations again
                 $store.dispatch('loadTranslations', routes.map(route => route.view));
-
-                router("/auth");
+				const nav = $id("navigator");
+				nav.classList.remove("d-flex", "flex-row", "justify-content-center");
+				nav.style.display = 'none';
+				$store.addMutationListener("setTranslations", (e) => {
+					console.log("mutation state", e);
+					router("/auth");
+				});
             }
 
             return;

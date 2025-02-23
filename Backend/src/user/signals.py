@@ -1,8 +1,14 @@
-from django.db.models.signals import post_save
+import random
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User, NoCoolWith, IsCoolWith
-from user.constants import USER_ID_OVERLORDS, USER_ID_AI
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE, AVATAR_DEFAULTS
+
+@receiver(pre_save, sender=User)
+def set_default_avatar(sender, instance, **kwargs):
+    if not instance.avatar_path:
+        instance.avatar_path = random.choice(AVATAR_DEFAULTS)
 
 @receiver(post_save, sender=User)
 def set_default_relationships(sender, instance, created, **kwargs):
@@ -13,6 +19,8 @@ def set_default_relationships(sender, instance, created, **kwargs):
             NoCoolWith.objects.create(blocker_id=USER_ID_OVERLORDS, blocked_id=instance.id)
             # Add AI Opponent as a friend with the new user
             IsCoolWith.objects.create(requester_id=USER_ID_AI, requestee_id=instance.id, status=IsCoolWith.CoolStatus.ACCEPTED)
+            # Add TheFlatmate as a friend with the new user
+            IsCoolWith.objects.create(requester_id=USER_ID_FLATMATE, requestee_id=instance.id, status=IsCoolWith.CoolStatus.ACCEPTED)
         except ObjectDoesNotExist as e:
             # Log or handle the exception if the user is missing
             print(f"Error in signal handler set_default_relationships: {e}")
