@@ -28,7 +28,7 @@ export function buildView(tournamentState) {
         element.style.display = 'flex';
     }
     for (let element of hideDivs) {
-        console.log("noning:", element.getAttribute("id"));
+        console.log("hiding:", element.getAttribute("id"));
         element.style.display = 'none';
     }
 
@@ -52,20 +52,20 @@ export function createPlayerCard(playerObject) {
 
     console.log("player", playerObject);
 
-    tournamentData.playersIds.push(playerObject.userId);
+    tournamentData.playersIds.push(playerObject.id);
 
     const template = $id("tournament-players-list-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-players-list-player-card");
 
-    container.setAttribute("id", "tournament-players-list-player" + playerObject.userId)
+    container.setAttribute("id", "tournament-players-list-player" + playerObject.id)
 
-    if (playerObject.userAvatar)
-        template.querySelector(".tournament-players-list-player-card-avatar").src = window.origin + "/media/avatars/" + playerObject.userAvatar;
+    if (playerObject.avatarUrl)
+        template.querySelector(".tournament-players-list-player-card-avatar").src = window.origin + "/media/avatars/" + playerObject.avatarUrl;
     else
     template.querySelector(".tournament-players-list-player-card-avatar").style.display = "none";
     template.querySelector(".tournament-players-list-player-card-username").textContent = playerObject.username;
 
-    if (playerObject.userState === "pending")
+    if (playerObject.state === "pending")
         container.style.backgroundColor = "grey";
 
     $id("tournament-players-list-container").appendChild(container);
@@ -86,11 +86,11 @@ export function createGameCard(gameObject) {
     const template = $id("tournament-game-card-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-game-card-container");
 
-    container.setAttribute("id", "tournament-game-" + gameObject.gameId)
-    template.querySelector(".tournament-game-card-player1-avatar").src = window.origin + "/media/avatars/" + gameObject.player1.avatarPath;
-    template.querySelector(".tournament-game-card-player2-avatar").src = window.origin + "/media/avatars/" + gameObject.player2.avatarPath;
-    template.querySelector(".tournament-game-card-player1-username").textContent = gameObject.player1.username;
-    template.querySelector(".tournament-game-card-player2-username").textContent = gameObject.player2.username;
+    container.setAttribute("id", "tournament-game-" + gameObject.id)
+    template.querySelector(".tournament-game-card-player1-avatar").src = window.origin + "/media/avatars/" + gameObject.playerLeft.avatarUrl;
+    template.querySelector(".tournament-game-card-player2-avatar").src = window.origin + "/media/avatars/" + gameObject.playerRight.avatarUrl;
+    template.querySelector(".tournament-game-card-player1-username").textContent = gameObject.playerLeft.username;
+    template.querySelector(".tournament-game-card-player2-username").textContent = gameObject.playerRight.username;
     template.querySelector(".tournament-game-card-spinner").style.display = "none";
     template.querySelector(".tournament-game-card-player1-winner-tag").style.display = "none";
     template.querySelector(".tournament-game-card-player2-winner-tag").style.display = "none";
@@ -98,7 +98,7 @@ export function createGameCard(gameObject) {
     if (gameObject.state === "pending")
         template.querySelector(".tournament-game-card-score").textContent = "VS";
     else
-        template.querySelector(".tournament-game-card-score").textContent = gameObject.player1.points + "-" + gameObject.player2.points; 
+        template.querySelector(".tournament-game-card-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
 
     if (gameObject.state === "finished")
         $id("tournament-history-container").appendChild(container);
@@ -136,27 +136,23 @@ export function gameUpdateState(gameObject) {
 }
 
 function createRankCard(rankCardObject) {
-    const template = $id("tournament-rank-card-template").content.cloneNode(true);
+    const template = $id("tournament-rank-row-template").content.cloneNode(true);
 
-    //TODO: the object fetched from the ws should be in exactly the same format as the one from REST
 
-    const container = template.querySelector(".tournament-rank-card-container");
-    template.querySelector(".tournament-rank-card-position").textContent = rankCardObject.rank;
-    // TODO: the backend should pass the avatar and username
-    // template.querySelector(".tournament-rank-card-avatar").src = rankCardObject.avatar;
-    // template.querySelector(".tournament-rank-card-username").textContent = rankCardObject.username;
-    template.querySelector(".tournament-rank-card-wins").textContent = rankCardObject.wins;
-    template.querySelector(".tournament-rank-card-diff").textContent = rankCardObject.points_diff; //TODO: this should be camelCase
-    // TODO: it would be cool if it also showed the games played :D
-    // template.querySelector(".tournament-rank-card-games").textContent = rankCardObject.games;
+    const container = template.querySelector(".tournament-rank-row");
+    template.querySelector(".tournament-rank-row-position").textContent = rankCardObject.rank;
+    template.querySelector(".tournament-rank-row-avatar").src = rankCardObject.avatarUrl;
+    template.querySelector(".tournament-rank-row-username").textContent = rankCardObject.username;
+    template.querySelector(".tournament-rank-row-wins").textContent = rankCardObject.wonGames;
+    template.querySelector(".tournament-rank-row-diff").textContent = rankCardObject.winPoints;
+    template.querySelector(".tournament-rank-row-games").textContent = rankCardObject.playedGames;
 
-    $id("tournament-rank-list-cards-list").appendChild(container);
+    $id("tournament-rank-table").appendChild(container);
 }
 
 export function updateTournamentRank(rankObject) {
 
     $id("tournament-rank-list-cards-list").innerHTML = "";
-
 
     for (let element of rankObject)
         createRankCard(element);
@@ -177,67 +173,6 @@ export function createGameList(games) {
     }
 }
 
-// export function createGameCard(gameData) {
-//     console.log("Creating game card with data: ", gameData);
-
-//     // Clone the template
-//     let template = $id("game-card-template").content.cloneNode(true);
-//     const card = template.querySelector(".game-card");
-//     card.setAttribute("game-id", gameData.userId);
-//     // Update the card background color based on user state
-//     if (gameData.state === "pending")
-//         template.querySelector(".game-card").style.backgroundColor = "grey";
-//     else if (gameData.state === "ongoing")
-//         template.querySelector(".game-card").style.backgroundColor = "orange";
-//     else if (gameData.state === "paused")
-//         template.querySelector(".game-card").style.backgroundColor = "yelllow";
-//     else if (gameData.state === "finished")
-//         template.querySelector(".game-card").style.backgroundColor = "green";
-//     else if (gameData.state === "quited")
-//         template.querySelector(".game-card").style.backgroundColor = "red";
-
-//     // Populate the template fields with user data
-//     template.querySelector(".game-id .value").textContent = gameData.gameId;
-//     template.querySelector(".map-number .value").textContent = gameData.mapNumber;
-//     template.querySelector(".game-state .value").textContent = gameData.state;
-//     template.querySelector(".finish-time .value").textContent = gameData.finishTime;
-//     template.querySelector(".deadline .value").textContent = gameData.deadline;
-//     template.querySelector(".avatar1 .value").textContent = gameData.player1.avatarPath;
-//     template.querySelector(".username1 .value").textContent = gameData.player1.username;
-//     template.querySelector(".points1 .value").textContent = gameData.player1.points1;
-//     template.querySelector(".result1 .value").textContent = gameData.player1.result1;
-//     template.querySelector(".avatar2 .value").textContent = gameData.player2.avatarPath;
-//     template.querySelector(".username2 .value").textContent = gameData.player2.username;
-//     template.querySelector(".points2 .value").textContent = gameData.player2.points;
-//     template.querySelector(".result2 .value").textContent = gameData.player2.result;
-
-//     // Return the populated card
-//     return template;
-// }
-
-// export function createParticipantCard(userData) {
-//     console.log("Creating participant card for user with data: ", userData);
-
-//     // Clone the template
-//     let template = $id("tournament-list-card-template").content.cloneNode(true);
-//     const card = template.querySelector(".card");
-//     card.setAttribute("user-id", userData.userId);
-//     // Update the card background color based on user state
-//     if (userData.userState === "pending") {
-//         template.querySelector(".card").style.backgroundColor = "grey";
-//     }
-
-//     // Populate the template fields with user data
-//     template.querySelector(".user-id .value").textContent = userData.userId;
-//     template.querySelector(".username .value").textContent = "Username: " + userData.username;
-//     template.querySelector(".user-avatar").src = "https://localhost/media/avatars/" + userData.userAvatar;
-//     template.querySelector(".user-avatar").alt = `Avatar of ${userData.username}`;
-//     template.querySelector(".user-state .value").textContent = "State: " + userData.userState;
-
-//     // Return the populated card
-//     return template;
-// }
-
 export function updateParticipantsCard(userData) {
 
     console.log("user data:", userData);
@@ -247,19 +182,14 @@ export function updateParticipantsCard(userData) {
     // TODO:    a) on "accepted" the keyword is data.userState and on the others is data.state
     //          b) in the "join" message the avatar and username needs to be included
 
-
-    if (userData.userState === "accepted") {
-        changePlayerCardToAccepted(userData.userId);
-    }
-    else if (userData.state === "join")
+    if (!$id("tournament-players-list-player" + userData.id))
         createPlayerCard(userData);
-    else if (userData.state === "leave"){
-        removePlayerCard(userData.userId);
-        tournamentData.playersIds.pop(userData.userState);
+    if (userData.state === "accepted") {
+        changePlayerCardToAccepted(userData.id);
     }
-
-    console.log("incoming state:", userData.userState);
-    console.log("expected state: leave");
-    console.log("players:", tournamentData.playersIds);
+    else if (userData.state === "leave"){
+        removePlayerCard(userData.id);
+        tournamentData.playersIds.pop(userData.id);
+    }
 }
 

@@ -69,17 +69,44 @@
 
             <!-- Tournament Rank -->
             <div id="tournament-rank-container">
-				<div id="tournament-rank-list">
+				<table id="tournament-rank-table">
+					<thead id="tournament-rank-table-header">
+						<tr>
+							<th>Rank</th>
+							<th>Player</th>
+							<th>Wins</th>
+							<th>Diff</th>
+							<th>Games</th>
+						</tr>
+					</thead>
+					<tbody id="tournament-rank-table-body">
+						<!-- where the rank rows will be -->
+					</tbody>
+					<template id="tournament-rank-row-template">
+						<tr class="tournament-rank-row">
+							<td class="tournament-rank-row-position"></td>
+							<td class="tournament-rank-row-user">
+								<img class="tournament-rank-row-avatar" alt="image not found">
+								<h5 class="tournament-rank-row-username"></h5>
+							</td>
+							<td class="tournament-rank-row-wins"></td>
+							<td class="tournament-rank-row-diff"></td>
+							<td class="tournament-rank-row-games"></td>
+						</tr>
+					</template>
+				</table>
+
+				<!-- <div id="tournament-rank-list">
 					<div id="tournament-rank-list-header">
 						<p>Position</p>
 						<p>Player</p>
 						<p>Wins</p>
 						<p>Diff</p>
-						<p>Games</p>
+						<p>Games</p> -->
 					</div>
 					<div id="tournament-rank-list-cards-list">
 						<!-- where the rank cards will be -->
-					</div>
+					<!-- </div>
 					<template id="tournament-rank-card-template">
 						<div class="tournament-rank-card-container">
 							<h5 class="tournament-rank-card-position"></h5>
@@ -90,7 +117,7 @@
 							<h6 class="tournament-rank-card-games"></h6>
 						</div>
 					</template>
-				</div>
+				</div> -->
 			</div>
 
             <!-- Tournament History -->
