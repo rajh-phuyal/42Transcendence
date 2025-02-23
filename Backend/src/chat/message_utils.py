@@ -48,6 +48,10 @@ def create_and_send_overloards_pm(userA, userB, content):
     This function will create a message in the database and send it to the frontend
     also updating the unread message count for all conversation_member entries.
     """
+    if isinstance(userA, int):
+        userA = User.objects.get(id=userA)
+    if isinstance(userB, int):
+        userB = User.objects.get(id=userB)
     conversation = get_or_create_conversation(userA, userB)
     message = create_msg_db(User.objects.get(id=USER_ID_OVERLORDS), conversation, content)
     async_to_sync(send_ws_badge)(userA.id, conversation.id)

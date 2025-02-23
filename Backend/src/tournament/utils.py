@@ -11,7 +11,7 @@ from core.exceptions import BarelyAnException
 from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg
 from services.channel_groups import delete_tournament_group
 # User
-from user.constants import USER_ID_AI
+from user.constants import USER_ID_AI, USER_ID_FLATMATE
 from user.models import User
 from user.exceptions import BlockingException
 from user.utils import get_user_by_id
@@ -82,8 +82,10 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
             raise BarelyAnException(_("Opponent not found: {opponent_id}").format(opponent_id=opponent_id))
         if creator_id == opponent_id:
             raise BarelyAnException(_("You can't invite yourself to a tournament"))
+        if opponent.id == USER_ID_FLATMATE:
+            raise BarelyAnException(_("You can't invite this pal: {username} to a tournament").format(username=opponent.username))
         if opponent.id == USER_ID_AI:
-            logging.error("TODO: Playing against AI is not supported yet! issue #216")
+            logging.error("TODO: Playing against AI in tournament is not supported yet! issue #216")
         if is_blocking(creator, opponent):
             raise BlockingException(_("You can't invite a user whom you have blocked: {opponent.username}").format(opponent=opponent))
         if is_blocked(creator, opponent):

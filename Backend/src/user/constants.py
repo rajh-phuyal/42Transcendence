@@ -1,8 +1,15 @@
 USER_ID_OVERLORDS = 1
 USER_ID_AI = 2
+USER_ID_FLATMATE = 3
 AVATAR_FRAME = "e7dd102e-fcbc-4eda-b973-e2252c35b1b5.png"
-AVATAR_DEFAULT = "54c455d5-761b-46a2-80a2-7a557d9ec618.png"
 AVATAR_OVERLORDS = "c5d1dcf4-3f76-497d-9208-d230c7020dce.png"
 AVATAR_AI = "670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"
+AVATAR_FLATMATE = "4ca810c2-9b38-4bc8-ab87-d478cb1739f0.png"
 NO_OF_USERS_TO_LOAD = 20
 USERNAME_OVERLORDS = "overlords"
+AVATAR_DEFAULTS = [
+    "c0ff26c3-0acc-4c9c-ae69-a65e88421b75.png",
+    "a75be01d-8f1f-4ab2-9527-880487ad48ea.png",
+    "ec31e73b-31f8-4f5f-a128-9d0281232ccf.png",
+    "5ac8dbe4-7ff7-4575-ae91-74d28d92ca5d.png"
+]

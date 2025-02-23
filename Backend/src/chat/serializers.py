@@ -1,10 +1,10 @@
 # Basics
-import re, logging
+import re, logging, random
 # Django
 from rest_framework import serializers
 from django.utils.translation import gettext as _
 # User
-from user.constants import AVATAR_DEFAULT
+from user.constants import AVATAR_DEFAULTS
 from user.models import User
 # Chat
 from chat.models import Conversation, Message, ConversationMember
@@ -26,10 +26,6 @@ def generate_template_msg(message):
         "G": {
             "message": _("@{0} has invited @{1} to play a friendly match: {2}"),
             "count": 3
-        },
-        "GL": {
-            "message": _("Local game has been created: {0}"),
-            "count": 1
         },
         "FS": {
             "message": _("User @{0} has sent a friend request to @{1}"),
@@ -148,8 +144,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj):
         if isinstance(obj, dict):  # Custom separator message
-            return obj.get('user').avatar_path if obj.get('user') else AVATAR_DEFAULT
-        return obj.user.avatar_path if obj.user.avatar_path else AVATAR_DEFAULT
+            return obj.get('user').avatar_path if obj.get('user') else random.choice(AVATAR_DEFAULTS)
+        return obj.user.avatar_path if obj.user.avatar_path else random.choice(AVATAR_DEFAULTS)
 
     def to_representation(self, instance):
         if isinstance(instance, dict):  # Handle custom messages (LastSeenMessage)

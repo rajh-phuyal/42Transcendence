@@ -21,10 +21,9 @@ class CreateGameView(BaseAuthenticatedView):
         opponent_id = request.data.get('opponentId')
         map_number = request.data.get('mapNumber')
         powerups = request.data.get('powerups', False)
-        local_game = request.data.get('localGame', False)
         if not opponent_id or not map_number:
             return error_response(_('Missing one of the required fields: opponentId, mapNumber'))
-        game, success = create_game(user, opponent_id, map_number, powerups, local_game)
+        game, success = create_game(user, opponent_id, map_number, powerups)
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game.id})
         return success_response(_('Game already exists'), **{'gameId': game.id})
@@ -69,17 +68,6 @@ class LobbyView(BaseAuthenticatedView):
         opponent_member = GameMember.objects.filter(game=game).exclude(user=user).first()
         if not opponent_member:
             return error_response(_("Opponent not found"))
-
-        # Removed this since u can see a lobby even if the game is finished
-        #if game.state not in [Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]:
-        #    return error_response(_("Game can't be played since it's either finished or quited"))
-
-        # TODO: ISSUE #312
-        # Check if the game is local, than only the admin can fetch the lobby
-        if user_member.local_game and not user_member.admin:
-            return error_response(_("Only the admin @{admin_username} can fetch the lobby for local games. You have to go to his computer and play there together")
-                .format(admin_username=opponent_member.user.username))
-
         tournament_name = None
         if (game.tournament):
             tournament_name = game.tournament.name
@@ -143,8 +131,7 @@ class PlayAgainView(BaseAuthenticatedView):
         if old_game.tournament:
             return error_response(_('Tournament games can not be played again'))
         opponent_id = GameMember.objects.filter(game=old_game).exclude(user=user).first().user.id
-        local_game = GameMember.objects.filter(game=old_game, user=user).first().local_game
-        game, success = create_game(user, opponent_id, old_game.map_number, old_game.powerups, local_game)
+        game, success = create_game(user, opponent_id, old_game.map_number, old_game.powerups)
         if success:
             return success_response(_('Game created successfully'), **{'gameId': game.id})
         return success_response(_('Game already exists'), **{'gameId': game.id})

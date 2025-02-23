@@ -14,13 +14,16 @@ from core.exceptions import BarelyAnException
 # Authentication
 from authentication.utils import validate_username
 # User
-from user.constants import NO_OF_USERS_TO_LOAD
+from user.constants import NO_OF_USERS_TO_LOAD, USER_ID_AI
 from user.models import User, IsCoolWith
 from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
 from user.exceptions import ValidationException
 from user.utils import get_user_by_id
 from user.utils_img import process_avatar
 from user.utils_relationship import is_blocking, block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
+# Services
+from services.chat_bots import send_message_with_delay
+from asgiref.sync import async_to_sync
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
@@ -159,6 +162,10 @@ class UpdateUserInfoView(BaseAuthenticatedView):
 
         # Activate the new language
         activate(new_language)
+
+        # Send a pm in the chat with AI
+        if user.language != new_language:
+            async_to_sync(send_message_with_delay)(USER_ID_AI, user, 0, _("Okay, I will now speak in ur new favorite language! ;)"))
 
         # Update the user info
         user.username = new_username
