@@ -8,6 +8,7 @@ import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
 import { translate } from './locale/locale.js';
 import { audioPlayer } from './abstracts/audio.js';
+import { zoomIn } from './views/barely-responsive/methods.js';
 setViewLoading(true);
 
 try {
@@ -97,10 +98,12 @@ document.addEventListener('wheel', function(event) {
 
 
 window.onresize = () => {
-	if ((window.outerHeight < 1020 || window.outerWidth < 1020)
-		&& window.location.pathname != "/barely-responsive") {
-		$store.commit("setMarkBook", window.location.pathname);
-		router("/barely-responsive");
+	if (window.outerHeight < 1020 || window.outerWidth < 1020){
+        zoomIn(window.outerHeight, window.outerWidth);
+        if (window.location.pathname != "/barely-responsive") {
+            $store.commit("setMarkBook", window.location.pathname);
+            router("/barely-responsive");
+        }
 	} else if (window.outerHeight >= 1020 && window.outerWidth >= 1020
 		&& window.location.pathname == "/barely-responsive") {
 			const path = $store.state.markbook;

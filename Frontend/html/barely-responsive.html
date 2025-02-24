@@ -2,7 +2,9 @@
     <div id="dont-resize">
         Why resize?
     </div>
-	<img id="overlord-denys-resize" src="../assets/overlordDenysResize.webp" alt="overlord Denys Resize">
+    <div id="image-container">
+	    <img id="overlord-denys-resize" src="../assets/overlordDenysResize.png" alt="overlord Denys Resize">
+    </div>
 </div>
 
 <style>
@@ -17,15 +19,30 @@
 	}
 
 	#dont-resize {
-		font-size: min(5vw, 60px);
+		font-size: min(5vw, 5vh, 60px);
 		font-weight: bold;
-		height: 10%;
+		max-height: 10%;
+        justify-content: bottom;
 	}
 
-	#overlord-denys-resize {
-		max-width: 90%;
+    #image-container {
+        max-width: 90%;
 		max-height: 90%;
-		object-fit: contain;
+        border-width: min(2vw, 2vh, 20px);
+        border: solid black;
+        border-radius: 3%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+	#overlord-denys-resize {
+		max-width: 100%;
+		max-height: 100%;
+        transform: scale(1);
+        transform-origin: center;
+        object-fit: contain;
 	}
 
 </style>
