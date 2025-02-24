@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema."user" (
     is_staff BOOLEAN NOT NULL,
     is_active BOOLEAN NOT NULL,
     date_joined TIMESTAMP WITH TIME ZONE NOT NULL,
-	avatar_path CHAR(40) DEFAULT '54c455d5-761b-46a2-80a2-7a557d9ec618.png' NOT NULL,
+	avatar_path CHAR(40) NOT NULL,
 	language CHAR(5) DEFAULT 'en-US' NOT NULL
 );
 

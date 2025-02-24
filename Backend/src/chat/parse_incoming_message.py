@@ -39,27 +39,22 @@ async def check_if_msg_is_cmd(user, other_user, content):
             await sync_to_async(unblock_user)(user, other_user)
         elif content_upper.startswith("/G"):
             # Create a Game
-            # e.g: /G,UFO,REMOTE,YES
-            #      /G,SNOWMAN,LOCAL,NO
+            # e.g: /G,UFO,YES
+            #      /G,SNOWMAN,NO
             temp = content_upper.split(",")
-            if len(temp) != 4:
+            if len(temp) != 3:
                 raise BarelyAnException(_("Invalid conversation command"))
             logging.info(f"Mapname: %s", temp[1].lower())
             map_number = MAPNAME_TO_MAPNUMBER.get(temp[1].lower(), None)
             if not map_number:
                 raise BarelyAnException(_("Invalid map name"))
-            if temp[2] not in ["LOCAL", "REMOTE"]:
-                raise BarelyAnException(_("Invalid game type"))
-            local_game = False
-            if temp[2] == "local":
-                local_game = True
-            if temp[3] not in ["YES", "NO"]:
+            if temp[2] not in ["YES", "NO"]:
                 raise BarelyAnException(_("Invalid powerup value"))
             powerups = False
-            if temp[3] == "yes":
+            if temp[2] == "yes":
                 powerups = True
             logging.info(f"User/Opponent: %s/%s", user.id, other_user.id)
-            game, sucess = await sync_to_async(create_game)(user, other_user.id, map_number, powerups, local_game)
+            game, sucess = await sync_to_async(create_game)(user, other_user.id, map_number, powerups)
             if not sucess:
                 raise BarelyAnException(_("Game already exists: {link_game}").format(link_game=game.as_clickable()))
         else:

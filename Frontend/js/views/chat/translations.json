@@ -64,7 +64,7 @@
         "ne-NP": ""
     },
     "helpMessage/G0": {
-        "en-US": "<strong><u>(0/3) Create a game</u><br>Choose a map</strong> e.g. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "en-US": "<strong><u>(1/3) Create a game</u><br>Choose a map</strong> e.g. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
@@ -72,7 +72,7 @@
         "ne-NP": ""
     },
     "helpMessage/G2": {
-        "en-US": "<strong><u>(1/3) Create a game</u><br>Choose type</strong> e.g. /G,ufo,remote,<br>remote<br>local",
+        "en-US": "<strong><u>(2/3) Create a game</u><br>Wanna play with powerups?</strong> e.g. /G,ufo,yes,<br>yes<br>no",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
@@ -80,14 +80,6 @@
         "ne-NP": ""
     },
     "helpMessage/G3": {
-        "en-US": "<strong><u>(2/3) Create a game</u><br>Wanna play with powerups?</strong> e.g. /G,ufo,remote,yes,<br>yes<br>no",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
-    "helpMessage/G4": {
         "en-US": "<strong><u>(3/3) Create a game</u><br>Press return to create the game</strong>",
         "pt-PT": "",
         "pt-BR": "",
