@@ -27,9 +27,13 @@ class TextField extends HTMLElement {
 
     startSendingMessage(){
         const inputElement = this.shadow.getElementById("text-field");
-        const value = inputElement.value;
+        const value = inputElement.value.trim();
+        if (value === '')
+            return;
         // Reset text box & hide the help message when the user sends a message
         inputElement.value = '';
+        let sendButton = this.shadow.getElementById("textFieldButton");
+        sendButton.disabled = true;
         updateHelpMessage();
         // Send the message to the server
         WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
@@ -55,6 +59,11 @@ class TextField extends HTMLElement {
     }
 
     handleMessageInput(event){
+        let sendButton = this.shadow.getElementById("textFieldButton");
+        if (event.target.value.trim() === '')
+            sendButton.disabled = true;
+        else
+            sendButton.disabled = false;
         createHelpMessage(event.target.value)
     }
 
@@ -81,35 +90,37 @@ class TextField extends HTMLElement {
 
     render() {
         this.shadow.innerHTML = `
+            <div id="main-container">
+                <textarea id="text-field" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
+                <button id="textFieldButton">${translate("chat", "sendButton")}</button>
+            </div>
             <style>
                 div {
                     color: black;
                     font-weight: 600;
-                    width: ${this.width || '20'}%;
-                    height: ${this.height || '20'}%;
+                    width: 100% !important;
+                    height: 100% !important;
                     align-items: center;
-                    flex: 1;
-                    padding: 5px;
-                    border:  3px solid  black;
-                    outline: none;
+                    border:  0.5vh solid  black;
+                    overflow: hidden;
                     background-color: #FFF7E3;
                 }
 
                 textarea {
-                    font-size: 16px;
+                    font-size: min(1vw, 15px);
                     font-family: 'Courier';
                     color: black;
-                    width: 50%;
-                    height: 100%;
-                    font-weight: 600;
+
+                    height: calc(100% - 0.5vh);
+
                     flex: 1;
-                    padding: 5px;
+                    overflow-y: auto;
                     border:  none;
                     border-radius: 3px;
                     outline: none;
                     background-color: #FFF7E3;
                     resize: none;
-                    overflow: auto;
+
                 }
 
                 textarea:hover{
@@ -121,9 +132,9 @@ class TextField extends HTMLElement {
                 }
 
                 button {
-                    margin: 5% 0% 0% 0%;
-                    width: 12%;
-                    height: 40%;
+                    margin: 0 0.2vw 0 0;
+                    width: 12% !important;
+                    height: 90% !important;
                     font-family: 'Courier';
                     font-size: ${this.fontSize}vh;
                     vertical-align: middle;
@@ -133,7 +144,7 @@ class TextField extends HTMLElement {
                     color: #FFFCE6;
                     background-color: #000000;
                     cursor: pointer;
-                    padding: 2px 4px;
+                    padding: 2px 4px !important;
                     border: 2px solid #968503;
                 }
 
@@ -144,15 +155,15 @@ class TextField extends HTMLElement {
                 button:active{
                     background-color: #505050;
                 }
+                button:disabled,
+                button[disabled]{
+                    background-color:rgba(145, 143, 143, 0.9);
+                }
                 #main-container {
                     display: flex;
                     flex-direction: row;
                 }
             </style>
-            <div id="main-container">
-                <textarea id="text-field" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
-                <button id="textFieldButton">${translate("chat", "sendButton")}</button>
-            </div>
         `;
     }
 }

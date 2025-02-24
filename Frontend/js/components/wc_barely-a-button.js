@@ -45,7 +45,7 @@ class BarelyAButton extends HTMLElement
     {
         this.shadow.innerHTML = `
             <style>
-                .round-button{
+               /*  .round-button{
                     display: flex;
                     font-family: 'Courier';
                     align-items: justify;
@@ -61,7 +61,7 @@ class BarelyAButton extends HTMLElement
                     border-radius: 100%;
                     background-color: #3D3D3D;
                     cursor: pointer;
-                }
+                } */
 
                 .rect-button{
                     font-family: 'Courier';

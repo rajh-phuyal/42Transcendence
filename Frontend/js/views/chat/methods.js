@@ -1,6 +1,6 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 
@@ -112,6 +112,9 @@ export function coversationCardClickListener(event) {
     const cardId = event.currentTarget.id;
     // This will than give us the conversation_id in this case 9
     const conversationId = cardId.split('-').pop();
+    // Clear the searchbar
+    resetFilter();
+    // Update the selected conversation
     selectConversation(conversationId);
 }
 
@@ -163,6 +166,17 @@ export function deleteAllConversationCards() {
     }
 }
 
+// Resets the filter
+export function resetFilter() {
+    const conversationsContainer = $id("chat-view-conversations-container");
+    const searchBar = $id("chat-view-searchbar");
+    searchBar.value = "";
+    const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+    conversationCards.forEach((card) => {
+        card.style.display = "flex"; // Show all cards
+    });
+}
+
 // -----------------------------------------------------------------------------
 // MESSAGE STUFF
 // -----------------------------------------------------------------------------
@@ -172,33 +186,36 @@ export function deleteAllConversationCards() {
 //    - by the REST API when selecting a conversation
 export function createMessage(element, prepend = true) {
     // Determine the correct template for the message
-    let elementId = "chat-view-sent-message-template";
-    let containerId = ".chat-view-sent-message-container";
-    if (element.username == "overlords"){
-        elementId = "chat-view-overlords-message-template";
-        containerId = ".chat-view-overlords-message-container";
-    }
-    else if (element.userId != $store.fromState("user").id){
-        elementId = "chat-view-incoming-message-template";
-        containerId = ".chat-view-incoming-message-container";
-    }
-
+    let elementId = "chat-view-message-template";
+    let containerId = ".chat-view-message-container";
     // Clone the template
     let template = $id(elementId).content.cloneNode(true);
 
+    // Add the right styling class for container
+    let messageContainer = template.querySelector(".chat-view-message-container");
+    if (element.username == "overlords")
+        messageContainer.classList.add("chat-view-message-container-overlords");
+    else if (element.userId == $store.fromState("user").id)
+        messageContainer.classList.add("chat-view-message-container-outgoing");
+    else
+        messageContainer.classList.add("chat-view-message-container-incoming");
+
+    // Add the right styling class for box
+    if (element.username == "overlords")
+        template.querySelector(".chat-view-message-box").classList.add("chat-view-message-box-overlords");
+    else if (element.userId != $store.fromState("user").id)
+        template.querySelector(".chat-view-message-box").classList.add("chat-view-message-box-outgoing");
+    else
+        template.querySelector(".chat-view-message-box").classList.add("chat-view-message-box-incoming");
+
     // Set the id of the node to the message id
-    let messageContainer = template.querySelector(".chat-view-sent-message-container");
-    if(!messageContainer)
-        messageContainer = template.querySelector(".chat-view-incoming-message-container");
-    if(!messageContainer)
-        messageContainer = template.querySelector(".chat-view-overlords-message-container");
+    messageContainer = template.querySelector(".chat-view-message-container");
     if(!messageContainer || element.id == undefined || element.id == "null")
         console.log("Can't find message container for element. Mostlikely this is not an issue since it is an overlord message");
     else
         messageContainer.id = "message-" + element.id;
-
-    if (element.userId != $store.fromState("user").id)
-        template.querySelector(".chat-view-messages-message-sender").textContent = element.username;
+    // Set username
+    template.querySelector(".chat-view-message-sender").textContent = element.username;
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
@@ -221,13 +238,10 @@ export function createMessage(element, prepend = true) {
     }
 
     // Set the content of the message
-    if (element.userId == 1)
-        template.querySelector(".chat-view-messages-message-overlords-box").innerHTML = parsedContent;
-    else
-        template.querySelector(".chat-view-messages-message-box").innerHTML = parsedContent;
+    template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
-    template.querySelector(".chat-view-messages-message-time-stamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
+    template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
     // Prepend or append the message to the container
@@ -272,9 +286,9 @@ export async function selectConversation(conversationId){
     await loadMessages(conversationId);
 
     // Show the chatElements
-    $id("chat-view-header-subject-container").style.display = "flex";
-    $id("chat-view-header-avatar").style.display = "block";
-    $id("chat-view-text-field-container").style.display = "block";
+    $id("chat-view-details").style.display = "flex";
+    $id("chat-view-details-img").style.display = "flex";
+    //$id("chat-view-text-field-container").style.display = "block";
 
     // Scroll to the bottom
     let scrollContainer = $id("chat-view-messages-container");
@@ -316,8 +330,7 @@ export function loadMessages(conversationId) {
                 setTimeout(() => {
                     spinner.remove();
                     // Update conversation header
-                    //$id("chat-view-header-subject").textContent = "@" + data.conversationName;
-                    $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">@${data.conversationName}</a>`;
+                    $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">${translate("chat", "subject") + "<br>" + data.conversationName}</a>`;
                     $id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + data.conversationAvatar;
                     $id("chat-view-header-avatar").setAttribute("user-id", data.userId);
                     $id("chat-view-header-online-icon").src = data.online ? "../assets/onlineIcon.png" : "../assets/offlineIcon.png";
@@ -347,12 +360,18 @@ export function loadMessages(conversationId) {
 // This deletes all messages and hides the chatElements (right side of the chat view)
 export function resetConversationView(){
     // Hide chatElements
-    $id("chat-view-header-subject-container").style.display = "none";
-    $id("chat-view-header-avatar").style.display = "none";
-    $id("chat-view-text-field-container").style.display = "none";
+// TODO: check if this is right
+    $id("chat-view-details").style.display = "none";
+    $id("chat-view-details-img").style.display = "none";
+    //$id("chat-view-text-field-container").style.display = "none";
+
+    // THe scroll class for the wc can only be added here!
+    let inputField = $id("chat-view-text-field");
+    $addClass(inputField, "barely-a-scroll-class");
+    console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
 
     // Delete all messages
-    let toDelete = $queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-overlords-message-container, .spinner-grow")
+    let toDelete = $queryAll(".chat-view-message-container, .spinner-grow")
     for (let element of toDelete)
         element.remove();
 

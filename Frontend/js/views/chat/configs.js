@@ -1,6 +1,6 @@
 import call from '../../abstracts/call.js';
 import { translate } from '../../locale/locale.js';
-import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages } from './methods.js';
+import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
@@ -106,12 +106,7 @@ export default {
 
             if (event.key === "Escape") {
                 // ESC clears the search bar
-                    searchBar.value = ""; // Clear the search bar
-                    const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
-
-                    conversationCards.forEach((card) => {
-                        card.style.display = "flex"; // Show all cards
-                    });
+                resetFilter();
                 }else if (event.key === "Enter") {
                 // ENTER selects the first visible card
                     const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
@@ -359,10 +354,6 @@ export default {
         async afterDomInsertion() {
             // Set translations
             this.setTranslations();
-
-            // Hide non MVP Elements
-            this.domManip.$id("chat-view-header-invite-for-game-image").style.display = "none";
-            this.domManip.$id("chat-view-header-group-chat-image").style.display = "none";
 
             // Inform WebSocketManager that we are entering the chat
             WebSocketManager.setCurrentRoute("chat");
