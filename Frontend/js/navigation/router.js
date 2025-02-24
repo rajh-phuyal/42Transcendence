@@ -71,13 +71,17 @@ async function router(path, params = null) {
     const userAuthenticated = await $auth.isUserAuthenticated();
     console.log("User authenticated:", userAuthenticated);
 
-    if (userAuthenticated && path === '/auth') {
+	if (path === "/barely-responsive") {
+
+	}
+
+    else if (userAuthenticated && path === '/auth') {
         console.log("Redirecting to home");
         path = '/home';
         params = null;
     }
 
-    if (!userAuthenticated && path !== '/auth') {
+    else if (!userAuthenticated && path !== '/auth') {
         console.log("Redirecting to auth");
         path = '/auth';
         params = null;
@@ -98,6 +102,11 @@ async function router(path, params = null) {
         view: "404",
         requireAuth: false,
     };
+
+	if (route.view == "auth" || route.view == "barely-responsive") {
+		let nav = document.getElementById('navigator');
+		nav.style.display = 'none';
+	}
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
@@ -124,6 +133,7 @@ async function router(path, params = null) {
 
     // set the view name to the container
     viewContainer.dataset.view = route.view;
+
 
     setViewLoading(false);
 }
