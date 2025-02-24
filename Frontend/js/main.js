@@ -94,3 +94,17 @@ document.addEventListener('wheel', function(event) {
         event.preventDefault();
     }
 }, { passive: false });
+
+
+window.onresize = () => {
+	if ((window.outerHeight < 1020 || window.outerWidth < 1020)
+		&& window.location.pathname != "/barely-responsive") {
+		$store.commit("setMarkBook", window.location.pathname);
+		router("/barely-responsive");
+	} else if (window.outerHeight >= 1020 && window.outerWidth >= 1020
+		&& window.location.pathname == "/barely-responsive") {
+			const path = $store.state.markbook;
+			$store.commit("setMarkBook", "");
+			router(path);
+		}
+}

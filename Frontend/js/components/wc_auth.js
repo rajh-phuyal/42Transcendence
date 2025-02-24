@@ -72,11 +72,6 @@ class AuthCard extends HTMLElement {
         return ["login"];
     }
 
-    hideNav(){
-        let nav = document.getElementById('navigator');
-        nav.style.display = 'none';
-    }
-
     showNav(){
         let nav = document.getElementById('navigator');
         nav.style.display = 'flex';
@@ -320,7 +315,6 @@ class AuthCard extends HTMLElement {
 	}
 
     render() {
-        this.hideNav();
         this.shadow.innerHTML = `
             <style>
             .main-container {

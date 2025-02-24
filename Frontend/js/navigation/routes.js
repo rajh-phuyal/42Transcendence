@@ -39,6 +39,11 @@ const routes = [
         view: "404",
         requireAuth: false,
     },
+	{
+		path: "/barely-responsive",
+		view: "barely-responsive",
+		requireAuth: false,
+	}
 ];
 
 export { routes };

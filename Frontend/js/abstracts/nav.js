@@ -68,7 +68,7 @@ export default function $nav(navigationPathParams = null) {
                     ? '/assets/game/icons/music-on.png'
                     : '/assets/game/icons/music-off.png');
             }
-         },
+		},
         { id: 'nav-sound-icon',
             callback: () => {
                 audioPlayer.toggleSound();
