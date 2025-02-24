@@ -141,4 +141,4 @@ def get_random_AI_message():
         _("No lag, no hesitation, just pure gaming focus."),
     ]
 
-    return random.choice(sentences) + " Anyways, create a game I wanna play!"
+    return random.choice(sentences) + "<br> ...Anyways, create a game I wanna play!"

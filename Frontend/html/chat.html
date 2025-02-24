@@ -52,7 +52,6 @@
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
     .header {
         grid-area: header;
-        padding: 0 0 0 0;
         background-color: rgb(0, 0, 0);
     }
 
@@ -84,6 +83,7 @@
         font-size: min(1vw, 15px);
         overflow-y: auto;
         scroll-behavior: smooth;
+        justify-content: flex-start;
     }
 
     .input {
@@ -112,7 +112,7 @@
     /* This is the online state eye image */
     #chat-view-header-online-icon {
         position: absolute;
-        top: 90%;
+        top: 87%;
         left: 50%;
         transform: translate(-50%, -50%);
         height: 15%;
@@ -124,7 +124,7 @@
 <template id="chat-view-conversation-card-template">
     <div class="chat-view-conversation-card">
         <img class="chat-view-conversation-card-avatar" alt="error loading image">
-        <h2 class="chat-view-conversation-card-username"></h2>
+        <h4 class="chat-view-conversation-card-username"></h4>
         <div class="chat-view-conversation-card-unseen-container">
             <img class="chat-view-conversation-card-unseen-image" src="../assets/profileView/unreadMessageIcon.png" alt="error loading image"></img>
             <span class="chat-view-conversation-card-unseen-counter"></span>
@@ -143,7 +143,6 @@
         align-self: center;
         border:  0.2vw solid  black;
         background-color: #EFE7D3;
-
     }
 
     .chat-view-conversation-card-unseen-container {
@@ -153,11 +152,11 @@
         margin-left: auto !important;
         height: 90%;
         width: auto;
-        align-self: flex-end;
+        align-self: center;
     }
 
   .chat-view-conversation-card-unseen-image {
-    height: 70%;
+    height: 90%;
     margin-right: 2% !important;
   }
 
@@ -172,19 +171,6 @@
     font-size: smaller;
   }
 
-
-
-
-  .chat-view-conversation-card-enter {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-
-  .chat-view-conversation-card-enter-active {
-    transform: translateY(0);
-    opacity: 1;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
 
   .chat-view-conversation-card:hover {
     background-color: #DFD7C3;
@@ -205,7 +191,7 @@
     align-self: center;
     border:  0.2vw solid  black;
     background-color: black;
-    color: white !important;
+    color: rgb(255, 255, 255) !important;
   }
 
   .chat-view-conversation-card-highlighted:hover {
@@ -228,7 +214,7 @@
 <!-- ####################################################################### -->
 <template id="chat-view-message-template">
     <div class="chat-view-message-container">
-        <span class="chat-view-message-sender">SENDER</span>
+        <span class="chat-view-message-sender mention-user"></span>
         <div class="chat-view-message-box"></div>
         <span class="chat-view-message-timestamp"></span>
     </div>
@@ -255,15 +241,22 @@
         align-self: center;
         align-items: center;
     }
+    .chat-view-message-sender {
+        align-self: flex-start;
+    }
+    .chat-view-message-timestamp {
+        align-self: flex-end;
+    }
 
     /* CLASSES FOR THE MESSAGE BOX */
     .chat-view-message-box {
         height: auto;
+        min-width: 100%;
         max-width: 100%;
         min-height: initial;
         border:  3px solid  rgba(0, 0, 0, 0.445);
         border-radius: 3px;
-        padding: 1% 2%;
+        padding: 1% 2% 1% 2%;
         box-sizing: border-box;
         word-wrap: break-word;
         overflow: visible;
@@ -287,5 +280,21 @@
         color: yellow;
         gap: 5px;
         white-space: nowrap;
+    }
+</style>
+
+<!-- CMD Help message Template -->
+<template id="chat-view-help-message-template">
+    <div class="chat-view-help-message-container">
+        <div class="chat-view-messages-message-help-box"></div>
+    </div>
+</template>
+<style>
+    .chat-view-help-message-container {
+        margin-top: auto;
+        background: #31332d73; /* Example styling */
+        padding: 10px;
+        width: max-content;
+        border-radius: 3px;
     }
 </style>

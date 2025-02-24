@@ -216,6 +216,7 @@ export function createMessage(element, prepend = true) {
         messageContainer.id = "message-" + element.id;
     // Set username
     template.querySelector(".chat-view-message-sender").textContent = element.username;
+    template.querySelector(".chat-view-message-sender").setAttribute("data-userid", element.userId);
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
@@ -248,8 +249,14 @@ export function createMessage(element, prepend = true) {
     const container = $id("chat-view-messages-container");
     if (prepend)
         container.prepend(template);
-    else
-        container.appendChild(template);
+    else {
+        // If the help message is already there, we need to insert the message before it
+        const lastChild = container.lastElementChild;
+        if (!lastChild || !lastChild.classList.contains("chat-view-help-message-container"))
+            container.appendChild(template);
+        else
+            container.insertBefore(template, lastChild);
+    }
 
     // Update the last message id (to be able to know where the next scroll load should start)
     const lastMessageId = container.getAttribute("last-message-id");
@@ -276,11 +283,11 @@ export async function selectConversation(conversationId){
     // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
     history.pushState({}, "Chat", "/chat?id=" + conversationId);
 
-    // Highlight the selected conversation card
-    highlightConversationCard(conversationId);
-
     // Remove old messages
     resetConversationView();
+
+    // Highlight the selected conversation card
+    highlightConversationCard(conversationId);
 
     // Load the conversation header and messages
     await loadMessages(conversationId);
@@ -288,7 +295,11 @@ export async function selectConversation(conversationId){
     // Show the chatElements
     $id("chat-view-details").style.display = "flex";
     $id("chat-view-details-img").style.display = "flex";
-    //$id("chat-view-text-field-container").style.display = "block";
+    let inputField = $id("chat-view-text-field");
+    inputField.style.display = "flex";
+    console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
+    inputField.setInput($id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft") || "");
+    inputField.focus();
 
     // Scroll to the bottom
     let scrollContainer = $id("chat-view-messages-container");
@@ -334,7 +345,6 @@ export function loadMessages(conversationId) {
                     $id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + data.conversationAvatar;
                     $id("chat-view-header-avatar").setAttribute("user-id", data.userId);
                     $id("chat-view-header-online-icon").src = data.online ? "../assets/onlineIcon.png" : "../assets/offlineIcon.png";
-
                     // Load messages (prepend as they are in reverse order)
                     for (let element of data.data)
                         createMessage(element, true);
@@ -360,21 +370,22 @@ export function loadMessages(conversationId) {
 // This deletes all messages and hides the chatElements (right side of the chat view)
 export function resetConversationView(){
     // Hide chatElements
-// TODO: check if this is right
     $id("chat-view-details").style.display = "none";
     $id("chat-view-details-img").style.display = "none";
-    //$id("chat-view-text-field-container").style.display = "none";
-
-    // THe scroll class for the wc can only be added here!
+    // Store input as attribute
     let inputField = $id("chat-view-text-field");
-    $addClass(inputField, "barely-a-scroll-class");
-    console.log("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-
+    let inputValue = inputField.getInput().trim();
+    if (inputValue) {
+        const highlightedCards = $queryAll(".chat-view-conversation-card-highlighted");
+        if (highlightedCards && highlightedCards.length > 0)
+            highlightedCards[0].setAttribute("message-draft", inputValue);
+    }
+    inputField.setEnabled(false);
+    inputField.style.display = "none";
     // Delete all messages
     let toDelete = $queryAll(".chat-view-message-container, .spinner-grow")
     for (let element of toDelete)
         element.remove();
-
     // Unset Attributes
     $id("chat-view-messages-container").setAttribute("last-message-id", 0);
     $id("chat-view-header-avatar").setAttribute("user-id", undefined);

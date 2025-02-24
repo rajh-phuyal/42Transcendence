@@ -107,22 +107,22 @@ export default {
             if (event.key === "Escape") {
                 // ESC clears the search bar
                 resetFilter();
-                }else if (event.key === "Enter") {
-                // ENTER selects the first visible card
-                    const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
-                        .filter((card) => card.style.display !== "none"); // Only include visible cards
+            } else if (event.key === "Enter") {
+            // ENTER selects the first visible card
+                const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
+                    .filter((card) => card.style.display !== "none"); // Only include visible cards
 
-                    if (visibleCards.length > 0) {
-                        visibleCards[0].click(); // Simulate a click on the first filtered card
-                        searchBar.value = ""; // Clear the search bar
+                if (visibleCards.length > 0) {
+                    visibleCards[0].click(); // Simulate a click on the first filtered card
+                    searchBar.value = ""; // Clear the search bar
 
-                        // Show all cards again
-                        const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
-                        allCards.forEach((card) => {
-                            card.style.display = "flex";
-                        });
-                    }
+                    // Show all cards again
+                    const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+                    allCards.forEach((card) => {
+                        card.style.display = "flex";
+                    });
                 }
+            }
         },
 
         // This is the Event Listener for the mentions (@user, #game, #tournament)

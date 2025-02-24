@@ -1,5 +1,5 @@
 import { createMessage, createHelpMessage, updateHelpMessage } from '../views/chat/methods.js';
-import { $id } from '../abstracts/dollars.js';
+import { $id, $queryAll } from '../abstracts/dollars.js';
 import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
 import router from '../navigation/router.js';
@@ -16,12 +16,36 @@ class TextField extends HTMLElement {
         return ["placeholder", "width", "height", "clear", "conversation-id"];
     }
 
+    focus() {
+        this.shadow.getElementById("text-field").focus();
+    }
+
+    getInput() {
+        return this.shadow.getElementById("text-field").value;
+    }
+
+    setEnabled(value) {
+        let sendButton = this.shadow.getElementById("textFieldButton");
+        if (value){
+            sendButton.disabled = false;
+        } else {
+            sendButton.disabled = true;
+        }
+    }
+
+    setInput(value) {
+        this.shadow.getElementById("text-field").value = value;
+        if(value.trim() !== ''){
+            this.setEnabled(true);
+        }
+    }
+
     connectedCallback() {
         this.render();
         const inputElement = this.shadow.getElementById("textFieldButton");
         inputElement.addEventListener('click', this.buttonclick.bind(this));
         const inputElement2 = this.shadow.getElementById("text-field");
-        inputElement2.addEventListener('keypress', this.handleKeyPress.bind(this));
+        inputElement2.addEventListener('keydown', this.handleKeyPress.bind(this));
         inputElement2.addEventListener('input', this.handleMessageInput.bind(this));
     }
 
@@ -32,9 +56,11 @@ class TextField extends HTMLElement {
             return;
         // Reset text box & hide the help message when the user sends a message
         inputElement.value = '';
-        let sendButton = this.shadow.getElementById("textFieldButton");
-        sendButton.disabled = true;
+        this.setEnabled(false);
         updateHelpMessage();
+        // Reset the template
+        const highlightedCards = $queryAll(".chat-view-conversation-card-highlighted");
+        highlightedCards[0].removeAttribute("message-draft");
         // Send the message to the server
         WebSocketManager.sendMessage({messageType: "chat", conversationId: this.conversationId, content: value});
         // If the message is a cmd we need to reload the view.
@@ -50,6 +76,10 @@ class TextField extends HTMLElement {
     }
 
     handleKeyPress(event){
+        if(event.key === 'Escape') {
+            $id("chat-view-searchbar").focus();
+            return;
+        }
         if (event.key !== 'Enter')
             return ;
         if (event.shiftKey)
@@ -91,14 +121,14 @@ class TextField extends HTMLElement {
     render() {
         this.shadow.innerHTML = `
             <div id="main-container">
-                <textarea id="text-field" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
+                <textarea id="text-field" class="barely-a-scroll-class" type="search" maxlength="250" placeholder="${translate("chat", "textAreaPlaceHolder")}"></textarea>
                 <button id="textFieldButton">${translate("chat", "sendButton")}</button>
             </div>
             <style>
                 div {
                     color: black;
                     font-weight: 600;
-                    width: 100% !important;
+                    width: 99% !important;
                     height: 100% !important;
                     align-items: center;
                     border:  0.5vh solid  black;
@@ -132,11 +162,11 @@ class TextField extends HTMLElement {
                 }
 
                 button {
-                    margin: 0 0.2vw 0 0;
+                    margin: 0 0.5vw 0 0.5vw;
                     width: 12% !important;
                     height: 90% !important;
                     font-family: 'Courier';
-                    font-size: ${this.fontSize}vh;
+                    font-size: min(1vw, 15px);
                     vertical-align: middle;
                     text-align: center;
                     align-items: justify;
@@ -144,7 +174,7 @@ class TextField extends HTMLElement {
                     color: #FFFCE6;
                     background-color: #000000;
                     cursor: pointer;
-                    padding: 2px 4px !important;
+                    /* margin: 20px 40px !important; */
                     border: 2px solid #968503;
                 }
 
@@ -163,6 +193,18 @@ class TextField extends HTMLElement {
                     display: flex;
                     flex-direction: row;
                 }
+
+                /* Since the shadow dom can't read from main.css i need to copy this here: */
+                .barely-a-scroll-class::-webkit-scrollbar {
+                    width: 5px;
+                }
+                .barely-a-scroll-class::-webkit-scrollbar-thumb {
+                    background-color: #727272;
+                }
+                .barely-a-scroll-class::-webkit-scrollbar-track {
+                    background-color: black;
+                }
+
             </style>
         `;
     }
