@@ -44,19 +44,19 @@ export default {
 
         buttonSettings: {
             friend: {
-                path: "../../../../assets/profileView/friendsIcon.png",
+                path: "../../../../assets/icons/icon_rel_yes.png",
                 index: 0,
             },
             noFriend: {
-                path: "../../../../assets/profileView/firendRequestIcon.png",
+                path: "../../../../assets/icons/icon_rel_no.png",
                 index: 1,
             },
             requestReceived: {
-                path: "../../../../assets/profileView/receivedFriendRequest.png",
+                path: "../../../../assets/icons/icon_rel_received.png",
                 index: 2,
             },
             requestSent: {
-                path: "../../../../assets/profileView/sentFriendRequest.png",
+                path: "../../../../assets/icons/icon_rel_send.png",
                 index: 3,
             },
 
@@ -74,7 +74,7 @@ export default {
                 this.buttonTopLeft.method = this.friendshipMethod;
                 this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
                 if (this.result.relationship.isBlocking) {
-                    this.buttonTopLeft.image = "../../../../assets/profileView/blockedUserIcon.png";
+                    this.buttonTopLeft.image = "../../../../assets/icons/icon_rel_block.png";
                 }
             }
 
@@ -82,23 +82,23 @@ export default {
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
                 this.buttonTopMiddle.method = this.profileEditMethod;
-                this.buttonTopMiddle.image = "../../../../assets/profileView/penIcon.png";
+                this.buttonTopMiddle.image = "../../../../assets/icons/icon_edit.png";
             }
             else {
                 if (this.result.newMessage)
-                    this.buttonTopMiddle.image = "../../../../assets/profileView/unreadMessageIcon.png";
+                    this.buttonTopMiddle.image = "../../../../assets/icons/icon_msg_unread.png";
                 else
-                    this.buttonTopMiddle.image = "../../../../assets/profileView/sendMessageIcon.png";
+                    this.buttonTopMiddle.image = "../../../../assets/icons/icon_msg.png";
                     this.buttonTopMiddle.method = this.messageMethod;
             }
         },
         setupTopRightButton() {
             if (this.result.relationship.state == "yourself") {
-                this.buttonTopRight.image = "../../../../assets/profileView/logoutIcon.png";
+                this.buttonTopRight.image = "../../../../assets/icons/icon_logout.png";
                 this.buttonTopRight.method = this.logoutMethod;
             }
             else if (this.result.relationship.state == "friend" && !this.result.relationship.isBlocking && !this.result.relationship.isBlocked) {
-                this.buttonTopRight.image = "../../../../assets/profileView/invitePongIcon.png";
+                this.buttonTopRight.image = "../../../../assets/icons/icon_game_invite.png";
                 this.buttonTopRight.method = this.openInviteForGameModal;
             }
         },
@@ -116,9 +116,9 @@ export default {
             else
                 element.style.display = "none";
             element = this.domManip.$id("button-bottom-left");
-            element.src = "../../../../assets/profileView/gamingHistoryIcon.png";
+            element.src = "../../../../assets/icons/icon_game_history.png";
             element = this.domManip.$id("button-bottom-right");
-            element.src = "../../../../assets/profileView/FriendsListIcon.png";
+            element.src = "../../../../assets/icons/icon_rel_list.png";
         },
 
         populateButtons(){
@@ -154,7 +154,6 @@ export default {
 
         profileEditMethod() {
             this.hideElement("edit-profile-modal-avatar-change");
-            this.hideElement("edit-profile-modal-password-change");
             this.showElement("edit-profile-modal-form");
 
             this.domManip.$id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
@@ -166,12 +165,6 @@ export default {
             let modalElement = this.domManip.$id("edit-profile-modal");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
-        },
-
-        changePasswordMethod() {
-            this.hideElement("edit-profile-modal-form");
-            this.showElement("edit-profile-modal-password-change");
-            this.domManip.$id("edit-profile-modal").focus();
         },
 
         changeAvatarMethod() {
@@ -282,22 +275,6 @@ export default {
 
                 reader.readAsDataURL(file); // Read the file as a data URL
             }
-        },
-
-        submitNewPassword() {
-
-            const oldPassword = this.domManip.$id("edit-profile-modal-password-change-input-old-password").value;
-            const newPassword = this.domManip.$id("edit-profile-modal-password-change-input-new-password").value;
-            const repeatPassword = this.domManip.$id("edit-profile-modal-password-change-input-repeat-password").value;
-
-            console.log("new password:", oldPassword);
-            console.log("new password:", newPassword);
-            console.log("rep password:", repeatPassword);
-
-            if (newPassword !== repeatPassword)
-                console.log("Error: Passwords dont match");
-            else
-                console.log("Success! Password changed!!");
         },
 
         submitForm() {
@@ -532,8 +509,6 @@ export default {
             this.domManip.$off(element, "click", this.buttonTopMiddle.method);
             element = this.domManip.$id("button-top-right");
             this.domManip.$off(element, "click", this.buttonTopRight.method);
-            element = this.domManip.$id("edit-profile-modal-form-change-password-button");
-            this.domManip.$off(element, "click", this.changePasswordMethod);
             element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
             this.domManip.$off(element, "click", this.changeAvatarMethod);
             element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
@@ -544,8 +519,6 @@ export default {
             this.domManip.$off(element, "click", this.submitAvatar);
             element = this.domManip.$id("edit-profile-modal-form-submit-button");
             this.domManip.$off(element, "click", this.submitForm);
-            element = this.domManip.$id("edit-profile-modal-password-change-submit-button");
-            this.domManip.$off(element, "click", this.submitNewPassword);
             element = this.domManip.$id("friendship-modal-friendship-primary-button");
             this.domManip.$off(element, "click", this.changeFrendshipPrimaryMethod);
             element = this.domManip.$class("invite-for-game-modal-maps-button");
@@ -565,8 +538,8 @@ export default {
             this.domManip.$off(element, "click", this.createConversation);
             element = this.domManip.$id("button-bottom-right");
             this.domManip.$off(element, "click", this.openFriendList);
-            element = this.domManip.$id("friends-list-modal-search-bar-button");
-            this.domManip.$off(element, "click", this.searchFriend);
+            element = this.domManip.$id("friends-list-modal-search-bar");
+            this.domManip.$off(element, "keydown", this.searchFriend);
             this.removeFriendsList();
         },
 
@@ -600,9 +573,7 @@ export default {
                     this.domManip.$on(element, "click", this.buttonTopRight.method);
                 }
 
-                let element = this.domManip.$id("edit-profile-modal-form-change-password-button");
-                this.domManip.$on(element, "click", this.changePasswordMethod);
-                element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
+                let element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
                 this.domManip.$on(element, "click", this.changeAvatarMethod);
                 element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
                 this.domManip.$on(element, "click", this.openFileExplorer);
@@ -612,8 +583,6 @@ export default {
                 this.domManip.$on(element, "click", this.submitAvatar);
                 element = this.domManip.$id("edit-profile-modal-form-submit-button");
                 this.domManip.$on(element, "click", this.submitForm);
-                element = this.domManip.$id("edit-profile-modal-password-change-submit-button");
-                this.domManip.$on(element, "click", this.submitNewPassword);
                 element = this.domManip.$id("friendship-modal-friendship-primary-button");
                 this.domManip.$on(element, "click", this.changeFrendshipPrimaryMethod);
                 element = this.domManip.$class("invite-for-game-modal-maps-button");
@@ -633,10 +602,10 @@ export default {
                 this.domManip.$on(element, "click", this.createConversation);
                 element = this.domManip.$id("button-bottom-right");
                 this.domManip.$on(element, "click", this.openFriendList);
-                element = this.domManip.$id("friends-list-modal-search-bar-button");
-                this.domManip.$on(element, "click", this.searchFriend);
+                element = this.domManip.$id("friends-list-modal-search-bar");
+                this.domManip.$on(element, "keydown", this.searchFriend);
             })
-            // on error?
+            // TODO: on error?
         },
     }
 }

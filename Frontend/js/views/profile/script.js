@@ -11,9 +11,9 @@ function populateUserInfo(res) {
     let lastSeenImg =$id("last-seen-image");
 
     if (res.online)
-        lastSeenImg.src = "../../../../assets/onlineIcon.png";
+        lastSeenImg.src = "../../../../assets/icons/icon_online.png";
     else
-        lastSeenImg.src = "../../../../assets/offlineIcon.png";
+        lastSeenImg.src = "../../../../assets/icons/icon_offline.png";
     lastSeenText.textContent = translate("profile", "lastSeen") + res.lastLogin;
     let language =$id("language");
     language.textContent = translate("profile", "language") + res.language;
@@ -37,9 +37,10 @@ function populateProgress(res, identity) {
     let progressBar =$id(id);
     progressBar.style.width =  percentageValue + '%';
 
-    id = identity + "percentage";
-    let percentage =$id(id);
-    percentage.textContent = percentageValue + "%";
+    // TODO: check if still needed
+    //id = identity + "percentage";
+    //let percentage =$id(id);
+    //percentage.textContent = percentageValue + "%";
 }
 
 function populateInfoAndStats(res) {
