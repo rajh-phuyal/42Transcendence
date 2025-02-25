@@ -20,6 +20,10 @@
                 </div>
                 <div id="chat-view-messages-container" class="grid-cell default-grid-area msgs barely-a-scroll-class"></div>
                 <text-field id="chat-view-text-field" class="grid-cell default-grid-area input" width="100" height="100" clear="true"></text-field>
+                <div id="chat-view-eye-container" class="grid-cell default-grid-area eye">
+                    <img id="chat-view-eye-background" src="../assets/chat/eye.png" alt="Main Image" style="display: block;">
+                    <img id="chat-view-eye-pupil" src="../assets/chat/ball.png" alt="Overlay Image" style="display: block;">
+                </div>
             </div>
         </div>
     </div>
@@ -31,21 +35,21 @@
 <style>
     /* The basic valus of the grid are already set in main.css */
     .view-overlay-grid {
-        grid-template-columns: 1.5% 22.7% 2% 1fr 7% 7.5% 1.5%;
+        grid-template-columns: 1.5% 22.7% 0.6% 1.4% 1fr 7% 7.5% 1.5%;
         grid-template-rows: 2.2% 6% 1.25% 5.5% 1.25% 3.5% 2.7% 41% 17% 2.5% 1fr 3%;
         grid-template-areas:
-            ".       .       .       .      .       .             ."
-            ".       header  .       .      details details-img   ."
-            ".       .       .       .      details details-img   ."
-            ".       search  .       .      details details-img   ."
-            ".       .  .       .      details details-img   ."
-            ".       convs       .       .      details details-img   ."
-            ".       convs       .       .      .       .             ."
-            ".       convs   .       msgs   msgs    msgs          ."
-            ".       .       .       msgs   msgs    msgs          ."
-            ".       .       .       .      .       .             ."
-            ".       .       .       input  input   input          ."
-            ".       .       .       .      .       .             ."
+            ".       .       .      .       .      .       .             ."
+            ".       header  .      .       .      details details-img   ."
+            ".       .       .      .       .      details details-img   ."
+            ".       search  .      .       .      details details-img   ."
+            ".       .  .    .      .      details details-img   ."
+            ".       convs   .      .       .      details details-img   ."
+            ".       convs   .      .       .      .       .             ."
+            ".       convs   .      .       msgs   msgs    msgs          ."
+            "eye     eye     eye    .       msgs   msgs    msgs          ."
+            "eye     eye     eye    .       .      .       .             ."
+            "eye     eye     eye    .       input  input   input          ."
+            "eye     eye     eye    .       .      .       .             ."
     }
 
 
@@ -98,6 +102,30 @@
         margin-left: 2.5%;
         background-color: black;
         color: white;
+    }
+
+    .eye {
+        display: flex;
+        position: relative;
+        grid-area: eye;
+        background-color: #f0f0f0;
+    }
+
+    #chat-view-eye-background {
+        display: block !important;
+        height: 100%;
+        width: 100%;
+    }
+
+    #chat-view-eye-pupil {
+        display: block !important;
+        position: absolute;
+        height: 50%;
+        width: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
     }
 
     /* For the image at the top right */

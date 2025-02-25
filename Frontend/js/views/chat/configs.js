@@ -159,6 +159,30 @@ export default {
             }
         },
 
+        eyeListener(event){
+            let backgroundImage = this.domManip.$id("chat-view-eye-background");
+            let pupil = this.domManip.$id("chat-view-eye-pupil");
+            const rect = backgroundImage.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const relativeX = Math.round(event.clientX - centerX);
+            const relativeY = Math.round(event.clientY - centerY);
+            const maxMoveX = backgroundImage.width * 0.15;
+            const maxMoveY = backgroundImage.height * 0.12;
+            let percentageMoveX = 0
+            let percentageMoveY = 0
+            if (relativeX > 0)
+                percentageMoveX = (relativeX / (window.innerWidth - centerX));
+            else
+                percentageMoveX = (relativeX / centerX);
+            if (relativeY > 0)
+                percentageMoveY = (relativeY / (window.innerHeight - centerY));
+            else
+                percentageMoveY = (relativeY / centerY);
+            const moveX = percentageMoveX * maxMoveX;
+            const moveY = percentageMoveY * maxMoveY;
+            pupil.style.transform = `translate(-50%, -50%) translate(${moveX}px, ${moveY}px)`;
+        },
         // ADDIND / REMOVING EVENT LISTENERS
         // -------------------------------------------
         // Adding / Removing Event Listeners for the infinite scroll
@@ -265,6 +289,18 @@ export default {
             }
         },
 
+        initEyeListener(init = true) {
+            if (init)
+                this.domManip.$on(document, "mousemove", this.eyeListener);
+            else {
+                if(this.eyeListener)
+                    this.domManip.$off(document, "mousemove", this.eyeListener);
+                else
+                    console.log("eyeListener is not defined, cannot remove listener.");
+                return ;
+            }
+        },
+
         // This will be called only once by afterDomInsertion to initalize the cards via REST API
         async loadConversations() {
             const conversationsContainer = this.domManip.$id('chat-view-conversations-container');
@@ -337,6 +373,7 @@ export default {
             this.initAvatarClick(false);
             this.initSearch(false);
             this.initMentionClick(false);
+            this.initEyeListener(false);
 
             // Inform WebSocketManager that we are leaving the chat
             WebSocketManager.setCurrentRoute(undefined);
@@ -388,6 +425,7 @@ export default {
             this.initAvatarClick();
             this.initSearch()
             this.initMentionClick();
+            this.initEyeListener();
         },
     },
 };
