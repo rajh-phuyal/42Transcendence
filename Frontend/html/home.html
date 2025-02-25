@@ -1,6 +1,16 @@
-<div id="home-view">
+<div class="view-base" id="home-view">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img id="home-view-image" src="../assets/backgrounds/home.png" alt="Background Image" class="view-background-image">
+            <div class="view-overlay-grid">
+                <canvas id="home-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div  -->
   <!-- Canvas -->
-  <canvas id="home-canvas"></canvas>
 
   <!-- Modal -->
   <div class="modal fade custom-modal" id="home-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -145,7 +155,7 @@
       </div>
     </div>
   </div>
-</div>
+<!-- </div> -->
 
 <style>
   .modal {
@@ -564,12 +574,12 @@
     color: white;
   }
 
-  #home-canvas {
+/*   #home-canvas {
     width: 100%;
     height: 100%;
     background-color: black;
-    background-image: url('../assets/homeView/corkboard 1.png');
-  }
+    background-image: url('../assets/backgrounds/home.png');
+  } */
 
   #home-view {
     width: 100%;

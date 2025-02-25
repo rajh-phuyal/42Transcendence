@@ -2,7 +2,7 @@ import {imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
 import { $id } from '../../abstracts/dollars.js';
 
-/* 
+/*
 *************************************************************
 ******************* DRAWING FUNCTIONS ***********************
 *************************************************************
@@ -16,7 +16,7 @@ function drawImg(image) {
         let image = canvasData.image;
 
         imageObject.src = image.src;
-      
+
         imageObject.onload = function () {
             let context = canvasData.context;
             let shadowColor;
@@ -32,17 +32,17 @@ function drawImg(image) {
             context.shadowOffsetX = image.shadow;
             context.shadowOffsetY = image.shadow;
             context.drawImage(imageObject, image.x, image.y, image.width, image.height);
-            
+
             context.shadowColor = shadowColor;
             context.shadowOffsetX = -image.shadow;
             context.shadowOffsetY = -image.shadow;
-            
+
             context.drawImage(imageObject, image.x, image.y, image.width, image.height);
-            
+
             // Reset shadow offsets
             context.shadowOffsetX = 0;
             context.shadowOffsetY = 0;
-            
+
             resolve();
         };
 
@@ -63,7 +63,7 @@ async function drawImageBook(){
 function drawLabel(label){
 
     let context = canvasData.context;
-    
+
     // Draw the rectangle
     context.beginPath();
     context.rect(label.x, label.y, label.width, label.height);
@@ -81,7 +81,7 @@ function drawLabel(label){
     context.fillText(label.text, label.x + (label.width / 2), label.y + (label.height / 2))
     context.closePath();
 
-    
+
 }
 
 // draw a line in the canvas
@@ -112,12 +112,12 @@ export async function buildCanvas(){
 
     for (const element of labels)
         drawLabel(element);
-    
+
     for (const element of lines)
         drawLine(element);
 }
 
-async function redraw(image)
+export async function redraw(image)
 {
     await drawImg(image);
     for (let element of image.lines)
@@ -127,12 +127,12 @@ async function redraw(image)
 
 }
 
-/* 
+/*
 ************************************************************
 ************************ EVENTS ****************************
 ************************************************************
 */
-   
+
 // check if the mouse mouse coordinates match the images for the imageBook
 function isContained(x, y, img){
     return (x >= img.x && x <= (img.x + img.width) && y >= img.y && y <= (img.y + img.height))
@@ -154,15 +154,15 @@ export async function isHovering(event){
     // Adjust the mouse position relative to the canvas
     let mouseX = (event.clientX - rect.left) * (canvas.width / canvas.clientWidth);
     let mouseY = (event.clientY - rect.top) * (canvas.height / canvas.clientHeight);
-    
+
     // the state variable stores the id of the element currently highlighted
     let state = canvasData.highlitedImageID;
 
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
-    
+
     if ((!foundElement && state == 0) || (foundElement && foundElement.id == state))
         return ;
-    
+
     if (foundElement)
         foundElement.highleted = true;
 
@@ -188,22 +188,22 @@ export async function isHovering(event){
 
 // deals with the clicking events
 export function mouseClick(event){
-    
+
     let modalElement = $id('home-modal');
-    
+
     if (modalElement.classList.contains('show'))
         return ;
 
 	let mouseX = event.clientX;
     let mouseY = event.clientY;
-    
+
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
-    
+
     if (!foundElement)
         foundElement = backgroundImageBook.find(element => isContained(mouseX, mouseY, element));
     else
         foundElement.callback();
-    
+
     if (!foundElement)
         return ;
 	modalElement.classList.remove('custom-modal');

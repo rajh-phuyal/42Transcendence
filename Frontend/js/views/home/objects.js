@@ -1,5 +1,5 @@
 export const imageDir = '../../../assets/homeView/';
-import { AIModalCallback, battleModalCallback, 
+import { AIModalCallback, battleModalCallback,
     tournamentModalCallback, chatRoomModalCallback,
     leaderboardModalCallback } from './callbacks.js';
 import { translate } from '../../locale/locale.js';
@@ -161,7 +161,6 @@ export const backgroundImageBook = [
         height: 200,
         shadow: 3,
     },
-    
 ]
 
 // Array containing the objects for the labels
@@ -245,7 +244,7 @@ export const lines = [
     },
     {
         //index: 4
-        // bigfoot card to bigfoot foot print polaroid 
+        // bigfoot card to bigfoot foot print polaroid
         x1: imageBook[2].x + 50,
         y1: imageBook[2].y + 290,
         x2: backgroundImageBook[1].x + 60,
@@ -253,7 +252,7 @@ export const lines = [
     },
     {
         //index: 5
-        // bigfoot card to bigfoot polaroid 
+        // bigfoot card to bigfoot polaroid
         x1: imageBook[2].x + 50,
         y1: imageBook[2].y + 290,
         x2: backgroundImageBook[5].x + 60,
@@ -261,7 +260,7 @@ export const lines = [
     },
     {
         //index: 6
-        // bigfoot foot print polaroid  to bigfoot polaroid 
+        // bigfoot foot print polaroid  to bigfoot polaroid
         x1: backgroundImageBook[1].x + 60,
         y1: backgroundImageBook[1].y + 10,
         x2: backgroundImageBook[5].x + 60,
@@ -269,7 +268,7 @@ export const lines = [
     },
     {
         //index: 7
-        // power plant polaroid  to toxic waste polaroid 
+        // power plant polaroid  to toxic waste polaroid
         x1: backgroundImageBook[6].x + 60,
         y1: backgroundImageBook[6].y + 10,
         x2: backgroundImageBook[7].x + 60,
