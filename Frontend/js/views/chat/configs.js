@@ -297,8 +297,8 @@ export default {
 
             if (!init)
             {
-                console.log ("remooooooooooove");
                 document.removeEventListener("mousemove", this.eyeListener);
+                return ;
             }
         },
 
