@@ -167,8 +167,8 @@ export default {
             const centerY = rect.top + rect.height / 2;
             const relativeX = Math.round(event.clientX - centerX);
             const relativeY = Math.round(event.clientY - centerY);
-            const maxMoveX = backgroundImage.width * 0.15;
-            const maxMoveY = backgroundImage.height * 0.1;
+            const maxMoveX = backgroundImage.width * 0.25;
+            const maxMoveY = backgroundImage.height * 0.2;
             let percentageMoveX = 0
             let percentageMoveY = 0
             if (relativeX > 0)

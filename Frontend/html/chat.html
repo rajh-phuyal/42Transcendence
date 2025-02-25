@@ -108,7 +108,7 @@
         display: flex;
         position: relative;
         grid-area: eye;
-        background-color: #f0f0f0;
+        background-color: rgba(255, 255, 255, 0)
     }
 
     /* The next two styles are for the moving eye */
@@ -116,6 +116,7 @@
         display: block !important;
         height: 100%;
         width: 100%;
+        z-index: 2;
     }
 
     #chat-view-eye-pupil {
@@ -126,7 +127,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 2;
+        z-index: 1;
     }
 
     /* For the image at the top right */
