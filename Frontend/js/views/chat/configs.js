@@ -168,7 +168,7 @@ export default {
             const relativeX = Math.round(event.clientX - centerX);
             const relativeY = Math.round(event.clientY - centerY);
             const maxMoveX = backgroundImage.width * 0.15;
-            const maxMoveY = backgroundImage.height * 0.12;
+            const maxMoveY = backgroundImage.height * 0.1;
             let percentageMoveX = 0
             let percentageMoveY = 0
             if (relativeX > 0)
@@ -290,14 +290,15 @@ export default {
         },
 
         initEyeListener(init = true) {
-            if (init)
-                this.domManip.$on(document, "mousemove", this.eyeListener);
-            else {
-                if(this.eyeListener)
-                    this.domManip.$off(document, "mousemove", this.eyeListener);
-                else
-                    console.log("eyeListener is not defined, cannot remove listener.");
+            if (init) {
+                document.addEventListener("mousemove", this.eyeListener);
                 return ;
+            }
+
+            if (!init)
+            {
+                console.log ("remooooooooooove");
+                document.removeEventListener("mousemove", this.eyeListener);
             }
         },
 

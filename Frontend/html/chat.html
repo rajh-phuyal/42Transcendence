@@ -111,6 +111,7 @@
         background-color: #f0f0f0;
     }
 
+    /* The next two styles are for the moving eye */
     #chat-view-eye-background {
         display: block !important;
         height: 100%;
@@ -172,6 +173,35 @@
         border:  0.2vw solid  black;
         background-color: #EFE7D3;
     }
+        .chat-view-conversation-card:hover {
+        background-color: #DFD7C3;
+        cursor: pointer;
+    }
+    .chat-view-conversation-card:active {
+        background-color: #CFC7B3;
+        cursor: pointer;
+    }
+
+    .chat-view-conversation-card-highlighted {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 95%;
+        height: 17%;
+        margin: 1% 0% !important;
+        align-self: center;
+        border:  0.2vw solid  black;
+        background-color: black;
+        color: rgb(255, 255, 255) !important;
+    }
+    .chat-view-conversation-card-highlighted:hover {
+        background-color: #101010;
+        cursor: pointer;
+    }
+    .chat-view-conversation-card-highlighted:active {
+        background-color: #202020;
+        cursor: pointer;
+    }
 
     .chat-view-conversation-card-unseen-container {
         display: flex;
@@ -183,60 +213,26 @@
         align-self: center;
     }
 
-  .chat-view-conversation-card-unseen-image {
-    height: 90%;
-    margin-right: 2% !important;
-  }
+    .chat-view-conversation-card-unseen-image {
+        height: 90%;
+        margin-right: 2% !important;
+    }
 
-  .chat-view-conversation-card-unseen-counter {
-    /* border:  1px solid  black; */
-    border-radius: 100%;
-    background-color: #101010;
-    margin-bottom: 30% !important;
-    padding: 5% 10%;
-    color: white;
-    height: 50%;
-    font-size: smaller;
-  }
+    .chat-view-conversation-card-unseen-counter {
+        border-radius: 100%;
+        background-color: #101010;
+        margin-bottom: 30% !important;
+        padding: 5% 10%;
+        color: white;
+        height: 50%;
+        font-size: smaller;
+    }
 
-
-  .chat-view-conversation-card:hover {
-    background-color: #DFD7C3;
-    cursor: pointer;
-  }
-  .chat-view-conversation-card:active {
-    background-color: #CFC7B3;
-    cursor: pointer;
-  }
-
-  .chat-view-conversation-card-highlighted {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 95%;
-    height: 17%;
-    margin: 1% 0% !important;
-    align-self: center;
-    border:  0.2vw solid  black;
-    background-color: black;
-    color: rgb(255, 255, 255) !important;
-  }
-
-  .chat-view-conversation-card-highlighted:hover {
-    background-color: #101010;
-    cursor: pointer;
-  }
-  .chat-view-conversation-card-highlighted:active {
-    background-color: #202020;
-    cursor: pointer;
-  }
-
-  .chat-view-conversation-card-avatar {
-    height: 90%;
-    margin: 0% 4% 0% 2% !important;
-  }
+    .chat-view-conversation-card-avatar {
+        height: 90%;
+        margin: 0% 4% 0% 2% !important;
+    }
 </style>
-
 
 <!--                       MESSAGE TEMPLATE                                  -->
 <!-- ####################################################################### -->
