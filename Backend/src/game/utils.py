@@ -141,7 +141,7 @@ def delete_or_quit_game(user_id, game_id):
             game.delete()
 
     # ONGOING GAME - QUIT
-    elif game.state == Game.GameState.ONGOING or Game.GameState.PAUSED or Game.GameState.COUNTDOWN:
+    elif game.state == Game.GameState.ONGOING or game.state == Game.GameState.PAUSED or game.state == Game.GameState.COUNTDOWN:
         # ONGOING GAME - don't delete the game, just quit it
         gq = "**GQ,{user_id},{game}**".format(user_id=user_id, game=game.as_clickable())
         create_and_send_overloards_pm(user_id, opponent, gq)
