@@ -1,12 +1,12 @@
 # Basics
-import logging, asyncio, json
-from datetime import datetime, timedelta
+import logging, asyncio, json, math
+from datetime import datetime, timedelta, timezone
 # Django
 from django.utils.translation import gettext as _
 # Core
 from core.decorators import barely_handle_ws_exceptions
 # Game stuff
-from game.constants import GAME_FPS
+from game.constants import GAME_FPS, GAME_COUNTDOWN_MAX
 from game.models import Game
 from game.utils import is_left_player, get_user_of_game
 from game.utils_ws import update_game_state
@@ -133,7 +133,7 @@ class GameConsumer(CustomWebSocketLogic):
     async def start_the_game(self):
         # Start / Continue the loop
         # 1. Set start time and send it to channel
-        start_time = datetime.now() + timedelta(seconds=5)
+        start_time = datetime.now(timezone.utc) + timedelta(seconds=GAME_COUNTDOWN_MAX)
         start_time_formated = start_time.isoformat()
         logging.info(f"Game will start at: {start_time_formated}")
         await send_ws_game_players_ready_msg(self.game_id, True, True, start_time_formated)
@@ -141,9 +141,9 @@ class GameConsumer(CustomWebSocketLogic):
         await update_game_state(self.game_id, Game.GameState.COUNTDOWN)
         await send_ws_game_data_msg(self.game_id)
         # 2. Calculate the delay so the game loop start not before the start time
-        delay = (start_time - datetime.now()).total_seconds()
+        delay = (start_time - datetime.now(timezone.utc)).total_seconds()
         if delay > 0:
-            await asyncio.sleep(delay)  # Wait until the start time
+            await asyncio.sleep(math.floor(delay))  # Wait until the start time
         # 3. Start the game loop
         GameConsumer.game_loops[self.game_id] = asyncio.create_task(GameConsumer.run_game_loop(self.game_id))
 

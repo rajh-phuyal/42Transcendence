@@ -1,3 +1,4 @@
+GAME_COUNTDOWN_MAX = 8 # Notice that the fe needs to have the countdown images for this to work
 GAME_FPS = 15
 RECONNECT_TIMEOUT = 2 # Minutes
 INIT_BALL_SPEED = 1.5
