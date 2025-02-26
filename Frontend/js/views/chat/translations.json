@@ -23,6 +23,14 @@
         "uk-UA": "Тема: ",
         "ne-NP": "विषय: "
     },
+    "lastSeenHeader": {
+        "en-US": "last seen: ",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
     "textAreaPlaceHolder": {
         "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / #",
         "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / #",

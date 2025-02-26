@@ -1,6 +1,6 @@
 import call from '../../abstracts/call.js';
 import { translate } from '../../locale/locale.js';
-import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages } from './methods.js';
+import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
@@ -106,28 +106,23 @@ export default {
 
             if (event.key === "Escape") {
                 // ESC clears the search bar
+                resetFilter();
+            } else if (event.key === "Enter") {
+            // ENTER selects the first visible card
+                const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
+                    .filter((card) => card.style.display !== "none"); // Only include visible cards
+
+                if (visibleCards.length > 0) {
+                    visibleCards[0].click(); // Simulate a click on the first filtered card
                     searchBar.value = ""; // Clear the search bar
-                    const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
 
-                    conversationCards.forEach((card) => {
-                        card.style.display = "flex"; // Show all cards
+                    // Show all cards again
+                    const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+                    allCards.forEach((card) => {
+                        card.style.display = "flex";
                     });
-                }else if (event.key === "Enter") {
-                // ENTER selects the first visible card
-                    const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
-                        .filter((card) => card.style.display !== "none"); // Only include visible cards
-
-                    if (visibleCards.length > 0) {
-                        visibleCards[0].click(); // Simulate a click on the first filtered card
-                        searchBar.value = ""; // Clear the search bar
-
-                        // Show all cards again
-                        const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
-                        allCards.forEach((card) => {
-                            card.style.display = "flex";
-                        });
-                    }
                 }
+            }
         },
 
         // This is the Event Listener for the mentions (@user, #game, #tournament)
@@ -164,6 +159,30 @@ export default {
             }
         },
 
+        eyeListener(event){
+            let backgroundImage = this.domManip.$id("chat-view-eye-background");
+            let pupil = this.domManip.$id("chat-view-eye-pupil");
+            const rect = backgroundImage.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const relativeX = Math.round(event.clientX - centerX);
+            const relativeY = Math.round(event.clientY - centerY);
+            const maxMoveX = backgroundImage.width * 0.25;
+            const maxMoveY = backgroundImage.height * 0.2;
+            let percentageMoveX = 0
+            let percentageMoveY = 0
+            if (relativeX > 0)
+                percentageMoveX = (relativeX / (window.innerWidth - centerX));
+            else
+                percentageMoveX = (relativeX / centerX);
+            if (relativeY > 0)
+                percentageMoveY = (relativeY / (window.innerHeight - centerY));
+            else
+                percentageMoveY = (relativeY / centerY);
+            const moveX = percentageMoveX * maxMoveX;
+            const moveY = percentageMoveY * maxMoveY;
+            pupil.style.transform = `translate(-50%, -50%) translate(${moveX}px, ${moveY}px)`;
+        },
         // ADDIND / REMOVING EVENT LISTENERS
         // -------------------------------------------
         // Adding / Removing Event Listeners for the infinite scroll
@@ -270,6 +289,19 @@ export default {
             }
         },
 
+        initEyeListener(init = true) {
+            if (init) {
+                document.addEventListener("mousemove", this.eyeListener);
+                return ;
+            }
+
+            if (!init)
+            {
+                document.removeEventListener("mousemove", this.eyeListener);
+                return ;
+            }
+        },
+
         // This will be called only once by afterDomInsertion to initalize the cards via REST API
         async loadConversations() {
             const conversationsContainer = this.domManip.$id('chat-view-conversations-container');
@@ -342,6 +374,7 @@ export default {
             this.initAvatarClick(false);
             this.initSearch(false);
             this.initMentionClick(false);
+            this.initEyeListener(false);
 
             // Inform WebSocketManager that we are leaving the chat
             WebSocketManager.setCurrentRoute(undefined);
@@ -359,10 +392,6 @@ export default {
         async afterDomInsertion() {
             // Set translations
             this.setTranslations();
-
-            // Hide non MVP Elements
-            this.domManip.$id("chat-view-header-invite-for-game-image").style.display = "none";
-            this.domManip.$id("chat-view-header-group-chat-image").style.display = "none";
 
             // Inform WebSocketManager that we are entering the chat
             WebSocketManager.setCurrentRoute("chat");
@@ -397,6 +426,7 @@ export default {
             this.initAvatarClick();
             this.initSearch()
             this.initMentionClick();
+            this.initEyeListener();
         },
     },
 };

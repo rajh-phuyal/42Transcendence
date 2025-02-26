@@ -205,6 +205,10 @@ class WebSocketManager {
         this.currentRoute = route;
     }
 
+    getCurrentRoute() {
+        return this.currentRoute;
+    }
+
     reconnect() {
         this.disconnect();
         this.connect();
