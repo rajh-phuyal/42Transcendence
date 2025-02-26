@@ -2,7 +2,7 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { changeGameState, updateReadyStateNodes } from './methods.js';
+import { changeGameState, drawPlayersState } from './methods.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
 import { gameObject } from './objects.js';
 import { endGameLoop } from './loop.js';
@@ -10,8 +10,6 @@ import { endGameLoop } from './loop.js';
 export default {
     attributes: {
         gameId: null,
-        mapId: undefined,
-
         maps: {
             1: "ufo",
             2: "lizard-people",
@@ -43,20 +41,18 @@ export default {
         menuKeysCallback(event) {
             switch (event.key) {
                 case " ":
+                    // If game is finished the space key will create a new game
+                    if (gameObject.state === "finished")
+                       this.playAgainCallback();
                     // Only if no connection exists and
                     // game state is pending, ongoing or paused, open the WS connection
                     if (!gameObject.wsConnection && gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused" || gameObject.state === "countdown") {
                         try {
-                            this.domManip.$id("game-view-middle-side-container-top-text").innerText="";
                             gameObject.playerLeft.state = "waiting";
                             gameObject.playerRight.state = "waiting";
-                            updateReadyStateNodes();
+                            drawPlayersState();
                             WebSocketManagerGame.connect(this.gameId);
                             gameObject.wsConnection = true;
-                            // TODO #304 this should be done by the animaion
-                            const gameViewImageContainer = this.domManip.$id("game-view-image-container");
-                            gameViewImageContainer.style.backgroundImage = "none";
-                            gameViewImageContainer.style.width= "100%";
                         }
                         catch (error) {
                             this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
@@ -70,10 +66,39 @@ export default {
                     return;
             }
         },
+
+        mentionClickCallback(event) {
+            const mention = event.target.closest(".mention-user");
+            const tournament = event.target.closest(".mention-tournament");
+
+            // Check if a mention USER was clicked
+            if (mention) {
+                const userId = mention.getAttribute("data-userid");
+                if (userId)
+                    router(`/profile`, { id: userId });
+                else
+                    console.warn("Mention clicked but no user ID found.");
+            }
+
+            // Check if a mention GAME was clicked
+            // TODO: we need to display the tournament name somewehre
+            if (game) {
+                const gameId = game.getAttribute("data-gameid");
+                if(gameId)
+                    router(`/game`, { id: gameId });
+                else
+                    console.warn("Mention clicked but no game ID found.");
+            }
+        },
+
         initListeners(init = true) {
             const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
             const buttonQuitGame = this.domManip.$id("button-quit-game");
             const buttonPlayAgain = this.domManip.$id("button-play-again");
+            const leftUsername = this.domManip.$id("player-left-username");
+            const leftAvatar = this.domManip.$id("player-left-avatar");
+            const rightUsername = this.domManip.$id("player-right-username");
+            const rightAvatar = this.domManip.$id("player-right-avatar");
 
             if (init) {
                 // TODO: translation for buttons should be done in with the abstraction tool TBC
@@ -87,6 +112,10 @@ export default {
                 this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
                 this.domManip.$on(buttonPlayAgain, "click", this.playAgainCallback);
                 this.domManip.$on(document, 'keydown', this.menuKeysCallback);
+                this.domManip.$on(leftUsername, 'click', this.mentionClickCallback);
+                this.domManip.$on(leftAvatar, 'click', this.mentionClickCallback);
+                this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
+                this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
                 return ;
             }
 
@@ -101,6 +130,14 @@ export default {
                         this.domManip.$off(buttonPlayAgain, "click");
                     if (document.eventListeners)
                         this.domManip.$on(document, 'keydown', this.menuKeysCallback);
+                    if (leftUsername.eventListeners)
+                        this.domManip.$on(leftUsername, 'click', this.mentionClickCallback);
+                    if (leftAvatar.eventListeners)
+                        this.domManip.$on(leftAvatar, 'click', this.mentionClickCallback);
+                    if (rightUsername.eventListeners)
+                        this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
+                    if (rightAvatar.eventListeners)
+                        this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
                 }
             }
         },
@@ -112,21 +149,24 @@ export default {
                     console.log("data:", data);
 
                     // Set user cards
-                    this.domManip.$id("player-left-username").innerText = "@" + data.playerLeft.username;
+                    this.domManip.$id("player-left-username").innerText = data.playerLeft.username;
+                    this.domManip.$id("player-left-username").setAttribute("data-userid", data.playerLeft.userId);
                     this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/' + data.playerLeft.avatar
-                    this.domManip.$id("player-right-username").innerText = "@" + data.playerRight.username;
+                    this.domManip.$id("player-left-avatar").setAttribute("data-userid", data.playerLeft.userId);
+                    this.domManip.$id("player-right-username").innerText = data.playerRight.username;
+                    this.domManip.$id("player-right-username").setAttribute("data-userid", data.playerRight.userId);
                     this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/' + data.playerRight.avatar
+                    this.domManip.$id("player-right-avatar").setAttribute("data-userid", data.playerRight.userId);
 
                     // Set game data
+                    gameObject.clientIsPlayer = data.gameData.clientIsPlayer;
                     gameObject.playerLeft.points = data.playerLeft.points;
                     gameObject.playerLeft.result = data.playerLeft.result;
                     gameObject.playerRight.points = data.playerRight.points;
                     gameObject.playerRight.result = data.playerRight.result;
-                    gameObject.mapId = data.gameData.mapNumber;
-                    this.mapId = data.gameData.mapNumber;
+                    gameObject.mapName = this.maps[data.gameData.mapNumber];
 
                     // I send the ready state also via REST NOW
-                    // TODO: but i guess this could go in a function thath is also called by the WSManager
                     gameObject.playerRight.state = data.playerRight.ready ? "ready" : undefined;
                     gameObject.playerLeft.state = data.playerLeft.ready ? "ready" : undefined;
 
@@ -137,12 +177,8 @@ export default {
                         router('/404', {msg: msg});
                 });
         },
+
         initObjects() {
-            // TODO: the game state should be set by the WSManager
-            // Not sure if this TODO is correct.
-            // THe initial load will only be done here
-            // If a game is finished we will never opene a connection just show this default stuff
-            // but with an updated score!
             gameObject.gameId = this.gameId;
             gameObject.wsConnection = false;
             gameObject.state = undefined;
@@ -172,21 +208,7 @@ export default {
             gameObject.playerRight.powerupFast = "unavailable";
 			gameObject.ball.posX = 50;
 			gameObject.ball.posY = 50;
-            // Before loading sed the game avatars to default avatar:
-            this.domManip.$id("player-left-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
-            this.domManip.$id("player-right-avatar").src = window.origin + '/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png';
-
         },
-
-        setMapImage() {
-            const mapName = this.maps[this.mapId];
-            const gameImage = this.domManip.$id("game-view-map-image").children[0];
-            const gameField = this.domManip.$id("game-field");
-            const filePath = window.location.origin + '/assets/game/maps/' + mapName + '.png';
-            gameImage.src = filePath;
-            gameImage.style.display = "block";
-            gameField.style.display = "block";
-        }
     },
 
     hooks: {
@@ -220,9 +242,6 @@ export default {
             changeGameState(undefined);
             // REST call to load the game details
             await this.loadDetails()
-            this.setMapImage();
-            // Show filed TODO: this should not happen right away!
-            toggleGamefieldVisible(true);
 		}
     }
 }

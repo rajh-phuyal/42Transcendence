@@ -31,6 +31,22 @@
         "uk-UA": "",
         "ne-NP": ""
     },
+    "spectator-connect": {
+        "en-US": "You are not part of this game!\nPress space to watch it live",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "spectator-waiting": {
+        "en-US": "Connected\nWaiting for players",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
     "ready": {
         "en-US": "READY",
         "pt-PT": "",
@@ -40,7 +56,7 @@
         "ne-NP": ""
     },
     "finished": {
-        "en-US": "Game is over",
+        "en-US": "Game is over\nPress space to create a new game with the same settings",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",

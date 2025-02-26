@@ -71,8 +71,8 @@ class BarelyAButton extends HTMLElement
                     align-items: justify;
                     font-weight: 700;
                     color: #FFFCE6;
-                    height: ${this.height}vh;
-                    width: ${this.width}vw;
+                    height: ${this.height}%;
+                    width: ${this.width}%;
                     background-color: ${this.color};
                     cursor: pointer;
                     padding: 2px 4px;

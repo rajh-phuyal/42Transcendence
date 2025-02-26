@@ -3,9 +3,49 @@
 <div class="view-base">
     <div class="view-container">
         <div class="view-image-wrapper">
-            <img src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image">
+            <!-- <img src="../assets/game/maps/lizard-people.png" alt="Background Image" class="view-background-image"> -->
+            <img id="view-game-background" src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image">
             <div class="view-overlay-grid">
-                <div id="SOME-ID" class="grid-cell default-grid-area AREA">
+                <!-- LEFT PLAYER -->
+                <h2 id="player-left-username" class="grid-cell default-grid-area lun user-card username mention-user">@test</h2>
+                <div                          class="grid-cell default-grid-area lav user-card">
+                    <img id="player-left-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png">
+                </div>
+                <div class="grid-cell default-grid-area lst user-card user-state">
+                    <h4  id="player-left-state"           class="user-state"></h4>
+                    <div id="player-left-state-spinner"   class="spinner-grow" style="align-self: center;" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div id="player-left-powerups-status" class="player-powerup-status-container" >
+                        <img id="player-left-powerups-slow"   class="player-powerup-status" src=""></img>
+                        <img id="player-left-powerups-fast"   class="player-powerup-status" src=""></img>
+                        <img id="player-left-powerups-big"    class="player-powerup-status" src=""></img>
+                    </div>
+                </div>
+                <!-- RIGHT PLAYER -->
+                <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user">@test</h2>
+                <div                           class="grid-cell default-grid-area rav user-card">
+                    <img id="player-right-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/54c455d5-761b-46a2-80a2-7a557d9ec618.png">
+                </div>
+                <div class="grid-cell default-grid-area rst user-card user-state">
+                    <h4  id="player-right-state"           class="user-state"></h4>
+                    <div id="player-right-state-spinner"   class="spinner-grow" style="align-self: center;" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div id="player-right-powerups-status" class="player-powerup-status-container" >
+                        <img id="player-right-powerups-slow"   class="player-powerup-status" src=""></img>
+                        <img id="player-right-powerups-fast"   class="player-powerup-status" src=""></img>
+                        <img id="player-right-powerups-big"    class="player-powerup-status" src=""></img>
+                    </div>
+                </div>
+                <!-- GAME FIELD -->
+                <div id="game-view-middle-side-container-top-text"          class="grid-cell default-grid-area field">test</div>
+                <canvas id="game-field"                                     class="grid-cell default-grid-area field"></canvas>
+                <img id="game-countdown-image"                              class="grid-cell default-grid-area field countdown-image" src="../assets/game/countdown/1.png" alt="Background Image" style="display: none;">
+
+                <barely-a-button id="button-play-again"  fontsize="0.05"  width="100" heigth="100"  class="grid-cell default-grid-area btnpa"   buttonclass="rect-button"></barely-a-button>
+                <barely-a-button id="button-leave-lobby" fontsize="0.05"  width="100" heigth="100"  class="grid-cell default-grid-area btnl"    buttonclass="rect-button"></barely-a-button>
+                <barely-a-button id="button-quit-game"   fontsize="0.05"  width="100" heigth="100"  class="grid-cell default-grid-area btnq"    buttonclass="rect-button"></barely-a-button>
             </div>
         </div>
     </div>
@@ -17,26 +57,173 @@
 <style>
     /* The basic valus of the grid are already set in main.css */
     .view-overlay-grid {
-        grid-template-columns: 1.5% 22.7% 0.6% 1.4% 1fr 7% 7.5% 1.5%;
-        grid-template-rows: 2.2% 6% 1.25% 5.5% 1.25% 3.5% 2.7% 41% 17% 2.5% 1fr 3%;
+        grid-template-columns: repeat(auto-fill, 2.5%);
+        grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
-            ".       .       .      .       .      .       .    ."
-            ".       AREA    .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
-            ".       .       .      .       .      .       .    ."
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
+            ".      lun    lun    lun    lun    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      run    run    run    run    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
+            ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
+            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
+            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
     }
 
 
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
-    .AREA {
-        grid-area: AREA;
+    .lun {
+        grid-area: lun;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-top: 0.3vw solid rgb(143, 148, 112);
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
     }
+    .lav {
+        grid-area: lav;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .lst {
+        grid-area: lst;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+        border-bottom: 0.3vw solid rgb(143, 148, 112);
+    }
+
+    .run {
+        grid-area: run;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-top: 0.3vw solid rgb(143, 148, 112);
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .rav {
+        grid-area: rav;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .rst {
+        grid-area: rst;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+        border-bottom: 0.3vw solid rgb(143, 148, 112);
+    }
+
+    /* BUTTONS */
+    .btnl {
+        grid-area: btnl;
+        height: 100%;
+        width: 100%;
+    }
+    .btnq {
+        grid-area: btnq;
+    }
+    .btnpa {
+        grid-area: btnpa;
+    }
+
+    /* FIELD */
+    .field {
+        grid-area: field;
+        background-color: #3f323f00;
+        border: 1px solid black;
+        justify-content: center;
+        align-items: center;
+        border: none;
+    }
+
+    /* COSTOM STYLE FOR ELEMENTS BELOW */
+
+    #game-view-middle-side-container-top-text{
+        width: 100%;
+        height: auto;
+        background-color: rgba(194, 182, 182, 0.815);
+        color: rgb(0, 0, 0);
+        text-align: center;
+    }
+
+    .user-card {
+        background-color: #f8ebd7;
+        color: black !important;
+        text-align: center;
+    }
+    .user-card-winner {
+        border-top: 0.3vw solid rgb(5, 92, 24);
+        border-left: 0.3vw solid rgb(5, 92, 24);
+        border-right: 0.3vw solid rgb(5, 92, 24);
+        background-color: rgba(40, 235, 82, 0.733);
+    }
+
+    .user-card-looser {
+        border-top: 0.3vw solid rgb(119, 15, 15);
+        border-left: 0.3vw solid rgb(119, 15, 15);
+        border-right: 0.3vw solid rgb(119, 15, 15);
+        background-color: rgb(199, 71, 71);
+    }
+
+    .username {
+        font-size: 1.3vw;
+        padding-top: 5%;
+        align-self: center;
+    }
+    .user-image {
+        width: 80%;
+        border-radius: 3px;
+        object-fit: contain;
+        align-self: center;
+    }
+
+    .countdown-image {
+        height: 50%;
+        object-fit: contain;
+    }
+
+    .player-powerup-status-container {
+    display: flex;
+    flex: row;
+    width: 80%;
+    height: 80%;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    background-color: rgba(90, 90, 70, 0.2);
+    border-radius: 5px;
+}
+
+.player-powerup-status {
+    margin: 5px;
+    border-radius: 5px;
+    width: 30%
+}
+
+
+
+
+
+
+
+
+
+
+
+
 </style>

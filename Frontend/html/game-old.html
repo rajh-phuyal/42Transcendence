@@ -65,29 +65,8 @@
 
 <style>
     /* Main game view container */
-#game-view {
-    display: flex;
-    justify-content: center; /* Centers the image horizontally */
-    align-items: center; /* Centers everything vertically */
-    width: 100%;
-    height: calc(100vh - 100px); /* Adjust for navbar */
-    background-color: rgb(255, 255, 255); /* Fallback background */
-    position: relative;
-}
 
 /* Image container with correct aspect ratio */
-#game-view-image-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 80%;
-    height: calc(100vh - 100px);
-    aspect-ratio: 16 / 9; /* Ensures the image maintains ratio */
-    background: url('../assets/game/lobby.png') no-repeat center center;
-    background-size: 100% 100%;
-}
 
 /* Ensure the sections are on top of the image */
 #game-view-left-side-container,
@@ -102,29 +81,6 @@
     position: relative;
 }
 
-#game-view-middle-side-container-top-text{
-    /*Background color for text-align: ;*/
-    background-color: rgba(194, 182, 182, 0.815);
-    /*Text color*/
-    color: rgb(0, 0, 0);
-}
-/* Sidebar Widths */
-#game-view-left-side-container   {
-	background-color: rgba(0, 0, 0, 1);
-	width: 20%;
-	max-width: 200px;
-}
-
-#game-view-middle-side-container {
-	/* background-color: rgba(0, 255, 0, 0.3); */
-	width: 60%;
-}
-
-#game-view-right-side-container  {
-	background-color: rgba(0, 0, 0, 1);
-	width: 20%;
-	max-width: 200px;
-}
 
 
 /* Top Containers Take Most of the Space */
@@ -164,39 +120,15 @@
 }
 
 /* User Card Styling */
-.user-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgb(63, 62, 18);
-    color: white;
-    border: 2px solid white;
-    padding: 10px;
-    border-radius: 8px;
-    width: 50%;
-    text-align: center;
-}
 
-.user-card-winner {
-    border: 2px solid rgb(5, 92, 24);
-}
 
-.user-card-looser {
-    border: 2px solid rgb(119, 15, 15);
-}
+
 
 /* Username Styling */
-.username {
-    font-size: 18px;
-}
+
 
 /* User Image Styling */
-.user-image {
-    width: 80%;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 2px solid white;
-}
+
 
 .player-powerup-status {
     display: flex;
@@ -224,24 +156,6 @@
 }
 
 /* Game Field Styling */
-
-#game-view-map-image {
-	position: absolute;
-	width: 65%;
-	height: 90%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-#game-view-map-image > img {
-	display: none;
-	height: 100%;
-	max-width: 1080px;
-	aspect-ratio: 16 / 9;
-	background-size: 100% 100%;
-	position: relative;
-}
 
 
 #game-field {

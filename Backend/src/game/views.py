@@ -62,22 +62,23 @@ class LobbyView(BaseAuthenticatedView):
             game = Game.objects.get(id=id)
         except Game.DoesNotExist:
             return error_response(_("Game not found"))
-        user_member = GameMember.objects.filter(game=game, user=user).first()
-        if not user_member:
-            return error_response(_("You are not a member of this game"))
-        opponent_member = GameMember.objects.filter(game=game).exclude(user=user).first()
-        if not opponent_member:
-            return error_response(_("Opponent not found"))
+        member1 = GameMember.objects.filter(game=game).first()
+        member2 = GameMember.objects.filter(game=game).exclude(user=member1.user).first()
+        if not member1 or not member2:
+            return error_response(_("Game members not found"))
+        client_is_player = False
+        if member1.user.id == user.id or member2.user.id == user.id:
+            client_is_player = True
         tournament_name = None
         if (game.tournament):
             tournament_name = game.tournament.name
         # User with lower id will be playerRight
-        if user_member.user.id < opponent_member.user.id:
-            memberLeft = opponent_member
-            memberRight = user_member
+        if member1.user.id < member2.user.id:
+            memberLeft = member2
+            memberRight = member1
         else:
-            memberLeft = user_member
-            memberRight = opponent_member
+            memberLeft = member1
+            memberRight = member2
         response_message = {
             'playerLeft':{
                 'userId': memberLeft.user.id,
@@ -99,7 +100,8 @@ class LobbyView(BaseAuthenticatedView):
                 'state': game.state,
                 'mapNumber': game.map_number,
                 'tournamentId': game.tournament_id,
-                'tournamentName': tournament_name
+                'tournamentName': tournament_name,
+                'clientIsPlayer': client_is_player,
             },
         }
         return success_response(_('Lobby details'), **response_message)

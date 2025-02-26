@@ -226,7 +226,7 @@ h5 {
 .mention-user {
     color: rgb(159, 144, 144) !important;
     cursor: pointer !important;
-    text-decoration: underline !important;
+    /* text-decoration: underline !important; */
     display: inline-flex;
     white-space: nowrap;
 }
@@ -236,7 +236,7 @@ h5 {
 .mention-game {
     color: rgb(196, 147, 101) !important;
     cursor: pointer !important;
-    text-decoration: underline !important;
+    /* text-decoration: underline !important; */
     display: inline;
     white-space: nowrap;
 }
@@ -246,7 +246,7 @@ h5 {
 .mention-tournament {
     color: rgb(139, 69, 16) !important;
     cursor: pointer !important;
-    text-decoration: underline !important;
+    /* text-decoration: underline !important; */
     display: inline;
     white-space: nowrap;
 }

@@ -1,7 +1,7 @@
 import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import { keyPressCallback, keyReleaseCallback } from './callbacks.js';
-import { showPowerupStatus, sendPlayerInput, changeGameState } from './methods.js';
+import { drawPlayersState, sendPlayerInput, changeGameState } from './methods.js';
 import { gameRender } from './render.js';
 
 function gameLoop(currentTime) {
@@ -9,7 +9,7 @@ function gameLoop(currentTime) {
         gameObject.lastFrameTime = currentTime;
         if (gameObject.state === "ongoing")
             sendPlayerInput();
-            showPowerupStatus(true);
+        drawPlayersState();
         gameRender();
         // Check if the game is  still ongoing
         if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
@@ -29,7 +29,7 @@ export function startGameLoop() {
     $on(document, 'keyup', keyReleaseCallback);
     gameObject.lastFrameTime = performance.now();
     gameObject.animationId = requestAnimationFrame(gameLoop);
-    showPowerupStatus(true);
+    drawPlayersState();
 }
 
 export function endGameLoop() {
@@ -48,10 +48,10 @@ export const animateImage = (
     timingFunction = "ease-in-out"
 ) => {
     const image = $id(id);
-    //image.style.animationDuration = duration;
-    //image.style.animationName = animationName;
-    //image.style.animationIterationCount = iterationCount;
-    //image.style.animationTimingFunction = timingFunction;
+    image.style.animationDuration = duration;
+    image.style.animationName = animationName;
+    image.style.animationIterationCount = iterationCount;
+    image.style.animationTimingFunction = timingFunction;
 };
 
 export const removeImageAnimation = (id) => {

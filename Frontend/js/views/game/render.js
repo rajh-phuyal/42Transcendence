@@ -1,8 +1,7 @@
 import { gameObject } from './objects.js';
 import { $id } from '../../abstracts/dollars.js';
-import { percentageToPixels, showPowerupStatus } from './methods.js';
 import { audioPlayer } from '../../abstracts/audio.js';
-import { updateReadyStateNodes } from './methods.js';
+import { percentageToPixels } from './methods.js';
 
 // ############## VARIABLES ##############
 const borders = {
@@ -293,17 +292,35 @@ export function gameRender () {
 }
 
 export function toggleGamefieldVisible(visible) {
-    // TODO:
+    const gameField = $id("game-field");
+    let imgPath = "";
+
+
+
     if(visible) {
+        // Load the background map image
+        imgPath = window.location.origin + '/assets/game/maps/' + gameObject.mapName + '.png';
+        // Show the field canvas
+        gameField.style.display = "block";
+
+        // TODO: do we still need this?
         // Show the game field
-        const gameField = $id("game-field");
         const ctx = gameField.getContext('2d');
         ctx.clearRect(0, 0, gameField.width, gameField.height);
         gameRender(gameField, ctx);
+
+
         // Play the game music
     } else {
-        console.log("TODO");
-        // Hide the game field
-        // Play the lobby music
+        // Load the background lobby image
+        imgPath = window.location.origin + '/assets/backgrounds/game.png';
+        // Hide the field canvas
+        gameField.style.display = "none";
+
+
+
     }
+    // TODO: maybe here we can make a smooth transition
+    const gameImage = $id("view-game-background");
+    gameImage.src = imgPath;
 }

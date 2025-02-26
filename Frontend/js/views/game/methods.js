@@ -5,8 +5,8 @@ import { animateImage, removeImageAnimation, showGame } from './loop.js';
 import { endGameLoop } from './loop.js';
 import { startGameLoop} from './loop.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { gameRender } from './render.js';
 import { audioPlayer } from '../../abstracts/audio.js';
+import { toggleGamefieldVisible, gameRender } from './render.js';
 
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
@@ -20,70 +20,158 @@ export const percentageToPixels = (side, percentage) => {
 
 export function changeGameState(state) {
     console.log("changeGameState", state);
+    const lastState = gameObject.state;
     gameObject.state = state;
     switch (state) {
         case undefined:
-            $id("button-play-again").style.display = "none";
+            //Audio
             audioPlayer.play(0); // Lobby music
-            showPowerupStatus(false);
-            $id("button-quit-game").style.display = "none";
+            //Buttons
+            $id("button-play-again").style.display = "none";
             break;
+
         case "pending":
-            $id("button-play-again").style.display = "none";
+            //Audio
             audioPlayer.play(0); // Lobby music
-            showPowerupStatus(false);
-            $id("button-quit-game").style.display = "block";
-            if (gameObject.wsConnection)
-                $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
-            else
-                $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
-            break;
-        case "countdown":
+            // Buttons
             $id("button-play-again").style.display = "none";
-            audioPlayer.play(gameObject.mapId);
-            audioPlayer.playSound("unpause");
-            showPowerupStatus(true);
-            $id("game-view-middle-side-container-top-text").innerText = "TODO: COUNTDOWN 5,4,3,2,1,0";
-            break;
-        case "ongoing":
-            $id("button-play-again").style.display = "none";
-            audioPlayer.playSound("beep2");
-            $id("game-view-middle-side-container-top-text").innerText ="";
-            $id("button-quit-game").style.display = "none";
-            break;
-        case "paused":
-            //showGame(false); TODO: when this function works we should use it here
-            $id("button-play-again").style.display = "none";
-            audioPlayer.play(0); // Lobby music
-            showPowerupStatus(false);
-            $id("button-quit-game").style.display = "none";
-            if (gameObject.wsConnection){
-                $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
-                audioPlayer.playSound("pause");
+            // Main Info text
+            if (gameObject.wsConnection) {
+                if(gameObject.clientIsPlayer)
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
+                else
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-waiting");
+            } else {
+                if(gameObject.clientIsPlayer)
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
+                else
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-connect");
             }
-            else
-                $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
             break;
-        case "finished":
-            //showGame(false);  TODO: when this function works we should use it here
-            $id("button-play-again").style.display = "block";
-            audioPlayer.playSound("gameover");
+
+        case "countdown":
+            // Audio
+            audioPlayer.play(gameObject.mapId);
+            if (lastState === "paused")
+                audioPlayer.playSound("unpause");
+            // Buttons
+            $id("button-play-again").style.display = "none";
+            // Show game field
+            toggleGamefieldVisible(true);
+            // Update player states
+            gameObject.playerLeft.state = "ongoing";
+            gameObject.playerRight.state = "ongoing";
+            break;
+
+        case "ongoing":
+            // Buttons
+            $id("button-play-again").style.display = "none";
+            // Update player states
+            gameObject.playerLeft.state = "ongoing";
+            gameObject.playerRight.state = "ongoing";
+            break;
+
+        case "paused":
+            // Audio
             audioPlayer.play(0); // Lobby music
-            showPowerupStatus(false);
-            $id("button-quit-game").style.display = "none";
-            $id("game-view-middle-side-container-top-text").innerText = "";
+            if (lastState === "ongoing")
+                audioPlayer.playSound("pause");
+            // Buttons
+            $id("button-play-again").style.display = "none";
+            // Hide game field
+            toggleGamefieldVisible(false);
+            // Main Info text
+            if (gameObject.wsConnection){
+                if(gameObject.clientIsPlayer)
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
+                else
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-waiting");
+            } else {
+                if(gameObject.clientIsPlayer)
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
+                else
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-connect");
+            }
+            break;
+
+        case "finished":
+            // Audio
+            audioPlayer.play(0); // Lobby music
+            if (lastState === "ongoing")
+                audioPlayer.playSound("gameover");
+            // Buttons
+            $id("button-play-again").style.display = "block";
+            // Hide game field
+            toggleGamefieldVisible(false);
+            // Main Info text
             $id("game-view-middle-side-container-top-text").innerText = translate("game", "finished");
+            // Update the player states
             gameObject.playerLeft.state = "finished"
             gameObject.playerRight.state = "finished"
             break;
+
         default:
             console.warn("FE doen't know what to do with this state:", state);
     }
-    updateReadyStateNodes();
+    drawPlayersState();
 }
 
-export function updateReadyStateNodes() {
-    //console.log("Updating ready state nodes with:", gameObject.playerLeft.state, gameObject.playerRight.state);
+function drawPlayerState(playerSide) {
+    // Side should be "playerLeft" or "playerRight"
+    // state can be "waiting", "ready", "ongoing", "finished"
+    let playerSideDash = "player-left";
+    if (playerSide === "playerRight")
+        playerSideDash = "player-right";
+    if (gameObject[playerSide].state === undefined) {
+        // Hide everything
+        $id(playerSideDash + "-state").innerHTML = "";
+        $id(playerSideDash + "-state-spinner").style.display = "none";
+        $id(playerSideDash + "-powerups-status").style.display = "none";
+    } else if (gameObject[playerSide].state === "waiting") {
+        // Show spinner; Hide message and powerup states
+        $id(playerSideDash + "-state").innerHTML = "";
+        $id(playerSideDash + "-state-spinner").style.display = "block";
+        $id(playerSideDash + "-powerups-status").style.display = "none";
+    } else if (gameObject[playerSide].state === "ready") {
+        // Show message; Hide spinner and powerup states
+        $id(playerSideDash + "-state").innerText = translate("game", "ready");
+        $id(playerSideDash + "-state-spinner").style.display = "none";
+        $id(playerSideDash + "-powerups-status").style.display = "none";
+    } else if (gameObject[playerSide].state === "ongoing") {
+        // Show powerup states; Hide message and spinner
+        $id(playerSideDash + "-state").innerHTML = "";
+        $id(playerSideDash + "-state-spinner").style.display = "none";
+        $id(playerSideDash + "-powerups-status").style.display = "flex";
+        // Set the powerup images
+        const imgPathPre = `${window.origin}/assets/game/icons/powerup-`;
+        console.warn("path:", imgPathPre + gameObject[playerSide].powerupBig + "-big.png");
+        $id(playerSideDash + "-powerups-big").src = imgPathPre + gameObject[playerSide].powerupBig + "-big.png";
+        $id(playerSideDash + "-powerups-slow").src = imgPathPre + gameObject[playerSide].powerupSlow + "-slow.png";
+        $id(playerSideDash + "-powerups-fast").src = imgPathPre + gameObject[playerSide].powerupFast + "-fast.png";
+    } else if (gameObject[playerSide].state === "finished") {
+        // Show score; Hide spinner and powerup states
+        $id(playerSideDash + "-state").innerText = gameObject[playerSide].points;
+        $id(playerSideDash + "-state-spinner").style.display = "none";
+        $id(playerSideDash + "-powerups-status").style.display = "none";
+        // Also add the winner / looser class
+        if (gameObject[playerSide].result === "won") {
+            $id(playerSideDash + "-username").classList.remove("user-card-looser");
+            $id(playerSideDash + "-username").classList.add("user-card-winner");
+        }
+        else {
+            $id(playerSideDash + "-username").classList.remove("user-card-winner");
+            $id(playerSideDash + "-username").classList.add("user-card-looser");
+        }
+    }
+}
+
+export function drawPlayersState() {
+    drawPlayerState("playerLeft");
+    drawPlayerState("playerRight");
+}
+
+/* export function updateReadyStateNodes() {
+     //console.log("Updating ready state nodes with:", gameObject.playerLeft.state, gameObject.playerRight.state);
         // Hide the ready message and the spinner (for finished, ongoing games)
         if (gameObject.playerLeft.state === undefined){
             $id("player-left-state").innerHTML = "";
@@ -135,28 +223,9 @@ export function updateReadyStateNodes() {
                 $id("user-card-player-right").classList.remove("user-card-winner");
                 $id("user-card-player-right").classList.add("user-card-looser");
             }
+
         }
-}
-
-// available / using / used / unavailable
-function setPowerupImg(element, powerupName, state) {
-    let filename = `${window.origin}/assets/game/icons/powerup-` + state + `-` + powerupName + `.png`;
-        element.src = filename;
-}
-
-export function showPowerupStatus(visible) {
-    let elements = $class('player-powerup-status')
-    for (let element of elements)
-        element.style.display = visible ? element.style.display = "flex" : element.style.display = "none";
-    if (!visible)
-        return;
-    setPowerupImg($id('player-left-powerups-big'), 'big',  gameObject.playerLeft.powerupBig);
-    setPowerupImg($id('player-left-powerups-slow'), 'slow',  gameObject.playerLeft.powerupSlow);
-    setPowerupImg($id('player-left-powerups-fast'), 'fast',  gameObject.playerLeft.powerupFast);
-    setPowerupImg($id('player-right-powerups-big'), 'big',  gameObject.playerRight.powerupBig);
-    setPowerupImg($id('player-right-powerups-slow'), 'slow',  gameObject.playerRight.powerupSlow);
-    setPowerupImg($id('player-right-powerups-fast'), 'fast',  gameObject.playerRight.powerupFast);
-}
+} */
 
 export function updateReadyStatefromWS(readyStateObject) {
     let gameCountdownIntervalId = undefined;
@@ -170,31 +239,33 @@ export function updateReadyStatefromWS(readyStateObject) {
     gameObject.playerLeft.state = readyStateObject.playerLeft ? "ready" : "waiting";
     gameObject.playerRight.state = readyStateObject.playerRight ? "ready" : "waiting";
     //console.log("updateReadyState", gameObject.playerLeft.state, gameObject.playerRight.state);
-    updateReadyStateNodes();
+    drawPlayersState();
 
     if (readyStateObject.startTime) {
         animateImage("game-countdown-image", "pulsate", "1s", "infinite");
         changeGameState("countdown");
         startGameLoop();
+
         gameCountdownIntervalId = setInterval((startTime) => {
-            let diff = Math.floor((startTime - new Date()) / 1000);
+            const now = new Date();
+            let diff = Math.floor((startTime - now) / 1000);
+            console.log("diff", diff);
+            gameCountdownImage(diff);
             if (diff <= 0) {
                 clearInterval(gameCountdownIntervalId);
-                gameCountdownImage(0);
                 return;
             }
 
-            if (diff == 3) {
+            /* if (diff == 3) {
                 console.log("Fading in map image");
                 showGame(true);
                 setTimeout(() => {
                     removeImageAnimation("game-view-map-image");
                 }, 3000);
-            }
+            } */
 
-            // update image here
-            gameCountdownImage(diff);
-        }, 1000, Date.parse(readyStateObject.startTime));
+
+        }, 1000, new Date(readyStateObject.startTime));
     }
 }
 
@@ -268,27 +339,16 @@ export function sendPlayerInput() {
 
 
 
-// TODO: do we need the stuff below? #304
-const countdownImageObject = {
-    0: "",
-    1: `${window.origin}/assets/game/countdown/countdown1.png`,
-    2: `${window.origin}/assets/game/countdown/countdown2.png`,
-    3: `${window.origin}/assets/game/countdown/countdown3.png`,
-    4: `${window.origin}/assets/game/countdown/countdown4.png`,
-    5: `${window.origin}/assets/game/countdown/countdown5.png`,
-    6: `${window.origin}/assets/game/countdown/countdown6.png`,
-    7: `${window.origin}/assets/game/countdown/countdown7.png`,
-    8: `${window.origin}/assets/game/countdown/countdown8.png`,
-    9: `${window.origin}/assets/game/countdown/countdown9.png`,
-}
 
-// TODO: do we need the stuff below? #304
-const gameCountdownImage = (currentTime) => {
+const gameCountdownImage = (timeDiff) => {
+    console.warn("!gameCountdownImage", timeDiff);
     const gameCountdownImage = $id("game-countdown-image");
-    gameCountdownImage.src = countdownImageObject[currentTime];
+    const basePath = `${window.origin}/assets/game/countdown/`;
+    gameCountdownImage.src = basePath + timeDiff + ".png";
     gameCountdownImage.style.display = "block";
-
-    if (!currentTime) {
+    audioPlayer.playSound("beep1");
+    if (!timeDiff) {
+        audioPlayer.playSound("beep2");
         gameCountdownImage.style.display = "none";
     }
 }
