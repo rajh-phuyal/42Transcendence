@@ -263,7 +263,6 @@ accept_friend_request "rphuyal" "arabelo"
 accept_friend_request "anshovah" "astein"
 
 # Blocking example Users
-block_user "anshovah" "arabelo"
 block_user "anshovah" "fdaestr"
 block_user "fdaestr" "anshovah"
 
