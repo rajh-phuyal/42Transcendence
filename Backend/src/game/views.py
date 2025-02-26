@@ -11,7 +11,7 @@ from user.models import User
 from user.utils import get_user_by_id
 # Game
 from game.models import Game, GameMember
-from game.utils import create_game, delete_game, get_game_of_user
+from game.utils import create_game, delete_or_quit_game, get_game_of_user
 
 class CreateGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -47,9 +47,9 @@ class GetGameView(BaseAuthenticatedView):
 class DeleteGameView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def delete(self, request, id):
-        success = delete_game(request.user.id, id)
+        success = delete_or_quit_game(request.user.id, id)
         if success:
-            return success_response(_('Game deleted successfully'))
+            return success_response(_('Game deleted/quit successfully'))
         # Most likely this won't be reached since delete_game will raise an
         # exception in error cases
         return error_response(_('Could not delete game'))
@@ -126,12 +126,13 @@ class PlayAgainView(BaseAuthenticatedView):
             GameMember.objects.get(game=old_game, user=user)
         except GameMember.DoesNotExist:
             return error_response(_('You are not a member of this game'))
-        # Game needs to be finished or quited
-        if not old_game.state == Game.GameState.FINISHED or old_game.state == Game.GameState.QUITED:
-            return success_response(_('Game is not finished yet!'), **{'gameId': old_game.id})
         # Game can't be a tournament game
         if old_game.tournament:
             return error_response(_('Tournament games can not be played again'))
+        # Game needs to be finished or quited
+        logging.info(f"Game state: {old_game.state}")
+        if not (old_game.state == Game.GameState.FINISHED or old_game.state == Game.GameState.QUITED):
+            return success_response(_('Game is not finished yet!'), **{'gameId': old_game.id})
         opponent_id = GameMember.objects.filter(game=old_game).exclude(user=user).first().user.id
         game, success = create_game(user, opponent_id, old_game.map_number, old_game.powerups)
         if success:

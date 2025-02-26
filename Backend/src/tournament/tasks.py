@@ -6,11 +6,18 @@ from celery import shared_task
 from django.db import transaction
 from django.utils.translation import gettext as _
 from django.utils import timezone
+from asgiref.sync import async_to_sync
+# Services
+from services.send_ws_msg import send_ws_game_data_msg
+# User
+from user.constants import USER_ID_OVERLORDS
 # Tournament
 from tournament.models import Tournament
 # Game
 from game.models import Game, GameMember
-from game.utils import finish_game
+from game.utils_ws import update_game_state
+# CHAT
+from chat.message_utils import create_and_send_overloards_pm
 
 @shared_task(ignore_result=True)
 def check_overdue_tournament_games():
@@ -34,22 +41,16 @@ def check_overdue_tournament_games():
         # Compare the aware deadline with the current time
         if game_deadline_aware < current_time:
             found_one = True
-            game_members = GameMember.objects.filter(game_id=game.id)
-            # Random select a user to loose:TODO: implement a better logic
-            looser=random.choice(game_members)
-            winner=game_members.exclude(id=looser.id).first()
-            with transaction.atomic():
-                game=Game.objects.select_for_update().get(id=game.id)
-                looser=GameMember.objects.select_for_update().get(id=looser.id)
-                winner=GameMember.objects.select_for_update().get(id=winner.id)
-                looser.points = 0
-                looser.save()
-                winner.points = 0
-                winner.save()
-            logging.info(f"Game {game.id} has passed its deadline. Decided: Winner is {winner.user_id} and looser is {looser.user_id}")
-            #Set game to finished (this will also send the ws)
-            finish_game(game, _("The overloards lost their patience. Game {gameId} has been set to finished since the deadline has passed. They randomly decided that user {username} won the game.")
-                .format(gameId=game.id, username=winner.user.username))
+            # Inform the users
+            game_members = GameMember.objects.filter(game=game)
+            if not game_members.__len__() == 2:
+                logging.error(f"Game {game.id} has {game_members.__len__()} members.")
+                return
+            gde = "**GDE,{game}**".format(game=game.as_clickable())
+            create_and_send_overloards_pm(game_members[0].user, game_members[1].user, gde)
+            # Set game to finished (this will also send the ws)
+            async_to_sync(update_game_state)(game.id, Game.GameState.QUITED, USER_ID_OVERLORDS)
+            async_to_sync(send_ws_game_data_msg)(game.id)
     if not found_one:
         logging.info("No overdue games found.")
 

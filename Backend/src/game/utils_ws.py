@@ -11,7 +11,6 @@ from core.exceptions import BarelyAnException
 # Game
 from game.constants import GAME_STATE, GAME_PLAYER_INPUT, PADDLE_OFFSET
 from game.models import Game, GameMember
-from game.utils import is_left_player, get_user_of_game, finish_game
 from game.game_cache import get_game_data, set_game_data
 # Services
 from services.send_ws_msg import send_ws_tournament_info_msg, send_ws_tournament_game_msg
@@ -21,15 +20,16 @@ from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 
 @database_sync_to_async
-def update_game_state(game_id, state):
+def update_game_state(game_id, state, quit_user_id=None):
+    from game.utils import is_left_player, end_game
     # Update cache
     set_game_data(game_id, 'gameData', 'state', state)
     # Update db
     with transaction.atomic():
         game = Game.objects.select_for_update().get(id=game_id)
-        if (state == Game.GameState.FINISHED):
-            # Use my finish_game function to deal with everything
-            winner, looser = finish_game(game)
+        if (state == Game.GameState.FINISHED or state == Game.GameState.QUITED):
+            # Use my end_game function to deal with everything
+            winner, looser = end_game(game, quit_user_id)
             if is_left_player(game_id, winner.user_id):
                 set_game_data(game_id, 'playerLeft', 'result', GameMember.GameResult.WON)
                 set_game_data(game_id, 'playerRight', 'result', GameMember.GameResult.LOST)
@@ -49,6 +49,7 @@ def update_game_state(game_id, state):
 
 @database_sync_to_async
 def update_game_points(game_id, player_id=None, player_side=None):
+    from game.utils import is_left_player, get_user_of_game
     # If the player id is not provided, we have to find it by the side
     if player_id is None:
         if player_side is None:
@@ -91,6 +92,7 @@ def update_player_powerup(game_id, player_side, powerup, new_value):
 
     The function will return if the powerup was updated successfully
     """
+    from game.utils import get_user_of_game
     # Deactivate the powerup if currently in use
     if new_value == 'used' and get_game_data(game_id, player_side, powerup) == 'using':
         set_game_data(game_id, player_side, powerup, new_value)

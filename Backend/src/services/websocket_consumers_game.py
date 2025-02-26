@@ -34,10 +34,15 @@ class GameConsumer(CustomWebSocketLogic):
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
 
         # CHECK IF CLIENT IS ALLOWED TO CONNECT
-        # Check if the client is a game member if not close the connection
+        # Check if the client is a game member...
         if not await database_sync_to_async(lambda: self.game.game_members.filter(user=self.user).exists())():
-            logging.info(f"User {self.user.id} is not a member of game {self.game_id}. CONNECTION CLOSED.")
-            await self.close()
+            logging.info(f"User {self.user.id} is not a member of game: entering viewer mode.")
+            group_name = f"{PRE_GROUP_GAME}{self.game_id}"
+            await channel_layer.group_add(group_name, self.channel_name)
+            await self.accept()
+            await send_ws_game_data_msg(self.game_id)
+            return
+
         # Check if game is part of a local tournament...
         if self.game.tournament and self.game.tournament.local_tournament:
             # ... only the admin can connect to the game
@@ -145,6 +150,16 @@ class GameConsumer(CustomWebSocketLogic):
         if delay > 0:
             await asyncio.sleep(math.floor(delay))  # Wait until the start time
         # 3. Start the game loop
+        if get_game_data(self.game_id, 'gameData', 'state') != Game.GameState.COUNTDOWN:
+            logging.info(f"Game loop was not started because the game state is not countdown: {self.game_id}. This isn't a problem. Mostlikely the game was paused again before the countdown finihed...")
+            return
+
+        left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
+        right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
+        if not left_ready or not right_ready:
+            logging.info(f"Game loop was not started because one of the players is not ready: {self.game_id}. This isn't a problem. Mostlikely the game was paused again before the countdown finihed...")
+            return
+
         GameConsumer.game_loops[self.game_id] = asyncio.create_task(GameConsumer.run_game_loop(self.game_id))
 
     @staticmethod
@@ -179,7 +194,7 @@ class GameConsumer(CustomWebSocketLogic):
         logging.info(f"Game loop ended: {game_id}")
         # To make sure the client has got the most up to date game state send it again
         await send_ws_game_data_msg(game_id)
-        if(get_game_data(game_id, 'gameData', 'state') == 'finished'):
+        if (get_game_data(game_id, 'gameData', 'state') == 'finished') or (get_game_data(game_id, 'gameData', 'state') == 'quited'):
             delete_game_from_cache(game_id)
             logging.info(f"Game was finished and cache cleared: {game_id}")
             # Inform both consumers to close their connection
