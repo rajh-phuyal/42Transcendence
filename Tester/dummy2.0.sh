@@ -263,9 +263,7 @@ accept_friend_request "rphuyal" "arabelo"
 accept_friend_request "anshovah" "astein"
 
 # Blocking example Users
-# block_user "anshovah" "arabelo" TODO: HACKATHON uncomment
-send_friend_request "john" "arabelo" # TODO: HACKATHON delete
-accept_friend_request "arabelo" "john" # TODO: HACKATHON delete
+block_user "anshovah" "arabelo"
 block_user "anshovah" "fdaestr"
 block_user "fdaestr" "anshovah"
 
