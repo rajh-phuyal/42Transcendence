@@ -1,4 +1,5 @@
 export const gameObject = {
+    countDownInterval: undefined,
     gameId: undefined,
     mapName: undefined,
     wsConnection: false,

@@ -7,7 +7,7 @@ import { gameRender } from './render.js';
 function gameLoop(currentTime) {
     if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
         gameObject.lastFrameTime = currentTime;
-        if (gameObject.state === "ongoing")
+        if (gameObject.state === "ongoing" && gameObject.clientIsPlayer)
             sendPlayerInput();
         drawPlayersState();
         gameRender();
@@ -24,9 +24,10 @@ function gameLoop(currentTime) {
 export function startGameLoop() {
     //Just in case we have an ongoing game loop end it
     endGameLoop();
-    //console.log("Starting game loop");
-    $on(document, 'keydown', keyPressCallback);
-    $on(document, 'keyup', keyReleaseCallback);
+    if (gameObject.clientIsPlayer) {
+        $on(document, 'keydown', keyPressCallback);
+        $on(document, 'keyup', keyReleaseCallback);
+    }
     gameObject.lastFrameTime = performance.now();
     gameObject.animationId = requestAnimationFrame(gameLoop);
     drawPlayersState();

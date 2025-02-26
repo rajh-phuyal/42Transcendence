@@ -63,6 +63,22 @@
         "uk-UA": "",
         "ne-NP": ""
     },
+    "quited": {
+        "en-US": "Game was quited\nPress space to create a new game with the same settings",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "deleted": {
+        "en-US": "Game was deleted\nWill redirect to home in 10 seconds",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
     "connection-error": {
         "en-US": "Could not connect to server\nPress space to try again",
         "pt-PT": "",

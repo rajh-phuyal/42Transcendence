@@ -7,6 +7,7 @@ import { startGameLoop} from './loop.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { audioPlayer } from '../../abstracts/audio.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
+import router from '../../navigation/router.js';
 
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
@@ -19,6 +20,13 @@ export const percentageToPixels = (side, percentage) => {
 }
 
 export function changeGameState(state) {
+    // In case the countdown is still running, we need to stop it
+    if (gameObject.countDownInterval) {
+        clearInterval(gameObject.countDownInterval);
+        gameObject.countDownInterval = undefined;
+        $id("game-countdown-image").style.display = "none";
+    }
+
     console.log("changeGameState", state);
     const lastState = gameObject.state;
     gameObject.state = state;
@@ -28,6 +36,8 @@ export function changeGameState(state) {
             audioPlayer.play(0); // Lobby music
             //Buttons
             $id("button-play-again").style.display = "none";
+            // Show game field
+            toggleGamefieldVisible(false);
             break;
 
         case "pending":
@@ -35,6 +45,8 @@ export function changeGameState(state) {
             audioPlayer.play(0); // Lobby music
             // Buttons
             $id("button-play-again").style.display = "none";
+            // Show game field
+            toggleGamefieldVisible(false);
             // Main Info text
             if (gameObject.wsConnection) {
                 if(gameObject.clientIsPlayer)
@@ -66,6 +78,8 @@ export function changeGameState(state) {
         case "ongoing":
             // Buttons
             $id("button-play-again").style.display = "none";
+            // Show game field
+            toggleGamefieldVisible(true);
             // Update player states
             gameObject.playerLeft.state = "ongoing";
             gameObject.playerRight.state = "ongoing";
@@ -101,6 +115,7 @@ export function changeGameState(state) {
                 audioPlayer.playSound("gameover");
             // Buttons
             $id("button-play-again").style.display = "block";
+            $id("button-quit-game").style.display = "none";
             // Hide game field
             toggleGamefieldVisible(false);
             // Main Info text
@@ -108,6 +123,31 @@ export function changeGameState(state) {
             // Update the player states
             gameObject.playerLeft.state = "finished"
             gameObject.playerRight.state = "finished"
+            break;
+
+        case "quited":
+            // Audio
+            audioPlayer.play(0); // Lobby music
+            if (lastState === "ongoing")
+                audioPlayer.playSound("gameover");
+            // Buttons
+            $id("button-play-again").style.display = "block";
+            $id("button-quit-game").style.display = "none";
+            // Hide game field
+            toggleGamefieldVisible(false);
+            // Main Info text
+            $id("game-view-middle-side-container-top-text").innerText = translate("game", "quited");
+            // Update the player states
+            gameObject.playerLeft.state = "finished"  // Since the behaviour is the same as finished
+            gameObject.playerRight.state = "finished" // Since the behaviour is the same as finished
+            break;
+
+        case "aboutToBeDeleted":
+            $id("game-view-middle-side-container-top-text").innerText = translate("game", "deleted");
+            // Sleep for 10 seconds and then redirect to the lobby
+            setTimeout(() => {
+                router('/');
+            }, 10000);
             break;
 
         default:
@@ -144,7 +184,6 @@ function drawPlayerState(playerSide) {
         $id(playerSideDash + "-powerups-status").style.display = "flex";
         // Set the powerup images
         const imgPathPre = `${window.origin}/assets/game/icons/powerup-`;
-        console.warn("path:", imgPathPre + gameObject[playerSide].powerupBig + "-big.png");
         $id(playerSideDash + "-powerups-big").src = imgPathPre + gameObject[playerSide].powerupBig + "-big.png";
         $id(playerSideDash + "-powerups-slow").src = imgPathPre + gameObject[playerSide].powerupSlow + "-slow.png";
         $id(playerSideDash + "-powerups-fast").src = imgPathPre + gameObject[playerSide].powerupFast + "-fast.png";
@@ -158,10 +197,11 @@ function drawPlayerState(playerSide) {
             $id(playerSideDash + "-username").classList.remove("user-card-looser");
             $id(playerSideDash + "-username").classList.add("user-card-winner");
         }
-        else {
+        if (gameObject[playerSide].result === "lost") {
             $id(playerSideDash + "-username").classList.remove("user-card-winner");
             $id(playerSideDash + "-username").classList.add("user-card-looser");
-        }
+        } else
+            console.warn("finished game but I don't know if I won or lost");
     }
 }
 
@@ -170,66 +210,7 @@ export function drawPlayersState() {
     drawPlayerState("playerRight");
 }
 
-/* export function updateReadyStateNodes() {
-     //console.log("Updating ready state nodes with:", gameObject.playerLeft.state, gameObject.playerRight.state);
-        // Hide the ready message and the spinner (for finished, ongoing games)
-        if (gameObject.playerLeft.state === undefined){
-            $id("player-left-state").innerHTML = "";
-            $id("player-left-state-spinner").style.display = "none";
-        }
-        if (gameObject.playerRight.state === undefined){
-            $id("player-right-state").innerHTML = "";
-            $id("player-right-state-spinner").style.display = "none";
-        }
-        // Show the spinner and remove the text
-        if (gameObject.playerLeft.state === "waiting"){
-            $id("player-left-state").innerHTML = "";
-            $id("player-left-state-spinner").style.display = "block";
-        }
-        if (gameObject.playerRight.state === "waiting"){
-            $id("player-right-state").innerHTML = "";
-            $id("player-right-state-spinner").style.display = "block";
-        }
-        // Show the message and remove the spinner
-        if (gameObject.playerLeft.state === "ready"){
-            $id("player-left-state").innerText = translate("game", "ready");
-            $id("player-left-state-spinner").style.display = "none";
-        }
-        if (gameObject.playerRight.state === "ready"){
-            $id("player-right-state").innerText = translate("game", "ready");
-            $id("player-right-state-spinner").style.display = "none";
-        }
-        // Show the score and remove the spinner
-        if (gameObject.playerLeft.state === "finished"){
-            $id("player-left-state").innerText = gameObject.playerLeft.points;
-            $id("player-left-state-spinner").style.display = "none";
-            console.log("result", gameObject.playerLeft.result);
-            if (gameObject.playerLeft.result === "won") {
-                $id("user-card-player-left").classList.remove("user-card-looser");
-                $id("user-card-player-left").classList.add("user-card-winner");
-            } else {
-                $id("user-card-player-left").classList.remove("user-card-winner");
-                $id("user-card-player-left").classList.add("user-card-looser");
-            }
-        }
-        if (gameObject.playerRight.state === "finished"){
-            $id("player-right-state").innerText = gameObject.playerRight.points;
-            $id("player-right-state-spinner").style.display = "none";
-            console.log("result", gameObject.playerRight.result);
-            if (gameObject.playerRight.result === "won") {
-                $id("user-card-player-right").classList.remove("user-card-looser");
-                $id("user-card-player-right").classList.add("user-card-winner");
-            } else {
-                $id("user-card-player-right").classList.remove("user-card-winner");
-                $id("user-card-player-right").classList.add("user-card-looser");
-            }
-
-        }
-} */
-
 export function updateReadyStatefromWS(readyStateObject) {
-    let gameCountdownIntervalId = undefined;
-
     // Remove paused banner:
     $id("game-view-middle-side-container-top-text").innerText = "";
 
@@ -241,18 +222,24 @@ export function updateReadyStatefromWS(readyStateObject) {
     //console.log("updateReadyState", gameObject.playerLeft.state, gameObject.playerRight.state);
     drawPlayersState();
 
+    // If we already have the countdown we need to reset it first
+    if (gameObject.state === "countdown" || gameObject.state === "ongoing") {
+        clearInterval(gameObject.countDownInterval);
+        gameObject.countDownInterval = undefined;
+        $id("game-countdown-image").style.display = "none";
+        changeGameState("pending");
+    }
+
     if (readyStateObject.startTime) {
         animateImage("game-countdown-image", "pulsate", "1s", "infinite");
         changeGameState("countdown");
         startGameLoop();
-
-        gameCountdownIntervalId = setInterval((startTime) => {
+        gameObject.countDownInterval = setInterval((startTime) => {
             const now = new Date();
             let diff = Math.floor((startTime - now) / 1000);
-            console.log("diff", diff);
             gameCountdownImage(diff);
             if (diff <= 0) {
-                clearInterval(gameCountdownIntervalId);
+                clearInterval(gameObject.countDownInterval);
                 return;
             }
 
@@ -324,24 +311,7 @@ export function sendPlayerInput() {
     gameObject.playerInputRight.powerupSpeed = false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const gameCountdownImage = (timeDiff) => {
-    console.warn("!gameCountdownImage", timeDiff);
     const gameCountdownImage = $id("game-countdown-image");
     const basePath = `${window.origin}/assets/game/countdown/`;
     gameCountdownImage.src = basePath + timeDiff + ".png";

@@ -3,7 +3,6 @@ import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { changeGameState, drawPlayersState } from './methods.js';
-import { toggleGamefieldVisible, gameRender } from './render.js';
 import { gameObject } from './objects.js';
 import { endGameLoop } from './loop.js';
 
@@ -26,7 +25,10 @@ export default {
         quitGameCallback() {
             // Quit game
             call(`game/delete/${this.gameId}/`, 'DELETE').then(data => {
-                router('/');
+                if (gameObject.state === "pending")
+                    router('/');
+                else
+                    router(`/game`, {id: this.gameId});
             })
         },
         playAgainCallback() {
@@ -46,17 +48,25 @@ export default {
                        this.playAgainCallback();
                     // Only if no connection exists and
                     // game state is pending, ongoing or paused, open the WS connection
-                    if (!gameObject.wsConnection && gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused" || gameObject.state === "countdown") {
-                        try {
-                            gameObject.playerLeft.state = "waiting";
-                            gameObject.playerRight.state = "waiting";
-                            drawPlayersState();
-                            WebSocketManagerGame.connect(this.gameId);
-                            gameObject.wsConnection = true;
-                        }
-                        catch (error) {
-                            this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
-                        }
+                    if (!gameObject.wsConnection && (gameObject.state === "pending" || gameObject.state === "ongoing" || gameObject.state === "paused" || gameObject.state === "countdown")) {
+                        gameObject.playerLeft.state = "waiting";
+                        gameObject.playerRight.state = "waiting";
+                        drawPlayersState();
+                        WebSocketManagerGame.connect(this.gameId)
+                            .then(() => {
+                                gameObject.wsConnection = true;
+                                // Since the viewer could enter whenever we need to check if the game is already ongoing
+                                // and if so we need to start the game loop
+                                if (!gameObject.clientIsPlayer) {
+                                    if (gameObject.state === "ongoing")
+                                        startGameLoop();
+                                    else
+                                        changeGameState("pending");
+                                }
+                            })
+                            .catch(error => {
+                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
+                            });
                     }
                     break;
                 case "Escape":
@@ -170,6 +180,9 @@ export default {
                     gameObject.playerRight.state = data.playerRight.ready ? "ready" : undefined;
                     gameObject.playerLeft.state = data.playerLeft.ready ? "ready" : undefined;
 
+                    // The state should never be "ongoing" when the game is loaded
+                    if (data.gameData.state === "ongoing")
+                        data.gameData.state = "paused";
                     changeGameState(data.gameData.state);
                 })
                 .catch(error => {
@@ -217,10 +230,16 @@ export default {
         },
 
         beforeRouteLeave() {
-            WebSocketManagerGame.disconnect(this.gameId);
+            // In case the countdown is still running, we need to stop it
+            if (gameObject.countDownInterval) {
+                clearInterval(gameObject.countDownInterval);
+                gameObject.countDownInterval = undefined;
+                this.domManip.$id("game-countdown-image").style.display = "none";
+            }
             this.initListeners(false);
             endGameLoop();
             this.audioPlayer.stop();
+            WebSocketManagerGame.disconnect(this.gameId)
         },
 
         beforeDomInsertion() {
