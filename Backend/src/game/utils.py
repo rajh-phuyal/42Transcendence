@@ -1,26 +1,30 @@
 # Basics
-import logging
+import logging, random
 # DJANGO
 from rest_framework import status
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from asgiref.sync import async_to_sync
 # CORE
 from core.exceptions import BarelyAnException
+# SERVICES
+from services.send_ws_msg import send_ws_tournament_game_msg, send_ws_all_tournament_members_msg, send_ws_game_data_msg
 # USER
-from user.constants import USER_ID_AI, USER_ID_FLATMATE
+from user.constants import USER_ID_AI, USER_ID_OVERLORDS, USER_ID_FLATMATE
 from user.models import User
 from user.exceptions import RelationshipException, BlockingException
 from user.utils_relationship import is_blocking, are_friends
 # GAME
 from game.constants import MAPNAME_TO_MAPNUMBER
 from game.models import Game, GameMember
+from game.game_cache import set_game_data, delete_game_from_cache, get_game_data
+from game.utils_ws import update_game_state
 # TOURNAMENT
 from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.models import TournamentMember
 from tournament.serializer import TournamentMemberSerializer
 from tournament.tournament_manager import check_tournament_routine
-from services.send_ws_msg import send_ws_tournament_game_msg, send_ws_all_tournament_members_msg
 from tournament.ranking import db_update_tournament_member_stats, db_update_tournament_ranks
 from user.utils import get_user_by_id
 # CHAT
@@ -104,7 +108,8 @@ def get_game_of_user(user1, user2):
             return game
     return None
 
-def delete_game(user_id, game_id):
+def delete_or_quit_game(user_id, game_id):
+    logging.info(f"User {user_id} wants to delete/quit game {game_id}")
     # Check if the game exists
     try:
         game = Game.objects.get(id=game_id)
@@ -118,27 +123,48 @@ def delete_game(user_id, game_id):
     # Check for not being a tournament game
     if game.tournament_id:
         raise BarelyAnException(_("You can't delete a tournament game"))
-    # Check if the game is in a deletable state
-    if game.state != Game.GameState.PENDING:
-        raise BarelyAnException(_("You can only delete a pending game"))
-    # Delete the game and the game members in a transaction
-    with transaction.atomic():
-        GameMember.objects.filter(game=game_id).delete()
-        game.delete()
+    opponent = GameMember.objects.filter(game=game_id).exclude(user=user_id).first().user
+
+
+    # PENDING GAME - DELETE
+    if game.state == Game.GameState.PENDING:
+        # Inform the opponent
+        gd = "**GD,{user_id},{game}**".format(user_id=user_id, game=game.as_clickable())
+        create_and_send_overloards_pm(user_id, opponent, gd)
+        # So if the other guy is in lobby to inform them
+        set_game_data(game.id, 'gameData', 'state', 'aboutToBeDeleted')
+        async_to_sync(send_ws_game_data_msg)(game_id)
+        # And delete the game
+        delete_game_from_cache(game_id)
+        with transaction.atomic():
+            GameMember.objects.filter(game=game_id).delete()
+            game.delete()
+
+    # ONGOING GAME - QUIT
+    elif game.state == Game.GameState.ONGOING or game.state == Game.GameState.PAUSED or game.state == Game.GameState.COUNTDOWN:
+        # ONGOING GAME - don't delete the game, just quit it
+        gq = "**GQ,{user_id},{game}**".format(user_id=user_id, game=game.as_clickable())
+        create_and_send_overloards_pm(user_id, opponent, gq)
+        async_to_sync(update_game_state)(game_id, Game.GameState.QUITED, user_id)
+        async_to_sync(send_ws_game_data_msg)(game_id)
+    else:
+        raise BarelyAnException(_("Game is already finished or quited"))
     return True
 
-def finish_game(game, message=None):
-    logging.info(f"Finishing game {game.id}")
+def end_game(game, quit_user_id=None):
+    """
+    This function should only be called by update_game_state function.
+
+    If there is a quitter we set the state to QUITED if not to FINISHED.
+    """
+
     game_members = GameMember.objects.filter(game=game.id)
-    if not message:
-        message = _(
-                    "Game between {user1} and {user2} has been finished"
-                ).format(
-                    user1=game_members.first().user.username,
-                    user2=game_members.last().user.username
-                )
+
     with transaction.atomic():
-        game.state = Game.GameState.FINISHED
+        if quit_user_id:
+            game.state = Game.GameState.QUITED
+        else:
+            game.state = Game.GameState.FINISHED
         game.finish_time = timezone.now() #TODO: Issue #193
         game.save()
         if game_members.count() != 2:
@@ -147,12 +173,32 @@ def finish_game(game, message=None):
         # Update the game members
         game_member_1 = GameMember.objects.select_for_update().get(id=game_members.first().id)
         game_member_2 = GameMember.objects.select_for_update().get(id=game_members.last().id)
-        if game_member_1.points > game_member_2.points:
-            game_member_1.result = GameMember.GameResult.WON
-            game_member_2.result = GameMember.GameResult.LOST
+        if quit_user_id:
+            if quit_user_id == USER_ID_OVERLORDS:
+                # If the the overlords decided that the game is - choose a winner
+                # Random select a user to loose:TODO: implement a better logic
+                if random.random() < 0.5:
+                    game_member_1.result = GameMember.GameResult.LOST
+                    game_member_2.result = GameMember.GameResult.WON
+                else:
+                    game_member_1.result = GameMember.GameResult.WON
+                    game_member_2.result = GameMember.GameResult.LOST
+
+            # The player who quits looses
+            elif quit_user_id == game_member_1.user.id:
+                game_member_1.result = GameMember.GameResult.LOST
+                game_member_2.result = GameMember.GameResult.WON
+            else:
+                game_member_1.result = GameMember.GameResult.WON
+                game_member_2.result = GameMember.GameResult.LOST
         else:
-            game_member_1.result = GameMember.GameResult.LOST
-            game_member_2.result = GameMember.GameResult.WON
+            # The player with more points wins
+            if game_member_1.points > game_member_2.points:
+                game_member_1.result = GameMember.GameResult.WON
+                game_member_2.result = GameMember.GameResult.LOST
+            else:
+                game_member_1.result = GameMember.GameResult.LOST
+                game_member_2.result = GameMember.GameResult.WON
         game_member_1.save()
         game_member_2.save()
 

@@ -27,6 +27,18 @@ def generate_template_msg(message):
             "message": _("@{0} has invited @{1} to play a friendly match: {2}"),
             "count": 3
         },
+        "GD": {
+            "message": _("@{0} has deleted the friendly match: {1}"),
+            "count": 2
+        },
+        "GQ": {
+            "message": _("@{0} has conceded the friendly match {1} and is therefore the loser"),
+            "count": 2
+        },
+        "GDE": {
+            "message": _("@1 lost their patience. Game {0} has been set to finished since the deadline has passed. They randomly decided a winner."),
+            "count": 1
+        },
         "FS": {
             "message": _("User @{0} has sent a friend request to @{1}"),
             "count": 2

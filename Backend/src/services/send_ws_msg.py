@@ -117,7 +117,11 @@ async def send_ws_chat(message_object):
     serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message_object).data)()
     # Send to conversation channel
     group_name = f"{PRE_GROUP_CONVERSATION}{message_object.conversation.id}"
-    await channel_layer.group_send(group_name, serialized_message)
+    try:
+        await channel_layer.group_send(group_name, serialized_message)
+    except Exception as e:
+        # Mostlikely this is not a big problem
+        ...
 
 async def send_ws_chat_temporary(user_id, conversation_id, content):
     overloards = await sync_to_async(User.objects.get)(id=USER_ID_OVERLORDS)
@@ -166,13 +170,16 @@ def send_ws_tournament_info_msg(tournament, deleted=False):
     else:
         info_data = serializerInfo.data
     tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament.id}"
-    async_to_sync(channel_layer.group_send)(
-    tournament_id_name,
-    {
-        "messageType": "tournamentInfo",
-        "type": "tournament_info",
-        "tournamentInfo": info_data
-    })
+    try:
+        async_to_sync(channel_layer.group_send)(
+        tournament_id_name,
+        {
+            "messageType": "tournamentInfo",
+            "type": "tournament_info",
+            "tournamentInfo": info_data
+        })
+    except Exception as e:
+        ...
 
 def send_ws_tournament_member_msg(tournament_member, leave=False):
     """
@@ -191,13 +198,16 @@ def send_ws_tournament_member_msg(tournament_member, leave=False):
     else:
         member_data = serializer_member.data
     tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament_member.tournament.id}"
-    async_to_sync(channel_layer.group_send)(
-    tournament_id_name,
-    {
-        "messageType": "tournamentMember",
-        "type": "tournament_member",
-        "tournamentMember": member_data
-    })
+    try:
+        async_to_sync(channel_layer.group_send)(
+        tournament_id_name,
+        {
+            "messageType": "tournamentMember",
+            "type": "tournament_member",
+            "tournamentMember": member_data
+        })
+    except Exception as e:
+        ...
 
 def send_ws_all_tournament_members_msg(tournament):
     """
@@ -209,13 +219,16 @@ def send_ws_all_tournament_members_msg(tournament):
     members = TournamentMember.objects.filter(tournament=tournament).order_by('rank')
     serializer_members = TournamentMemberSerializer(members, many=True)
     tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{tournament.id}"
-    async_to_sync(channel_layer.group_send)(
-    tournament_id_name,
-    {
-        "messageType": "tournamentMembers",
-        "type": "tournament_members",
-        "tournamentMembers": serializer_members.data
-    })
+    try:
+        async_to_sync(channel_layer.group_send)(
+        tournament_id_name,
+        {
+            "messageType": "tournamentMembers",
+            "type": "tournament_members",
+            "tournamentMembers": serializer_members.data
+        })
+    except Exception as e:
+        ...
 
 def send_ws_tournament_game_msg(game):
     if isinstance(game, int):
@@ -224,13 +237,16 @@ def send_ws_tournament_game_msg(game):
         return
     serializerGame = TournamentGameSerializer(game)
     tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{game.tournament.id}"
-    async_to_sync(channel_layer.group_send)(
-    tournament_id_name,
-    {
-        "messageType": "tournamentGame",
-        "type": "tournament_game",
-        "TournamentGame": serializerGame.data
-    })
+    try:
+        async_to_sync(channel_layer.group_send)(
+        tournament_id_name,
+        {
+            "messageType": "tournamentGame",
+            "type": "tournament_game",
+            "TournamentGame": serializerGame.data
+        })
+    except Exception as e:
+        ...
 
 def send_ws_tournament_pm(tournament_id, message):
     """
@@ -255,16 +271,19 @@ def send_ws_tournament_pm(tournament_id, message):
 # ==============================================================================
 async def send_ws_game_players_ready_msg(game_id, left_ready, right_ready, start_time = None):
     group_name = f"{PRE_GROUP_GAME}{game_id}"
-    await channel_layer.group_send(
-        group_name,
-        {
-            "type": "update_players_ready",
-            "messageType": "playersReady",
-            "playerLeft": left_ready,
-            "playerRight": right_ready,
-            "startTime": start_time
-        }
-    )
+    try:
+        await channel_layer.group_send(
+            group_name,
+            {
+                "type": "update_players_ready",
+                "messageType": "playersReady",
+                "playerLeft": left_ready,
+                "playerRight": right_ready,
+                "startTime": start_time
+            }
+        )
+    except Exception as e:
+        ...
 
 async def send_ws_game_data_msg(game_id):
     game_state_data = get_game_data(game_id)
@@ -272,15 +291,23 @@ async def send_ws_game_data_msg(game_id):
         logging.error(f"Game state not found for game {game_id} so it can't be send as a ws message!")
         return
     group_name = f"{PRE_GROUP_GAME}{game_id}"
-    await channel_layer.group_send(
-        group_name,
-        {
-            "type": "update_game_state",
-            "messageType": "gameState",
-            **game_state_data
-        }
-    )
+    try:
+        await channel_layer.group_send(
+            group_name,
+            {
+                "type": "update_game_state",
+                "messageType": "gameState",
+                **game_state_data
+            }
+        )
+    except Exception as e:
+        ...
+        # Not a problem if the game is already finished
 
 async def send_ws_game_finished(game_id):
     group_name = f"{PRE_GROUP_GAME}{game_id}"
-    await channel_layer.group_send(group_name, {"type": "game_finished"})
+    try:
+        await channel_layer.group_send(group_name, {"type": "game_finished"})
+    except Exception as e:
+        ...
+        # Not a problem if the game is already finished
