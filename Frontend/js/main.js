@@ -98,13 +98,13 @@ document.addEventListener('wheel', function(event) {
 
 
 window.onresize = () => {
-	if (window.outerHeight < 1020 || window.outerWidth < 1020){
+	if (window.outerHeight < 510 || window.outerWidth < 510){
         zoomIn(window.outerHeight, window.outerWidth);
         if (window.location.pathname != "/barely-responsive") {
             $store.commit("setMarkBook", window.location.pathname);
             router("/barely-responsive");
         }
-	} else if (window.outerHeight >= 1020 && window.outerWidth >= 1020
+	} else if (window.outerHeight >= 510 && window.outerWidth >= 510
 		&& window.location.pathname == "/barely-responsive") {
 			const path = $store.state.markbook;
 			$store.commit("setMarkBook", "");
