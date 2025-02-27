@@ -293,32 +293,29 @@ export function gameRender () {
 
 export function toggleGamefieldVisible(visible) {
     const gameField = $id("game-field");
+    const tournamentBanner = $id("game-view-tournament-name");
     let imgPath = "";
-
-
 
     if(visible) {
         // Load the background map image
         imgPath = window.location.origin + '/assets/game/maps/' + gameObject.mapName + '.png';
         // Show the field canvas
         gameField.style.display = "block";
-
-        // TODO: do we still need this?
         // Show the game field
         const ctx = gameField.getContext('2d');
         ctx.clearRect(0, 0, gameField.width, gameField.height);
         gameRender(gameField, ctx);
-
-
-        // Play the game music
+        // Hide the tournament banner if it is a tournament game
+        if (gameObject.tournamentId)
+            tournamentBanner.style.display = "none";
     } else {
         // Load the background lobby image
         imgPath = window.location.origin + '/assets/backgrounds/game.png';
         // Hide the field canvas
         gameField.style.display = "none";
-
-
-
+        // Show the tournament banner if it is a tournament game
+        if (gameObject.tournamentId)
+            tournamentBanner.style.display = "block";
     }
     // TODO: maybe here we can make a smooth transition
     const gameImage = $id("view-game-background");

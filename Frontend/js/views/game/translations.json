@@ -1,6 +1,6 @@
 {
-    "template": {
-        "en-US": "",
+    "partOfTournament": {
+        "en-US": "Part of tournament: ",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
@@ -72,7 +72,15 @@
         "ne-NP": ""
     },
     "deleted": {
-        "en-US": "Game was deleted\nWill redirect to home in 10 seconds",
+        "en-US": "Game was deleted\nWill redirect to home in 5 seconds...",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "redirTournament": {
+        "en-US": "Game is over\nWill redirect to tournament lobby in 5 seconds...",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",

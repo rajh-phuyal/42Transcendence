@@ -1,5 +1,6 @@
 export const gameObject = {
     countDownInterval: undefined,
+    tournamentId: undefined,
     gameId: undefined,
     mapName: undefined,
     wsConnection: false,

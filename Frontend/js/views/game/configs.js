@@ -44,7 +44,8 @@ export default {
             switch (event.key) {
                 case " ":
                     // If game is finished the space key will create a new game
-                    if (gameObject.state === "finished")
+                    console.log("gameObject.state:", gameObject.state);
+                    if (gameObject.state === "finished" || gameObject.state === "quited")
                        this.playAgainCallback();
                     // Only if no connection exists and
                     // game state is pending, ongoing or paused, open the WS connection
@@ -90,15 +91,15 @@ export default {
                     console.warn("Mention clicked but no user ID found.");
             }
 
-            // Check if a mention GAME was clicked
-            // TODO: we need to display the tournament name somewehre
-            if (game) {
-                const gameId = game.getAttribute("data-gameid");
-                if(gameId)
-                    router(`/game`, { id: gameId });
+            // Check if a mention TOURNAMENT was clicked
+            if (tournament) {
+                const tournamentId = tournament.getAttribute("data-tournamentid");
+                if (tournamentId)
+                    router(`/tournament`, { id: tournamentId });
                 else
-                    console.warn("Mention clicked but no game ID found.");
+                    console.warn("Mention clicked but no tournament ID found.");
             }
+
         },
 
         initListeners(init = true) {
@@ -109,6 +110,7 @@ export default {
             const leftAvatar = this.domManip.$id("player-left-avatar");
             const rightUsername = this.domManip.$id("player-right-username");
             const rightAvatar = this.domManip.$id("player-right-avatar");
+            const tournamentName = this.domManip.$id("game-view-tournament-name");
 
             if (init) {
                 // TODO: translation for buttons should be done in with the abstraction tool TBC
@@ -126,6 +128,7 @@ export default {
                 this.domManip.$on(leftAvatar, 'click', this.mentionClickCallback);
                 this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
                 this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
+                this.domManip.$on(tournamentName, 'click', this.mentionClickCallback);
                 return ;
             }
 
@@ -148,6 +151,8 @@ export default {
                         this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
                     if (rightAvatar.eventListeners)
                         this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
+                    if (tournamentName.eventListeners)
+                        this.domManip.$on(tournamentName, 'click', this.mentionClickCallback);
                 }
             }
         },
@@ -175,6 +180,14 @@ export default {
                     gameObject.playerRight.points = data.playerRight.points;
                     gameObject.playerRight.result = data.playerRight.result;
                     gameObject.mapName = this.maps[data.gameData.mapNumber];
+
+                    // Check if game is part of tournament
+                    if (data.gameData.tournamentId) {
+                        gameObject.tournamentId = data.gameData.tournamentId;
+                        this.domManip.$id("game-view-tournament-name").innerText = translate("game", "partOfTournament") + data.gameData.tournamentName;
+                        this.domManip.$id("game-view-tournament-name").setAttribute("data-tournamentid", data.gameData.tournamentId);
+                        this.domManip.$id("game-view-tournament-name").style.display = "block";
+                    }
 
                     // I send the ready state also via REST NOW
                     gameObject.playerRight.state = data.playerRight.ready ? "ready" : undefined;

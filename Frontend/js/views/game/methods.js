@@ -114,7 +114,8 @@ export function changeGameState(state) {
             if (lastState === "ongoing")
                 audioPlayer.playSound("gameover");
             // Buttons
-            $id("button-play-again").style.display = "block";
+            if (!gameObject.tournamentId)
+                $id("button-play-again").style.display = "block";
             $id("button-quit-game").style.display = "none";
             // Hide game field
             toggleGamefieldVisible(false);
@@ -123,6 +124,13 @@ export function changeGameState(state) {
             // Update the player states
             gameObject.playerLeft.state = "finished"
             gameObject.playerRight.state = "finished"
+            // If game is part of tournament redir to tournament page
+            if (gameObject.tournamentId) {
+                $id("game-view-middle-side-container-top-text").innerText = translate("game", "redirTournament");
+                setTimeout(() => {
+                    router('/tounament', {id: gameObject.tournamentId});
+                }, 5000);
+            }
             break;
 
         case "quited":
@@ -143,11 +151,15 @@ export function changeGameState(state) {
             break;
 
         case "aboutToBeDeleted":
+            // Audio
+            audioPlayer.play(0); // Lobby music
+            if (lastState === "ongoing")
+                audioPlayer.playSound("no");
             $id("game-view-middle-side-container-top-text").innerText = translate("game", "deleted");
             // Sleep for 10 seconds and then redirect to the lobby
             setTimeout(() => {
                 router('/');
-            }, 10000);
+            }, 5000);
             break;
 
         default:

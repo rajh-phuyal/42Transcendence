@@ -6,6 +6,8 @@
             <!-- <img src="../assets/game/maps/lizard-people.png" alt="Background Image" class="view-background-image"> -->
             <img id="view-game-background" src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image">
             <div class="view-overlay-grid">
+                <!-- TOURNAMENT HEADING -->
+                <div id="game-view-tournament-name" class="grid-cell default-grid-area tname mention-tournament" style="display: none;"></div>
                 <!-- LEFT PLAYER -->
                 <h2 id="player-left-username" class="grid-cell default-grid-area lun user-card username mention-user"></h2>
                 <div                          class="grid-cell default-grid-area lav user-card">
@@ -61,8 +63,8 @@
         grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname tname  tname  tname  tname  tname  tname  tname  tname tname   .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname tname  tname  tname  tname  tname  tname  tname  tname tname   .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
             ".      lun    lun    lun    lun    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      run    run    run    run    .     "
@@ -84,6 +86,17 @@
 
 
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+    .tname {
+        grid-area: tname;
+        background-color: rgba(20, 15, 15, 0.726);
+        color: rgb(255, 255, 255) !important;
+        border: 0.1vw solid white;
+        border-radius: 3px;
+        height: 90%;
+        font-size: min(10vw, 20px);
+        font-weight: bold;
+        text-align: center;
+    }
     .lun {
         grid-area: lun;
         border-top-left-radius: 3px;
