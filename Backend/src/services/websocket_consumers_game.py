@@ -32,11 +32,13 @@ class GameConsumer(CustomWebSocketLogic):
         # Set self vars for consumer
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
+        self.isOnlyViewer = False
 
         # CHECK IF CLIENT IS ALLOWED TO CONNECT
         # Check if the client is a game member...
         if not await database_sync_to_async(lambda: self.game.game_members.filter(user=self.user).exists())():
             logging.info(f"User {self.user.id} is not a member of game: entering viewer mode.")
+            self.isOnlyViewer = True
             group_name = f"{PRE_GROUP_GAME}{self.game_id}"
             await channel_layer.group_add(group_name, self.channel_name)
             await self.accept()
@@ -95,6 +97,11 @@ class GameConsumer(CustomWebSocketLogic):
         # Note: here i can't use update_client_in_group since this always uses the main ws connection!
         group_name = f"{PRE_GROUP_GAME}{self.game_id}"
         await channel_layer.group_discard(group_name, self.channel_name)
+
+        # If the client is only a viewer return
+        if self.isOnlyViewer:
+            return
+
         # Set the player NOT ready
         self.game.set_player_ready(self.user.id, False)
         left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
@@ -121,6 +128,10 @@ class GameConsumer(CustomWebSocketLogic):
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
+        # If the client is only a viewer return
+        if self.isOnlyViewer:
+            return
+
         # Calling the receive function of the parent class (CustomWebSocketLogic)
         await super().receive(text_data)
         # Process the message

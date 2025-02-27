@@ -36,6 +36,8 @@ export function changeGameState(state) {
             audioPlayer.play(0); // Lobby music
             //Buttons
             $id("button-play-again").style.display = "none";
+            // Main Info text
+            $id("game-view-middle-side-container-top-text").innerText = "";
             // Show game field
             toggleGamefieldVisible(false);
             break;
@@ -68,6 +70,8 @@ export function changeGameState(state) {
                 audioPlayer.playSound("unpause");
             // Buttons
             $id("button-play-again").style.display = "none";
+            // Main Info text
+            $id("game-view-middle-side-container-top-text").innerText = "";
             // Show game field
             toggleGamefieldVisible(true);
             // Update player states
@@ -78,6 +82,8 @@ export function changeGameState(state) {
         case "ongoing":
             // Buttons
             $id("button-play-again").style.display = "none";
+            // Main Info text
+            $id("game-view-middle-side-container-top-text").innerText = "";
             // Show game field
             toggleGamefieldVisible(true);
             // Update player states
@@ -155,6 +161,7 @@ export function changeGameState(state) {
             audioPlayer.play(0); // Lobby music
             if (lastState === "ongoing")
                 audioPlayer.playSound("no");
+            // Main Info text
             $id("game-view-middle-side-container-top-text").innerText = translate("game", "deleted");
             // Sleep for 10 seconds and then redirect to the lobby
             setTimeout(() => {
@@ -269,6 +276,15 @@ export function updateReadyStatefromWS(readyStateObject) {
 }
 
 export function updateGameObjects(beMessage) {
+    // For a viewer who enters an ongoing game we need to change the state!
+    if (!gameObject.clientIsPlayer) {
+        if (gameObject.state !== beMessage?.gameData?.state) {
+            changeGameState(beMessage?.gameData?.state);
+            if (gameObject.state === "countdown" || gameObject.state === "ongoing")
+                startGameLoop();
+        }
+    }
+
     // The first time we get the state ongoing we need to set it
     if ( beMessage?.gameData?.state === "ongoing" && gameObject.state !== "ongoing")
         changeGameState("ongoing");
