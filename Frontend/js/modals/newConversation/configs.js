@@ -10,7 +10,12 @@ export default {
 
     methods: {
         enableButtonCallback() {
-            console.log("enableButtonCallback");
+            const input = this.domManip.$id("modal-new-conversation-textarea");
+            const btn = this.domManip.$id("modal-new-conversation-create-button");
+            if (input.value.trim() === "")
+                btn.disabled = true;
+            else
+                btn.disabled = false;
         },
 
         createConversation() {
@@ -40,7 +45,6 @@ export default {
             this.chatId = this.domManip.$id("router-view").getAttribute("data-user-chat-id");
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
             // If already a chat exists, redirect to the chat
-            console.warn(this.chatId);
             if(this.chatId && this.chatId !== "null") {
                 router(`/chat`, {id: this.chatId});
                 return false;
@@ -59,6 +63,10 @@ export default {
             this.domManip.$on(this.domManip.$id("modal-new-conversation-create-button"), "click", this.createConversation.bind(this));
             this.domManip.$on(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
 
+            // TODO: set the focus to the textarea
+            // Not sure how since this code snippet doesnt fit topur setup...
+            // https://getbootstrap.com/docs/4.0/components/modal/#how-it-works
+
             return true;
         },
         beforeRouteEnter() {
@@ -74,6 +82,7 @@ export default {
         },
 
         afterDomInsertion() {
+
         },
     }
 }

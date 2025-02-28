@@ -370,3 +370,6 @@ h5 {
     background-color: #4a4a4a !important;
     border: 2px solid black !important;
 }
+.modal-button:disabled, .modal-button[disabled]{
+    background-color:rgba(145, 143, 143, 0.9);
+}
