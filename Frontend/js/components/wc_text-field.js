@@ -4,6 +4,7 @@ import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
 import router from '../navigation/router.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
+import { showTypingIndicator } from '../views/chat/typingIndicator.js';
 
 class TextField extends HTMLElement {
     constructor() {
@@ -90,8 +91,18 @@ class TextField extends HTMLElement {
     }
 
     handleMessageInput(event){
+        // Send the typing indicator to server
+        const inputLength = event.target.value.trim().length;
+        if (inputLength === 0)
+            WebSocketManager.sendMessage({messageType: "typing", conversationId: this.conversationId, isTyping: false});
+        else if (inputLength === 1)
+            WebSocketManager.sendMessage({messageType: "typing", conversationId: this.conversationId, isTyping: true});
+        else if (inputLength % 5 === 1) // Send update every 5 characters
+            WebSocketManager.sendMessage({messageType: "typing", conversationId: this.conversationId, isTyping: true});
+
+        // Update the send button disabled state
         let sendButton = this.shadow.getElementById("textFieldButton");
-        if (event.target.value.trim() === '')
+        if (inputLength === 0)
             sendButton.disabled = true;
         else
             sendButton.disabled = false;

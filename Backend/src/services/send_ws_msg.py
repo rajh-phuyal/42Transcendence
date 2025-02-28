@@ -150,6 +150,18 @@ async def send_ws_new_conversation(user, conversation):
     serialized_conversation['type'] = "new_conversation"
     await send_ws_msg_to_user(user, **serialized_conversation)
 
+async def send_ws_chat_typing(receiver, conversation_id, is_typing):
+    """
+    This is send to update the typing status of the user_changed in the chat
+    """
+    message_dict = {
+        "messageType": "typing",
+        "type": "typing",
+        "conversationId": conversation_id,
+        "isTyping": is_typing
+    }
+    await send_ws_msg_to_user(receiver, **message_dict)
+
 # ==============================================================================
 #     TOURNAMENT FUNCTIONS
 # ==============================================================================

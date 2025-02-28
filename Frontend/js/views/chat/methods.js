@@ -3,6 +3,7 @@ import call from '../../abstracts/call.js';
 import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
+import { showTypingIndicator } from './typingIndicator.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -19,6 +20,9 @@ export function processIncomingWsChatMessage(message) {
     // The conversation card is already selected so we can just add the message
     const currentConversationId = $id("chat-view-text-field").getAttribute("conversation-id");
     if (currentConversationId && currentConversationId == message.conversationId) {
+        // Remove the typing indicator
+        showTypingIndicator(Date.now());
+        // Create the message
         createMessage(message, false);
         // Scroll to the bottom
         let scrollContainer = $id("chat-view-messages-container");
@@ -361,6 +365,29 @@ export function loadMessages(conversationId) {
             spinner.remove();
             messageContainer.setAttribute("loading", "false"); // Reset loading state
         });
+}
+
+// -----------------------------------------------------------------------------
+// TYPING INDICATOR STUFF
+// -----------------------------------------------------------------------------
+export function updateTypingState(element) {
+        // Check if the client is at chat view
+        const messagesContainer = $id("chat-view-messages-container");
+        if (!messagesContainer) {
+            // User is at another view
+            return;
+        }
+
+        // Check if the right conversation is selected
+        const currentConversationId = $id("chat-view-text-field").getAttribute("conversation-id");
+        if (currentConversationId != element.conversationId)
+            return;
+
+        // Update the typing indicator
+        if (element.isTyping)
+            showTypingIndicator(Date.now() + 2000); // 2 secs visible
+        else
+            showTypingIndicator(Date.now());        // Hide the typing indicator
 }
 
 // -----------------------------------------------------------------------------
