@@ -1,0 +1,29 @@
+<!-- New Conversation Modal -->
+<!-- ####################################################################### -->
+<div class="modal fade" id="modal-new-conversation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-new-conversation-title"></h5>
+                <!-- TODO: Translate Button Text -->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body barely-a-scroll-class" id="modal-new-conversation-body">
+                <textarea id="modal-new-conversation-textarea" class="barely-a-scroll-class" placeholder="Say smth nice"></textarea>
+            </div>
+            <div class="modal-footer">
+                <!-- TODO: Translate Button Text -->
+                <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
+                <button id="modal-new-conversation-create-button" type="button" class="btn modal-button" disabled">Create Conversation</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-new-conversation-textarea {
+        width: 100% !important;
+        height: 80px;
+        font-size: min(1vw, 15px);
+        resize: none;
+    }
+</style>

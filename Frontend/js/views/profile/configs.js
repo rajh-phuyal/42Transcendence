@@ -9,6 +9,7 @@ import $callToast from '../../abstracts/callToast.js';
 import { translate } from '../../locale/locale.js';
 import { $id } from '../../abstracts/dollars.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { modalManager } from '../../abstracts/ModalManager.js';
 
 export default {
     attributes: {
@@ -64,6 +65,29 @@ export default {
     },
 
     methods: {
+        setViewAttributes(set, data=null) {
+            // This function sets/unsets the atrributes so that the modals can get the data
+            const view = this.domManip.$id("router-view");
+            if(set) {
+                if (!data) {
+                    console.warn("profile: setViewAttributes: data is not defined");
+                    return;
+                }
+                console.log("data:", data);
+                // Set the attributes
+                view.setAttribute("data-user-id", data.id);
+                view.setAttribute("data-user-username", data.username);
+                view.setAttribute("data-user-chat-id", data.chatId);
+
+            } else {
+                // Unset the attributes
+                view.removeAttribute("data-user-id");
+                view.removeAttribute("data-user-username");
+                view.removeAttribute("data-user-chat-id");
+            }
+
+        },
+
         insertAvatar() {
             const element = this.domManip.$id("avatar");
             element.src = window.origin + '/media/avatars/' + this.result.avatarUrl;
@@ -188,22 +212,22 @@ export default {
             if (this.result.relationship.state == "noFriend" && (this.result.relationship.isBlocked || this.result.relationship.isBlocking))
             {
                 element.style.display = "none";
-                this.hideElement("friendship-modal-friendship-primary-button");
+                this.hideElement("modal-edit-friendship-friendship-primary-button");
             }
 
             if (!buttonObjects[this.result.relationship.state].secondaryButton)
-                this.hideElement("friendship-modal-friendship-secondary-button");
+                this.hideElement("modal-edit-friendship-friendship-secondary-button");
 
             // blocking portion of the friendshop modal
             if (this.result.relationship.state == "requestReceived" || this.result.relationship.state == "requestSent")
-                this.hideElement("friendship-modal-block");
+                this.hideElement("modal-edit-friendship-block");
 
             else {
                 element = this.domManip.$id("friendshp-modal-block-text")
                 element.textContent = buttonObjects[blockIndex].text;
             }
 
-            let modalElement = this.domManip.$id("friendship-modal");
+            let modalElement = this.domManip.$id("modal-edit-friendship");
             const modal = new bootstrap.Modal(modalElement);
             modal.show();
         },
@@ -300,19 +324,12 @@ export default {
             });
         },
 
-        createConversation() {
-            const message = this.domManip.$id("new-chat-modal-textarea").value;
-            this.hideModal("new-chat-modal");
-            call("chat/create/conversation/", "POST", {"userId": this.result.id, "initialMessage": message}).then(data => {
-                $callToast("success", data.message);
-                router(`/profile`, {id: this.result.id});
-            })
-        },
+
 
         openChatModal() {
-            let modalElement = this.domManip.$id("new-chat-modal");
+            let modalElement = this.domManip.$id("modal-new-conversation");
             const modal = new bootstrap.Modal(modalElement);
-            this.domManip.$id("new-chat-modal-new-chat-text").textContent = translate('profile', "createNewConversation") + this.result.username;
+            this.domManip.$id("modal-new-conversation-new-chat-text").textContent = translate('profile', "createNewConversation") + this.result.username;
             modal.show();
         },
 
@@ -332,7 +349,7 @@ export default {
             const fullUrl = object.Url + this.result.id + "/";
 
             call(fullUrl, object.method).then(data =>{
-                this.hideModal("friendship-modal");
+                this.hideModal("modal-edit-friendship");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
@@ -342,7 +359,7 @@ export default {
 
         changeFrendshipSecondaryMethod() {
             call(`user/relationship/reject/${this.result.id}/`, "DELETE").then(data =>{
-                this.hideModal("friendship-modal");
+                this.hideModal("modal-edit-friendship");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
@@ -360,7 +377,7 @@ export default {
                 object = buttonObjects["unblocked"];
             const fullUrl = object.Url + this.result.id + "/";
             call(fullUrl, object.method).then(data =>{
-                this.hideModal("friendship-modal");
+                this.hideModal("modal-edit-friendship");
                 $callToast("success", data.message);
                 router('/profile', { id: this.result.id});
             }).catch((error) => {
@@ -374,16 +391,16 @@ export default {
                 if (data.gameId)
                     router('/game', {"id": data.gameId});
                 else {
-                    this.domManip.$id("invite-for-game-modal-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
-                    this.domManip.$id("invite-for-game-modal-opponent-name").textContent = this.result.username;
-                    let modalElement = this.domManip.$id("invite-for-game-modal");
+                    this.domManip.$id("modal-create-game-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
+                    this.domManip.$id("modal-create-game-opponent-name").textContent = this.result.username;
+                    let modalElement = this.domManip.$id("modal-create-game");
                     const modal = new bootstrap.Modal(modalElement);
                     modal.show();
                 }
             });
         },
         selectMap(chosenMap) {
-            const maps = this.domManip.$class("invite-for-game-modal-maps-button");
+            const maps = this.domManip.$class("modal-create-game-maps-button");
             this.gameSettings.map = chosenMap.srcElement.name
             for (let element of maps){
                 if (element.name != this.gameSettings.map)
@@ -401,13 +418,13 @@ export default {
                 "opponentId": this.routeParams.id,
             }
             call('game/create/', 'POST', data).then(data => {
-                this.hideModal("invite-for-game-modal");
+                this.hideModal("modal-create-game");
                 router('/game', {"id": data.gameId});
             })
         },
 
         cancelButton() {
-            this.hideModal("friendship-modal");
+            this.hideModal("modal-edit-friendship");
         },
 
         clickFriendCard(event) {
@@ -417,21 +434,21 @@ export default {
             if (element == null)
                 element = event.srcElement.parentElement.getAttribute("user-id");
             const params = { id: element };
-            this.hideModal("friends-list-modal");
+            this.hideModal("modal-friends-list");
             router('/profile',  params);
         },
 
         populateFriendList() {
-            const mainDiv = this.domManip.$id("friends-list-modal-list");
+            const mainDiv = this.domManip.$id("modal-friends-list-list");
             for (let element of this.friendList){
-                const container = this.domManip.$id("friends-list-modal-list-element-template").content.cloneNode(true);
-                const elementDiv = container.querySelector(".friends-list-modal-list-element");
+                const container = this.domManip.$id("modal-friends-list-list-element-template").content.cloneNode(true);
+                const elementDiv = container.querySelector(".modal-friends-list-list-element");
                 elementDiv.setAttribute("user-id", element.id);
-                elementDiv.setAttribute("id", "friends-list-modal-list-element-user-" + element.username);
+                elementDiv.setAttribute("id", "modal-friends-list-list-element-user-" + element.username);
 
-                container.querySelector("#friends-list-modal-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatarUrl;
-                container.querySelector(".friends-list-modal-list-element-username").textContent = element.username;
-                container.querySelector("#friends-list-modal-list-element-friendship-image").src = this.buttonSettings[element.status].path;
+                container.querySelector("#modal-friends-list-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatarUrl;
+                container.querySelector(".modal-friends-list-list-element-username").textContent = element.username;
+                container.querySelector("#modal-friends-list-list-element-friendship-image").src = this.buttonSettings[element.status].path;
                 mainDiv.appendChild(container)
                 this.domManip.$on(elementDiv, "click", this.clickFriendCard);
             }
@@ -444,9 +461,9 @@ export default {
                 this.removeFriendsList();
                 this.friendList = res.friends;
                 this.populateFriendList();
-                this.domManip.$id("friends-list-modal-search-bar").value = "";
-                this.hideElement("friends-list-modal-list-result-not-found-message");
-                let modalElement = this.domManip.$id("friends-list-modal");
+                this.domManip.$id("modal-friends-list-search-bar").value = "";
+                this.hideElement("modal-friends-list-list-result-not-found-message");
+                let modalElement = this.domManip.$id("modal-friends-list");
                 const modal = new bootstrap.Modal(modalElement);
                 modal.show();
             }).catch((error) => {
@@ -460,7 +477,7 @@ export default {
                 return ;
             for (let user of this.friendList)
             {
-                const elementId = "friends-list-modal-list-element-user-" + user.username;
+                const elementId = "modal-friends-list-list-element-user-" + user.username;
                 const element =  this.domManip.$id(elementId);
                 this.domManip.$off(element, "click", this.clickFriendCard);
                 element.remove();
@@ -469,23 +486,23 @@ export default {
         },
 
         searchFriend() {
-            const searchBarElement = this.domManip.$id("friends-list-modal-search-bar")
+            const searchBarElement = this.domManip.$id("modal-friends-list-search-bar")
             let inputValue = searchBarElement.value.trim();
 
             for (let element of this.friendList) {
-                this.showElement("friends-list-modal-list-element-user-" + element.username, "flex");
+                this.showElement("modal-friends-list-list-element-user-" + element.username, "flex");
             }
-            this.hideElement("friends-list-modal-list-result-not-found-message");
+            this.hideElement("modal-friends-list-list-result-not-found-message");
 
             const filteredObj = Object.fromEntries(
                 Object.entries(this.friendList).filter(([key, value]) => !value.username.startsWith(inputValue))
             );
 
             if (Object.values(filteredObj).length === this.friendList.length)
-                this.showElement("friends-list-modal-list-result-not-found-message");
+                this.showElement("modal-friends-list-list-result-not-found-message");
 
             for (let [key, element] of Object.entries(filteredObj)) {
-                this.hideElement("friends-list-modal-list-element-user-" + element.username);
+                this.hideElement("modal-friends-list-list-element-user-" + element.username);
             }
         },
         powerupsAction() {
@@ -503,7 +520,7 @@ export default {
 
         beforeRouteLeave() {
             WebSocketManager.setCurrentRoute(undefined);
-            let element = this.domManip.$id("button-top-left");
+            /* let element = this.domManip.$id("button-top-left");
             this.domManip.$off(element, "click", this.buttonTopLeft.method);
             element = this.domManip.$id("button-top-middle");
             this.domManip.$off(element, "click", this.buttonTopMiddle.method);
@@ -519,27 +536,39 @@ export default {
             this.domManip.$off(element, "click", this.submitAvatar);
             element = this.domManip.$id("edit-profile-modal-form-submit-button");
             this.domManip.$off(element, "click", this.submitForm);
-            element = this.domManip.$id("friendship-modal-friendship-primary-button");
+            element = this.domManip.$id("modal-edit-friendship-friendship-primary-button");
             this.domManip.$off(element, "click", this.changeFrendshipPrimaryMethod);
-            element = this.domManip.$class("invite-for-game-modal-maps-button");
+            element = this.domManip.$class("modal-create-game-maps-button");
             for (let individualElement of element)
                 this.domManip.$off(individualElement, "click", this.selectMap);
-            element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
+            element = this.domManip.$id("modal-create-game-powerups-checkbox");
             this.domManip.$off(element, "change", this.powerupsAction);
-            element = this.domManip.$id("invite-for-game-modal-start-button");
+            element = this.domManip.$id("modal-create-game-start-button");
             this.domManip.$off(element, "click", this.submitInvitation);
-            element = this.domManip.$id("friendship-modal-friendship-secondary-button");
+            element = this.domManip.$id("modal-edit-friendship-friendship-secondary-button");
             this.domManip.$off(element, "click", this.changeFrendshipSecondaryMethod);
-            element = this.domManip.$id("friendship-modal-block-button");
+            element = this.domManip.$id("modal-edit-friendship-block-button");
             this.domManip.$off(element, "click", this.changeBlockMethod);
-            element = this.domManip.$id("friendship-modal-cancel-button");
+            element = this.domManip.$id("modal-edit-friendship-cancel-button");
             this.domManip.$off(element, "click", this.cancelButton);
-            element = this.domManip.$id("new-chat-modal-create-button");
+            element = this.domManip.$id("modal-new-conversation-create-button");
             this.domManip.$off(element, "click", this.createConversation);
             element = this.domManip.$id("button-bottom-right");
             this.domManip.$off(element, "click", this.openFriendList);
-            element = this.domManip.$id("friends-list-modal-search-bar");
-            this.domManip.$off(element, "keydown", this.searchFriend);
+            element = this.domManip.$id("modal-friends-list-search-bar");
+            this.domManip.$off(element, "keydown", this.searchFriend); */
+
+
+            // Unlink the modal buttons to the methods
+            modalManager.off("button-top-left", "modal-edit-friendship");
+            modalManager.off("button-top-middle", "modal-new-conversation");
+            modalManager.off("button-top-right", "modal-create-game");
+            modalManager.off("button-bottom-right", "modal-friends-list");
+            modalManager.off("test-modal-btn", "modal-template");
+
+            // Remove the attributes from the view
+            this.setViewAttributes(false);
+
             this.removeFriendsList();
         },
 
@@ -554,11 +583,21 @@ export default {
                 WebSocketManager.setCurrentRoute("profile-" + this.result.id);
                 console.log(res);
                 this.insertAvatar();
+                this.setViewAttributes(true, res)
                 populateInfoAndStats(res);
                 this.populateButtons();
                 if (res.relationship.isBlocked)
                     this.blackout();
 
+                // Link the modal buttons to the methods
+                modalManager.on("button-top-left", "modal-edit-friendship");
+                modalManager.on("button-top-middle", "modal-new-conversation");
+                modalManager.on("button-top-right", "modal-create-game");
+                modalManager.on("button-bottom-right", "modal-friends-list");
+                modalManager.on("test-modal-btn", "modal-template");
+
+
+/*
                 // callback functions
                 if (this.buttonTopLeft.method) {
                     let element = this.domManip.$id("button-top-left");
@@ -583,27 +622,28 @@ export default {
                 this.domManip.$on(element, "click", this.submitAvatar);
                 element = this.domManip.$id("edit-profile-modal-form-submit-button");
                 this.domManip.$on(element, "click", this.submitForm);
-                element = this.domManip.$id("friendship-modal-friendship-primary-button");
+                element = this.domManip.$id("modal-edit-friendship-friendship-primary-button");
                 this.domManip.$on(element, "click", this.changeFrendshipPrimaryMethod);
-                element = this.domManip.$class("invite-for-game-modal-maps-button");
+                element = this.domManip.$class("modal-create-game-maps-button");
                 for (let individualElement of element)
                     this.domManip.$on(individualElement, "click", this.selectMap);
-                element = this.domManip.$id("invite-for-game-modal-powerups-checkbox");
+                element = this.domManip.$id("modal-create-game-powerups-checkbox");
                 this.domManip.$on(element, "change", this.powerupsAction);
-                element = this.domManip.$id("invite-for-game-modal-start-button");
+                element = this.domManip.$id("modal-create-game-start-button");
                 this.domManip.$on(element, "click", this.submitInvitation);
-                element = this.domManip.$id("friendship-modal-friendship-secondary-button");
+                element = this.domManip.$id("modal-edit-friendship-friendship-secondary-button");
                 this.domManip.$on(element, "click", this.changeFrendshipSecondaryMethod);
-                element = this.domManip.$id("friendship-modal-block-button");
+                element = this.domManip.$id("modal-edit-friendship-block-button");
                 this.domManip.$on(element, "click", this.changeBlockMethod);
-                element = this.domManip.$id("friendship-modal-cancel-button");
+                element = this.domManip.$id("modal-edit-friendship-cancel-button");
                 this.domManip.$on(element, "click", this.cancelButton);
-                element = this.domManip.$id("new-chat-modal-create-button");
+                element = this.domManip.$id("modal-new-conversation-create-button");
                 this.domManip.$on(element, "click", this.createConversation);
                 element = this.domManip.$id("button-bottom-right");
                 this.domManip.$on(element, "click", this.openFriendList);
-                element = this.domManip.$id("friends-list-modal-search-bar");
+                element = this.domManip.$id("modal-friends-list-search-bar");
                 this.domManip.$on(element, "keydown", this.searchFriend);
+                */
             })
             // TODO: on error?
         },

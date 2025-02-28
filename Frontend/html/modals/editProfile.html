@@ -1,0 +1,76 @@
+
+<!-- Edit Profile Modal -->
+<!-- ####################################################################### -->
+<div class="modal fade" id="modal-edit-profile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="width: 32vw;">
+            <div class="modal-body" id="edit-profile-modal-body">
+                <!-- Form Body -->
+                <div id="edit-profile-modal-form">
+                    <h2>Edit Profile</h2>
+                    <barely-a-button id="edit-profile-modal-form-change-avatar-button" buttonclass="rect-button" name="avatar"></barely-a-button>
+                    <!-- Bootstrap Form -->
+                    <form class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label for="validationCustom01">First name</label>
+                                <input type="text" class="form-control" id="edit-profile-modal-form-input-first-name" placeholder="First name" value="John" required>
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="validationCustom02">Last name</label>
+                                <input type="text" class="form-control" id="edit-profile-modal-form-input-last-name" placeholder="Last name" value="Doe" required>
+                                <div class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label for="validationCustomUsername">Username</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="edit-profile-modal-form-input-username" placeholder="Username" value="user" aria-describedby="inputGroupPrepend" required>
+                                    <div class="invalid-feedback">Please choose a username.</div>
+                                </div>
+                            </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Language</label>
+                            <select class="form-control" id="edit-profile-modal-form-language-selector">
+                                <option value="none">Chose a Language</option>
+                                <option value="de-DE">DE - Deutsch</option>
+                                <option value="en-US">US - English</option>
+                                <option value="ne-NP">NP - Nepalese</option>
+                                <option value="pt-BR">BR - Portugues</option>
+                                <option value="pt-PT">PT - Portugues</option>
+                                <option value="uk-UA">UK - Ukrainian</option>
+                            </select>
+                        </div>
+                    </div>
+                    <barely-a-button id="edit-profile-modal-form-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
+                    </form>
+                </div>
+            </div>
+            <!--  Avatar Change Body -->
+            <div id="edit-profile-modal-avatar-change">
+                <button id="edit-profile-modal-avatar-change-upload-button">Upload Image</button>
+                <input type="file" id="edit-profile-modal-avatar-change-file-input" accept="image/*" style="display: none;">
+                <img id="edit-profile-modal-avatar-change-uploaded-image" src="" alt="Uploaded Image" style="display: none; width: 30vw; margin-top: 20px;"></img>
+                <barely-a-button id="edit-profile-modal-avatar-change-crop-image" buttonclass="rect-button" name="Submit"></barely-a-button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+ #edit-profile-modal-avatar-change-cropped-image {
+      width: 30vw; margin-top: 20px !important;
+    }
+    .form-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #edit-profile-modal-autentication-error {
+      display: none;
+    }
+</style>

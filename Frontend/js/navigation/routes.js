@@ -7,7 +7,8 @@ const routes = [
     {
         path: "/home",
         view: "home",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["createGame", "tournament"]
     },
     {
         path: "/game",
@@ -22,7 +23,8 @@ const routes = [
     {
         path: "/profile",
         view: "profile",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["template", "editProfile", "createGame", "editFriendship", "newConversation", "friendList"]
     },
     {
         path: "/chat",

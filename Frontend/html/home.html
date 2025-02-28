@@ -11,6 +11,7 @@
         <div class="modal-body" id="home-modal-body">
 
           <!-- A.I. Modal -->
+           <!-- TODO: THIS WILL BECOME A createGame MODAL -->
           <div id="AI-modal">
             <div id="modal-title">
               <h1>Play against A.I.</h1>
@@ -36,111 +37,6 @@
               <button id="AIModalStartButton">start</button>
             </div>
           </div>
-
-          <!-- Tournament Modal -->
-          <div id="tournament-modal">
-            <div id="tournament-modal-create-container">
-              <div class="tournament-modal-center create-modal">
-                <img id="tournament-modal-bigfoot-1" src="../../../assets/homeView/bigfootModal1.png" alt="big foot 1">
-                <img class="tournament-modal-bigfoot-2" src="../../../assets/homeView/bigfootModal2.png"
-                  alt="big foot 2">
-                <div id="tournament-modal-create-container-right-side">
-                  <div id="tournament-modal-create-form">
-                    <div id="tournament-modal-create-form-top">
-                      <h2>Host Tournament</h2>
-                    </div>
-                    <div id="tournament-modal-create-form-center">
-                      <div id="tournament-modal-create-form-name-container">
-                        <h5>Name: </h5>
-                        <input type="text" name="" id="tournament-modal-create-form-name-container-input">
-                      </div>
-                      <div id="tournament-modal-create-form-container-center">
-                        <div id="tournament-modal-create-form-left">
-                          <div id="tournament-modal-create-form-powerups-container">
-                            <h5>Powerups</h5>
-                            <input type="checkbox" name="" id="tournament-modal-create-form-name-container-checkbox">
-                          </div>
-                          <div id="tournament-modal-create-form-type-buttons-container">
-                            <barely-a-button class="tournament-modal-create-form-type-buttons" type="local" name="Local"
-                              width="3.6" buttonclass="rect-button">Left</barely-a-button>
-                            <barely-a-button class="tournament-modal-create-form-type-buttons" type="private"
-                              name="Private" width="3.6" buttonclass="rect-button">Middle</barely-a-button>
-                            <barely-a-button class="tournament-modal-create-form-type-buttons" type="public"
-                              name="Public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
-                          </div>
-                          <div id="template-tournament-modal-create-form-invited-user-card-container" class="barely-a-scroll-class">
-                            <search-bar
-								placeholder="Invite a user"
-								width="250"
-								search-type="users"
-								on-click-event="select-user-invite"
-								clear-on-click="true"
-							>
-							</search-bar>
-                            <template id="template-tournament-modal-create-form-invited-user-card">
-                              <div class="tournament-modal-create-form-invited-user-card">
-                                <img class="tournament-modal-create-form-invited-user-card-avatar">
-                                <p class="tournament-modal-create-form-invited-user-card-username"></p>
-                                <img class="tournament-modal-create-form-invited-user-card-delete-user"
-                                  src="../assets/logo.png">
-                              </div>
-                            </template>
-                          </div>
-                        </div>
-                        <div id="tournament-modal-create-form-right">
-                          <div id="tournament-modal-create-maps-container">
-                            <h3>Maps</h3>
-                            <img id="tournament-modal-create-map-ufo" name="ufo"
-                              class="tournament-modal-create-maps-button" src="../assets/homeView/UFOIcon.png"
-                              alt="error loading the image">
-                            <img id="tournament-modal-create-map-lizard-people" name="lizard-people"
-                              class="tournament-modal-create-maps-button" src="../assets/homeView/lizardPeopleIcon.png"
-                              alt="error loading the image">
-                            <img id="tournament-modal-create-map-snowman" name="snowman"
-                              class="tournament-modal-create-maps-button" src="../assets/homeView/snowmanIcon.png"
-                              alt="error loading the image">
-                            <img id="tournament-modal-create-map-lochness" name="lochness"
-                              class="tournament-modal-create-maps-button" src="../assets/homeView/lochnessIcon.png"
-                              alt="error loading the image">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div id="tournament-modal-create-form-bottom">
-                      <div id="tournament-modal-create-form-name-container-bottom-buttons">
-                        <button id="tournament-modal-create-form-create-button">Create</button>
-                        <button id='tournament-modal-create-form-join-button'>Join</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="tournament-modal-join-container">
-              <div class="tournament-modal-center join-modal">
-                <div id="tournament-modal-join-container-left-side">
-                  <div id="tournament-modal-join-container-left-side-top">
-                    <h1 id="tournament-modal-join-title">Join Tournament</h1>
-                  </div>
-                  <div id="tournament-modal-join-container-left-side-center">
-                    <template id="tournament-modal-join-tournament-cards-template">
-                      <div class="tournament-modal-join-tournament-card">
-                        <p class="tournament-modal-join-tournament-name"></p>
-                      </div>
-                    </template>
-                    <div id="tournament-modal-join-tournament-cards-container">
-                    </div>
-                  </div>
-                  <div id="tournament-modal-join-container-left-side-bottom">
-                    <button id="tournament-modal-join-form-host-button">Host</button>
-                  </div>
-                </div>
-                <img class="tournament-modal-bigfoot-2" id='modal-bigfoot-2'
-                  src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
-                <img src="../../../assets/homeView/bigfootModal3.png" alt="big foot 3" id="tournament-modal-bigfoot-3">
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -157,7 +53,7 @@
   }
 
   /* Tournament modal */
-  #tournament-modal {
+  #modal-tournament {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -166,8 +62,8 @@
     /* background-color: brown */
   }
 
-  #tournament-modal-create-container,
-  #tournament-modal-join-container {
+  #modal-tournament-create-container,
+  #modal-tournament-join-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -176,20 +72,20 @@
     /* background-color: purple; */
   }
 
-  #tournament-modal-join-container {
+  #modal-tournament-join-container {
     display: none;
   }
 
-  #tournament-modal-create-container {
+  #modal-tournament-create-container {
     display: display;
   }
 
-  #tournament-modal-create-form {
+  #modal-tournament-create-form {
     height: 81%;
     /* background-color: rgba(0, 0, 255, 0.328); */
   }
 
-  .tournament-modal-center {
+  .modal-tournament-center {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -201,9 +97,9 @@
     /* background-color: green; */
   }
 
-  #tournament-modal-bigfoot-1,
-  .tournament-modal-bigfoot-2,
-  #tournament-modal-bigfoot-3 {
+  #modal-tournament-bigfoot-1,
+  .modal-tournament-bigfoot-2,
+  #modal-tournament-bigfoot-3 {
     position: relative;
     top: 0;
     height: 100%;
@@ -211,17 +107,17 @@
     width: 100%;
   }
 
-  .tournament-modal-bigfoot-2,
-  #tournament-modal-create-container-right-side,
-  #tournament-modal-bigfoot-3 {
+  .modal-tournament-bigfoot-2,
+  #modal-tournament-create-container-right-side,
+  #modal-tournament-bigfoot-3 {
     position: absolute;
     left: 50%;
     height: 100%;
   }
 
-  #tournament-modal-bigfoot-1,
-  .tournament-modal-bigfoot-2,
-  #tournament-modal-bigfoot-3 {
+  #modal-tournament-bigfoot-1,
+  .modal-tournament-bigfoot-2,
+  #modal-tournament-bigfoot-3 {
     position: relative;
     top: 0;
     height: 100%;
@@ -229,7 +125,7 @@
     width: 100%;
   }
 
-  #tournament-modal-join-container-left-side {
+  #modal-tournament-join-container-left-side {
     /* background-color: rgba(255, 0, 0, 0.249); */
     position: absolute;
     top: 0;
@@ -239,8 +135,8 @@
     z-index: 2;
   }
 
-  #tournament-modal-join-container-left-side-top,
-  #tournament-modal-create-form-top {
+  #modal-tournament-join-container-left-side-top,
+  #modal-tournament-create-form-top {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -249,13 +145,13 @@
     height: 15.5%;
   }
 
-  #tournament-modal-join-title {
+  #modal-tournament-join-title {
     margin: auto;
     text-align: center;
     font-size: clamp(0.8rem, calc(7vw + 1rem), 2rem);
   }
 
-  #tournament-modal-join-tournament-cards-container {
+  #modal-tournament-join-tournament-cards-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -265,7 +161,7 @@
     overflow-y: auto;
   }
 
-  .tournament-modal-join-tournament-card {
+  .modal-tournament-join-tournament-card {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -277,30 +173,30 @@
     border: 3px solid black;
   }
 
-  .tournament-modal-join-tournament-card:hover {
+  .modal-tournament-join-tournament-card:hover {
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.061);
   }
 
   /*loading text*/
-  #tournament-modal-join-tournament-cards-container-loading {
+  #modal-tournament-join-tournament-cards-container-loading {
     margin: 1rem 2rem 0.5rem 2rem !important;
     text-align: center;
     font-size: clamp(0.8rem, calc(7vw + 1rem), 2rem);
   }
 
-  .tournament-modal-join-tournament-card>p {
+  .modal-tournament-join-tournament-card>p {
     margin: 0 !important;
   }
 
-  #tournament-modal-join-container-left-side-center,
-  #tournament-modal-create-form-center {
+  #modal-tournament-join-container-left-side-center,
+  #modal-tournament-create-form-center {
     /* background-color: rgba(0, 128, 0, 0.433); */
     width: 100%;
     height: 72.5%;
   }
 
-  #tournament-modal-join-container-left-side-bottom {
+  #modal-tournament-join-container-left-side-bottom {
     display: flex;
     flex-direction: row;
     padding-left: 1.5rem;
@@ -310,7 +206,7 @@
     height: 12%;
   }
 
-  #tournament-modal-create-form-bottom {
+  #modal-tournament-create-form-bottom {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -320,7 +216,7 @@
     height: 12%;
   }
 
-  #tournament-modal-join-form-host-button {
+  #modal-tournament-join-form-host-button {
     width: 40%;
     margin: 0.1rem 0.2rem 0.8rem;
     border: none;
@@ -330,17 +226,17 @@
 
   }
 
-  #tournament-modal-create-container-right-side {
+  #modal-tournament-create-container-right-side {
     /* background-color: rgba(255, 0, 0, 0.395); */
     width: 100%;
   }
 
-  #tournament-modal-create-form-center {
+  #modal-tournament-create-form-center {
     display: flex;
     flex-direction: column;
   }
 
-  #tournament-modal-create-form-name-container {
+  #modal-tournament-create-form-name-container {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -351,11 +247,11 @@
     /* background-color: rgba(0, 128, 0, 0.363); */
   }
 
-  #tournament-modal-create-form-name-container>h5 {
+  #modal-tournament-create-form-name-container>h5 {
     text-align: end;
   }
 
-  #tournament-modal-create-form-name-container-input {
+  #modal-tournament-create-form-name-container-input {
     border: none;
     border-bottom: 1px solid black;
     background-color: transparent;
@@ -366,7 +262,7 @@
     text-align: center;
   }
 
-  #tournament-modal-create-form-name-container-input:focus {
+  #modal-tournament-create-form-name-container-input:focus {
     outline: none;
     border: 1px solid black;
     border-radius: 0.25rem;
@@ -375,20 +271,20 @@
     width: 51%;
   }
 
-  #tournament-modal-create-form-container-center {
+  #modal-tournament-create-form-container-center {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     height: 80%;
   }
 
-  #tournament-modal-create-form-left,
-  #tournament-modal-create-form-right {
+  #modal-tournament-create-form-left,
+  #modal-tournament-create-form-right {
     display: flex;
     flex-direction: column;
   }
 
-  #tournament-modal-create-form-left {
+  #modal-tournament-create-form-left {
     width: 75%;
     /* background-color: rgba(255, 0, 0, 0.297); */
     height: 100%;
@@ -396,14 +292,14 @@
     align-items: center;
   }
 
-  #tournament-modal-create-form-right {
+  #modal-tournament-create-form-right {
     width: 25%;
     /* background-color: rgba(0, 0, 255, 0.321); */
     position: relative;
     margin-bottom: 1rem;
   }
 
-  #tournament-modal-create-form-right::before {
+  #modal-tournament-create-form-right::before {
     position: absolute;
     top: 0;
     left: 0.5rem;
@@ -413,7 +309,7 @@
     background-color: black;
   }
 
-  #tournament-modal-create-form-powerups-container {
+  #modal-tournament-create-form-powerups-container {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -422,7 +318,7 @@
     width: 100%;
   }
 
-  #tournament-modal-create-form-type-buttons-container {
+  #modal-tournament-create-form-type-buttons-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -430,7 +326,7 @@
     width: 80%;
   }
 
-  #template-tournament-modal-create-form-invited-user-card-container {
+  #template-modal-tournament-create-form-invited-user-card-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -445,21 +341,21 @@
     position: relative;
   }
 
-  /* #template-tournament-modal-create-form-invited-user-card-container::-webkit-scrollbar {
+  /* #template-modal-tournament-create-form-invited-user-card-container::-webkit-scrollbar {
     width: 0.5rem;
   }
 
-  #template-tournament-modal-create-form-invited-user-card-container::-webkit-scrollbar-track {
+  #template-modal-tournament-create-form-invited-user-card-container::-webkit-scrollbar-track {
     background-color: black;
     border-radius: 0.25rem;
   }
 
-  #template-tournament-modal-create-form-invited-user-card-container::-webkit-scrollbar-thumb {
+  #template-modal-tournament-create-form-invited-user-card-container::-webkit-scrollbar-thumb {
     background-color: rgb(176, 176, 176);
     border-radius: 0.25rem;
   } */
 
-  #template-tournament-modal-create-form-invited-user-card-container>input {
+  #template-modal-tournament-create-form-invited-user-card-container>input {
     width: 80%;
     background-color: black;
     color: rgb(255, 255, 255);
@@ -469,7 +365,7 @@
     left: 0;
   }
 
-  .tournament-modal-create-form-invited-user-card {
+  .modal-tournament-create-form-invited-user-card {
     display: flex;
     flex-direction: row;
     height: 100%;
@@ -482,23 +378,23 @@
     align-items: center;
   }
 
-  .tournament-modal-create-form-invited-user-card-avatar,
-  .tournament-modal-create-form-invited-user-card-delete-user {
+  .modal-tournament-create-form-invited-user-card-avatar,
+  .modal-tournament-create-form-invited-user-card-delete-user {
     width: 15%;
     max-width: 200px;
     aspect-ratio: 3 / 4;
     object-fit: contain;
   }
 
-  .tournament-modal-create-form-invited-user-card-delete-user:hover {
+  .modal-tournament-create-form-invited-user-card-delete-user:hover {
     cursor: pointer;
   }
 
-  .tournament-modal-create-form-invited-user-card>p {
+  .modal-tournament-create-form-invited-user-card>p {
     text-align: center;
   }
 
-  #tournament-modal-create-maps-container {
+  #modal-tournament-create-maps-container {
     display: flex;
     flex-direction: column;
     /* background-color: rgba(255, 0, 0, 0.407); */
@@ -507,40 +403,40 @@
     overflow-y: auto;
   }
 
-  .tournament-modal-create-maps-button {
+  .modal-tournament-create-maps-button {
     width: 45%;
     max-width: 200px;
     margin-right: 2rem;
   }
 
-  .tournament-modal-create-maps-button:hover {
+  .modal-tournament-create-maps-button:hover {
     cursor: pointer;
   }
 
-  #tournament-modal-create-maps-container>h3 {
+  #modal-tournament-create-maps-container>h3 {
     margin-right: 2rem;
   }
 
-  #tournament-modal-create-maps-container::-webkit-scrollbar {
+  #modal-tournament-create-maps-container::-webkit-scrollbar {
     width: 0.5rem;
   }
 
-  #tournament-modal-create-maps-container::-webkit-scrollbar-track {
+  #modal-tournament-create-maps-container::-webkit-scrollbar-track {
     background-color: black;
     border-radius: 0.25rem;
   }
 
-  #tournament-modal-create-maps-container::-webkit-scrollbar-thumb {
+  #modal-tournament-create-maps-container::-webkit-scrollbar-thumb {
     background-color: rgb(176, 176, 176);
     border-radius: 0.25rem;
   }
 
-  #tournament-modal-create-form-bottom {
+  #modal-tournament-create-form-bottom {
     /* background-color: rgba(0, 0, 255, 0.43); */
     width: 100%;
   }
 
-  #tournament-modal-create-form-name-container-bottom-buttons {
+  #modal-tournament-create-form-name-container-bottom-buttons {
     display: flex;
     flex-direction: row;
     /* background-color: rgba(255, 0, 0, 0.388); */
@@ -550,14 +446,14 @@
     height: 77%;
   }
 
-  #tournament-modal-create-form-create-button {
+  #modal-tournament-create-form-create-button {
     width: 44%;
     height: 100%;
     background-color: black;
     color: white;
   }
 
-  #tournament-modal-create-form-join-button {
+  #modal-tournament-create-form-join-button {
     width: 54%;
     height: 100%;
     background-color: black;

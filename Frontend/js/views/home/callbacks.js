@@ -7,7 +7,7 @@ import { generateTournamentName } from './methods.js';
 function hideModalElements(){
     let modalContent = $id("AI-modal");
     modalContent.style.display = 'none';
-    $id("tournament-modal").style.display = 'none';
+    $id("modal-tournament").style.display = 'none';
     $id('home-modal-body').style.backgroundImage = 'none';
 }
 
@@ -57,16 +57,16 @@ function checkEnrolement() {
 }
 
 function createTournamentCard(element) {
-    const template = $id("tournament-modal-tournament-template").content.cloneNode(true);
+    const template = $id("modal-tournament-tournament-template").content.cloneNode(true);
 
-    template.querySelector("tournament-modal-tournament-name").textContent = element.name; // Check if this is the keyword name
+    template.querySelector("modal-tournament-tournament-name").textContent = element.name; // Check if this is the keyword name
 
 }
 
 function createJoinTournamentList() {
 
     call('tournament/to-join/','GET').then(data => {
-        const listContainer = $id("tournament-modal-tournament-list");
+        const listContainer = $id("modal-tournament-tournament-list");
 
         // loop through the tournaments call the createTournamentCard function
 
@@ -85,12 +85,12 @@ export function tournamentModalCallback(){
     // modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
     // modalBody.style.backgroundPosition = 'center'; // Center the image
     // modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
-    $id("tournament-modal").style.display = 'flex';
+    $id("modal-tournament").style.display = 'flex';
     const modal = new bootstrap.Modal(modalElement);
     // Adding a "random name" to the tournament name input. That needs to be
     // done so that the client can create a tournament without having to type
     // a name. This "fast button" is mandatory from subject
-    $id("tournament-modal-create-form-name-container-input").value = generateTournamentName();
+    $id("modal-tournament-create-form-name-container-input").value = generateTournamentName();
     modal.show();
 }
 

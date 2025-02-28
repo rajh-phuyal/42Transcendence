@@ -1,0 +1,76 @@
+
+
+
+<!-- Friends List Modal -->
+<!-- ####################################################################### -->
+<div class="modal fade" id="modal-friends-list" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content" id="modal-friends-list-content">
+            <div class="modal-header" id="modal-friends-list-content">
+                <h1>Friends List</h1>
+            </div>
+            <div class="modal-body  barely-a-scroll-class" id="modal-friends-list-body">
+                <div id="modal-friends-list-search-bar-container">
+                    <input type="text" id="modal-friends-list-search-bar" placeholder="search">
+                </div>
+                <div>
+                    <ul id="modal-friends-list-list" class="list-group">
+                        <template id="modal-friends-list-list-element-template">
+                            <div class="modal-friends-list-list-element">
+                                <img id="modal-friends-list-list-element-avatar-image" class="modal-friends-list-list-element-image" alt="error loading image"></img>
+                                <h3 class="modal-friends-list-list-element-username"></h3>
+                                <img id="modal-friends-list-list-element-friendship-image" class="modal-friends-list-list-element-image" alt="error loading image"></img>
+                            </div>
+                        </template>
+                    </ul>
+                    <h3 id="modal-friends-list-list-result-not-found-message">No Results Found</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-friends-list-close-button" class="rect-button" name="Close">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-friends-list-search-bar{
+        background-color: black;
+        color: white;
+        width: 100%;
+    }
+
+    .modal-friends-list-list-element{
+        display: flex;
+        flex-direction: row;
+        margin: 1% 0% !important;
+        height: 8vh;
+        border:  3px solid  black;
+        background-color: #EFE7D3;
+        align-items: center;
+    }
+
+    .modal-friends-list-list-element-image {
+        height: 7vh;
+        margin: 0vh 1vw !important;
+    }
+
+    #modal-friends-list-list-element-friendship-image {
+        height: 70%;
+    }
+
+    .modal-friends-list-list-element-username {
+        margin: 0vh 6vw 0vh 2vw !important;
+        width: 4vw;
+    }
+
+    #modal-friends-list-list {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    #modal-friends-list-body {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
