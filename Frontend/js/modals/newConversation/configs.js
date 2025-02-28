@@ -10,6 +10,7 @@ export default {
 
     methods: {
         enableButtonCallback() {
+            // Enable the button if the input is not empty
             const input = this.domManip.$id("modal-new-conversation-textarea");
             const btn = this.domManip.$id("modal-new-conversation-create-button");
             if (input.value.trim() === "")
@@ -19,10 +20,10 @@ export default {
         },
 
         createConversation() {
+            // This is calling the endpoint to create a new conversation
             console.log("1");
             const message = this.domManip.$id("modal-new-conversation-textarea").value;
             console.log("2");
-            //this.hideModal("modal-new-conversation");
             call("chat/create/conversation/", "POST", {"userId": this.userId, "initialMessage": message}).then(data => {
                 console.log("3");
                 $callToast("success", data.message);
@@ -41,7 +42,19 @@ export default {
 
             console.log("Running beforeOpen hook for modal-new-conversation");
             // Fetching the attributes from view and store them locally
-            this.userId = this.domManip.$id("router-view").getAttribute("data-user-id");
+
+
+            // Try to store userId as Number
+            try {
+                this.userId = parseInt(this.domManip.$id("router-view").getAttribute("data-user-id"));
+            } catch {
+                console.error("newConversationModal: Couldn't find the userId attribute in the view");
+                return false;
+            }
+            if (!this.userId) {
+                console.error("newConversationModal: Couldn't find the userId attribute in the view");
+                return false;
+            }
             this.chatId = this.domManip.$id("router-view").getAttribute("data-user-chat-id");
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
             // If already a chat exists, redirect to the chat
@@ -50,10 +63,7 @@ export default {
                 return false;
             }
 
-            if (!this.userId) {
-                console.error("newConversationModal: Couldn't find the userId attribute in the view");
-                return false;
-            }
+
 
             // Set modal title
             this.domManip.$id("modal-new-conversation-title").innerText = `Create new conversation with ${this.username}`;
