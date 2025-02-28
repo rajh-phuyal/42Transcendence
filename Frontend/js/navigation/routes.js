@@ -29,7 +29,8 @@ const routes = [
     {
         path: "/chat",
         view: "chat",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["createGame"]
     },
     {
         path: "/auth",

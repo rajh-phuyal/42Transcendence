@@ -47,16 +47,14 @@ export default {
 
     hooks: {
         beforeOpen () {
-            // This function prepares the modal
-            // On sucess returns true, on failure returns false
-            // Will be called by the ModalManager
+            /* This function prepares the modal
+                On sucess returns true, on failure returns false
+                Will be called by the ModalManager
+            */
 
-            console.log("Running beforeOpen hook for modal-new-conversation");
             // Fetching the attributes from view and store them locally
-
-
-            // Try to store userId as Number
             try {
+                // Try to store userId as Number
                 this.userId = parseInt(this.domManip.$id("router-view").getAttribute("data-user-id"));
             } catch {
                 console.error("newConversationModal: Couldn't find the userId attribute in the view");
@@ -73,8 +71,6 @@ export default {
                 router(`/chat`, {id: this.chatId});
                 return false;
             }
-
-
 
             // Set modal title
             this.domManip.$id("modal-new-conversation-title").innerText = `Create new conversation with ${this.username}`;
