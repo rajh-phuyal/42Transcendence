@@ -1,12 +1,4 @@
 {
-    "template": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
     "group": {
         "en-US": "group: ",
         "pt-PT": "grupo: ",
