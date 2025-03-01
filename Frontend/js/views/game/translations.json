@@ -1,6 +1,6 @@
 {
-    "template": {
-        "en-US": "",
+    "partOfTournament": {
+        "en-US": "Part of tournament: ",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
@@ -31,6 +31,22 @@
         "uk-UA": "",
         "ne-NP": ""
     },
+    "spectator-connect": {
+        "en-US": "You are not part of this game!\nPress space to watch it live",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "spectator-waiting": {
+        "en-US": "Connected\nWaiting for players",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
     "ready": {
         "en-US": "READY",
         "pt-PT": "",
@@ -40,7 +56,31 @@
         "ne-NP": ""
     },
     "finished": {
-        "en-US": "Game is over",
+        "en-US": "Game is over\nPress space to create a new game with the same settings",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "quited": {
+        "en-US": "Game was quited\nPress space to create a new game with the same settings",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "deleted": {
+        "en-US": "Game was deleted\nWill redirect to home in 5 seconds...",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "redirTournament": {
+        "en-US": "Game is over\nWill redirect to tournament lobby in 5 seconds...",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
