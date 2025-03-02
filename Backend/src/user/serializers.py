@@ -4,6 +4,11 @@ from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
 from django.core.cache import cache
 from chat.models import Conversation
+from game.models import GameMember
+from tournament.models import TournamentMember
+from django.db.models import Count, Subquery, Sum, IntegerField
+from django.db.models.functions import Coalesce
+from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP
 import logging
 
 class SearchSerializer(serializers.ModelSerializer):
@@ -48,22 +53,72 @@ class ProfileSerializer(serializers.ModelSerializer):
         return get_relationship_status(requester, requested)
 
     def get_stats(self, obj):
+        current_user = self.context['request'].user
+
+        # Fetching total games and games won
+        total_games = GameMember.objects.filter(user=current_user).count()
+        games_won = GameMember.objects.filter(user=current_user, result='won').count()
+
+        # Fetching the top user's total games
+        top_user_total_games = (
+            User.objects
+            .annotate(total_games=Count('game_members'))
+            .order_by('-total_games')
+            .values_list('total_games', flat=True)
+            .first() or 1  # Default to 1 to prevent division errors
+        )
+
+        # Fetching tournament stats
+        total_tournament_games = (
+            TournamentMember.objects.filter(user=current_user)
+            .aggregate(total_games=Sum('played_games'))['total_games'] or 0
+        )
+
+        top_tournament_total_games = (
+            User.objects
+            .annotate(total_games=Sum('tournament_members__played_games'))
+            .order_by('-total_games')
+            .values_list('total_games', flat=True)
+            .first() or 1  # Default to 1 to prevent division errors
+        )
+
+        # Raw skill and experience calculations
+        skill = (games_won or 0) / (total_games or 1)
+        game_experience = (total_games or 1) / (top_user_total_games or 1)
+        tournament_experience = (total_tournament_games or 1) / (top_tournament_total_games or 1)
+
+        # Normalize values into 0-100% range (clamping max at 100%)
+        def normalize(value):
+            return min(round(value * 100, 2), 100)  # Convert to percentage, max 100%
+
+        skill_norm = normalize(skill)
+        game_experience_norm = normalize(game_experience)
+        tournament_experience_norm = normalize(tournament_experience)
+
+        # Normalize total score into 0-100 range based on weight factors
+        total_score = (
+            NORM_STATS_SKILL * skill +
+            NORM_STATS_GAME_EXP * game_experience +
+            NORM_STATS_TOURNAMENT_EXP * tournament_experience
+        )
+        total_score_norm = min(round(total_score, 2), 100)
+
         return {
             "game": {
-                "won": 42,
-                "played": 420
+                "won": games_won,
+                "played": total_games
             },
             "tournament": {
-                "firstPlace": 5,
+                "firstPlace": 5, 
                 "secondPlace": 6,
-                "thirdPlace": 7,
-                "played": 42
+                "thirdPlace": 7, 
+                "played": total_tournament_games
             },
             "score": {
-                "skill": 0.10,
-                "experience": 0.25,
-                "performance": 0.75,
-                "total": 0.50
+                "skill": skill_norm,
+                "experience": game_experience_norm,
+                "performance": tournament_experience_norm,
+                "total": total_score_norm
             }
         }
 

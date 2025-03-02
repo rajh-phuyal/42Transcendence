@@ -32,7 +32,7 @@ function populateStats(res) {
 
 function populateProgress(res, identity) {
     let id = identity + "progress";
-    let percentageValue = res * 100;
+    let percentageValue = res;
 
     let progressBar =$id(id);
     progressBar.style.width =  percentageValue + '%';
