@@ -105,6 +105,46 @@ export function createGameCard(gameObject) {
     else
         $id("tournament-current-games-container").appendChild(container);
 
+    if (!gameObject.deadline)
+        container.style.display = "none";
+
+}
+
+function createRankEntry(rankObject) {
+    const template = $id("tournament-rank-row-template").content.cloneNode(true);
+    const container = template.querySelector(".tournament-rank-row");
+
+    container.querySelector(".tournament-rank-row-position").textContent = rankObject.rank;
+    container.querySelector(".tournament-rank-row-avatar").src = window.origin + "/media/avatars/" + rankObject.avatarUrl;
+    container.querySelector(".tournament-rank-row-username").textContent = rankObject.username;
+    container.querySelector(".tournament-rank-row-wins").textContent = rankObject.wonGames;
+    container.querySelector(".tournament-rank-row-diff").textContent = rankObject.winPoints;
+    container.querySelector(".tournament-rank-row-games").textContent = rankObject.playedGames;
+
+    return container;
+}
+
+export function updateRankTable(rankObject) {
+    console.log("rank object:", rankObject);
+
+    const rankTableBody = $id("tournament-rank-table-body");
+
+    rankTableBody.innerHTML = "";
+
+    for (let element of rankObject)
+        rankTableBody.appendChild(createRankEntry(element));
+
+    // Sort the Table by rank position
+
+    const rows = Array.from(rankTableBody.querySelectorAll(".tournament-rank-row"));
+    rows.sort((rowA, rowB) => {
+        const rankA = parseInt(rowA.querySelector(".tournament-rank-row-position").textContent, 10);
+        const rankB = parseInt(rowB.querySelector(".tournament-rank-row-position").textContent, 10);
+        return rankA - rankB;
+    });
+
+    rankTableBody.innerHTML = "";
+    rows.forEach(row => rankTableBody.appendChild(row));
 }
 
 function moveGameCardToHistory(gameId) {
@@ -120,18 +160,21 @@ export function gameUpdateScore(gameObject) {
 }
 
 export function gameUpdateState(gameObject) {
-    const gameCard = $id("tournament-game-" + gameObject.gameId);
+    const gameCard = $id("tournament-game-" + gameObject.id);
 
     gameCard.querySelector(".tournament-game-card-spinner").style.display = "none";
 
-    if (gameObject.state === "ongoing")
-        gameCard.querySelector(".tournament-game-card-score").textContent = "0 - 0";
-    else if (gameObject.state === "paused")
+    if (gameObject.state === "pending") {
+        gameCard.querySelector(".tournament-game-card-score").textContent = "VS";
+        return ;
+    }
+
+    gameCard.querySelector(".tournament-game-card-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
+
+    if (gameObject.state === "paused")
         gameCard.querySelector(".tournament-game-card-spinner").style.display = "flex";
     else if (gameObject.state === "finished") {
-        console.log("FINIIIIISHH HIIIIIIIM!!!!!");
-        //TODO: the winner value should be player1/2 instead of player id
-        moveGameCardToHistory(gameObject.gameId);
+        moveGameCardToHistory(gameObject.id);
     }
 }
 
@@ -193,3 +236,12 @@ export function updateParticipantsCard(userData) {
     }
 }
 
+export function updateGameCard(gameObject) {
+    console.log("game object:", gameObject);
+    if (!$id("tournament-game-" + gameObject.id))
+        createGameCard(gameObject);
+    else
+        gameUpdateState(gameObject);
+    if (gameObject.deadline)
+        $id("tournament-game-" + gameObject.id).style.display = "flex";
+}

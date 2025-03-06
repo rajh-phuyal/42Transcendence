@@ -1,7 +1,7 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateGameCardScore, gameUpdateState, updateTournamentRank } from '../views/tournament/methods.js';
+import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
@@ -76,6 +76,8 @@ class WebSocketManager {
     // - update
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
+
+    // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
         console.log("BE -> FE:", message);
         switch (message.messageType) {
@@ -98,16 +100,36 @@ class WebSocketManager {
                 createConversationCard(message, false);
                 return ;
 
+                // =======================================================
+                // ====================| TOURNAMENT |=====================
+                // =======================================================
+
             case "tournamentFan":
                 console.warn("TODO!")
                 return ;
 
-            case "tournamentState":
+            case "tournamentInfo":
                 console.warn("TODO!")
                 if (this.currentRoute == "tournament"){
                     buildView(message.state);
                 }
                 return ;
+
+            case "tournamentMember":
+                updateParticipantsCard(message.tournamentMember);
+                return ;
+
+            // TODO: maybe the name of this message type is to close to tournamentMember
+            case "tournamentMembers":
+                updateRankTable(message.tournamentMembers);
+                return ;
+
+            case "tournamentGame":
+                // TODO: change the TournamentGame to camelCase
+                updateGameCard(message.TournamentGame);
+                return ;
+
+                // ================| OLD MESSAGES TYPES |===================
 
             case "tournamentSubscription":
                 console.warn("TODO!")

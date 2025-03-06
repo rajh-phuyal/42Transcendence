@@ -18,13 +18,13 @@
 		<div id="tournament-middle-upper">
             <div id="tournament-middle-upper-ongoing-stage" class="tournament-ongoing">
                 <button id="tournament-games-do-come-button" class="tournament-tabs">
-                    Game to come 
+                    Game to come
                 </button>
                 <button id="tournament-rank-button" class="tournament-tabs">
-                    Tournament rank 
+                    Tournament rank
                 </button>
                 <button id="tournament-history-button" class="tournament-tabs">
-                    Tournament History 
+                    Tournament History
                 </button>
             </div>
             <div id="tournament-middle-upper-setup-stage" class="tournament-setup">
@@ -86,8 +86,10 @@
 						<tr class="tournament-rank-row">
 							<td class="tournament-rank-row-position"></td>
 							<td class="tournament-rank-row-user">
-								<img class="tournament-rank-row-avatar" alt="image not found">
-								<h5 class="tournament-rank-row-username"></h5>
+								<div class="tournament-rank-row-user-wrapper">
+									<img class="tournament-rank-row-avatar" alt="image not found">
+									<h5 class="tournament-rank-row-username"></h5>
+								</div>
 							</td>
 							<td class="tournament-rank-row-wins"></td>
 							<td class="tournament-rank-row-diff"></td>
@@ -103,8 +105,8 @@
 						<p>Wins</p>
 						<p>Diff</p>
 						<p>Games</p> -->
-					</div>
-					<div id="tournament-rank-list-cards-list">
+					<!-- </div>
+					<div id="tournament-rank-list-cards-list"> -->
 						<!-- where the rank cards will be -->
 					<!-- </div>
 					<template id="tournament-rank-card-template">
@@ -126,9 +128,7 @@
 		</div>
 		<div id="tournament-middle-bottom">
             <div id="tournament-middle-bottom-current-game-button" class="tournament-ongoing">
-                <button>
-                    Go to your current game 
-                </button>
+                <barely-a-button id="tournament-games-do-come-button" buttonclass="rect-button" name="Go to your current game"></barely-a-button>
             </div>
             <div id="tournament-middle-bottom-subscribe-start-button" class="tournament-setup">
                 <button>
@@ -139,12 +139,48 @@
 	</div>
 	<div id="tournament-right-side">
 		<button id="tournament-quit-cancel-button" class="tournament-setup">
-			Quit tournament 
+			Quit tournament
 		</button>
 	</div>
-	
 </div>
 <style>
+
+	.tournament-rank-row-avatar {
+		height: 45px;
+	}
+
+	.tournament-rank-row-user-wrapper {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.tournament-rank-row {
+		display: table-row;
+		flex-direction: row;
+		width: 100%;
+		height: 20%;
+	}
+
+	#tournament-rank-table {
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.766);
+		color: white;
+		border: 2px solid white;
+		border-collapse: collapse;
+	}
+
+
+#tournament-rank-table,
+#tournament-rank-table th,
+#tournament-rank-table td {
+    border: 1px solid white; /* Adjust color as needed */
+}
+
+th, td {
+    padding: 8px; /* Adds spacing inside cells */
+    text-align: left; /* Aligns text to the left */
+}
 
 	#tournament-rank-list-cards-list {
 		display: flex;
@@ -154,18 +190,19 @@
 	}
 
 	#tournament-rank-container {
-		background-color: orange;
 		display: flex;
 		flex-direction: column;
+		height: 100%;
+		width: 100%;
 	}
 
 	#tournament-rank-list {
-		height: 100%;
+		height: 60%;
 	}
 
 	#tournament-rank-list-header {
 		display: flex;
-		flex-direction: row;	
+		flex-direction: row;
 		height: 10%;
 		width: 100%;
 		background-color:black;
@@ -176,7 +213,7 @@
 
 	.tournament-rank-card-container {
 		display: flex;
-		flex-direction: row;	
+		flex-direction: row;
 		height: 20%;
 		width: 100%;
 		color: black;
@@ -252,8 +289,6 @@
 
     #tournament-players-list-container,
     #tournament-current-games-container,
-    #tournament-rank-container,
-	#tournament-rank-container,
     #tournament-matches-table-container{
         height: 60%;
 		width: 80%;

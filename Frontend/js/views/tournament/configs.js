@@ -3,7 +3,7 @@ import $callToast from '../../abstracts/callToast.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
-import { buildView, createPlayerCard, createGameCard } from './methods.js';
+import { buildView, createPlayerCard, createGameCard, updateRankTable } from './methods.js';
 import { tournamentData } from './objects.js';
 
 
@@ -14,11 +14,11 @@ export default {
 
     methods: {
 
-        openCurrentGames() {
-            this.domManip.$id("tournament-current-games-container").style.display = "flex";
-            this.domManip.$id("tournament-rank-container").style.display = "none";
-            this.domManip.$id("tournament-history-container").style.display = "none";
-        },
+        // openCurrentGames() {
+        //     this.domManip.$id("tournament-current-games-container").style.display = "flex";
+        //     this.domManip.$id("tournament-rank-container").style.display = "none";
+        //     this.domManip.$id("tournament-history-container").style.display = "none";
+        // },
 
         openTournamentRank() {
             this.domManip.$id("tournament-current-games-container").style.display = "none";
@@ -33,7 +33,7 @@ export default {
         },
 
         quitCancelTournamentButtonAction() {
-            if (this.data.tournamentState !== "setup")
+            if (this.data.tournamentInfo.state !== "setup")
                 return
             if (this.data.clientRole === "admin") {
                 console.log("canceling tournament");
@@ -51,7 +51,7 @@ export default {
         },
 
         subscribeStartTournamentButtonAction() {
-            if (this.data.tournamentState !== "setup")
+            if (this.data.tournamentInfo.state !== "setup")
                 return;
             if (this.data.clientRole === "admin") {
                 console.log("starting tournament");
@@ -68,11 +68,18 @@ export default {
             }
         },
 
+        routeToCurrentGame() {
+            console.log("routing to current games");
+            call('tournament/go-to-game/', 'GET').then(data => {
+                console.log(data);
+                router(`/game`, { id: data.id });
+            })
+        },
+
         leaveLobbyButtonAction() {
             router("/home");
         },
 
-       
         // buildParticipantsList(list) {
         //     //console.log("Building participants list from list: ", list);
         //     const mainDiv = this.domManip.$id("tournament-list");
@@ -134,15 +141,14 @@ export default {
             // this.domManip.$off(this.domManip.$id("start-button"), "click", this.startTournament);
             // this.domManip.$off(this.domManip.$id("cancel-button"), "click", this.cancelTournament);
             // WebSocketManager.setCurrentRoute(undefined);
-        
-        
+
             this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
-            this.domManip.$off(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
+            // this.domManip.$off(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
             this.domManip.$off(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
             this.domManip.$off(this.domManip.$id("tournament-history-button"), "click", this.openTournamentHistory);
-            
+            this.domManip.$off(this.domManip.$id("tournament-games-do-come-button"), "click", this.routeToCurrentGame);
         },
 
         beforeDomInsertion() {
@@ -156,12 +162,11 @@ export default {
                 this.data = data;
 
                 tournamentData.isPublic = data.tournamentPublic;
-                
 
 
-                buildView(data.tournamentState);
+                buildView(data.tournamentInfo.state);
 
-                if (data.tournamentState === "setup") {
+                if (data.tournamentInfo.state === "setup") {
                     for (let element of data.tournamentMembers)
                         createPlayerCard(element);
                 }
@@ -171,14 +176,18 @@ export default {
                     }
                 }
 
+                if (data.tournamentInfo.state !== "setup")
+                    updateRankTable(data.tournamentMembers);
+
                 //  TODO: the tournament rank should be created with data from rest aswell
 
                 this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
-                this.domManip.$on(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
+                // this.domManip.$on(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
                 this.domManip.$on(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
                 this.domManip.$on(this.domManip.$id("tournament-history-button"), "click", this.openTournamentHistory);
+                this.domManip.$on(this.domManip.$id("tournament-games-do-come-button"), "click", this.routeToCurrentGame);
             })
 
 
