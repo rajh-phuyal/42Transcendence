@@ -225,21 +225,35 @@ export function updateFinalsDiagram(gameObject) {
             if (gameObject.playerLeft.result === "won") {
                 winner = gameObject.playerLeft;
                 loser = gameObject.playerRight;
+                $id("tournament-finals-player-right-avatar").style.filter = "brightness(50%)" ;
             }
             else {
                 winner = gameObject.playerRight;
                 loser = gameObject.playerLeft;
+                $id("tournament-finals-player-left-avatar").style.filter = "brightness(50%)" ;
             }
 
             podiumContainer.querySelector("#tournament-podium-first-avatar").src = window.origin + "/media/avatars/" + winner.avatarUrl;
+            podiumContainer.querySelector("#tournament-podium-first-avatar").style.display = "flex";
             podiumContainer.querySelector("#tournament-podium-first-username").textContent = winner.username;
+            podiumContainer.querySelector("#tournament-podium-first-username").style.display = "flex";
             podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
 
             podiumContainer = $id("tournament-podium-second");
 
             podiumContainer.querySelector("#tournament-podium-second-avatar").src = window.origin + "/media/avatars/" + loser.avatarUrl;
+            podiumContainer.querySelector("#tournament-podium-second-avatar").style.display = "flex";
             podiumContainer.querySelector("#tournament-podium-second-username").textContent = loser.username;
+            podiumContainer.querySelector("#tournament-podium-second-username").style.display = "flex";
             podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
+        }
+        else {
+            $id("tournament-podium-first").querySelector(".tournament-podium-question-mark").style.display = "flex";
+            $id("tournament-podium-second").querySelector(".tournament-podium-question-mark").style.display = "flex";
+            $id("#tournament-podium-first-avatar").style.display = "none";
+            $id("#tournament-podium-second-avatar").style.display = "none";
+            $id("#tournament-podium-first-username").style.display = "none";
+            $id("#tournament-podium-second-username").style.display = "none";
         }
         return ;
     }

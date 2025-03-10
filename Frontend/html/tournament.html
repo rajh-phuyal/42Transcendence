@@ -76,18 +76,18 @@
 					<div id="tournament-podium-container">
 						<div id="tournament-podium-second" class="tournament-podium-step">
 							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-second-avatar" alt="image not found">
-							<h5 id="tournament-podium-second-username">cona</h5>
+							<img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found">
+							<h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
 						</div>
 						<div id="tournament-podium-first" class="tournament-podium-step">
 							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-first-avatar" alt="image not found">
-							<h5 id="tournament-podium-first-username">coninha</h5>
+							<img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found">
+							<h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
 						</div>
 						<div id="tournament-podium-third" class="tournament-podium-step">
 							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-third-avatar" alt="image not found">
-							<h5 id="tournament-podium-third-username">conalho</h5>
+							<img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found">
+							<h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
 						</div>
 					</div>
 					<!-- Finals Diagram -->
@@ -247,6 +247,16 @@
 		color: white;
 		margin: 2%;
 		border-radius: 10%;
+		width: 15%;
+	}
+
+	.tournament-podium-username {
+		display: none;
+	}
+
+	.tournament-podium-avatar {
+		height: 50%;
+		display: none;
 	}
 
 	#tournament-podium-second {
