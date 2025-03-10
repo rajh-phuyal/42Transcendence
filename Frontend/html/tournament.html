@@ -69,57 +69,94 @@
 
             <!-- Tournament Rank -->
             <div id="tournament-rank-container">
-				<table id="tournament-rank-table">
-					<thead id="tournament-rank-table-header">
-						<tr>
-							<th>Rank</th>
-							<th>Player</th>
-							<th>Wins</th>
-							<th>Diff</th>
-							<th>Games</th>
-						</tr>
-					</thead>
-					<tbody id="tournament-rank-table-body">
-						<!-- where the rank rows will be -->
-					</tbody>
-					<template id="tournament-rank-row-template">
-						<tr class="tournament-rank-row">
-							<td class="tournament-rank-row-position"></td>
-							<td class="tournament-rank-row-user">
-								<div class="tournament-rank-row-user-wrapper">
-									<img class="tournament-rank-row-avatar" alt="image not found">
-									<h5 class="tournament-rank-row-username"></h5>
-								</div>
-							</td>
-							<td class="tournament-rank-row-wins"></td>
-							<td class="tournament-rank-row-diff"></td>
-							<td class="tournament-rank-row-games"></td>
-						</tr>
-					</template>
-				</table>
-
-				<!-- <div id="tournament-rank-list">
-					<div id="tournament-rank-list-header">
-						<p>Position</p>
-						<p>Player</p>
-						<p>Wins</p>
-						<p>Diff</p>
-						<p>Games</p> -->
-					<!-- </div>
-					<div id="tournament-rank-list-cards-list"> -->
-						<!-- where the rank cards will be -->
-					<!-- </div>
-					<template id="tournament-rank-card-template">
-						<div class="tournament-rank-card-container">
-							<h5 class="tournament-rank-card-position"></h5>
-							<img class="tournament-rank-card-avatar" alt="image not found">
-							<h5 class="tournament-rank-card-username"></h5>
-							<h6 class="tournament-rank-card-wins"></h6>
-							<h6 class="tournament-rank-card-diff"></h6>
-							<h6 class="tournament-rank-card-games"></h6>
+				<barely-a-button id="tournament-round-robbin-button" buttonclass="rect-button" name="Round Robbin"></barely-a-button>
+				<barely-a-button id="tournament-finals-button" buttonclass="rect-button" name="Finals"></barely-a-button>
+				<div id="tournament-finals-container">
+					<!-- Podium -->
+					<div id="tournament-podium-container">
+						<div id="tournament-podium-second" class="tournament-podium-step">
+							<h1 class="tournament-podium-question-mark">?</h1>
+							<img id="tournament-podium-second-avatar" alt="image not found">
+							<h5 id="tournament-podium-second-username">cona</h5>
 						</div>
-					</template>
-				</div> -->
+						<div id="tournament-podium-first" class="tournament-podium-step">
+							<h1 class="tournament-podium-question-mark">?</h1>
+							<img id="tournament-podium-first-avatar" alt="image not found">
+							<h5 id="tournament-podium-first-username">coninha</h5>
+						</div>
+						<div id="tournament-podium-third" class="tournament-podium-step">
+							<h1 class="tournament-podium-question-mark">?</h1>
+							<img id="tournament-podium-third-avatar" alt="image not found">
+							<h5 id="tournament-podium-third-username">conalho</h5>
+						</div>
+					</div>
+					<!-- Finals Diagram -->
+					<div id="tournment-finals-diagram">
+						<div id="tournament-semi-finals-one" class="tournament-semi-finals" in-use="false">
+							<h5 class="finals-title">Semi-Finals 1</h5>
+							<img class="finals-player-left-avatar" id="tournament-semi-finals-one-player-left-avatar" alt="">
+							<h6 class="finals-player-left-username" id="tournament-semi-finals-one-player-left-username">player 1</h6>
+							<h5 class="finals-score" id="tournament-semi-finals-one-score">VS</h5>
+							<h6 class="finals-player-right-username" id="tournament-semi-finals-one-player-right-username">player 2</h6>
+							<img class="finals-player-right-avatar" id="tournament-semi-finals-one-player-right-avatar" alt="">
+						</div>
+						<div id="tournament-semi-finals-two" class="tournament-semi-finals" in-use="false">
+							<h5 class="finals-title">Semi-Finals 2</h5>
+							<img class="finals-player-left-avatar" id="tournament-semi-finals-two-player-left-avatar" alt="">
+							<h6 class="finals-player-left-username" id="tournament-semi-finals-two-player-left-username">player 3</h6>
+							<h5 class="finals-score" id="tournament-semi-finals-two-score">VS</h5>
+							<h6 class="finals-player-right-username" id="tournament-semi-finals-two-player-right-username">player 4</h6>
+							<img class="finals-player-right-avatar" id="tournament-semi-finals-two-player-right-avatar" alt="">
+						</div>
+						<div id="tournament-finals" in-use="false">
+							<h5 class="finals-title">Finals</h5>
+							<img class="finals-player-left-avatar" id="tournament-finals-player-left-avatar" alt="">
+							<h6 class="finals-player-left-username" id="tournament-finals-player-left-username">player 1</h6>
+							<h5 class="finals-score" id="tournament-finals-score">VS</h5>
+							<h6 class="finals-player-right-username" id="tournament-finals-player-right-username">player 3</h6>
+							<img class="finals-player-right-avatar" id="tournament-finals-player-right-avatar" alt="">
+						</div>
+						<div id="tournament-third-place-game" in-use="false">
+							<h5 class="finals-title">Third Place Game</h5>
+							<img class="finals-player-left-avatar" id="tournament-third-place-game-player-left-avatar" alt="">
+							<h6 class="finals-player-left-username" id="tournament-third-place-game-player-left-username">player 2</h6>
+							<h5 class="finals-score" id="tournament-third-place-game-score">VS</h5>
+							<h6 class="finals-player-right-username" id="tournament-third-place-game-player-right-username">player 4</h6>
+							<img class="finals-player-right-avatar" id="tournament-third-place-game-player-right-avatar" alt="">
+						</div>
+					</div>
+				</div>
+				<div id="tournament-round-robbin-container">
+
+					<table id="tournament-rank-table">
+						<thead id="tournament-rank-table-header">
+							<tr>
+								<th>Rank</th>
+								<th>Player</th>
+								<th>Wins</th>
+								<th>Diff</th>
+								<th>Games</th>
+							</tr>
+						</thead>
+						<tbody id="tournament-rank-table-body">
+						<!-- where the rank rows will be -->
+						</tbody>
+						<template id="tournament-rank-row-template">
+							<tr class="tournament-rank-row">
+								<td class="tournament-rank-row-position"></td>
+								<td class="tournament-rank-row-user">
+									<div class="tournament-rank-row-user-wrapper">
+										<img class="tournament-rank-row-avatar" alt="image not found">
+										<h5 class="tournament-rank-row-username"></h5>
+									</div>
+								</td>
+								<td class="tournament-rank-row-wins"></td>
+								<td class="tournament-rank-row-diff"></td>
+								<td class="tournament-rank-row-games"></td>
+							</tr>
+						</template>
+					</table>
+				</div>
 			</div>
 
             <!-- Tournament History -->
@@ -128,7 +165,7 @@
 		</div>
 		<div id="tournament-middle-bottom">
             <div id="tournament-middle-bottom-current-game-button" class="tournament-ongoing">
-                <barely-a-button id="tournament-games-do-come-button" buttonclass="rect-button" name="Go to your current game"></barely-a-button>
+                <barely-a-button id="tournament-go-to-current-game-button" buttonclass="rect-button" name="Go to your current game"></barely-a-button>
             </div>
             <div id="tournament-middle-bottom-subscribe-start-button" class="tournament-setup">
                 <button>
@@ -144,6 +181,92 @@
 	</div>
 </div>
 <style>
+
+	.tournament-semi-finals, #tournament-finals, #tournament-third-place-game {
+		display: grid;
+		color: white;
+		height: 50%;
+		width: 70%;
+		align-items: center;
+		background-color: black;
+		grid-template-areas:
+			"finals-title finals-title finals-title finals-title finals-title"
+			"finals-player-left-avatar finals-player-left-username finals-score finals-player-right-username finals-player-right-avatar";
+
+	}
+	.finals-title {
+		grid-area: finals-title;
+	}
+
+	.finals-player-left-avatar {
+		grid-area: finals-player-left-avatar;
+	}
+
+	.finals-player-left-username {
+		grid-area: finals-player-left-username;
+	}
+
+	.finals-score {
+		grid-area: finals-score;
+	}
+
+	.finals-player-right-username {
+		grid-area: finals-player-right-username;
+	}
+
+	.finals-player-right-avatar {
+		grid-area: finals-player-right-avatar;
+	}
+
+	#tournament-finals-container {
+		display: flex;
+		flex-direction: column;
+		background-color: blue;
+		height: 100%;
+	}
+
+	#tournament-round-robbin-container {
+		display: none;
+	}
+
+	#tournament-podium-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: end;
+		width: 100%;
+		height: 30%;
+	}
+
+	.tournament-podium-step {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-items: center;
+		background-color: black;
+		color: white;
+		margin: 2%;
+		border-radius: 10%;
+	}
+
+	#tournament-podium-second {
+		height: 90%;
+		color: silver;
+	}
+
+	#tournament-podium-first {
+		height: 100%;
+		color: gold;
+	}
+
+	#tournament-podium-third {
+		height: 80%;
+		color: #E1C16E;
+	}
+
+	.tournament-podium-question-mark {
+		color: white;
+	}
 
 	.tournament-rank-row-avatar {
 		height: 45px;

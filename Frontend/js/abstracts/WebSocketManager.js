@@ -1,7 +1,7 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard } from '../views/tournament/methods.js';
+import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
@@ -127,6 +127,7 @@ class WebSocketManager {
             case "tournamentGame":
                 // TODO: change the TournamentGame to camelCase
                 updateGameCard(message.TournamentGame);
+                updateFinalsDiagram(message.TournamentGame);
                 return ;
 
                 // ================| OLD MESSAGES TYPES |===================

@@ -201,6 +201,50 @@ export function updateTournamentRank(rankObject) {
         createRankCard(element);
 }
 
+export function updateFinalsDiagram(gameObject) {
+
+
+    if (gameObject.type === "normal")
+        return ;
+    console.log("finals diagram:", gameObject);
+
+    if (gameObject.type === "final") {
+        $id("tournament-finals-player-left-username").textContent = gameObject.playerLeft.username;
+        $id("tournament-finals-player-right-username").textContent = gameObject.playerRight.username;
+        $id("tournament-finals-player-left-avatar").src = window.origin + "/media/avatars/" + gameObject.playerLeft.avatarUrl;
+        $id("tournament-finals-player-right-avatar").src = window.origin + "/media/avatars/" + gameObject.playerRight.avatarUrl;
+
+        if (gameObject.state !== "pending") {
+            $id("tournament-finals-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
+        }
+        if (gameObject.state === "finished") {
+            let podiumContainer = $id("tournament-podium-first");
+            let winner;
+            let loser;
+
+            if (gameObject.playerLeft.result === "won") {
+                winner = gameObject.playerLeft;
+                loser = gameObject.playerRight;
+            }
+            else {
+                winner = gameObject.playerRight;
+                loser = gameObject.playerLeft;
+            }
+
+            podiumContainer.querySelector("#tournament-podium-first-avatar").src = window.origin + "/media/avatars/" + winner.avatarUrl;
+            podiumContainer.querySelector("#tournament-podium-first-username").textContent = winner.username;
+            podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
+
+            podiumContainer = $id("tournament-podium-second");
+
+            podiumContainer.querySelector("#tournament-podium-second-avatar").src = window.origin + "/media/avatars/" + loser.avatarUrl;
+            podiumContainer.querySelector("#tournament-podium-second-username").textContent = loser.username;
+            podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
+        }
+        return ;
+    }
+}
+
 // =================================================================================================
 // =================================================================================================
 // =================================================================================================
