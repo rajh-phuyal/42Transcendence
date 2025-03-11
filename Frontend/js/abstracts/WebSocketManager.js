@@ -111,22 +111,16 @@ class WebSocketManager {
                 updateTypingState(message)
                 return ;
 
-                // =======================================================
-                // ====================| TOURNAMENT |=====================
-                // =======================================================
-
+            // TOURNAMENT RELATED MESSAGES
             case "tournamentInfo":
                 if (this.currentRoute == "tournament"){
                     buildView(message.state);
                 }
                 return ;
-
             case "tournamentMember":
                 updateParticipantsCard(message.tournamentMember);
                 return ;
-
-                // TODO: maybe the name of this message type is to close to tournamentMember
-                case "tournamentMembers":
+            case "tournamentMembers":
                     updateRankTable(message.tournamentMembers);
                 console.log("tournanemtMembers:", message.tournamentMembers);
                 console.log("Length!!!!", message.tournamentMembers.length);
@@ -135,43 +129,9 @@ class WebSocketManager {
                     updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
                 }
                 return ;
-
             case "tournamentGame":
-                // TODO: change the TournamentGame to camelCase
                 updateGameCard(message.TournamentGame);
                 updateFinalsDiagram(message.TournamentGame);
-                return ;
-
-                // ================| OLD MESSAGES TYPES |===================
-
-            case "tournamentSubscription":
-                console.warn("TODO!")
-                if (this.currentRoute == "tournament"){
-                    updateParticipantsCard(message);
-                    return ;
-                }
-                break;
-            case "gameCreate":
-                if (this.currentRoute == "tournament"){
-                    createGameList(message.games);
-                    return ;
-                } 
-                break ;
-            case "gameSetDeadline":
-                //TODO:
-                console.log("deadline:", message);
-                return ;
-            case "gameUpdateScore":
-                //TODO: test with the real ws message when they are created.
-                updateGameCardScore(message);
-                return ;
-
-            case "gameUpdateState": // pending "VS" > ongoing "a x b (score)" / paused a x b (score, with red spinner) > finished (move the card to history and highlight the winner)
-                gameUpdateState(message);
-                return ;
-
-            case "gameUpdateRank": // delete the old one and put the new there
-                updateTournamentRank(message.ranking);
                 return ;
 
             // PROFILE RELATED MESSAGES
