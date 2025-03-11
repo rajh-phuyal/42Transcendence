@@ -40,5 +40,12 @@ export const mutations = {
             state.websocketIsAlive = value; 
         },   
         presistence: false,
-    }
+    },
+	setMarkBook: {
+		stateName: 'markbook',
+		onUpdate: (state, value) => {
+			state.markbook = value;
+		},
+		presistence: true,
+	}
 };

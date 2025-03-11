@@ -86,6 +86,8 @@ def create_conversation(user1, user2):
     # Create the start of conversation message
     create_and_send_overloards_pm(user1, user2, f"**S,{user1.id},{user2.id}**")
     # If it is AI or Flatmate send a response
-    if user1.id in [USER_ID_AI, USER_ID_FLATMATE] or user2.id in [USER_ID_AI, USER_ID_FLATMATE]:
+    if user1.id in [USER_ID_AI, USER_ID_FLATMATE]:
         async_to_sync(send_message_with_delay)(user1, user2, 0, _("Hello there!"))
+    if user2.id in [USER_ID_AI, USER_ID_FLATMATE]:
+        async_to_sync(send_message_with_delay)(user2, user1, 0, _("Hello there!"))
     return conversation

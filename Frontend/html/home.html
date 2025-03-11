@@ -68,7 +68,7 @@
                             <barely-a-button class="tournament-modal-create-form-type-buttons" type="public"
                               name="Public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
                           </div>
-                          <div id="template-tournament-modal-create-form-invited-user-card-container">
+                          <div id="template-tournament-modal-create-form-invited-user-card-container" class="barely-a-scroll-class">
                             <search-bar
 								placeholder="Invite a user"
 								width="250"
@@ -445,7 +445,7 @@
     position: relative;
   }
 
-  #template-tournament-modal-create-form-invited-user-card-container::-webkit-scrollbar {
+  /* #template-tournament-modal-create-form-invited-user-card-container::-webkit-scrollbar {
     width: 0.5rem;
   }
 
@@ -457,7 +457,7 @@
   #template-tournament-modal-create-form-invited-user-card-container::-webkit-scrollbar-thumb {
     background-color: rgb(176, 176, 176);
     border-radius: 0.25rem;
-  }
+  } */
 
   #template-tournament-modal-create-form-invited-user-card-container>input {
     width: 80%;
@@ -567,8 +567,9 @@
   #home-canvas {
     width: 100%;
     height: 100%;
+    aspect-ratio: 20/9;
     background-color: black;
-    background-image: url('../assets/homeView/corkboard 1.png');
+    background-image: url('../assets/backgrounds/home.png');
   }
 
   #home-view {

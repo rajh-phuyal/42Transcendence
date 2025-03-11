@@ -1,405 +1,334 @@
-<div id="chat-view" style="display: flex;">
-  <div id="chat-view-image-container">
-    <img id="chat-view-background-image" src="../assets/chat/chatroom.png" alt="error loading image"/>
-  </div>
-  <!-- Side Container -->
-  <div id="chat-view-left-side-container">
-    <h2 id="chat-room-heading" style="color: white;">chat room</h2>
-    <input id="chat-view-searchbar" placeholder="" type="text">
-    <div id="chat-view-conversations-container">
-      <span id="chat-view-conversations-no-converations-found"></span>
+<!--                  THIS IS THE MAIN DIV FOR CHAT VIEW                     -->
+<!-- ####################################################################### -->
+<div class="view-base">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img src="../assets/backgrounds/chat.png" alt="Background Image" class="view-background-image">
+            <div class="view-overlay-grid">
+                <h2 id="chat-room-heading" class="grid-cell default-grid-area header" style="color: white;">chat room</h2>
+                <input id="chat-view-searchbar" class="grid-cell default-grid-area search">
+                <div id="chat-view-details" class="grid-cell default-grid-area details">
+                    <div id="chat-view-header-subject" style="font-weight: bold;"></div>
+                    <div id="chat-view-header-last-seen-header"></div>
+                </div>
+                <div id="chat-view-details-img" class="grid-cell default-grid-area details-img">
+                    <img id="chat-view-header-avatar" alt="error loading image">
+                    <img id="chat-view-header-online-icon" src="../assets/onlineIcon.png" alt="error loading image">
+                </div>
+                <div id="chat-view-conversations-container" class="grid-cell default-grid-area convs barely-a-scroll-class">
+                    <span id="chat-view-conversations-no-converations-found"></span>
+                </div>
+                <div id="chat-view-messages-container" class="grid-cell default-grid-area msgs barely-a-scroll-class"></div>
+                <text-field id="chat-view-text-field" class="grid-cell default-grid-area input" width="100" height="100" clear="true"></text-field>
+                <div id="chat-view-eye-container" class="grid-cell default-grid-area eye">
+                    <img id="chat-view-eye-background" src="../assets/chat/eye.png" alt="Main Image" style="display: block;">
+                    <img id="chat-view-eye-pupil" src="../assets/chat/ball.png" alt="Overlay Image" style="display: block;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      <!-- Conversation Card Template -->
-      <template id="chat-view-conversation-card-template">
-        <div class="chat-view-conversation-card">
-          <img class="chat-view-conversation-card-avatar" alt="error loading image">
-          <h5 class="chat-view-conversation-card-username"></h5>
-          <div class="chat-view-conversation-card-unseen-container">
+<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR CHAT VIEW                 -->
+<!--            NOTE: some styles are defined in main.css!                   -->
+<!-- ####################################################################### -->
+<style>
+    /* The basic valus of the grid are already set in main.css */
+    .view-overlay-grid {
+        grid-template-columns: 1.5% 22.7% 0.6% 1.4% 1fr 7% 7.5% 1.5%;
+        grid-template-rows: 2.2% 6% 1.25% 5.5% 1.25% 3.5% 2.7% 41% 17% 2.5% 1fr 3%;
+        grid-template-areas:
+            ".       .       .      .       .      .       .             ."
+            ".       header  .      .       .      details details-img   ."
+            ".       .       .      .       .      details details-img   ."
+            ".       search  .      .       .      details details-img   ."
+            ".       .  .    .      .      details details-img   ."
+            ".       convs   .      .       .      details details-img   ."
+            ".       convs   .      .       .      .       .             ."
+            ".       convs   .      .       msgs   msgs    msgs          ."
+            "eye     eye     eye    .       msgs   msgs    msgs          ."
+            "eye     eye     eye    .       .      .       .             ."
+            "eye     eye     eye    .       input  input   input          ."
+            "eye     eye     eye    .       .      .       .             ."
+    }
+
+
+    /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+    .header {
+        grid-area: header;
+        background-color: rgb(0, 0, 0);
+    }
+
+    .convs {
+        grid-area: convs;
+        font-size: min(1vw, 15px);
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        justify-content: flex-start;
+        box-sizing: border-box;
+    }
+
+    .details {
+        grid-area: details;
+        color: white;
+        background-color: black;
+        padding: 1vh 1vw;
+        font-size: min(1.2vw, 18px);
+    }
+
+    .details-img {
+        grid-area: details-img;
+        background-color: black;
+        position: relative;
+    }
+
+    .msgs {
+        grid-area: msgs;
+        font-size: min(1vw, 15px);
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        justify-content: flex-start;
+    }
+
+    .input {
+        grid-area: input;
+    }
+
+    .search {
+        grid-area: search;
+        font-size: min(1vw, 15px);
+        height: 100%;
+        width: 95%;
+        margin-left: 2.5%;
+        background-color: black;
+        color: white;
+    }
+
+    .eye {
+        display: flex;
+        position: relative;
+        grid-area: eye;
+        background-color: rgba(255, 255, 255, 0)
+    }
+
+    /* The next two styles are for the moving eye */
+    #chat-view-eye-background {
+        display: block !important;
+        height: 100%;
+        width: 100%;
+        z-index: 2;
+    }
+
+    #chat-view-eye-pupil {
+        display: block !important;
+        position: absolute;
+        height: 50%;
+        width: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+
+    /* For the image at the top right */
+    #chat-view-header-avatar {
+        top: 5%;
+        width: 100%;
+        height: 90%;
+        align-self: center;
+        object-fit: contain;
+        display: block;
+    }
+    /* This is the online state eye image */
+    #chat-view-header-online-icon {
+        position: absolute;
+        top: 87%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 15%;
+    }
+</style>
+
+<!--                    CONERSATION CARD TEMPLATE                            -->
+<!-- ####################################################################### -->
+<template id="chat-view-conversation-card-template">
+    <div class="chat-view-conversation-card">
+        <img class="chat-view-conversation-card-avatar" alt="error loading image">
+        <h4 class="chat-view-conversation-card-username"></h4>
+        <div class="chat-view-conversation-card-unseen-container">
             <img class="chat-view-conversation-card-unseen-image" src="../assets/profileView/unreadMessageIcon.png" alt="error loading image"></img>
             <span class="chat-view-conversation-card-unseen-counter"></span>
-          </div>
         </div>
-      </template>
     </div>
-  </div>
-  <div id="chat-view-right-side-container">
-    <!-- Header -->
-    <div id="chat-view-header-container">
-      <img id="chat-view-header-group-chat-image" class="chat-view-header-icons" src="../assets/chat/groupChatIcon.png" alt="Image loading error">
-      <img id="chat-view-header-invite-for-game-image" class="chat-view-header-icons" src="../assets/profileView/invitePongIcon.png" alt="Image loading error">
-      <div id="chat-view-header-subject-container">
-        <h5 id="chat-view-header-subject"></h5>
-        <img id="chat-view-header-online-icon" src="../assets/onlineIcon.png" alt="error loading image">
-      </div>
-      <img id="chat-view-header-avatar" src="../assets/chat/groupChatAvatar.png" alt="error loading image">
-    </div>
-    <!-- Messages -->
-    <div id="chat-view-messages-container">
-
-      <!-- Sent message Template -->
-      <template id="chat-view-sent-message-template">
-        <div class="chat-view-sent-message-container">
-          <div class="chat-view-messages-message-box">
-          </div>
-          <span class="chat-view-messages-message-time-stamp"></span>
-        </div>
-      </template>
-
-      <!-- Incoming message Template -->
-      <template id="chat-view-incoming-message-template">
-        <div class="chat-view-incoming-message-container">
-          <span class="chat-view-messages-message-sender"></span>
-          <div class="chat-view-messages-message-box">
-          </div>
-          <span class="chat-view-messages-message-time-stamp"></span>
-        </div>
-      </template>
-
-      <!-- Overlords message Template -->
-      <template id="chat-view-overlords-message-template">
-        <div class="chat-view-overlords-message-container">
-          <span class="chat-view-messages-message-sender"></span>
-          <div class="chat-view-messages-message-overlords-box">
-          </div>
-          <span class="chat-view-messages-message-time-stamp"></span>
-        </div>
-      </template>
-
-      <!-- CMD Help message Template -->
-      <template id="chat-view-help-message-template">
-        <div class="chat-view-help-message-container">
-          <div class="chat-view-messages-message-help-box">
-          </div>
-        </div>
-      </template>
-    </div>
-
-    <!-- Text field -->
-    <div id="chat-view-text-field-container">
-      <text-field id="chat-view-text-field" width="96" clear="true" height="90" placeholder="write a message... Just don’t forget that they see everything"></text-field>
-    </div>
-  </div>
-
-</div>
+</template>
 <style>
+    .chat-view-conversation-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 95%;
+        height: 17%;
+        margin: 1% 0% !important;
+        padding-right: 5% !important;
+        align-self: center;
+        border:  0.2vw solid  black;
+        background-color: #EFE7D3;
+    }
+        .chat-view-conversation-card:hover {
+        background-color: #DFD7C3;
+        cursor: pointer;
+    }
+    .chat-view-conversation-card:active {
+        background-color: #CFC7B3;
+        cursor: pointer;
+    }
 
-  .chat-view-conversation-card-unseen-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: auto !important;
-    height: 90%;
-    width: auto;
-    align-self: flex-end;
-  }
+    .chat-view-conversation-card-highlighted {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 95%;
+        height: 17%;
+        margin: 1% 0% !important;
+        align-self: center;
+        border:  0.2vw solid  black;
+        background-color: black;
+        color: rgb(255, 255, 255) !important;
+    }
+    .chat-view-conversation-card-highlighted:hover {
+        background-color: #101010;
+        cursor: pointer;
+    }
+    .chat-view-conversation-card-highlighted:active {
+        background-color: #202020;
+        cursor: pointer;
+    }
 
-  .chat-view-conversation-card-unseen-image {
-    height: 70%;
-    margin-right: 2% !important;
-  }
+    .chat-view-conversation-card-unseen-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: auto !important;
+        height: 90%;
+        width: auto;
+        align-self: center;
+    }
 
-  .chat-view-conversation-card-unseen-counter {
-    /* border:  1px solid  black; */
-    border-radius: 100%;
-    background-color: #101010;
-    margin-bottom: 30% !important;
-    padding: 5% 10%;
-    color: white;
-    height: 50%;
-    font-size: smaller;
-  }
+    .chat-view-conversation-card-unseen-image {
+        height: 90%;
+        margin-right: 2% !important;
+    }
 
-  #chat-view-header-avatar {
-    margin: 3% 0% 0% 5% !important;
-    height: 80%;
-    margin-left: auto !important;
-  }
+    .chat-view-conversation-card-unseen-counter {
+        border-radius: 100%;
+        background-color: #101010;
+        margin-bottom: 30% !important;
+        padding: 5% 10%;
+        color: white;
+        height: 50%;
+        font-size: smaller;
+    }
 
-  #chat-view-header-subject-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 13% 0% 0% 50% !important;
-    width: 30%;
-  }
+    .chat-view-conversation-card-avatar {
+        height: 90%;
+        margin: 0% 4% 0% 2% !important;
+    }
+</style>
 
-  .chat-view-conversation-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 95%;
-    height: 17%;
-    margin: 1% 0% !important;
-    padding-right: 5% !important;
-    align-self: center;
-    border:  3px solid  black;
-    background-color: #EFE7D3;
-  }
+<!--                       MESSAGE TEMPLATE                                  -->
+<!-- ####################################################################### -->
+<template id="chat-view-message-template">
+    <div class="chat-view-message-container">
+        <span class="chat-view-message-sender mention-user"></span>
+        <div class="chat-view-message-box"></div>
+        <span class="chat-view-message-timestamp"></span>
+    </div>
+</template>
+<style>
+    /* CLASSES FOR THE MESSAGE CONTAINER. WILL BE ADDED VIA JS */
+    .chat-view-message-container {
+        display: flex;
+        flex-direction: column;
+        max-width: 60%;
+        height: auto;
+        margin: 0 2% !important;
+        align-self: flex-start;
+    }
+    .chat-view-message-container-incoming {
+        align-self: flex-start;
+        align-items: flex-start;
+    }
+    .chat-view-message-container-outgoing {
+        align-self: flex-end;
+        align-items: flex-end;
+    }
+    .chat-view-message-container-overlords {
+        align-self: center;
+        align-items: center;
+    }
+    .chat-view-message-container-typing {
+        opacity: 0.7;
+        font-style: italic;
+        height: 100%;
+        width: 5%;
+        text-align: center;
+        font-weight: bold;
+    }
 
-  .chat-view-conversation-card-enter {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
+    .chat-view-message-sender {
+        align-self: flex-start;
+    }
+    .chat-view-message-timestamp {
+        align-self: flex-end;
+    }
 
-  .chat-view-conversation-card-enter-active {
-    transform: translateY(0);
-    opacity: 1;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
+    /* CLASSES FOR THE MESSAGE BOX */
+    .chat-view-message-box {
+        height: auto;
+        min-width: 100%;
+        max-width: 100%;
+        min-height: initial;
+        border:  3px solid  rgba(0, 0, 0, 0.445);
+        border-radius: 3px;
+        padding: 1% 2% 1% 2%;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        overflow: visible;
+    }
+    .chat-view-message-box-incoming {
+        background-color: #efe7d380;
+    }
+    .chat-view-message-box-outgoing {
+        background-color: #b6af9e7e;
+    }
+    .chat-view-message-box-overlords {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        max-width: 100%;
+        border:  3px solid yellow;
+        background-color: rgba(0, 0, 0, 0.829);
+        overflow: hidden;
+        color: yellow;
+        gap: 5px;
+        white-space: nowrap;
+    }
+</style>
 
-  .chat-view-conversation-card:hover {
-    background-color: #DFD7C3;
-    cursor: pointer;
-  }
-  .chat-view-conversation-card:active {
-    background-color: #CFC7B3;
-    cursor: pointer;
-  }
-
-  .chat-view-conversation-card-highlighted {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 95%;
-    height: 17%;
-    margin: 1% 0% !important;
-    align-self: center;
-    border:  3px solid  black;
-    background-color: black;
-    color: white;
-  }
-
-  .chat-view-conversation-card-highlighted:hover {
-    background-color: #101010;
-    cursor: pointer;
-  }
-  .chat-view-conversation-card-highlighted:active {
-    background-color: #202020;
-    cursor: pointer;
-  }
-
-  .chat-view-conversation-card-avatar {
-    height: 90%;
-    margin: 0% 4% 0% 2% !important;
-  }
-
-  #chat-view-header-online-icon {
-    height: 50%;
-    margin: 0% 0% 4% 3% !important;
-  }
-
-  .chat-view-header-icons {
-    height: 40%;
-    margin-top: 10% !important;
-  }
-
-  .chat-view-header-icons:hover {
-    height: 43%;
-    margin-top: 9.7% !important;
-    cursor: pointer;
-  }
-
-  #chat-view-left-side-container{
-    z-index: 1;
-    width: 45%;
-    height: 95%;
-    padding: 2% 0% 0% 1% !important;
-  }
-
-  #chat-view-header-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 21%;
-    padding-right: 1% !important;
-  }
-
-  #chat-view-messages-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 58%;
-    margin: 2% 0% !important;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-  }
-
-  .chat-view-incoming-message-container {
-    display: flex;
-    flex-direction: column;
-    width: 60%;
-    height: auto;
-    margin: 0 2% !important;
-    align-self: flex-start;
-  }
-
-  .chat-view-sent-message-container {
-    display: flex;
-    flex-direction: column;
-    width: 60%;
-    height: auto;
-    margin: 0 2% !important;
-    align-self: flex-end;
-    align-items: left;
-  }
-
-  .chat-view-overlords-message-container {
-    display: flex;
-    flex-direction: column;
-    width: 60%;
-    height: auto;
-    align-self: center;
-  }
-
-  .chat-view-help-message-container {
-    margin-top: auto;
-    background: #31332d73; /* Example styling */
-    padding: 10px;
-    width: max-content;
-  }
-
-  .chat-view-messages-message-box {
-    height: auto;
-    width: 100%;
-    min-height: initial;
-    border:  3px solid  black;
-    background-color: #EFE7D3;
-    padding: 1% 2% !important;
-    box-sizing: border-box;
-    word-wrap: break-word;
-    overflow: visible;
-  }
-
-  .chat-view-messages-message-overlords-box{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    height: auto;
-    width: 100%;
-    max-width: 100%;
-    border:  3px solid yellow;
-    background-color: black;
-    padding: 1% 2% !important;
-    box-sizing: border-box;
-    overflow: hidden;
-    color: yellow;
-    gap: 5px;
-    white-space: nowrap;
-  }
-
-  .mention-user {
-      color: rgb(159, 144, 144) !important;
-      cursor: pointer !important;
-      text-decoration: underline !important;
-      display: inline-flex;
-      white-space: nowrap;
-  }
-  .mention-user:hover {
-      text-decoration: none !important;
-  }
-  .mention-game {
-      color: rgb(206, 111, 22) !important;
-      cursor: pointer !important;
-      text-decoration: underline !important;
-      display: inline;
-      white-space: nowrap;
-  }
-  .mention-game:hover {
-      text-decoration: none !important;
-  }
-  .mention-tournament {
-      color: rgb(214, 108, 27) !important;
-      cursor: pointer !important;
-      text-decoration: underline !important;
-      display: inline;
-      white-space: nowrap;
-  }
-  .mention-tournament:hover {
-      text-decoration: none !important;
-  }
-
-  #chat-view-text-field-container {
-    width: 100%;
-    height: 15%;
-    margin-left: 1% !important;
-  }
-
-  #chat-view-text-field {
-    width: 100%;
-    height: 100%;
-  }
-
-  #chat-view-searchbar {
-    background-color: black;
-    color: white;
-    padding-left: 4% !important;
-    margin: 4% 0% 7% 0% !important;
-    height: 6%;
-    width: 80%;
-  }
-
-  #chat-view-conversations-container {
-    display: flex;
-    flex-direction: column;
-    height: 43%;
-    width: 95%;
-    overflow-y: auto;
-    box-sizing: border-box;
-  }
-
-  #chat-view-right-side-container {
-    z-index: 1;
-    width: 100%;
-    height: 95%;
-  }
-
-  #chat-view-background-image{
-    z-index: 0;
-    position: relative;
-    height: 100%;
-  }
-
-  #chat-view-image-container {
-    z-index: 0;
-    position: absolute;
-    height: 90%;
-    padding: 0;
-    margin: 0;
-  }
-
-  #chat-view {
-      display: flex;
-      flex-direction: row;
-      height: 100%;
-      width: 68%;
-      align-items: center;
-      justify-content: center;
-  }
-
-  #chat-view-messages-container::-webkit-scrollbar {
-  	width: 0.4vw;
-  }
-
-  #chat-view-conversations-container::-webkit-scrollbar {
-  	width: 0.4vw;
-  }
-
-  #chat-view-messages-container::-webkit-scrollbar-thumb {
-    background-color: #727272;
-  }
-
-  #chat-view-conversations-container::-webkit-scrollbar-thumb {
-    background-color: #727272;
-  }
-
-  #chat-view-messages-container::-webkit-scrollbar-track {
-  	background-color: black;
-  }
-
-  #chat-view-conversations-container::-webkit-scrollbar-track {
-  	background-color: black;
-  }
+<!-- CMD Help message Template -->
+<template id="chat-view-help-message-template">
+    <div class="chat-view-help-message-container">
+        <div class="chat-view-messages-message-help-box"></div>
+    </div>
+</template>
+<style>
+    .chat-view-help-message-container {
+        margin-top: auto;
+        background: #31332d73; /* Example styling */
+        padding: 10px;
+        width: max-content;
+        border-radius: 3px;
+    }
 </style>

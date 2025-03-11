@@ -62,13 +62,21 @@ const eventListenersConfig = [
 	}
 ];
 
+const languageFlags = {
+	"en-US": "🇺🇸",
+	"de-DE": "🇩🇪",
+	"ne-NP": "🇳🇵",
+	"pt-BR": "🇧🇷",
+	"pt-PT": "🇵🇹",
+	"uk-UA": "🇺🇦"
+};
+
 class AuthCard extends HTMLElement {
 
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
 		this.displayMode = "home";
-		console.log("trans:", $store.fromState("translations"));
         this.usernamePlaceholder = translate("auth", "usernamePlaceholder")
         this.passwordPlaceholder = translate("auth", "passwordPlaceholder")
         this.passwordConfirmationPlaceholder = translate("auth", "passwordConfirmationPlaceholder")
@@ -78,16 +86,12 @@ class AuthCard extends HTMLElement {
 		this.backButton = translate("auth", "backButton");
 		this.passwordVisibilityButton = translate("auth", "displayPassword");
 		this.transitionTime = 300;
-		this.language = "en-US";
+		this.languageFlag = languageFlags[$store.state.locale];
+		this.language = $store.state.locale;
     }
 
     static get observedAttributes() {
         return ["login"];
-    }
-
-    hideNav(){
-        let nav = document.getElementById('navigator');
-        nav.style.display = 'none';
     }
 
     showNav(){
@@ -348,8 +352,19 @@ class AuthCard extends HTMLElement {
 		}
 	}
 
+	putLanguage() {
+		let component = "";
+		const listOfLanguages = Object.keys(languageFlags);
+		for (let language of listOfLanguages) {
+			if (language == this.language)
+				component += `<option class="auth-language" selected value="${language}">${languageFlags[language]}</option>`;
+			else
+				component += `<option class="auth-language" value="${language}">${languageFlags[language]}</option>`;
+		}
+		return component;
+	}
+
     render() {
-        this.hideNav();
         this.shadow.innerHTML = `
             <style>
             .main-container {
@@ -510,12 +525,7 @@ class AuthCard extends HTMLElement {
             <div class="main-container">
 				<div id="auth-language-selector-container">
 					<select name="language" id="auth-language-selector">
-						<option class="auth-language" value="en-US">🇺🇸</option>
-                        <option class="auth-language" value="de-DE">🇩🇪</option>
-                        <option class="auth-language" value="ne-NP">🇳🇵</option>
-                        <option class="auth-language" value="pt-BR">🇧🇷</option>
-                        <option class="auth-language" value="pt-PT">🇵🇹</option>
-                        <option class="auth-language" value="uk-UA">🇺🇦</option>
+						${this.putLanguage()}
 					</select>
 				</div>
 

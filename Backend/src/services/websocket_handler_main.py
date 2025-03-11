@@ -7,7 +7,7 @@ from core.exceptions import BarelyAnException
 from user.constants import USER_ID_AI, USER_ID_FLATMATE
 # Chat stuff
 from chat.utils_ws import get_other_user_async, validate_conversation_membership_async
-from services.send_ws_msg import send_ws_chat_temporary, send_ws_info_msg, send_ws_badge, send_ws_badge_all, send_ws_chat, send_ws_error_msg
+from services.send_ws_msg import send_ws_chat_temporary, send_ws_badge, send_ws_badge_all, send_ws_chat, send_ws_chat_typing
 from chat.parse_incoming_message import check_if_msg_is_cmd, check_if_msg_contains_username
 from chat.message_utils import create_msg_db, mark_all_messages_as_seen_async
 from chat.models import Conversation
@@ -80,6 +80,16 @@ class WebSocketMessageHandlersMain:
         conversation_id = message.get('conversationId')
         await validate_conversation_membership_async(consumer.user, conversation_id)
         await mark_all_messages_as_seen_async(consumer.user.id, conversation_id)
+
+    @staticmethod
+    async def handle_typing(consumer, message):
+        message = check_message_keys(message, mandatory_keys=['conversationId','isTyping'])
+        # Find other user
+        conversation_id = message.get('conversationId')
+        await validate_conversation_membership_async(consumer.user, conversation_id)
+        other_user = await get_other_user_async(consumer.user, conversation_id)
+        # Send typing message
+        await send_ws_chat_typing(other_user, conversation_id, message.get('isTyping'))
 
 def check_message_keys(text: str, mandatory_keys: list[str] = None) -> dict:
     """

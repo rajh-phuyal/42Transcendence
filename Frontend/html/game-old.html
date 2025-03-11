@@ -1,0 +1,197 @@
+<div id="game-view">
+	<div id="game-view-map-image">
+		<img src='' alt="Game Map">
+		<canvas id="game-field"></canvas>
+	</div>
+
+    <!-- Image container to maintain aspect ratio -->
+    <div id="game-view-image-container">
+        <!-- Left Section -->
+        <div id="game-view-left-side-container">
+            <div class="game-view-left-side-container-top">
+                <!-- Left User Card -->
+                <div class="user-card" id="user-card-player-left">
+                    <h2 id="player-left-username" class="username"></h2>
+                    <img id="player-left-avatar" alt="User Image" class="user-image">
+                    <h3 id="player-left-state" class="user-state"></h3>
+                    <div id="player-left-state-spinner" class="spinner-grow" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div id="player-left-powerups-status" class="player-powerup-status" >
+                        <img id="player-left-powerups-slow" class="powerup-status" src=""></img>
+                        <img id="player-left-powerups-fast" class="powerup-status" src=""></img>
+                        <img id="player-left-powerups-big" class="powerup-status" src=""></img>
+                    </div>
+                </div>
+            </div>
+            <div id="game-view-left-side-container-bottom" class="game-view-left-side-container-bottom"></div>
+        </div>
+
+        <!-- Middle Section -->
+        <div id="game-view-middle-side-container">
+            <div class="game-view-middle-side-container-top">
+                <img id="game-countdown-image" src="" alt="Game countdown" width="150px" height="150px">
+                <h2 id="game-view-middle-side-container-top-text"></h2>
+                <barely-a-button buttonclass="rect-button" id="button-play-again"></barely-a-button>
+			</div>
+            <div class="game-view-middle-side-container-bottom">
+            </div>
+        </div>
+
+        <!-- Right Section -->
+        <div id="game-view-right-side-container">
+            <div class="game-view-right-side-container-top">
+                <div class="user-card" id="user-card-player-right">
+                    <h2 id="player-right-username" class="username"></h2>
+                    <img id="player-right-avatar" alt="User Image" class="user-image">
+                    <h3 id="player-right-state" class="user-state"></h3>
+                    <div id="player-right-state-spinner" class="spinner-grow" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                    <div id="player-right-powerups-status" class="player-powerup-status" >
+                        <img id="player-right-powerups-slow" class="powerup-status" src=""></img>
+                        <img id="player-right-powerups-fast" class="powerup-status" src=""></img>
+                        <img id="player-right-powerups-big" class="powerup-status" src=""></img>
+                    </div>
+                </div>
+            </div>
+            <div class="game-view-right-side-container-bottom">
+                <barely-a-button buttonclass="rect-button"id="button-leave-lobby"></barely-a-button>
+                <barely-a-button buttonclass="rect-button"id="button-quit-game"></barely-a-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Main game view container */
+
+/* Image container with correct aspect ratio */
+
+/* Ensure the sections are on top of the image */
+#game-view-left-side-container,
+#game-view-middle-side-container,
+#game-view-right-side-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-grow: 1;
+    position: relative;
+}
+
+
+
+/* Top Containers Take Most of the Space */
+.game-view-left-side-container-top,
+.game-view-right-side-container-top {
+    flex-grow: 1;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-view-middle-side-container-top {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Bottom Containers */
+.game-view-left-side-container-bottom,
+.game-view-middle-side-container-bottom,
+.game-view-right-side-container-bottom {
+    height: 20%;
+    width: 100%;
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* User Card Styling */
+
+
+
+
+/* Username Styling */
+
+
+/* User Image Styling */
+
+
+.player-powerup-status {
+    display: flex;
+    flex: row;
+    width: 80%;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+    background-color: rgba(136, 21, 21, 0.2);
+    border-radius: 5px;
+}
+
+.powerup-status {
+    margin: 5px;
+    border-radius: 5px;
+    width: 30%
+}
+
+/* User State Styling */
+.user-state {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Game Field Styling */
+
+
+#game-field {
+	display: none;
+	height: 42%;
+	width: 42%;
+	margin-bottom: 3%;
+	/* aspect-ratio: 19 / 12; */
+	background-color: black;
+	position: absolute;
+}
+
+#game-countdown-image {
+    position: absolute;
+	width: 150px;
+	height: 150px;
+    display: none;
+	justify-content: center;
+	align-items: center;
+}
+
+@keyframes pulsate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadein {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeout {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+</style>
+
