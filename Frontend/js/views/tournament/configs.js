@@ -3,7 +3,7 @@ import $callToast from '../../abstracts/callToast.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
-import { buildView, createPlayerCard, createGameCard, updateRankTable, updateFinalsDiagram } from './methods.js';
+import { buildView, createPlayerCard, createGameCard, updateRankTable, updateFinalsDiagram, updatePodium } from './methods.js';
 import { tournamentData } from './objects.js';
 
 
@@ -14,11 +14,11 @@ export default {
 
     methods: {
 
-        // openCurrentGames() {
-        //     this.domManip.$id("tournament-current-games-container").style.display = "flex";
-        //     this.domManip.$id("tournament-rank-container").style.display = "none";
-        //     this.domManip.$id("tournament-history-container").style.display = "none";
-        // },
+        openCurrentGames() {
+            this.domManip.$id("tournament-current-games-container").style.display = "flex";
+            this.domManip.$id("tournament-rank-container").style.display = "none";
+            this.domManip.$id("tournament-history-container").style.display = "none";
+        },
 
         openTournamentRank() {
             this.domManip.$id("tournament-current-games-container").style.display = "none";
@@ -93,7 +93,7 @@ export default {
             console.log("opening finals table");
 
             this.domManip.$id("tournament-round-robbin-container").style.display = "none";
-            this.domManip.$id("tournament-finals-container").style.display = "flex";
+            this.domManip.$id("tournament-finals-container").style.display = "block";
             this.domManip.$id("tournament-round-robbin-button").setAttribute("color", "black");
             this.domManip.$id("tournament-finals-button").setAttribute("color", "#7B0101")
         }
@@ -143,6 +143,8 @@ export default {
                         createPlayerCard(element);
                 }
                 else {
+                    if (data.tournamentMembers.length == 3)
+                        updatePodium(data.tournamentMembers.find(member => member.rank === 3), "third", false);
                     for (let element of data.tournamentGames) {
                         createGameCard(element);
                         updateFinalsDiagram(element);

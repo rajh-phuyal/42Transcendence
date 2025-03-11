@@ -201,61 +201,72 @@ export function updateTournamentRank(rankObject) {
         createRankCard(element);
 }
 
+export function updatePodium(playerObject, position, flex = true) {
+
+    const podiumContainer = $id(`tournament-podium-${position}`);
+
+    podiumContainer.querySelector(".tournament-podium-avatar").src = window.origin + "/media/avatars/" + playerObject.avatarUrl;
+    podiumContainer.querySelector(".tournament-podium-username").textContent = playerObject.username;
+
+    if (flex) {
+        podiumContainer.querySelector(".tournament-podium-avatar").style.display = "flex";
+        podiumContainer.querySelector(".tournament-podium-username").style.display = "flex";
+        podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
+    }
+}
+
 export function updateFinalsDiagram(gameObject) {
-
-
     if (gameObject.type === "normal")
         return ;
     console.log("finals diagram:", gameObject);
 
-    if (gameObject.type === "final") {
-        $id("tournament-finals-player-left-username").textContent = gameObject.playerLeft.username;
-        $id("tournament-finals-player-right-username").textContent = gameObject.playerRight.username;
-        $id("tournament-finals-player-left-avatar").src = window.origin + "/media/avatars/" + gameObject.playerLeft.avatarUrl;
-        $id("tournament-finals-player-right-avatar").src = window.origin + "/media/avatars/" + gameObject.playerRight.avatarUrl;
+    let diagramContainer = $id(`tournament-${gameObject.type}-${gameObject.id}`);
 
-        if (gameObject.state !== "pending") {
-            $id("tournament-finals-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
-        }
-        if (gameObject.state === "finished") {
-            let podiumContainer = $id("tournament-podium-first");
-            let winner;
-            let loser;
+    if (!diagramContainer) {
+        const template = $id("tournament-finals-template").content.cloneNode(true);
+        diagramContainer = template.querySelector(".tournament-finals-diagram-container");
+        diagramContainer.setAttribute("id", `tournament-${gameObject.type}-${gameObject.id}`);
+        $id("tournment-finals-diagram").prepend(diagramContainer);
+    }
 
-            if (gameObject.playerLeft.result === "won") {
-                winner = gameObject.playerLeft;
-                loser = gameObject.playerRight;
-                $id("tournament-finals-player-right-avatar").style.filter = "brightness(50%)" ;
-            }
-            else {
-                winner = gameObject.playerRight;
-                loser = gameObject.playerLeft;
-                $id("tournament-finals-player-left-avatar").style.filter = "brightness(50%)" ;
-            }
+    diagramContainer.querySelector(".finals-title").textContent = gameObject.type;
+    diagramContainer.querySelector(".finals-player-left-username").textContent = gameObject.playerLeft.username;
+    diagramContainer.querySelector(".finals-player-right-username").textContent = gameObject.playerRight.username;
+    diagramContainer.querySelector(".finals-player-left-avatar").src = window.origin + "/media/avatars/" + gameObject.playerLeft.avatarUrl;
+    diagramContainer.querySelector(".finals-player-right-avatar").src = window.origin + "/media/avatars/" + gameObject.playerRight.avatarUrl;
 
-            podiumContainer.querySelector("#tournament-podium-first-avatar").src = window.origin + "/media/avatars/" + winner.avatarUrl;
-            podiumContainer.querySelector("#tournament-podium-first-avatar").style.display = "flex";
-            podiumContainer.querySelector("#tournament-podium-first-username").textContent = winner.username;
-            podiumContainer.querySelector("#tournament-podium-first-username").style.display = "flex";
-            podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
+    if (gameObject.state !== "pending") {
+        diagramContainer.querySelector(".finals-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
+    }
 
-            podiumContainer = $id("tournament-podium-second");
-
-            podiumContainer.querySelector("#tournament-podium-second-avatar").src = window.origin + "/media/avatars/" + loser.avatarUrl;
-            podiumContainer.querySelector("#tournament-podium-second-avatar").style.display = "flex";
-            podiumContainer.querySelector("#tournament-podium-second-username").textContent = loser.username;
-            podiumContainer.querySelector("#tournament-podium-second-username").style.display = "flex";
-            podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
-        }
-        else {
-            $id("tournament-podium-first").querySelector(".tournament-podium-question-mark").style.display = "flex";
-            $id("tournament-podium-second").querySelector(".tournament-podium-question-mark").style.display = "flex";
-            $id("#tournament-podium-first-avatar").style.display = "none";
-            $id("#tournament-podium-second-avatar").style.display = "none";
-            $id("#tournament-podium-first-username").style.display = "none";
-            $id("#tournament-podium-second-username").style.display = "none";
-        }
+    if (gameObject.state !== "finished")
         return ;
+    if (gameObject.playerLeft.result === "won") {
+        diagramContainer.querySelector(".finals-player-right-avatar").style.filter = "brightness(50%)";
+        if (gameObject.type === "final") {
+            updatePodium(gameObject.playerLeft, "first");
+            updatePodium(gameObject.playerRight, "second");
+
+            // Flex the podium for third place in case it already exists. this is here for games without semi-finals
+            if ($id("tournament-podium-third").querySelector(".tournament-podium-username").textContent !== "") {
+                $id("tournament-podium-third").querySelector(".tournament-podium-avatar").style.display = "flex";
+                $id("tournament-podium-third").querySelector(".tournament-podium-username").style.display = "flex";
+                $id("tournament-podium-third").querySelector(".tournament-podium-question-mark").style.display = "none";
+            }
+        }
+        if (gameObject.type === "thirdplace") {
+            updatePodium(gameObject.playerLeft, "third");
+        }
+    }
+    else {
+        diagramContainer.querySelector(".finals-player-left-avatar").style.filter = "brightness(50%)";
+        if (gameObject.type === "final") {
+            updatePodium(gameObject.playerLeft, "second");
+            updatePodium(gameObject.playerRight, "first");
+        }
+        if (gameObject.type === "thirdplace") {
+            updatePodium(gameObject.playerRight, "third");
+        }
     }
 }
 

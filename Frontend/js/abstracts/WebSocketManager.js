@@ -1,7 +1,7 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram } from '../views/tournament/methods.js';
+import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
@@ -119,9 +119,15 @@ class WebSocketManager {
                 updateParticipantsCard(message.tournamentMember);
                 return ;
 
-            // TODO: maybe the name of this message type is to close to tournamentMember
-            case "tournamentMembers":
-                updateRankTable(message.tournamentMembers);
+                // TODO: maybe the name of this message type is to close to tournamentMember
+                case "tournamentMembers":
+                    updateRankTable(message.tournamentMembers);
+                console.log("tournanemtMembers:", message.tournamentMembers);
+                console.log("Length!!!!", message.tournamentMembers.length);
+                if (message.tournamentMembers.length == 3) {
+                    console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
+                    updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
+                }
                 return ;
 
             case "tournamentGame":

@@ -91,39 +91,18 @@
 						</div>
 					</div>
 					<!-- Finals Diagram -->
+
 					<div id="tournment-finals-diagram">
-						<div id="tournament-semi-finals-one" class="tournament-semi-finals" in-use="false">
-							<h5 class="finals-title">Semi-Finals 1</h5>
-							<img class="finals-player-left-avatar" id="tournament-semi-finals-one-player-left-avatar" alt="">
-							<h6 class="finals-player-left-username" id="tournament-semi-finals-one-player-left-username">player 1</h6>
-							<h5 class="finals-score" id="tournament-semi-finals-one-score">VS</h5>
-							<h6 class="finals-player-right-username" id="tournament-semi-finals-one-player-right-username">player 2</h6>
-							<img class="finals-player-right-avatar" id="tournament-semi-finals-one-player-right-avatar" alt="">
-						</div>
-						<div id="tournament-semi-finals-two" class="tournament-semi-finals" in-use="false">
-							<h5 class="finals-title">Semi-Finals 2</h5>
-							<img class="finals-player-left-avatar" id="tournament-semi-finals-two-player-left-avatar" alt="">
-							<h6 class="finals-player-left-username" id="tournament-semi-finals-two-player-left-username">player 3</h6>
-							<h5 class="finals-score" id="tournament-semi-finals-two-score">VS</h5>
-							<h6 class="finals-player-right-username" id="tournament-semi-finals-two-player-right-username">player 4</h6>
-							<img class="finals-player-right-avatar" id="tournament-semi-finals-two-player-right-avatar" alt="">
-						</div>
-						<div id="tournament-finals" in-use="false">
-							<h5 class="finals-title">Finals</h5>
-							<img class="finals-player-left-avatar" id="tournament-finals-player-left-avatar" alt="">
-							<h6 class="finals-player-left-username" id="tournament-finals-player-left-username">player 1</h6>
-							<h5 class="finals-score" id="tournament-finals-score">VS</h5>
-							<h6 class="finals-player-right-username" id="tournament-finals-player-right-username">player 3</h6>
-							<img class="finals-player-right-avatar" id="tournament-finals-player-right-avatar" alt="">
-						</div>
-						<div id="tournament-third-place-game" in-use="false">
-							<h5 class="finals-title">Third Place Game</h5>
-							<img class="finals-player-left-avatar" id="tournament-third-place-game-player-left-avatar" alt="">
-							<h6 class="finals-player-left-username" id="tournament-third-place-game-player-left-username">player 2</h6>
-							<h5 class="finals-score" id="tournament-third-place-game-score">VS</h5>
-							<h6 class="finals-player-right-username" id="tournament-third-place-game-player-right-username">player 4</h6>
-							<img class="finals-player-right-avatar" id="tournament-third-place-game-player-right-avatar" alt="">
-						</div>
+						<template id="tournament-finals-template">
+							<div class="tournament-finals-diagram-container">
+								<h5 class="finals-title">Semi-Final</h5>
+								<img class="finals-player-left-avatar tournament-finals-diagram-avatar" alt="">
+								<h6 class="finals-player-left-username">player 1</h6>
+								<h5 class="finals-score">VS</h5>
+								<h6 class="finals-player-right-username">player 2</h6>
+								<img class="finals-player-right-avatar tournament-finals-diagram-avatar" alt="">
+							</div>
+						</template>
 					</div>
 				</div>
 				<div id="tournament-round-robbin-container">
@@ -182,13 +161,14 @@
 </div>
 <style>
 
-	.tournament-semi-finals, #tournament-finals, #tournament-third-place-game {
+	.tournament-finals-diagram-container {
 		display: grid;
 		color: white;
-		height: 50%;
+		height: 20%;
 		width: 70%;
 		align-items: center;
 		background-color: black;
+		grid-template-rows: 50% 50%;
 		grid-template-areas:
 			"finals-title finals-title finals-title finals-title finals-title"
 			"finals-player-left-avatar finals-player-left-username finals-score finals-player-right-username finals-player-right-avatar";
@@ -218,11 +198,15 @@
 		grid-area: finals-player-right-avatar;
 	}
 
-	#tournament-finals-container {
+	#tournment-finals-diagram {
 		display: flex;
 		flex-direction: column;
 		background-color: blue;
 		height: 100%;
+	}
+
+	.tournament-finals-diagram-avatar {
+		height: 80%;
 	}
 
 	#tournament-round-robbin-container {
