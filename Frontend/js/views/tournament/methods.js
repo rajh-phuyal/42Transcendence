@@ -173,7 +173,7 @@ export function gameUpdateState(gameObject) {
 
     if (gameObject.state === "paused")
         gameCard.querySelector(".tournament-game-card-spinner").style.display = "flex";
-    else if (gameObject.state === "finished") {
+    else if (gameObject.state === "finished" || gameObject.state === "quited") {
         moveGameCardToHistory(gameObject.id);
     }
 }
@@ -215,6 +215,15 @@ export function updatePodium(playerObject, position, flex = true) {
     }
 }
 
+function showThirdPlaceFinalsDiagram() {
+    // Flex the podium for third place in case it already exists. this is here for games without semi-finals
+    if ($id("tournament-podium-third").querySelector(".tournament-podium-username").textContent !== "") {
+        $id("tournament-podium-third").querySelector(".tournament-podium-avatar").style.display = "flex";
+        $id("tournament-podium-third").querySelector(".tournament-podium-username").style.display = "flex";
+        $id("tournament-podium-third").querySelector(".tournament-podium-question-mark").style.display = "none";
+    }
+}
+
 export function updateFinalsDiagram(gameObject) {
     if (gameObject.type === "normal")
         return ;
@@ -239,20 +248,14 @@ export function updateFinalsDiagram(gameObject) {
         diagramContainer.querySelector(".finals-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
     }
 
-    if (gameObject.state !== "finished" && gameObject.state !== "quited")
-        return ;
+    if (!(gameObject.state === "finished" || gameObject.state === "quited"))
+        return;
     if (gameObject.playerLeft.result === "won") {
         diagramContainer.querySelector(".finals-player-right-avatar").style.filter = "brightness(50%)";
         if (gameObject.type === "final") {
             updatePodium(gameObject.playerLeft, "first");
             updatePodium(gameObject.playerRight, "second");
-
-            // Flex the podium for third place in case it already exists. this is here for games without semi-finals
-            if ($id("tournament-podium-third").querySelector(".tournament-podium-username").textContent !== "") {
-                $id("tournament-podium-third").querySelector(".tournament-podium-avatar").style.display = "flex";
-                $id("tournament-podium-third").querySelector(".tournament-podium-username").style.display = "flex";
-                $id("tournament-podium-third").querySelector(".tournament-podium-question-mark").style.display = "none";
-            }
+            showThirdPlaceFinalsDiagram();
         }
         if (gameObject.type === "thirdplace") {
             updatePodium(gameObject.playerLeft, "third");
@@ -263,6 +266,7 @@ export function updateFinalsDiagram(gameObject) {
         if (gameObject.type === "final") {
             updatePodium(gameObject.playerLeft, "second");
             updatePodium(gameObject.playerRight, "first");
+            showThirdPlaceFinalsDiagram();
         }
         if (gameObject.type === "thirdplace") {
             updatePodium(gameObject.playerRight, "third");
