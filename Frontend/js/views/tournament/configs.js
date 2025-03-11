@@ -106,12 +106,7 @@ export default {
         },
 
         beforeRouteLeave() {
-            // this.domManip.$off(this.domManip.$id("join-button"), "click", this.joinTournament);
-            // this.domManip.$off(this.domManip.$id("leave-button"), "click", this.leaveTournament);
-            // this.domManip.$off(this.domManip.$id("start-button"), "click", this.startTournament);
-            // this.domManip.$off(this.domManip.$id("cancel-button"), "click", this.cancelTournament);
-            // WebSocketManager.setCurrentRoute(undefined);
-
+            WebSocketManager.setCurrentRoute(undefined);
             this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
@@ -154,8 +149,6 @@ export default {
                 if (data.tournamentInfo.state !== "setup")
                     updateRankTable(data.tournamentMembers);
 
-                //  TODO: the tournament rank should be created with data from rest aswell
-
                 this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
@@ -166,31 +159,6 @@ export default {
                 this.domManip.$on(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
                 this.domManip.$on(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
             })
-
-
-            // const id = 5;  // TODO: MAKE IT COME FROM THE URL
-            // call(`tournament/lobby/${id}/`, 'GET').then(data => {
-            //     //console.log(data);
-            //     let stateColor;
-            //     if (data.tournamentState == "setup")
-            //         stateColor = "orange";
-            //     else if (data.tournamentState == "ongoing")
-            //         stateColor = "green";
-            //     else
-            //         stateColor = "red";
-            //     this.domManip.$id("status").style.backgroundColor = stateColor;
-            //     this.domManip.$id("status").textContent = "State: " + data.tournamentState;
-            //     this.domManip.$id("tournament-name").textContent = "Tournament Name: " + data.tournamentName;
-            //     this.domManip.$id("client-role").textContent = "Client Role: " + data.clientRole;
-
-            //     this.buildParticipantsList(data.tournamentMembers);
-
-            //     this.domManip.$on(this.domManip.$id("join-button"), "click", this.joinTournament);
-            //     this.domManip.$on(this.domManip.$id("leave-button"), "click", this.leaveTournament);
-            //     this.domManip.$on(this.domManip.$id("start-button"), "click", this.startTournament);
-            //     this.domManip.$on(this.domManip.$id("cancel-button"), "click", this.cancelTournament);
-            //     this.domManip.$id("leave-button").style.display = "none";
-            // })
         },
     }
 }

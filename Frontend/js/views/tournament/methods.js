@@ -270,14 +270,6 @@ export function updateFinalsDiagram(gameObject) {
     }
 }
 
-// =================================================================================================
-// =================================================================================================
-// =================================================================================================
-// =================================================================================================
-// =================================================================================================
-// =================================================================================================
-
-
 export function createGameList(games) {
     console.log("Creating game list with data: ", games);
     for (let element of games) {
@@ -288,12 +280,6 @@ export function createGameList(games) {
 export function updateParticipantsCard(userData) {
 
     console.log("user data:", userData);
-
-
-
-    // TODO:    a) on "accepted" the keyword is data.userState and on the others is data.state
-    //          b) in the "join" message the avatar and username needs to be included
-
     if (!$id("tournament-players-list-player" + userData.id))
         createPlayerCard(userData);
     if (userData.state === "accepted") {
