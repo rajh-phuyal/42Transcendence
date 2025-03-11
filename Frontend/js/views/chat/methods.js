@@ -434,36 +434,6 @@ export function createLoadingSpinner() {
     return spinnerContainer;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export function updateConversationUnreadCounter(conversationId, value) {
     let element = $id("chat-view-conversation-card-" +  conversationId);
     let unseenContainer = element.querySelector(".chat-view-conversation-card-unseen-container");
