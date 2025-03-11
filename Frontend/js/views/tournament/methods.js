@@ -100,7 +100,7 @@ export function createGameCard(gameObject) {
     else
         template.querySelector(".tournament-game-card-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
 
-    if (gameObject.state === "finished")
+    if (gameObject.state === "finished" || gameObject.state === "quited")
         $id("tournament-history-container").appendChild(container);
     else
         $id("tournament-current-games-container").appendChild(container);
