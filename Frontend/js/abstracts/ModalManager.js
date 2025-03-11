@@ -5,6 +5,7 @@ const modalFolders = [
     ["modal-new-conversation", "newConversation"],
     ["modal-edit-friendship", "editFriendship"],
     ["modal-friends-list", "friendsList"],
+    ["modal-create-game", "createGame"],
     ["modal-template", "template"],
 ];
 export default class ModalManager {

@@ -21,6 +21,26 @@ export default {
     },
 
     hooks: {
+        beforeOpen () {
+            console.log("beforeOpen of modal-create-game");
+
+            // Fetching the attributes from view and store them locally
+//            this.relationship = this.domManip.$id("router-view").getAttribute("data-relationship");
+//            if(this.relationship == undefined){
+//                console.error("editFriendshipModal: Couldn't find the relationship attribute in the view");
+//                return false;
+//            }
+//
+//            // Set modal title
+//            this.domManip.$id("modal-edit-friendship-title").textContent = "Edit Friendship (need translation!)"; //Todo: translate
+//
+//            // Add event listener to the create conversation button
+//            //TODO: add event listener to the buttons
+//            //this.domManip.$on(this.domManip.$id("modal-new-conversation-create-button"), "click", this.createConversation.bind(this));
+//            //this.domManip.$on(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
+//
+            return true;
+        },
         beforeRouteEnter() {
         },
 

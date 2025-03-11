@@ -8,31 +8,31 @@
             - e.g. newConversation modal js!
 -->
 
-<div class="modal fade" id="modal-edit-friendship" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modal-edit-friendship" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-body" id="modal-edit-friendship-body">
-                <h3 id="friendshp-modal-friendship-text" class="modal-edit-friendship-text"></h3>
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-edit-friendship-title">Edit Friendship</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body barely-a-scroll-class" id="modal-edit-friendship-body">
+                <div id="friendshp-modal-friendship-text" class="modal-edit-friendship-text">here the friendship text</div>
+
                 <div id="modal-edit-friendship-friendship-buttons">
-                    <barely-a-button id="modal-edit-friendship-friendship-primary-button" class="modal-edit-friendship-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
-                    <barely-a-button id="modal-edit-friendship-friendship-secondary-button" class="modal-edit-friendship-buttons" buttonclass="rect-button" name="No"></barely-a-button>
+                    <button id="modal-edit-friendship-friendship-primary-button" class="btn modal-button">YES</button>
+                    <button id="modal-edit-friendship-friendship-secondary-button" class="btn modal-button">NO</button>
                 </div>
+                <hr>
                 <div id="modal-edit-friendship-block">
-                    <h3 id="friendshp-modal-block-text" class="modal-edit-friendship-text"></h3>
-                    <barely-a-button id="modal-edit-friendship-block-button" class="modal-edit-friendship-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
+                    <div id="friendshp-modal-block-text" class="modal-edit-friendship-text">here the bblock text</div>
+                    <button id="modal-edit-friendship-block-button" class="btn modal-button">YES</button>
                 </div>
-                <barely-a-button id="modal-edit-friendship-cancel-button" class="modal-edit-friendship-buttons" name="Cancel" buttonclass="rect-button"></barely-a-button>
+            </div>
+            <div class="modal-footer">
+                <!-- TODO: Translate Button Text -->
+                <button id="modal-edit-friendship-cancel-button" type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn modal-button">Save changes</button>
             </div>
         </div>
     </div>
 </div>
-<style>
- #modal-edit-friendship-body {
-        text-align: center;
-    }
-
-    #modal-edit-friendship-friendship-buttons {
-        display: flex;
-        display: row;
-    }
-</style>
