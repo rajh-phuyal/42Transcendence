@@ -1,7 +1,7 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { updateParticipantsCard, createGameList } from '../views/tournament/methods.js';
+import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
@@ -77,6 +77,8 @@ class WebSocketManager {
     // - update
     //      - "what": "conversation","all"
     //      - "id": <conversationid>
+
+    // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
         console.log("BE -> FE:", message);
         switch (message.messageType) {
@@ -109,40 +111,27 @@ class WebSocketManager {
                 updateTypingState(message)
                 return ;
 
-            // TOURNAMENT RELATED MESSAGES TODO: I guess most of them are outdated!
-            case "tournamentFan":
-                console.warn("TODO!")
-                return ;
-            case "tournamentState":
-                console.warn("TODO!")
+            // TOURNAMENT RELATED MESSAGES
+            case "tournamentInfo":
                 if (this.currentRoute == "tournament"){
-                    $id("status").style.backgroundColor = "green";
+                    buildView(message.state);
                 }
                 return ;
-            case "tournamentSubscription":
-                console.warn("TODO!")
-                if (this.currentRoute == "tournament"){
-                    updateParticipantsCard(message);
-                    return ;
+            case "tournamentMember":
+                updateParticipantsCard(message.tournamentMember);
+                return ;
+            case "tournamentMembers":
+                    updateRankTable(message.tournamentMembers);
+                console.log("tournanemtMembers:", message.tournamentMembers);
+                console.log("Length!!!!", message.tournamentMembers.length);
+                if (message.tournamentMembers.length == 3) {
+                    console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
+                    updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
                 }
-                break;
-            case "gameCreate":
-                if (this.currentRoute == "tournament"){
-                    createGameList(message.games);
-                    return ;
-                }
-                break ;
-            case "gameSetDeadline":
-                console.warn("TODO!")
                 return ;
-            case "gameUpdateScore":
-                console.warn("TODO!")
-                return ;
-            case "gameUpdateState":
-                console.warn("TODO!")
-                return ;
-            case "gameUpdateRank":
-                console.warn("TODO!")
+            case "tournamentGame":
+                updateGameCard(message.TournamentGame);
+                updateFinalsDiagram(message.TournamentGame);
                 return ;
 
             // PROFILE RELATED MESSAGES
@@ -172,31 +161,6 @@ class WebSocketManager {
 		if (value > 99)
 			value = "99+";
         $id("chat-nav-badge").textContent = value || "";
-    }
-
-    updateTournamentMemberCard(message) {
-        console.log("TODO: Implement updateTournamentMemberCard", message);
-    }
-
-    createParticipantCard(userData) {
-        // Clone the template
-        let card = this.domManip.$id("tournament-list-card-template").content.cloneNode(true);
-
-        // Update the card background color based on user state
-        if (userData.userState === "pending") {
-            card.querySelector(".card").style.backgroundColor = "grey";
-        }
-
-        // Populate the template fields with user data
-        //console.log("AAAAAAAAAAAAAA userData:", userData);
-        card.querySelector(".user-id .value").textContent = "ID: " + userData.userId;
-        card.querySelector(".username .value").textContent = "Username: " + userData.username;
-        card.querySelector(".user-avatar").src = "https://localhost/media/avatars/" + userData.userAvatar;
-        card.querySelector(".user-avatar").alt = `Avatar of ${userData.username}`;
-        card.querySelector(".user-state .value").textContent = "State: " + userData.userState;
-
-        // Return the populated card
-        return card;
     }
 
     setCurrentRoute(route) {
