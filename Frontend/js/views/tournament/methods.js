@@ -22,7 +22,7 @@ export function buildView(tournamentState) {
         hideDivs = $class("tournament-setup")
     }
 
-    
+
     for (let element of flexDivs) {
         console.log("flexing:", element.getAttribute("id"));
         element.style.display = 'flex';
@@ -33,19 +33,19 @@ export function buildView(tournamentState) {
     }
 
     if (tournamentState === "finished") {
-        $id("tournament-middle-bottom-current-game-button").style.display = "none"; 
+        $id("tournament-middle-bottom-current-game-button").style.display = "none";
         $id("tournament-games-do-come-button").style.display = "none";
         $id("tournament-middle-bottom-subscribe-start-button").style.display = "none";
         $id("tournament-quit-cancel-button").style.display = "none";
-        $id("tournament-current-games-container").style.display = "none"; 
-        $id("tournament-rank-container").style.display = "flex"; 
-        $id("tournament-history-container").style.display = "none"; 
+        $id("tournament-current-games-container").style.display = "none";
+        $id("tournament-rank-container").style.display = "flex";
+        $id("tournament-history-container").style.display = "none";
         return ;
-        
+
     }
 
-    $id("tournament-rank-container").style.display = "none"; 
-    $id("tournament-history-container").style.display = "none"; 
+    $id("tournament-rank-container").style.display = "none";
+    $id("tournament-history-container").style.display = "none";
 }
 
 export function createPlayerCard(playerObject) {
@@ -152,7 +152,7 @@ function moveGameCardToHistory(gameId) {
 }
 
 export function updateGameCardScore(gameObject) {
-    $id("tournament-game-" + gameId).querySelector(".tournament-game-card-score").textContent = gameObject.player1.points + "-" + gameObject.player2.points; 
+    $id("tournament-game-" + gameId).querySelector(".tournament-game-card-score").textContent = gameObject.player1.points + "-" + gameObject.player2.points;
 }
 
 export function gameUpdateScore(gameObject) {
@@ -239,7 +239,7 @@ export function updateFinalsDiagram(gameObject) {
         diagramContainer.querySelector(".finals-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
     }
 
-    if (gameObject.state !== "finished")
+    if (gameObject.state !== "finished" && gameObject.state !== "quited")
         return ;
     if (gameObject.playerLeft.result === "won") {
         diagramContainer.querySelector(".finals-player-right-avatar").style.filter = "brightness(50%)";
@@ -290,7 +290,7 @@ export function updateParticipantsCard(userData) {
     console.log("user data:", userData);
 
 
-    
+
     // TODO:    a) on "accepted" the keyword is data.userState and on the others is data.state
     //          b) in the "join" message the avatar and username needs to be included
 
