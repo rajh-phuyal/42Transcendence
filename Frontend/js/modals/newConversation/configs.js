@@ -32,15 +32,10 @@ export default {
 
         createConversation() {
             // This is calling the endpoint to create a new conversation
-            console.log("1");
             const message = this.domManip.$id("modal-new-conversation-textarea").value;
-            console.log("2");
             call("chat/create/conversation/", "POST", {"userId": this.userId, "initialMessage": message}).then(data => {
-                console.log("3");
                 $callToast("success", data.message);
-                console.log("4");
                 router(`/profile`, {id: this.userId});
-                console.log("5");
             })
         },
     },
@@ -81,7 +76,7 @@ export default {
             this.domManip.$on(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
 
             // TODO: set the focus to the textarea
-            // Not sure how since this code snippet doesnt fit topur setup...
+            // Not sure how since this code snippet doesnt fit to our setup...
             // https://getbootstrap.com/docs/4.0/components/modal/#how-it-works
 
             return true;

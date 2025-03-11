@@ -1,6 +1,12 @@
 import { $id, $on, $off, $class } from './dollars.js';
 import { objectToBind } from '../navigation/router.js';
 
+const modalFolders = [
+    ["modal-new-conversation", "newConversation"],
+    ["modal-edit-friendship", "editFriendship"],
+    ["modal-friends-list", "friendsList"],
+    ["modal-template", "template"],
+];
 export default class ModalManager {
     static instance = null;
 
@@ -12,14 +18,13 @@ export default class ModalManager {
     }
 
     static idToFolderName(modalName) {
-        const modalFolders = [
-            // TODO: Add all modals here
-            ["modal-new-conversation", "newConversation"],
-            ["modal-template", "template"],
-        ];
-
         const result = modalFolders.find(([modal, _]) => modal === modalName);
         return result ? result[1] : null; // Return filename or null if not found
+    }
+
+    static folderNameToId(folderName) {
+        const result = modalFolders.find(([_, folder]) => folder === folderName);
+        return result ? result[0] : null; // Return modal ID or null if not found
     }
 
     static async startBeforeOpenHook(modalId) {
@@ -77,6 +82,7 @@ export default class ModalManager {
             return
         }
         const modal = new bootstrap.Modal(modalElement);
+        console.log("ModalManager: openModal: Opening modal with id %s", modalId);
         if (!modal) {
             console.warn("ModalManager: openModal: Modal with id %s not found", modalId);
             return
@@ -85,23 +91,29 @@ export default class ModalManager {
         (async () => {
             if (await ModalManager.startBeforeOpenHook(modalId))
                 modal.show();
+            else
+                console.warn("ModalManager: openModal: beforeOpen hook failed for modal with id %s. The 'beforeOpen' function was expected to return true but returned false!", modalId);
         })();
     }
 
     closeModal(modalId) {
+        // In case we get the folderName instead of the modalId:
+        if (!modalId.includes("-"))
+            modalId = ModalManager.folderNameToId(modalId);
+
         let modalElement = $id(modalId);
         if(!modalElement) {
-            console.warn("ModalManager: closeModal: Element with id %s not found", modalId);
+            console.info("ModalManager: closeModal: Element with id %s not found", modalId);
             return
         }
         if (!modalElement) {
-            console.warn("ModalManager: closeModal: Modal with id %s not found", modalId);
+            console.info("ModalManager: closeModal: Modal with id %s not found", modalId);
             return
         }
 
         const modal = bootstrap.Modal.getInstance(modalElement);
         if (!modal) {
-            console.warn("ModalManager: closeModal: Modal instance with id %s not found", modalId);
+            console.info("ModalManager: closeModal: Modal instance with id %s not found", modalId);
             return
         }
         modal.hide();

@@ -24,7 +24,7 @@ const routes = [
         path: "/profile",
         view: "profile",
         requireAuth: true,
-        modals: ["template", "editProfile", "createGame", "editFriendship", "newConversation", "friendList"]
+        modals: ["template", "editProfile", "createGame", "editFriendship", "newConversation", "friendsList"]
     },
     {
         path: "/chat",
@@ -37,7 +37,7 @@ const routes = [
         view: "auth",
         requireAuth: false,
     },
-    { // TODO: @rajh: not sure if I should add 404 here but without the translation wasn't working
+    {
         path: "/404",
         view: "404",
         requireAuth: false,

@@ -13,6 +13,7 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 import dollars from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { modalManager } from '../abstracts/ModalManager.js';
 
 const simpleObjectToBind = () => {
     return {
@@ -131,6 +132,15 @@ async function router(path, params = null) {
         nav.style.display = 'none';
     }
 
+    // Now remove all old modals from the view
+    for (const modal of oldRoute.modals || []) {
+        console.log("Closing modal:", modal);
+        modalManager.closeModal(modal);
+        console.log("Removing modal:", modal);
+        const lastViewModalHooks = await getModalHooks(modal);
+        lastViewModalHooks && await lastViewModalHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewModalHooks))();
+    }
+
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
     const viewConfigWithoutHooks = objectToBind(viewHooks, params);
@@ -141,12 +151,6 @@ async function router(path, params = null) {
     // bind everything except the hooks to the object
     lastViewHooks && await lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
-    // Now remove all old modals from the view
-    for (const modal of oldRoute.modals || []) {
-        console.log("Removing modal:", modal);
-        const lastViewModalHooks = await getModalHooks(modal);
-        lastViewModalHooks && await lastViewModalHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewModalHooks))();
-    }
 
     // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();

@@ -1,6 +1,5 @@
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
-import { buttonObjects } from "./objects.js"
 import router from '../../navigation/router.js';
 import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $store from '../../store/store.js';
@@ -41,7 +40,6 @@ export default {
 
         result: undefined,
         cropper: undefined,
-        friendList: undefined,
 
         buttonSettings: {
             friend: {
@@ -78,12 +76,14 @@ export default {
                 view.setAttribute("data-user-id", data.id);
                 view.setAttribute("data-user-username", data.username);
                 view.setAttribute("data-user-chat-id", data.chatId);
+                view.setAttribute("data-relationship", data.relationship);
 
             } else {
                 // Unset the attributes
                 view.removeAttribute("data-user-id");
                 view.removeAttribute("data-user-username");
                 view.removeAttribute("data-user-chat-id");
+                view.removeAttribute("data-relationship");
             }
 
         },
@@ -165,6 +165,7 @@ export default {
             element.style.display = "none";
         },
 
+        //TODO: this function needs to be removed
         hideModal(modalToHide) {
             let modalElement = this.domManip.$id(modalToHide);
             const modal = bootstrap.Modal.getInstance(modalElement);
@@ -198,39 +199,7 @@ export default {
             this.domManip.$id("edit-profile-modal").focus();
         },
 
-        friendshipMethod() {
 
-            let blockIndex;
-            if (this.result.relationship.isBlocking)
-                blockIndex = "blocked";
-            else
-                blockIndex = "unblocked";
-
-            // friendship portion of the modal
-            let element = this.domManip.$id("friendshp-modal-friendship-text")
-            element.textContent = buttonObjects[this.result.relationship.state].text;
-            if (this.result.relationship.state == "noFriend" && (this.result.relationship.isBlocked || this.result.relationship.isBlocking))
-            {
-                element.style.display = "none";
-                this.hideElement("modal-edit-friendship-friendship-primary-button");
-            }
-
-            if (!buttonObjects[this.result.relationship.state].secondaryButton)
-                this.hideElement("modal-edit-friendship-friendship-secondary-button");
-
-            // blocking portion of the friendshop modal
-            if (this.result.relationship.state == "requestReceived" || this.result.relationship.state == "requestSent")
-                this.hideElement("modal-edit-friendship-block");
-
-            else {
-                element = this.domManip.$id("friendshp-modal-block-text")
-                element.textContent = buttonObjects[blockIndex].text;
-            }
-
-            let modalElement = this.domManip.$id("modal-edit-friendship");
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-        },
 
         openFileExplorer() {
             let element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
@@ -344,46 +313,7 @@ export default {
             router("/logout");
         },
 
-        changeFrendshipPrimaryMethod() {
-            const object = buttonObjects[this.result.relationship.state];
-            const fullUrl = object.Url + this.result.id + "/";
 
-            call(fullUrl, object.method).then(data =>{
-                this.hideModal("modal-edit-friendship");
-                $callToast("success", data.message);
-                router('/profile', { id: this.result.id});
-            }).catch((error) => {
-                console.error('Error:', error);
-            });
-        },
-
-        changeFrendshipSecondaryMethod() {
-            call(`user/relationship/reject/${this.result.id}/`, "DELETE").then(data =>{
-                this.hideModal("modal-edit-friendship");
-                $callToast("success", data.message);
-                router('/profile', { id: this.result.id});
-            }).catch((error) => {
-                console.error('Error:', error);
-            });
-
-        },
-
-        changeBlockMethod() {
-            let object;
-
-            if (this.result.relationship.isBlocking)
-                object = buttonObjects["blocked"];
-            else
-                object = buttonObjects["unblocked"];
-            const fullUrl = object.Url + this.result.id + "/";
-            call(fullUrl, object.method).then(data =>{
-                this.hideModal("modal-edit-friendship");
-                $callToast("success", data.message);
-                router('/profile', { id: this.result.id});
-            }).catch((error) => {
-                console.error('Error:', error);
-            });
-        },
 
         openInviteForGameModal() {
             // Check if the user is already in a game -> redir to game
@@ -423,88 +353,11 @@ export default {
             })
         },
 
+        // TODO: this needs to be removed i  guess
         cancelButton() {
             this.hideModal("modal-edit-friendship");
         },
 
-        clickFriendCard(event) {
-
-            let element = event.srcElement.getAttribute("user-id");
-
-            if (element == null)
-                element = event.srcElement.parentElement.getAttribute("user-id");
-            const params = { id: element };
-            this.hideModal("modal-friends-list");
-            router('/profile',  params);
-        },
-
-        populateFriendList() {
-            const mainDiv = this.domManip.$id("modal-friends-list-list");
-            for (let element of this.friendList){
-                const container = this.domManip.$id("modal-friends-list-list-element-template").content.cloneNode(true);
-                const elementDiv = container.querySelector(".modal-friends-list-list-element");
-                elementDiv.setAttribute("user-id", element.id);
-                elementDiv.setAttribute("id", "modal-friends-list-list-element-user-" + element.username);
-
-                container.querySelector("#modal-friends-list-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatarUrl;
-                container.querySelector(".modal-friends-list-list-element-username").textContent = element.username;
-                container.querySelector("#modal-friends-list-list-element-friendship-image").src = this.buttonSettings[element.status].path;
-                mainDiv.appendChild(container)
-                this.domManip.$on(elementDiv, "click", this.clickFriendCard);
-            }
-        },
-
-        openFriendList() {
-
-            call(`/user/friend/list/${this.result.id}/`, "GET").then((res) => {
-
-                this.removeFriendsList();
-                this.friendList = res.friends;
-                this.populateFriendList();
-                this.domManip.$id("modal-friends-list-search-bar").value = "";
-                this.hideElement("modal-friends-list-list-result-not-found-message");
-                let modalElement = this.domManip.$id("modal-friends-list");
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            }).catch((error) => {
-                console.error('Error:', error);
-            });
-
-        },
-
-        removeFriendsList() {
-            if (!this.friendList)
-                return ;
-            for (let user of this.friendList)
-            {
-                const elementId = "modal-friends-list-list-element-user-" + user.username;
-                const element =  this.domManip.$id(elementId);
-                this.domManip.$off(element, "click", this.clickFriendCard);
-                element.remove();
-            }
-            this.friendList = undefined;
-        },
-
-        searchFriend() {
-            const searchBarElement = this.domManip.$id("modal-friends-list-search-bar")
-            let inputValue = searchBarElement.value.trim();
-
-            for (let element of this.friendList) {
-                this.showElement("modal-friends-list-list-element-user-" + element.username, "flex");
-            }
-            this.hideElement("modal-friends-list-list-result-not-found-message");
-
-            const filteredObj = Object.fromEntries(
-                Object.entries(this.friendList).filter(([key, value]) => !value.username.startsWith(inputValue))
-            );
-
-            if (Object.values(filteredObj).length === this.friendList.length)
-                this.showElement("modal-friends-list-list-result-not-found-message");
-
-            for (let [key, element] of Object.entries(filteredObj)) {
-                this.hideElement("modal-friends-list-list-element-user-" + element.username);
-            }
-        },
         powerupsAction() {
             this.gameSettings.powerups = !this.gameSettings.powerups;
         },
@@ -568,8 +421,6 @@ export default {
 
             // Remove the attributes from the view
             this.setViewAttributes(false);
-
-            this.removeFriendsList();
         },
 
         beforeDomInsertion() {
