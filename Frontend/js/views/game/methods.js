@@ -202,7 +202,7 @@ function drawPlayerState(playerSide) {
         $id(playerSideDash + "-state-spinner").style.display = "none";
         $id(playerSideDash + "-powerups-status").style.display = "flex";
         // Set the powerup images
-        const imgPathPre = `${window.origin}/assets/game/icons/powerup-`;
+        const imgPathPre = `${window.origin}/assets/icons_128x128/icon_powerup-`;
         $id(playerSideDash + "-powerups-big").src = imgPathPre + gameObject[playerSide].powerupBig + "-big.png";
         $id(playerSideDash + "-powerups-slow").src = imgPathPre + gameObject[playerSide].powerupSlow + "-slow.png";
         $id(playerSideDash + "-powerups-fast").src = imgPathPre + gameObject[playerSide].powerupFast + "-fast.png";
@@ -341,7 +341,7 @@ export function sendPlayerInput() {
 
 const gameCountdownImage = (timeDiff) => {
     const gameCountdownImage = $id("game-countdown-image");
-    const basePath = `${window.origin}/assets/game/countdown/`;
+    const basePath = `${window.origin}/assets/images/game/countdown/`;
     gameCountdownImage.src = basePath + timeDiff + ".png";
     gameCountdownImage.style.display = "block";
     audioPlayer.playSound("beep1");

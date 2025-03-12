@@ -348,7 +348,7 @@ export function loadMessages(conversationId) {
                     $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">${translate("chat", "subject") + "<br>" + data.conversationName}</a>`;
                     $id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + data.conversationAvatar;
                     $id("chat-view-header-avatar").setAttribute("user-id", data.userId);
-                    $id("chat-view-header-online-icon").src = data.online ? "../assets/icons/icon_online.png" : "../assets/icons/icon_offline.png";
+                    $id("chat-view-header-online-icon").src = data.online ? "../assets/icons_128x128/icon_online.png" : "../assets/icons_128x128/icon_offline.png";
                     // Load messages (prepend as they are in reverse order)
                     for (let element of data.data)
                         createMessage(element, true);

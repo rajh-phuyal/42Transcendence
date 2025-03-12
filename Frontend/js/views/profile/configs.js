@@ -43,19 +43,19 @@ export default {
 
         buttonSettings: {
             friend: {
-                path: "../../../../assets/icons/icon_rel_yes.png",
+                path: "../../../../assets/icons_128x128/icon_rel_yes.png",
                 index: 0,
             },
             noFriend: {
-                path: "../../../../assets/icons/icon_rel_no.png",
+                path: "../../../../assets/icons_128x128/icon_rel_no.png",
                 index: 1,
             },
             requestReceived: {
-                path: "../../../../assets/icons/icon_rel_received.png",
+                path: "../../../../assets/icons_128x128/icon_rel_received.png",
                 index: 2,
             },
             requestSent: {
-                path: "../../../../assets/icons/icon_rel_send.png",
+                path: "../../../../assets/icons_128x128/icon_rel_send.png",
                 index: 3,
             },
 
@@ -98,7 +98,7 @@ export default {
                 this.buttonTopLeft.method = this.friendshipMethod;
                 this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
                 if (this.result.relationship.isBlocking) {
-                    this.buttonTopLeft.image = "../../../../assets/icons/icon_rel_block.png";
+                    this.buttonTopLeft.image = "../../../../assets/icons_128x128/icon_rel_block.png";
                 }
             }
 
@@ -106,23 +106,23 @@ export default {
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
                 this.buttonTopMiddle.method = this.profileEditMethod;
-                this.buttonTopMiddle.image = "../../../../assets/icons/icon_edit.png";
+                this.buttonTopMiddle.image = "../../../../assets/icons_128x128/icon_edit.png";
             }
             else {
                 if (this.result.newMessage)
-                    this.buttonTopMiddle.image = "../../../../assets/icons/icon_msg_unread.png";
+                    this.buttonTopMiddle.image = "../../../../assets/icons_128x128/icon_msg_unread.png";
                 else
-                    this.buttonTopMiddle.image = "../../../../assets/icons/icon_msg.png";
+                    this.buttonTopMiddle.image = "../../../../assets/icons_128x128/icon_msg.png";
                     this.buttonTopMiddle.method = this.messageMethod;
             }
         },
         setupTopRightButton() {
             if (this.result.relationship.state == "yourself") {
-                this.buttonTopRight.image = "../../../../assets/icons/icon_logout.png";
+                this.buttonTopRight.image = "../../../../assets/icons_128x128/icon_logout.png";
                 this.buttonTopRight.method = this.logoutMethod;
             }
             else if (this.result.relationship.state == "friend" && !this.result.relationship.isBlocking && !this.result.relationship.isBlocked) {
-                this.buttonTopRight.image = "../../../../assets/icons/icon_game_invite.png";
+                this.buttonTopRight.image = "../../../../assets/icons_128x128/icon_game_invite.png";
                 this.buttonTopRight.method = this.openInviteForGameModal;
             }
         },
@@ -140,9 +140,9 @@ export default {
             else
                 element.style.display = "none";
             element = this.domManip.$id("button-bottom-left");
-            element.src = "../../../../assets/icons/icon_game_history.png";
+            element.src = "../../../../assets/icons_128x128/icon_game_history.png";
             element = this.domManip.$id("button-bottom-right");
-            element.src = "../../../../assets/icons/icon_rel_list.png";
+            element.src = "../../../../assets/icons_128x128/icon_rel_list.png";
         },
 
         populateButtons(){

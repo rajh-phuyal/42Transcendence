@@ -12,11 +12,33 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title" id="modal-create-game-title">TODO: remove Modal title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modal-create-game-body">
                 <p>Modal body text goes here.</p>
+                <div id="modal-create-game-maps-powerups-container">
+                    <div id="modal-create-game-powerups-container">
+                      <h4>Powerups</h4>
+                      <input id="modal-create-game-powerups-checkbox" type="checkbox">
+                    </div>
+                    <div id="modal-create-game-maps-container">
+                      <h3>Maps</h3>
+                      <img id="modal-create-game-map-ufo" name="ufo" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_ufo.png" alt="error loading the image">
+                      <img id="modal-create-game-map-lizard-people" name="lizard-people" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_lizard-people.png" alt="error loading the image">
+                      <img id="modal-create-game-map-snowman" name="snowman" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_snowman.png" alt="error loading the image">
+                      <img id="modal-create-game-map-lochness" name="lochness" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_lochness.png" alt="error loading the image">
+                    </div>
+                  </div>
+                  <div id="modal-create-game-opponent-title-container">
+                    <h4 id="modal-create-game-opponent-title">Your Opponent:</h3>
+                    <h4 id="modal-create-game-opponent-name" style="margin-left: 1vw;"></h3>
+                  </div>
+                  <div id="modal-create-game-opponent-start-container">
+                    <img id="modal-create-game-opponent-photo" alt="error loading the image">
+
+                    <barely-a-button id="modal-create-game-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
+                  </div>
             </div>
             <div class="modal-footer">
                 <!-- TODO: Translate Button Text -->
@@ -26,48 +48,8 @@
         </div>
     </div>
 </div>
-
-
-
-
-<!-- Invite for game Modal -->
-<!-- ####################################################################### -->
-<div class="modal fade" id="modal-create-game" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content" id="modal-create-game-content">
-        <div class="modal-body" id="modal-create-game-body">
-          <div id="modal-create-game-title-container">
-            <h1 id="modal-create-game-title">Friendly Match</h1>
-          </div>
-          <div id="modal-create-game-maps-powerups-container">
-            <div id="modal-create-game-powerups-container">
-              <h4>Powerups</h4>
-              <input id="modal-create-game-powerups-checkbox" type="checkbox">
-            </div>
-            <div id="modal-create-game-maps-container">
-              <h3>Maps</h3>
-              <img id="modal-create-game-map-ufo" name="ufo" class="modal-create-game-maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
-              <img id="modal-create-game-map-lizard-people" name="lizard-people" class="modal-create-game-maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
-              <img id="modal-create-game-map-snowman" name="snowman" class="modal-create-game-maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
-              <img id="modal-create-game-map-lochness" name="lochness" class="modal-create-game-maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
-            </div>
-          </div>
-          <div id="modal-create-game-opponent-title-container">
-            <h4 id="modal-create-game-opponent-title">Your Opponent:</h3>
-            <h4 id="modal-create-game-opponent-name" style="margin-left: 1vw;"></h3>
-          </div>
-          <div id="modal-create-game-opponent-start-container">
-            <img id="modal-create-game-opponent-photo" alt="error loading the image">
-
-            <barely-a-button id="modal-create-game-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
-          </div>
-      </div>
-    </div>
-  </div>
-
-  </div>
-  <style>
-   #modal-create-game-start-button {
+<style>
+ /*   #modal-create-game-start-button {
         margin: 2vh 0vw 0vh 4vw !important;
       }
 
@@ -149,5 +131,5 @@
       #modal-create-game-opponent-photo {
         height: 12vh;
         margin: 0vh 0vw 0vh 2vw !important;
-      }
+      } */
   </style>

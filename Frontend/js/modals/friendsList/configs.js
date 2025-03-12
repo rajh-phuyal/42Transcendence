@@ -21,19 +21,19 @@ export default {
 
         buttonSettings: {
             friend: {
-                path: "../../../../assets/icons/icon_rel_yes.png",
+                path: "../../../../assets/icons_128x128/icon_rel_yes.png",
                 index: 0,
             },
             noFriend: {
-                path: "../../../../assets/icons/icon_rel_no.png",
+                path: "../../../../assets/icons_128x128/icon_rel_no.png",
                 index: 1,
             },
             requestReceived: {
-                path: "../../../../assets/icons/icon_rel_received.png",
+                path: "../../../../assets/icons_128x128/icon_rel_received.png",
                 index: 2,
             },
             requestSent: {
-                path: "../../../../assets/icons/icon_rel_send.png",
+                path: "../../../../assets/icons_128x128/icon_rel_send.png",
                 index: 3,
             },
 

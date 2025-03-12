@@ -298,7 +298,7 @@ export function toggleGamefieldVisible(visible) {
 
     if(visible) {
         // Load the background map image
-        imgPath = window.location.origin + '/assets/game/maps/' + gameObject.mapName + '.png';
+        imgPath = window.location.origin + '/assets/images/game/maps/' + gameObject.mapName + '.png';
         // Show the field canvas
         gameField.style.display = "block";
         // Show the game field
