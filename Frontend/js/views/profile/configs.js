@@ -25,19 +25,6 @@ export default {
             method: undefined,
         },
 
-        //TODO: place this map in the store
-        maps: {
-            "ufo": 1,
-            "lizard-people": 2,
-            "snowman": 3,
-            "lochness": 4,
-        },
-
-        gameSettings: {
-            map: parseInt(Math.random() * (4 - 1) + 1),
-            powerups: false,
-        },
-
         result: undefined,
         cropper: undefined,
 
@@ -75,6 +62,7 @@ export default {
                 // Set the attributes
                 view.setAttribute("data-user-id", data.id);
                 view.setAttribute("data-user-username", data.username);
+                view.setAttribute("data-user-avatar", data.avatarUrl);
                 view.setAttribute("data-user-chat-id", data.chatId);
                 view.setAttribute("data-relationship", data.relationship);
 
@@ -82,6 +70,7 @@ export default {
                 // Unset the attributes
                 view.removeAttribute("data-user-id");
                 view.removeAttribute("data-user-username");
+                view.removeAttribute("data-user-avatar");
                 view.removeAttribute("data-user-chat-id");
                 view.removeAttribute("data-relationship");
             }
@@ -313,53 +302,9 @@ export default {
             router("/logout");
         },
 
-
-
-        openInviteForGameModal() {
-            // Check if the user is already in a game -> redir to game
-            call(`game/get-game/${this.routeParams.id}/`, 'GET').then(data => {
-                if (data.gameId)
-                    router('/game', {"id": data.gameId});
-                else {
-                    this.domManip.$id("modal-create-game-opponent-photo").src = window.origin + '/media/avatars/' + this.result.avatarUrl;
-                    this.domManip.$id("modal-create-game-opponent-name").textContent = this.result.username;
-                    let modalElement = this.domManip.$id("modal-create-game");
-                    const modal = new bootstrap.Modal(modalElement);
-                    modal.show();
-                }
-            });
-        },
-        selectMap(chosenMap) {
-            const maps = this.domManip.$class("modal-create-game-maps-button");
-            this.gameSettings.map = chosenMap.srcElement.name
-            for (let element of maps){
-                if (element.name != this.gameSettings.map)
-                    element.style.opacity = 0.7;
-                else
-                    element.style.opacity = 1;
-            }
-        },
-        submitInvitation() {
-            console.log(this.gameSettings);
-
-            const data = {
-                "mapNumber": this.maps[this.gameSettings.map],
-                "powerups": this.gameSettings.powerups,
-                "opponentId": this.routeParams.id,
-            }
-            call('game/create/', 'POST', data).then(data => {
-                this.hideModal("modal-create-game");
-                router('/game', {"id": data.gameId});
-            })
-        },
-
         // TODO: this needs to be removed i  guess
         cancelButton() {
             this.hideModal("modal-edit-friendship");
-        },
-
-        powerupsAction() {
-            this.gameSettings.powerups = !this.gameSettings.powerups;
         },
     },
 
@@ -445,7 +390,7 @@ export default {
                 modalManager.on("button-top-middle", "modal-new-conversation");
                 modalManager.on("button-top-right", "modal-create-game");
                 modalManager.on("button-bottom-right", "modal-friends-list");
-                modalManager.on("test-modal-btn", "modal-template");
+                modalManager.on("test-modal-btn", "modal-template-image");
 
 
 /*

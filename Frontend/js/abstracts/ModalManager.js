@@ -7,6 +7,7 @@ const modalFolders = [
     ["modal-friends-list", "friendsList"],
     ["modal-create-game", "createGame"],
     ["modal-template", "template"],
+    ["modal-template-image", "templateImage"],
 ];
 export default class ModalManager {
     static instance = null;

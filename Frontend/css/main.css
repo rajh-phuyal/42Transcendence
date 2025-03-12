@@ -317,10 +317,30 @@ h5 {
     height: 100%;
 }
 
+/* IMAGE MODAL LAYOUT AND GRID */
+.image-modal-content{
+    width: 400px !important;
+    height: 700px !important;
+}
+
+.image-modal-body {
+    padding: 0 !important;
+}
+
+.image-modal-background-image {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    padding: 0 0 0 0;
+}
+
 /* MODAL STYLES */
 .modal-content {
-    border: 3px solid #000000 !important;
-    border-radius: 10px !important;
+    border: 3px solid #000000;
+    border-radius: 10px;
 }
 .modal-header {
     background-color: #837b6a;
@@ -358,6 +378,17 @@ h5 {
     padding: 2px 4px;
     border: 2px solid #968503;
 }
+.modal-image-button {
+    background-color: #00000000;
+    border: none !important;
+}
+.modal-toggle-button-enabled {
+    filter: brightness(100%) !important;
+}
+.modal-toggle-button-disabled {
+    filter: brightness(30%) !important;
+}
+
 .modal-button:hover {
     background-color: #4a4a4a !important;
     border: 2px solid black !important;
@@ -372,4 +403,15 @@ h5 {
 }
 .modal-button:disabled, .modal-button[disabled]{
     background-color:rgba(145, 143, 143, 0.9);
+}
+
+/* Deactivate active and focus for toggle buttons */
+.modal-toggle-button-enabled:focus,
+.modal-toggle-button-enabled:active,
+.modal-toggle-button-disabled:focus,
+.modal-toggle-button-disabled:active {
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: inherit !important; /* Ensures it keeps its default bg */
+    border: inherit !important; /* Ensures border doesn't change */
 }

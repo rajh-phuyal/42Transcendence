@@ -10,126 +10,102 @@
 
 <div class="modal fade" id="modal-create-game" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-create-game-title">TODO: remove Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="modal-create-game-body">
-                <p>Modal body text goes here.</p>
-                <div id="modal-create-game-maps-powerups-container">
-                    <div id="modal-create-game-powerups-container">
-                      <h4>Powerups</h4>
-                      <input id="modal-create-game-powerups-checkbox" type="checkbox">
-                    </div>
-                    <div id="modal-create-game-maps-container">
-                      <h3>Maps</h3>
-                      <img id="modal-create-game-map-ufo" name="ufo" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_ufo.png" alt="error loading the image">
-                      <img id="modal-create-game-map-lizard-people" name="lizard-people" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_lizard-people.png" alt="error loading the image">
-                      <img id="modal-create-game-map-snowman" name="snowman" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_snowman.png" alt="error loading the image">
-                      <img id="modal-create-game-map-lochness" name="lochness" class="modal-create-game-maps-button" src="../assets/icons_128x128/icon_map_lochness.png" alt="error loading the image">
-                    </div>
-                  </div>
-                  <div id="modal-create-game-opponent-title-container">
-                    <h4 id="modal-create-game-opponent-title">Your Opponent:</h3>
-                    <h4 id="modal-create-game-opponent-name" style="margin-left: 1vw;"></h3>
-                  </div>
-                  <div id="modal-create-game-opponent-start-container">
-                    <img id="modal-create-game-opponent-photo" alt="error loading the image">
+        <div class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img id="modal-create-game-background" src='../../assets/backgrounds/modal-create-game-lizard-people.png' class="image-modal-background-image" alt="Background Image">
+                <div id="modal-template-image-grid" class="view-overlay-grid">
+                    <!-- Kind of header: -->
+                    <h4  id="modal-create-game-title"       class="grid-cell default-grid-area modal-title title" ></h4>
+                    <button type="button"                   class="grid-cell default-grid-area btn-close btnclo" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                    <barely-a-button id="modal-create-game-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
-                  </div>
-            </div>
-            <div class="modal-footer">
-                <!-- TODO: Translate Button Text -->
-                <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn modal-button">Save changes</button>
+                    <!-- Kind of body -->
+                    <h5                                             class="grid-cell default-grid-area maps">Maps</h5>
+                    <img id="modal-create-game-map-ufo"             class="grid-cell default-grid-area mufo modal-button modal-image-button modal-toggle-button-disabled map-button" mapid="1" src="../assets/icons_128x128/icon_map_ufo.png" alt="ufo">
+                    <img id="modal-create-game-map-lizard-people"   class="grid-cell default-grid-area mliz modal-button modal-image-button modal-toggle-button-disabled map-button" mapid="2" src="../assets/icons_128x128/icon_map_lizard-people.png" alt="error loading the image">
+                    <img id="modal-create-game-map-snowman"         class="grid-cell default-grid-area msno modal-button modal-image-button modal-toggle-button-disabled map-button" mapid="3" src="../assets/icons_128x128/icon_map_snowman.png" alt="error loading the image">
+                    <img id="modal-create-game-map-lochness"        class="grid-cell default-grid-area mloc modal-button modal-image-button modal-toggle-button-disabled map-button" mapid="4" src="../assets/icons_128x128/icon_map_lochness.png" alt="error loading the image">
+                    <button type="button" enabled="true"            class="grid-cell default-grid-area modal-button btnpu">Powerups</button>
+                    <!-- Kind of footer -->
+                    <h5     id="modal-create-game-opponent-username"        class="grid-cell default-grid-area opp"></h5>
+                    <img    id="modal-create-game-opponent-avatar"          class="grid-cell default-grid-area avat" alt="avatar">
+                    <button id="modal-create-game-btn-pu"     type="button" class="grid-cell default-grid-area btnpu  modal-button modal-toggle-button-enabled">Powerups</button>
+                    <button id="modal-create-game-btn-create" type="button" class="grid-cell default-grid-area btncre modal-button">Create</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <style>
- /*   #modal-create-game-start-button {
-        margin: 2vh 0vw 0vh 4vw !important;
-      }
+    #modal-template-image-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btnclo .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      maps   maps   maps  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mufo   mufo  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mufo   mufo  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mliz   mliz  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mliz   mliz  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      msno   msno  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      msno   msno  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mloc   mloc  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mloc   mloc  "
+            ".      btnpu  btnpu  btnpu  btnpu  .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      avat   avat   avat   .      .      .      .      .      .      .      .      .      .     "
+            ".      avat   avat   avat   .      .      .      .      .      .      .      .      .      .     "
+            ".      avat   avat   avat   .      .      .      .      .      .      .      .      .      .     "
+            ".      avat   avat   avat   .      .      .      .      .      .      btncre btncre btncre btncre"
+            ".      opp    opp    opp    .      .      .      .      .      .      btncre btncre btncre btncre"
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
 
-      #modal-create-game-title-container {
-        margin: 19vh 0vw 0vh 0vw !important;
-
-      }
-
-      #modal-create-game-maps-powerups-container {
-        display: flex;
-        flex-direction: row;
-      }
-
-      #modal-create-game-powerups-checkbox {
-        margin: 0vh 0vw 0vh 0.6vw !important;
-      }
-
-      #modal-create-game-powerups-container {
-        display: flex;
-        flex-direction: row;
-        margin: 30vh 0vw 0vh 1.5vw !important;
-        align-items: center;
-      }
-
-      #modal-create-game-maps-container {
-        display: flex;
-        flex-direction: column;
-        margin: 0vh 0vw 0vh 10.7vw !important;
-        padding: 0vh 0vw 0vh 0.3vw !important;
-      }
-
-      #modal-create-game-title {
-        text-align: center;
-      }
-
-      .modal-create-game-maps-button {
-        margin: 0vh 0vw 1vh 0.3vw !important;
-        height: 7vh;
-        width: 7vh;
-        opacity: 0.7;
-      }
-      .modal-create-game-maps-button:hover {
-        margin: 0vh 0vw 0.6vh 0.1vw !important;
-        height: 7.4vh;
-        width: 7.4vh;
-      }
-
-      #modal-create-game-content {
-        background-color: transparent;
-        border: none;
-        background-image: url('../assets/homeView/lizardPeopleModal.png');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-      }
-
-      #modal-create-game-body {
-        display: flex;
-        flex-direction: column;
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        height: 90vh;
-        width: 30vw;
-      }
-
-      #modal-create-game-opponent-title-container {
-        display: flex;
-        flex-direction: row;
-        margin: 1vh 0vw 0vh 1.5vw !important;
-      }
-
-      #modal-create-game-opponent-start-container {
-        display: flex;
-        flex-direction: row;
-        margin: 1vh 0vw 0vh 1.5vw !important;
-      }
-
-      #modal-create-game-opponent-photo {
-        height: 12vh;
-        margin: 0vh 0vw 0vh 2vw !important;
-      } */
-  </style>
+    .title {
+        grid-area: title;
+        color: black;
+    }
+    .btnclo {
+        grid-area: btnclo;
+    }
+    .maps {
+        grid-area: maps;
+        color: black;
+    }
+    .mufo {
+        grid-area: mufo;
+        height: 95%;
+    }
+    .mliz {
+        grid-area: mliz;
+        height: 95%;
+    }
+    .msno {
+        grid-area: msno;
+        height: 95%;
+    }
+    .mloc {
+        grid-area: mloc;
+        height: 95%;
+    }
+    .btnpu {
+        grid-area: btnpu;
+    }
+    .opp {
+        grid-area: opp;
+        color: black;
+    }
+    .avat {
+        grid-area: avat;
+        height: 100%;
+    }
+    .btncre {
+        grid-area: btncre;
+    }
+</style>

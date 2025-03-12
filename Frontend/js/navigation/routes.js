@@ -24,7 +24,7 @@ const routes = [
         path: "/profile",
         view: "profile",
         requireAuth: true,
-        modals: ["template", "editProfile", "createGame", "editFriendship", "newConversation", "friendsList"]
+        modals: ["template", "templateImage", "editProfile", "createGame", "editFriendship", "newConversation", "friendsList"]
     },
     {
         path: "/chat",

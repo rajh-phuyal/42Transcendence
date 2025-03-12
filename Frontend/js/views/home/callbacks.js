@@ -34,7 +34,7 @@ export function battleModalCallback(){
     let modalBody = $id('home-modal-body');
 
     hideModalElements();
-    modalBody.style.backgroundImage = "url('../../../assets/homeView/lizardPeopleModal.png')";
+    modalBody.style.backgroundImage = "url('../../../assets/backgrounds/modal-create-game-lizard-people.png')";
     modalBody.style.height = '90vh';
     modalBody.style.width = '30vw';
     modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
