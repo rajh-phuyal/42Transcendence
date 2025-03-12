@@ -9,12 +9,16 @@ TODO: THIS MODAL IS NOT DONE AT ALL!!!
             - e.g. newConversation modal js!
 */
 
+import call from '../../abstracts/call.js'
+import router from '../../navigation/router.js';
+import $callToast from '../../abstracts/callToast.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
-import { buttonObjects } from "./objects.js"
+import { buttonObjects } from "./buttonObjects.js"
 
 export default {
     attributes: {
         relationship: undefined,
+        targetId: undefined,
     },
 
     methods: {
@@ -23,7 +27,9 @@ export default {
             element.style.display = "none";
         },
 
-        friendshipMethod() {
+        /* This function sets all actions and text */
+        initModal() {
+            console.dir(this.relationship);
 
             let blockIndex;
             if (this.relationship.isBlocking)
@@ -31,68 +37,65 @@ export default {
             else
                 blockIndex = "unblocked";
 
+            console.log(("1"));
             // friendship portion of the modal
-            let element = this.domManip.$id("friendshp-modal-friendship-text")
+            let element = this.domManip.$id("modal-edit-friendship-friendship-text")
             element.textContent = buttonObjects[this.relationship.state].text;
+            console.log(("1123"));
             if (this.relationship.state == "noFriend" && (this.relationship.isBlocked || this.relationship.isBlocking))
-            {
-                element.style.display = "none";
-                this.hideElement("modal-edit-friendship-friendship-primary-button");
-            }
+                {
+                    element.style.display = "none";
+                    this.hideElement("modal-edit-friendship-friendship-primary-button");
+                }
 
+            console.log(("2"));
             if (!buttonObjects[this.relationship.state].secondaryButton)
                 this.hideElement("modal-edit-friendship-friendship-secondary-button");
 
             // blocking portion of the friendshop modal
+            console.log(("3"));
             if (this.relationship.state == "requestReceived" || this.relationship.state == "requestSent")
                 this.hideElement("modal-edit-friendship-block");
 
             else {
-                element = this.domManip.$id("friendshp-modal-block-text")
+                element = this.domManip.$id("modal-edit-friendship-block-text")
                 element.textContent = buttonObjects[blockIndex].text;
             }
-
-            let modalElement = this.domManip.$id("modal-edit-friendship");
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
         },
 
         changeFrendshipPrimaryMethod() {
-            const object = buttonObjects[this.result.relationship.state];
-            const fullUrl = object.Url + this.result.id + "/";
+            const object = buttonObjects[this.relationship.state];
+            const fullUrl = object.Url + this.targetId + "/";
 
+            console.log(("44444"));
             call(fullUrl, object.method).then(data =>{
-                this.hideModal("modal-edit-friendship");
                 $callToast("success", data.message);
-                router('/profile', { id: this.result.id});
+                router('/profile', { id: this.targetId});
             }).catch((error) => {
                 console.error('Error:', error);
             });
         },
 
         changeFrendshipSecondaryMethod() {
-            call(`user/relationship/reject/${this.result.id}/`, "DELETE").then(data =>{
-                this.hideModal("modal-edit-friendship");
+            call(`user/relationship/reject/${this.targetId}/`, "DELETE").then(data =>{
                 $callToast("success", data.message);
-                router('/profile', { id: this.result.id});
+                router('/profile', { id: this.targetId});
             }).catch((error) => {
                 console.error('Error:', error);
             });
-
         },
 
         changeBlockMethod() {
             let object;
 
-            if (this.result.relationship.isBlocking)
+            if (this.relationship.isBlocking)
                 object = buttonObjects["blocked"];
             else
                 object = buttonObjects["unblocked"];
-            const fullUrl = object.Url + this.result.id + "/";
+            const fullUrl = object.Url + this.targetId + "/";
             call(fullUrl, object.method).then(data =>{
-                this.hideModal("modal-edit-friendship");
                 $callToast("success", data.message);
-                router('/profile', { id: this.result.id});
+                router('/profile', { id: this.targetId});
             }).catch((error) => {
                 console.error('Error:', error);
             });
@@ -104,27 +107,54 @@ export default {
             console.log("beforeOpen of modal-edit-friendship");
 
             // Fetching the attributes from view and store them locally
-            this.relationship = this.domManip.$id("router-view").getAttribute("data-relationship");
-            if(this.relationship == undefined){
-                console.error("editFriendshipModal: Couldn't find the relationship attribute in the view");
+            try {
+                // Try to store userId (wich is the target) as Number
+                this.targetId = parseInt(this.domManip.$id("router-view").getAttribute("data-user-id"));
+            } catch {
+                console.error("createGameModal: Couldn't find the targetId ('data-user-id') attribute in the view");
+                return false;
+            }
+            if (!this.targetId) {
+                console.error("createGameModal: Couldn't find the targetId ('data-user-id') attribute in the view");
+                return false;
+            }
+            try {
+                let attr = this.domManip.$id("router-view").getAttribute("data-relationship");
+                if (!attr) {
+                    throw new Error("Attribute 'data-relationship' is missing or empty");
+                }
+                this.relationship = JSON.parse(attr);
+                if (!this.relationship) {  // Ensure object is not `null`
+                    throw new Error("Parsed object is null");
+                }
+            } catch (error) {
+                console.error("editFriendshipModal: Couldn't find or parse the relationship attribute in the view");
                 return false;
             }
 
             // Set modal title
-            this.domManip.$id("modal-edit-friendship-title").textContent = "Edit Friendship (need translation!)"; //Todo: translate
+            this.domManip.$id("modal-edit-friendship-title").textContent = "Edit Friendship"; //Todo: translate
 
-            // Add event listener to the create conversation button
-            //TODO: add event listener to the buttons
-            //this.domManip.$on(this.domManip.$id("modal-new-conversation-create-button"), "click", this.createConversation.bind(this));
-            //this.domManip.$on(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
+            // Set the modal content according to the relationship
+            this.initModal()
 
+            // Add event listener to the buttons
+            this.domManip.$on(this.domManip.$id("modal-edit-friendship-friendship-primary-button"), "click", this.changeFrendshipPrimaryMethod);
+            this.domManip.$on(this.domManip.$id("modal-edit-friendship-friendship-secondary-button"), "click", this.changeFrendshipSecondaryMethod);
+            this.domManip.$on(this.domManip.$id("modal-edit-friendship-block-button"), "click", this.changeBlockMethod);
             return true;
         },
         beforeRouteEnter() {
         },
 
         beforeRouteLeave() {
-           modalManager.closeModal("modal-edit-friendship");
+            // Add event listener to the buttons
+            this.domManip.$off(this.domManip.$id("modal-edit-friendship-friendship-primary-button"), "click", this.changeFrendshipPrimaryMethod);
+            this.domManip.$off(this.domManip.$id("modal-edit-friendship-friendship-secondary-button"), "click", this.changeFrendshipSecondaryMethod);
+            this.domManip.$off(this.domManip.$id("modal-edit-friendship-block-button"), "click", this.changeBlockMethod);
+
+            // TODO: check if this is already done by the router
+            modalManager.closeModal("modal-edit-friendship");
         },
 
         beforeDomInsertion() {

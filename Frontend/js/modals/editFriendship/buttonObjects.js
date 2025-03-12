@@ -4,7 +4,7 @@ export const buttonObjects = {
     // users are friends 0
     "friend": {
         text: translate("profile", "confirmRemoveFriend"),
-        secundaryButton: false,
+        secondaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "DELETE",
@@ -13,7 +13,7 @@ export const buttonObjects = {
     // users are not friends 1
     "noFriend": {
         text: translate("profile", "sendRequest"),
-        secundaryButton: false,
+        secondaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "POST",
@@ -22,7 +22,7 @@ export const buttonObjects = {
     // friend request received 2
     "requestReceived": {
         text: translate("profile", "acceptRequest"),
-        secundaryButton: true,
+        secondaryButton: true,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "PUT",
@@ -31,7 +31,7 @@ export const buttonObjects = {
     // friend request sent 3
     "requestSent": {
         text: translate("profile", "cancelRequest"),
-        secundaryButton: false,
+        secondaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
         method: "DELETE",

@@ -64,7 +64,7 @@ export default {
                 view.setAttribute("data-user-username", data.username);
                 view.setAttribute("data-user-avatar", data.avatarUrl);
                 view.setAttribute("data-user-chat-id", data.chatId);
-                view.setAttribute("data-relationship", data.relationship);
+                view.setAttribute("data-relationship", JSON.stringify(data.relationship));
 
             } else {
                 // Unset the attributes
@@ -232,6 +232,11 @@ export default {
 
         extractFile(event) {
             const file = event.target.files[0]; // Get the selected file
+            if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
+                $callToast("error", "Invalid file type. Please select a PNG or JPEG file.");
+                // TODO: close modal
+                return;
+            }
             if (file) {
                 const reader = new FileReader(); // Create a FileReader to read the file
 
@@ -339,15 +344,12 @@ export default {
             element = this.domManip.$class("modal-create-game-maps-button");
             for (let individualElement of element)
                 this.domManip.$off(individualElement, "click", this.selectMap);
-            element = this.domManip.$id("modal-create-game-powerups-checkbox");
-            this.domManip.$off(element, "change", this.powerupsAction);
             element = this.domManip.$id("modal-create-game-start-button");
             this.domManip.$off(element, "click", this.submitInvitation);
             element = this.domManip.$id("modal-edit-friendship-friendship-secondary-button");
             this.domManip.$off(element, "click", this.changeFrendshipSecondaryMethod);
             element = this.domManip.$id("modal-edit-friendship-block-button");
             this.domManip.$off(element, "click", this.changeBlockMethod);
-            element = this.domManip.$id("modal-edit-friendship-cancel-button");
             this.domManip.$off(element, "click", this.cancelButton);
             element = this.domManip.$id("modal-new-conversation-create-button");
             this.domManip.$off(element, "click", this.createConversation);
@@ -408,6 +410,8 @@ export default {
                     this.domManip.$on(element, "click", this.buttonTopRight.method);
                 }
 
+                HERE IS FOR EDIT PROFILE MODAL
+                ----
                 let element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
                 this.domManip.$on(element, "click", this.changeAvatarMethod);
                 element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
@@ -418,27 +422,18 @@ export default {
                 this.domManip.$on(element, "click", this.submitAvatar);
                 element = this.domManip.$id("edit-profile-modal-form-submit-button");
                 this.domManip.$on(element, "click", this.submitForm);
-                element = this.domManip.$id("modal-edit-friendship-friendship-primary-button");
-                this.domManip.$on(element, "click", this.changeFrendshipPrimaryMethod);
-                element = this.domManip.$class("modal-create-game-maps-button");
-                for (let individualElement of element)
-                    this.domManip.$on(individualElement, "click", this.selectMap);
-                element = this.domManip.$id("modal-create-game-powerups-checkbox");
-                this.domManip.$on(element, "change", this.powerupsAction);
-                element = this.domManip.$id("modal-create-game-start-button");
-                this.domManip.$on(element, "click", this.submitInvitation);
-                element = this.domManip.$id("modal-edit-friendship-friendship-secondary-button");
-                this.domManip.$on(element, "click", this.changeFrendshipSecondaryMethod);
-                element = this.domManip.$id("modal-edit-friendship-block-button");
-                this.domManip.$on(element, "click", this.changeBlockMethod);
-                element = this.domManip.$id("modal-edit-friendship-cancel-button");
-                this.domManip.$on(element, "click", this.cancelButton);
+
+
+
+
+                HERE COMES CONVERSATION MODAL
                 element = this.domManip.$id("modal-new-conversation-create-button");
                 this.domManip.$on(element, "click", this.createConversation);
+
+
                 element = this.domManip.$id("button-bottom-right");
                 this.domManip.$on(element, "click", this.openFriendList);
-                element = this.domManip.$id("modal-friends-list-search-bar");
-                this.domManip.$on(element, "keydown", this.searchFriend);
+
                 */
             })
             // TODO: on error?
