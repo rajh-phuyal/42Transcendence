@@ -317,26 +317,6 @@ h5 {
     height: 100%;
 }
 
-/* IMAGE MODAL LAYOUT AND GRID */
-.image-modal-content{
-    width: 400px !important;
-    height: 700px !important;
-}
-
-.image-modal-body {
-    padding: 0 !important;
-}
-
-.image-modal-background-image {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 100%;
-    width: 100%;
-    position: relative;
-    padding: 0 0 0 0;
-}
-
 /* MODAL STYLES */
 .modal-content {
     border: 3px solid #000000;
@@ -363,6 +343,29 @@ h5 {
     font-size: 1.5em;
     width: 100%;
     min-height: 0%;
+}
+
+/* IMAGE MODAL LAYOUT AND GRID */
+.image-modal-content{
+    width: 400px !important;
+    height: 700px !important;
+    border: none !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.image-modal-body {
+    padding: 0 !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.image-modal-background-image {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    padding: 0 0 0 0;
 }
 
 .modal-button {
