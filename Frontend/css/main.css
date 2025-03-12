@@ -207,8 +207,14 @@ h5 {
 	padding: 0.2rem !important;
 }
 
-#home-view > .custom-modal {
-	display: none !important;
+/* All single line text input fields for e.g. filters shoud use this class! */
+.barely-an-input {
+    font-size: min(1vw, 15px);
+    background-color: black;
+    color: white;
+}
+.barely-an-input:disabled, .barely-an-input[disabled]{
+    background-color:rgba(145, 143, 143, 0.9);
 }
 
 /* ALL NODES THAT HAVE SCROLL BARS SHOULD BE SET TO THIS CLASS */

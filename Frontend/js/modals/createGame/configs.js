@@ -17,18 +17,11 @@ import router from '../../navigation/router.js';
 
 export default {
     attributes: {
+        isOpponentFixed: true,
         opponentId: null,
         avatar: null,
         username: null,
 
-/*         //TODO: place this map in the store
-        maps: {
-            "ufo": 1,
-            "lizard-people": 2,
-            "snowman": 3,
-            "lochness": 4,
-        },
- */
         backgrounds: {
             1: "../../assets/backgrounds/modal-create-game-ufo.png",
             2: "../../assets/backgrounds/modal-create-game-lizard-people.png",
@@ -41,18 +34,42 @@ export default {
     },
 
     methods: {
+        /* This functions toggles between selecting a user and fixing it */
+        updateOpponentSection() {
+            const search = this.domManip.$id("modal-create-game-opponent-search");
+            const username = this.domManip.$id("modal-create-game-opponent-username");
+            const avatar = this.domManip.$id("modal-create-game-opponent-avatar");
+
+            /* Greyout the search if fixed opponent*/
+            if (this.isOpponentFixed)
+                search.style.display = "none";
+            else
+                search.style.display = "block";
+
+            /* Show the opponent info if availiable*/
+            if (this.username) {
+                username.textContent = this.username;
+                username.style.display = "block";
+            } else {
+                username.textContent = "";
+                username.style.display = "none";
+            }
+            if (this.avatar) {
+                avatar.src = window.origin + '/media/avatars/' + this.avatar;
+                avatar.style.display = "block";
+            } else {
+                avatar.src = "";
+                avatar.style.display = "none";
+            }
+        },
         callbackPowerups(event) {
-            console.log("powerups");
             const btn = this.domManip.$id("modal-create-game-btn-pu");
             if(this.powerups) {
-                console.log("powerups false");
                 this.powerups = false;
                 this.domManip.$addClass(btn, "modal-toggle-button-disabled");
                 this.domManip.$removeClass(btn, "modal-toggle-button-enabled");
-                console.log("powerups false-DONE");
             }
             else {
-                console.log("powerups true");
                 this.powerups = true;
                 btn.classList.remove("modal-toggle-button-disabled");
                 btn.classList.add("modal-toggle-button-enabled");
@@ -78,9 +95,7 @@ export default {
             }
             // Change the background image
             const backgroundImg = this.domManip.$id("modal-create-game-background");
-            console.log(this.map);
             backgroundImg.src = this.backgrounds[this.map];
-            console.log(backgroundImg.src);
         },
 
         createGame() {
@@ -108,42 +123,37 @@ export default {
         async beforeOpen () {
             console.log("beforeOpen of modal-create-game");
 
+            // Set modal title
+            this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //Todo: translate
             // Fetching the attributes from view and store them locally
+            this.isOpponentFixed = false;
             try {
                 // Try to store userId (wich is the opponent) as Number
                 this.opponentId = parseInt(this.domManip.$id("router-view").getAttribute("data-user-id"));
-            } catch {
-                console.error("createGameModal: Couldn't find the opponentId ('data-user-id') attribute in the view");
-                return false;
-            }
-            if (!this.opponentId) {
-                console.error("createGameModal: Couldn't find the opponentId ('data-user-id') attribute in the view");
-                return false;
-            }
+                if(this.opponentId)
+                    this.isOpponentFixed = true;
+            } catch (error) {}
             this.avatar = this.domManip.$id("router-view").getAttribute("data-user-avatar");
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
-            if (!this.avatar || !this.username) {
+            if (this.isOpponentFixed && (!this.avatar || !this.username)) {
                 console.error("createGameModal: Couldn't find the avatar or username attribute in the view");
                 return false;
             }
 
             // Check if the user is already in a game -> redir to game
-            try {
-                let data = await call(`game/get-game/${this.opponentId}/`, 'GET');
-                if (data.gameId) {
-                    console.log("User is already in a game, redirecting to game");
-                    router('/game', {"id": data.gameId});
+            if (this.isOpponentFixed) {
+                try {
+                    let data = await call(`game/get-game/${this.opponentId}/`, 'GET');
+                    if (data.gameId) {
+                        console.log("User is already in a game, redirecting to game");
+                        router('/game', {"id": data.gameId});
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Error in call game/get-game");
                     return false;
                 }
-            } catch (error) {
-                console.error("Error in call game/get-game");
-                return false;
             }
-
-            // Set modal title and opponent info
-            this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //Todo: translate
-            this.domManip.$id("modal-create-game-opponent-avatar").src = window.origin + '/media/avatars/' + this.avatar;
-            this.domManip.$id("modal-create-game-opponent-username").textContent = this.username;
 
             // Chosse a random map if not set
             if (!this.map) {
@@ -158,6 +168,8 @@ export default {
             this.domManip.$on(this.domManip.$id("modal-create-game-map-snowman"), "click", this.callbackSelectMap);
             this.domManip.$on(this.domManip.$id("modal-create-game-map-lochness"), "click", this.callbackSelectMap);
             this.domManip.$on(this.domManip.$id("modal-create-game-btn-create"), "click", this.createGame);
+
+            this.updateOpponentSection();
             return true;
         },
         beforeRouteEnter() {

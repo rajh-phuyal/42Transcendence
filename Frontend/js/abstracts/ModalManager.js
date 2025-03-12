@@ -4,8 +4,10 @@ import { objectToBind } from '../navigation/router.js';
 const modalFolders = [
     ["modal-new-conversation", "newConversation"],
     ["modal-edit-friendship", "editFriendship"],
+    ["modal-edit-profile", "editProfile"],
     ["modal-friends-list", "friendsList"],
     ["modal-create-game", "createGame"],
+    ["modal-game-history", "gameHistory"],
     ["modal-template", "template"],
     ["modal-template-image", "templateImage"],
 ];

@@ -25,7 +25,7 @@ export default {
             method: undefined,
         },
 
-        result: undefined,
+        result: null,
         cropper: undefined,
 
         buttonSettings: {
@@ -50,22 +50,20 @@ export default {
     },
 
     methods: {
-        setViewAttributes(set, data=null) {
-            // This function sets/unsets the atrributes so that the modals can get the data
+        /* This function sets/unsets the atrributes so that the modals can get the data */
+        setViewAttributes(set) {
             const view = this.domManip.$id("router-view");
             if(set) {
-                if (!data) {
-                    console.warn("profile: setViewAttributes: data is not defined");
+                if (!this.result) {
+                    console.warn("profile: setViewAttributes: this.result is not defined");
                     return;
                 }
-                console.log("data:", data);
                 // Set the attributes
-                view.setAttribute("data-user-id", data.id);
-                view.setAttribute("data-user-username", data.username);
-                view.setAttribute("data-user-avatar", data.avatarUrl);
-                view.setAttribute("data-user-chat-id", data.chatId);
-                view.setAttribute("data-relationship", JSON.stringify(data.relationship));
-
+                view.setAttribute("data-user-id", this.result.id);
+                view.setAttribute("data-user-username", this.result.username);
+                view.setAttribute("data-user-avatar", this.result.avatarUrl);
+                view.setAttribute("data-user-chat-id", this.result.chatId);
+                view.setAttribute("data-relationship", JSON.stringify(this.result.relationship));
             } else {
                 // Unset the attributes
                 view.removeAttribute("data-user-id");
@@ -74,17 +72,11 @@ export default {
                 view.removeAttribute("data-user-chat-id");
                 view.removeAttribute("data-relationship");
             }
-
-        },
-
-        insertAvatar() {
-            const element = this.domManip.$id("avatar");
-            element.src = window.origin + '/media/avatars/' + this.result.avatarUrl;
         },
 
         setupTopLeftButton() {
             if (this.result.relationship.state != "yourself"){
-                this.buttonTopLeft.method = this.friendshipMethod;
+                this.buttonTopLeft.method = "modal-edit-friendship";
                 this.buttonTopLeft.image = this.buttonSettings[this.result.relationship.state].path;
                 if (this.result.relationship.isBlocking) {
                     this.buttonTopLeft.image = "../../../../assets/icons_128x128/icon_rel_block.png";
@@ -94,7 +86,7 @@ export default {
         },
         setupTopMiddleButton() {
             if (this.result.relationship.state == "yourself") {
-                this.buttonTopMiddle.method = this.profileEditMethod;
+                this.buttonTopMiddle.method = "modal-edit-profile";
                 this.buttonTopMiddle.image = "../../../../assets/icons_128x128/icon_edit.png";
             }
             else {
@@ -102,17 +94,17 @@ export default {
                     this.buttonTopMiddle.image = "../../../../assets/icons_128x128/icon_msg_unread.png";
                 else
                     this.buttonTopMiddle.image = "../../../../assets/icons_128x128/icon_msg.png";
-                    this.buttonTopMiddle.method = this.messageMethod;
+                    this.buttonTopMiddle.method = "modal-new-conversation";
             }
         },
         setupTopRightButton() {
             if (this.result.relationship.state == "yourself") {
                 this.buttonTopRight.image = "../../../../assets/icons_128x128/icon_logout.png";
-                this.buttonTopRight.method = this.logoutMethod;
+                this.buttonTopRight.method = "logout";
             }
             else if (this.result.relationship.state == "friend" && !this.result.relationship.isBlocking && !this.result.relationship.isBlocked) {
                 this.buttonTopRight.image = "../../../../assets/icons_128x128/icon_game_invite.png";
-                this.buttonTopRight.method = this.openInviteForGameModal;
+                this.buttonTopRight.method = "modal-create-game";
             }
         },
         putImagesInButtons() {
@@ -141,8 +133,8 @@ export default {
             this.putImagesInButtons();
         },
 
+        /* If user is blocked, the page is blacked out */
         blackout() {
-
             let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right");
             for (let element of elements) {
                 element.style.backgroundColor = "black";
@@ -166,150 +158,9 @@ export default {
             element.style.display = flex || "block";
         },
 
-        profileEditMethod() {
-            this.hideElement("edit-profile-modal-avatar-change");
-            this.showElement("edit-profile-modal-form");
 
-            this.domManip.$id("edit-profile-modal-form-input-first-name").value = this.result.firstName;
-            this.domManip.$id("edit-profile-modal-form-input-last-name").value = this.result.lastName;
-            this.domManip.$id("edit-profile-modal-form-input-username").value = this.result.username;
-            this.domManip.$id("edit-profile-modal-form-language-selector").value = $store.fromState("locale");
-
-
-            let modalElement = this.domManip.$id("edit-profile-modal");
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
-        },
-
-        changeAvatarMethod() {
-            this.hideElement("edit-profile-modal-form");
-            this.showElement("edit-profile-modal-avatar-change");
-            this.hideElement("edit-profile-modal-avatar-change-crop-image");
-            this.domManip.$id("edit-profile-modal").focus();
-        },
-
-
-
-        openFileExplorer() {
-            let element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
-            element.click();
-        },
-
-        callFormData(blob) {
-            const formData = new FormData();
-            formData.append('avatar', blob, 'avatar.png');
-
-            fetch(window.origin + '/api/user/update-avatar/', {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
-            }).then(response => {
-                if (!response.ok) {
-                    console.log('Error uploading the image');
-                    $callToast("error", "Error on uploading the image.")
-                }
-                return response.json();
-            }).then(data => {
-				$store.commit("setUser", { ...$store.fromState("user"), avatar: data.avatar_url.avatar_url });
-				$id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${data.avatar_url.avatar_url}`;
-                this.hideModal("edit-profile-modal");
-                $callToast("success", data.message);
-                router('/profile', { id: $store.fromState("user").id});
-            });
-        },
-
-        submitAvatar() {
-
-            // Extract the cropped portion of the selected image
-            const croppedCanvas = this.cropper.getCroppedCanvas({
-                width: 186,
-                height: 208
-            });
-
-            // prepare image to send to backend
-            croppedCanvas.toBlob(this.callFormData, 'image/png');
-        },
-
-        extractFile(event) {
-            const file = event.target.files[0]; // Get the selected file
-            if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
-                $callToast("error", "Invalid file type. Please select a PNG or JPEG file.");
-                // TODO: close modal
-                return;
-            }
-            if (file) {
-                const reader = new FileReader(); // Create a FileReader to read the file
-
-                reader.onload = e => {
-                    let uploadedImage = this.domManip.$id("edit-profile-modal-avatar-change-uploaded-image");
-                    uploadedImage.src = e.target.result; // Set the src to the image data
-                    uploadedImage.style.display = 'block'; // Make the img tag visible
-
-                    // Initialize Cropper after the image has fully loaded
-                    uploadedImage.onload = () => {
-                        // Destroy any previous Cropper instance before creating a new one
-                        if (this.cropper) {
-                            this.cropper.destroy();
-                        }
-
-                        this.cropper = new Cropper(uploadedImage, {
-                            aspectRatio: 0.894, // Adjust aspect ratio as needed
-                            viewMode: 1,
-                        });
-                        this.showElement("edit-profile-modal-avatar-change-crop-image");
-                    };
-                };
-
-                reader.readAsDataURL(file); // Read the file as a data URL
-            }
-        },
-
-        submitForm() {
-
-
-            const firstName = this.domManip.$id("edit-profile-modal-form-input-first-name").value;
-            const lastName = this.domManip.$id("edit-profile-modal-form-input-last-name").value;
-            const username = this.domManip.$id("edit-profile-modal-form-input-username").value;
-            const language = this.domManip.$id("edit-profile-modal-form-language-selector").value;
-
-            call("user/update-user-info/", "PUT", {
-                username: username,
-                firstName: firstName,
-                lastName: lastName,
-                language: language
-            }).then(data => {
-                this.hideModal("edit-profile-modal");
-                $callToast("success", data.message);
-                this.$store.commit("setLocale", language);
-                router('/profile', { id: $store.fromState("user").id});
-            }).catch((error) => {
-                console.error('Error:', error);
-            });
-        },
-
-
-
-        openChatModal() {
-            let modalElement = this.domManip.$id("modal-new-conversation");
-            const modal = new bootstrap.Modal(modalElement);
-            this.domManip.$id("modal-new-conversation-new-chat-text").textContent = translate('profile', "createNewConversation") + this.result.username;
-            modal.show();
-        },
-
-        messageMethod() {
-            if (this.result.chatId)
-                router(`/chat`, {id: this.result.chatId});
-            else
-                this.openChatModal();
-        },
-
-        logoutMethod() {
+        callbackLogout() {
             router("/logout");
-        },
-
-        // TODO: this needs to be removed i  guess
-        cancelButton() {
-            this.hideModal("modal-edit-friendship");
         },
     },
 
@@ -350,7 +201,6 @@ export default {
             this.domManip.$off(element, "click", this.changeFrendshipSecondaryMethod);
             element = this.domManip.$id("modal-edit-friendship-block-button");
             this.domManip.$off(element, "click", this.changeBlockMethod);
-            this.domManip.$off(element, "click", this.cancelButton);
             element = this.domManip.$id("modal-new-conversation-create-button");
             this.domManip.$off(element, "click", this.createConversation);
             element = this.domManip.$id("button-bottom-right");
@@ -360,11 +210,16 @@ export default {
 
 
             // Unlink the modal buttons to the methods
-            modalManager.off("button-top-left", "modal-edit-friendship");
-            modalManager.off("button-top-middle", "modal-new-conversation");
-            modalManager.off("button-top-right", "modal-create-game");
-            modalManager.off("button-bottom-right", "modal-friends-list");
-            modalManager.off("test-modal-btn", "modal-template");
+            modalManager.off("button-top-left")
+            modalManager.off("button-top-middle")
+            if (this.buttonTopRight.method) {
+                if (this.buttonTopRight.method == "logout")
+                    this.domManip.$off(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                else
+                    modalManager.off("button-top-right")
+            }
+            modalManager.off("button-bottom-right")
+            modalManager.off("button-bottom-left")
 
             // Remove the attributes from the view
             this.setViewAttributes(false);
@@ -379,62 +234,25 @@ export default {
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 WebSocketManager.setCurrentRoute("profile-" + this.result.id);
-                console.log(res);
-                this.insertAvatar();
-                this.setViewAttributes(true, res)
+                this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();
                 if (res.relationship.isBlocked)
                     this.blackout();
 
                 // Link the modal buttons to the methods
-                modalManager.on("button-top-left", "modal-edit-friendship");
-                modalManager.on("button-top-middle", "modal-new-conversation");
-                modalManager.on("button-top-right", "modal-create-game");
-                modalManager.on("button-bottom-right", "modal-friends-list");
-                modalManager.on("test-modal-btn", "modal-template-image");
-
-
-/*
-                // callback functions
-                if (this.buttonTopLeft.method) {
-                    let element = this.domManip.$id("button-top-left");
-                    this.domManip.$on(element, "click", this.buttonTopLeft.method);
-                }
-                if (this.buttonTopMiddle.method) {
-                    let element = this.domManip.$id("button-top-middle");
-                    this.domManip.$on(element, "click", this.buttonTopMiddle.method);
-                }
+                if (this.buttonTopLeft.method)
+                    modalManager.on("button-top-left", this.buttonTopLeft.method);
+                if (this.buttonTopMiddle.method)
+                    modalManager.on("button-top-middle", this.buttonTopMiddle.method);
                 if (this.buttonTopRight.method) {
-                    let element = this.domManip.$id("button-top-right");
-                    this.domManip.$on(element, "click", this.buttonTopRight.method);
+                    if (this.buttonTopRight.method == "logout")
+                        this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                    else
+                        modalManager.on("button-top-right", this.buttonTopRight.method);
                 }
-
-                HERE IS FOR EDIT PROFILE MODAL
-                ----
-                let element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
-                this.domManip.$on(element, "click", this.changeAvatarMethod);
-                element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
-                this.domManip.$on(element, "click", this.openFileExplorer);
-                element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
-                this.domManip.$on(element, "change", this.extractFile);
-                element = this.domManip.$id("edit-profile-modal-avatar-change-crop-image");
-                this.domManip.$on(element, "click", this.submitAvatar);
-                element = this.domManip.$id("edit-profile-modal-form-submit-button");
-                this.domManip.$on(element, "click", this.submitForm);
-
-
-
-
-                HERE COMES CONVERSATION MODAL
-                element = this.domManip.$id("modal-new-conversation-create-button");
-                this.domManip.$on(element, "click", this.createConversation);
-
-
-                element = this.domManip.$id("button-bottom-right");
-                this.domManip.$on(element, "click", this.openFriendList);
-
-                */
+                modalManager.on("button-bottom-left", "modal-game-history");
+                modalManager.on("button-bottom-right", "modal-friends-list");
             })
             // TODO: on error?
         },

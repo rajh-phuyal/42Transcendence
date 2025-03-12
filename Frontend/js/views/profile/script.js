@@ -5,6 +5,8 @@ import $store from '../../store/store.js';
 function populateUserInfo(res) {
     let username = $id("username");
     username.textContent = translate("profile", "subject") + res.username;
+    const element = $id("avatar");
+    element.src = window.origin + '/media/avatars/' + res.avatarUrl;
     let birthName =$id("birth-name");
     birthName.textContent = translate("profile", "birthName") + res.lastName + ", " + res.firstName;
     let lastSeenText =$id("last-seen-text");

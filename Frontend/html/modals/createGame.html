@@ -26,10 +26,22 @@
                     <img id="modal-create-game-map-lochness"        class="grid-cell default-grid-area mloc modal-button modal-image-button modal-toggle-button-disabled map-button" mapid="4" src="../assets/icons_128x128/icon_map_lochness.png" alt="error loading the image">
                     <button type="button" enabled="true"            class="grid-cell default-grid-area modal-button btnpu">Powerups</button>
                     <!-- Kind of footer -->
-                    <h5     id="modal-create-game-opponent-username"        class="grid-cell default-grid-area opp"></h5>
-                    <img    id="modal-create-game-opponent-avatar"          class="grid-cell default-grid-area avat" alt="avatar">
-                    <button id="modal-create-game-btn-pu"     type="button" class="grid-cell default-grid-area btnpu  modal-button modal-toggle-button-enabled">Powerups</button>
-                    <button id="modal-create-game-btn-create" type="button" class="grid-cell default-grid-area btncre modal-button">Create</button>
+                    <div id="modal-create-game-opponent-search" class="grid-cell default-grid-area srch">
+                        <!-- TODO: TRANSLATION -->
+                        <search-bar
+                            placeholder="Invite a user"
+                            width="100%"
+                            search-type="users"
+                            on-click-event="modal-create-game-select-user"
+                            clear-on-click="true"
+                        >
+                        </search-bar>
+                    </div>
+                    <input   type="text"   placeholder="Invite a user">
+                    <h5     id="modal-create-game-opponent-username"            class="grid-cell default-grid-area opp"></h5>
+                    <img    id="modal-create-game-opponent-avatar"              class="grid-cell default-grid-area avat" alt="avatar">
+                    <button id="modal-create-game-btn-pu"     type="button"     class="grid-cell default-grid-area btnpu  modal-button modal-toggle-button-enabled">Powerups</button>
+                    <button id="modal-create-game-btn-create" type="button"     class="grid-cell default-grid-area btncre modal-button">Create</button>
                 </div>
             </div>
         </div>
@@ -59,11 +71,11 @@
             ".      .      .      .      .      .      .      .      .      .      .      .      mloc   mloc  "
             ".      btnpu  btnpu  btnpu  btnpu  .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      avat   avat   avat   .      .      .      .      .      .      .      .      .      .     "
-            ".      avat   avat   avat   .      .      .      .      .      .      .      .      .      .     "
-            ".      avat   avat   avat   .      .      .      .      .      .      .      .      .      .     "
-            ".      avat   avat   avat   .      .      .      .      .      .      btncre btncre btncre btncre"
-            ".      opp    opp    opp    .      .      .      .      .      .      btncre btncre btncre btncre"
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      btncre btncre btncre .     "
+            ".      srch   srch   srch   srch   .      opp    opp    opp    .      btncre btncre btncre .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -100,6 +112,12 @@
     .opp {
         grid-area: opp;
         color: black;
+    }
+    .srch {
+        grid-area: srch;
+        align-items: start !important;
+        align-content: start !important;
+        justify-content: start !important;
     }
     .avat {
         grid-area: avat;

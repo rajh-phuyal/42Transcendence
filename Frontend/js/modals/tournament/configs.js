@@ -173,25 +173,29 @@ export default {
 
             this.domManip.$on(container, "click", this.redirectTournamentLobby);
             this.domManip.$id("modal-tournament-join-tournament-cards-container").appendChild(container);
-        },
-
-		escapeCallback(event) {
-			console.log("key pressed", event.key);
-			if (event.key === "Escape") {
-				const modal = this.domManip.$id("home-modal");
-				if (modal) {
-					modal.classList.add("custom-modal");
-				}
-			}
-		}
+        }
     },
 
     hooks: {
+        beforeOpen() {
+        },
         beforeRouteEnter() {
         },
 
         beforeRouteLeave() {
             modalManager.closeModal("modal-tournament");
+            // TODO:
+            //let element = this.domManip.$id("modal-tournament-create-form-create-button");
+            //if (element)
+            //    this.domManip.$off(element, "click", this.createTournament);
+            //element = this.domManip.$class("modal-tournament-create-maps-button");
+            //for (let individualElement of element)
+            //    this.domManip.$off(individualElement, "click", this.selectMap);
+            //element = this.domManip.$class("modal-tournament-create-form-type-buttons");
+            //for (let individualElement of element)
+            //    this.domManip.$off(individualElement, "click", this.selectMap);
+            //this.domManip.$off(this.domManip.$id("modal-tournament-create-form-join-button"), "click", this.toggleCreateJoinView);
+            //this.domManip.$off(this.domManip.$id("modal-tournament-join-form-host-button"), "click", this.toggleCreateJoinView);
         },
 
         beforeDomInsertion() {

@@ -141,7 +141,7 @@ class SearchBar extends HTMLElement {
                 input {
                     width: 100%;
                     font-family: 'Times New Roman', serif;
-                    font-size: 20px;
+                    font-size: min(1vw, 15px);
                     padding: 10px;
                     border: none;
                     background-color: #000000;

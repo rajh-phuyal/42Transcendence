@@ -3,45 +3,24 @@ import router from '../../navigation/router.js';
 import call from '../../abstracts/call.js'
 import data from './data.js';
 import { generateTournamentName } from './methods.js';
-
-function hideModalElements(){
-    let modalContent = $id("AI-modal");
-    modalContent.style.display = 'none';
-    $id("modal-tournament").style.display = 'none';
-    $id('home-modal-body').style.backgroundImage = 'none';
-}
+import { modalManager } from '../../abstracts/ModalManager.js';
 
 export function AIModalCallback(){
-
-    let modalElement = $id('home-modal');
-    let modalBody = $id('home-modal-body');
-    let modalContent = $id("AI-modal")
-
-    hideModalElements();
-    modalBody.style.backgroundImage = "url('../../../assets/homeView/AIModal.png')";
-    // modalBody.style.height = '90vh';
-    // modalBody.style.width = '30vw';
-
-    modalContent.style.display = 'block';
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
-
+    // Set the opponent to AI
+    const view = $id("router-view");
+    view.setAttribute("data-user-id", "2");
+    view.setAttribute("data-user-username", "ai");                                     // TODO: maybe this should be saved somewhere else as a constant
+    view.setAttribute("data-user-avatar", "670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"); // TODO: maybe this should be saved somewhere else as a constant
+    modalManager.openModal("modal-create-game");
 }
 
 export function battleModalCallback(){
-
-    let modalElement = $id('home-modal');
-    let modalBody = $id('home-modal-body');
-
-    hideModalElements();
-    modalBody.style.backgroundImage = "url('../../../assets/backgrounds/modal-create-game-lizard-people.png')";
-    modalBody.style.height = '90vh';
-    modalBody.style.width = '30vw';
-    modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
-    modalBody.style.backgroundPosition = 'center'; // Center the image
-    modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
+    // Remove the attributes from the view so that the user can select a friend in the modal
+    const view = $id("router-view");
+    view.removeAttribute("data-user-id");
+    view.removeAttribute("data-user-username");
+    view.removeAttribute("data-user-avatar");
+    modalManager.openModal("modal-create-game");
 }
 
 
@@ -78,7 +57,7 @@ export function tournamentModalCallback(){
     let modalElement = $id('home-modal');
     let modalBody = $id('home-modal-body');
 
-    hideModalElements();
+
     // modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
     modalBody.style.height = '90vh';
     modalBody.style.width = '80vw';
@@ -95,22 +74,9 @@ export function tournamentModalCallback(){
 }
 
 export function chatRoomModalCallback(){
-
     router("/chat");
-
 }
 
 export function leaderboardModalCallback(){
-    let modalBody = $id('home-modal-body');
-    let modalElement = $id('home-modal');
-
-    hideModalElements();
-    modalBody.style.backgroundImage = "url('../../../assets/homeView/AICard.png')";
-    modalBody.style.height = '90vh';
-    modalBody.style.width = '30vw';
-    modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
-    modalBody.style.backgroundPosition = 'center'; // Center the image
-    modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
+    modalManager.openModal("modal-leaderboard");
 }
