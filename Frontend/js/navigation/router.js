@@ -59,18 +59,6 @@ async function getViewHooks(viewName) {
     });
 }
 
-async function getModalHooks(viewName) {
-    if (!viewName) return null;
-
-    // Load modal view hooks
-    return await import(`../modals/${viewName}/configs.js`).then(conf => conf.default).then(viewHooks => {
-        return viewHooks;
-    }).catch(err => {
-        console.log(`For view ${viewName} there are no hooks! Err: ${err}`);
-        return null;
-    });
-}
-
 async function router(path, params = null) {
     setViewLoading(true);
 
@@ -132,14 +120,8 @@ async function router(path, params = null) {
         nav.style.display = 'none';
     }
 
-    // Now remove all old modals from the view
-    for (const modal of oldRoute.modals || []) {
-        console.log("Closing modal:", modal);
-        modalManager.closeModal(modal);
-        console.log("Removing modal:", modal);
-        const lastViewModalHooks = await getModalHooks(modal);
-        lastViewModalHooks && await lastViewModalHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewModalHooks))();
-    }
+    // Close all modals before switching routes
+    modalManager.destroyAllModals();
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
@@ -151,30 +133,21 @@ async function router(path, params = null) {
     // bind everything except the hooks to the object
     lastViewHooks && await lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
 
-
     // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
     await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
 
-
     // set the view name to the container
     viewContainer.dataset.view = route.view;
 
-
     // Now add all modals to the view
-    let htmlContentModal = "";
+    modalContainer.innerHTML = "";
     for (const modal of route.modals || []) {
         console.log("Loading modal:", modal);
-        htmlContentModal += await fetch(`./modals/${modal}.html`).then(response => response.text());
-        const modalHooks = await getModalHooks(modal);
-        const modalConfigWithoutHooks = objectToBind(modalHooks, params);
-        await modalHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
-        await modalHooks?.hooks?.beforeDomInsertion?.bind(modalConfigWithoutHooks)();
-        await modalHooks?.hooks?.afterDomInsertion?.bind(modalConfigWithoutHooks)();
+        modalContainer.innerHTML += await fetch(`./modals/${modal}.html`).then(response => response.text());
     }
     modalContainer.dataset.view = route.view;
-    modalContainer.innerHTML = htmlContentModal;
 
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();

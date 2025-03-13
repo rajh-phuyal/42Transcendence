@@ -85,7 +85,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            modalManager.closeModal("modal-new-conversation");
             this.domManip.$off(this.domManip.$id("modal-new-conversation-create-button"), "click", this.createConversation.bind(this));
             this.domManip.$off(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
         },

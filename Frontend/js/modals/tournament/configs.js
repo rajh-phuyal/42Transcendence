@@ -183,7 +183,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            modalManager.closeModal("modal-tournament");
             // TODO:
             //let element = this.domManip.$id("modal-tournament-create-form-create-button");
             //if (element)

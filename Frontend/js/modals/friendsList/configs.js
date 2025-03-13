@@ -55,7 +55,6 @@ export default {
             let element = event.srcElement.getAttribute("user-id");
             if (element == null)
                 element = event.srcElement.parentElement.getAttribute("user-id");
-            //modalManager.closeModal("modal-friends-list");
             router('/profile',  { id: element });
         },
 

@@ -167,7 +167,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            modalManager.closeModal("modal-edit-profile");
         },
 
         beforeDomInsertion() {

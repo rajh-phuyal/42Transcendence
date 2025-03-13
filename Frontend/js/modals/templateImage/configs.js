@@ -30,7 +30,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            modalManager.closeModal("modal-template-image");
         },
 
         beforeDomInsertion() {

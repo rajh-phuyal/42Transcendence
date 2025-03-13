@@ -153,8 +153,6 @@ export default {
             this.domManip.$off(this.domManip.$id("modal-edit-friendship-friendship-secondary-button"), "click", this.changeFrendshipSecondaryMethod);
             this.domManip.$off(this.domManip.$id("modal-edit-friendship-block-button"), "click", this.changeBlockMethod);
 
-            // TODO: check if this is already done by the router
-            modalManager.closeModal("modal-edit-friendship");
         },
 
         beforeDomInsertion() {

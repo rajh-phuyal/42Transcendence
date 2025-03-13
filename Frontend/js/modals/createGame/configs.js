@@ -62,6 +62,17 @@ export default {
                 avatar.style.display = "none";
             }
         },
+
+        callbackSearchbar(event) {
+            const user = event.detail.user;
+            console.log(user);
+            this.opponentId = user.id;
+            this.avatar = user.avatar_path;
+            this.username = user.username;
+            console.log(this.opponentId, this.avatar, this.username);
+            this.updateOpponentSection();
+        },
+
         callbackPowerups(event) {
             const btn = this.domManip.$id("modal-create-game-btn-pu");
             if(this.powerups) {
@@ -168,10 +179,17 @@ export default {
             this.domManip.$on(this.domManip.$id("modal-create-game-map-snowman"), "click", this.callbackSelectMap);
             this.domManip.$on(this.domManip.$id("modal-create-game-map-lochness"), "click", this.callbackSelectMap);
             this.domManip.$on(this.domManip.$id("modal-create-game-btn-create"), "click", this.createGame);
+            // For search bar
+            this.domManip.$on(window, "modal-create-game-select-user", this.callbackSearchbar);
 
             this.updateOpponentSection();
             return true;
         },
+
+        beforeClose () {
+            console.warn("beforeClose of modal-create-game");
+        },
+
         beforeRouteEnter() {
         },
 
@@ -183,6 +201,7 @@ export default {
             this.domManip.$off(this.domManip.$id("modal-create-game-map-snowman"), "click", this.callbackSelectMap);
             this.domManip.$off(this.domManip.$id("modal-create-game-map-lochness"), "click", this.callbackSelectMap);
             this.domManip.$off(this.domManip.$id("modal-create-game-btn-create"), "click", this.createGame);
+            this.domManip.$off(window, "modal-create-game-select-user", this.callbackSearchbar);
         },
 
         beforeDomInsertion() {
