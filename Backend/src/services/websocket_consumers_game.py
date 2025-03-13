@@ -197,61 +197,48 @@ class GameConsumer(CustomWebSocketLogic):
 
     @staticmethod
     async def manage_ai(game_id):
-        logging.info(f"Managing AI for game: {game_id}")
         if game_id not in GameConsumer.ai_players:
             return None
 
-        logging.info(f"AI players: {GameConsumer.ai_players}")
         game_ai = GameConsumer.ai_players[game_id]
         ai = game_ai['player']
         ai_side = game_ai['side']  # Get the side the AI is playing on
         last_state_snapshot_at = game_ai['stateSnapshotAt']
 
-        # Update AI with fresh game state once per second
-        if (datetime.now(timezone.utc) - last_state_snapshot_at).total_seconds() > 1:
-            game_ai['stateSnapshotAt'] = datetime.now(timezone.utc)
+        try:
+            # Update AI with fresh game state once per second
+            if (datetime.now(timezone.utc) - last_state_snapshot_at).total_seconds() > 1:
+                game_ai['stateSnapshotAt'] = datetime.now(timezone.utc)
 
-            # Get complete game state for the AI to make better decisions
-            game_state = {
-                'gameData': get_game_data(game_id, 'gameData'),
-                'ball': get_game_data(game_id, 'ball'),
-                'playerLeft': get_game_data(game_id, 'playerLeft'),
-                'playerRight': get_game_data(game_id, 'playerRight')
-            }
-            action = await ai.action(game_state)
-        else:
+                # Get complete game state for the AI to make better decisions
+                game_state = {
+                    'gameData': get_game_data(game_id, 'gameData'),
+                    'ball': get_game_data(game_id, 'ball'),
+                    'playerLeft': get_game_data(game_id, 'playerLeft'),
+                    'playerRight': get_game_data(game_id, 'playerRight')
+                }
+
+                ai.compute(game_state)
+
+            # Get the next action from AI - with proper await
             action = await ai.action()
 
-        logging.info(f"AI action: {action}")
-        # Apply AI action by simulating player input
-        if action:
-            # Extract paddle movement from AI action
-            paddle_movement = "0"  # Default no movement
-            if isinstance(action, dict):
-                if 'movement' in action:
-                    # Use the movement directly if available
-                    paddle_movement = action['movement']
-                elif 'computed_move' in action:
-                    # Convert computed_move to paddle movement format
-                    move = action['computed_move']
-                    if move == 'up':
-                        paddle_movement = '-'
-                    elif move == 'down':
-                        paddle_movement = '+'
-                    # 'none' stays as '0'
+            # Apply the action to the game
+            if action and isinstance(action, dict):
+                set_player_input(game_id, ai_side, action)
+                return
 
-            # Create player input object (similar to what a real client would send)
-            player_input = {
-                'movePaddle': paddle_movement,
+            raise Exception("Invalid AI action")
+
+        except Exception as e:
+            logging.error(f"Error managing AI for game {game_id}: {e}")
+            # In case of error, use a default "do nothing" action
+            default_action = {
+                'movePaddle': "0",
                 'activatePowerupBig': False,
                 'activatePowerupSpeed': False
             }
-
-            logging.info(f"Setting AI paddle movement to: {paddle_movement}")
-            # Set the input directly in the game cache
-            set_player_input(game_id, ai_side, player_input)
-
-        return action
+            set_player_input(game_id, ai_side, default_action)
 
     @staticmethod
     async def run_game_loop(game_id):
@@ -262,7 +249,6 @@ class GameConsumer(CustomWebSocketLogic):
         while get_game_data(game_id, 'gameData', 'state') == 'ongoing':
             try:
                 # Process AI input if this game has an AI player
-                logging.info(f"Game loop: {game_id} in GameConsumer.ai_players: {GameConsumer.ai_players} | {game_id in GameConsumer.ai_players}")
                 if game_id in GameConsumer.ai_players:
                     await GameConsumer.manage_ai(game_id)
 
