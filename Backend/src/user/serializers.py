@@ -55,63 +55,76 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_stats(self, obj):
         current_user = self.context['request'].user
 
-        # Fetching total games and games won
-        total_games = GameMember.objects.filter(user=current_user).count()
-        games_won = GameMember.objects.filter(user=current_user, result='won').count()
+        # Fetch total games and games won
+        total_games = GameMember.objects.filter(
+            user=current_user,
+            game__state__in=['finished', 'quited']
+        )
+        total_games_count = total_games.count()
+        games_won = total_games.filter(result = GameMember.GameResult.WON).count()
 
-        # Fetching the top user's total games
+        # Fetch the top user's total games (to normalize)
         top_user_total_games = (
             User.objects
             .annotate(total_games=Count('game_members'))
             .order_by('-total_games')
             .values_list('total_games', flat=True)
-            .first() or 1  # Default to 1 to prevent division errors
+            .first() or 1  # Prevent division by zero
         )
 
-        # Fetching tournament stats
+        # Fetch tournament statistics
         total_tournament_games = (
             TournamentMember.objects.filter(user=current_user)
             .aggregate(total_games=Sum('played_games'))['total_games'] or 0
         )
 
+        # Get total tournaments finished where the player has participated
+        finished_tournaments = TournamentMember.objects.filter(user=current_user, tournament__state='finished')
+
+        # Count first, second, and third place finishes dynamically
+        first_place = finished_tournaments.filter(rank=1).count()
+        second_place = finished_tournaments.filter(rank=2).count()
+        third_place = finished_tournaments.filter(rank=3).count()
+
+        # Fetch the top player's total tournament games (to normalize)
         top_tournament_total_games = (
             User.objects
             .annotate(total_games=Sum('tournament_members__played_games'))
             .order_by('-total_games')
             .values_list('total_games', flat=True)
-            .first() or 1  # Default to 1 to prevent division errors
+            .first() or 1  # Prevent division by zero
         )
 
-        # Raw skill and experience calculations
-        skill = (games_won or 0) / (total_games or 1)
-        game_experience = (total_games or 1) / (top_user_total_games or 1)
+        # Calculate raw stats
+        skill = (games_won or 0) / (total_games_count or 1)
+        game_experience = (total_games_count or 1) / (top_user_total_games or 1)
         tournament_experience = (total_tournament_games or 1) / (top_tournament_total_games or 1)
 
-        # Normalize values into 0-100% range (clamping max at 100%)
+        # Normalize values into a 0-100% range
         def normalize(value):
-            return min(round(value * 100, 2), 100)  # Convert to percentage, max 100%
+            return min(round(value * 100, 2), 100)
 
         skill_norm = normalize(skill)
         game_experience_norm = normalize(game_experience)
         tournament_experience_norm = normalize(tournament_experience)
 
-        # Normalize total score into 0-100 range based on weight factors
+        # Compute total score based on weights
         total_score = (
             NORM_STATS_SKILL * skill +
             NORM_STATS_GAME_EXP * game_experience +
             NORM_STATS_TOURNAMENT_EXP * tournament_experience
         )
-        total_score_norm = min(round(total_score, 2), 100)
+        total_score_norm = normalize(total_score)
 
         return {
             "game": {
                 "won": games_won,
-                "played": total_games
+                "played": total_games_count
             },
             "tournament": {
-                "firstPlace": 5, 
-                "secondPlace": 6,
-                "thirdPlace": 7, 
+                "firstPlace": first_place,
+                "secondPlace": second_place,
+                "thirdPlace": third_place,
                 "played": total_tournament_games
             },
             "score": {
