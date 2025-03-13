@@ -31,62 +31,121 @@ class Thinker:
     """
     def __init__(self, action_queue: Queue, difficulty: int = 0):
         self.action_queue = action_queue
-        self.depth = difficulty * 10
-        self.compute_queue = Queue(maxsize=1)  # Queue for new game states to process
-        self.result_queue = action_queue   # Queue for computed results
+        self.difficulty = difficulty
+        self.compute_queue = Queue(maxsize=1)  # For new game states
         self.running = True
+        self.last_game_state = None  # Store last game state for reference
+
+        # Start background thread
         self.thread = threading.Thread(target=self._compute_loop, daemon=True)
         self.thread.start()
 
     def _compute_loop(self):
-        """
-        Background thread that continuously processes game states
-        """
+        """Background thread that continuously processes game states"""
         while self.running:
             try:
-                # Get the latest game state to process
+                # Get latest game state to process
                 game_state = self.compute_queue.get()
-                # Compute the next move/strategy
-                result = self.train(game_state)
-                # Clear the result queue of old results and put new result
-                while not self.result_queue.empty():
-                    self.result_queue.get()
-                self.result_queue.put(result)
+                self.last_game_state = game_state
+
+                # Generate a sequence of actions (about 1 second worth)
+                action_sequence = self._generate_action_sequence(game_state)
+
+                # Add actions to queue without clearing existing ones
+                # (We want to build up a buffer of actions)
+                for action in action_sequence:
+                    if not self.action_queue.full():
+                        self.action_queue.put(action)
+                    else:
+                        break  # Queue is full, stop adding
+
             except Exception as e:
                 logging.error(f"Error in AI compute loop: {e}")
 
+    def _generate_action_sequence(self, game_state: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Generate a sequence of related actions based on game state"""
+        # For a basic implementation, create a simple ball-tracking strategy
+        actions = []
+
+        # Extract relevant data
+        try:
+            ball = game_state.get('ball', {})
+            paddle = game_state.get('playerRight', {})
+            ball_pos_y = ball.get('posY', 50)
+            ball_dir_x = ball.get('directionX', 0)
+            ball_dir_y = ball.get('directionY', 0)
+            paddle_pos = paddle.get('paddlePos', 50)
+
+            # Only actively track if ball is coming toward AI
+            is_ball_approaching = ball_dir_x > 0
+
+            # Calculate target position with some difficulty-based error
+            target_y = ball_pos_y
+            if is_ball_approaching:
+                # Predict where ball will be
+                field_width = 100
+                paddle_x = 95  # Right side
+                ball_pos_x = ball.get('posX', 50)
+                distance = abs(paddle_x - ball_pos_x)
+                time_to_impact = distance / abs(ball_dir_x) if ball_dir_x != 0 else 0
+                predicted_y = ball_pos_y + (ball_dir_y * time_to_impact)
+
+                # Add difficulty-based error
+                config = DIFFICULTY_CONFIGS[self.difficulty]
+                error_margin = config["error_margin"]
+                import random
+                target_y = predicted_y + random.uniform(-error_margin * 20, error_margin * 20)
+            else:
+                # Move toward center when ball is going away
+                target_y = 50 + random.uniform(-10, 10)
+
+            # Generate sequence of movements to reach target
+            for _ in range(min(GAME_FPS, self.action_queue.maxsize - self.action_queue.qsize())):
+                # Determine movement direction
+                if paddle_pos < target_y - 3:  # Add small deadzone
+                    movement = "+"  # Move down
+                elif paddle_pos > target_y + 3:
+                    movement = "-"  # Move up
+                else:
+                    movement = "0"  # Stay
+
+                # Update simulated paddle position for next movement
+                if movement == "+":
+                    paddle_pos += 1  # Simplified movement speed
+                elif movement == "-":
+                    paddle_pos -= 1
+
+                # Add action to sequence
+                actions.append({
+                    'movePaddle': movement,
+                    'activatePowerupBig': False,
+                    'activatePowerupSpeed': False
+                })
+
+        except Exception as e:
+            logging.error(f"Error generating action sequence: {e}")
+            # Fill with default actions on error
+            for _ in range(5):
+                actions.append({
+                    'movePaddle': "0",
+                    'activatePowerupBig': False,
+                    'activatePowerupSpeed': False
+                })
+
+        return actions
+
     def think(self, game_state: Dict[str, Any]) -> None:
-        """
-        Submit a new game state for processing.
-        Non-blocking - will drop the state if the trainer is busy.
-        """
-        if not self.compute_queue.full():
-            self.compute_queue.put(game_state)
-
-    def train(self, game_state: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        The actual training/computation logic.
-        This runs in the background thread.
-        """
-        # For now, just generate a random movement (placeholder)
-        import random
-        movements = ["0", "+", "-"]  # No movement, down, up
-        movement = random.choice(movements)
-
-        # Return in the format expected by the game
-        return {
-            'movePaddle': movement,
-            'activatePowerupBig': False,
-            'activatePowerupSpeed': False
-        }
+        """Submit a new game state for processing. Non-blocking."""
+        # Put newest state in queue, replacing any existing one
+        while not self.compute_queue.empty():
+            self.compute_queue.get()
+        self.compute_queue.put(game_state)
 
     def cleanup(self):
-        """
-        Cleanup method to stop the background thread
-        """
+        """Stop the background thread"""
         self.running = False
         if self.thread.is_alive():
-            self.thread.join(timeout=1.0)  # Wait up to 1 second for thread to end
+            self.thread.join(timeout=1.0)
 
 
 class AIPlayer:
@@ -100,7 +159,7 @@ class AIPlayer:
         self.difficulty = difficulty
 
         # Create a queue for AI movements
-        self.action_queue = Queue(maxsize=GAME_FPS)
+        self.action_queue = Queue()
 
         # Create a thinker for AI computation
         self.thinker = Thinker(self.action_queue, difficulty)
@@ -175,19 +234,17 @@ class AIPlayer:
 
         # Generate a few random movements as fallbacks
         prev_movement = "0"
-        for _ in range(3):  # Add 3 fallback actions
+        for _ in range(3):
             if random.random() < randomness:
                 # Choose a random movement
                 movements = ["0", "+", "-"]
                 weights = [error_margin, (1 - error_margin) / 2, (1 - error_margin) / 2]
                 movement = random.choices(movements, weights=weights, k=1)[0]
             else:
-                # Keep previous movement for continuity
                 movement = prev_movement
 
             prev_movement = movement
 
-            # Only add if queue isn't full
             if not self.action_queue.full():
                 self.action_queue.put({
                     'movePaddle': movement,
