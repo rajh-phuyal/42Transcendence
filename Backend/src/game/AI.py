@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 import threading
 from queue import Queue
 import logging
-
+import time
 class Thinker:
     """
     This class computes game strategies in the background while the game is running.
@@ -79,45 +79,121 @@ class AIPlayer:
     It uses AITrainer for background computation while maintaining responsive gameplay.
     """
 
-    def __init__(self, depth: int = 0):
-        self.depth = depth
-        self.thinker = Thinker(depth)
+    DIFFICULTY_EASY = 0
+    DIFFICULTY_MEDIUM = 1
+    DIFFICULTY_HARD = 2
+
+    def __init__(self, difficulty=DIFFICULTY_MEDIUM):
+        self.difficulty = difficulty
+        # Last time we made a decision
+        self.last_decision_time = 0
+        # Track if we're using a powerup
+        self.using_powerup = False
+        # Store latest action
         self.current_action = None
+        # Randomness factors based on difficulty
+        if difficulty == self.DIFFICULTY_EASY:
+            self.movement_change_probability = 0.1  # 10% chance to change direction each frame
+            self.stationary_weight = 0.6           # 60% chance of no movement when changing
+        elif difficulty == self.DIFFICULTY_MEDIUM:
+            self.movement_change_probability = 0.2  # 20% chance to change direction each frame
+            self.stationary_weight = 0.5           # 50% chance of no movement when changing
+        else:  # HARD
+            self.movement_change_probability = 0.3  # 30% chance to change direction each frame
+            self.stationary_weight = 0.4           # 40% chance of no movement when changing
 
-    def action(self, game_state: Dict[str, Any]) -> Dict[str, Any]:
+    async def action(self, game_state=None):
         """
-        Main update method called by the game loop.
-        - Submits current state to thinker for future computation
-        - Returns best move based on previous computation and factors
+        Main method that decides what action to take based on the game state.
+        For now, just returns random paddle movements.
         """
-        # Submit current state for background processing
-        self.thinker.think(game_state)
+        import random
 
-        # Get latest computed result if available
-        result = self.thinker.get_latest_result()
-        if result is not None:
-            self.current_action = result
+        # If no game state is provided, return the current action
+        if not game_state:
+            return self.current_action
 
-        return self.current_action or {"computed_move": "none", "confidence": 0.0}
+        # Decide whether to change movement direction
+        if random.random() < self.movement_change_probability or self.current_action is None:
+            # Choose a random movement
+            movements = ["0", "+", "-"]  # No movement, down, up
+            weights = [self.stationary_weight, (1 - self.stationary_weight) / 2, (1 - self.stationary_weight) / 2]
 
-    def move_paddle(self, paddle_pos: float, ball_pos: float, ball_speed: float) -> str:
+            # Select a movement based on weights
+            movement = random.choices(movements, weights=weights, k=1)[0]
+
+            # Convert to AI action format
+            if movement == "0":
+                computed_move = "none"
+            elif movement == "+":
+                computed_move = "down"
+            else:  # "-"
+                computed_move = "up"
+
+            self.current_action = {
+                "computed_move": computed_move,
+                "movement": movement,
+                "confidence": 1.0
+            }
+
+        # Return the current action
+        return self.current_action
+
+    def move_paddle(self, paddle_pos, ball_pos, ball_direction_x, ball_direction_y, paddle_size=10, is_left_side=True):
         """
-        Decides paddle movement based on latest computed strategy
+        Simple random paddle movement.
+        Returns:
+            '+': Move paddle down
+            '-': Move paddle up
+            '0': Don't move paddle
         """
-        return
+        import random
 
-    def get_move(self, paddle_pos: float, ball_pos: float, ball_speed: float) -> str:
-        pass
+        # Get current movement from last action or generate a new one
+        if self.current_action and "movement" in self.current_action:
+            return self.current_action["movement"]
 
-    def get_powerup(self, game_state: Dict[str, Any]) -> str:
-        pass
+        # If we don't have a current action, generate a random one
+        movements = ["0", "+", "-"]
+        weights = [self.stationary_weight, (1 - self.stationary_weight) / 2, (1 - self.stationary_weight) / 2]
+        return random.choices(movements, weights=weights, k=1)[0]
 
-    def get_game_state(self) -> Dict[str, Any]:
-        pass
+    def get_move(self, game_state):
+        """
+        Extract relevant game state and call move_paddle.
+        """
+        if not game_state or not isinstance(game_state, dict):
+            return "0"
+
+        # Extract game state parameters
+        try:
+            ball = game_state.get('ball', {})
+            playerRight = game_state.get('playerRight', {})
+
+            paddle_pos = playerRight.get('paddlePos', 50)
+            ball_pos_x = ball.get('posX', 50)
+            ball_pos_y = ball.get('posY', 50)
+            ball_direction_x = ball.get('directionX', 0)
+            ball_direction_y = ball.get('directionY', 0)
+            paddle_size = playerRight.get('paddleSize', 10)
+
+            # Call move_paddle with extracted parameters
+            return self.move_paddle(
+                paddle_pos,
+                (ball_pos_x, ball_pos_y),
+                ball_direction_x,
+                ball_direction_y,
+                paddle_size,
+                False  # AI is right player
+            )
+        except Exception as e:
+            import logging
+            logging.error(f"Error in AI get_move: {e}")
+            return "0"
 
     def cleanup(self):
         """
         Cleanup method to be called when the game ends
         """
-        self.thinker.cleanup()
+        pass  # Nothing to clean up in this simplified version
 

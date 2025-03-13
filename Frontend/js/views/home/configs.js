@@ -67,8 +67,6 @@ export default {
             }
         },
 
-
-
         selectTournamentType(chosenType) {
             const type = this.domManip.$class("tournament-modal-create-form-type-buttons");
             this.tournament.type = chosenType.srcElement.getAttribute("type");
@@ -175,7 +173,19 @@ export default {
 					modal.classList.add("custom-modal");
 				}
 			}
-		}
+		},
+
+        playAgainstAI() {
+            call("game/create/", "POST", {
+                "mapNumber": 1,
+                "powerups": false,
+                "opponentId": 2 // AI
+            }).then(data => {
+                this.router(`/game`, { id: data.gameId });
+            }).catch(error => {
+                callToast("error", error.message);
+            });
+        },
     },
 
     hooks: {
@@ -194,12 +204,20 @@ export default {
 			if (homeModal)
 				homeModal.classList.add("custom-modal");
 
+            const aiModal = this.domManip.$id("AI-modal");
+            if (aiModal) {
+                aiModal.classList.add("custom-modal");
+            }
+
             $off(document, "click", mouseClick);
             $off(document, "mousemove", isHovering);
 			$off(this.domManip.$id('home-view'), "keydown", this.escapeCallback);
             let element = this.domManip.$id("tournament-modal-create-form-create-button");
             if (element)
                 this.domManip.$off(element, "click", this.createTournament);
+            element = this.domManip.$id("ai-modal-start-button");
+            if (element)
+                this.domManip.$off(element, "click", this.playAgainstAI);
 
             element = this.domManip.$class("tournament-modal-create-maps-button");
             for (let individualElement of element)
@@ -258,7 +276,9 @@ export default {
             element = this.domManip.$class("tournament-modal-create-form-type-buttons");
             for (let individualElement of element)
                 this.domManip.$on(individualElement, "click", this.selectTournamentType);
-
+            element = this.domManip.$id("ai-modal-start-button");
+            if (element)
+                this.domManip.$on(element, "click", this.playAgainstAI);
             // for the search bar
             this.domManip.$on(window, "select-user-invite", this.selectUserToInvite);
         },

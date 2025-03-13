@@ -12,28 +12,39 @@
 
           <!-- A.I. Modal -->
           <div id="AI-modal">
-            <div id="modal-title">
-              <h1>Play against A.I.</h1>
-            </div>
-            <div id="AI-modal-content-div">
-              <h3 id="AIModalMapsHeader">Maps</h3>
-              <h3 id="AIModalDificultyHeader">Dificulty</h3>
-              <button class="map1"></button>
-              <button class="map2"></button>
-              <div id="AIModalDificultyButton" class="btn-group" role="group"
-                aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="btnradio1">Easy</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio2">Medium</label>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnradio3">Hard</label>
+            <div class="ai-modal-content">
+              <div class="ai-modal-header">
+                <div class="ai-modal-title">
+                  <h1>Play against A.I.</h1>
+                </div>
               </div>
-              <button class="map3"></button>
-              <button class="map4"></button>
-              <button id="AIModalStartButton">start</button>
+              <div class="ai-modal-body">
+                <div class="ai-modal-column left-column">
+                  <div class="ai-section-title">Maps</div>
+                  <div class="ai-maps-container">
+                    <button class="map-button map1" data-map="ufo"></button>
+                    <button class="map-button map2" data-map="lizard-people"></button>
+                    <button class="map-button map3" data-map="snowman"></button>
+                    <button class="map-button map4" data-map="lochness"></button>
+                  </div>
+                </div>
+                <!-- <div class="ai-modal-column right-column">
+                  <div class="ai-section-title">Difficulty</div>
+                  <div class="ai-difficulty-container">
+                    <div id="AIModalDificultyButton" class="btn-group" role="group" aria-label="Difficulty selection">
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+                      <label class="btn btn-outline-primary" for="btnradio1">Easy</label>
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+                      <label class="btn btn-outline-primary" for="btnradio2">Medium</label>
+                      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+                      <label class="btn btn-outline-primary" for="btnradio3">Hard</label>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+              <div class="ai-modal-footer">
+                <button id="ai-modal-start-button">START GAME</button>
+              </div>
             </div>
           </div>
 
@@ -70,13 +81,13 @@
                           </div>
                           <div id="template-tournament-modal-create-form-invited-user-card-container" class="barely-a-scroll-class">
                             <search-bar
-								placeholder="Invite a user"
-								width="250"
-								search-type="users"
-								on-click-event="select-user-invite"
-								clear-on-click="true"
-							>
-							</search-bar>
+                              placeholder="Invite a user"
+                              width="250"
+                              search-type="users"
+                              on-click-event="select-user-invite"
+                              clear-on-click="true"
+                            >
+                            </search-bar>
                             <template id="template-tournament-modal-create-form-invited-user-card">
                               <div class="tournament-modal-create-form-invited-user-card">
                                 <img class="tournament-modal-create-form-invited-user-card-avatar">
@@ -584,121 +595,219 @@
     height: 90vh;
   }
 
-  .modal-content {
-    background-color: transparent;
-    display: flex;
-    border: none;
-    height: 90vh;
-  }
-
   /* A.I. Modal */
   #AI-modal {
-    padding: 6vh 2vh 2vh 2vh;
+    padding: 2vh;
     display: none;
+    height: 100%;
+    width: 100%;
   }
 
-  #modal-title {
-    height: 10vh;
+  .ai-modal-content {
+    /* Remove background color to use background image */
+    background-color: transparent;
+    border: 3px solid black;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+
+  .ai-modal-header {
+    padding: 3vh 2vh 1vh 2vh;
+    text-align: center;
+    border-bottom: 2px solid black;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ai-modal-title h1 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    color: #1a1a1a;
+  }
+
+  .ai-modal-title h1::after {
+    content: "";
+    display: block;
+    width: 70%;
+    height: 3px;
+    background: black;
+    margin: 10px auto 15px;
+  }
+
+  .ai-modal-subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+
+  .ai-modal-body {
+    display: flex;
+    padding: 3vh 1vh;
+    flex: 1;
+    position: relative;
+  }
+
+  .ai-modal-column {
+    display: flex;
+    flex-direction: column;
+    padding: 1vh;
+  }
+
+  .left-column {
+    width: 50%;
+    position: relative;
+  }
+
+  .left-column::after {
+    content: "";
+    position: absolute;
+    top: 10%;
+    right: 0;
+    width: 1px;
+    height: 80%;
+    border-right: 2px dotted #333;
+  }
+
+  .right-column {
+    width: 50%;
+    padding-left: 4vh;
+  }
+
+  .ai-section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 3vh;
+    text-decoration: underline;
+    text-transform: uppercase;
     text-align: center;
   }
 
-  #AI-modal-content-div {
+  .ai-maps-container {
     display: grid;
-    margin: 48vh 5vh 5vh 5vh;
-    padding: 2vh;
-    grid-template-columns: 7vh auto;
-    grid-gap: 1vh;
-    grid-template-areas: "header1 header1 header2 header2"
-      "map1 map2 buttons buttons"
-      "map3 map4 startButton startButton";
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 2vh;
+    justify-items: center;
+  }
+
+  .map-button {
+    width: 10vh;
+    height: 10vh;
+    border: 3px solid black;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #e2e0d5;
+  }
+
+  .map-button:hover, .map-button.selected {
+    transform: scale(1.05);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
   }
 
   .map1 {
-    width: 6vh;
-    height: 6vh;
-    grid-area: map1;
-    border: none;
     background-image: url('../assets/homeView/UFOIcon.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    box-shadow: 4px 4px;
-  }
-
-  .map1:hover {
-    box-shadow: 10px;
   }
 
   .map2 {
-    width: 6vh;
-    height: 6vh;
-    grid-area: map2;
-    border: none;
     background-image: url('../assets/homeView/lizardPeopleIcon.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
   }
 
   .map3 {
-    width: 6vh;
-    height: 6vh;
-    grid-area: map3;
-    border: none;
     background-image: url('../assets/homeView/snowmanIcon.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
   }
 
   .map4 {
-    width: 6vh;
-    height: 6vh;
-    grid-area: map4;
-    border: none;
     background-image: url('../assets/homeView/lochnessIcon.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
   }
 
-  #AIModalMapsHeader {
-    grid-area: header1;
-  }
-
-  #AIModalDificultyHeader {
-    grid-area: header2;
+  .ai-difficulty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2vh;
   }
 
   #AIModalDificultyButton {
-    grid-area: buttons;
-    height: 4vh;
-    width: 20vh;
-  }
-
-  #AIModalStartButton {
-    grid-area: startButton;
-    height: 5vh;
-    width: 20vh;
-    color: black;
+    height: auto;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
   }
 
   .btn-outline-primary {
     color: black;
     background-color: transparent;
-    border-color: black;
-  }
-
-  .btn-outline-primary:hover,
-  .btn-outline-primary:focus {
-    color: black;
-    background-color: white;
-    border-color: black;
+    border: none;
+    border-bottom: 1px solid black;
+    border-radius: 0;
+    padding: 1.5vh 3vh;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.2s ease;
+    margin-bottom: 1vh;
+    font-size: 1.2rem;
+    text-align: center;
   }
 
   .btn-check:checked+.btn-outline-primary {
     color: white;
     background-color: black;
     border-color: transparent;
+    text-shadow: none;
+  }
+
+  .ai-modal-footer {
+    padding: 2vh;
+    text-align: center;
+    position: relative;
+  }
+
+  #ai-modal-start-button {
+    height: auto;
+    width: auto;
+    min-width: 200px;
+    padding: 1.5vh 6vh;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+    position: relative;
+  }
+
+  #ai-modal-start-button::after {
+    content: "GAME";
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: black;
+  }
+
+  /* Keep all other existing CSS intact */
+  #modal-title,
+  #AI-modal-content-div,
+  #AIModalMapsHeader,
+  #AIModalDificultyHeader {
+    display: none;
   }
 </style>
