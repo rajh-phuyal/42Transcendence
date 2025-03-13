@@ -160,7 +160,7 @@ export default {
                 this.domManip.$on(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
             }).catch(err => {
                 console.log(err);
-                router("/home");
+                router("/404", {msg: "404 | " + err.message});
             }
             );
         },
