@@ -122,6 +122,15 @@ async function router(path, params = null) {
 
     // Close all modals before switching routes
     modalManager.destroyAllModals();
+    // Now add all modals to the view (the html part)
+    modalContainer.innerHTML = "";
+    for (const modal of route.modals || []) {
+        console.log("Router: Loading html of modal:", modal);
+        modalContainer.innerHTML += await fetch(`./modals/${modal}.html`).then(response => response.text());
+    }
+    modalContainer.dataset.view = route.view;
+    // Setup the js for all modals
+    await modalManager.setupAllModalsForView();
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
@@ -140,14 +149,6 @@ async function router(path, params = null) {
 
     // set the view name to the container
     viewContainer.dataset.view = route.view;
-
-    // Now add all modals to the view
-    modalContainer.innerHTML = "";
-    for (const modal of route.modals || []) {
-        console.log("Loading modal:", modal);
-        modalContainer.innerHTML += await fetch(`./modals/${modal}.html`).then(response => response.text());
-    }
-    modalContainer.dataset.view = route.view;
 
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();

@@ -210,16 +210,16 @@ export default {
 
 
             // Unlink the modal buttons to the methods
-            modalManager.off("button-top-left")
-            modalManager.off("button-top-middle")
+            modalManager.off("button-top-left", this.buttonTopLeft.method)
+            modalManager.off("button-top-middle", this.buttonTopMiddle.method)
             if (this.buttonTopRight.method) {
                 if (this.buttonTopRight.method == "logout")
                     this.domManip.$off(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
                 else
-                    modalManager.off("button-top-right")
+                    modalManager.off("button-top-right", this.buttonTopRight.method);
             }
-            modalManager.off("button-bottom-right")
-            modalManager.off("button-bottom-left")
+            modalManager.off("button-bottom-left", "modal-game-history");
+            modalManager.off("button-bottom-right", "modal-friends-list");
 
             // Remove the attributes from the view
             this.setViewAttributes(false);

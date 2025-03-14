@@ -9,11 +9,12 @@ const modalFolders = [
     ["modal-create-game", "createGame"],
     ["modal-game-history", "gameHistory"],
     ["modal-template", "template"],
+    ["modal-tournament", "tournament"],
     ["modal-template-image", "templateImage"],
 ];
 export default class ModalManager {
-    static instance = null;
-    static modalInstances = {}; // Here we store all modal instances. To make sure we instantiate each modal only once
+    static instance = null;     // Instance of the singleton
+    static modalInstances = {}; // Here we store both: modal instances & their bound event listeners ( to be able to remove them later )
 
     /* For the singleton export */
     static getInstance() {
@@ -23,11 +24,26 @@ export default class ModalManager {
         return ModalManager.instance;
     }
 
+    /* Helpers to convert between modal names and folder names
+    ========================================================================= */
     static idToFolderNameStatic(modalName) {
         const result = modalFolders.find(([modal, _]) => modal === modalName);
         return result ? result[1] : null; // Return filename or null if not found
     }
+    idToFolderName(modalName) {
+        const result = modalFolders.find(([modal, _]) => modal === modalName);
+        return result ? result[1] : null; // Return filename or null if not found
+    }
 
+    folderNameToId(folderName) {
+        const result = modalFolders.find(([_, folder]) => folder === folderName);
+        return result ? result[0] : null; // Return modal ID or null if not found
+    }
+
+    /* HELPERS TO SETUP A SINGLE MODAL
+    ========================================================================= */
+
+    /* Used by setupModal to load the hooks for a modal */
     static async loadModalHooks(modalId) {
         const folderName = ModalManager.idToFolderNameStatic(modalId);
         if (!folderName) {
@@ -51,12 +67,11 @@ export default class ModalManager {
             return;
         }
 
-        // Only continue if the modal was not already set up
-        if (ModalManager.modalInstances[modalId]) return;
+        // Create a new instance of the modala and store it
+        const instance = new bootstrap.Modal(modalElement);
+        ModalManager.modalInstances[modalId] = { instance: instance, openCallback: null };
 
-        // Create a new instance of the modal
-        ModalManager.modalInstances[modalId] = new bootstrap.Modal(modalElement);
-
+        // Load the hooks for the modal
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
 
@@ -65,15 +80,11 @@ export default class ModalManager {
         // Prevent duplicate event listeners by removing them first
         $off(modalElement, 'show.bs.modal');
         $off(modalElement, 'hidden.bs.modal');
-        // Attach Bootstrap event listeners
+        // Attach Bootstrap event listeners // TODO: dont use annonymos function
         $on(modalElement, 'show.bs.modal', async () => {
             console.log(`ModalManager: Opening modal: ${modalId}`);
             if (modalHooks.hooks.beforeOpen) {
-                const shouldOpen = await modalHooks.hooks.beforeOpen.bind(modalConfig)();
-                if (!shouldOpen) {
-                    console.warn(`ModalManager: beforeOpen returned false. Preventing modal ${modalId} from opening.`);
-                    ModalManager.modalInstances[modalId].hide();
-                }
+                await modalHooks.hooks.beforeOpen.bind(modalConfig)();
             } else
                 console.warn(`ModalManager: Couldn't find the 'beforeOpen' function for modal: ${modalId}`);
         });
@@ -86,65 +97,153 @@ export default class ModalManager {
         });
     }
 
+    /* FUNCTIONS FOR THE ROUTER
+    ========================================================================= */
+
+    /*
+    The idea is that the router calls this function after inserting the html for the modals
+    So the modal manager can loop trough the modal nodes and set up the modals which means:
+        - create the bootstrap modal instance
+        - set up the event listeners (open, close)
+    */
+    async setupAllModalsForView() {
+        const modalsContainer = $id("modal-view");
+        // Loop through the modals and set them up
+        for (const modal of modalsContainer.children) {
+            if (modal.tagName === "DIV") { // To prevent setting up the style tag
+                console.log("setupAllModalsForView: Seting up:", modal.id);
+                await this.setupModal(modal.id);
+            }
+        }
+    }
+
+    /*
+    Before changing route this function will be called it:
+      - removes all event listeners (open, close)
+      - removes all event listeners from the buttons that open the modals
+      - destroys all modal instances
+      - removes all modals from the DOM
+    */
+    destroyAllModals() {
+        console.log("ModalManager: Destroying all loaded modals");
+        Object.keys(ModalManager.modalInstances).forEach(modalId => {
+            const modalElement = $id(modalId);
+            const modalInstance = ModalManager.modalInstances[modalId].instance;
+            if (modalInstance) {
+                // Remove all Bootstrap event listeners
+                if (modalElement) {
+                    $off(modalElement, 'show.bs.modal');
+                    $off(modalElement, 'hidden.bs.modal');
+                }
+                // Remove all open modal event listeners
+                this.off(modalId);
+                modalInstance.dispose();
+                delete ModalManager.modalInstances[modalId].instance;
+            }
+            if (modalElement && modalElement.parentNode) {
+                modalElement.parentNode.removeChild(modalElement);
+            }
+        });
+    }
+
+    /* OPENING A MODAL
+    =========================================================================
+    There are two ways how to open a modal:
+       - for view home:     openModal()     -> This will open the modal
+       - for other views:   on()            -> This will add an event listener to the button which opens the modal
+    */
+
+    /* This can be used everywhere like modalManager.openModal("modal-create-game") */
     async openModal(modalId) {
+        if(!modalId) {
+            console.warn("ModalManager: need argument modalId");
+            return;
+        }
+        let modalElement = $id(modalId);
+        if (!modalElement) {
+            console.warn(`ModalManager: openModal: Modal element not found: ${modalId}`);
+            return;
+        }
+        ModalManager.modalInstances[modalId].instance.show();
+    }
+
+    /* This is the callback function for on() which will be stored in the ModalManager.modalInstances.openCallback */
+    async openModalCallback(event) {
+        const modalId = event.target.getAttribute("target-modal-id");
+        if(!modalId) {
+            console.warn("ModalManager: openModalCallback: No modal id found in the event target");
+            return;
+        }
+        let modalElement = $id(modalId);
+        if (!modalElement) {
+            console.warn(`ModalManager: openModalCallback: Modal element not found: ${modalId}`);
+            return;
+        }
+        ModalManager.modalInstances[modalId].instance.show();
+    }
+
+    /* This can be used from a configs.js of a view to open a modal when a button is clicked */
+    on(buttonId, modalId) {
+        let element = $id(buttonId);
+        if (element) {
+            element.setAttribute("target-modal-id", modalId);
+            ModalManager.modalInstances[modalId].openCallback = this.openModalCallback.bind(this);
+            $on(element, "click", ModalManager.modalInstances[modalId].openCallback);
+        }
+        else
+            console.warn("ModalManager: on: Element with id %s not found", buttonId);
+    }
+
+    /* This NEEDS to be called by a configs.js of a view to remove the event listener from the button */
+    off(buttonId, modalId) {
+        let element = $id(buttonId);
+        if (element) {
+            element.removeAttribute("target-modal-id");
+            if (ModalManager.modalInstances[modalId] && ModalManager.modalInstances[modalId].openCallback) {
+                $off(element, "click", ModalManager.modalInstances[modalId].openCallback);
+                ModalManager.modalInstances[modalId].openCallback = null;
+            }
+        }
+        else
+            console.warn("ModalManager: off: Element with id %s not found", buttonId);
+    }
+
+
+
+
+    /* async openModal(event) {
+        const modalId = event.target.getAttribute("target-modal-id");
+        if(!modalId) {
+            console.warn("ModalManager: openModal: No modal id found in the event target");
+            return;
+        }
         let modalElement = $id(modalId);
         if (!modalElement) {
             console.warn(`ModalManager: openModal: Modal element not found: ${modalId}`);
             return;
         }
         await this.setupModal(modalId);
-        ModalManager.modalInstances[modalId].show();
-    }
+        ModalManager.modalInstances[modalId].instance.show();
+    } */
 
-    closeModal(modalId) {
-        console.warn(`ModalManager: closeModal: Closing modal with id ${modalId}`);
-        if (!ModalManager.modalInstances[modalId]) return;
-        ModalManager.modalInstances[modalId].hide();
-    }
-
-    destroyAllModals() {
-        console.log("ModalManager: Destroying all loaded modals");
-        Object.keys(ModalManager.modalInstances).forEach(modalId => {
-            const modalElement = $id(modalId);
-            const modalInstance = ModalManager.modalInstances[modalId];
-            if (modalInstance) {
-                modalInstance.hide();
-                modalInstance.dispose();
-            }
-            // Remove all Bootstrap event listeners
-            if (modalElement) {
-                $off(modalElement, 'show.bs.modal');
-                $off(modalElement, 'hidden.bs.modal');
-            }
-        });
-        ModalManager.modalInstances = {}; // Reset all instances
-    }
-
-    idToFolderName(modalName) {
-        const result = modalFolders.find(([modal, _]) => modal === modalName);
-        return result ? result[1] : null; // Return filename or null if not found
-    }
-
-    folderNameToId(folderName) {
-        const result = modalFolders.find(([_, folder]) => folder === folderName);
-        return result ? result[0] : null; // Return modal ID or null if not found
-    }
-
+/*
     on(buttonId, modalId) {
         let element = $id(buttonId);
-        if (element)
-            $on(element, "click", () => this.openModal(modalId));
+        if (element) {
+            element.setAttribute("target-modal-id", modalId);
+
+            // If modal is not initialized, set up storage
+            if (!ModalManager.modalInstances[modalId]) {
+                ModalManager.modalInstances[modalId] = { instance: null, openCallback: null };
+            }
+            ModalManager.modalInstances[modalId].openCallback = this.openModal.bind(this);
+            $on(element, "click", ModalManager.modalInstances[modalId].openCallback);
+        }
         else
             console.warn("ModalManager: on: Element with id %s not found", buttonId);
-    }
+    } */
 
-    off(buttonId) {
-        let element = $id(buttonId);
-        if (element)
-            $off(element, "click", () => this.openModal(modalId));
-        else
-            console.warn("ModalManager: off: Element with id %s not found", buttonId);
-    }
+
 }
 
 // Create and export a single instance

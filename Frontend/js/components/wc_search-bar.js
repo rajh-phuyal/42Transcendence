@@ -124,7 +124,6 @@ class SearchBar extends HTMLElement {
     }
 
     render() {
-        console.log(this.searchType);
         this.shadow.innerHTML = `
             <style>
                 .container {

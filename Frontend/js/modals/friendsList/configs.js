@@ -155,20 +155,11 @@ export default {
             return true;
         },
 
-        beforeRouteEnter() {
-        },
-
-        beforeRouteLeave() {
+        afterClose () {
             this.removeFriendsList();
             // Remove event listener from the search
             const searchBar = this.domManip.$id("modal-friends-list-search-bar");
             this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
-        },
-
-        beforeDomInsertion() {
-        },
-
-        afterDomInsertion() {
-        },
+        }
     }
 }

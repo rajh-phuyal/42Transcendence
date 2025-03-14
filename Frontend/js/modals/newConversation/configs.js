@@ -17,9 +17,24 @@ import router from '../../navigation/router.js';
 export default {
     attributes: {
         userId: null,
+        conversationId: null,
     },
 
     methods: {
+        /*  If a conversation already exist just show a message */
+        updateView() {
+            if (this.conversationId && this.conversationId !== "null") {
+                // Disable text area
+                const input = this.domManip.$id("modal-new-conversation-textarea");
+                input.value = `You already have a conversation with ${this.username}`; // TODO: tanslate
+                input.disabled = true;
+                this.domManip.$id("modal-new-conversation-create-button").disabled = true;
+                // Change the button text
+                const button = this.domManip.$id("modal-new-conversation-create-button");
+                button.innerText = "Go to conversation"; // TODO: translate
+            }
+        },
+
         enableButtonCallback() {
             // Enable the button if the input is not empty
             const input = this.domManip.$id("modal-new-conversation-textarea");
@@ -30,13 +45,17 @@ export default {
                 btn.disabled = false;
         },
 
-        createConversation() {
-            // This is calling the endpoint to create a new conversation
-            const message = this.domManip.$id("modal-new-conversation-textarea").value;
-            call("chat/create/conversation/", "POST", {"userId": this.userId, "initialMessage": message}).then(data => {
-                $callToast("success", data.message);
-                router(`/profile`, {id: this.userId});
-            })
+        callbackSubmitButton() {
+            if (this.conversationId && this.conversationId !== "null")
+                router(`/chat`, {id: this.conversationId});
+            else {
+                // This is calling the endpoint to create a new conversation
+                const message = this.domManip.$id("modal-new-conversation-textarea").value;
+                call("chat/create/conversation/", "POST", {"userId": this.userId, "initialMessage": message}).then(data => {
+                    $callToast("success", data.message);
+                    router(`/profile`, {id: this.userId});
+                })
+            }
         },
     },
 
@@ -59,21 +78,20 @@ export default {
                 console.error("newConversationModal: Couldn't find the userId attribute in the view");
                 return false;
             }
-            this.chatId = this.domManip.$id("router-view").getAttribute("data-user-chat-id");
+            this.conversationId = this.domManip.$id("router-view").getAttribute("data-user-chat-id");
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
-            // If already a chat exists, redirect to the chat
-            if(this.chatId && this.chatId !== "null") {
-                router(`/chat`, {id: this.chatId});
-                return false;
-            }
 
             // Set modal title
             this.domManip.$id("modal-new-conversation-title").innerText = `Create new conversation with ${this.username}`;
             this.domManip.$id("modal-new-conversation-title").setAttribute("data-user-id", this.userId);
 
             // Add event listener to the create conversation button
-            this.domManip.$on(this.domManip.$id("modal-new-conversation-create-button"), "click", this.createConversation.bind(this));
+            this.domManip.$on(this.domManip.$id("modal-new-conversation-create-button"), "click", this.callbackSubmitButton.bind(this));
             this.domManip.$on(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
+
+            // Update the view if a conversation already exists
+            this.updateView();
+            this.enableButtonCallback();
 
             // TODO: set the focus to the textarea
             // Not sure how since this code snippet doesnt fit to our setup...
@@ -81,19 +99,10 @@ export default {
 
             return true;
         },
-        beforeRouteEnter() {
-        },
 
-        beforeRouteLeave() {
-            this.domManip.$off(this.domManip.$id("modal-new-conversation-create-button"), "click", this.createConversation.bind(this));
+        afterClose () {
+            this.domManip.$off(this.domManip.$id("modal-new-conversation-create-button"), "click", this.callbackSubmitButton.bind(this));
             this.domManip.$off(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
-        },
-
-        beforeDomInsertion() {
-        },
-
-        afterDomInsertion() {
-
         },
     }
 }

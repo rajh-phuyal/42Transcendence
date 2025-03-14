@@ -142,17 +142,17 @@ export default {
                     if (buttonPlayAgain.eventListeners)
                         this.domManip.$off(buttonPlayAgain, "click");
                     if (document.eventListeners)
-                        this.domManip.$on(document, 'keydown', this.menuKeysCallback);
+                        this.domManip.$off(document, 'keydown', this.menuKeysCallback);
                     if (leftUsername.eventListeners)
-                        this.domManip.$on(leftUsername, 'click', this.mentionClickCallback);
+                        this.domManip.$off(leftUsername, 'click', this.mentionClickCallback);
                     if (leftAvatar.eventListeners)
-                        this.domManip.$on(leftAvatar, 'click', this.mentionClickCallback);
+                        this.domManip.$off(leftAvatar, 'click', this.mentionClickCallback);
                     if (rightUsername.eventListeners)
-                        this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
+                        this.domManip.$off(rightUsername, 'click', this.mentionClickCallback);
                     if (rightAvatar.eventListeners)
-                        this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
+                        this.domManip.$off(rightAvatar, 'click', this.mentionClickCallback);
                     if (tournamentName.eventListeners)
-                        this.domManip.$on(tournamentName, 'click', this.mentionClickCallback);
+                        this.domManip.$off(tournamentName, 'click', this.mentionClickCallback);
                 }
             }
         },

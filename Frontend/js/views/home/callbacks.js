@@ -54,23 +54,25 @@ function createJoinTournamentList() {
 }
 
 export function tournamentModalCallback(){
-    let modalElement = $id('home-modal');
-    let modalBody = $id('home-modal-body');
-
-
-    // modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
-    modalBody.style.height = '90vh';
-    modalBody.style.width = '80vw';
-    // modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
-    // modalBody.style.backgroundPosition = 'center'; // Center the image
-    // modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
-    $id("modal-tournament").style.display = 'flex';
-    const modal = new bootstrap.Modal(modalElement);
-    // Adding a "random name" to the tournament name input. That needs to be
-    // done so that the client can create a tournament without having to type
-    // a name. This "fast button" is mandatory from subject
-    $id("modal-tournament-create-form-name-container-input").value = generateTournamentName();
-    modal.show();
+    modalManager.openModal("modal-tournament");
+    // TODO: check if the code below is still needed!
+//    let modalElement = $id('home-modal');
+//    let modalBody = $id('home-modal-body');
+//
+//
+//    // modalBody.style.backgroundImage = "url('../../../assets/homeView/bigfootModal2.png')";
+//    modalBody.style.height = '90vh';
+//    modalBody.style.width = '80vw';
+//    // modalBody.style.backgroundSize = 'contain'; // Ensure the image covers the whole area background-size: contain
+//    // modalBody.style.backgroundPosition = 'center'; // Center the image
+//    // modalBody.style.backgroundRepeat = 'no-repeat'; // Prevent repeating the image
+//    $id("modal-tournament").style.display = 'flex';
+//    const modal = new bootstrap.Modal(modalElement);
+//    // Adding a "random name" to the tournament name input. That needs to be
+//    // done so that the client can create a tournament without having to type
+//    // a name. This "fast button" is mandatory from subject
+//    $id("modal-tournament-create-form-name-container-input").value = generateTournamentName();
+//    modal.show();
 }
 
 export function chatRoomModalCallback(){

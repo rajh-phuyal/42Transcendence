@@ -163,16 +163,7 @@ export default {
 //this.domManip.$on(element, "click", this.submitForm);
             return true;
         },
-        beforeRouteEnter() {
-        },
-
-        beforeRouteLeave() {
-        },
-
-        beforeDomInsertion() {
-        },
-
-        afterDomInsertion() {
-        },
+        afterClose () {
+        }
     }
 }

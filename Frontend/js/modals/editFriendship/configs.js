@@ -29,31 +29,25 @@ export default {
 
         /* This function sets all actions and text */
         initModal() {
-            console.dir(this.relationship);
-
             let blockIndex;
             if (this.relationship.isBlocking)
                 blockIndex = "blocked";
             else
                 blockIndex = "unblocked";
 
-            console.log(("1"));
             // friendship portion of the modal
             let element = this.domManip.$id("modal-edit-friendship-friendship-text")
             element.textContent = buttonObjects[this.relationship.state].text;
-            console.log(("1123"));
             if (this.relationship.state == "noFriend" && (this.relationship.isBlocked || this.relationship.isBlocking))
                 {
                     element.style.display = "none";
                     this.hideElement("modal-edit-friendship-friendship-primary-button");
                 }
 
-            console.log(("2"));
             if (!buttonObjects[this.relationship.state].secondaryButton)
                 this.hideElement("modal-edit-friendship-friendship-secondary-button");
 
             // blocking portion of the friendshop modal
-            console.log(("3"));
             if (this.relationship.state == "requestReceived" || this.relationship.state == "requestSent")
                 this.hideElement("modal-edit-friendship-block");
 
@@ -67,7 +61,6 @@ export default {
             const object = buttonObjects[this.relationship.state];
             const fullUrl = object.Url + this.targetId + "/";
 
-            console.log(("44444"));
             call(fullUrl, object.method).then(data =>{
                 $callToast("success", data.message);
                 router('/profile', { id: this.targetId});
@@ -104,8 +97,6 @@ export default {
 
     hooks: {
         beforeOpen () {
-            console.log("beforeOpen of modal-edit-friendship");
-
             // Fetching the attributes from view and store them locally
             try {
                 // Try to store userId (wich is the target) as Number
@@ -144,21 +135,12 @@ export default {
             this.domManip.$on(this.domManip.$id("modal-edit-friendship-block-button"), "click", this.changeBlockMethod);
             return true;
         },
-        beforeRouteEnter() {
-        },
 
-        beforeRouteLeave() {
+        afterClose () {
             // Add event listener to the buttons
             this.domManip.$off(this.domManip.$id("modal-edit-friendship-friendship-primary-button"), "click", this.changeFrendshipPrimaryMethod);
             this.domManip.$off(this.domManip.$id("modal-edit-friendship-friendship-secondary-button"), "click", this.changeFrendshipSecondaryMethod);
             this.domManip.$off(this.domManip.$id("modal-edit-friendship-block-button"), "click", this.changeBlockMethod);
-
-        },
-
-        beforeDomInsertion() {
-        },
-
-        afterDomInsertion() {
-        },
+        }
     }
 }

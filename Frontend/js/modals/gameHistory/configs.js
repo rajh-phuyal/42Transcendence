@@ -26,16 +26,7 @@ export default {
             // Will be called by the ModalManager
             return true;
         },
-        beforeRouteEnter() {
-        },
-
-        beforeRouteLeave() {
-        },
-
-        beforeDomInsertion() {
-        },
-
-        afterDomInsertion() {
-        },
+        afterClose () {
+        }
     }
 }

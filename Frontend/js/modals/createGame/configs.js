@@ -1,16 +1,3 @@
-/*
-TODO: THIS MODAL IS NOT DONE AT ALL!!!
-    NEED TO:
-        - copy the right structure from the template modal
-        - double check all nodes/elements if needed?
-        - adjust the js code
-            - move it from original configs.js (profile/home) to congigs.js of modal!
-            - make sure the js code has all values. the idea is that the view stores the info as attribute and the modal takes it from there
-            - e.g. newConversation modal js!
-*/
-
-
-import { modalManager } from '../../abstracts/ModalManager.js';
 import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
@@ -186,14 +173,8 @@ export default {
             return true;
         },
 
-        beforeClose () {
+        afterClose () {
             console.warn("beforeClose of modal-create-game");
-        },
-
-        beforeRouteEnter() {
-        },
-
-        beforeRouteLeave() {
             // Remove event listener
             this.domManip.$off(this.domManip.$id("modal-create-game-btn-pu"), "click", this.callbackPowerups);
             this.domManip.$off(this.domManip.$id("modal-create-game-map-ufo"), "click", this.callbackSelectMap);
@@ -202,12 +183,6 @@ export default {
             this.domManip.$off(this.domManip.$id("modal-create-game-map-lochness"), "click", this.callbackSelectMap);
             this.domManip.$off(this.domManip.$id("modal-create-game-btn-create"), "click", this.createGame);
             this.domManip.$off(window, "modal-create-game-select-user", this.callbackSearchbar);
-        },
-
-        beforeDomInsertion() {
-        },
-
-        afterDomInsertion() {
-        },
+        }
     }
 }

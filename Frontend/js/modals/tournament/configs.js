@@ -178,11 +178,25 @@ export default {
 
     hooks: {
         beforeOpen() {
-        },
-        beforeRouteEnter() {
+           // this.tournament.type = "public";
+           // this.tournament.map = "random";
+           // this.tournament.userIds = [];
+             // TODO:
+            //this.domManip.$on(this.domManip.$id("modal-tournament-create-form-join-button"), "click", this.toggleCreateJoinView);
+            //this.domManip.$on(this.domManip.$id("modal-tournament-join-form-host-button"), "click", this.toggleCreateJoinView);
+            //element = this.domManip.$class("modal-tournament-create-maps-button");
+            //for (let individualElement of element)
+            //    this.domManip.$on(individualElement, "click", this.selectMap);
+            //element = this.domManip.$class("modal-tournament-create-form-type-buttons");
+            //for (let individualElement of element)
+            //    this.domManip.$on(individualElement, "click", this.selectTournamentType);
+//
+            //// for the search bar
+            //this.domManip.$on(window, "select-user-invite", this.selectUserToInvite);
+            return true;
         },
 
-        beforeRouteLeave() {
+        afterClose () {
             // TODO:
             //let element = this.domManip.$id("modal-tournament-create-form-create-button");
             //if (element)
@@ -195,27 +209,6 @@ export default {
             //    this.domManip.$off(individualElement, "click", this.selectMap);
             //this.domManip.$off(this.domManip.$id("modal-tournament-create-form-join-button"), "click", this.toggleCreateJoinView);
             //this.domManip.$off(this.domManip.$id("modal-tournament-join-form-host-button"), "click", this.toggleCreateJoinView);
-        },
-
-        beforeDomInsertion() {
-            this.tournament.type = "public";
-            this.tournament.map = "random";
-            this.tournament.userIds = [];
-        },
-
-        afterDomInsertion() {
-            // TODO:
-            //this.domManip.$on(this.domManip.$id("modal-tournament-create-form-join-button"), "click", this.toggleCreateJoinView);
-            //this.domManip.$on(this.domManip.$id("modal-tournament-join-form-host-button"), "click", this.toggleCreateJoinView);
-            //element = this.domManip.$class("modal-tournament-create-maps-button");
-            //for (let individualElement of element)
-            //    this.domManip.$on(individualElement, "click", this.selectMap);
-            //element = this.domManip.$class("modal-tournament-create-form-type-buttons");
-            //for (let individualElement of element)
-            //    this.domManip.$on(individualElement, "click", this.selectTournamentType);
-//
-            //// for the search bar
-            //this.domManip.$on(window, "select-user-invite", this.selectUserToInvite);
-        },
+        }
     }
 }
