@@ -1,0 +1,80 @@
+<!-- Friends List Modal -->
+<!-- ####################################################################### -->
+<div class="modal fade" id="modal-friends-list" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content" id="modal-friends-list-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-friends-list-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body barely-a-scroll-class" id="modal-friends-list-body">
+                <div id="modal-friends-list-search-bar-container">
+                    <input type="text" id="modal-friends-list-search-bar" placeholder="filter"> <!-- TODO: Translate -->
+                </div>
+                <div>
+                    <ul id="modal-friends-list-list" class="list-group">
+                        <template id="modal-friends-list-list-element-template">
+                            <div class="modal-friends-list-list-element">
+                                <img id="modal-friends-list-list-element-avatar-image" class="modal-friends-list-list-element-avatar-image" alt="error loading image"></img>
+                                <h5 class="modal-friends-list-list-element-username"></h5>
+                                <img id="modal-friends-list-list-element-friendship-image" class="modal-friends-list-list-element-friendship-image" alt="error loading image"></img>
+                            </div>
+                        </template>
+                    </ul>
+                    <h3 id="modal-friends-list-list-result-not-found-message" style="padding: 10px 10px 10px 10px; color:black" >No Results Found</h3> <!-- TODO: translate -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- TODO: Translate Button Text -->
+                <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+
+    /* This is needed so that the modal doesn't shrink when filtering */
+    #modal-friends-list-content{
+        height: 100% !important;
+    }
+
+    #modal-friends-list-search-bar{
+        background-color: black;
+        color: white;
+        width: 100%;
+    }
+
+    /* This is the style for a user card */
+    .modal-friends-list-list-element{
+        display: flex;
+        flex-direction: row;
+        margin: 1% 0% !important;
+        height: 8vh;
+        border:  3px solid  black;
+        background-color: #EFE7D3;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    /* Those are the styles for inside the usercard */
+    .modal-friends-list-list-element-avatar-image {
+        height: 90%;
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-right: auto;
+    }
+    .modal-friends-list-list-element-username {
+        flex-grow: 1;
+        text-align: center;
+        margin: 0;
+        width: auto;
+        color: black;
+    }
+    .modal-friends-list-list-element-friendship-image {
+        height: 70%;
+        margin-left: auto;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+</style>

@@ -75,7 +75,7 @@ export const showGame = (show) => {
         animateImage("game-view-map-image", "fadein", "3s");
     } else {
         // TODO: this doesn't work yet
-        gameViewImageContainer.style.backgroundImage = `${window.location.origin}/assets/game/lobby.png`;
+        gameViewImageContainer.style.backgroundImage = `${window.location.origin}/assets/images/game/lobby.png`;
         gameImage.style.display = "none";
         gameField.style.display = "none";
     }

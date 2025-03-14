@@ -2,7 +2,6 @@ import { routes } from './routes.js';
 import { functionalRoutes } from './functionalRoutes.js';
 import { setViewLoading } from '../abstracts/loading.js';
 import { $id } from '../abstracts/dollars.js';
-
 // bind store, auth and other singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
@@ -13,6 +12,7 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 import dollars from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { modalManager } from '../abstracts/ModalManager.js';
 
 const simpleObjectToBind = () => {
     return {
@@ -29,7 +29,7 @@ const simpleObjectToBind = () => {
     }
 }
 
-const objectToBind = (config, params = null) => {
+export const objectToBind = (config, params = null) => {
     let binder = {};
     let {hooks, attributes, methods} = config || {attributes: {}, methods: {}, hooks: {}}
 
@@ -49,6 +49,7 @@ const objectToBind = (config, params = null) => {
 async function getViewHooks(viewName) {
     if (!viewName) return null;
 
+    // Load view hooks
     return await import(`../views/${viewName}/configs.js`).then(conf => conf.default).then(viewHooks => {
         return viewHooks;
     }).catch(err => {
@@ -71,11 +72,9 @@ async function router(path, params = null) {
     const userAuthenticated = await $auth.isUserAuthenticated();
     console.log("User authenticated:", userAuthenticated);
 
-	if (path === "/barely-responsive") {
-
-	}
-
-    else if (userAuthenticated && path === '/auth') {
+    if (path === "/barely-responsive") {
+        console.log("TODO: check if we need this if!");
+    } else if (userAuthenticated && path === '/auth') {
         console.log("Redirecting to home");
         path = '/home';
         params = null;
@@ -95,18 +94,31 @@ async function router(path, params = null) {
     }
 
     const viewContainer = $id('router-view');
+    const modalContainer = $id('modal-view');
 
     // find the route that matches the path
     const route = routes.find(route => route.path === path) || {
         path: path,
         view: "404",
         requireAuth: false,
+        modals: [],
     };
 
-	if (route.view == "auth" || route.view == "barely-responsive") {
-		let nav = document.getElementById('navigator');
-		nav.style.display = 'none';
-	}
+    if (route.view == "auth" || route.view == "barely-responsive") {
+        let nav = document.getElementById('navigator');
+        nav.style.display = 'none';
+    }
+
+    // Close all modals before switching routes
+    modalManager.destroyAllModals();
+    // Now add all modals to the view (the html part)
+    modalContainer.innerHTML = "";
+    for (const modal of route.modals || []) {
+        console.log("Router: Loading html of modal:", modal);
+        modalContainer.innerHTML += await fetch(`./modals/${modal}.html`).then(response => response.text());
+    }
+    // Setup the js for all modals
+    await modalManager.setupAllModalsForView();
 
     const htmlContent = await fetch(`./${route.view}.html`).then(response => response.text());
     const viewHooks = await getViewHooks(route.view);
@@ -114,27 +126,20 @@ async function router(path, params = null) {
 
     // get the hooks of the last view and call the beforeRouteLeave hook
     const lastViewHooks = await getViewHooks(viewContainer.dataset.view);
-
     // bind everything except the hooks to the object
     lastViewHooks && await lastViewHooks?.hooks?.beforeRouteLeave?.bind(objectToBind(lastViewHooks))();
-
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
-
     // reduce the params to a query string
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
     const pathWithParams = params ? `${path}?${params}` : path;
     history.pushState({}, 'newUrl', pathWithParams);
-
     // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
     await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
-
     // set the view name to the container
     viewContainer.dataset.view = route.view;
-
-
     setViewLoading(false);
 }
 
