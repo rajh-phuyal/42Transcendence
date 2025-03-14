@@ -424,3 +424,19 @@ h5 {
     background-color: inherit !important; /* Ensures it keeps its default bg */
     border: inherit !important; /* Ensures border doesn't change */
 }
+
+/* For flag selector dropdown */
+/* TODO: use this style on auth page! */
+.barely-an-flag-selector {
+    font-size: min(1vw, 15px);
+    background-color: black;
+    color: white;
+    padding: 0% 0% 0% 0%;
+}
+.barely-an-flag-selector select {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    text-align: center;
+    appearance: none;
+}

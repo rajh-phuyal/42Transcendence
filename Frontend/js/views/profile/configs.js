@@ -1,8 +1,6 @@
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
 import router from '../../navigation/router.js';
-import Cropper from '../../libraries/cropperjs/cropper.esm.js'
-import $store from '../../store/store.js';
 import $auth from '../../auth/authentication.js';
 import $callToast from '../../abstracts/callToast.js';
 import { translate } from '../../locale/locale.js';
@@ -58,9 +56,13 @@ export default {
                     console.warn("profile: setViewAttributes: this.result is not defined");
                     return;
                 }
+                console.log(this.result);
                 // Set the attributes
                 view.setAttribute("data-user-id", this.result.id);
                 view.setAttribute("data-user-username", this.result.username);
+                view.setAttribute("data-user-first-name", this.result.firstName);
+                view.setAttribute("data-user-last-name", this.result.lastName);
+                view.setAttribute("data-user-language", this.result.language);
                 view.setAttribute("data-user-avatar", this.result.avatarUrl);
                 view.setAttribute("data-user-chat-id", this.result.chatId);
                 view.setAttribute("data-relationship", JSON.stringify(this.result.relationship));
@@ -68,6 +70,9 @@ export default {
                 // Unset the attributes
                 view.removeAttribute("data-user-id");
                 view.removeAttribute("data-user-username");
+                view.removeAttribute("data-user-first-name");
+                view.removeAttribute("data-user-last-name");
+                view.removeAttribute("data-user-language");
                 view.removeAttribute("data-user-avatar");
                 view.removeAttribute("data-user-chat-id");
                 view.removeAttribute("data-relationship");

@@ -1,91 +1,92 @@
-<!-- TODO: THIS MODAL IS NOT DONE AT ALL!!!
-    NEED TO:
-        - copy the right structure from the template modal
-        - double check all nodes/elements if needed?
-        - adjust the js code
-            - move it from original configs.js (profile/home) to congigs.js of modal!
-            - make sure the js code has all values. the idea is that the view stores the info as attribute and the modal takes it from there
-            - e.g. newConversation modal js!
-
-
-    ISSUES ARE ALSO RELATED:
-        - #316
-        - #285
--->
-
-
-<!-- Edit Profile Modal -->
-<!-- ####################################################################### -->
-<div class="modal fade" id="modal-edit-profile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="modal-edit-profile" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" style="width: 32vw;">
-            <div class="modal-body" id="edit-profile-modal-body">
-                <!-- Form Body -->
-                <div id="edit-profile-modal-form">
-                    <h2>Edit Profile</h2>
-                    <barely-a-button id="edit-profile-modal-form-change-avatar-button" buttonclass="rect-button" name="avatar"></barely-a-button>
-                    <!-- Bootstrap Form -->
-                    <form class="needs-validation" novalidate>
-                        <div class="form-row">
-                            <div class="col-md-4 mb-3">
-                                <label for="validationCustom01">First name</label>
-                                <input type="text" class="form-control" id="edit-profile-modal-form-input-first-name" placeholder="First name" value="John" required>
-                                <div class="valid-feedback">Looks good!</div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="validationCustom02">Last name</label>
-                                <input type="text" class="form-control" id="edit-profile-modal-form-input-last-name" placeholder="Last name" value="Doe" required>
-                                <div class="valid-feedback">Looks good!</div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-4 mb-3">
-                                <label for="validationCustomUsername">Username</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                    </div>
-                                    <input type="text" class="form-control" id="edit-profile-modal-form-input-username" placeholder="Username" value="user" aria-describedby="inputGroupPrepend" required>
-                                    <div class="invalid-feedback">Please choose a username.</div>
-                                </div>
-                            </div>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Language</label>
-                            <select class="form-control" id="edit-profile-modal-form-language-selector">
-                                <option value="none">Chose a Language</option>
-                                <option value="de-DE">DE - Deutsch</option>
-                                <option value="en-US">US - English</option>
-                                <option value="ne-NP">NP - Nepalese</option>
-                                <option value="pt-BR">BR - Portugues</option>
-                                <option value="pt-PT">PT - Portugues</option>
-                                <option value="uk-UA">UK - Ukrainian</option>
-                            </select>
-                        </div>
+        <div id="modal-edit-profile-content" class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img id="modal-edit-profile-background" src='../../assets/backgrounds/modal-edit-profile.png' class="image-modal-background-image" alt="Background Image">
+                <div id="modal-edit-profile-image-grid" class="view-overlay-grid">
+                    <!-- Kind of header: -->
+                    <h4 id="modal-edit-profile-title"                                    class="grid-cell default-grid-area modal-title title">Edit Profile</h4>
+                    <button type="button"                                                class="grid-cell default-grid-area btncl btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <img    id="modal-edit-profile-avatar"                               class="grid-cell default-grid-area avat modal-button modal-image-button">
+                    <!--  Avatar Change Body -->
+<!--                     <div id="edit-profile-modal-avatar-change"> -->
+<!--                         <button id="edit-profile-modal-avatar-change-upload-button">Upload Image</button> -->
+<!--                         <input type="file" id="edit-profile-modal-avatar-change-file-input" accept="image/*" style="display: none;"> -->
+<!--                         <img id="edit-profile-modal-avatar-change-uploaded-image" src="" alt="Uploaded Image" style="display: none; width: 30vw; margin-top: 20px;"></img> -->
+<!--                         <barely-a-button id="edit-profile-modal-avatar-change-crop-image" buttonclass="rect-button" name="Submit"></barely-a-button> -->
+<!--                     </div> -->
+                    <div class="grid-cell default-grid-area ilan barely-an-flag-selector">
+                        <select id="modal-edit-profile-language">
+                            <option value="en-US">🇺🇸</option>
+                            <option value="de-DE">🇩🇪</option>
+                            <option value="ne-NP">🇳🇵</option>
+                            <option value="pt-BR">🇧🇷</option>
+                            <option value="pt-PT">🇵🇹</option>
+                            <option value="uk-UA">🇺🇦</option>
+                        </select>
                     </div>
-                    <barely-a-button id="edit-profile-modal-form-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
-                    </form>
+                    <input  id="modal-edit-profile-username"                             class="grid-cell default-grid-area iuse barely-an-input">
+                    <input  id="modal-edit-profile-first-name"                           class="grid-cell default-grid-area ifna barely-an-input">
+                    <input  id="modal-edit-profile-last-name"                            class="grid-cell default-grid-area ilna barely-an-input">
+                    <button id="modal-edit-profile-btn-save" type="button"               class="grid-cell default-grid-area btns modal-button">Save</button>
                 </div>
-            </div>
-            <!--  Avatar Change Body -->
-            <div id="edit-profile-modal-avatar-change">
-                <button id="edit-profile-modal-avatar-change-upload-button">Upload Image</button>
-                <input type="file" id="edit-profile-modal-avatar-change-file-input" accept="image/*" style="display: none;">
-                <img id="edit-profile-modal-avatar-change-uploaded-image" src="" alt="Uploaded Image" style="display: none; width: 30vw; margin-top: 20px;"></img>
-                <barely-a-button id="edit-profile-modal-avatar-change-crop-image" buttonclass="rect-button" name="Submit"></barely-a-button>
             </div>
         </div>
     </div>
 </div>
 <style>
- #edit-profile-modal-avatar-change-cropped-image {
-      width: 30vw; margin-top: 20px !important;
+    #modal-edit-profile-content {
+        height: 400px !important;
     }
-    .form-row {
-        display: flex;
-        flex-direction: row;
+    #modal-edit-profile-image-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 7%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".      avat   avat   avat   avat   avat   .      .      .      .      .      ilan   ilan   .     "
+            ".      avat   avat   avat   avat   avat   .      iuse   iuse   iuse   iuse   iuse   iuse   .     "
+            ".      avat   avat   avat   avat   avat   .      ifna   ifna   ifna   ifna   ifna   ifna   .     "
+            ".      avat   avat   avat   avat   avat   .      ilna   ilna   ilna   ilna   ilna   ilna   .     "
+            ".      avat   avat   avat   avat   avat   .      .      .      .      .      .      .      .     "
+            ".      avat   avat   avat   avat   avat   .      btns   btns   btns   btns   btns   btns   .     "
     }
 
-    #edit-profile-modal-autentication-error {
-      display: none;
+    .title {
+        grid-area: title;
+        color: black;
+    }
+    .btncl {
+        grid-area: btncl;
+    }
+    .avat {
+        grid-area: avat;
+        border: 1px solid black;
+    }
+    .iuse {
+        grid-area: iuse;
+        height: 90%;
+    }
+    .ifna {
+        grid-area: ifna;
+        height: 90%;
+    }
+    .ilna {
+        grid-area: ilna;
+        height: 90%;
+    }
+    .ilan {
+        grid-area: ilan;
+        height: 90%;
+    }
+    .btns {
+        grid-area: btns;
+        height: 90%;
     }
 </style>
