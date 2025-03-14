@@ -25,14 +25,14 @@ def db_update_tournament_member_stats(game, game_member_winner, game_member_loos
 # This will be called when a game is finished
 # It will update the ranks of the tournament members
 def db_update_tournament_ranks(tournament):
-    # Sort descending by ratio won_games / played_games
-    # and win_points
+    # Sort descending by ratio won_games / played_games and win_points
     members = TournamentMember.objects.filter(tournament=tournament).annotate(
+        # Ensure that win_ratio is properly handled for cases where played_games is zero
         win_ratio=Case(
-            When(played_games=0, then=Value(0.0)),
-            default=ExpressionWrapper(F('won_games') / F('played_games'), output_field=FloatField()),
+            When(played_games=0, then=Value(0.0)),  # Explicitly set to 0 when no games played
+            default=ExpressionWrapper(F('won_games') * 1.0 / F('played_games'), output_field=FloatField()),
             output_field=FloatField()
-            )
+        )
     ).order_by('-win_ratio', '-win_points')
 
     with transaction.atomic():

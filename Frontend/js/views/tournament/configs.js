@@ -158,7 +158,11 @@ export default {
                 this.domManip.$on(this.domManip.$id("tournament-go-to-current-game-button"), "click", this.routeToCurrentGame);
                 this.domManip.$on(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
                 this.domManip.$on(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
-            })
+            }).catch(err => {
+                console.log(err);
+                router("/404", {msg: "404 | " + err.message});
+            }
+            );
         },
     }
 }
