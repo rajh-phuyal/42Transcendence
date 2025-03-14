@@ -3,13 +3,13 @@ const routes = [
         path: "/",
         view: "home",
         requireAuth: true,
-        modals: ["createGame", "tournament"]
+        modals: ["createGame"] // TODO: add: , "tournament"]
     },
     {
         path: "/home",
         view: "home",
         requireAuth: true,
-        modals: ["createGame", "tournament"]
+        modals: ["createGame"] // TODO: add: , "tournament"]
     },
     {
         path: "/game",

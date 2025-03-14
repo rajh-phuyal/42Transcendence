@@ -122,7 +122,7 @@ export default {
             console.log("beforeOpen of modal-create-game");
 
             // Set modal title
-            this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //Todo: translate
+            this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //TODO: translate
             // Fetching the attributes from view and store them locally
             this.isOpponentFixed = false;
             try {
@@ -174,7 +174,6 @@ export default {
         },
 
         afterClose () {
-            console.warn("beforeClose of modal-create-game");
             // Remove event listener
             this.domManip.$off(this.domManip.$id("modal-create-game-btn-pu"), "click", this.callbackPowerups);
             this.domManip.$off(this.domManip.$id("modal-create-game-map-ufo"), "click", this.callbackSelectMap);
