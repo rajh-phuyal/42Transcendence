@@ -118,11 +118,46 @@ export default {
     },
 
     hooks: {
+        async allowedToOpen() {
+            let checkIsOpponentFixed = false;
+            let checkOpponentId = undefined;
+            try {
+                // Try to store userId (wich is the opponent) as Number
+                checkOpponentId = parseInt(this.domManip.$id("router-view").getAttribute("data-user-id"));
+                console.log("checkOpponentId: ", checkOpponentId);
+                if(checkOpponentId)
+                    checkIsOpponentFixed = true;
+            } catch (error) {
+                console.error("Error in allowedToOpen: ", error);
+            }
+            console.log("isOpponentFixed: ", checkIsOpponentFixed);
+            console.log("opponentId: ", checkOpponentId);
+            // Check if the user is already in a game -> redir to game
+            if (checkIsOpponentFixed) {
+                console.log("Checking if user is already in a game");
+                try {
+                    let data = await call(`game/get-game/${checkOpponentId}/`, 'GET');
+                    if (data.gameId) {
+                        console.log("User is already in a game, redirecting to game");
+                        router('/game', {"id": data.gameId});
+                        console.error("returning false");
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Error in call game/get-game");
+                    console.error("returning false");
+                    return false;
+                }
+            }
+            console.error("returning true");
+            return true;
+        },
         async beforeOpen () {
             console.log("beforeOpen of modal-create-game");
 
             // Set modal title
             this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //TODO: translate
+
             // Fetching the attributes from view and store them locally
             this.isOpponentFixed = false;
             try {
@@ -133,25 +168,8 @@ export default {
             } catch (error) {}
             this.avatar = this.domManip.$id("router-view").getAttribute("data-user-avatar");
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
-            if (this.isOpponentFixed && (!this.avatar || !this.username)) {
+            if (this.isOpponentFixed && (!this.avatar || !this.username))
                 console.error("createGameModal: Couldn't find the avatar or username attribute in the view");
-                return false;
-            }
-
-            // Check if the user is already in a game -> redir to game
-            if (this.isOpponentFixed) {
-                try {
-                    let data = await call(`game/get-game/${this.opponentId}/`, 'GET');
-                    if (data.gameId) {
-                        console.log("User is already in a game, redirecting to game");
-                        router('/game', {"id": data.gameId});
-                        return false;
-                    }
-                } catch (error) {
-                    console.error("Error in call game/get-game");
-                    return false;
-                }
-            }
 
             // Chosse a random map if not set
             if (!this.map) {
@@ -170,7 +188,6 @@ export default {
             this.domManip.$on(window, "modal-create-game-select-user", this.callbackSearchbar);
 
             this.updateOpponentSection();
-            return true;
         },
 
         afterClose () {

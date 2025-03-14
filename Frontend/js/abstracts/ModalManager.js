@@ -69,12 +69,14 @@ export default class ModalManager {
 
         // Create a new instance of the modala and store it
         const instance = new bootstrap.Modal(modalElement);
-        ModalManager.modalInstances[modalId] = { instance: instance, openCallback: null };
+        ModalManager.modalInstances[modalId] = {
+            instance: instance,
+            openCallback: null,
+        };
 
         // Load the hooks for the modal
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
-
         const modalConfig = objectToBind(modalHooks);
 
         // Prevent duplicate event listeners by removing them first
@@ -128,6 +130,7 @@ export default class ModalManager {
         console.log("ModalManager: Destroying all loaded modals");
         Object.keys(ModalManager.modalInstances).forEach(modalId => {
             const modalElement = $id(modalId);
+            // Deal wih the instance
             const modalInstance = ModalManager.modalInstances[modalId].instance;
             if (modalInstance) {
                 // Remove all Bootstrap event listeners
@@ -135,11 +138,13 @@ export default class ModalManager {
                     $off(modalElement, 'show.bs.modal');
                     $off(modalElement, 'hidden.bs.modal');
                 }
-                // Remove all open modal event listeners
+                // Remove all open modal event listeners (Deal with the openCallback)
                 this.off(modalId);
                 modalInstance.dispose();
-                delete ModalManager.modalInstances[modalId].instance;
+                ModalManager.modalInstances[modalId].instance = null;
             }
+            delete ModalManager.modalInstances[modalId];
+            // Deal with the DOM
             if (modalElement && modalElement.parentNode) {
                 modalElement.parentNode.removeChild(modalElement);
             }
@@ -164,7 +169,7 @@ export default class ModalManager {
             console.warn(`ModalManager: openModal: Modal element not found: ${modalId}`);
             return;
         }
-        ModalManager.modalInstances[modalId].instance.show();
+        await this.tryToShowModal(modalId);
     }
 
     /* This is the callback function for on() which will be stored in the ModalManager.modalInstances.openCallback */
@@ -179,7 +184,7 @@ export default class ModalManager {
             console.warn(`ModalManager: openModalCallback: Modal element not found: ${modalId}`);
             return;
         }
-        ModalManager.modalInstances[modalId].instance.show();
+        await this.tryToShowModal(modalId);
     }
 
     /* This can be used from a configs.js of a view to open a modal when a button is clicked */
@@ -208,42 +213,21 @@ export default class ModalManager {
             console.warn("ModalManager: off: Element with id %s not found", buttonId);
     }
 
-
-
-
-    /* async openModal(event) {
-        const modalId = event.target.getAttribute("target-modal-id");
-        if(!modalId) {
-            console.warn("ModalManager: openModal: No modal id found in the event target");
-            return;
+    /*
+    Some modals shouldnt open. e.g.: CreateConversation if a covnersation already exists
+    To deal with it those modal configs.js files have a hook: async allowedToOpen()
+    So we first get the okay to open and then open!
+    */
+    async tryToShowModal(modalId) {
+        const modalHooks = await ModalManager.loadModalHooks(modalId);
+        if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
+        if (modalHooks.hooks.allowedToOpen) {
+            if (await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))())
+                ModalManager.modalInstances[modalId].instance.show();
+            else
+                console.log("ModalManager: tryToShowModal: Not allowed to open modal (Probably the client got redirected)");
         }
-        let modalElement = $id(modalId);
-        if (!modalElement) {
-            console.warn(`ModalManager: openModal: Modal element not found: ${modalId}`);
-            return;
-        }
-        await this.setupModal(modalId);
-        ModalManager.modalInstances[modalId].instance.show();
-    } */
-
-/*
-    on(buttonId, modalId) {
-        let element = $id(buttonId);
-        if (element) {
-            element.setAttribute("target-modal-id", modalId);
-
-            // If modal is not initialized, set up storage
-            if (!ModalManager.modalInstances[modalId]) {
-                ModalManager.modalInstances[modalId] = { instance: null, openCallback: null };
-            }
-            ModalManager.modalInstances[modalId].openCallback = this.openModal.bind(this);
-            $on(element, "click", ModalManager.modalInstances[modalId].openCallback);
-        }
-        else
-            console.warn("ModalManager: on: Element with id %s not found", buttonId);
-    } */
-
-
+    }
 }
 
 // Create and export a single instance
