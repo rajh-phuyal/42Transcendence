@@ -28,7 +28,6 @@ export default {
         },
 
         typeCallback(event) {
-            console.warn("triggered");
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
             const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");

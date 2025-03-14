@@ -80,27 +80,15 @@ export default class ModalManager {
         // Load the hooks for the modal
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
-        const modalConfig = objectToBind(modalHooks);
+        const modalConfig = objectToBind(modalHooks); // TODO: check if this function is not an overkill
 
         // Prevent duplicate event listeners by removing them first
-        $off(modalElement, 'show.bs.modal');
-        $off(modalElement, 'hidden.bs.modal');
-        // Attach Bootstrap event listeners // TODO: dont use annonymos function
-        $on(modalElement, 'show.bs.modal', async () => {
-            console.log(`ModalManager: Opening modal: ${modalId}`);
-            if (modalHooks.hooks.beforeOpen) {
-                await modalHooks.hooks.beforeOpen.bind(modalConfig)();
-            } else
-                console.warn(`ModalManager: Couldn't find the 'beforeOpen' function for modal: ${modalId}`);
-        });
-        $on(modalElement, 'hidden.bs.modal', async () => {
-            console.log(`ModalManager: Closing modal: ${modalId}`);
-            if (modalHooks.hooks.afterClose)
-                await modalHooks.hooks.afterClose.bind(modalConfig)();
-            else
-                console.warn(`ModalManager: Couldn't find the 'afterClose' function for modal: ${modalId}`);
-        });
-    }
+        $off(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
+        $off(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
+        // Attach Bootstrap event listeners
+        $on(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
+        $on(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
+        }
 
     /* FUNCTIONS FOR THE ROUTER
     ========================================================================= */
@@ -225,7 +213,7 @@ export default class ModalManager {
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
         if (modalHooks.hooks.allowedToOpen) {
-            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))()) {
+            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))()) {  // TODO: check if this function is not an overkill
                 console.log("ModalManager: tryToShowModal: Not allowed to open modal (Probably the client got redirected)");
                 return;
             }
