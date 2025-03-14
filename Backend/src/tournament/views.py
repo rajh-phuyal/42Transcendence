@@ -149,7 +149,9 @@ class TournamentLobbyView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, id):
         user = request.user
-        tournament = Tournament.objects.get(id=id)
+        tournament = Tournament.objects.filter(id=id).first()
+        if not tournament:
+            return error_response(_("Tournament not found"), status_code=status.HTTP_404_NOT_FOUND)
         # Add client to websocket group if tournament is not finished
         if tournament.state != Tournament.TournamentState.FINISHED:
             async_to_sync(update_client_in_group)(user, tournament.id, PRE_GROUP_TOURNAMENT, add=True)
