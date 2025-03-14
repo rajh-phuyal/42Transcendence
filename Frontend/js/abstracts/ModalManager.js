@@ -222,11 +222,12 @@ export default class ModalManager {
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
         if (modalHooks.hooks.allowedToOpen) {
-            if (await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))())
-                ModalManager.modalInstances[modalId].instance.show();
-            else
+            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))()) {
                 console.log("ModalManager: tryToShowModal: Not allowed to open modal (Probably the client got redirected)");
+                return;
+            }
         }
+        ModalManager.modalInstances[modalId].instance.show();
     }
 }
 

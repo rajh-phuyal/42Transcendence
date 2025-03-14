@@ -64,7 +64,7 @@ export default {
                 view.setAttribute("data-user-last-name", this.result.lastName);
                 view.setAttribute("data-user-language", this.result.language);
                 view.setAttribute("data-user-avatar", this.result.avatarUrl);
-                view.setAttribute("data-user-chat-id", this.result.chatId);
+                view.setAttribute("data-user-conversation-id", this.result.chatId);
                 view.setAttribute("data-relationship", JSON.stringify(this.result.relationship));
             } else {
                 // Unset the attributes
@@ -74,7 +74,7 @@ export default {
                 view.removeAttribute("data-user-last-name");
                 view.removeAttribute("data-user-language");
                 view.removeAttribute("data-user-avatar");
-                view.removeAttribute("data-user-chat-id");
+                view.removeAttribute("data-user-conversation-id");
                 view.removeAttribute("data-relationship");
             }
         },

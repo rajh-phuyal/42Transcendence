@@ -21,20 +21,6 @@ export default {
     },
 
     methods: {
-        /*  If a conversation already exist just show a message */
-        updateView() {
-            if (this.conversationId && this.conversationId !== "null") {
-                // Disable text area
-                const input = this.domManip.$id("modal-new-conversation-textarea");
-                input.value = `You already have a conversation with ${this.username}`; // TODO: tanslate
-                input.disabled = true;
-                this.domManip.$id("modal-new-conversation-create-button").disabled = true;
-                // Change the button text
-                const button = this.domManip.$id("modal-new-conversation-create-button");
-                button.innerText = "Go to conversation"; // TODO: translate
-            }
-        },
-
         enableButtonCallback() {
             // Enable the button if the input is not empty
             const input = this.domManip.$id("modal-new-conversation-textarea");
@@ -46,20 +32,28 @@ export default {
         },
 
         callbackSubmitButton() {
-            if (this.conversationId && this.conversationId !== "null")
-                router(`/chat`, {id: this.conversationId});
-            else {
-                // This is calling the endpoint to create a new conversation
-                const message = this.domManip.$id("modal-new-conversation-textarea").value;
-                call("chat/create/conversation/", "POST", {"userId": this.userId, "initialMessage": message}).then(data => {
-                    $callToast("success", data.message);
-                    router(`/profile`, {id: this.userId});
-                })
-            }
+            // This is calling the endpoint to create a new conversation
+            const message = this.domManip.$id("modal-new-conversation-textarea").value;
+            call("chat/create/conversation/", "POST", {"userId": this.userId, "initialMessage": message}).then(data => {
+                $callToast("success", data.message);
+                router(`/profile`, {id: this.userId});
+            })
         },
     },
 
     hooks: {
+        /*
+        This function is called before opening the modal to check if the modal should be opened or not
+        In this case: if conversation already exists: Don't open modal but redir to conversation*/
+        async allowedToOpen() {
+            let conversationId = this.domManip.$id("router-view").getAttribute("data-user-conversation-id");
+            if (conversationId && conversationId !== "null") {
+                router(`/chat`, {id: conversationId});
+                return false;
+            }
+            return true;
+        },
+
         beforeOpen () {
             /* This function prepares the modal
                 On sucess returns true, on failure returns false
@@ -78,7 +72,7 @@ export default {
                 console.error("newConversationModal: Couldn't find the userId attribute in the view");
                 return false;
             }
-            this.conversationId = this.domManip.$id("router-view").getAttribute("data-user-chat-id");
+            this.conversationId = this.domManip.$id("router-view").getAttribute("data-user-conversation-id");
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
 
             // Set modal title
@@ -89,8 +83,6 @@ export default {
             this.domManip.$on(this.domManip.$id("modal-new-conversation-create-button"), "click", this.callbackSubmitButton.bind(this));
             this.domManip.$on(this.domManip.$id("modal-new-conversation-textarea"), "input", this.enableButtonCallback.bind(this));
 
-            // Update the view if a conversation already exists
-            this.updateView();
             this.enableButtonCallback();
 
             // TODO: set the focus to the textarea

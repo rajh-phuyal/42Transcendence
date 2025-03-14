@@ -118,38 +118,34 @@ export default {
     },
 
     hooks: {
+        /*
+        This function is called before opening the modal to check if the modal should be opened or not
+        In this case: if a game already exists: don't open modal but redir to game
+        */
         async allowedToOpen() {
             let checkIsOpponentFixed = false;
             let checkOpponentId = undefined;
             try {
                 // Try to store userId (wich is the opponent) as Number
                 checkOpponentId = parseInt(this.domManip.$id("router-view").getAttribute("data-user-id"));
-                console.log("checkOpponentId: ", checkOpponentId);
                 if(checkOpponentId)
                     checkIsOpponentFixed = true;
             } catch (error) {
                 console.error("Error in allowedToOpen: ", error);
             }
-            console.log("isOpponentFixed: ", checkIsOpponentFixed);
-            console.log("opponentId: ", checkOpponentId);
             // Check if the user is already in a game -> redir to game
             if (checkIsOpponentFixed) {
-                console.log("Checking if user is already in a game");
                 try {
                     let data = await call(`game/get-game/${checkOpponentId}/`, 'GET');
                     if (data.gameId) {
-                        console.log("User is already in a game, redirecting to game");
                         router('/game', {"id": data.gameId});
-                        console.error("returning false");
                         return false;
                     }
                 } catch (error) {
                     console.error("Error in call game/get-game");
-                    console.error("returning false");
                     return false;
                 }
             }
-            console.error("returning true");
             return true;
         },
         async beforeOpen () {
