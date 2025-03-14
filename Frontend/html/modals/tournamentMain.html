@@ -1,23 +1,16 @@
-<!-- TODO: THIS MODAL IS NOT DONE AT ALL!!!
-    NEED TO:
-        - copy the right structure from the template modal
-        - double check all nodes/elements if needed?
-        - adjust the js code
-            - move it from original configs.js (profile/home) to congigs.js of modal!
-            - make sure the js code has all values. the idea is that the view stores the info as attribute and the modal takes it from there
-            - e.g. newConversation modal js!
--->
-
-<div class="modal fade" id="modal-tournament" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modal-tournament-main" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content image-modal-content">
-            <div class="modal-body image-modal-body">
-                <img src='../../assets/backgrounds/modal-create-game-lizard-people.png' class="image-modal-background-image" alt="Background Image">
-                <div id="modal-tournament-grid" class="view-overlay-grid">
+        <div id="modal-tournament-main-content" class="modal-content image-modal-content modal-tournament-content">
+            <div class="modal-body image-modal-body modal-tournament-body">
+                <img src='../../assets/backgrounds/modal-tournament-main.png' class="image-modal-background-image" alt="Background Image">
+                <button class="btn" type="button" data-bs-target="#modal-tournament-create"  data-bs-toggle="modal" data-bs-dismiss="modal">CREATE</button>
+                <button class="btn" type="button" data-bs-target="#modal-tournament-join"    data-bs-toggle="modal" data-bs-dismiss="modal">JOIN</button>
+                <button class="btn" type="button" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">HISTORY</button>
+                <div id="modal-tournament-main-grid" class="view-overlay-grid">
 
                         <!-- Place your content here -->
 
-                            <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-title">Modal title</h5>
+                            <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-main-title">Modal title</h5>
                             <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                             <!-- <p>This is some text placed on top of the background image.</p> -->
                             <!-- Add more components, grids, etc. as needed -->
@@ -30,7 +23,7 @@
     </div>
 </div>
 <style>
-    #modal-tournament-grid{
+    #modal-tournament-main-grid{
         grid-template-columns: repeat(auto-fill, 7%) !important;
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:

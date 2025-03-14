@@ -44,7 +44,8 @@ export default {
     hooks: {
         /*
         This function is called before opening the modal to check if the modal should be opened or not
-        In this case: if conversation already exists: Don't open modal but redir to conversation*/
+        In this case: if conversation already exists: Don't open modal but redir to conversation
+        */
         async allowedToOpen() {
             let conversationId = this.domManip.$id("router-view").getAttribute("data-user-conversation-id");
             if (conversationId && conversationId !== "null") {

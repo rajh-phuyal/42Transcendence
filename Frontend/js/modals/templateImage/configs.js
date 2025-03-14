@@ -20,11 +20,11 @@ export default {
     },
 
     hooks: {
+        async allowedToOpen() {
+            return false;
+        },
+
         beforeOpen () {
-            // This function prepares the modal
-            // On sucess returns true, on failure returns false
-            // Will be called by the ModalManager
-            return true;
         },
 
         afterClose () {

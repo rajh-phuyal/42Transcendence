@@ -9,7 +9,10 @@ const modalFolders = [
     ["modal-create-game", "createGame"],
     ["modal-game-history", "gameHistory"],
     ["modal-template", "template"],
-    ["modal-tournament", "tournament"],
+    ["modal-tournament-main", "tournamentMain"],
+    ["modal-tournament-create", "tournamentCreate"],
+    ["modal-tournament-join", "tournamentJoin"],
+    ["modal-tournament-history", "tournamentHistory"],
     ["modal-template-image", "templateImage"],
 ];
 export default class ModalManager {

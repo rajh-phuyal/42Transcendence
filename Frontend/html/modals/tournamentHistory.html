@@ -1,0 +1,58 @@
+<div class="modal fade" id="modal-tournament-history" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-tournament-history-content" class="modal-content image-modal-content modal-tournament-content">
+            <div class="modal-body image-modal-body modal-tournament-body">
+                <img src='../../assets/backgrounds/modal-tournament-history.png' class="image-modal-background-image" alt="Background Image">
+                <button class="btn" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button>
+                <div id="modal-tournament-history-grid" class="view-overlay-grid">
+
+                        <!-- Place your content here -->
+
+                            <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-history-title">Modal title</h5>
+                            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                            <!-- <p>This is some text placed on top of the background image.</p> -->
+                            <!-- Add more components, grids, etc. as needed -->
+                            <!-- <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button> -->
+                            <!-- <button type="button" class="btn modal-button">Save changes</button> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-tournament-history-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    .title {
+        grid-area: title;
+    }
+</style>

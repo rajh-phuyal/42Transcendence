@@ -6,6 +6,10 @@ export default {
     },
 
     hooks: {
+        async allowedToOpen() {
+            return false;
+        },
+
         beforeOpen () {
             console.warn("template: beforeOpen");
             return true;

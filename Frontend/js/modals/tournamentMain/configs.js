@@ -178,6 +178,8 @@ export default {
 
     hooks: {
         beforeOpen() {
+            //modalManager.hideModal("modal-tournament");
+            //modalManager.on("test-test", "modal-create-game");
            // this.tournament.type = "public";
            // this.tournament.map = "random";
            // this.tournament.userIds = [];
