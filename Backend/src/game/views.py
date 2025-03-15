@@ -2,6 +2,7 @@
 import logging
 # Django
 from django.utils.translation import gettext as _
+from django.db.models import Case, When, Value, IntegerField
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
@@ -11,6 +12,7 @@ from user.models import User
 from user.utils import get_user_by_id
 # Game
 from game.models import Game, GameMember
+from game.serializer import GameSerializer
 from game.utils import create_game, delete_or_quit_game, get_game_of_user
 
 class CreateGameView(BaseAuthenticatedView):
@@ -107,6 +109,28 @@ class LobbyView(BaseAuthenticatedView):
         return success_response(_('Lobby details'), **response_message)
         # The frontend will use this response to show the lobby details and
         # establish the WebSocket connection for this specific game
+
+class HistoryView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, userid):
+        user = request.user
+        try:
+            user = User.objects.get(id=userid)
+        except User.DoesNotExist:
+            return error_response(_("User not found"))
+        # Get all games and sort them descending by finish_time
+        # Not finsihed games always need to be at the end
+        games = Game.objects.filter(game_members__user=user).annotate(
+                finish_time_nulls=Case(
+                When(finish_time__isnull=True, then=Value(1)),  # Assign 1 for NULL values
+                default=Value(0),  # Assign 0 for non-NULL values
+                output_field=IntegerField(),
+            )
+        ).order_by('-finish_time', 'finish_time_nulls')
+        serializer_games = GameSerializer(games, many=True)
+        return success_response(_("Game History fetched"), **{
+            'Games': serializer_games.data,
+        })
 
 class PlayAgainView(BaseAuthenticatedView):
     @barely_handle_exceptions
