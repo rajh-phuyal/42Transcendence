@@ -36,15 +36,15 @@ export default {
             if (this.data.tournamentInfo.state !== "setup")
                 return
             if (this.data.clientRole === "admin") {
-                console.log("canceling tournament");
+                // console.log("canceling tournament");
                 call(`tournament/delete/${this.routeParams.id}/`, 'DELETE').then(data => {
-                    console.log(data);
+                    // console.log(data);
                     $callToast("success", data.message);
                 })
             }
             else {
                 call(`tournament/leave/${this.routeParams.id}/`, 'DELETE').then(data => {
-                    console.log(data);
+                    // console.log(data);
                     $callToast("success", data.message);
                 })
             }
@@ -54,24 +54,24 @@ export default {
             if (this.data.tournamentInfo.state !== "setup")
                 return;
             if (this.data.clientRole === "admin") {
-                console.log("starting tournament");
+                // console.log("starting tournament");
                 call(`tournament/start/${this.routeParams.id}/`, 'PUT').then(data => {
-                    console.log(data);
+                    // console.log(data);
                     $callToast("success", data.message);
                 })
             }
             else {
                 call(`tournament/join/${this.routeParams.id}/`, 'PUT').then(data => {
-                    console.log(data);
+                    // console.log(data);
                     $callToast("success", data.message);
                 })
             }
         },
 
         routeToCurrentGame() {
-            console.log("routing to current games");
+            // console.log("routing to current games");
             call('tournament/go-to-game/', 'GET').then(data => {
-                console.log(data);
+                // console.log(data);
                 router(`/game`, { id: data.id });
             })
         },
@@ -81,7 +81,7 @@ export default {
         },
 
         openRoundRobbinTable() {
-            console.log("opening round robbin table");
+            // console.log("opening round robbin table");
 
             this.domManip.$id("tournament-round-robbin-container").style.display = "flex";
             this.domManip.$id("tournament-finals-container").style.display = "none";
@@ -90,7 +90,7 @@ export default {
         },
 
         openFinalsTable() {
-            console.log("opening finals table");
+            // console.log("opening finals table");
 
             this.domManip.$id("tournament-round-robbin-container").style.display = "none";
             this.domManip.$id("tournament-finals-container").style.display = "block";
@@ -125,7 +125,7 @@ export default {
         afterDomInsertion() {
             WebSocketManager.setCurrentRoute("tournament");
             call(`tournament/lobby/${this.routeParams.id}/`, 'GET').then(data => {
-                console.log("data:", data);
+                // console.log("data:", data);
                 this.data = data;
 
                 tournamentData.isPublic = data.tournamentPublic;
@@ -159,7 +159,7 @@ export default {
                 this.domManip.$on(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
                 this.domManip.$on(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 router("/404", {msg: "404 | " + err.message});
             }
             );

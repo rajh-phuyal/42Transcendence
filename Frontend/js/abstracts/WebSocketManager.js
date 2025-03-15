@@ -16,13 +16,11 @@ class WebSocketManager {
     // Connect to WebSocket with the provided token
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("WebSocket already connected.");
             return;
         }
 
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
-            console.log("Not connecting WebSocket - user not authenticated");
             $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
                 if (!isAuthenticated) return;
                 this.connect();
@@ -33,13 +31,11 @@ class WebSocketManager {
         const host = hostname;
         const socketUrl = `wss://${host}/ws/app/main/`;
 
-        console.log("Connecting to WebSocket:", socketUrl);
         try {
             this.socket = new WebSocket(socketUrl);
 
             // Log connection events
             this.socket.onopen = () => {
-                console.log("WebSocket connected.");
                 $store.commit("setWebSocketIsAlive", true);
             };
 
@@ -69,7 +65,6 @@ class WebSocketManager {
     // - typing (for sending typing indicator)
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        console.log("FE -> BE:", message);
     }
 
     // The backend send:
@@ -80,7 +75,6 @@ class WebSocketManager {
 
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
-        console.log("BE -> FE:", message);
         switch (message.messageType) {
             // BASIC MESSAGES
             case "error":
@@ -122,10 +116,7 @@ class WebSocketManager {
                 return ;
             case "tournamentMembers":
                     updateRankTable(message.tournamentMembers);
-                console.log("tournanemtMembers:", message.tournamentMembers);
-                console.log("Length!!!!", message.tournamentMembers.length);
                 if (message.tournamentMembers.length == 3) {
-                    console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
                     updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
                 }
                 return ;
@@ -150,9 +141,6 @@ class WebSocketManager {
         if (this.socket) {
             this.socket.close();
             this.socket = null;
-            console.log("WebSocket connection closed.");
-        } else {
-            console.log("WebSocket is not connected.");
         }
         // this.socket.removeEventListner("message", this.receiveMessage);
     }

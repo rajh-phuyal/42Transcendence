@@ -52,11 +52,11 @@ export default {
 
         callbackSearchbar(event) {
             const user = event.detail.user;
-            console.log(user);
+            // console.log(user);
             this.opponentId = user.id;
             this.avatar = user.avatar_path;
             this.username = user.username;
-            console.log(this.opponentId, this.avatar, this.username);
+            // console.log(this.opponentId, this.avatar, this.username);
             this.updateOpponentSection();
         },
 
@@ -149,7 +149,7 @@ export default {
             return true;
         },
         async beforeOpen () {
-            console.log("beforeOpen of modal-create-game");
+            // console.log("beforeOpen of modal-create-game");
 
             // Set modal title
             this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //TODO: translate

@@ -203,8 +203,7 @@ export default {
             if (!init){
                 if(this.scrollListener)
                     this.domManip.$off(container, "scroll", this.scrollListener);
-                else
-                    console.log("handleScroll is not defined, cannot remove listener.");
+                    // console.log("handleScroll is not defined, cannot remove listener.");
                 return ;
             }
         },
@@ -228,8 +227,8 @@ export default {
             if (!init){
                 if(this.clickAvatarListener)
                     this.domManip.$off(avatar, "click", this.clickAvatarListener);
-                else
-                    console.log("clickAvatarListener is not defined, cannot remove listener.");
+                // else
+                //     console.log("clickAvatarListener is not defined, cannot remove listener.");
                 return ;
             }
         },
@@ -255,12 +254,12 @@ export default {
             if (!init){
                 if(this.searchBarTypeListener)
                     this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
-                else
-                    console.log("searchBarListenerType is not defined, cannot remove listener.");
+                // else
+                //     console.log("searchBarListenerType is not defined, cannot remove listener.");
                 if(this.searchBarKeydownListener)
                     this.domManip.$off(searchBar, "keydown", this.searchBarKeydownListener);
-                else
-                    console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
+                // else
+                //     console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
                 return ;
             }
         },
@@ -284,8 +283,8 @@ export default {
             if (!init){
                 if(this.messageMeantionListener)
                     this.domManip.$off(container, "click", this.messageMeantionListener);
-                else
-                    console.log("messageMeantionListener is not defined, cannot remove listener.");
+                // else
+                //     console.log("messageMeantionListener is not defined, cannot remove listener.");
                 return ;
             }
         },
@@ -421,7 +420,7 @@ export default {
                             console.warn("Invalid conversation id '%s' from routeParams?.id will be ignored!", this.routeParams.id);
                             return ;
                         }
-                        selectConversation(this.routeParams.id);
+                        selectConversation(this.routeParams.id, false);
                     }
                 })
                 .catch(error => {

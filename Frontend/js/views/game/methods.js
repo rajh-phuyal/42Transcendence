@@ -27,7 +27,7 @@ export function changeGameState(state) {
         $id("game-countdown-image").style.display = "none";
     }
 
-    console.log("changeGameState", state);
+    // console.log("changeGameState", state);
     const lastState = gameObject.state;
     gameObject.state = state;
     switch (state) {

@@ -283,7 +283,7 @@ export function createMessage(element, prepend = true) {
         - load the messages and display them
         - show the chatElements like the input box, etc
 */
-export async function selectConversation(conversationId){
+export async function selectConversation(conversationId, selectedFromChat = true){
     // Set variables
     $id("chat-view-text-field").setAttribute("conversation-id", conversationId);
 
@@ -292,14 +292,21 @@ export async function selectConversation(conversationId){
 
     // Highlight the selected conversation card
     if (!highlightConversationCard(conversationId)) {
-        console.log("Conversation card not found:", conversationId);
+        // console.log("Conversation card not found:", conversationId);
         router("/chat");
         return;
     }
 
-    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
-    history.pushState({}, "Chat", "/chat?id=" + conversationId);
-
+    const path = window.location.pathname;
+    // We can store the data in state if needed
+    // console.debug("window.location.href != window.location.origin + /chat:", window.href != window.location.origin + "/chat");
+    if (selectedFromChat) {
+        const obj = { path: path, route: path, params: null };
+        console.debug("push object into history state:", obj);
+        history.pushState(obj, '', path);
+    }
+    // if (selectedFromChat)
+    //     history.pushState(null, "", window.location.origin + window.location.pathname);
     // Load the conversation header and messages
     await loadMessages(conversationId);
 
@@ -310,7 +317,7 @@ export async function selectConversation(conversationId){
     inputField.style.display = "flex";
     let createGameButton = $id("chat-view-btn-create-game");
     createGameButton.style.display = "flex";
-    console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
+    // console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
     inputField.setInput($id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft") || "");
     inputField.focus();
 
@@ -475,7 +482,7 @@ export function createHelpMessage(input){
         if(input.startsWith("/G")) {
             // Count the typed "," to determine the step of the game creation
             const commaCount = input.split(",").length - 1;
-            console.log("Comma count:", commaCount);
+            // console.log("Comma count:", commaCount);
             if (commaCount < 2)
                 htmlContent = translate("chat", "helpMessage/G0");
             else if (commaCount == 2) {

@@ -13,7 +13,7 @@ class Store {
     }
 
     initializer() {
-        console.log("Initializing store: initializer");
+        // console.log("Initializing store: initializer");
         this.state = { ...this.initialState };
 
         // pull from local storage

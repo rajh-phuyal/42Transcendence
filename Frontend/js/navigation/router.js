@@ -58,7 +58,11 @@ async function getViewHooks(viewName) {
     });
 }
 
-async function router(path, params = null) {
+async function router(path, params = null, updateHistory = true) {
+
+    if (!path)
+        return;
+
     setViewLoading(true);
 
     // check for routes pre authentication check
@@ -70,18 +74,18 @@ async function router(path, params = null) {
     }
 
     const userAuthenticated = await $auth.isUserAuthenticated();
-    console.log("User authenticated:", userAuthenticated);
+    // console.log("User authenticated:", userAuthenticated);
 
     if (path === "/barely-responsive") {
         console.log("TODO: check if we need this if!");
     } else if (userAuthenticated && path === '/auth') {
-        console.log("Redirecting to home");
+        // console.log("Redirecting to home");
         path = '/home';
         params = null;
     }
 
     else if (!userAuthenticated && path !== '/auth') {
-        console.log("Redirecting to auth");
+        // console.log("Redirecting to auth");
         path = '/auth';
         params = null;
     }
@@ -114,7 +118,7 @@ async function router(path, params = null) {
     // Now add all modals to the view (the html part)
     modalContainer.innerHTML = "";
     for (const modal of route.modals || []) {
-        console.log("Router: Loading html of modal:", modal);
+        // console.log("Router: Loading html of modal:", modal);
         modalContainer.innerHTML += await fetch(`./modals/${modal}.html`).then(response => response.text());
     }
     // Setup the js for all modals
@@ -131,9 +135,23 @@ async function router(path, params = null) {
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
     // reduce the params to a query string
+
+
+    // We can store the data in state if needed
+    const tmp = JSON.parse(JSON.stringify(params));
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
     const pathWithParams = params ? `${path}?${params}` : path;
-    history.pushState({}, 'newUrl', pathWithParams);
+
+    let isSame = window.location.origin + pathWithParams === window.location.href;
+
+    // console.debug("full:", window.location.origin + pathWithParams, `href:${window.location.href}`);
+    // console.debug("isSame:", isSame);
+
+    if ((updateHistory && !isSame) || !history.state) {
+        const obj = { path: pathWithParams, route: path, params: tmp };
+        history.pushState(obj, '', pathWithParams);
+    }
+
     // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;

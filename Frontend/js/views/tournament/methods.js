@@ -4,7 +4,7 @@ import router from "../../navigation/router.js";
 
 export function buildView(tournamentState) {
 
-    console.log("state:", tournamentState);
+    // console.log("state:", tournamentState);
 
     let flexDivs;
     let hideDivs;
@@ -24,11 +24,11 @@ export function buildView(tournamentState) {
 
 
     for (let element of flexDivs) {
-        console.log("flexing:", element.getAttribute("id"));
+        // console.log("flexing:", element.getAttribute("id"));
         element.style.display = 'flex';
     }
     for (let element of hideDivs) {
-        console.log("hiding:", element.getAttribute("id"));
+        // console.log("hiding:", element.getAttribute("id"));
         element.style.display = 'none';
     }
 
@@ -50,7 +50,7 @@ export function buildView(tournamentState) {
 
 export function createPlayerCard(playerObject) {
 
-    console.log("player", playerObject);
+    // console.log("player", playerObject);
 
     tournamentData.playersIds.push(playerObject.id);
 
@@ -81,7 +81,7 @@ export function changePlayerCardToAccepted(playerId) {
 
 export function createGameCard(gameObject) {
 
-    console.log("player", gameObject);
+    // console.log("player", gameObject);
 
     const template = $id("tournament-game-card-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-game-card-container");
@@ -125,7 +125,7 @@ function createRankEntry(rankObject) {
 }
 
 export function updateRankTable(rankObject) {
-    console.log("rank object:", rankObject);
+    // console.log("rank object:", rankObject);
 
     const rankTableBody = $id("tournament-rank-table-body");
 
@@ -227,7 +227,7 @@ function showThirdPlaceFinalsDiagram() {
 export function updateFinalsDiagram(gameObject) {
     if (gameObject.type === "normal")
         return ;
-    console.log("finals diagram:", gameObject);
+    // console.log("finals diagram:", gameObject);
 
     let diagramContainer = $id(`tournament-${gameObject.type}-${gameObject.id}`);
 
@@ -275,7 +275,7 @@ export function updateFinalsDiagram(gameObject) {
 }
 
 export function createGameList(games) {
-    console.log("Creating game list with data: ", games);
+    // console.log("Creating game list with data: ", games);
     for (let element of games) {
         createGameCard(element);
     }
@@ -283,7 +283,7 @@ export function createGameList(games) {
 
 export function updateParticipantsCard(userData) {
 
-    console.log("user data:", userData);
+    // console.log("user data:", userData);
     if (!$id("tournament-players-list-player" + userData.id))
         createPlayerCard(userData);
     if (userData.state === "accepted") {
@@ -296,7 +296,7 @@ export function updateParticipantsCard(userData) {
 }
 
 export function updateGameCard(gameObject) {
-    console.log("game object:", gameObject);
+    // console.log("game object:", gameObject);
     if (!$id("tournament-game-" + gameObject.id))
         createGameCard(gameObject);
     else

@@ -27,7 +27,7 @@ export function battleModalCallback(){
 // TODO: return a boolean and treat the data inside the call function
 function checkEnrolement() {
     call('tournament/enrolment/','GET').then(data => {
-        console.log("enrolement:", data);
+        // console.log("enrolement:", data);
         return data;
     }).error( error => {
         console.log(error);

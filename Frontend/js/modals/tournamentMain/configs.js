@@ -121,7 +121,7 @@ export default {
 
         selectUserToInvite(event) {
             const user = event.detail;
-            console.log("user", user);
+            // console.log("user", user);
             this.createInviteUserCard(user);
         },
 

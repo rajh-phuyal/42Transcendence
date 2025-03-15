@@ -17,11 +17,9 @@ class Auth {
 
     async isUserAuthenticated() {
         const now = Date.now();
-        console.log("Checking authentication");
 
         // Return cached result if within timeout window
         if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
-            console.log("Using cached auth result:", this.isAuthenticated);
             return this.isAuthenticated;
         }
 
@@ -35,16 +33,13 @@ class Auth {
 
                 this.isAuthenticated = response.isAuthenticated;
                 $store.commit('setIsAuthenticated', this.isAuthenticated);
-                console.log("Auth check successful");
 
                 if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
-                    console.log("Connecting WebSocket");
                     WebSocketManager.connect();
                 }
 
                 this._lastCheckTimestamp = now;
             } catch (error) {
-                console.log("Auth check failed:", error);
                 this.isAuthenticated = false;
                 this.clearAuthCache();
             }

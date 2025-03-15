@@ -33,7 +33,7 @@ export default {
         },
         playAgainCallback() {
             call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
-                console.log("data:", data);
+                // console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game
                     router(`/game`, {id: data.gameId});
@@ -44,7 +44,7 @@ export default {
             switch (event.key) {
                 case " ":
                     // If game is finished the space key will create a new game
-                    console.log("gameObject.state:", gameObject.state);
+                    // console.log("gameObject.state:", gameObject.state);
                     if (gameObject.state === "finished" || gameObject.state === "quited")
                        this.playAgainCallback();
                     // Only if no connection exists and
@@ -161,7 +161,7 @@ export default {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
-                    console.log("data:", data);
+                    // console.log("data:", data);
 
                     // Set user cards
                     this.domManip.$id("player-left-username").innerText = data.playerLeft.username;

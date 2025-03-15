@@ -9,8 +9,6 @@ async function call(url, method, data = null, showToast = true) {
         'Content-Type': 'application/json'
     };
 
-    console.log("data to send:", data);
-
     let payload = {
         method: method,
         headers: headers,
@@ -21,8 +19,6 @@ async function call(url, method, data = null, showToast = true) {
     };
 
     const response = await fetch(fullUrl, payload);
-    console.log("response:", response);
-
     if (!response.ok) {
         let errorMessage;
 
