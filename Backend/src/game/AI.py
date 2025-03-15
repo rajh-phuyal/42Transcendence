@@ -139,6 +139,9 @@ class Learner:
         if use_speed_available:
             scenarios.append({"name": "speed", "useBig": False, "useSpeed": True})
 
+        # Debug log which powerups are available
+        debug_write(f"Powerups available - Big: {use_big_available}, Speed: {use_speed_available}")
+
         # We'll run a short forward simulation for each scenario and pick the best.
         best_scenario_name = "none"
         best_scenario_score = float("-inf")
@@ -151,6 +154,9 @@ class Learner:
 
         use_big = (best_scenario_name == "big")
         use_speed = (best_scenario_name == "speed")
+
+        # Log which scenario was selected
+        debug_write(f"Selected scenario: {best_scenario_name} - useBig: {use_big}, useSpeed: {use_speed}")
 
         # Adaptive difficulty based on performance
         recommended_difficulty = self.difficulty
@@ -183,14 +189,22 @@ class Learner:
         Return (big_available, speed_available).
         """
         player_right = game_state.get("playerRight", {})
-        # For your code, you might store powerup states as 'available', 'using', 'used', etc.
-        # We'll treat them as booleans here. Adjust as needed.
+        # Debug the current powerup state
+        debug_write(f"Checking powerups: {player_right}")
+
+        # Correctly identify available powerups
         has_big = (player_right.get("powerupBig") == "available")
         has_slow = (player_right.get("powerupSlow") == "available")
         has_fast = (player_right.get("powerupFast") == "available")
 
-        # If either slow or fast is available, we can treat that as a "speed" scenario
+        # We can use either slow or fast as our "speed" powerup
         has_speed = has_slow or has_fast
+
+        # Store which type of speed powerup is available for later reference
+        self.has_slow_powerup = has_slow
+        self.has_fast_powerup = has_fast
+
+        debug_write(f"Powerup availability check: big={has_big}, speed={has_speed} (slow={has_slow}, fast={has_fast})")
         return has_big, has_speed
 
     def _simulate_scenario(self, game_state: Dict[str, Any], scenario: Dict[str, bool]) -> float:
@@ -220,28 +234,43 @@ class Learner:
         use_big = scenario.get("useBig", False)
         use_speed = scenario.get("useSpeed", False)
 
+        # Start with a base score, which we'll adjust as we evaluate the scenario
+        # This encourages powerup usage if they're available
+        scenario_score = 0.0
+
+        # Boost the score if this scenario uses powerups - make AI more eager to use them
+        if use_big:
+            scenario_score += 0.3  # Bias toward using powerups when available
+        if use_speed:
+            scenario_score += 0.3  # Bias toward using powerups when available
+
         # If we use big
         if use_big:
             # Let's assume that "big" means we instantly get a bigger paddle for the next bounce
             # Example: from 10 to 22
             paddle_size = 22.0
+            debug_write(f"Scenario with BIG powerup: paddle size increased to {paddle_size}")
 
         # If we use speed (the ball is inbound => slow, outbound => fast)
         if use_speed:
             if dir_x > 0:
                 # Ball moving right => inbound for the AI => slow it
                 speed = 1.0
+                debug_write(f"Scenario with SLOW powerup: ball speed reduced to {speed}")
             else:
                 # Ball moving left => outbound => speed it up
                 speed += 2.0
+                debug_write(f"Scenario with FAST powerup: ball speed increased to {speed}")
 
         # We'll simulate up to ~2 seconds in small steps
         frames_to_simulate = min(2 * GAME_FPS, 200)  # 2 seconds or 200 frames, whichever is smaller
         dt = 1.0 / GAME_FPS
 
+        # Track intercept success
+        intercept_success = False
+
         # We'll track how well we do by checking if we can intercept the ball if it crosses x>=95
-        scenario_score = 0.0
-        for _ in range(frames_to_simulate):
+        for frame_idx in range(frames_to_simulate):
             # Move the ball
             ball_x += dir_x * speed * dt
             ball_y += dir_y * speed * dt
@@ -260,9 +289,12 @@ class Learner:
                 top_paddle = paddle_pos - (paddle_size / 2)
                 bot_paddle = paddle_pos + (paddle_size / 2)
                 if top_paddle <= ball_y <= bot_paddle:
-                    scenario_score = 1.0  # success
+                    scenario_score += 1.0  # success
+                    intercept_success = True
                 else:
-                    scenario_score = -1.0 # fail
+                    distance_to_paddle = min(abs(ball_y - top_paddle), abs(ball_y - bot_paddle))
+                    # The closer we are to intercepting, the better
+                    scenario_score -= distance_to_paddle / 10.0  # partial penalty based on distance
                 break
 
             # If ball goes left of ~5 or 0, we might not worry for now, or keep simulating
@@ -282,6 +314,25 @@ class Learner:
                 paddle_pos = paddle_size / 2
             elif paddle_pos > 100 - (paddle_size / 2):
                 paddle_pos = 100 - (paddle_size / 2)
+
+        # Adaptive powerup evaluation based on game situation
+        # Check if we're losing - be more aggressive with powerups if behind
+        ai_score = game_state.get("playerRight", {}).get("points", 0)
+        opponent_score = game_state.get("playerLeft", {}).get("points", 0)
+
+        # More likely to use powerups if we're behind in score
+        if opponent_score > ai_score and (use_big or use_speed):
+            scenario_score += 0.5
+            debug_write(f"Boosting powerup scenario score because we're behind: {opponent_score}-{ai_score}")
+
+        # If this is a close game (near 11-11), be more aggressive with powerups
+        if ai_score >= 9 and opponent_score >= 9:
+            if use_big or use_speed:
+                scenario_score += 0.7
+                debug_write(f"Boosting powerup scenario score in close game: {ai_score}-{opponent_score}")
+
+        # Log the final scenario score to help debugging
+        debug_write(f"Scenario {scenario['name']} final score: {scenario_score}")
 
         return scenario_score
 
@@ -515,10 +566,24 @@ class Thinker:
             use_big = metrics.get("useBig", False)
             use_speed = metrics.get("useSpeed", False)
 
-            # Check the situation - ball coming toward AI or moving away
+            # Check which type of speed powerup is available (from _check_powerup_availability)
+            has_slow = getattr(self, 'has_slow_powerup', False)
+            has_fast = getattr(self, 'has_fast_powerup', False)
+
+            # Determine which speed powerup to use based on ball direction
+            # Use slow when ball coming toward AI, use fast when ball moving away
             ball_coming_toward_ai = dir_x > 0
 
-            # Predict collision - only if ball is coming toward AI
+            # Prepare the specific powerup actions
+            activate_big = use_big
+            activate_slow = use_speed and has_slow and ball_coming_toward_ai
+            activate_fast = use_speed and has_fast and not ball_coming_toward_ai
+
+            # Log our decision about powerups for this planning cycle
+            debug_write(f"Planning actions with powerups: useBig={use_big}, useSpeed={use_speed}")
+            debug_write(f"Specific powerups: activateBig={activate_big}, activateSlow={activate_slow}, activateFast={activate_fast}")
+
+            # Check the situation - ball coming toward AI or moving away
             if ball_coming_toward_ai:
                 collision_info = self.predict_collision_frame_and_y(
                     start_x=ball_x,
@@ -593,9 +658,6 @@ class Thinker:
 
             debug_write(f"Movement plan: distance={distance_to_travel}, frames_needed={frames_to_travel}, frames_to_reach={frames_to_reach}")
 
-            activate_big = use_big
-            activate_speed = use_speed
-
             # In case the ball is moving away, center paddle more gradually
             if dir_x < 0 and ball_x < 50:
                 # Don't move to center if we're already close to center
@@ -634,19 +696,21 @@ class Thinker:
                 elif current_pos > 100 - paddle_size/2:
                     current_pos = 100 - paddle_size/2
 
+                # Create the action for this frame
                 action = {
                     "movePaddle": move,
                     "activatePowerupBig": activate_big,
-                    "activatePowerupSpeed": activate_speed
+                    "activatePowerupSpeed": activate_slow or activate_fast  # Combine both speed types
                 }
                 actions.append(action)
 
                 debug_write(f"Frame={frame_i}, Move={move}, PaddlePos={current_pos:.2f}, "
-                            f"PowerUpBig={activate_big}, PowerUpSpeed={activate_speed}")
+                            f"PowerUpBig={activate_big}, PowerUpSpeed={activate_slow or activate_fast}")
 
                 # only trigger powerups once
                 activate_big = False
-                activate_speed = False
+                activate_slow = False
+                activate_fast = False
 
         except Exception as e:
             logging.error(f"Thinker plan error: {e}")
@@ -681,6 +745,17 @@ class AIPlayer:
         self.last_left_score = 0
         self.last_right_score = 0
 
+        # Track powerup usage and availability to ensure we use them during the game
+        self.powerup_big_used = False
+        self.powerup_speed_used = False
+        self.last_big_state = "unavailable"
+        self.last_speed_state = "unavailable"
+        self.powerup_usage_attempts = 0
+
+        # Track game state for better powerup usage decision making
+        self.game_critical_moment = False  # Set to true in close games near the end
+        self.next_powerup_usage_check = 10  # Check after this many compute calls
+
         # Initialize with neutral movement
         self.action_queue.put({
             "movePaddle": "0",
@@ -710,6 +785,77 @@ class AIPlayer:
                 # Clear the action queue to avoid stale actions
                 while not self.action_queue.empty():
                     self.action_queue.get()
+
+        # Track powerup availability changes
+        player_right = game_state.get("playerRight", {})
+        current_big_state = player_right.get("powerupBig", "unavailable")
+
+        # Check both slow and fast for speed powerups
+        slow_state = player_right.get("powerupSlow", "unavailable")
+        fast_state = player_right.get("powerupFast", "unavailable")
+        current_speed_state = "available" if slow_state == "available" or fast_state == "available" else "unavailable"
+
+        # Log when powerups become available
+        if current_big_state == "available" and self.last_big_state != "available":
+            debug_write("!!! BIG POWERUP NOW AVAILABLE !!!")
+        if current_speed_state == "available" and self.last_speed_state != "available":
+            debug_write("!!! SPEED POWERUP NOW AVAILABLE !!!")
+
+        # Check if we've used powerups
+        if self.last_big_state == "available" and current_big_state == "unavailable":
+            self.powerup_big_used = True
+            debug_write("BIG POWERUP HAS BEEN USED!")
+        if self.last_speed_state == "available" and current_speed_state == "unavailable":
+            self.powerup_speed_used = True
+            debug_write("SPEED POWERUP HAS BEEN USED!")
+
+        # Store current powerup states
+        self.last_big_state = current_big_state
+        self.last_speed_state = current_speed_state
+
+        # Determine if this is a critical game moment (close scores near end of game)
+        if (left_score >= 9 or right_score >= 9) and abs(left_score - right_score) <= 2:
+            self.game_critical_moment = True
+            debug_write(f"CRITICAL GAME MOMENT DETECTED! Score: {left_score}-{right_score}")
+        else:
+            self.game_critical_moment = False
+
+        # Force powerup usage based on game state
+        if (current_big_state == "available" or current_speed_state == "available"):
+            self.powerup_usage_attempts += 1
+
+            # Be more aggressive with usage in critical moments
+            max_attempts = 3 if self.game_critical_moment else 5
+
+            if self.powerup_usage_attempts > max_attempts:
+                debug_write(f"Forcing powerup usage after {self.powerup_usage_attempts} attempts")
+                # Clear queue to inject a forced powerup action
+                while not self.action_queue.empty():
+                    self.action_queue.get()
+
+                # Determine which speed powerup to use based on ball direction
+                ball = game_state.get("ball", {})
+                dir_x = ball.get("directionX", 0)
+                ball_coming_toward_ai = dir_x > 0
+
+                use_slow = slow_state == "available" and ball_coming_toward_ai
+                use_fast = fast_state == "available" and not ball_coming_toward_ai
+                use_speed = use_slow or use_fast
+
+                # Add an immediate action that uses any available powerup
+                self.action_queue.put({
+                    "movePaddle": "0",  # Neutral movement
+                    "activatePowerupBig": current_big_state == "available",
+                    "activatePowerupSpeed": use_speed
+                })
+
+                debug_write(f"Forced powerup usage: Big={current_big_state=='available'}, Speed={use_speed}")
+
+                # Reset counter after forcing usage
+                self.powerup_usage_attempts = 0
+        else:
+            # Reset counter if no powerups available
+            self.powerup_usage_attempts = 0
 
         # Update state tracking
         self.last_state = game_state
@@ -770,7 +916,15 @@ class AIPlayer:
         If the queue is empty, returns a do-nothing fallback.
         """
         try:
-            return self.action_queue.get_nowait()
+            action = self.action_queue.get_nowait()
+
+            # Track when we actually try to use powerups
+            if action.get("activatePowerupBig", False):
+                debug_write("⭐ TRYING TO USE BIG POWERUP NOW ⭐")
+            if action.get("activatePowerupSpeed", False):
+                debug_write("⭐ TRYING TO USE SPEED POWERUP NOW ⭐")
+
+            return action
         except Empty:
             # Emergency fallback - if queue is empty, move toward center
             debug_write("Action queue empty! Using emergency fallback")
@@ -783,10 +937,20 @@ class AIPlayer:
             else:
                 move = "0"
 
+            # Check if any powerups are available that we should use in this emergency
+            player_right = self.thinker.last_game_state.get("playerRight", {})
+            big_available = player_right.get("powerupBig") == "available"
+            speed_available = (player_right.get("powerupSlow") == "available" or
+                              player_right.get("powerupFast") == "available")
+
+            # If in emergency and powerups available, use them!
+            if big_available or speed_available:
+                debug_write(f"Emergency powerup usage! Big: {big_available}, Speed: {speed_available}")
+
             return {
                 'movePaddle': move,
-                'activatePowerupBig': False,
-                'activatePowerupSpeed': False
+                'activatePowerupBig': big_available,
+                'activatePowerupSpeed': speed_available
             }
 
     def cleanup(self):
