@@ -20,6 +20,9 @@
                 </div>
                 <div id="chat-view-messages-container" class="grid-cell default-grid-area msgs barely-a-scroll-class"></div>
                 <text-field id="chat-view-text-field" class="grid-cell default-grid-area input" width="100" height="100" clear="true"></text-field>
+                <div class="grid-cell default-grid-area btncrga">
+                    <img id="chat-view-btn-create-game" class="modal-button modal-image-button" src="../assets/icons_128x128/icon_game_invite.png" style="height: 90%; align-self: center; padding: 0px 0px 2px 0px;">
+                </div>
                 <div id="chat-view-eye-container" class="grid-cell default-grid-area eye">
                     <img id="chat-view-eye-background" src="../assets/images/chat/eye.png" alt="Main Image" style="display: block;">
                     <img id="chat-view-eye-pupil" src="../assets/images/chat/ball.png" alt="Overlay Image" style="display: block;">
@@ -48,7 +51,7 @@
             ".       convs   .      .       msgs   msgs    msgs          ."
             "eye     eye     eye    .       msgs   msgs    msgs          ."
             "eye     eye     eye    .       .      .       .             ."
-            "eye     eye     eye    .       input  input   input         ."
+            "eye     eye     eye    .       input  input   btncrga       ."
             "eye     eye     eye    .       .      .       .             ."
     }
 
@@ -72,8 +75,14 @@
         grid-area: details;
         color: white;
         background-color: black;
-        padding: 1vh 1vw;
+        text-align: center;
         font-size: min(1.2vw, 18px);
+        align-items: center;
+    }
+
+    .btncrga {
+        grid-area: btncrga;
+        width: 100%;
     }
 
     .details-img {
