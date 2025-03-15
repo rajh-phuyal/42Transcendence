@@ -1,0 +1,2008 @@
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 4, 'posY': 50, 'height': 1, 'width': 1, 'speed': 1.5, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.005216023333808127}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=4, y=50, vx=1.5, vy=0.00782403500071219, speed=1.5
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+No prediction available - centering paddle
+Plan Next Second => BallX=4, BallY=50, DirX=1, DirY=0.005216023333808127, speed=1.5, Predicted Collision: frame=15, y=50.0, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.0 (target y: 50.0, current y: 50)
+Movement plan: distance=0.0, frames_needed=0, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 25.0, 'posY': 50.10953649000993, 'height': 1, 'width': 1, 'speed': 1.5, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.005216023333808127}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=25.0, y=50.10953649000993, vx=1.5, vy=0.00782403500071219, speed=1.5
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+No prediction available - centering paddle
+Plan Next Second => BallX=25.0, BallY=50.10953649000993, DirX=1, DirY=0.005216023333808127, speed=1.5, Predicted Collision: frame=15, y=50.0, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.0 (target y: 50.0, current y: 50)
+Movement plan: distance=0.0, frames_needed=0, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 46.0, 'posY': 50.21907298001986, 'height': 1, 'width': 1, 'speed': 1.5, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.005216023333808127}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=46.0, y=50.21907298001986, vx=1.5, vy=0.00782403500071219, speed=1.5
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+No prediction available - centering paddle
+Plan Next Second => BallX=46.0, BallY=50.21907298001986, DirX=1, DirY=0.005216023333808127, speed=1.5, Predicted Collision: frame=15, y=50.0, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.0 (target y: 50.0, current y: 50)
+Movement plan: distance=0.0, frames_needed=0, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 65.5, 'posY': 50.32078543502908, 'height': 1, 'width': 1, 'speed': 1.5, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.005216023333808127}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=65.5, y=50.32078543502908, vx=1.5, vy=0.00782403500071219, speed=1.5
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+No prediction available - centering paddle
+Plan Next Second => BallX=65.5, BallY=50.32078543502908, DirX=1, DirY=0.005216023333808127, speed=1.5, Predicted Collision: frame=15, y=50.0, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.0 (target y: 50.0, current y: 50)
+Movement plan: distance=0.0, frames_needed=0, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 86.5, 'posY': 50.43032192503901, 'height': 1, 'width': 1, 'speed': 1.5, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.005216023333808127}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=86.5, y=50.43032192503901, vx=1.5, vy=0.00782403500071219, speed=1.5
+Target collision_x: 95.0
+Collision predicted at frame 85, y=50.4746581233762
+Plan Next Second => BallX=86.5, BallY=50.43032192503901, DirX=1, DirY=0.005216023333808127, speed=1.5, Predicted Collision: frame=85, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 87.5251897436303, 'posY': 51.11161727983677, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -0.996851282046211, 'directionY': 0.07929389309918657}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=87.5251897436303, BallY=51.11161727983677, DirX=-0.996851282046211, DirY=0.07929389309918657, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 65.19572102579517, 'posY': 52.88780048525859, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -0.996851282046211, 'directionY': 0.07929389309918657}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=65.19572102579517, BallY=52.88780048525859, DirX=-0.996851282046211, DirY=0.07929389309918657, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 44.46121435923396, 'posY': 54.5371134617217, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -0.996851282046211, 'directionY': 0.07929389309918657}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=44.46121435923396, BallY=54.5371134617217, DirX=-0.996851282046211, DirY=0.07929389309918657, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Ball away from AI - centering paddle, movement needed: 0.0
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 23.72670769267276, 'posY': 56.18642643818482, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -0.996851282046211, 'directionY': 0.07929389309918657}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=23.72670769267276, BallY=56.18642643818482, DirX=-0.996851282046211, DirY=0.07929389309918657, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Ball away from AI - centering paddle, movement needed: 0.0
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 94.4, 'posY': 50.00177835711268, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.001111473195421259}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI scored! Consecutive goals: 1
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=94.4, BallY=50.00177835711268, DirX=-1, DirY=0.001111473195421259, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 72.00000000000009, 'posY': 50.026675356690156, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.001111473195421259}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=72.00000000000009, BallY=50.026675356690156, DirX=-1, DirY=0.001111473195421259, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 52.800000000000104, 'posY': 50.04801564204228, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.001111473195421259}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=52.800000000000104, BallY=50.04801564204228, DirX=-1, DirY=0.001111473195421259, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 30.400000000000084, 'posY': 50.07291264161976, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.001111473195421259}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=30.400000000000084, BallY=50.07291264161976, DirX=-1, DirY=0.001111473195421259, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Ball away from AI - centering paddle, movement needed: 0.0
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 8.000000000000073, 'posY': 50.09780964119724, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.001111473195421259}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=8.000000000000073, BallY=50.09780964119724, DirX=-1, DirY=0.001111473195421259, speed=1.6, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Ball away from AI - centering paddle, movement needed: 0.0
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 25.19708933395477, 'posY': 50.445962789924586, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9998573202918971, 'directionY': 0.01689198208343138}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=25.19708933395477, y=50.445962789924586, vx=1.6997574444962253, vy=0.028716369541833348, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=25.19708933395477, BallY=50.445962789924586, DirX=0.9998573202918971, DirY=0.01689198208343138, speed=1.7000000000000002, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 45.594178667909496, 'posY': 50.79055922442658, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9998573202918971, 'directionY': 0.01689198208343138}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=45.594178667909496, y=50.79055922442658, vx=1.6997574444962253, vy=0.028716369541833348, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=45.594178667909496, BallY=50.79055922442658, DirX=0.9998573202918971, DirY=0.01689198208343138, speed=1.7000000000000002, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 69.39078289085668, 'posY': 51.19258839801224, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9998573202918971, 'directionY': 0.01689198208343138}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 53.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=69.39078289085668, y=51.19258839801224, vx=1.6997574444962253, vy=0.028716369541833348, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.4746581233762, frame=70
+Plan Next Second => BallX=69.39078289085668, BallY=51.19258839801224, DirX=0.9998573202918971, DirY=0.01689198208343138, speed=1.7000000000000002, Predicted Collision: frame=70, y=50.4746581233762, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.4746581233762015 (target y: 50.4746581233762, current y: 50)
+Movement plan: distance=0.4746581233762015, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 93.18738711380388, 'posY': 51.5946175715979, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9998573202918971, 'directionY': 0.01689198208343138}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 46.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=93.18738711380388, y=51.5946175715979, vx=1.6997574444962253, vy=0.028716369541833348, speed=1.7000000000000002
+Target collision_x: 95.0
+Collision predicted at frame 15, y=51.625240565275476
+Plan Next Second => BallX=93.18738711380388, BallY=51.5946175715979, DirX=0.9998573202918971, DirY=0.01689198208343138, speed=1.7000000000000002, Predicted Collision: frame=15, y=51.625240565275476, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 1.625240565275476 (target y: 51.625240565275476, current y: 50)
+Movement plan: distance=1.625240565275476, frames_needed=1, frames_to_reach=1
+Frame=0, Move=+, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 75.76209538921213, 'posY': 57.3868065833418, 'height': 1, 'width': 1, 'speed': 1.8000000000000003, 'lastSpeed': 0, 'directionX': -0.9641114172955686, 'directionY': 0.2654979755861235}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 53.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=51.625240565275476, frame=1
+Plan Next Second => BallX=75.76209538921213, BallY=57.3868065833418, DirX=-0.9641114172955686, DirY=0.2654979755861235, speed=1.8000000000000003, Predicted Collision: frame=1, y=51.625240565275476, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 1.625240565275476 (target y: 51.625240565275476, current y: 50)
+Movement plan: distance=1.625240565275476, frames_needed=1, frames_to_reach=1
+Frame=0, Move=+, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 51.466487673363844, 'posY': 64.07735556811208, 'height': 1, 'width': 1, 'speed': 1.8000000000000003, 'lastSpeed': 0, 'directionX': -0.9641114172955686, 'directionY': 0.2654979755861235}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 74.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=51.625240565275476, frame=1
+Plan Next Second => BallX=51.466487673363844, BallY=64.07735556811208, DirX=-0.9641114172955686, DirY=0.2654979755861235, speed=1.8000000000000003, Predicted Collision: frame=1, y=51.625240565275476, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 1.625240565275476 (target y: 51.625240565275476, current y: 50)
+Movement plan: distance=1.625240565275476, frames_needed=1, frames_to_reach=1
+Frame=0, Move=+, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=51.63, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 27.17087995751551, 'posY': 70.76790455288246, 'height': 1, 'width': 1, 'speed': 1.8000000000000003, 'lastSpeed': 0, 'directionX': -0.9641114172955686, 'directionY': 0.2654979755861235}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 74.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 53.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=51.625240565275476, frame=1
+Plan Next Second => BallX=27.17087995751551, BallY=70.76790455288246, DirX=-0.9641114172955686, DirY=0.2654979755861235, speed=1.8000000000000003, Predicted Collision: frame=1, y=51.625240565275476, paddlePos=53.5, useBig=False, useSpeed=False
+Movement needed: -1.874759434724524 (target y: 51.625240565275476, current y: 53.5)
+Movement plan: distance=1.874759434724524, frames_needed=1, frames_to_reach=1
+Ball away from AI - centering paddle, movement needed: -3.5
+Frame=0, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 6.481837957006816, 'posY': 76.65079828747076, 'height': 1, 'width': 1, 'speed': 1.9000000000000004, 'lastSpeed': 0, 'directionX': 0.9848237706355872, 'directionY': -0.17355731269844055}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 81.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 57.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=6.481837957006816, y=76.65079828747076, vx=1.8711651642076161, vy=-0.3297588941270371, speed=1.9000000000000004
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=51.625240565275476, frame=1
+Plan Next Second => BallX=6.481837957006816, BallY=76.65079828747076, DirX=0.9848237706355872, DirY=-0.17355731269844055, speed=1.9000000000000004, Predicted Collision: frame=1, y=51.625240565275476, paddlePos=57.0, useBig=False, useSpeed=False
+Movement needed: -5.374759434724524 (target y: 51.625240565275476, current y: 57.0)
+Movement plan: distance=5.374759434724524, frames_needed=2, frames_to_reach=1
+Frame=0, Move=-, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 32.67815025591345, 'posY': 72.03417376969222, 'height': 1, 'width': 1, 'speed': 1.9000000000000004, 'lastSpeed': 0, 'directionX': 0.9848237706355872, 'directionY': -0.17355731269844055}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 60.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=32.67815025591345, y=72.03417376969222, vx=1.8711651642076161, vy=-0.3297588941270371, speed=1.9000000000000004
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=51.625240565275476, frame=1
+Plan Next Second => BallX=32.67815025591345, BallY=72.03417376969222, DirX=0.9848237706355872, DirY=-0.17355731269844055, speed=1.9000000000000004, Predicted Collision: frame=1, y=51.625240565275476, paddlePos=60.5, useBig=False, useSpeed=False
+Movement needed: -8.874759434724524 (target y: 51.625240565275476, current y: 60.5)
+Movement plan: distance=8.874759434724524, frames_needed=3, frames_to_reach=1
+Frame=0, Move=-, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 58.8744625548201, 'posY': 67.41754925191367, 'height': 1, 'width': 1, 'speed': 1.9000000000000004, 'lastSpeed': 0, 'directionX': 0.9848237706355872, 'directionY': -0.17355731269844055}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 60.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=58.8744625548201, y=67.41754925191367, vx=1.8711651642076161, vy=-0.3297588941270371, speed=1.9000000000000004
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=51.625240565275476, frame=1
+Plan Next Second => BallX=58.8744625548201, BallY=67.41754925191367, DirX=0.9848237706355872, DirY=-0.17355731269844055, speed=1.9000000000000004, Predicted Collision: frame=1, y=51.625240565275476, paddlePos=60.5, useBig=False, useSpeed=False
+Movement needed: -8.874759434724524 (target y: 51.625240565275476, current y: 60.5)
+Movement plan: distance=8.874759434724524, frames_needed=3, frames_to_reach=1
+Frame=0, Move=-, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=57.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 85.07077485372666, 'posY': 62.80092473413512, 'height': 1, 'width': 1, 'speed': 1.9000000000000004, 'lastSpeed': 0, 'directionX': 0.9848237706355872, 'directionY': -0.17355731269844055}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 57.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=85.07077485372666, y=62.80092473413512, vx=1.8711651642076161, vy=-0.3297588941270371, speed=1.9000000000000004
+Target collision_x: 95.0
+Collision predicted at frame 79, y=61.05107904097854
+Plan Next Second => BallX=85.07077485372666, BallY=62.80092473413512, DirX=0.9848237706355872, DirY=-0.17355731269844055, speed=1.9000000000000004, Predicted Collision: frame=79, y=61.05107904097854, paddlePos=57.0, useBig=False, useSpeed=False
+Movement needed: 4.051079040978543 (target y: 61.05107904097854, current y: 57.0)
+Movement plan: distance=4.051079040978543, frames_needed=2, frames_to_reach=2
+Frame=0, Move=+, PaddlePos=59.03, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 82.86354208799246, 'posY': 69.51268967243908, 'height': 1, 'width': 1, 'speed': 2.0000000000000004, 'lastSpeed': 0, 'directionX': -0.8396389844362433, 'directionY': 0.5431448939416387}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 53.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=61.05107904097854, frame=64
+Plan Next Second => BallX=82.86354208799246, BallY=69.51268967243908, DirX=-0.8396389844362433, DirY=0.5431448939416387, speed=2.0000000000000004, Predicted Collision: frame=64, y=61.05107904097854, paddlePos=53.5, useBig=False, useSpeed=False
+Movement needed: 7.551079040978543 (target y: 61.05107904097854, current y: 53.5)
+Movement plan: distance=7.551079040978543, frames_needed=3, frames_to_reach=3
+Frame=0, Move=+, PaddlePos=56.02, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=58.53, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 59.35365052377769, 'posY': 84.72074670280492, 'height': 1, 'width': 1, 'speed': 2.0000000000000004, 'lastSpeed': 0, 'directionX': -0.8396389844362433, 'directionY': 0.5431448939416387}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 91.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=61.05107904097854, frame=64
+Plan Next Second => BallX=59.35365052377769, BallY=84.72074670280492, DirX=-0.8396389844362433, DirY=0.5431448939416387, speed=2.0000000000000004, Predicted Collision: frame=64, y=61.05107904097854, paddlePos=50.0, useBig=False, useSpeed=False
+Movement needed: 11.051079040978543 (target y: 61.05107904097854, current y: 50.0)
+Movement plan: distance=11.051079040978543, frames_needed=4, frames_to_reach=4
+Frame=0, Move=+, PaddlePos=52.76, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=55.53, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=58.29, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'wall'}, 'ball': {'posX': 35.84375895956292, 'posY': 99, 'height': 1, 'width': 1, 'speed': 2.0000000000000004, 'lastSpeed': 0, 'directionX': -0.8396389844362433, 'directionY': -0.5431448939416387}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 91.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 53.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=61.05107904097854, frame=64
+Plan Next Second => BallX=35.84375895956292, BallY=99, DirX=-0.8396389844362433, DirY=-0.5431448939416387, speed=2.0000000000000004, Predicted Collision: frame=64, y=61.05107904097854, paddlePos=53.5, useBig=False, useSpeed=False
+Movement needed: 7.551079040978543 (target y: 61.05107904097854, current y: 53.5)
+Movement plan: distance=7.551079040978543, frames_needed=3, frames_to_reach=3
+Ball away from AI - centering paddle, movement needed: -3.5
+Frame=0, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=53.50, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 12.333867395348108, 'posY': 83.79194296963416, 'height': 1, 'width': 1, 'speed': 2.0000000000000004, 'lastSpeed': 0, 'directionX': -0.8396389844362433, 'directionY': -0.5431448939416387}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 91.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 57.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=61.05107904097854, frame=64
+Plan Next Second => BallX=12.333867395348108, BallY=83.79194296963416, DirX=-0.8396389844362433, DirY=-0.5431448939416387, speed=2.0000000000000004, Predicted Collision: frame=64, y=61.05107904097854, paddlePos=57.0, useBig=False, useSpeed=False
+Movement needed: 4.051079040978543 (target y: 61.05107904097854, current y: 57.0)
+Movement plan: distance=4.051079040978543, frames_needed=2, frames_to_reach=2
+Ball away from AI - centering paddle, movement needed: -7.0
+Frame=0, Move=-, PaddlePos=56.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=55.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=-, PaddlePos=54.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=-, PaddlePos=53.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=-, PaddlePos=52.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=-, PaddlePos=51.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=-, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.00, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 22.567665242672156, 'posY': 81.54264842190497, 'height': 1, 'width': 1, 'speed': 2.1000000000000005, 'lastSpeed': 0, 'directionX': 0.9857242164913478, 'directionY': 0.16836795723212483}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 67.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 67.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=22.567665242672156, y=81.54264842190497, vx=2.070020854631831, vy=0.3535727101874622, speed=2.1000000000000005
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=61.05107904097854, frame=64
+Plan Next Second => BallX=22.567665242672156, BallY=81.54264842190497, DirX=0.9857242164913478, DirY=0.16836795723212483, speed=2.1000000000000005, Predicted Collision: frame=64, y=61.05107904097854, paddlePos=67.5, useBig=False, useSpeed=False
+Movement needed: -6.448920959021457 (target y: 61.05107904097854, current y: 67.5)
+Movement plan: distance=6.448920959021457, frames_needed=2, frames_to_reach=2
+Frame=0, Move=-, PaddlePos=64.28, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 51.54795720751776, 'posY': 86.49266636452947, 'height': 1, 'width': 1, 'speed': 2.1000000000000005, 'lastSpeed': 0, 'directionX': 0.9857242164913478, 'directionY': 0.16836795723212483}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 67.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 81.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=51.54795720751776, y=86.49266636452947, vx=2.070020854631831, vy=0.3535727101874622, speed=2.1000000000000005
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=61.05107904097854, frame=64
+Plan Next Second => BallX=51.54795720751776, BallY=86.49266636452947, DirX=0.9857242164913478, DirY=0.16836795723212483, speed=2.1000000000000005, Predicted Collision: frame=64, y=61.05107904097854, paddlePos=81.5, useBig=False, useSpeed=False
+Movement needed: -20.448920959021457 (target y: 61.05107904097854, current y: 81.5)
+Movement plan: distance=20.448920959021457, frames_needed=6, frames_to_reach=6
+Frame=0, Move=-, PaddlePos=78.09, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=74.68, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=-, PaddlePos=71.28, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=-, PaddlePos=67.87, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=-, PaddlePos=64.46, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=-, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=61.05, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 80.5282491723634, 'posY': 91.44268430715397, 'height': 1, 'width': 1, 'speed': 2.1000000000000005, 'lastSpeed': 0, 'directionX': 0.9857242164913478, 'directionY': 0.16836795723212483}, 'playerLeft': {'points': 0, 'result': 'pending', 'paddlePos': 67.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 81.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 1}
+Starting prediction from: x=80.5282491723634, y=91.44268430715397, vx=2.070020854631831, vy=0.3535727101874622, speed=2.1000000000000005
+Target collision_x: 95.0
+Collision predicted at frame 104, y=93.91455126918818
+Plan Next Second => BallX=80.5282491723634, BallY=91.44268430715397, DirX=0.9857242164913478, DirY=0.16836795723212483, speed=2.1000000000000005, Predicted Collision: frame=104, y=93.91455126918818, paddlePos=81.5, useBig=False, useSpeed=False
+Movement needed: 12.41455126918818 (target y: 93.91455126918818, current y: 81.5)
+Movement plan: distance=12.41455126918818, frames_needed=4, frames_to_reach=4
+Frame=0, Move=+, PaddlePos=84.60, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=87.71, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=90.81, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=93.91, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 13.599999999999998, 'posY': 50.08723867921918, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.009087362418665276}, 'playerLeft': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 39.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI MISSED a ball! Total misses: 1
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=13.599999999999998, y=50.08723867921918, vx=1.6, vy=0.014539779869864442, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=93.91455126918818, frame=89
+Plan Next Second => BallX=13.599999999999998, BallY=50.08723867921918, DirX=1, DirY=0.009087362418665276, speed=1.6, Predicted Collision: frame=89, y=93.91455126918818, paddlePos=39.5, useBig=False, useSpeed=False
+Movement needed: 54.41455126918818 (target y: 93.91455126918818, current y: 39.5)
+Movement plan: distance=54.41455126918818, frames_needed=16, frames_to_reach=16
+Frame=0, Move=+, PaddlePos=42.90, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=46.30, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=49.70, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=53.10, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=56.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=59.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=63.31, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=66.71, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=+, PaddlePos=70.11, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=+, PaddlePos=73.51, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=+, PaddlePos=76.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=+, PaddlePos=80.31, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=+, PaddlePos=83.71, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=+, PaddlePos=87.11, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=+, PaddlePos=90.51, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 36.000000000000014, 'posY': 50.29079559739728, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.009087362418665276}, 'playerLeft': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 32.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=36.000000000000014, y=50.29079559739728, vx=1.6, vy=0.014539779869864442, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=93.91455126918818, frame=89
+Plan Next Second => BallX=36.000000000000014, BallY=50.29079559739728, DirX=1, DirY=0.009087362418665276, speed=1.6, Predicted Collision: frame=89, y=93.91455126918818, paddlePos=32.5, useBig=False, useSpeed=False
+Movement needed: 61.41455126918818 (target y: 93.91455126918818, current y: 32.5)
+Movement plan: distance=61.41455126918818, frames_needed=18, frames_to_reach=18
+Frame=0, Move=+, PaddlePos=35.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=39.32, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=42.74, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=46.15, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=49.56, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=52.97, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=56.38, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=59.80, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=+, PaddlePos=63.21, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=+, PaddlePos=66.62, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=+, PaddlePos=70.03, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=+, PaddlePos=73.44, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=+, PaddlePos=76.85, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=+, PaddlePos=80.27, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=+, PaddlePos=83.68, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 58.400000000000034, 'posY': 50.49435251557537, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.009087362418665276}, 'playerLeft': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 11.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=58.400000000000034, y=50.49435251557537, vx=1.6, vy=0.014539779869864442, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=93.91455126918818, frame=89
+Plan Next Second => BallX=58.400000000000034, BallY=50.49435251557537, DirX=1, DirY=0.009087362418665276, speed=1.6, Predicted Collision: frame=89, y=93.91455126918818, paddlePos=11.5, useBig=False, useSpeed=False
+Movement needed: 82.41455126918818 (target y: 93.91455126918818, current y: 11.5)
+Movement plan: distance=82.41455126918818, frames_needed=24, frames_to_reach=24
+Frame=0, Move=+, PaddlePos=14.93, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=18.37, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=21.80, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=25.24, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=28.67, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=32.10, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=35.54, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=38.97, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=+, PaddlePos=42.41, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=+, PaddlePos=45.84, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=+, PaddlePos=49.27, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=+, PaddlePos=52.71, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=+, PaddlePos=56.14, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=+, PaddlePos=59.58, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=+, PaddlePos=63.01, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 80.79999999999998, 'posY': 50.697909433753466, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': 0.009087362418665276}, 'playerLeft': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 25.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=80.79999999999998, y=50.697909433753466, vx=1.6, vy=0.014539779869864442, speed=1.6
+Target collision_x: 95.0
+Collision predicted at frame 133, y=50.82694998009888
+Plan Next Second => BallX=80.79999999999998, BallY=50.697909433753466, DirX=1, DirY=0.009087362418665276, speed=1.6, Predicted Collision: frame=133, y=50.82694998009888, paddlePos=25.5, useBig=False, useSpeed=False
+Movement needed: 25.32694998009888 (target y: 50.82694998009888, current y: 25.5)
+Movement plan: distance=25.32694998009888, frames_needed=8, frames_to_reach=8
+Frame=0, Move=+, PaddlePos=28.67, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=31.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=35.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=38.16, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=41.33, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=44.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=47.66, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 10.399999999999999, 'posY': 49.967248130135516, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': -0.0051174796663246295}, 'playerLeft': {'points': 2, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 64.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI MISSED a ball! Total misses: 2
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=10.399999999999999, y=49.967248130135516, vx=1.6, vy=-0.008187967466119408, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=10.399999999999999, BallY=49.967248130135516, DirX=1, DirY=-0.0051174796663246295, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=64.0, useBig=False, useSpeed=False
+Movement needed: -13.173050019901119 (target y: 50.82694998009888, current y: 64.0)
+Movement plan: distance=13.173050019901119, frames_needed=4, frames_to_reach=4
+Frame=0, Move=-, PaddlePos=60.71, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=57.41, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=-, PaddlePos=54.12, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=-, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 32.80000000000001, 'posY': 49.85261658560982, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': -0.0051174796663246295}, 'playerLeft': {'points': 2, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=32.80000000000001, y=49.85261658560982, vx=1.6, vy=-0.008187967466119408, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=32.80000000000001, BallY=49.85261658560982, DirX=1, DirY=-0.0051174796663246295, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=95.0, useBig=False, useSpeed=False
+Movement needed: -44.17305001990112 (target y: 50.82694998009888, current y: 95.0)
+Movement plan: distance=44.17305001990112, frames_needed=13, frames_to_reach=13
+Frame=0, Move=-, PaddlePos=91.60, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=88.20, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=-, PaddlePos=84.81, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=-, PaddlePos=81.41, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=-, PaddlePos=78.01, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=-, PaddlePos=74.61, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=-, PaddlePos=71.21, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=-, PaddlePos=67.82, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=-, PaddlePos=64.42, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=-, PaddlePos=61.02, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=-, PaddlePos=57.62, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=-, PaddlePos=54.22, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=-, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 55.20000000000003, 'posY': 49.73798504108413, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': -0.0051174796663246295}, 'playerLeft': {'points': 2, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI STRUGGLING! Decreasing difficulty to 0
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=55.20000000000003, y=49.73798504108413, vx=1.6, vy=-0.008187967466119408, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=55.20000000000003, BallY=49.73798504108413, DirX=1, DirY=-0.0051174796663246295, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=95.0, useBig=False, useSpeed=False
+Movement needed: -44.17305001990112 (target y: 50.82694998009888, current y: 95.0)
+Movement plan: distance=44.17305001990112, frames_needed=13, frames_to_reach=13
+Frame=0, Move=-, PaddlePos=91.60, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=88.20, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=-, PaddlePos=84.81, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=-, PaddlePos=81.41, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=-, PaddlePos=78.01, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=-, PaddlePos=74.61, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=-, PaddlePos=71.21, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=-, PaddlePos=67.82, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=-, PaddlePos=64.42, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=-, PaddlePos=61.02, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=-, PaddlePos=57.62, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=-, PaddlePos=54.22, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=-, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+AI struggling (0.00), decreasing difficulty to 0
+Difficulty adjusted to 0
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerLeft', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 77.6, 'posY': 49.62335349655844, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': 1, 'directionY': -0.0051174796663246295}, 'playerLeft': {'points': 2, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 95.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=77.6, y=49.62335349655844, vx=1.6, vy=-0.008187967466119408, speed=1.6
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=77.6, BallY=49.62335349655844, DirX=1, DirY=-0.0051174796663246295, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=95.0, useBig=False, useSpeed=False
+Movement needed: -44.17305001990112 (target y: 50.82694998009888, current y: 95.0)
+Movement plan: distance=44.17305001990112, frames_needed=13, frames_to_reach=13
+Frame=0, Move=-, PaddlePos=91.60, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=-, PaddlePos=88.20, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=-, PaddlePos=84.81, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=-, PaddlePos=81.41, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=-, PaddlePos=78.01, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=-, PaddlePos=74.61, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=-, PaddlePos=71.21, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=-, PaddlePos=67.82, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=-, PaddlePos=64.42, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=-, PaddlePos=61.02, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=-, PaddlePos=57.62, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=-, PaddlePos=54.22, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=-, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 92.80000000000001, 'posY': 50.0156191492711, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.00488098414722052}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI MISSED a ball! Total misses: 3
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=92.80000000000001, BallY=50.0156191492711, DirX=-1, DirY=0.00488098414722052, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=50, useBig=False, useSpeed=False
+Movement needed: 0.8269499800988811 (target y: 50.82694998009888, current y: 50)
+Movement plan: distance=0.8269499800988811, frames_needed=1, frames_to_reach=1
+Frame=0, Move=+, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 70.40000000000009, 'posY': 50.124953194168825, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.00488098414722052}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 36.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=70.40000000000009, BallY=50.124953194168825, DirX=-1, DirY=0.00488098414722052, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=36.0, useBig=False, useSpeed=False
+Movement needed: 14.826949980098881 (target y: 50.82694998009888, current y: 36.0)
+Movement plan: distance=14.826949980098881, frames_needed=5, frames_to_reach=5
+Frame=0, Move=+, PaddlePos=38.97, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=41.93, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=44.90, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=47.86, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 48.0000000000001, 'posY': 50.234287239066546, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.00488098414722052}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 50.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 5.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=48.0000000000001, BallY=50.234287239066546, DirX=-1, DirY=0.00488098414722052, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=5.0, useBig=False, useSpeed=False
+Movement needed: 45.82694998009888 (target y: 50.82694998009888, current y: 5.0)
+Movement plan: distance=45.82694998009888, frames_needed=14, frames_to_reach=14
+Ball away from AI - centering paddle, movement needed: 45.0
+Frame=0, Move=+, PaddlePos=8.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=12.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=15.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=19.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=22.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=26.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 25.60000000000008, 'posY': 50.34362128396427, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.00488098414722052}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 50.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 5.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=25.60000000000008, BallY=50.34362128396427, DirX=-1, DirY=0.00488098414722052, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=5.0, useBig=False, useSpeed=False
+Movement needed: 45.82694998009888 (target y: 50.82694998009888, current y: 5.0)
+Movement plan: distance=45.82694998009888, frames_needed=14, frames_to_reach=14
+Ball away from AI - centering paddle, movement needed: 45.0
+Frame=0, Move=+, PaddlePos=8.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=12.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=15.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=19.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=22.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=26.00, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=29.50, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 6.4953405727173825, 'posY': 50.57092469721193, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9972591604219465, 'directionY': 0.07398761352087527}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 50.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 5.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=6.4953405727173825, y=50.57092469721193, vx=1.6953405727173092, vy=0.12577894298548797, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=6.4953405727173825, BallY=50.57092469721193, DirX=0.9972591604219465, DirY=0.07398761352087527, speed=1.7000000000000002, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=5.0, useBig=False, useSpeed=False
+Movement needed: 45.82694998009888 (target y: 50.82694998009888, current y: 5.0)
+Movement plan: distance=45.82694998009888, frames_needed=14, frames_to_reach=14
+Frame=0, Move=+, PaddlePos=8.27, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=11.55, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=14.82, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=18.09, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=21.37, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=24.64, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=27.91, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=31.19, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=+, PaddlePos=34.46, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=+, PaddlePos=37.73, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=+, PaddlePos=41.01, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=+, PaddlePos=44.28, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=+, PaddlePos=47.55, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=+, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 30.23010859075972, 'posY': 52.3318298990088, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9972591604219465, 'directionY': 0.07398761352087527}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 67.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 8.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=30.23010859075972, y=52.3318298990088, vx=1.6953405727173092, vy=0.12577894298548797, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=30.23010859075972, BallY=52.3318298990088, DirX=0.9972591604219465, DirY=0.07398761352087527, speed=1.7000000000000002, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=8.5, useBig=False, useSpeed=False
+Movement needed: 42.32694998009888 (target y: 50.82694998009888, current y: 8.5)
+Movement plan: distance=42.32694998009888, frames_needed=13, frames_to_reach=13
+Frame=0, Move=+, PaddlePos=11.76, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=15.01, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=18.27, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=21.52, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=24.78, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=28.04, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=31.29, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=34.55, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=+, PaddlePos=37.80, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=+, PaddlePos=41.06, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=+, PaddlePos=44.32, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=+, PaddlePos=47.57, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=+, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 53.964876608802015, 'posY': 54.092735100805676, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9972591604219465, 'directionY': 0.07398761352087527}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 67.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 26.0, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=53.964876608802015, y=54.092735100805676, vx=1.6953405727173092, vy=0.12577894298548797, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=53.964876608802015, BallY=54.092735100805676, DirX=0.9972591604219465, DirY=0.07398761352087527, speed=1.7000000000000002, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=26.0, useBig=False, useSpeed=False
+Movement needed: 24.82694998009888 (target y: 50.82694998009888, current y: 26.0)
+Movement plan: distance=24.82694998009888, frames_needed=8, frames_to_reach=8
+Frame=0, Move=+, PaddlePos=29.10, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=+, PaddlePos=32.21, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=+, PaddlePos=35.31, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=+, PaddlePos=38.41, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=+, PaddlePos=41.52, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=+, PaddlePos=44.62, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=+, PaddlePos=47.72, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=+, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '+', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 2, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 76.00430405412705, 'posY': 55.72786135961706, 'height': 1, 'width': 1, 'speed': 1.7000000000000002, 'lastSpeed': 0, 'directionX': 0.9972591604219465, 'directionY': 0.07398761352087527}, 'playerLeft': {'points': 3, 'result': 'pending', 'paddlePos': 67.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 50.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Starting prediction from: x=76.00430405412705, y=55.72786135961706, vx=1.6953405727173092, vy=0.12577894298548797, speed=1.7000000000000002
+Target collision_x: 95.0
+No collision predicted within 150 frames
+No collision predicted but ball coming toward AI
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=76.00430405412705, BallY=55.72786135961706, DirX=0.9972591604219465, DirY=0.07398761352087527, speed=1.7000000000000002, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=50.5, useBig=False, useSpeed=False
+Movement needed: 0.3269499800988811 (target y: 50.82694998009888, current y: 50.5)
+Movement plan: distance=0.3269499800988811, frames_needed=1, frames_to_reach=1
+Frame=0, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.50, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
+--- NEW SNAPSHOT ---
+GameState: {'gameData': {'state': Game.GameState.ONGOING, 'tournament': None, 'playerServes': 'playerRight', 'remainingServes': 1, 'extendingGameMode': False, 'sound': 'none'}, 'ball': {'posX': 94.4, 'posY': 50.005673728009626, 'height': 1, 'width': 1, 'speed': 1.6, 'lastSpeed': 0, 'directionX': -1, 'directionY': 0.003546080006014918}, 'playerLeft': {'points': 4, 'result': 'pending', 'paddlePos': 50, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}, 'playerRight': {'points': 1, 'result': 'pending', 'paddlePos': 53.5, 'paddleSize': 10, 'powerupBig': 'unavailable', 'powerupSlow': 'unavailable', 'powerupFast': 'unavailable', 'paddleSpeed': 3.5}}
+AI MISSED a ball! Total misses: 4
+Metrics: {'useBig': False, 'useSpeed': False, 'opponentPowerupProbability': 0.2, 'recommendedDifficulty': 0}
+Ball moving away from AI - not predicting collision
+Using previous prediction: y=50.82694998009888, frame=118
+Plan Next Second => BallX=94.4, BallY=50.005673728009626, DirX=-1, DirY=0.003546080006014918, speed=1.6, Predicted Collision: frame=118, y=50.82694998009888, paddlePos=53.5, useBig=False, useSpeed=False
+Movement needed: -2.673050019901119 (target y: 50.82694998009888, current y: 53.5)
+Movement plan: distance=2.673050019901119, frames_needed=1, frames_to_reach=1
+Frame=0, Move=-, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=1, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=2, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=3, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=4, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=5, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=6, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=7, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=8, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=9, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=10, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=11, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=12, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=13, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Frame=14, Move=0, PaddlePos=50.83, PowerUpBig=False, PowerUpSpeed=False
+Enqueued action: {'movePaddle': '-', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued action: {'movePaddle': '0', 'activatePowerupBig': False, 'activatePowerupSpeed': False}
+Enqueued 15 actions.
