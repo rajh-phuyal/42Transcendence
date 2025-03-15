@@ -27,27 +27,36 @@ class Auth {
 
         // Create new auth check promise
         return await (async () => {
+            this.isAuthenticated = false;
+
             try {
+                console.log("Calling auth/verify/ endpoint");
+            
                 const response = await call('auth/verify/', 'GET', null, false);
-                if (!response.isAuthenticated) {
-                    return false;
-                }
-
                 this.isAuthenticated = response.isAuthenticated;
-                $store.commit('setIsAuthenticated', this.isAuthenticated);
-                console.log("Auth check successful");
-
-                if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
-                    console.log("Connecting WebSocket");
-                    WebSocketManager.connect();
-                }
-
-                this._lastCheckTimestamp = now;
+                console.log("Auth check response:", response);
             } catch (error) {
                 console.log("Auth check failed:", error);
                 this.isAuthenticated = false;
                 this.clearAuthCache();
+            } finally {
+                if (!this.isAuthenticated) {
+                    if (!this.refreshToken()) {
+                        return false;
+                    }
+                    this.isAuthenticated = true;
+                }
             }
+
+            $store.commit('setIsAuthenticated', this.isAuthenticated);
+            console.log("Auth check successful");
+
+            if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
+                console.log("Connecting WebSocket");
+                WebSocketManager.connect();
+            }
+
+            this._lastCheckTimestamp = now;
 
             return this.isAuthenticated;
         })();
