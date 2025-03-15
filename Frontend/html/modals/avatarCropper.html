@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div id="modal-avatar-cropper-content" class="modal-content image-modal-content">
             <div class="modal-body image-modal-body">
-                <img src='../../assets/backgrounds/modal-edit-profile-no-header.png' class="image-modal-background-image" alt="Background Image">
+                <img src='../../assets/backgrounds/modal-avatar-cropper-background.png' class="image-modal-background-image" alt="Background Image">
                 <div id="modal-avatar-cropper-grid" class="view-overlay-grid">
 
                         <!-- Place your content here -->
@@ -14,7 +14,7 @@
                     </div>
                     <button     id="modal-avatar-cropper-btn-crop" class="grid-cell default-grid-area btnc modal-button">Submit</button>
                     <button     id="modal-avatar-cropper-btn-open-file-explorer" class="grid-cell default-grid-area btnexp modal-button">Select</button>
-                    <button class="btn grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button>
+                    <button class="btn grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
                 </div>
             </div>
         </div>
@@ -53,8 +53,8 @@
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      btnc   btnc   btnc   .      .      btnexp btnexp btnexp .      btnb   btnb   btnb   .     "
-            ".      btnc   btnc   btnc   .      .      btnexp btnexp btnexp .      btnb   btnb   btnb   .     "
+            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp .      btnc   btnc   btnc   .      .     "
+            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp .      btnc   btnc   btnc   .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -80,13 +80,9 @@
 
     #imodal-avatar-cropper-image-to-cropmg {
         max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
     }
-
-    .cropper-container .cropper-bg {
-    background: transparent !important; /* Removes the grid */
-}
 </style>
