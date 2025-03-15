@@ -3,6 +3,7 @@ import { translate } from '../../locale/locale.js';
 import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { modalManager } from '../../abstracts/ModalManager.js';
 
 /*
  QUICK EXPLANATION:
@@ -375,6 +376,7 @@ export default {
             this.initSearch(false);
             this.initMentionClick(false);
             this.initEyeListener(false);
+            modalManager.off("chat-view-btn-create-game", "modal-create-game");
 
             // Inform WebSocketManager that we are leaving the chat
             WebSocketManager.setCurrentRoute(undefined);
@@ -384,6 +386,12 @@ export default {
 
             // Remove all messages
             resetConversationView();
+
+            // Remove the attributes which the createGameModal uses
+            const view = this.domManip.$id("router-view");
+            view.removeAttribute("data-user-id");
+            view.removeAttribute("data-user-username");
+            view.removeAttribute("data-user-avatar");
         },
 
         beforeDomInsertion() {
@@ -427,6 +435,7 @@ export default {
             this.initSearch()
             this.initMentionClick();
             this.initEyeListener();
+            modalManager.on("chat-view-btn-create-game", "modal-create-game");
         },
     },
 };
