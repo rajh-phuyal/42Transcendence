@@ -1,23 +1,29 @@
-from services.constants import PRE_GROUP_TOURNAMENT
-from asgiref.sync import async_to_sync
-from services.channel_groups import update_client_in_group
-from core.authentication import BaseAuthenticatedView
-from django.db import transaction
-from core.response import success_response, error_response
-from user.models import User
-from game.models import Game, GameMember
-from tournament.models import Tournament, TournamentMember
-from django.utils.translation import gettext as _
-from core.decorators import barely_handle_exceptions
-from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
-from core.exceptions import BarelyAnException
-from tournament.serializer import TournamentMemberSerializer, TournamentGameSerializer, TournamentInfoSerializer
-import logging
-from django.db import models
-from services.send_ws_msg import send_ws_tournament_pm
+# Basics
+import re, logging
 from rest_framework import status
-import re
+# Django
+from django.db import transaction
+from django.utils.translation import gettext as _
+from django.db import models
+from asgiref.sync import async_to_sync
+# Core
+from core.authentication import BaseAuthenticatedView
+from core.response import success_response, error_response
+from core.decorators import barely_handle_exceptions
+from core.exceptions import BarelyAnException
+# User
+from user.models import User
+# Services
+from services.constants import PRE_GROUP_TOURNAMENT
 from services.send_ws_msg import send_ws_tournament_pm
+from services.channel_groups import update_client_in_group
+# Game
+from game.models import Game, GameMember
+from game.serializer import GameSerializer
+# Tournament
+from tournament.models import Tournament, TournamentMember
+from tournament.serializer import TournamentMemberSerializer, TournamentInfoSerializer
+from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -43,18 +49,16 @@ class HistoryView(BaseAuthenticatedView):
     def get(self, request):
         user = request.user
         # Get all tournaments of the user
-        tournaments = TournamentMember.objects.filter(
-            user_id=user.id
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name'),
-            tournamentState=models.F('tournament__state')
-        ).values(
-            'tournamentId',
-            'tournamentName',
-            'tournamentState'
-        )
-        return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
+        tournaments = Tournament.objects.filter(
+            members__user=user
+        ).order_by('-finish_time')
+
+        # Serialize the tournaments using TournamentInfoSerializer
+        serializer_tournaments = TournamentInfoSerializer(tournaments, many=True)
+
+        return success_response(_("User's tournament history fetched successfully"), **{
+            'tournaments': serializer_tournaments.data
+        })
 
 # All tournaments where user is invited to and public tournaments
 class ToJoinView(BaseAuthenticatedView):
@@ -175,7 +179,7 @@ class TournamentLobbyView(BaseAuthenticatedView):
         serializer_members = TournamentMemberSerializer(tournament_members, many=True)
         # Serialize the tournament games
         games = Game.objects.filter(tournament_id=tournament.id)
-        serializer_games = TournamentGameSerializer(games, many=True)
+        serializer_games = GameSerializer(games, many=True)
 
         # Send all data at once to the frontend
         return success_response(_("Tournament lobby fetched successfully"), **{
