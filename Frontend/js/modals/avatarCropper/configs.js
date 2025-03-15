@@ -9,6 +9,12 @@ export default {
     },
 
     methods: {
+
+        openFileExplorer() {
+            let element = this.domManip.$id("modal-avatar-cropper-file-input");
+            element.click();
+        },
+
         extractImageFile(event) {
 
             const file = event.target.files[0]; // Get the selected file
@@ -79,10 +85,6 @@ export default {
     },
 
     hooks: {
-        async allowedToOpen() {
-            return false;
-        },
-
         beforeOpen () {
 
             this.openFileExplorer();
