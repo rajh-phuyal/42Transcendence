@@ -127,7 +127,7 @@ class Thinker:
             dt = 1.0 / fps
 
             # Constants for wall boundaries - taking ball size into account
-            ball_height = self.last_game_state.get("ball", {}).get("height", 1.0)
+            ball_height = self.game_state.get("ball", {}).get("height", 1.0)
             # IMPROVED: Use a smaller wall buffer to avoid prediction errors
             top_wall = ball_height * 0.9  # Slightly smaller buffer
             bottom_wall = 100 - (ball_height * 0.9)  # Slightly smaller buffer
