@@ -70,8 +70,8 @@ class GameMember(models.Model):
         LOST = 'lost', 'Lost'
 
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='game_members')
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_members')
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='games')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='members')
     points = models.IntegerField(default=0)
     result = models.CharField(
         max_length=10,
