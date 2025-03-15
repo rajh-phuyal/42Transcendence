@@ -2,6 +2,8 @@ import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import $store from '../../store/store.js';
+import { openFileExplorer } from './changeAvatar.js';
+import { modalManager } from '../../abstracts/ModalManager.js';
 
 export default {
     attributes: {
@@ -90,6 +92,7 @@ export default {
             this.initTypeListeners(true);
             this.domManip.$on(avatarElement, "click", this.changeAvatarCallback);
             this.domManip.$on(submitElement, "click", this.submitCallback);
+            this.domManip.$on(avatarElement, "click", openFileExplorer);
             return true;
         },
         afterClose () {
@@ -99,6 +102,7 @@ export default {
             this.initTypeListeners(false);
             this.domManip.$off(avatarElement, "click", this.changeAvatarCallback);
             this.domManip.$off(submitElement, "click", this.submitCallback);
+            this.domManip.$off(avatarElement, "click", openFileExplorer);
         }
     }
 }
