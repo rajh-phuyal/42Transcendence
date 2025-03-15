@@ -398,8 +398,24 @@ class Thinker:
                 debug_write(f"Ball already past collision_x")
                 return (0, start_y)  # Immediate collision
 
+            # VERY IMPORTANT: If direction is nearly zero, simulation will take too long
+            # This happens in the game sometimes due to rounding errors - fix it
+            if abs(dir_x) < 0.0001:
+                debug_write(f"X direction is nearly zero, adjusting to prevent infinite loop")
+                dir_x = 0.0001 if dir_x >= 0 else -0.0001
+
+            # CLAMP extremely small Y directions to prevent simulation errors
+            if abs(dir_y) < 0.0001:
+                dir_y = 0.0001 if dir_y >= 0 else -0.0001
+
             dt = 1.0 / fps
 
+            # Constants for wall boundaries - taking ball size into account
+            ball_height = self.last_game_state.get("ball", {}).get("height", 1.0)
+            top_wall = ball_height  # Ball radius from top
+            bottom_wall = 100 - ball_height  # Ball radius from bottom
+
+            # Initialize for simulation
             x = start_x
             y = start_y
             vx = dir_x * speed  # Incorporate speed into velocity
@@ -419,18 +435,18 @@ class Thinker:
                 x += vx * dt
                 y += vy * dt
 
-                # Bounce off top/bottom walls
-                if y < 0:
-                    y = -y  # Reflect position
+                # Bounce off top/bottom walls with ball height considered
+                if y < top_wall:
+                    y = 2 * top_wall - y  # Reflect position
                     vy = -vy  # Reflect velocity
                     debug_write(f"Top wall bounce at frame {frame_idx}, x={x}")
-                elif y > 100:
-                    y = 200 - y  # Reflect position
+                elif y > bottom_wall:
+                    y = 2 * bottom_wall - y  # Reflect position
                     vy = -vy  # Reflect velocity
                     debug_write(f"Bottom wall bounce at frame {frame_idx}, x={x}")
 
                 # Check if crossing collision_x on this step
-                if (prev_x < collision_x and x >= collision_x) or (prev_x == collision_x):
+                if prev_x <= collision_x and x >= collision_x:
                     # Interpolate exact y position at crossing
                     if prev_x != x:  # Avoid division by zero
                         t = (collision_x - prev_x) / (x - prev_x)
@@ -438,8 +454,30 @@ class Thinker:
                     else:
                         collision_y = y
 
+                    # Clamp the collision y value to be in bounds
+                    collision_y = max(top_wall, min(bottom_wall, collision_y))
+
                     debug_write(f"Collision predicted at frame {frame_idx}, y={collision_y}")
                     return (frame_idx, collision_y)
+
+                # Safety check - if x is way out of bounds, abort
+                if x < -10 or x > 110:
+                    debug_write(f"Ball x position out of bounds: {x}, aborting prediction")
+                    return None
+
+            # If we've gone through all frames and haven't crossed,
+            # check if we're even moving toward the collision plane
+            if vx > 0 and start_x < collision_x:
+                # We're moving toward collision but didn't reach it in max_frames
+                debug_write(f"Ball moving toward collision_x but didn't reach in {max_frames} frames")
+                # Estimate based on current trajectory
+                time_to_collision = (collision_x - start_x) / vx if vx != 0 else float('inf')
+                estimated_y = start_y + vy * time_to_collision
+                # Clamp to screen bounds
+                estimated_y = max(top_wall, min(bottom_wall, estimated_y))
+                estimated_frame = int(time_to_collision / dt)
+                debug_write(f"Estimated collision at frame {estimated_frame}, y={estimated_y}")
+                return (estimated_frame, estimated_y)
 
             # No collision by max_frames
             debug_write(f"No collision predicted within {max_frames} frames")
@@ -461,6 +499,18 @@ class Thinker:
             paddle_pos = paddle.get("paddlePos", 50.0)
             paddle_size = paddle.get("paddleSize", 10.0)
             paddle_speed = paddle.get("paddleSpeed", 3.5)
+
+            # CRITICAL: Check if the paddle position has dramatically changed
+            # This can happen due to game resets, points being scored, or other events
+            if hasattr(self, 'last_paddle_pos') and abs(self.last_paddle_pos - paddle_pos) > 20:
+                debug_write(f"!!! MAJOR PADDLE POSITION CHANGE DETECTED: {self.last_paddle_pos} -> {paddle_pos}")
+                # Reset prediction history since our context has completely changed
+                self.last_predicted_y = None
+                self.last_predicted_frame = None
+                debug_write(f"Prediction history reset due to major position change")
+
+            # Track the paddle position for next time
+            self.last_paddle_pos = paddle_pos
 
             use_big = metrics.get("useBig", False)
             use_speed = metrics.get("useSpeed", False)
@@ -548,14 +598,19 @@ class Thinker:
 
             # In case the ball is moving away, center paddle more gradually
             if dir_x < 0 and ball_x < 50:
-                total_needed = 50.0 - paddle_pos
-                frames_to_reach = GAME_FPS // 2  # More gradual centering
-                debug_write(f"Ball away from AI - centering paddle, movement needed: {total_needed}")
+                # Don't move to center if we're already close to center
+                if abs(paddle_pos - 50.0) < 10:
+                    total_needed = 0
+                    debug_write(f"Ball away, already near center - staying still")
+                else:
+                    total_needed = 50.0 - paddle_pos
+                    frames_to_reach = GAME_FPS // 2  # More gradual centering
+                    debug_write(f"Ball away from AI - centering paddle, movement needed: {total_needed}")
 
             current_pos = paddle_pos
             for frame_i in range(GAME_FPS):
                 # If we've reached our target position or passed collision frame, stop moving
-                if (frame_i >= frames_to_reach) or (frame_i >= collision_frame):
+                if (frame_i >= frames_to_reach) or (frame_i >= collision_frame) or abs(total_needed) < 1.0:
                     move = "0"
                 else:
                     # Calculate step for this frame
@@ -622,6 +677,9 @@ class AIPlayer:
         self.last_performance_check = 0
         self.action_count = 0
         self.adapt_interval = 10  # Check for adaptation every 10 snapshots
+        self.last_state = None  # Track game state to detect point resets
+        self.last_left_score = 0
+        self.last_right_score = 0
 
         # Initialize with neutral movement
         self.action_queue.put({
@@ -634,6 +692,30 @@ class AIPlayer:
         """
         Called every ~1s. Tells the AI to do a fresh plan.
         """
+        # Detect if a point was scored since last update - if so, clear the action queue
+        left_score = game_state.get("playerLeft", {}).get("points", 0)
+        right_score = game_state.get("playerRight", {}).get("points", 0)
+
+        # Check for score change or serve change
+        if self.last_state:
+            score_changed = (left_score != self.last_left_score or right_score != self.last_right_score)
+            serve_changed = (
+                game_state.get("gameData", {}).get("playerServes") !=
+                self.last_state.get("gameData", {}).get("playerServes")
+            )
+
+            if score_changed or serve_changed:
+                debug_write(f"Game state change detected! Score change: {score_changed}, Serve change: {serve_changed}")
+                debug_write(f"Clearing action queue to resynchronize with game state")
+                # Clear the action queue to avoid stale actions
+                while not self.action_queue.empty():
+                    self.action_queue.get()
+
+        # Update state tracking
+        self.last_state = game_state
+        self.last_left_score = left_score
+        self.last_right_score = right_score
+
         # Check if we should adapt difficulty based on performance
         self.action_count += 1
         if self.action_count - self.last_performance_check >= self.adapt_interval:
@@ -653,6 +735,14 @@ class AIPlayer:
         try:
             # Get success rate from learner stats
             success_rate = self.thinker.learner.ai_stats.get("success_rate", 0.5)
+
+            # Only adapt difficulty if we have enough data points
+            min_balls_to_adapt = 3
+            total_balls = self.thinker.learner.ai_stats.get("total_balls_faced", 0)
+
+            if total_balls < min_balls_to_adapt:
+                debug_write(f"Not enough data to adapt difficulty yet ({total_balls}/{min_balls_to_adapt} balls faced)")
+                return
 
             # Decide if difficulty adjustment is needed
             recommended_difficulty = self.difficulty
@@ -684,8 +774,17 @@ class AIPlayer:
         except Empty:
             # Emergency fallback - if queue is empty, move toward center
             debug_write("Action queue empty! Using emergency fallback")
+            paddle_pos = self.thinker.last_game_state.get("playerRight", {}).get("paddlePos", 50.0)
+
+            # Move toward center if far from it
+            if abs(paddle_pos - 50.0) > 10:
+                move = "-" if paddle_pos > 50 else "+"
+                debug_write(f"Emergency fallback - moving toward center: {move}")
+            else:
+                move = "0"
+
             return {
-                'movePaddle': "0",
+                'movePaddle': move,
                 'activatePowerupBig': False,
                 'activatePowerupSpeed': False
             }
@@ -698,7 +797,6 @@ class AIPlayer:
         while not self.action_queue.empty():
             self.action_queue.get()
 
-
     def _add_fallback_actions(self):
         """
         If we're running low, push some do-nothing or random ones
@@ -709,6 +807,8 @@ class AIPlayer:
         # Try to add some useful fallbacks - move toward center of board
         paddle_pos = self.thinker.last_game_state.get("playerRight", {}).get("paddlePos", 50.0)
         distance_to_center = 50.0 - paddle_pos
+
+        debug_write(f"Generating fallback actions - paddle at {paddle_pos}, distance to center: {distance_to_center}")
 
         for _ in range(GAME_FPS // 3):  # 1/3 of the frames
             if random.random() < randomness:
