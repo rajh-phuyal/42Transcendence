@@ -49,18 +49,16 @@ class HistoryView(BaseAuthenticatedView):
     def get(self, request):
         user = request.user
         # Get all tournaments of the user
-        tournaments = TournamentMember.objects.filter(
-            user_id=user.id
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name'),
-            tournamentState=models.F('tournament__state')
-        ).values(
-            'tournamentId',
-            'tournamentName',
-            'tournamentState'
-        )
-        return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
+        tournaments = Tournament.objects.filter(
+            members__user=user
+        ).order_by('-finish_time')
+
+        # Serialize the tournaments using TournamentInfoSerializer
+        serializer_tournaments = TournamentInfoSerializer(tournaments, many=True)
+
+        return success_response(_("User's tournament history fetched successfully"), **{
+            'tournaments': serializer_tournaments.data
+        })
 
 # All tournaments where user is invited to and public tournaments
 class ToJoinView(BaseAuthenticatedView):
