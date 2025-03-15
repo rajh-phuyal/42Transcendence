@@ -8,12 +8,12 @@ function updateUserInfo() {
     // Music Sound icons
     // Update icons based on initial settings
     $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
-        ? '/assets/game/icons/music-on.png'
-        : '/assets/game/icons/music-off.png');
+        ? '/assets/icons_128x128/icon_music-on.png'
+        : '/assets/icons_128x128/icon_music-off.png');
 
     $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
-        ? '/assets/game/icons/sound-on.png'
-        : '/assets/game/icons/sound-off.png');
+        ? '/assets/icons_128x128/icon_sound-on.png'
+        : '/assets/icons_128x128/icon_sound-off.png');
 }
 
 const styleUpdateMap = {
@@ -65,16 +65,16 @@ export default function $nav(navigationPathParams = null) {
             callback: () => {
                 audioPlayer.toggleMusic();
                 $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
-                    ? '/assets/game/icons/music-on.png'
-                    : '/assets/game/icons/music-off.png');
+                    ? '/assets/icons_128x128/icon_music-on.png'
+                    : '/assets/icons_128x128/icon_music-off.png');
             }
 		},
         { id: 'nav-sound-icon',
             callback: () => {
                 audioPlayer.toggleSound();
                 $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
-                    ? '/assets/game/icons/sound-on.png'
-                    : '/assets/game/icons/sound-off.png');
+                    ? '/assets/icons_128x128/icon_sound-on.png'
+                    : '/assets/icons_128x128/icon_sound-off.png');
             }
         }
     ];
