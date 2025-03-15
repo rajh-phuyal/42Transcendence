@@ -73,10 +73,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         )
 
         # Fetch tournament statistics
-        total_tournament_games = (
-            TournamentMember.objects.filter(user=current_user)
-            .aggregate(total_games=Sum('played_games'))['total_games'] or 0
-        )
+        total_tournament_games = TournamentMember.objects.filter(
+            user=current_user, tournament__state='finished'
+        ).values('tournament').distinct().count()  # Count unique tournaments instead of summing played_games
+
 
         # Get total tournaments finished where the player has participated
         finished_tournaments = TournamentMember.objects.filter(user=current_user, tournament__state='finished')
@@ -89,11 +89,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         # Fetch the top player's total tournament games (to normalize)
         top_tournament_total_games = (
             User.objects
-            .annotate(total_games=Sum('tournament_members__played_games'))
-            .order_by('-total_games')
-            .values_list('total_games', flat=True)
+            .annotate(total_tournaments=Count('tournament_members__tournament', distinct=True))
+            .order_by('-total_tournaments')
+            .values_list('total_tournaments', flat=True)
             .first() or 1  # Prevent division by zero
         )
+
 
         # Calculate raw stats
         skill = (games_won or 0) / (total_games_count or 1)
