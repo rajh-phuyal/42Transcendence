@@ -1,5 +1,6 @@
 # Basic
 import logging
+from rest_framework import status
 # Django
 from django.utils.translation import gettext as _
 from django.db.models import Case, When, Value, IntegerField
@@ -10,6 +11,7 @@ from core.decorators import barely_handle_exceptions
 # User
 from user.models import User
 from user.utils import get_user_by_id
+from user.utils_relationship import is_blocking
 # Game
 from game.models import Game, GameMember
 from game.serializer import GameSerializer
@@ -113,14 +115,18 @@ class LobbyView(BaseAuthenticatedView):
 class HistoryView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, userid):
-        user = request.user
+        requester = request.user
         try:
-            user = User.objects.get(id=userid)
+            target = User.objects.get(id=userid)
         except User.DoesNotExist:
-            return error_response(_("User not found"))
+            return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
+        # Check if user is blocked:
+        if is_blocking(target, requester):
+            return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
+
         # Get all games and sort them descending by finish_time
         # Not finsihed games always need to be at the end
-        games = Game.objects.filter(game_members__user=user).annotate(
+        games = Game.objects.filter(game_members__user=target).annotate(
                 finish_time_nulls=Case(
                 When(finish_time__isnull=True, then=Value(1)),  # Assign 1 for NULL values
                 default=Value(0),  # Assign 0 for non-NULL values
@@ -129,7 +135,7 @@ class HistoryView(BaseAuthenticatedView):
         ).order_by('-finish_time', 'finish_time_nulls')
         serializer_games = GameSerializer(games, many=True)
         return success_response(_("Game History fetched"), **{
-            'Games': serializer_games.data,
+            'games': serializer_games.data,
         })
 
 class PlayAgainView(BaseAuthenticatedView):
