@@ -98,7 +98,7 @@ class GameConsumer(CustomWebSocketLogic):
                     logging.info(f"AI player added to game: {self.game_id}")
                     self.ai_players[self.game_id] = {
                         "stateSnapshotAt": datetime.now(timezone.utc),
-                        "player": AIPlayer(difficulty=1),
+                        "player": AIPlayer(difficulty=0), # start strong
                         "side": "playerRight"  # AI is always right player
                     }
 

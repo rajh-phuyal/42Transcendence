@@ -9,7 +9,7 @@ import math
 
 
 DIFFICULTY_CONFIGS = {
-    0: {"randomness": 0.3, "error_margin": 0.6},
+    0: {"randomness": 0, "error_margin": 0},
     1: {"randomness": 0.2, "error_margin": 0.5},
     2: {"randomness": 0.1, "error_margin": 0.4},
 }
@@ -463,8 +463,9 @@ class Thinker:
 
             # Constants for wall boundaries - taking ball size into account
             ball_height = self.last_game_state.get("ball", {}).get("height", 1.0)
-            top_wall = ball_height  # Ball radius from top
-            bottom_wall = 100 - ball_height  # Ball radius from bottom
+            # IMPROVED: Use a smaller wall buffer to avoid prediction errors
+            top_wall = ball_height * 0.9  # Slightly smaller buffer
+            bottom_wall = 100 - (ball_height * 0.9)  # Slightly smaller buffer
 
             # Initialize for simulation
             x = start_x
@@ -476,40 +477,48 @@ class Thinker:
             debug_write(f"Starting prediction from: x={x}, y={y}, vx={vx}, vy={vy}, speed={speed}")
             debug_write(f"Target collision_x: {collision_x}")
 
+            # Use a higher time resolution for more accurate predictions
+            # Instead of 1 step per frame, use multiple substeps
+            substeps = 4  # More substeps for better accuracy
+            dt_sub = dt / substeps
+
             # Simplified physics simulation - step by step
             for frame_idx in range(max_frames):
-                # Save previous position for interpolation
-                prev_x = x
-                prev_y = y
+                for substep in range(substeps):
+                    # Save previous position for interpolation
+                    prev_x = x
+                    prev_y = y
 
-                # Move
-                x += vx * dt
-                y += vy * dt
+                    # Move
+                    x += vx * dt_sub
+                    y += vy * dt_sub
 
-                # Bounce off top/bottom walls with ball height considered
-                if y < top_wall:
-                    y = 2 * top_wall - y  # Reflect position
-                    vy = -vy  # Reflect velocity
-                    debug_write(f"Top wall bounce at frame {frame_idx}, x={x}")
-                elif y > bottom_wall:
-                    y = 2 * bottom_wall - y  # Reflect position
-                    vy = -vy  # Reflect velocity
-                    debug_write(f"Bottom wall bounce at frame {frame_idx}, x={x}")
+                    # Bounce off top/bottom walls with ball height considered
+                    if y < top_wall:
+                        y = 2 * top_wall - y  # Reflect position
+                        vy = -vy  # Reflect velocity
+                        if substep == 0:  # Only log on the first substep to avoid excessive logs
+                            debug_write(f"Top wall bounce at frame {frame_idx}, x={x}")
+                    elif y > bottom_wall:
+                        y = 2 * bottom_wall - y  # Reflect position
+                        vy = -vy  # Reflect velocity
+                        if substep == 0:  # Only log on the first substep to avoid excessive logs
+                            debug_write(f"Bottom wall bounce at frame {frame_idx}, x={x}")
 
-                # Check if crossing collision_x on this step
-                if prev_x <= collision_x and x >= collision_x:
-                    # Interpolate exact y position at crossing
-                    if prev_x != x:  # Avoid division by zero
-                        t = (collision_x - prev_x) / (x - prev_x)
-                        collision_y = prev_y + t * (y - prev_y)
-                    else:
-                        collision_y = y
+                    # Check if crossing collision_x on this substep
+                    if prev_x <= collision_x and x >= collision_x:
+                        # Interpolate exact y position at crossing
+                        if prev_x != x:  # Avoid division by zero
+                            t = (collision_x - prev_x) / (x - prev_x)
+                            collision_y = prev_y + t * (y - prev_y)
+                        else:
+                            collision_y = y
 
-                    # Clamp the collision y value to be in bounds
-                    collision_y = max(top_wall, min(bottom_wall, collision_y))
+                        # Clamp the collision y value to be in bounds
+                        collision_y = max(top_wall, min(bottom_wall, collision_y))
 
-                    debug_write(f"Collision predicted at frame {frame_idx}, y={collision_y}")
-                    return (frame_idx, collision_y)
+                        debug_write(f"Collision predicted at frame {frame_idx}, y={collision_y}")
+                        return (frame_idx, collision_y)
 
                 # Safety check - if x is way out of bounds, abort
                 if x < -10 or x > 110:
@@ -563,25 +572,29 @@ class Thinker:
             # Track the paddle position for next time
             self.last_paddle_pos = paddle_pos
 
+            # Get powerup usage decisions from metrics
             use_big = metrics.get("useBig", False)
             use_speed = metrics.get("useSpeed", False)
 
-            # Check which type of speed powerup is available (from _check_powerup_availability)
-            has_slow = getattr(self, 'has_slow_powerup', False)
-            has_fast = getattr(self, 'has_fast_powerup', False)
+            # Check for available powerups in the game state
+            big_available = paddle.get("powerupBig") == "available"
+            slow_available = paddle.get("powerupSlow") == "available"
+            fast_available = paddle.get("powerupFast") == "available"
 
-            # Determine which speed powerup to use based on ball direction
-            # Use slow when ball coming toward AI, use fast when ball moving away
+            # Log what we found
+            debug_write(f"Powerup state check - Big: {paddle.get('powerupBig')}, Slow: {paddle.get('powerupSlow')}, Fast: {paddle.get('powerupFast')}")
+
+            # Final determination of which powerups to actually use (combining our decision with availability)
+            activate_big = use_big and big_available
+
+            # For speed powerups, we need to determine which one to use based on ball direction
             ball_coming_toward_ai = dir_x > 0
-
-            # Prepare the specific powerup actions
-            activate_big = use_big
-            activate_slow = use_speed and has_slow and ball_coming_toward_ai
-            activate_fast = use_speed and has_fast and not ball_coming_toward_ai
+            use_slow = use_speed and slow_available and ball_coming_toward_ai
+            use_fast = use_speed and fast_available and not ball_coming_toward_ai
 
             # Log our decision about powerups for this planning cycle
-            debug_write(f"Planning actions with powerups: useBig={use_big}, useSpeed={use_speed}")
-            debug_write(f"Specific powerups: activateBig={activate_big}, activateSlow={activate_slow}, activateFast={activate_fast}")
+            debug_write(f"Planning actions with powerups: useBig={use_big}(available:{big_available}), useSpeed={use_speed}(slow:{slow_available}, fast:{fast_available})")
+            debug_write(f"ACTIVATING powerups: Big={activate_big}, Slow={use_slow}, Fast={use_fast}")
 
             # Check the situation - ball coming toward AI or moving away
             if ball_coming_toward_ai:
@@ -625,14 +638,16 @@ class Thinker:
                 self.last_predicted_y = collision_y
                 self.last_predicted_frame = collision_frame
 
-                # Apply some randomness based on difficulty
-                randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]
-                error_margin = DIFFICULTY_CONFIGS[self.difficulty]["error_margin"]
+                # Apply a much smaller error based on difficulty
+                # REDUCED ERROR - This was causing the paddle to miss
+                randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"] * 0.5  # Reduce by half
+                error_margin = DIFFICULTY_CONFIGS[self.difficulty]["error_margin"] * 0.5  # Reduce by half
 
-                # Add a bit of error to make AI less perfect
+                # Add a smaller error to make AI challenging but not miss too much
                 if random.random() < randomness:
-                    error_amount = random.uniform(-error_margin * 10, error_margin * 10)
-                    debug_write(f"Adding error of {error_amount} to predicted y")
+                    # Much smaller error range
+                    error_amount = random.uniform(-error_margin * 5, error_margin * 5)
+                    debug_write(f"Adding small error of {error_amount} to predicted y")
                     collision_y += error_amount
                     # Clamp to keep in bounds
                     collision_y = max(paddle_size/2, min(100 - paddle_size/2, collision_y))
@@ -640,7 +655,7 @@ class Thinker:
             debug_write(f"Plan Next Second => BallX={ball_x}, BallY={ball_y}, "
                         f"DirX={dir_x}, DirY={dir_y}, speed={speed}, "
                         f"Predicted Collision: frame={collision_frame}, y={collision_y}, "
-                        f"paddlePos={paddle_pos}, useBig={use_big}, useSpeed={use_speed}")
+                        f"paddlePos={paddle_pos}, useBig={activate_big}, useSpeed={use_slow or use_fast}")
 
             # Calculate how much to move to reach the predicted y position
             total_needed = collision_y - paddle_pos
@@ -670,21 +685,62 @@ class Thinker:
                     debug_write(f"Ball away from AI - centering paddle, movement needed: {total_needed}")
 
             current_pos = paddle_pos
-            for frame_i in range(GAME_FPS):
-                # If we've reached our target position or passed collision frame, stop moving
-                if (frame_i >= frames_to_reach) or (frame_i >= collision_frame) or abs(total_needed) < 1.0:
+
+            # IMPORTANT: Create a special first action with powerups
+            # This ensures we explicitly try to use powerups right away
+            if activate_big or use_slow or use_fast:
+                # Determine first movement
+                if total_needed > 0.5:  # Need to move DOWN
+                    move = "+"
+                    current_pos += min(paddle_speed, total_needed / frames_to_reach)
+                elif total_needed < -0.5:  # Need to move UP
+                    move = "-"
+                    current_pos += max(-paddle_speed, total_needed / frames_to_reach)  # This will decrease y
+                else:
+                    move = "0"  # No movement needed
+
+                # Clamp paddle position
+                if current_pos < paddle_size/2:
+                    current_pos = paddle_size/2
+                elif current_pos > 100 - paddle_size/2:
+                    current_pos = 100 - paddle_size/2
+
+                # Add the action with powerup usage
+                first_action = {
+                    "movePaddle": move,
+                    "activatePowerupBig": activate_big,
+                    "activatePowerupSpeed": use_slow or use_fast
+                }
+                actions.append(first_action)
+
+                debug_write(f"SPECIAL POWERUP ACTION: Move={move}, PaddlePos={current_pos:.2f}, "
+                            f"PowerUpBig={activate_big}, PowerUpSpeed={use_slow or use_fast}")
+
+                # For remaining frames, we don't activate powerups again
+                start_frame = 1
+                powerups_used = True
+            else:
+                start_frame = 0
+                powerups_used = False
+
+            # Plan the rest of the actions (after the powerup action if used)
+            for frame_i in range(start_frame, GAME_FPS):
+                # CHANGED: Reduced movement threshold from 1.0 to 0.3
+                # to make smaller, more precise movements
+                if (frame_i >= frames_to_reach) or (frame_i >= collision_frame) or abs(total_needed) < 0.3:
                     move = "0"
                 else:
                     # Calculate step for this frame
                     step_per_frame = total_needed / frames_to_reach
 
+                    # CHANGED: Reduced the threshold from 0.5 to 0.2 for more responsive movement
                     # Choose movement direction - IMPORTANT: In the game:
                     # "+" means move DOWN (y increases)
                     # "-" means move UP (y decreases)
-                    if step_per_frame > 0.5:  # Need to move DOWN
+                    if step_per_frame > 0.2:  # Need to move DOWN - lower threshold
                         move = "+"
                         current_pos += min(paddle_speed, step_per_frame)
-                    elif step_per_frame < -0.5:  # Need to move UP
+                    elif step_per_frame < -0.2:  # Need to move UP - lower threshold
                         move = "-"
                         current_pos += max(-paddle_speed, step_per_frame)  # This will decrease y
                     else:
@@ -696,21 +752,16 @@ class Thinker:
                 elif current_pos > 100 - paddle_size/2:
                     current_pos = 100 - paddle_size/2
 
-                # Create the action for this frame
+                # Create the action for this frame - no powerups for remaining frames
                 action = {
                     "movePaddle": move,
-                    "activatePowerupBig": activate_big,
-                    "activatePowerupSpeed": activate_slow or activate_fast  # Combine both speed types
+                    "activatePowerupBig": False,
+                    "activatePowerupSpeed": False
                 }
                 actions.append(action)
 
                 debug_write(f"Frame={frame_i}, Move={move}, PaddlePos={current_pos:.2f}, "
-                            f"PowerUpBig={activate_big}, PowerUpSpeed={activate_slow or activate_fast}")
-
-                # only trigger powerups once
-                activate_big = False
-                activate_slow = False
-                activate_fast = False
+                            f"PowerUpBig=False, PowerUpSpeed=False")
 
         except Exception as e:
             logging.error(f"Thinker plan error: {e}")
@@ -734,7 +785,7 @@ class AIPlayer:
       action = await ai.action()  # each frame to see what to do next
     """
 
-    def __init__(self, difficulty=1):
+    def __init__(self, difficulty=0):
         self.difficulty = difficulty
         self.action_queue = Queue()
         self.thinker = Thinker(self.action_queue, difficulty)
@@ -795,19 +846,25 @@ class AIPlayer:
         fast_state = player_right.get("powerupFast", "unavailable")
         current_speed_state = "available" if slow_state == "available" or fast_state == "available" else "unavailable"
 
-        # Log when powerups become available
+        # Log when powerups become available - with very visible formatting
         if current_big_state == "available" and self.last_big_state != "available":
+            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             debug_write("!!! BIG POWERUP NOW AVAILABLE !!!")
+            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         if current_speed_state == "available" and self.last_speed_state != "available":
+            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             debug_write("!!! SPEED POWERUP NOW AVAILABLE !!!")
+            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         # Check if we've used powerups
-        if self.last_big_state == "available" and current_big_state == "unavailable":
+        if self.last_big_state == "available" and current_big_state != "available":
             self.powerup_big_used = True
-            debug_write("BIG POWERUP HAS BEEN USED!")
-        if self.last_speed_state == "available" and current_speed_state == "unavailable":
+            debug_write("!!! BIG POWERUP STATE CHANGE: " + self.last_big_state + " -> " + current_big_state)
+            debug_write("!!! BIG POWERUP HAS BEEN USED OR CHANGED STATE !!!")
+        if self.last_speed_state == "available" and current_speed_state != "available":
             self.powerup_speed_used = True
-            debug_write("SPEED POWERUP HAS BEEN USED!")
+            debug_write("!!! SPEED POWERUP STATE CHANGE: " + self.last_speed_state + " -> " + current_speed_state)
+            debug_write("!!! SPEED POWERUP HAS BEEN USED OR CHANGED STATE !!!")
 
         # Store current powerup states
         self.last_big_state = current_big_state
@@ -820,36 +877,59 @@ class AIPlayer:
         else:
             self.game_critical_moment = False
 
-        # Force powerup usage based on game state
-        if (current_big_state == "available" or current_speed_state == "available"):
+        # Force powerup usage based on game state - more aggressively now
+        # This is a critical path to ensure powerups get used
+        if (current_big_state == "available" or slow_state == "available" or fast_state == "available"):
             self.powerup_usage_attempts += 1
 
-            # Be more aggressive with usage in critical moments
-            max_attempts = 3 if self.game_critical_moment else 5
+            # If the ball direction has been determined, use it to make smarter decisions about slow/fast
+            ball = game_state.get("ball", {})
+            dir_x = ball.get("directionX", 0)
+            ball_coming_toward_ai = dir_x > 0
 
-            if self.powerup_usage_attempts > max_attempts:
-                debug_write(f"Forcing powerup usage after {self.powerup_usage_attempts} attempts")
+            # Be more aggressive with usage in critical moments
+            max_attempts = 2  # Even more aggressive now - try to use within 2 cycles
+
+            # When in critical game moment, try to use immediately
+            if self.game_critical_moment:
+                max_attempts = 1
+
+            if self.powerup_usage_attempts >= max_attempts:
+                debug_write(f"FORCING POWERUP USAGE after {self.powerup_usage_attempts} attempts!!")
                 # Clear queue to inject a forced powerup action
                 while not self.action_queue.empty():
                     self.action_queue.get()
 
-                # Determine which speed powerup to use based on ball direction
-                ball = game_state.get("ball", {})
-                dir_x = ball.get("directionX", 0)
-                ball_coming_toward_ai = dir_x > 0
+                # Determine which powerup to use based on game state
+                use_big = current_big_state == "available"
 
+                # Logic for speed powerups depends on ball direction
                 use_slow = slow_state == "available" and ball_coming_toward_ai
                 use_fast = fast_state == "available" and not ball_coming_toward_ai
+
+                if not ball_coming_toward_ai and not use_fast and slow_state == "available":
+                    # If ball going away and we don't have fast, still try to use slow
+                    use_slow = True
+                    debug_write("No FAST powerup, using SLOW even though ball moving away!")
+
+                elif ball_coming_toward_ai and not use_slow and fast_state == "available":
+                    # If ball coming toward us and we don't have slow, still try fast
+                    use_fast = True
+                    debug_write("No SLOW powerup, using FAST even though ball coming toward AI!")
+
                 use_speed = use_slow or use_fast
 
-                # Add an immediate action that uses any available powerup
-                self.action_queue.put({
-                    "movePaddle": "0",  # Neutral movement
-                    "activatePowerupBig": current_big_state == "available",
-                    "activatePowerupSpeed": use_speed
-                })
+                # Add several immediate actions that use available powerups
+                # Adding multiple consecutive frames to increase chances of activation
+                for i in range(3):  # Try for 3 consecutive frames
+                    self.action_queue.put({
+                        "movePaddle": "0",  # Neutral movement
+                        "activatePowerupBig": use_big,
+                        "activatePowerupSpeed": use_speed
+                    })
 
-                debug_write(f"Forced powerup usage: Big={current_big_state=='available'}, Speed={use_speed}")
+                debug_write(f"FORCED POWERUP ACTIVATION: Big={use_big}, Slow={use_slow}, Fast={use_fast}, Speed={use_speed}")
+                debug_write(f"Ball direction: {dir_x}, Coming toward AI: {ball_coming_toward_ai}")
 
                 # Reset counter after forcing usage
                 self.powerup_usage_attempts = 0
@@ -873,6 +953,74 @@ class AIPlayer:
         # Ensure we never fully run out of actions
         if self.action_queue.qsize() <= 2:
             self._add_fallback_actions()
+
+    async def action(self) -> Dict[str, Any]:
+        """
+        Called by the game loop each frame to get the next AI action.
+        If the queue is empty, returns a do-nothing fallback.
+        """
+        try:
+            action = self.action_queue.get_nowait()
+
+            # Track and log when we actually try to use powerups
+            if action.get("activatePowerupBig", False):
+                debug_write("⭐⭐⭐ EXECUTING BIG POWERUP ACTION NOW ⭐⭐⭐")
+            if action.get("activatePowerupSpeed", False):
+                debug_write("⭐⭐⭐ EXECUTING SPEED POWERUP ACTION NOW ⭐⭐⭐")
+
+            return action
+
+        except Empty:
+            # Emergency fallback - if queue is empty, move toward center
+            debug_write("Action queue empty! Using emergency fallback")
+            paddle_pos = self.thinker.last_game_state.get("playerRight", {}).get("paddlePos", 50.0)
+
+            # Move toward center if far from it
+            if abs(paddle_pos - 50.0) > 10:
+                move = "-" if paddle_pos > 50 else "+"
+                debug_write(f"Emergency fallback - moving toward center: {move}")
+            else:
+                move = "0"
+
+            # Check if any powerups are available that we should use in this emergency
+            player_right = self.thinker.last_game_state.get("playerRight", {})
+            big_available = player_right.get("powerupBig") == "available"
+            slow_available = player_right.get("powerupSlow") == "available"
+            fast_available = player_right.get("powerupFast") == "available"
+
+            # Check ball direction for choosing between slow and fast
+            ball = self.thinker.last_game_state.get("ball", {})
+            dir_x = ball.get("directionX", 0)
+            ball_coming_toward_ai = dir_x > 0
+
+            # Choose appropriate speed powerup based on ball direction
+            use_slow = slow_available and ball_coming_toward_ai
+            use_fast = fast_available and not ball_coming_toward_ai
+
+            # If neither matches direction but one is available, use what we have
+            if not (use_slow or use_fast) and (slow_available or fast_available):
+                use_slow = slow_available
+                use_fast = fast_available
+
+            speed_available = use_slow or use_fast
+
+            # If in emergency and powerups available, use them!
+            if big_available or speed_available:
+                debug_write(f"⭐⭐⭐ EMERGENCY POWERUP USAGE! Big: {big_available}, Speed: {speed_available} ⭐⭐⭐")
+
+            return {
+                'movePaddle': move,
+                'activatePowerupBig': big_available,
+                'activatePowerupSpeed': speed_available
+            }
+
+    def cleanup(self):
+        """
+        Clean up the background thread when the game ends.
+        """
+        self.thinker.cleanup()
+        while not self.action_queue.empty():
+            self.action_queue.get()
 
     def _check_for_difficulty_adaptation(self):
         """
@@ -909,57 +1057,6 @@ class AIPlayer:
                 debug_write(f"Difficulty adjusted to {recommended_difficulty}")
         except Exception as e:
             debug_write(f"Error in difficulty adaptation: {e}")
-
-    async def action(self) -> Dict[str, Any]:
-        """
-        Called by the game loop each frame to get the next AI action.
-        If the queue is empty, returns a do-nothing fallback.
-        """
-        try:
-            action = self.action_queue.get_nowait()
-
-            # Track when we actually try to use powerups
-            if action.get("activatePowerupBig", False):
-                debug_write("⭐ TRYING TO USE BIG POWERUP NOW ⭐")
-            if action.get("activatePowerupSpeed", False):
-                debug_write("⭐ TRYING TO USE SPEED POWERUP NOW ⭐")
-
-            return action
-        except Empty:
-            # Emergency fallback - if queue is empty, move toward center
-            debug_write("Action queue empty! Using emergency fallback")
-            paddle_pos = self.thinker.last_game_state.get("playerRight", {}).get("paddlePos", 50.0)
-
-            # Move toward center if far from it
-            if abs(paddle_pos - 50.0) > 10:
-                move = "-" if paddle_pos > 50 else "+"
-                debug_write(f"Emergency fallback - moving toward center: {move}")
-            else:
-                move = "0"
-
-            # Check if any powerups are available that we should use in this emergency
-            player_right = self.thinker.last_game_state.get("playerRight", {})
-            big_available = player_right.get("powerupBig") == "available"
-            speed_available = (player_right.get("powerupSlow") == "available" or
-                              player_right.get("powerupFast") == "available")
-
-            # If in emergency and powerups available, use them!
-            if big_available or speed_available:
-                debug_write(f"Emergency powerup usage! Big: {big_available}, Speed: {speed_available}")
-
-            return {
-                'movePaddle': move,
-                'activatePowerupBig': big_available,
-                'activatePowerupSpeed': speed_available
-            }
-
-    def cleanup(self):
-        """
-        Clean up the background thread when the game ends.
-        """
-        self.thinker.cleanup()
-        while not self.action_queue.empty():
-            self.action_queue.get()
 
     def _add_fallback_actions(self):
         """
