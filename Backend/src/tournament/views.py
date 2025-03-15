@@ -51,7 +51,7 @@ class HistoryView(BaseAuthenticatedView):
         # Get all tournaments of the user
         tournaments = Tournament.objects.filter(
             members__user=user
-        )
+        ).order_by('-finish_time')
 
         # Serialize the tournaments using TournamentInfoSerializer
         serializer_tournaments = TournamentInfoSerializer(tournaments, many=True)
