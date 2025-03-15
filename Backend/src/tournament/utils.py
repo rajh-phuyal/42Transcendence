@@ -18,10 +18,11 @@ from user.utils import get_user_by_id
 from user.utils_relationship import are_friends, is_blocking, is_blocked
 # Game
 from game.models import Game
+from game.serializer import GameSerializer
 # Tournament
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from tournament.models import Tournament, TournamentMember
-from tournament.serializer import TournamentGameSerializer, TournamentMemberSerializer
+from tournament.serializer import TournamentMemberSerializer
 # Chat
 from chat.message_utils import create_and_send_overloards_pm
 
