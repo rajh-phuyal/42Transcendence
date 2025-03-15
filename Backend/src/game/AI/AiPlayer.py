@@ -1,8 +1,6 @@
-import logging
 from queue import Queue, Empty
 from typing import Dict, Any
 import random
-from datetime import datetime, timezone
 from game.constants import GAME_FPS
 
 from .AI import debug_write, DIFFICULTY_CONFIGS
@@ -10,10 +8,10 @@ from .AiThinker import Thinker
 
 class AIPlayer:
     """
-    Main AI entrypoint used by the game loop. Owns the Thinker + action_queue.
+    Main AI used by the game loop. Owns the Thinker + action_queue.
     The game loop calls:
-      ai.compute(game_state)  # about once per second for a new snapshot
-      action = await ai.action()  # each frame to see what to do next
+      ai.compute(game_state)  # about once per second for a new state snapshot
+      action = await ai.action()  # get action for the frame
     """
 
     def __init__(self, difficulty=0):
@@ -22,7 +20,7 @@ class AIPlayer:
         self.thinker = Thinker(self.action_queue, difficulty)
         self.last_performance_check = 0
         self.action_count = 0
-        self.adapt_interval = 10  # Check for adaptation every 10 snapshots
+        self.adapt_interval = 3  # Check for adaptation every 3 snapshots
         self.last_state = None  # Track game state to detect point resets
         self.last_left_score = 0
         self.last_right_score = 0
@@ -77,25 +75,11 @@ class AIPlayer:
         fast_state = player_right.get("powerupFast", "unavailable")
         current_speed_state = "available" if slow_state == "available" or fast_state == "available" else "unavailable"
 
-        # Log when powerups become available - with very visible formatting
-        if current_big_state == "available" and self.last_big_state != "available":
-            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            debug_write("!!! BIG POWERUP NOW AVAILABLE !!!")
-            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        if current_speed_state == "available" and self.last_speed_state != "available":
-            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            debug_write("!!! SPEED POWERUP NOW AVAILABLE !!!")
-            debug_write("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
         # Check if we've used powerups
         if self.last_big_state == "available" and current_big_state != "available":
             self.powerup_big_used = True
-            debug_write("!!! BIG POWERUP STATE CHANGE: " + self.last_big_state + " -> " + current_big_state)
-            debug_write("!!! BIG POWERUP HAS BEEN USED OR CHANGED STATE !!!")
         if self.last_speed_state == "available" and current_speed_state != "available":
             self.powerup_speed_used = True
-            debug_write("!!! SPEED POWERUP STATE CHANGE: " + self.last_speed_state + " -> " + current_speed_state)
-            debug_write("!!! SPEED POWERUP HAS BEEN USED OR CHANGED STATE !!!")
 
         # Store current powerup states
         self.last_big_state = current_big_state
@@ -104,7 +88,6 @@ class AIPlayer:
         # Determine if this is a critical game moment (close scores near end of game)
         if (left_score >= 9 or right_score >= 9) and abs(left_score - right_score) <= 2:
             self.game_critical_moment = True
-            debug_write(f"CRITICAL GAME MOMENT DETECTED! Score: {left_score}-{right_score}")
         else:
             self.game_critical_moment = False
 
@@ -159,9 +142,6 @@ class AIPlayer:
                         "activatePowerupSpeed": use_speed
                     })
 
-                debug_write(f"FORCED POWERUP ACTIVATION: Big={use_big}, Slow={use_slow}, Fast={use_fast}, Speed={use_speed}")
-                debug_write(f"Ball direction: {dir_x}, Coming toward AI: {ball_coming_toward_ai}")
-
                 # Reset counter after forcing usage
                 self.powerup_usage_attempts = 0
         else:
@@ -192,58 +172,9 @@ class AIPlayer:
         """
         try:
             action = self.action_queue.get_nowait()
-
-            # Track and log when we actually try to use powerups
-            if action.get("activatePowerupBig", False):
-                debug_write("⭐⭐⭐ EXECUTING BIG POWERUP ACTION NOW ⭐⭐⭐")
-            if action.get("activatePowerupSpeed", False):
-                debug_write("⭐⭐⭐ EXECUTING SPEED POWERUP ACTION NOW ⭐⭐⭐")
-
             return action
-
         except Empty:
-            # Emergency fallback - if queue is empty, move toward center
-            debug_write("Action queue empty! Using emergency fallback")
-            paddle_pos = self.thinker.last_game_state.get("playerRight", {}).get("paddlePos", 50.0)
-
-            # Move toward center if far from it
-            if abs(paddle_pos - 50.0) > 10:
-                move = "-" if paddle_pos > 50 else "+"
-                debug_write(f"Emergency fallback - moving toward center: {move}")
-            else:
-                move = "0"
-
-            # Check if any powerups are available that we should use in this emergency
-            player_right = self.thinker.last_game_state.get("playerRight", {})
-            big_available = player_right.get("powerupBig") == "available"
-            slow_available = player_right.get("powerupSlow") == "available"
-            fast_available = player_right.get("powerupFast") == "available"
-
-            # Check ball direction for choosing between slow and fast
-            ball = self.thinker.last_game_state.get("ball", {})
-            dir_x = ball.get("directionX", 0)
-            ball_coming_toward_ai = dir_x > 0
-
-            # Choose appropriate speed powerup based on ball direction
-            use_slow = slow_available and ball_coming_toward_ai
-            use_fast = fast_available and not ball_coming_toward_ai
-
-            # If neither matches direction but one is available, use what we have
-            if not (use_slow or use_fast) and (slow_available or fast_available):
-                use_slow = slow_available
-                use_fast = fast_available
-
-            speed_available = use_slow or use_fast
-
-            # If in emergency and powerups available, use them!
-            if big_available or speed_available:
-                debug_write(f"⭐⭐⭐ EMERGENCY POWERUP USAGE! Big: {big_available}, Speed: {speed_available} ⭐⭐⭐")
-
-            return {
-                'movePaddle': move,
-                'activatePowerupBig': big_available,
-                'activatePowerupSpeed': speed_available
-            }
+            self._add_fallback_actions()
 
     def cleanup(self):
         """
@@ -289,47 +220,19 @@ class AIPlayer:
         except Exception as e:
             debug_write(f"Error in difficulty adaptation: {e}")
 
+
+    # ----------- fallback actions -----------
     def _add_fallback_actions(self):
         """
         If we're running low, push some do-nothing or random ones
-        so we never starve the game of actions.
+        so we never starve.
         """
         randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]
 
-        # Try to add some useful fallbacks - move toward center of board
-        paddle_pos = self.thinker.last_game_state.get("playerRight", {}).get("paddlePos", 50.0)
-        distance_to_center = 50.0 - paddle_pos
-
-        debug_write(f"Generating fallback actions - paddle at {paddle_pos}, distance to center: {distance_to_center}")
-
-        for _ in range(GAME_FPS // 3):  # 1/3 of the frames
-            if random.random() < randomness:
-                # Random movement with some bias toward center
-                if distance_to_center > 5:
-                    movement = "-"  # Move up toward center
-                elif distance_to_center < -5:
-                    movement = "+"  # Move down toward center
-                else:
-                    movement = random.choice(["+", "-", "0"])
-            else:
-                # Deliberate movement toward center
-                if abs(distance_to_center) > 2:
-                    movement = "-" if distance_to_center > 0 else "+"
-                else:
-                    movement = "0"
-
+        for _ in range(GAME_FPS // 5):  # adding 1/5 of the frames
             if not self.action_queue.full():
                 self.action_queue.put({
-                    'movePaddle': movement,
+                    'movePaddle': '0' if random.random() < randomness else random.choice(["+", "-"]),
                     'activatePowerupBig': False,
                     'activatePowerupSpeed': False
                 })
-
-            # Update our simulated position for next fallback
-            if movement == "+":
-                paddle_pos += 2
-            elif movement == "-":
-                paddle_pos -= 2
-
-            # Recalculate distance to center
-            distance_to_center = 50.0 - paddle_pos

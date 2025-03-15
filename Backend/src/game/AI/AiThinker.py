@@ -25,11 +25,10 @@ class Thinker:
         """
         self.action_queue = action_queue
         self.difficulty = difficulty
-        self.compute_queue = Queue(maxsize=1)
         self.running = True
-        self.last_game_state: Dict[str, Any] = {}
+        self.waiting = False
+        self.game_state: Dict[str, Any] = {}
 
-        # The 'brain' that does learning & simulation
         self.learner = Learner(difficulty=difficulty)
 
         # Track the last successful prediction for continuity
@@ -45,9 +44,8 @@ class Thinker:
         Called (e.g. once per second) with the latest snapshot.
         We store it in compute_queue, replacing any older snapshot.
         """
-        while not self.compute_queue.empty():
-            self.compute_queue.get()
-        self.compute_queue.put(game_state)
+        self.game_state = game_state
+        self.waiting = False
 
     def cleanup(self):
         """
@@ -59,25 +57,19 @@ class Thinker:
 
     def _compute_loop(self):
         while self.running:
-            try:
-                game_state = self.compute_queue.get()
-                self.last_game_state = game_state
+            if self.waiting:
+                continue
 
-                # Dump the raw game state or just the key parts
+            try:
+                game_state = self.game_state
+
                 debug_write(f"--- NEW SNAPSHOT ---")
                 debug_write(f"GameState: {game_state}")
 
-                # 1) Update learner
                 self.learner.update_with_game_state(game_state)
-
-                # 2) Learner's metrics
                 metrics = self.learner.get_metrics(game_state)
-                debug_write(f"Metrics: {metrics}")
-
-                # 3) Plan the next second
                 action_sequence = self._plan_actions_for_next_second(game_state, metrics)
 
-                # 4) Enqueue them
                 for action in action_sequence:
                     if not self.action_queue.full():
                         debug_write(f"Enqueued action: {action}")
@@ -85,8 +77,9 @@ class Thinker:
                     else:
                         break
 
-                # Also dump how many actions we generated
                 debug_write(f"Enqueued {len(action_sequence)} actions.")
+
+                self.waiting = True
 
             except Exception as e:
                 logging.error(f"Error in AI compute loop: {e}")
@@ -253,7 +246,6 @@ class Thinker:
             slow_available = paddle.get("powerupSlow") == "available"
             fast_available = paddle.get("powerupFast") == "available"
 
-            # Log what we found
             debug_write(f"Powerup state check - Big: {paddle.get('powerupBig')}, Slow: {paddle.get('powerupSlow')}, Fast: {paddle.get('powerupFast')}")
 
             # Final determination of which powerups to actually use (combining our decision with availability)

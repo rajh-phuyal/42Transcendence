@@ -3,9 +3,9 @@ from app.settings import DEBUG
 
 # Common constants used by all AI classes
 DIFFICULTY_CONFIGS = {
-    0: {"randomness": 0, "error_margin": 0},
-    1: {"randomness": 0.2, "error_margin": 0.5},
-    2: {"randomness": 0.1, "error_margin": 0.4},
+    0: {"randomness": 0, "error_margin": 0}, # hard
+    1: {"randomness": 0.1, "error_margin": 0.4}, # medium
+    2: {"randomness": 0.2, "error_margin": 0.5}, # easy
 }
 
 DEBUG_FILE_PATH = os.path.join(os.path.dirname(__file__), "ai_debug.txt")
