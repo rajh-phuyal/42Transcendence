@@ -1,0 +1,92 @@
+<div class="modal fade" id="modal-avatar-cropper" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-avatar-cropper-content" class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-edit-profile-no-header.png' class="image-modal-background-image" alt="Background Image">
+                <div id="modal-avatar-cropper-grid" class="view-overlay-grid">
+
+                        <!-- Place your content here -->
+
+                    <h5 class="modal-title grid-cell default-grid-area title" id="modal-avatar-cropper-title">Crop the image</h5>
+                    <input type="file" id="modal-avatar-cropper-file-input" accept="image/*" style="display: none;">
+                    <div class="grid-cell default-grid-area imgc">
+                        <img        id="modal-avatar-cropper-image-to-crop" src="">
+                    </div>
+                    <button     id="modal-avatar-cropper-btn-crop" class="grid-cell default-grid-area btnc modal-button">Submit</button>
+                    <button     id="modal-avatar-cropper-btn-open-file-explorer" class="grid-cell default-grid-area btnexp modal-button">Select</button>
+                    <button class="btn grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+
+    #modal-avatar-cropper-content {
+        height: 400px !important;
+        width: 400px !important;
+    }
+
+    #modal-avatar-cropper-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  .      .      .      .      .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
+            ".      btnc   btnc   btnc   .      .      btnexp btnexp btnexp .      btnb   btnb   btnb   .     "
+            ".      btnc   btnc   btnc   .      .      btnexp btnexp btnexp .      btnb   btnb   btnb   .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    .title {
+        grid-area: title;
+    }
+
+    .btnb {
+        grid-area: btnb;
+    }
+
+    .btnc {
+        grid-area: btnc;
+    }
+
+    .imgc {
+        grid-area: imgc;
+    }
+
+    .btnexp {
+        grid-area: btnexp;
+    }
+
+    #imodal-avatar-cropper-image-to-cropmg {
+        max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    }
+
+    .cropper-container .cropper-bg {
+    background: transparent !important; /* Removes the grid */
+}
+</style>

@@ -2,7 +2,6 @@ import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import $store from '../../store/store.js';
-import { openFileExplorer } from './changeAvatar.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 
 export default {
@@ -11,6 +10,7 @@ export default {
     },
 
     methods: {
+
         initTypeListeners(init) {
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
@@ -39,10 +39,6 @@ export default {
                 submitButton.disabled = false;
             else
                 submitButton.disabled = true;
-        },
-
-        changeAvatarCallback() {
-            console.warn("TODO: Here we need to open the file chooser and change the avatar. All the code is in changeAvatar.js");
         },
 
         submitCallback() {
@@ -90,19 +86,14 @@ export default {
             avatarElement.src = window.origin + '/media/avatars/' + this.domManip.$id("router-view").getAttribute("data-user-avatar");
             // Add Event Listeners
             this.initTypeListeners(true);
-            this.domManip.$on(avatarElement, "click", this.changeAvatarCallback);
             this.domManip.$on(submitElement, "click", this.submitCallback);
-            this.domManip.$on(avatarElement, "click", openFileExplorer);
             return true;
         },
         afterClose () {
             // Remove Event Listeners
             const submitElement     = this.domManip.$id("modal-edit-profile-btn-save");
-            const avatarElement     = this.domManip.$id("modal-edit-profile-avatar");
             this.initTypeListeners(false);
-            this.domManip.$off(avatarElement, "click", this.changeAvatarCallback);
             this.domManip.$off(submitElement, "click", this.submitCallback);
-            this.domManip.$off(avatarElement, "click", openFileExplorer);
         }
     }
 }
