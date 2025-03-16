@@ -52,7 +52,7 @@ export default {
 
             //TODO: Create an event listner for the ongoing games
 
-            this.domManip.$id("modal-game-history-body").appendChild(container);
+            this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
         }
     },
 
