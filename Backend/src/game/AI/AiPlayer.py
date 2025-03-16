@@ -29,10 +29,6 @@ class AIPlayer:
         self.last_left_score = 0
         self.last_right_score = 0
 
-        # Powerup usage tracking
-        self.powerup_attempts = 0
-        self.is_critical_moment = False
-
         # Initialize with neutral movement
         self.action_queue.put({
             "movePaddle": "0",
@@ -44,82 +40,20 @@ class AIPlayer:
         """
         Called every ~1s. Tells the AI to do a fresh plan.
         """
-        self.check_critical_moment(game_state)
-        self.handle_powerups(game_state)
+        # Update tracking data
         self.update_tracking(game_state)
         self.adapt_difficulty()
 
-        # clear the queue on state change, this will fall back to do nothing or random
+        # Clear the action queue for a fresh plan
         while not self.action_queue.empty():
             self.action_queue.get()
 
-        # Let the thinker plan ahead
+        # Let the thinker plan ahead - THIS HANDLES POWERUPS NOW
         self.thinker.think(game_state)
 
-        # we never run out of actions
+        # Ensure we never run out of actions
         if self.action_queue.qsize() <= 2:
             self.add_fallback_actions()
-
-    def check_critical_moment(self, game_state: Dict[str, Any]) -> None:
-        """
-        Determine if we're in a critical moment where powerup usage is urgent
-        """
-        left_score = game_state.get("playerLeft", {}).get("points", 0)
-        right_score = game_state.get("playerRight", {}).get("points", 0)
-
-        # Critical moment is when game is close and near the end
-        self.is_critical_moment = ((left_score >= 9 or right_score >= 9) and
-                                  abs(left_score - right_score) <= 2)
-
-        if self.is_critical_moment:
-            debug_write("CRITICAL GAME MOMENT DETECTED")
-
-    def handle_powerups(self, game_state: Dict[str, Any]) -> None:
-        """
-        Determine when to use powerups based on game state
-        """
-        # Get powerup states
-        player = game_state.get("playerRight", {})
-        big_available = player.get("powerupBig") == "available"
-        slow_available = player.get("powerupSlow") == "available"
-        fast_available = player.get("powerupFast") == "available"
-
-        # If no powerups available, reset counter and return
-        speed_available = slow_available or fast_available
-        if not (big_available or speed_available):
-            self.powerup_attempts = 0
-            return
-
-        # Increment attempt counter
-        self.powerup_attempts += 1
-
-        # Determine when to use powerups
-        max_attempts = 2 if not self.is_critical_moment else 1
-
-        # If not time to use powerups yet, return
-        if self.powerup_attempts < max_attempts:
-            return
-
-        # Time to use powerups!
-        debug_write(f"Using powerups after {self.powerup_attempts} attempts")
-
-        # Determine which powerups to use
-        ball = game_state.get("ball", {})
-        ball_coming_toward_ai = ball.get("directionX", 0) > 0
-
-        use_big = big_available
-        use_speed = speed_available
-
-        # Add powerup activation actions
-        for _ in range(3):  # Multiple frames to ensure activation
-            self.action_queue.put({
-                "movePaddle": "0",  # Neutral movement
-                "activatePowerupBig": use_big,
-                "activatePowerupSpeed": use_speed
-            })
-
-        # Reset counter
-        self.powerup_attempts = 0
 
     def update_tracking(self, game_state: Dict[str, Any]) -> None:
         """
@@ -181,13 +115,11 @@ class AIPlayer:
         """
         Add fallback actions to ensure we never run out
         """
-        # randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]
-
         for _ in range(GAME_FPS // 6):
             if not self.action_queue.full():
-                # move = '0' if random.random() < randomness else random.choice(["+", "-"])
+                move = '0'
                 self.action_queue.put({
-                    'movePaddle': '0',
+                    'movePaddle': move,
                     'activatePowerupBig': False,
                     'activatePowerupSpeed': False
                 })

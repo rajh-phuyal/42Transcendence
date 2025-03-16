@@ -1,4 +1,7 @@
-from typing import Dict, Any, Tuple, Optional, List
+from typing import Dict, Any, Tuple, Optional, List, Deque
+from collections import deque
+import random
+import math
 from game.constants import GAME_FPS
 from app.settings import DEBUG
 
@@ -7,17 +10,18 @@ from .AI import debug_write, DIFFICULTY_CONFIGS
 
 class Learner:
     """
-    The AI's 'intelligence' component. Gathers data from the game state,
-    runs short-horizon simulations for potential strategies (like using
-    powerups or not), and produces metrics/recommendations for the Thinker.
+    The AI's 'intelligence' component. Analyzes game data and opponent behavior
+    to make strategic decisions about powerup usage and other gameplay elements.
     """
 
     def __init__(self, difficulty: int = 1):
         """
-        :param difficulty: AI difficulty (0=easy, 1=medium, 2=hard)
+        Initialize the Learner with the specified difficulty level
         """
         self.difficulty = difficulty
         self.config = DIFFICULTY_CONFIGS.get(difficulty, DIFFICULTY_CONFIGS[1])
+
+        # Performance stats
         self.ai_stats = {
             "consecutive_goals": 0,
             "consecutive_goals_against": 0,
@@ -31,43 +35,98 @@ class Learner:
             "success_rate": 0.5  # Start with neutral assumption
         }
 
-        # We'll store the last known snapshot of the game state, so we can do
-        # heavier analysis or simulation after update_with_game_state is called.
-        self.last_game_state: Dict[str, Any] = {}
+        # Game state tracking
+        self.last_game_state = {}
 
-        # Track which type of speed powerup is available
-        self.has_slow_powerup = False
-        self.has_fast_powerup = False
+        # Powerup state tracking
+        self.has_big_powerup = False
+        self.has_speed_powerup = False
+
+        # Opponent behavior tracking (last N positions)
+        self.max_history = 50  # Store last 50 positions
+        self.opponent_positions = deque(maxlen=self.max_history)
+        self.opponent_movements = deque(maxlen=self.max_history-1)  # +1/-1/0 for movement direction
+        self.opponent_ball_responses = deque(maxlen=10)  # How opponent responds to ball approaches
+
+        # Strategic variables
+        self.big_powerup_value = 0.5  # Base value of using big powerup
+        self.speed_powerup_value = 0.5  # Base value of using speed powerup
+        self.last_metrics = None  # Store last computed metrics
 
     def update_with_game_state(self, game_state: Dict[str, Any]) -> None:
         """
-        Called with each new snapshot. We store it internally and update
-        any usage stats like whether the AI is currently losing or winning.
+        Update internal state and tracking based on new game state
         """
-        if self.last_game_state:
-            self.checkForScoredPoints(game_state)
-            self.detectBallInterception(game_state)
-            self.updateBallTracking(game_state)
+        # Track opponent behavior
+        self.track_opponent_behavior(game_state)
 
-        self.updateSuccessRate()
+        # Update performance stats
+        if self.last_game_state:
+            self.check_for_scored_points(game_state)
+            self.detect_ball_interception(game_state)
+            self.update_ball_tracking(game_state)
+
+        # Update success rate
+        self.update_success_rate()
+
+        # Update powerup state tracking
+        self.update_powerup_states(game_state)
 
         # Store current game state for next comparison
         self.last_game_state = game_state
 
-    def checkForScoredPoints(self, game_state: Dict[str, Any]) -> None:
+    def track_opponent_behavior(self, game_state: Dict[str, Any]) -> None:
         """
-        Check if points were scored since the last update and update stats accordingly.
+        Track opponent's position and movement patterns
+        """
+        # Get current opponent position
+        opponent = game_state.get("playerLeft", {})
+        current_pos = opponent.get("paddlePos", 50.0)
 
-        :param game_state: Current game state
+        # Add to position history
+        self.opponent_positions.append(current_pos)
+
+        # Calculate movement direction if we have previous positions
+        if len(self.opponent_positions) >= 2:
+            prev_pos = self.opponent_positions[-2]
+            # Determine movement direction: +1 (down), -1 (up), 0 (static)
+            movement = 0
+            if current_pos > prev_pos + 0.5:  # Moving down
+                movement = 1
+            elif current_pos < prev_pos - 0.5:  # Moving up
+                movement = -1
+            self.opponent_movements.append(movement)
+
+        # Track how opponent responds to ball approaches
+        ball = game_state.get("ball", {})
+        ball_dir_x = ball.get("directionX", 0)
+
+        if (ball_dir_x < 0 and ball.get("posX", 50) < 50 and
+            len(self.opponent_positions) >= 2):
+            # Ball is moving toward opponent
+            ball_y = ball.get("posY", 50)
+            paddle_y = current_pos
+            prev_paddle_y = self.opponent_positions[-2]
+
+            # Record if opponent is moving toward ball
+            if (ball_y > paddle_y and movement > 0) or (ball_y < paddle_y and movement < 0):
+                # Opponent is tracking ball
+                self.opponent_ball_responses.append(1)
+            else:
+                # Opponent not tracking ball well
+                self.opponent_ball_responses.append(0)
+
+    def check_for_scored_points(self, game_state: Dict[str, Any]) -> None:
         """
-        # Check if a point was scored since last update
+        Check if points were scored since the last update
+        """
         last_score_left = self.last_game_state.get("playerLeft", {}).get("points", 0)
         last_score_right = self.last_game_state.get("playerRight", {}).get("points", 0)
 
         curr_score_left = game_state.get("playerLeft", {}).get("points", 0)
         curr_score_right = game_state.get("playerRight", {}).get("points", 0)
 
-        # Point was scored against AI (right player)
+        # Point scored against AI
         if curr_score_left > last_score_left:
             self.ai_stats["consecutive_goals_against"] += 1
             self.ai_stats["consecutive_goals"] = 0
@@ -80,11 +139,9 @@ class Learner:
             self.ai_stats["consecutive_goals_against"] = 0
             debug_write(f"AI scored! Consecutive goals: {self.ai_stats['consecutive_goals']}")
 
-    def detectBallInterception(self, game_state: Dict[str, Any]) -> None:
+    def detect_ball_interception(self, game_state: Dict[str, Any]) -> None:
         """
-        Detect if the AI successfully intercepted the ball based on direction changes.
-
-        :param game_state: Current game state
+        Detect if the AI successfully intercepted the ball
         """
         curr_ball_x = game_state.get("ball", {}).get("posX", 50)
         curr_ball_dir_x = game_state.get("ball", {}).get("directionX", 0)
@@ -95,19 +152,17 @@ class Learner:
             self.ai_stats["successful_intercepts"] += 1
             debug_write(f"AI intercepted the ball! Total intercepts: {self.ai_stats['successful_intercepts']}")
 
-    def updateBallTracking(self, game_state: Dict[str, Any]) -> None:
+    def update_ball_tracking(self, game_state: Dict[str, Any]) -> None:
         """
-        Update tracking of ball position and direction.
-
-        :param game_state: Current game state
+        Update tracking of ball position and direction
         """
         self.ai_stats["last_ball_x"] = game_state.get("ball", {}).get("posX", 50)
         self.ai_stats["last_ball_y"] = game_state.get("ball", {}).get("posY", 50)
         self.ai_stats["last_direction_x"] = game_state.get("ball", {}).get("directionX", 0)
 
-    def updateSuccessRate(self) -> None:
+    def update_success_rate(self) -> None:
         """
-        Update total balls faced and success rate statistics.
+        Update total balls faced and success rate statistics
         """
         # Update total number of balls faced for success rate calculation
         self.ai_stats["total_balls_faced"] = (
@@ -119,330 +174,245 @@ class Learner:
                 self.ai_stats["successful_intercepts"] / self.ai_stats["total_balls_faced"]
             )
 
+    def update_powerup_states(self, game_state: Dict[str, Any]) -> None:
+        """
+        Update tracking of powerup availability and state
+        """
+        player_right = game_state.get("playerRight", {})
+
+        # Track which powerups are available - FIXED REFERENCES
+        self.has_big_powerup = player_right.get("powerupBig") == "available"
+        self.has_speed_powerup = player_right.get("powerupSpeed") == "available"
+
+        # Count usage if a powerup was used
+        if player_right.get("powerupBig") == "used" or player_right.get("powerupSpeed") == "used":
+            self.ai_stats["power_ups_used"] += 1
+
     def get_metrics(self, game_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
-        Main entrypoint to get the AI's recommended usage of powerups and other metrics.
-
-        :param game_state: Optionally pass a new state, else we'll use self.last_game_state.
-        :return: A dict of metrics, e.g.:
-           {
-             "useBig": bool,
-             "useSpeed": bool,
-             "opponentPowerupProbability": float,
-             "recommendedDifficulty": int
-           }
+        Calculate metrics and strategic decisions based on game state and opponent behavior
         """
         if game_state is None:
             game_state = self.last_game_state
 
-        # 1) Check powerup availability
-        use_big_available, use_speed_available = self.checkPowerupAvailability(game_state)
+        # Calculate recommended powerup usage
+        use_big, use_speed = self.calculate_powerup_strategy(game_state)
 
-        # 2) Create scenarios to evaluate
-        scenarios = self.createScenarios(use_big_available, use_speed_available)
+        # Calculate opponent powerup probability (chance they'll use a powerup soon)
+        opponent_powerup_probability = self.predict_opponent_powerup_usage(game_state)
 
-        # 3) Evaluate scenarios and select the best one
-        best_scenario = self.evaluateScenarios(game_state, scenarios)
+        # Determine recommended difficulty
+        recommended_difficulty = self.calculate_recommended_difficulty()
 
-        # 4) Determine recommended difficulty based on performance
-        recommended_difficulty = self.calculateRecommendedDifficulty()
-
-        # Return the dictionary the Thinker will use to plan actual actions
-        return {
-            "useBig": best_scenario["useBig"],
-            "useSpeed": best_scenario["useSpeed"],
-            "opponentPowerupProbability": 0.2,  # Stub or real logic
+        # Store metrics for future reference
+        metrics = {
+            "useBig": use_big,
+            "useSpeed": use_speed,
+            "opponentPowerupProbability": opponent_powerup_probability,
             "recommendedDifficulty": recommended_difficulty,
         }
 
-    def createScenarios(self, use_big_available: bool, use_speed_available: bool) -> List[Dict[str, Any]]:
+        self.last_metrics = metrics
+        return metrics
+
+    def calculate_powerup_strategy(self, game_state: Dict[str, Any]) -> Tuple[bool, bool]:
         """
-        Create scenarios to evaluate for powerup usage.
-
-        :param use_big_available: Whether big powerup is available
-        :param use_speed_available: Whether speed powerup is available
-        :return: List of scenarios to evaluate
+        Determine strategic powerup usage based on game state and opponent behavior
         """
-        scenarios = [{"name": "none", "useBig": False, "useSpeed": False}]
+        # Start with base values
+        big_value = self.big_powerup_value
+        speed_value = self.speed_powerup_value
 
-        if use_big_available:
-            scenarios.append({"name": "big", "useBig": True, "useSpeed": False})
+        # Check if powerups are even available
+        player_right = game_state.get("playerRight", {})
+        has_big = player_right.get("powerupBig") == "available"
+        has_speed = player_right.get("powerupSpeed") == "available"
 
-        if use_speed_available:
-            scenarios.append({"name": "speed", "useBig": False, "useSpeed": True})
+        if not has_big and not has_speed:
+            return False, False
 
-        return scenarios
+        # Factor 1: Game score context
+        left_score = game_state.get("playerLeft", {}).get("points", 0)
+        right_score = game_state.get("playerRight", {}).get("points", 0)
 
-    def evaluateScenarios(self, game_state: Dict[str, Any], scenarios: List[Dict[str, Any]]) -> Dict[str, Any]:
+        # If we're ahead by a lot, save powerups
+        if right_score > left_score + 3:
+            big_value -= 0.3
+            speed_value -= 0.3
+            debug_write("Score advantage: reducing powerup value")
+
+        # If we're behind, be more aggressive with powerups
+        elif left_score > right_score:
+            big_value += 0.2
+            speed_value += 0.2
+            debug_write("Score disadvantage: increasing powerup value")
+
+            # If significantly behind, be even more aggressive
+            if left_score > right_score + 2:
+                big_value += 0.2
+                speed_value += 0.2
+                debug_write("Significant score disadvantage: further increasing powerup value")
+
+        # Factor 2: End game scenario (close to match point)
+        if left_score >= 9 or right_score >= 9:
+            # End game - use powerups more aggressively
+            big_value += 0.3
+            speed_value += 0.3
+            debug_write("End game scenario: increasing powerup value")
+
+            # Extra boost if score is close
+            if abs(left_score - right_score) <= 1:
+                big_value += 0.2
+                speed_value += 0.2
+                debug_write("Close end game: further increasing powerup value")
+
+        # Factor 3: Ball position and direction context
+        ball = game_state.get("ball", {})
+        ball_x = ball.get("posX", 50)
+        ball_dir_x = ball.get("directionX", 0)
+
+        # Ball coming toward AI - want to use SLOW (same speed powerup)
+        if ball_dir_x > 0 and 40 < ball_x < 80:
+            # Middle of court, ball coming toward AI - slow effect is helpful
+            speed_value += 0.2
+            debug_write("Ball approaching AI: increasing speed powerup value (slow effect)")
+
+        # Ball moving away - want to use FAST (same speed powerup)
+        elif ball_dir_x < 0 and ball_x < 40:
+            # Ball moving toward opponent side - fast effect is helpful
+            speed_value += 0.15
+            debug_write("Ball moving to opponent: increasing speed powerup value (fast effect)")
+
+        # Factor 4: Opponent behavior analysis
+        if len(self.opponent_ball_responses) >= 3:
+            # Calculate how well opponent tracks the ball
+            response_rate = sum(self.opponent_ball_responses) / len(self.opponent_ball_responses)
+
+            # If opponent is good at tracking, use speed powerup more (fast effect)
+            if response_rate > 0.7:
+                speed_value += 0.25
+                debug_write(f"Opponent tracks well ({response_rate:.2f}): increasing speed powerup value")
+
+            # If opponent is bad at tracking, use big paddle more
+            elif response_rate < 0.4:
+                big_value += 0.2
+                debug_write(f"Opponent tracks poorly ({response_rate:.2f}): increasing big powerup value")
+
+        # Factor 5: AI performance
+        if self.ai_stats["consecutive_goals_against"] >= 2:
+            # We're on a losing streak, use powerups more aggressively
+            big_value += 0.2
+            speed_value += 0.2
+            debug_write("AI losing streak: increasing powerup values")
+
+        # Make final decision (threshold-based)
+        use_big = has_big and big_value > 0.7
+        use_speed = has_speed and speed_value > 0.7
+
+        debug_write(f"Powerup decision: big_value={big_value:.2f}, speed_value={speed_value:.2f}")
+        debug_write(f"Final decision: use_big={use_big}, use_speed={use_speed}")
+
+        return use_big, use_speed
+
+    def predict_opponent_powerup_usage(self, game_state: Dict[str, Any]) -> float:
         """
-        Evaluate all scenarios and select the best one.
-
-        :param game_state: Current game state
-        :param scenarios: List of scenarios to evaluate
-        :return: The best scenario
+        Predict the probability that the opponent will use a powerup soon
         """
-        best_scenario = scenarios[0]  # Default to first scenario (none)
-        best_scenario_score = float("-inf")
+        # Check if opponent has powerups available
+        opponent = game_state.get("playerLeft", {})
+        has_big = opponent.get("powerupBig") == "available"
+        has_speed = opponent.get("powerupSpeed") == "available"
 
-        for scn in scenarios:
-            scenario_score = self.simulateScenario(game_state, scn)
-            if scenario_score > best_scenario_score:
-                best_scenario_score = scenario_score
-                best_scenario = scn
+        if not has_big and not has_speed:
+            return 0.0
 
-        # Log which scenario was selected
-        debug_write(f"Selected scenario: {best_scenario['name']} - useBig: {best_scenario['useBig']}, useSpeed: {best_scenario['useSpeed']}")
+        # Base probability
+        probability = 0.2
 
-        return best_scenario
+        # Adjust based on game context
+        left_score = game_state.get("playerLeft", {}).get("points", 0)
+        right_score = game_state.get("playerRight", {}).get("points", 0)
 
-    def calculateRecommendedDifficulty(self) -> int:
+        # More likely if behind
+        if left_score < right_score:
+            probability += 0.2
+
+        # More likely in end game
+        if left_score >= 9 or right_score >= 9:
+            probability += 0.3
+
+        # More likely if ball moving toward them
+        ball = game_state.get("ball", {})
+        ball_dir_x = ball.get("directionX", 0)
+        if ball_dir_x < 0:
+            probability += 0.1
+
+        # Cap probability
+        probability = min(0.9, probability)
+
+        debug_write(f"Opponent powerup usage probability: {probability:.2f}")
+        return probability
+
+    def calculate_recommended_difficulty(self) -> int:
         """
-        Calculate recommended difficulty based on AI performance.
-
-        :return: Recommended difficulty level
+        Calculate recommended difficulty based on AI performance
         """
         recommended_difficulty = self.difficulty
 
-        # If AI is doing too well (success rate > 0.8), increase difficulty
+        # If AI is doing too well, increase difficulty
         if self.ai_stats["success_rate"] > 0.8 and self.difficulty < 2:
             recommended_difficulty = self.difficulty + 1
-            debug_write(f"AI TOO GOOD! Increasing difficulty to {recommended_difficulty}")
+            debug_write(f"AI too successful ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
 
-        # If AI is doing poorly (success rate < 0.3), decrease difficulty
+        # If AI is struggling, decrease difficulty
         elif self.ai_stats["success_rate"] < 0.3 and self.difficulty > 0:
             recommended_difficulty = self.difficulty - 1
-            debug_write(f"AI STRUGGLING! Decreasing difficulty to {recommended_difficulty}")
+            debug_write(f"AI struggling ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
 
         return recommended_difficulty
 
-    def checkPowerupAvailability(self, game_state: Dict[str, Any]) -> Tuple[bool, bool]:
+    def analyze_opponent_patterns(self) -> Dict[str, Any]:
         """
-        Check if powerups are still available for 'playerRight' (the AI).
-        Return (big_available, speed_available).
+        Analyze opponent's movement patterns to detect strategy
         """
-        player_right = game_state.get("playerRight", {})
-        # Debug the current powerup state
-        debug_write(f"Checking powerups: {player_right}")
+        if len(self.opponent_movements) < 10:
+            return {"pattern": "unknown", "confidence": 0.0}
 
-        # Correctly identify available powerups
-        has_big = (player_right.get("powerupBig") == "available")
-        has_slow = (player_right.get("powerupSlow") == "available")
-        has_fast = (player_right.get("powerupFast") == "available")
+        # Count different movement types
+        up_movements = self.opponent_movements.count(-1)
+        down_movements = self.opponent_movements.count(1)
+        static_movements = self.opponent_movements.count(0)
+        total_movements = len(self.opponent_movements)
 
-        # We can use either slow or fast as our "speed" powerup
-        has_speed = has_slow or has_fast
+        # Calculate percentages
+        up_percent = up_movements / total_movements
+        down_percent = down_movements / total_movements
+        static_percent = static_movements / total_movements
 
-        # Store which type of speed powerup is available for later reference
-        self.has_slow_powerup = has_slow
-        self.has_fast_powerup = has_fast
+        # Determine dominant pattern
+        pattern = "balanced"
+        confidence = 0.5
 
-        debug_write(f"Powerup availability check: big={has_big}, speed={has_speed} (slow={has_slow}, fast={has_fast})")
-        return has_big, has_speed
+        if static_percent > 0.6:
+            pattern = "camper"  # Opponent doesn't move much
+            confidence = static_percent
+        elif up_percent > 0.4 and down_percent > 0.4:
+            pattern = "sweeper"  # Opponent moves a lot both directions
+            confidence = (up_percent + down_percent) / 2
 
-    def simulateScenario(self, game_state: Dict[str, Any], scenario: Dict[str, bool]) -> float:
-        """
-        Forward-simulate the ball + AI paddle for up to ~2 seconds, applying the scenario's
-        powerup usage (big, speed) at the start. Return a numeric score indicating whether
-        we can likely intercept or not. Higher = better.
+        # Check if opponent prefers a court position
+        positions = list(self.opponent_positions)
+        avg_position = sum(positions) / len(positions)
 
-        If the ball is inbound and we have slow, we might slow the ball. If it's outbound,
-        we might speed it. This is simplified logic.
-        """
-        # Extract the initial state
-        initial_state = self.extractSimulationState(game_state, scenario)
-
-        # Apply powerup effects to the simulation
-        sim_state = self.applyPowerupEffects(initial_state, scenario)
-
-        # Run the simulation
-        scenario_score = self.runSimulation(sim_state)
-
-        # Adjust score based on game context
-        scenario_score = self.adjustScoreBasedOnGameContext(game_state, scenario, scenario_score)
-
-        # Log the final scenario score to help debugging
-        debug_write(f"Scenario {scenario['name']} final score: {scenario_score}")
-
-        return scenario_score
-
-    def extractSimulationState(self, game_state: Dict[str, Any], scenario: Dict[str, bool]) -> Dict[str, Any]:
-        """
-        Extract the initial state for simulation from the game state.
-
-        :param game_state: Current game state
-        :param scenario: Scenario being evaluated
-        :return: Initial simulation state
-        """
-        # Copy relevant fields
-        ball = dict(game_state.get("ball", {}))
-        paddle = dict(game_state.get("playerRight", {}))
-
-        # Positions & directions
-        ball_x = ball.get("posX", 50.0)
-        ball_y = ball.get("posY", 50.0)
-        dir_x = ball.get("directionX", 1.0)
-        dir_y = ball.get("directionY", 0.0)
-        speed = ball.get("speed", 1.0)
-
-        paddle_pos = paddle.get("paddlePos", 50.0)
-        paddle_size = paddle.get("paddleSize", 10.0)
-
-        # Which powerups we're "using" in this scenario
-        use_big = scenario.get("useBig", False)
-        use_speed = scenario.get("useSpeed", False)
+        position_bias = "middle"
+        if avg_position < 40:
+            position_bias = "top"
+        elif avg_position > 60:
+            position_bias = "bottom"
 
         return {
-            "ball_x": ball_x,
-            "ball_y": ball_y,
-            "dir_x": dir_x,
-            "dir_y": dir_y,
-            "speed": speed,
-            "paddle_pos": paddle_pos,
-            "paddle_size": paddle_size,
-            "use_big": use_big,
-            "use_speed": use_speed,
-            "scenario_score": 0.0  # Start with a base score
+            "pattern": pattern,
+            "confidence": confidence,
+            "position_bias": position_bias,
+            "avg_position": avg_position
         }
-
-    def applyPowerupEffects(self, state: Dict[str, Any], scenario: Dict[str, bool]) -> Dict[str, Any]:
-        """
-        Apply the effects of powerups to the simulation state.
-
-        :param state: Initial simulation state
-        :param scenario: Scenario being evaluated
-        :return: Updated simulation state with powerup effects
-        """
-        # Make a copy to avoid modifying the original
-        sim_state = state.copy()
-
-        # Boost the score if this scenario uses powerups - make AI more eager to use them
-        if sim_state["use_big"]:
-            sim_state["scenario_score"] += 0.3  # Bias toward using powerups when available
-        if sim_state["use_speed"]:
-            sim_state["scenario_score"] += 0.3  # Bias toward using powerups when available
-
-        # If we use big
-        if sim_state["use_big"]:
-            # Let's assume that "big" means we instantly get a bigger paddle for the next bounce
-            # Example: from 10 to 22
-            sim_state["paddle_size"] = 22.0
-            debug_write(f"Scenario with BIG powerup: paddle size increased to {sim_state['paddle_size']}")
-
-        # If we use speed (the ball is inbound => slow, outbound => fast)
-        if sim_state["use_speed"]:
-            if sim_state["dir_x"] > 0:
-                # Ball moving right => inbound for the AI => slow it
-                sim_state["speed"] = 1.0
-                debug_write(f"Scenario with SLOW powerup: ball speed reduced to {sim_state['speed']}")
-            else:
-                # Ball moving left => outbound => speed it up
-                sim_state["speed"] += 2.0
-                debug_write(f"Scenario with FAST powerup: ball speed increased to {sim_state['speed']}")
-
-        return sim_state
-
-    def runSimulation(self, state: Dict[str, Any]) -> Tuple[bool, float]:
-        """
-        Run the simulation for the scenario.
-
-        :param state: Simulation state with powerup effects applied
-        :return: Tuple of (intercept_success, scenario_score)
-        """
-        # Extract simulation state
-        ball_x = state["ball_x"]
-        ball_y = state["ball_y"]
-        dir_x = state["dir_x"]
-        dir_y = state["dir_y"]
-        speed = state["speed"]
-        paddle_pos = state["paddle_pos"]
-        paddle_size = state["paddle_size"]
-        scenario_score = state["scenario_score"]
-
-        # We'll simulate up to ~2 seconds in small steps
-        frames_to_simulate = min(GAME_FPS, 100)  # 2 seconds or 200 frames, whichever is smaller
-        dt = 1.0 / GAME_FPS
-
-        # We'll track how well we do by checking if we can intercept the ball if it crosses x>=95
-        for frame_idx in range(frames_to_simulate):
-            # Move the ball
-            ball_x += dir_x * speed * dt
-            ball_y += dir_y * speed * dt
-
-            # Basic top/bottom bounce
-            if ball_y <= 0:
-                ball_y = 0
-                dir_y *= -1
-            elif ball_y >= 100:
-                ball_y = 100
-                dir_y *= -1
-
-            # Check if ball has reached AI's side
-            if ball_x >= 95:
-                # Attempt intercept
-                top_paddle = paddle_pos - (paddle_size / 2)
-                bot_paddle = paddle_pos + (paddle_size / 2)
-                if top_paddle <= ball_y <= bot_paddle:
-                    scenario_score += 1.0  # success
-                else:
-                    distance_to_paddle = min(abs(ball_y - top_paddle), abs(ball_y - bot_paddle))
-                    # The closer we are to intercepting, the better
-                    scenario_score -= distance_to_paddle / 10.0  # partial penalty based on distance
-                break
-
-            # Move paddle in the sim: try to track the ball_y
-            paddle_pos = self.simulatePaddleMovement(paddle_pos, ball_y, paddle_size)
-
-        return scenario_score
-
-    def simulatePaddleMovement(self, paddle_pos: float, ball_y: float, paddle_size: float) -> float:
-        """
-        Simulate paddle movement during scenario evaluation.
-
-        :param paddle_pos: Current paddle position
-        :param ball_y: Ball Y position
-        :param paddle_size: Size of the paddle
-        :return: Updated paddle position
-        """
-        # Simple approach: if paddle is above ball, move down, etc.
-        if paddle_pos < ball_y - 1:
-            paddle_pos += 2.0
-        elif paddle_pos > ball_y + 1:
-            paddle_pos -= 2.0
-
-        # clamp paddle
-        if paddle_pos < (paddle_size / 2):
-            paddle_pos = paddle_size / 2
-        elif paddle_pos > 100 - (paddle_size / 2):
-            paddle_pos = 100 - (paddle_size / 2)
-
-        return paddle_pos
-
-    def adjustScoreBasedOnGameContext(self, game_state: Dict[str, Any], scenario: Dict[str, bool], scenario_score: float) -> float:
-        """
-        Adjust scenario score based on game context (score, critical moments).
-
-        :param game_state: Current game state
-        :param scenario: Scenario being evaluated
-        :param scenario_score: Current scenario score
-        :return: Adjusted scenario score
-        """
-        use_big = scenario.get("useBig", False)
-        use_speed = scenario.get("useSpeed", False)
-
-        # Adaptive powerup evaluation based on game situation
-        # Check if we're losing - be more aggressive with powerups if behind
-        ai_score = game_state.get("playerRight", {}).get("points", 0)
-        opponent_score = game_state.get("playerLeft", {}).get("points", 0)
-
-        # More likely to use powerups if we're behind in score
-        if opponent_score > ai_score and (use_big or use_speed):
-            scenario_score += 0.5
-            debug_write(f"Boosting powerup scenario score because we're behind: {opponent_score}-{ai_score}")
-
-        # If this is a close game (near 11-11), be more aggressive with powerups
-        if ai_score >= 9 and opponent_score >= 9:
-            if use_big or use_speed:
-                scenario_score += 0.7
-                debug_write(f"Boosting powerup scenario score in close game: {ai_score}-{opponent_score}")
-
-        return scenario_score

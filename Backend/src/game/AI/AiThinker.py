@@ -137,24 +137,21 @@ class Thinker:
 
         # Check if powerups are available
         big_available = paddle.get("powerupBig") == "available"
-        slow_available = paddle.get("powerupSlow") == "available"
-        fast_available = paddle.get("powerupFast") == "available"
+        speed_available = paddle.get("powerupSpeed") == "available"
 
-        # Ball direction affects which speed powerup to use
+        # Ball direction affects the EFFECT of the speed powerup, not which powerup to use
         ball = self.game_state.get("ball", {})
         ball_coming_toward_ai = ball.get("directionX", 0) > 0
 
         # Final decision on powerup usage
         activate_big = use_big and big_available
-        use_slow = use_speed and slow_available and ball_coming_toward_ai
-        use_fast = use_speed and fast_available and not ball_coming_toward_ai
+        activate_speed = use_speed and speed_available
 
-        debug_write(f"Powerup decisions: Big={activate_big}, Slow={use_slow}, Fast={use_fast}")
+        debug_write(f"Powerup decisions: Big={activate_big}, Speed={activate_speed}, Ball toward AI={ball_coming_toward_ai}")
 
         return {
             "activate_big": activate_big,
-            "use_slow": use_slow,
-            "use_fast": use_fast,
+            "activate_speed": activate_speed,
             "ball_coming_toward_ai": ball_coming_toward_ai
         }
 
@@ -486,9 +483,7 @@ class Thinker:
 
         # Extract powerup decisions
         use_big = powerup_decisions["activate_big"]
-        use_slow = powerup_decisions["use_slow"]
-        use_fast = powerup_decisions["use_fast"]
-        use_speed = use_slow or use_fast
+        use_speed = powerup_decisions["activate_speed"]
 
         # Debug movement plan
         debug_write(f"Movement plan: total={total_needed}, frames={frames_to_reach}, collision={collision_frame}")
