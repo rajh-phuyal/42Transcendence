@@ -178,7 +178,7 @@ export default {
         playAgainstAI() {
             call("game/create/", "POST", {
                 "mapNumber": 1,
-                "powerups": false,
+                "powerups": true,
                 "opponentId": 2 // AI
             }).then(data => {
                 this.router(`/game`, { id: data.gameId });

@@ -222,6 +222,37 @@
     .player-powerup-status {
         margin: 5px;
         border-radius: 5px;
-        width: 30%
+        width: 30%;
+        transition: all 0.3s ease;
+    }
+
+    /* Powerup status styles */
+    .powerup-unavailable {
+        opacity: 0.5;
+        filter: grayscale(100%);
+    }
+
+    .powerup-available {
+        opacity: 1;
+        border: 2px solid #4CAF50;
+        box-shadow: 0 0 5px #4CAF50;
+    }
+
+    .powerup-using {
+        opacity: 1;
+        border: 2px solid #FF9800;
+        box-shadow: 0 0 10px #FF9800;
+    }
+
+    .powerup-used {
+        opacity: 0.7;
+        filter: sepia(50%);
+    }
+
+    /* Animation for active powerups */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
     }
 </style>

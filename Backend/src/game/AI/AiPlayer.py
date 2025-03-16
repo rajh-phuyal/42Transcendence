@@ -16,11 +16,12 @@ class AIPlayer:
 
     def __init__(self, difficulty=0):
         self.difficulty = difficulty
-        self.action_queue = Queue()
-        self.thinker = Thinker(self.action_queue, difficulty)
+        self.action_queue = Queue() # main queue where moments are stored
+        self.thinker = Thinker(self.action_queue, difficulty) # my brain
+
         self.last_performance_check = 0
         self.action_count = 0
-        self.adapt_interval = 3  # Check for adaptation every 3 snapshots
+        self.adapt_interval = 1  # Check for adaptation every snapshot
         self.last_state = None  # Track game state to detect point resets
         self.last_left_score = 0
         self.last_right_score = 0
@@ -28,8 +29,6 @@ class AIPlayer:
         # Track powerup usage and availability to ensure we use them during the game
         self.powerup_big_used = False
         self.powerup_speed_used = False
-        self.last_big_state = "unavailable"
-        self.last_speed_state = "unavailable"
         self.powerup_usage_attempts = 0
 
         # Track game state for better powerup usage decision making
@@ -47,11 +46,13 @@ class AIPlayer:
         """
         Called every ~1s. Tells the AI to do a fresh plan.
         """
-        # Step 1: Check for game state changes and update tracking
-        self.detectGameStateChanges(game_state)
+
+        # clear the queue on state change, this will fall back to do nothing or random
+        while not self.action_queue.empty():
+            self.action_queue.get()
 
         # Step 2: Track powerup availability and usage
-        self.trackPowerups(game_state)
+        self.update_internal_powerup_states(game_state)
 
         # Step 3: Detect critical game moments
         self.detectCriticalMoments(game_state)
@@ -72,52 +73,19 @@ class AIPlayer:
         if self.action_queue.qsize() <= 2:
             self.addFallbackActions()
 
-    def detectGameStateChanges(self, game_state: Dict[str, Any]) -> None:
-        """
-        Detect if a point was scored or serve changed, and clear action queue if needed
-        """
-        left_score = game_state.get("playerLeft", {}).get("points", 0)
-        right_score = game_state.get("playerRight", {}).get("points", 0)
-
-        # Skip if there's no previous state to compare against
-        if not self.last_state:
-            return
-
-        # Check for score change or serve change
-        score_changed = (left_score != self.last_left_score or right_score != self.last_right_score)
-        serve_changed = (
-            game_state.get("gameData", {}).get("playerServes") !=
-            self.last_state.get("gameData", {}).get("playerServes")
-        )
-
-        if score_changed or serve_changed:
-            debug_write(f"Game state change detected! Score change: {score_changed}, Serve change: {serve_changed}")
-            debug_write(f"Clearing action queue to resynchronize with game state")
-            # Clear the action queue to avoid stale actions
-            while not self.action_queue.empty():
-                self.action_queue.get()
-
-    def trackPowerups(self, game_state: Dict[str, Any]) -> None:
+    def update_internal_powerup_states(self, game_state: Dict[str, Any]) -> None:
         """
         Track powerup availability and usage
         """
         player_right = game_state.get("playerRight", {})
         current_big_state = player_right.get("powerupBig", "unavailable")
-
-        # Check both slow and fast for speed powerups
-        slow_state = player_right.get("powerupSlow", "unavailable")
-        fast_state = player_right.get("powerupFast", "unavailable")
-        current_speed_state = "available" if slow_state == "available" or fast_state == "available" else "unavailable"
+        current_speed_state = player_right.get("powerupSpeed", "unavailable")
 
         # Check if we've used powerups
-        if self.last_big_state == "available" and current_big_state != "available":
+        if current_big_state in ("used", "unavailable"):
             self.powerup_big_used = True
-        if self.last_speed_state == "available" and current_speed_state != "available":
+        if current_speed_state in ("used", "unavailable"):
             self.powerup_speed_used = True
-
-        # Store current powerup states
-        self.last_big_state = current_big_state
-        self.last_speed_state = current_speed_state
 
     def detectCriticalMoments(self, game_state: Dict[str, Any]) -> None:
         """
@@ -142,6 +110,7 @@ class AIPlayer:
 
         # If no powerups available, reset counter and return
         if not (current_big_state == "available" or slow_state == "available" or fast_state == "available"):
+            debug_write("No powerups available, resetting counter")
             self.powerup_usage_attempts = 0
             return
 
@@ -222,21 +191,13 @@ class AIPlayer:
             try:
                 return self.action_queue.get_nowait()
             except Empty:
-                # Emergency fallback if we still couldn't get an action
+                # Emergency fallback
                 debug_write("Emergency fallback: action queue still empty!")
                 return {
                     "movePaddle": "0",
                     "activatePowerupBig": False,
                     "activatePowerupSpeed": False
                 }
-
-    def cleanup(self):
-        """
-        Clean up the background thread when the game ends.
-        """
-        self.thinker.cleanup()
-        while not self.action_queue.empty():
-            self.action_queue.get()
 
     def checkForDifficultyAdaptation(self):
         """
@@ -294,10 +255,19 @@ class AIPlayer:
         """
         randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]
 
-        for _ in range(GAME_FPS // 5):  # adding 1/5 of the frames
+        for _ in range(GAME_FPS // 6):  # adding 1/6 of the frames
             if not self.action_queue.full():
+                debug_write(f"Adding fallback action: {random.random() < randomness}")
                 self.action_queue.put({
                     'movePaddle': '0' if random.random() < randomness else random.choice(["+", "-"]),
                     'activatePowerupBig': False,
                     'activatePowerupSpeed': False
                 })
+
+    def cleanup(self):
+        """
+        Clean up the background thread when the game ends.
+        """
+        self.thinker.cleanup()
+        while not self.action_queue.empty():
+            self.action_queue.get()

@@ -203,9 +203,21 @@ function drawPlayerState(playerSide) {
         $id(playerSideDash + "-powerups-status").style.display = "flex";
         // Set the powerup images
         const imgPathPre = `${window.origin}/assets/game/icons/powerup-`;
-        $id(playerSideDash + "-powerups-big").src = imgPathPre + gameObject[playerSide].powerupBig + "-big.png";
-        $id(playerSideDash + "-powerups-slow").src = imgPathPre + gameObject[playerSide].powerupSlow + "-slow.png";
-        $id(playerSideDash + "-powerups-fast").src = imgPathPre + gameObject[playerSide].powerupFast + "-fast.png";
+
+        // Big powerup
+        const bigPowerupElement = $id(playerSideDash + "-powerups-big");
+        bigPowerupElement.src = imgPathPre + gameObject[playerSide].powerupBig + "-big.png";
+        updatePowerupStyles(bigPowerupElement, gameObject[playerSide].powerupBig);
+
+        // Slow powerup
+        const slowPowerupElement = $id(playerSideDash + "-powerups-slow");
+        slowPowerupElement.src = imgPathPre + gameObject[playerSide].powerupSlow + "-slow.png";
+        updatePowerupStyles(slowPowerupElement, gameObject[playerSide].powerupSlow);
+
+        // Fast powerup
+        const fastPowerupElement = $id(playerSideDash + "-powerups-fast");
+        fastPowerupElement.src = imgPathPre + gameObject[playerSide].powerupFast + "-fast.png";
+        updatePowerupStyles(fastPowerupElement, gameObject[playerSide].powerupFast);
     } else if (gameObject[playerSide].state === "finished") {
         // Show score; Hide spinner and powerup states
         $id(playerSideDash + "-state").innerText = gameObject[playerSide].points;
@@ -221,6 +233,32 @@ function drawPlayerState(playerSide) {
             $id(playerSideDash + "-username").classList.add("user-card-looser");
         } else
             console.warn("finished game but I don't know if I won or lost");
+    }
+}
+
+// Helper function to apply the appropriate styling based on powerup status
+function updatePowerupStyles(element, status) {
+    // Remove all status classes first
+    element.classList.remove("powerup-unavailable", "powerup-available", "powerup-using", "powerup-used");
+
+    // Reset any animations
+    element.style.animation = "none";
+
+    // Apply the appropriate class based on status
+    switch(status) {
+        case "unavailable":
+            element.classList.add("powerup-unavailable");
+            break;
+        case "available":
+            element.classList.add("powerup-available");
+            break;
+        case "using":
+            element.classList.add("powerup-using");
+            element.style.animation = "pulse 1s infinite";
+            break;
+        case "used":
+            element.classList.add("powerup-used");
+            break;
     }
 }
 

@@ -255,7 +255,7 @@ class Learner:
         sim_state = self.applyPowerupEffects(initial_state, scenario)
 
         # Run the simulation
-        intercept_success, scenario_score = self.runSimulation(sim_state)
+        scenario_score = self.runSimulation(sim_state)
 
         # Adjust score based on game context
         scenario_score = self.adjustScoreBasedOnGameContext(game_state, scenario, scenario_score)
@@ -359,11 +359,8 @@ class Learner:
         scenario_score = state["scenario_score"]
 
         # We'll simulate up to ~2 seconds in small steps
-        frames_to_simulate = min(2 * GAME_FPS, 200)  # 2 seconds or 200 frames, whichever is smaller
+        frames_to_simulate = min(GAME_FPS, 100)  # 2 seconds or 200 frames, whichever is smaller
         dt = 1.0 / GAME_FPS
-
-        # Track intercept success
-        intercept_success = False
 
         # We'll track how well we do by checking if we can intercept the ball if it crosses x>=95
         for frame_idx in range(frames_to_simulate):
@@ -386,7 +383,6 @@ class Learner:
                 bot_paddle = paddle_pos + (paddle_size / 2)
                 if top_paddle <= ball_y <= bot_paddle:
                     scenario_score += 1.0  # success
-                    intercept_success = True
                 else:
                     distance_to_paddle = min(abs(ball_y - top_paddle), abs(ball_y - bot_paddle))
                     # The closer we are to intercepting, the better
@@ -396,7 +392,7 @@ class Learner:
             # Move paddle in the sim: try to track the ball_y
             paddle_pos = self.simulatePaddleMovement(paddle_pos, ball_y, paddle_size)
 
-        return intercept_success, scenario_score
+        return scenario_score
 
     def simulatePaddleMovement(self, paddle_pos: float, ball_y: float, paddle_size: float) -> float:
         """
