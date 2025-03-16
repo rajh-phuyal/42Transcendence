@@ -218,7 +218,7 @@ class GameConsumer(CustomWebSocketLogic):
                     'playerRight': get_game_data(game_id, 'playerRight')
                 }
 
-                ai.compute(game_state)
+                ai.update(game_state)
 
             # Get the next action from AI - with proper await
             action = await ai.action()

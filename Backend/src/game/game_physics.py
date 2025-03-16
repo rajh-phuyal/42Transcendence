@@ -85,22 +85,15 @@ async def apply_wall_bonce(game_id):
 
 async def check_paddle_bounce(game_id):
     ball_pos_x = get_game_data(game_id, 'ball', 'posX')
-    ball_prev_x = ball_pos_x - (get_game_data(game_id, 'ball', 'directionX') * get_game_data(game_id, 'ball', 'speed'))
     ball_width = get_game_data(game_id, 'ball', 'width')
 
-    left_paddle_x = PADDLE_OFFSET + ball_width
-    right_paddle_x = 100 - PADDLE_OFFSET - ball_width
-
-    # Check for continuous collision with the left paddle
-    if (ball_pos_x <= left_paddle_x and ball_prev_x > left_paddle_x) or ball_pos_x == left_paddle_x:
-        # Ball crossed or exactly at the left paddle's x position
+    # Check if the ball is hitting the left or right paddle(point was scored)
+    if ball_pos_x <= PADDLE_OFFSET + ball_width:
         await apply_padlle_hit(game_id, 'playerLeft')
-    # Check for continuous collision with the right paddle
-    elif (ball_pos_x >= right_paddle_x and ball_prev_x < right_paddle_x) or ball_pos_x == right_paddle_x:
-        # Ball crossed or exactly at the right paddle's x position
+    elif ball_pos_x >= 100 - PADDLE_OFFSET - ball_width:
         await apply_padlle_hit(game_id, 'playerRight')
     else:
-        # No paddle bounce happened
+        # No paddle bounce happend
         ...
 
 async def normalize_ball_direction(new_dir_x, new_dir_y):
@@ -116,14 +109,11 @@ async def apply_padlle_hit(game_id, player_side):
     paddle_pos = get_game_data(game_id, player_side, 'paddlePos')
     paddle_size = get_game_data(game_id, player_side, 'paddleSize')
     ball_height = get_game_data(game_id, 'ball', 'height')
-    # Add a small margin of error for more forgiving collisions (0.5% of game height)
-    collision_margin = 0.5
-
     # logging.info(f"Ball pos y: {ball_pos_y}, paddle pos: {paddle_pos}, paddle size: {paddle_size}")
 
     # Check if a point was scored
     if ball_pos_y < paddle_pos:
-        if ball_pos_y + ball_height + collision_margin < paddle_pos - paddle_size / 2:
+        if ball_pos_y + ball_height < paddle_pos - paddle_size / 2:
             await apply_point(game_id, player_side)
         else:
             # Ball should bounce off up
@@ -135,8 +125,7 @@ async def apply_padlle_hit(game_id, player_side):
             set_game_data(game_id, 'ball', 'directionY', new_dir_y)
             set_game_data(game_id, 'gameData', 'sound', 'paddle')
     else:
-        if ball_pos_y - ball_height - collision_margin > paddle_pos + paddle_size / 2:
-            logging.debug(f"Point scored: Ball below paddle - Ball y-height ({ball_pos_y - ball_height}) > paddle bottom ({paddle_pos + paddle_size / 2})")
+        if ball_pos_y - ball_height > paddle_pos + paddle_size / 2:
             await apply_point(game_id, player_side)
         else:
             # Ball should bounce off down
