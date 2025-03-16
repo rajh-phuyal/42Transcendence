@@ -47,26 +47,60 @@ class AIPlayer:
         """
         Called every ~1s. Tells the AI to do a fresh plan.
         """
-        # Detect if a point was scored since last update - if so, clear the action queue
+        # Step 1: Check for game state changes and update tracking
+        self.detectGameStateChanges(game_state)
+
+        # Step 2: Track powerup availability and usage
+        self.trackPowerups(game_state)
+
+        # Step 3: Detect critical game moments
+        self.detectCriticalMoments(game_state)
+
+        # Step 4: Force powerup usage when available
+        self.handlePowerupUsage(game_state)
+
+        # Step 5: Update state tracking for next iteration
+        self.updateStateTracking(game_state)
+
+        # Step 6: Adapt difficulty if needed
+        self.checkForDifficultyAdaptation()
+
+        # Step 7: Tell the thinker to plan ahead
+        self.thinker.think(game_state)
+
+        # Step 8: Ensure we never run out of actions
+        if self.action_queue.qsize() <= 2:
+            self.addFallbackActions()
+
+    def detectGameStateChanges(self, game_state: Dict[str, Any]) -> None:
+        """
+        Detect if a point was scored or serve changed, and clear action queue if needed
+        """
         left_score = game_state.get("playerLeft", {}).get("points", 0)
         right_score = game_state.get("playerRight", {}).get("points", 0)
 
+        # Skip if there's no previous state to compare against
+        if not self.last_state:
+            return
+
         # Check for score change or serve change
-        if self.last_state:
-            score_changed = (left_score != self.last_left_score or right_score != self.last_right_score)
-            serve_changed = (
-                game_state.get("gameData", {}).get("playerServes") !=
-                self.last_state.get("gameData", {}).get("playerServes")
-            )
+        score_changed = (left_score != self.last_left_score or right_score != self.last_right_score)
+        serve_changed = (
+            game_state.get("gameData", {}).get("playerServes") !=
+            self.last_state.get("gameData", {}).get("playerServes")
+        )
 
-            if score_changed or serve_changed:
-                debug_write(f"Game state change detected! Score change: {score_changed}, Serve change: {serve_changed}")
-                debug_write(f"Clearing action queue to resynchronize with game state")
-                # Clear the action queue to avoid stale actions
-                while not self.action_queue.empty():
-                    self.action_queue.get()
+        if score_changed or serve_changed:
+            debug_write(f"Game state change detected! Score change: {score_changed}, Serve change: {serve_changed}")
+            debug_write(f"Clearing action queue to resynchronize with game state")
+            # Clear the action queue to avoid stale actions
+            while not self.action_queue.empty():
+                self.action_queue.get()
 
-        # Track powerup availability changes
+    def trackPowerups(self, game_state: Dict[str, Any]) -> None:
+        """
+        Track powerup availability and usage
+        """
         player_right = game_state.get("playerRight", {})
         current_big_state = player_right.get("powerupBig", "unavailable")
 
@@ -85,85 +119,95 @@ class AIPlayer:
         self.last_big_state = current_big_state
         self.last_speed_state = current_speed_state
 
-        # Determine if this is a critical game moment (close scores near end of game)
+    def detectCriticalMoments(self, game_state: Dict[str, Any]) -> None:
+        """
+        Determine if this is a critical game moment (close scores near end of game)
+        """
+        left_score = game_state.get("playerLeft", {}).get("points", 0)
+        right_score = game_state.get("playerRight", {}).get("points", 0)
+
         if (left_score >= 9 or right_score >= 9) and abs(left_score - right_score) <= 2:
             self.game_critical_moment = True
         else:
             self.game_critical_moment = False
 
-        # Force powerup usage based on game state - more aggressively now
-        # This is a critical path to ensure powerups get used
-        if (current_big_state == "available" or slow_state == "available" or fast_state == "available"):
-            self.powerup_usage_attempts += 1
+    def handlePowerupUsage(self, game_state: Dict[str, Any]) -> None:
+        """
+        Force powerup usage based on game state
+        """
+        player_right = game_state.get("playerRight", {})
+        current_big_state = player_right.get("powerupBig", "unavailable")
+        slow_state = player_right.get("powerupSlow", "unavailable")
+        fast_state = player_right.get("powerupFast", "unavailable")
 
-            # If the ball direction has been determined, use it to make smarter decisions about slow/fast
-            ball = game_state.get("ball", {})
-            dir_x = ball.get("directionX", 0)
-            ball_coming_toward_ai = dir_x > 0
-
-            # Be more aggressive with usage in critical moments
-            max_attempts = 2  # Even more aggressive now - try to use within 2 cycles
-
-            # When in critical game moment, try to use immediately
-            if self.game_critical_moment:
-                max_attempts = 1
-
-            if self.powerup_usage_attempts >= max_attempts:
-                debug_write(f"FORCING POWERUP USAGE after {self.powerup_usage_attempts} attempts!!")
-                # Clear queue to inject a forced powerup action
-                while not self.action_queue.empty():
-                    self.action_queue.get()
-
-                # Determine which powerup to use based on game state
-                use_big = current_big_state == "available"
-
-                # Logic for speed powerups depends on ball direction
-                use_slow = slow_state == "available" and ball_coming_toward_ai
-                use_fast = fast_state == "available" and not ball_coming_toward_ai
-
-                if not ball_coming_toward_ai and not use_fast and slow_state == "available":
-                    # If ball going away and we don't have fast, still try to use slow
-                    use_slow = True
-                    debug_write("No FAST powerup, using SLOW even though ball moving away!")
-
-                elif ball_coming_toward_ai and not use_slow and fast_state == "available":
-                    # If ball coming toward us and we don't have slow, still try fast
-                    use_fast = True
-                    debug_write("No SLOW powerup, using FAST even though ball coming toward AI!")
-
-                use_speed = use_slow or use_fast
-
-                # Add several immediate actions that use available powerups
-                # Adding multiple consecutive frames to increase chances of activation
-                for i in range(3):  # Try for 3 consecutive frames
-                    self.action_queue.put({
-                        "movePaddle": "0",  # Neutral movement
-                        "activatePowerupBig": use_big,
-                        "activatePowerupSpeed": use_speed
-                    })
-
-                # Reset counter after forcing usage
-                self.powerup_usage_attempts = 0
-        else:
-            # Reset counter if no powerups available
+        # If no powerups available, reset counter and return
+        if not (current_big_state == "available" or slow_state == "available" or fast_state == "available"):
             self.powerup_usage_attempts = 0
+            return
 
-        # Update state tracking
+        # Increment attempt counter
+        self.powerup_usage_attempts += 1
+
+        # Get ball direction information
+        ball = game_state.get("ball", {})
+        dir_x = ball.get("directionX", 0)
+        ball_coming_toward_ai = dir_x > 0
+
+        # Determine when to use powerups
+        max_attempts = 2  # Default: try to use within 2 cycles
+        if self.game_critical_moment:
+            max_attempts = 1  # Critical moment: try to use immediately
+
+        # Check if we should force powerup usage now
+        if self.powerup_usage_attempts < max_attempts:
+            return
+
+        # Time to force powerup usage
+        debug_write(f"FORCING POWERUP USAGE after {self.powerup_usage_attempts} attempts!!")
+
+        # Clear queue to inject powerup actions
+        while not self.action_queue.empty():
+            self.action_queue.get()
+
+        # Determine which powerups to use
+        use_big = current_big_state == "available"
+        use_slow = slow_state == "available" and ball_coming_toward_ai
+        use_fast = fast_state == "available" and not ball_coming_toward_ai
+
+        # Special handling for edge cases
+        if not ball_coming_toward_ai and not use_fast and slow_state == "available":
+            use_slow = True
+            debug_write("No FAST powerup, using SLOW even though ball moving away!")
+        elif ball_coming_toward_ai and not use_slow and fast_state == "available":
+            use_fast = True
+            debug_write("No SLOW powerup, using FAST even though ball coming toward AI!")
+
+        use_speed = use_slow or use_fast
+
+        # Add actions that use powerups (multiple frames to increase activation chance)
+        for i in range(3):
+            self.action_queue.put({
+                "movePaddle": "0",  # Neutral movement
+                "activatePowerupBig": use_big,
+                "activatePowerupSpeed": use_speed
+            })
+
+        # Reset counter after forcing usage
+        self.powerup_usage_attempts = 0
+
+    def updateStateTracking(self, game_state: Dict[str, Any]) -> None:
+        """
+        Update internal state tracking for next iteration
+        """
+        left_score = game_state.get("playerLeft", {}).get("points", 0)
+        right_score = game_state.get("playerRight", {}).get("points", 0)
+
         self.last_state = game_state
         self.last_left_score = left_score
         self.last_right_score = right_score
 
-        # Check if we should adapt difficulty based on performance
+        # Increment action count for difficulty adaptation
         self.action_count += 1
-        if self.action_count - self.last_performance_check >= self.adapt_interval:
-            self.last_performance_check = self.action_count
-            self._check_for_difficulty_adaptation()
-
-        self.thinker.think(game_state)
-
-        # Ensure we never fully run out of actions
-        if self.action_queue.qsize() <= 2:
-            self._add_fallback_actions()
 
     async def action(self) -> Dict[str, Any]:
         """
@@ -174,7 +218,17 @@ class AIPlayer:
             action = self.action_queue.get_nowait()
             return action
         except Empty:
-            self._add_fallback_actions()
+            self.addFallbackActions()
+            try:
+                return self.action_queue.get_nowait()
+            except Empty:
+                # Emergency fallback if we still couldn't get an action
+                debug_write("Emergency fallback: action queue still empty!")
+                return {
+                    "movePaddle": "0",
+                    "activatePowerupBig": False,
+                    "activatePowerupSpeed": False
+                }
 
     def cleanup(self):
         """
@@ -184,10 +238,16 @@ class AIPlayer:
         while not self.action_queue.empty():
             self.action_queue.get()
 
-    def _check_for_difficulty_adaptation(self):
+    def checkForDifficultyAdaptation(self):
         """
         Check if we need to adjust difficulty based on performance
         """
+        # Only check periodically
+        if self.action_count - self.last_performance_check < self.adapt_interval:
+            return
+
+        self.last_performance_check = self.action_count
+
         try:
             # Get success rate from learner stats
             success_rate = self.thinker.learner.ai_stats.get("success_rate", 0.5)
@@ -212,19 +272,24 @@ class AIPlayer:
 
             # Apply difficulty change if needed
             if recommended_difficulty != self.difficulty:
-                self.difficulty = recommended_difficulty
-                self.thinker.difficulty = recommended_difficulty
-                self.thinker.learner.difficulty = recommended_difficulty
-                self.thinker.learner.config = DIFFICULTY_CONFIGS.get(recommended_difficulty, DIFFICULTY_CONFIGS[1])
-                debug_write(f"Difficulty adjusted to {recommended_difficulty}")
+                self.applyDifficultyChange(recommended_difficulty)
+
         except Exception as e:
             debug_write(f"Error in difficulty adaptation: {e}")
 
-
-    # ----------- fallback actions -----------
-    def _add_fallback_actions(self):
+    def applyDifficultyChange(self, new_difficulty):
         """
-        If we're running low, push some do-nothing or random ones
+        Apply a difficulty change to all AI components
+        """
+        self.difficulty = new_difficulty
+        self.thinker.difficulty = new_difficulty
+        self.thinker.learner.difficulty = new_difficulty
+        self.thinker.learner.config = DIFFICULTY_CONFIGS.get(new_difficulty, DIFFICULTY_CONFIGS[1])
+        debug_write(f"Difficulty adjusted to {new_difficulty}")
+
+    def addFallbackActions(self):
+        """
+        If we're running low on actions, push some fallback actions
         so we never starve.
         """
         randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]

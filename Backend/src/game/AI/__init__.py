@@ -1,7 +1,9 @@
-# Export the main classes that should be available from this module
-from .AI import debug_write, DIFFICULTY_CONFIGS
+"""
+AI module for Pong with all the classes that the game loop needs.
+"""
+from .AI import DIFFICULTY_CONFIGS
 from .AiPlayer import AIPlayer
 from .AiThinker import Thinker
 from .AiLearner import Learner
 
-__all__ = ['AIPlayer', 'Thinker', 'Learner', 'debug_write', 'DIFFICULTY_CONFIGS']
+__all__ = ["AIPlayer", "Thinker", "Learner", "DIFFICULTY_CONFIGS"]
