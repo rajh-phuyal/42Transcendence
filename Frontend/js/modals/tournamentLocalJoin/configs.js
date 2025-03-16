@@ -47,7 +47,7 @@ export default {
             let tournamentState         = this.domManip.$id("router-view").getAttribute("data-tournament-state");
             let tournamentClientRole    = this.domManip.$id("router-view").getAttribute("data-tournament-client-role");
             let tournamentLocal         = this.domManip.$id("router-view").getAttribute("data-tournament-local");
-            console.log("tournamentLocalJoin: allowedToOpen: ", tournamentId, tournamentState, tournamentClientRole);
+            console.log("tournamentLocalJoin: allowedToOpen: ", tournamentId, tournamentState, tournamentClientRole, tournamentLocal);
             if(!tournamentId || !tournamentState || !tournamentClientRole) {
                 console.error("tournamentLocalJoin: allowedToOpen: tournamentId, tournamentState or tournamentClientRole is not defined");
                 return false;
@@ -61,7 +61,7 @@ export default {
                 return false;
             }
             else {
-                if (tournamentLocal)
+                if (tournamentLocal == "true")
                     return true;
                 this.joinTournament(tournamentId);
             }
