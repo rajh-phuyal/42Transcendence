@@ -24,6 +24,7 @@ from game.serializer import GameSerializer
 from tournament.models import Tournament, TournamentMember
 from tournament.serializer import TournamentMemberSerializer, TournamentInfoSerializer
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
+from user.utils_relationship import is_blocking
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -46,21 +47,33 @@ class EnrolmentView(BaseAuthenticatedView):
 # History of tournaments of user including all tournament states
 class HistoryView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def get(self, request):
-        user = request.user
-        # Get all tournaments of the user
-        tournaments = TournamentMember.objects.filter(
-            user_id=user.id
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name'),
-            tournamentState=models.F('tournament__state')
-        ).values(
-            'tournamentId',
-            'tournamentName',
-            'tournamentState'
+    def get(self, request, userid):
+        requester = request.user
+
+        try:
+            target = User.objects.get(id=userid)
+        except User.DoesNotExist:
+            return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
+
+        # Check if the requester is blocked by the target user
+        if is_blocking(target, requester):
+            return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
+
+        # Get all tournaments of the target user
+        tournaments = Tournament.objects.filter(
+            members__user=target, 
+            state__in=[Tournament.TournamentState.ONGOING, Tournament.TournamentState.FINISHED]
+        ).order_by(
+            'state',
+            '-finish_time'
         )
-        return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
+
+        # Serialize the tournaments using TournamentInfoSerializer
+        serializer_tournaments = TournamentInfoSerializer(tournaments, many=True)
+
+        return success_response(_("Tournament history fetched successfully"), **{
+            'tournaments': serializer_tournaments.data
+        })
 
 # All tournaments where user is invited to and public tournaments
 class ToJoinView(BaseAuthenticatedView):

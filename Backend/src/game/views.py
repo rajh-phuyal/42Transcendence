@@ -126,7 +126,7 @@ class HistoryView(BaseAuthenticatedView):
 
         # Get all games and sort them descending by finish_time
         # Not finsihed games always need to be at the end
-        games = Game.objects.filter(game_members__user=target).annotate(
+        games = Game.objects.filter(members__user=target).annotate(
                 finish_time_nulls=Case(
                 When(finish_time__isnull=True, then=Value(1)),  # Assign 1 for NULL values
                 default=Value(0),  # Assign 0 for non-NULL values
