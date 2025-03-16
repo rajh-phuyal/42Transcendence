@@ -42,6 +42,27 @@ class AIPlayer:
             "activatePowerupSpeed": False
         })
 
+    async def action(self) -> Dict[str, Any]:
+        """
+        Called by the game loop each frame to get the next AI action.
+        If the queue is empty, returns a do-nothing fallback.
+        """
+        try:
+            action = self.action_queue.get_nowait()
+            return action
+        except Empty:
+            self.addFallbackActions()
+            try:
+                return self.action_queue.get_nowait()
+            except Empty:
+                # Emergency fallback
+                debug_write("Emergency fallback: action queue still empty!")
+                return {
+                    "movePaddle": "0",
+                    "activatePowerupBig": False,
+                    "activatePowerupSpeed": False
+                }
+
     def compute(self, game_state: Dict[str, Any]) -> None:
         """
         Called every ~1s. Tells the AI to do a fresh plan.
@@ -105,11 +126,10 @@ class AIPlayer:
         """
         player_right = game_state.get("playerRight", {})
         current_big_state = player_right.get("powerupBig", "unavailable")
-        slow_state = player_right.get("powerupSlow", "unavailable")
-        fast_state = player_right.get("powerupFast", "unavailable")
+        current_speed_state = player_right.get("powerupSpeed", "unavailable")
 
         # If no powerups available, reset counter and return
-        if not (current_big_state == "available" or slow_state == "available" or fast_state == "available"):
+        if not (current_big_state == "available" or current_speed_state == "available"):
             debug_write("No powerups available, resetting counter")
             self.powerup_usage_attempts = 0
             return
@@ -140,23 +160,20 @@ class AIPlayer:
 
         # Determine which powerups to use
         use_big = current_big_state == "available"
-        use_slow = slow_state == "available" and ball_coming_toward_ai
-        use_fast = fast_state == "available" and not ball_coming_toward_ai
+        use_speed = current_speed_state == "available" and ball_coming_toward_ai
 
         # Special handling for edge cases
-        if not ball_coming_toward_ai and not use_fast and slow_state == "available":
-            use_slow = True
-            debug_write("No FAST powerup, using SLOW even though ball moving away!")
-        elif ball_coming_toward_ai and not use_slow and fast_state == "available":
-            use_fast = True
+        if not ball_coming_toward_ai and not use_speed and current_speed_state == "available":
+            use_speed = True
+            debug_write("No SPEED powerup, using SLOW even though ball moving away!")
+        elif ball_coming_toward_ai and not use_speed and current_speed_state == "available":
+            use_speed = True
             debug_write("No SLOW powerup, using FAST even though ball coming toward AI!")
 
-        use_speed = use_slow or use_fast
-
         # Add actions that use powerups (multiple frames to increase activation chance)
-        for i in range(3):
+        for _ in range(3):
             self.action_queue.put({
-                "movePaddle": "0",  # Neutral movement
+                "movePaddle": "0",
                 "activatePowerupBig": use_big,
                 "activatePowerupSpeed": use_speed
             })
@@ -177,27 +194,6 @@ class AIPlayer:
 
         # Increment action count for difficulty adaptation
         self.action_count += 1
-
-    async def action(self) -> Dict[str, Any]:
-        """
-        Called by the game loop each frame to get the next AI action.
-        If the queue is empty, returns a do-nothing fallback.
-        """
-        try:
-            action = self.action_queue.get_nowait()
-            return action
-        except Empty:
-            self.addFallbackActions()
-            try:
-                return self.action_queue.get_nowait()
-            except Empty:
-                # Emergency fallback
-                debug_write("Emergency fallback: action queue still empty!")
-                return {
-                    "movePaddle": "0",
-                    "activatePowerupBig": False,
-                    "activatePowerupSpeed": False
-                }
 
     def checkForDifficultyAdaptation(self):
         """
