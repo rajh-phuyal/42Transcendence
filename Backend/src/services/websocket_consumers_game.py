@@ -36,7 +36,7 @@ class GameConsumer(CustomWebSocketLogic):
 
         # CHECK IF CLIENT IS ALLOWED TO CONNECT
         # Check if the client is a game member...
-        if not await database_sync_to_async(lambda: self.game.game_members.filter(user=self.user).exists())():
+        if not await database_sync_to_async(lambda: self.game.members.filter(user=self.user).exists())():
             logging.info(f"User {self.user.id} is not a member of game: entering viewer mode.")
             self.isOnlyViewer = True
             group_name = f"{PRE_GROUP_GAME}{self.game_id}"
@@ -67,8 +67,8 @@ class GameConsumer(CustomWebSocketLogic):
         self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
         self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
         self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
-        self.leftMember = await database_sync_to_async(self.game.game_members.get)(user=self.leftUser)
-        self.rightMember = await database_sync_to_async(self.game.game_members.get)(user=self.rightUser)
+        self.leftMember = await database_sync_to_async(self.game.members.get)(user=self.leftUser)
+        self.rightMember = await database_sync_to_async(self.game.members.get)(user=self.rightUser)
         # Init game on cache and send the game data
         await init_game_on_cache(self.game, self.leftMember, self.rightMember)
         await send_ws_game_data_msg(self.game_id)
