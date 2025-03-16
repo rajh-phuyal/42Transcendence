@@ -18,6 +18,7 @@ class AIPlayer:
         self.difficulty = difficulty
         self.action_queue = Queue() # main queue where moments are stored
         self.thinker = Thinker(self.action_queue, difficulty) # my brain
+        self.thinker.set_prediction_accuracy(4)
 
         self.last_performance_check = 0
         self.action_count = 0
@@ -171,6 +172,7 @@ class AIPlayer:
         """
         self.difficulty = new_difficulty
         self.thinker.difficulty = new_difficulty
+        self.thinker.set_prediction_accuracy(8 - (new_difficulty * 2))
         self.thinker.learner.difficulty = new_difficulty
         self.thinker.learner.config = DIFFICULTY_CONFIGS.get(new_difficulty, DIFFICULTY_CONFIGS[1])
         debug_write(f"Difficulty adjusted to {new_difficulty}")
@@ -179,13 +181,13 @@ class AIPlayer:
         """
         Add fallback actions to ensure we never run out
         """
-        randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]
+        # randomness = DIFFICULTY_CONFIGS[self.difficulty]["randomness"]
 
         for _ in range(GAME_FPS // 6):
             if not self.action_queue.full():
-                move = '0' if random.random() < randomness else random.choice(["+", "-"])
+                # move = '0' if random.random() < randomness else random.choice(["+", "-"])
                 self.action_queue.put({
-                    'movePaddle': move,
+                    'movePaddle': '0',
                     'activatePowerupBig': False,
                     'activatePowerupSpeed': False
                 })
