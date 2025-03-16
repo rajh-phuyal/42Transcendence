@@ -16,13 +16,88 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body barely-a-scroll-class" id="modal-game-history-body">
-                <p>Modal body text goes here.</p>
+                <p id="modal-game-history-no-games">No games played yet.</p>
+                <!-- <div class="modal-game-history-card">
+                    <img    class="modal-game-history-card-playerLeft-avatar avt1" id="modal-game-history-card-playerLeft-avatari"></img>
+                    <h5     class="modal-game-history-card-playerLeft-username usr1"n>cona</h5>
+                    <h3     class="modal-game-history-card-score score">0-11</h3    >
+                    <h5     class="modal-game-history-card-playerRight-username usrn2">conalho</h5>
+                    <img    class="modal-game-history-card-playerRight-avatar avt2" id="modal-game-history-card-playerRight-avatari"></img>
+                    <h6     class="modal-game-history-card-date dt">12-05-2025 16:04 p.m.</h6>
+                </div> -->
+
             </div>
+            <template id="modal-game-history-card-template">
+                <div class="modal-game-history-card">
+                    <img    class="grid-cell default-grid-area modal-game-history-card-playerLeft-avatar avt1"></img>
+                    <h5     class="grid-cell default-grid-area modal-game-history-card-playerLeft-username usrn1"></h5>
+                    <h3     class="grid-cell default-grid-area modal-game-history-card-score score"></h3>
+                    <h5     class="grid-cell default-grid-area modal-game-history-card-playerRight-username usrn2"></h5>
+                    <img    class="grid-cell default-grid-area modal-game-history-card-playerRight-avatar avt2"></img>
+                    <h6     class="grid-cell default-grid-area modal-game-history-card-date dt"></h6>
+                </div>
+            </template>
             <div class="modal-footer">
                 <!-- TODO: Translate Button Text -->
                 <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn modal-button">Save changes</button>
+                <button type="button" class="btn modal-button" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">Tournament History</button>
             </div>
         </div>
     </div>
 </div>
+<style>
+
+
+    .modal-game-history-card {
+        margin: 10px 0px;
+    }
+
+    .modal-game-history-card{
+        display: grid;
+        background-color: #EFE7D3;
+        /* margin: 1% 0% !important; */
+        /* padding: 1vh; */
+        height: 8vh;
+        width: 100%;
+        border:  3px solid  black;
+        color: black;
+        align-items: center;
+        overflow: hidden;
+        justify-content: space-between;
+        grid-template-columns: repeat(auto-fill, 10%);
+        grid-template-rows: repeat(auto-fill, 14.2%);
+        grid-template-areas:
+            "avt1   .      .      .      .      .      .      .      .      avt2   "
+            "avt1   .      .      .      .      .      .      .      .      avt2   "
+            "avt1   usrn1  usrn1  usrn1  score  score  usrn2  usrn2  usrn2  avt2   "
+            "avt1   usrn1  usrn1  usrn1  score  score  usrn2  usrn2  usrn2  avt2   "
+            "avt1   usrn1  usrn1  usrn1  score  score  usrn2  usrn2  usrn2  avt2   "
+            "avt1   dt     dt     dt     dt     dt     dt     dt     dt     avt2   "
+            "avt1   dt     dt     dt     dt     dt     dt     dt     dt     avt2   "
+    }
+
+    .modal-game-history-card-playerLeft-avatar{
+        grid-area: avt1;
+    }
+    .modal-game-history-card-playerLeft-username{
+        grid-area: usrn1;
+        text-align: left !important;
+    }
+    .modal-game-history-card-score{
+        grid-area: score;
+    }
+    .modal-game-history-card-playerRight-username{
+        grid-area: usrn2;
+        text-align: right !important;
+    }
+    .modal-game-history-card-playerRight-avatar{
+        grid-area: avt2;
+    }
+    .modal-game-history-card-date{
+        grid-area: dt;
+    }
+    .avt1, .avt2{
+        height: auto;
+        width: 90%;
+    }
+</style>
