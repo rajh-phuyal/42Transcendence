@@ -4,6 +4,7 @@ import { createConversationCard, deleteAllConversationCards, selectConversation,
 import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 /*
  QUICK EXPLANATION:
@@ -292,13 +293,7 @@ export default {
 
         initEyeListener(init = true) {
             if (init) {
-                document.addEventListener("mousemove", this.eyeListener);
-                return ;
-            }
-
-            if (!init)
-            {
-                document.removeEventListener("mousemove", this.eyeListener);
+                EventListenerManager.linkEventListener("barely-a-body", "chat", "mousemove", this.eyeListener);
                 return ;
             }
         },
