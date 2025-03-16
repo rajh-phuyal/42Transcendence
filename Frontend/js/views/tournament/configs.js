@@ -5,6 +5,7 @@ import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
 import { buildView, createPlayerCard, createGameCard, updateRankTable, updateFinalsDiagram, updatePodium } from './methods.js';
 import { tournamentData } from './objects.js';
+import { modalManager } from '../../abstracts/ModalManager.js';
 
 
 export default {
@@ -13,6 +14,28 @@ export default {
     },
 
     methods: {
+        /* This function sets/unsets the atrributes so that the modals can get the data */
+        setViewAttributes(set) {
+            const view = this.domManip.$id("router-view");
+            if(set) {
+                if (!this.data) {
+                    console.warn("tournament: setViewAttributes: this.data is not defined");
+                    return;
+                }
+                console.log("DADADADAD:", this.data);
+                // Set the attributes
+                view.setAttribute("data-tournament-id", this.data.tournamentInfo.id);
+                view.setAttribute("data-tournament-state", this.data.tournamentInfo.state);
+                view.setAttribute("data-tournament-client-role", this.data.clientRole);
+                view.setAttribute("data-tournament-local", this.data.tournamentInfo.local);
+            } else {
+                // Unset the attributes
+                view.removeAttribute("data-tournament-id");
+                view.removeAttribute("data-tournament-state");
+                view.removeAttribute("data-tournament-client-role");
+                view.removeAttribute("data-tournament-local");
+            }
+        },
 
         openCurrentGames() {
             this.domManip.$id("tournament-current-games-container").style.display = "flex";
@@ -44,24 +67,6 @@ export default {
             }
             else {
                 call(`tournament/leave/${this.routeParams.id}/`, 'DELETE').then(data => {
-                    console.log(data);
-                    $callToast("success", data.message);
-                })
-            }
-        },
-
-        subscribeStartTournamentButtonAction() {
-            if (this.data.tournamentInfo.state !== "setup")
-                return;
-            if (this.data.clientRole === "admin") {
-                console.log("starting tournament");
-                call(`tournament/start/${this.routeParams.id}/`, 'PUT').then(data => {
-                    console.log(data);
-                    $callToast("success", data.message);
-                })
-            }
-            else {
-                call(`tournament/join/${this.routeParams.id}/`, 'PUT').then(data => {
                     console.log(data);
                     $callToast("success", data.message);
                 })
@@ -108,7 +113,7 @@ export default {
         beforeRouteLeave() {
             WebSocketManager.setCurrentRoute(undefined);
             this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
-            this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
+            //this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
             this.domManip.$off(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
@@ -116,6 +121,8 @@ export default {
             this.domManip.$off(this.domManip.$id("tournament-go-to-current-game-button"), "click", this.routeToCurrentGame);
             this.domManip.$off(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
             this.domManip.$off(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
+            // Remove atrributes for modal
+            this.setViewAttributes(false);
         },
 
         beforeDomInsertion() {
@@ -150,7 +157,8 @@ export default {
                     updateRankTable(data.tournamentMembers);
 
                 this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
-                this.domManip.$on(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
+                //this.domManip.$on(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
+                modalManager.on("tournament-middle-bottom-subscribe-start-button", "modal-tournament-local-join");
                 this.domManip.$on(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
                 this.domManip.$on(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
                 this.domManip.$on(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
@@ -158,6 +166,8 @@ export default {
                 this.domManip.$on(this.domManip.$id("tournament-go-to-current-game-button"), "click", this.routeToCurrentGame);
                 this.domManip.$on(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
                 this.domManip.$on(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
+
+                this.setViewAttributes(true);
             }).catch(err => {
                 console.log(err);
                 router("/404", {msg: "404 | " + err.message});

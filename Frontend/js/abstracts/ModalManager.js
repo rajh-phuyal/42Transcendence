@@ -180,6 +180,13 @@ export default class ModalManager {
         await this.tryToShowModal(modalId);
     }
 
+    closeModal(modalId) {
+        const modalInstance = ModalManager.modalInstances[modalId];
+        if (modalInstance && modalInstance.instance) {
+            modalInstance.instance.hide();
+        }
+    }
+
     /* This can be used from a configs.js of a view to open a modal when a button is clicked */
     on(buttonId, modalId) {
         let element = $id(buttonId);

@@ -1,29 +1,65 @@
 <div class="modal fade" id="modal-tournament-local-join" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-tournament-local-join-title">Confirm Local Tournament Join TODO</h5>
-                <!-- TODO: Translate Button Text -->
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body barely-a-scroll-class" id="modal-tournament-local-join-body">
-                <textarea id="modal-tournament-local-join-textarea" class="barely-a-scroll-class" placeholder="Say smth nice"></textarea>
-            </div>
-            <div class="modal-footer">
-                <!-- TODO: Translate Button Text -->
-                <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
-                <button id="modal-tournament-local-join-create-button" type="button" class="btn modal-button" disabled>Create Conversation</button>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-tournament-local-join.png' class="image-modal-background-image" alt="Background Image">
+                <div id="modal-tournament-local-join-grid" class="view-overlay-grid">
+                    <h5 id="modal-tournament-local-join-title" class="modal-title grid-cell default-grid-area title">LOCAL JOIN</h5>
+                    <div class="grid-cell default-grid-area txt">
+                        <p>
+                            Do u wanna join? this is a local tournamnt! TODO: this needs tranlstion!
+                        </p>
+                    </div>
+                    <button class="grid-cell default-grid-area btnc btn btn-modal" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button id="modal-tournament-local-join-btn-join" class="grid-cell default-grid-area btns btn modal-button">YES</button>
+
+                </div>
             </div>
         </div>
     </div>
 </div>
 <style>
-    #modal-tournament-local-join-textarea {
-        width: 100% !important;
-        height: 80px;
-        font-size: min(1vw, 15px);
-        resize: none;
-        border: 1px solid black;
-        border-radius: 5px;
+    #modal-tournament-local-join-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      txt    txt    txt    txt    txt    txt    txt    txt    txt    txt    txt    .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      btnc   btnc   btnc   btnc   .      .      .      .      btns   btns   btns   btns   .     "
+            ".      btnc   btnc   btnc   btnc   .      .      .      .      btns   btns   btns   btns   .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    .title {
+        grid-area: title;
+    }
+    .txt {
+        grid-area: txt;
+    }
+    .btns {
+        grid-area: btns;
+    }
+    .btnc {
+        grid-area: btnc;
     }
 </style>
