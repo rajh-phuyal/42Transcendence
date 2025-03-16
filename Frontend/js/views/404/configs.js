@@ -1,3 +1,4 @@
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import { translate } from '../../locale/locale.js';
 import router from '../../navigation/router.js';
 
@@ -29,11 +30,11 @@ export default {
             else
                 this.domManip.$id("404-title").innerText = translate("404", "title");
             let homeButton = this.domManip.$id("home-button");
-            console.log("homebutton:",homeButton);
+            // console.log("homebutton:",homeButton);
             // TODO: @rajh is this the correct way to translate the button?
             homeButton.name = translate("404", "homeButton");
             homeButton.render();
-            this.domManip.$on(homeButton, "click", () => router("/"));
+            EventListenerManager.linkEventListener("home-button", "404", "click", () => router("/"));
         },
     }
 }

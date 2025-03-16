@@ -8,7 +8,7 @@ export class EventListenerManager {
     }
 
     /**
-     * @param {HTMLElement} elementId - The html element ID which will receive the event listener.
+     * @param {String} elementId - The html element ID which will receive the event listener.
      * @param {String} view - View of the event, this refers to which view
      * the element it's associated, so when the view leaves the Router and all it's associated elements
      * event listeners are also removed.
@@ -71,7 +71,7 @@ export class EventListenerManager {
     static #addElementEventType(elementId, eventType, callback) {
         const newEventElement = {
             eventType,
-            callback: callback.bind(callback)
+            callback: callback?.bind(callback)
         };
         const element = $id(elementId);
         if (!element)

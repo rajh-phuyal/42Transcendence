@@ -196,18 +196,18 @@ export default {
             }
             // Adding theEventListener
             if (init){
-                this.domManip.$on(container, "scroll", this.scrollListener);
+                EventListenerManager.linkEventListener("chat-view-messages-container", "chat", "scroll", this.scrollListener);
                 return ;
             }
 
             // Remove the event listener before leaving the page
-            if (!init){
-                if(this.scrollListener)
-                    this.domManip.$off(container, "scroll", this.scrollListener);
-                else
-                    console.log("handleScroll is not defined, cannot remove listener.");
-                return ;
-            }
+            // if (!init){
+            //     if(this.scrollListener)
+            //         this.domManip.$off(container, "scroll", this.scrollListener);
+            //     else
+            //         console.log("handleScroll is not defined, cannot remove listener.");
+            //     return ;
+            // }
         },
 
         // Adding / Removing Event Listeners for the avatar click
@@ -221,18 +221,18 @@ export default {
 
             // Adding theEventListener
             if (init){
-                this.domManip.$on(avatar, "click", this.clickAvatarListener);
+                EventListenerManager.linkEventListener("chat-view-header-avatar", "chat", "click", this.clickAvatarListener);
                 return ;
             }
 
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.clickAvatarListener)
-                    this.domManip.$off(avatar, "click", this.clickAvatarListener);
-                else
-                    console.log("clickAvatarListener is not defined, cannot remove listener.");
-                return ;
-            }
+            // // Remove the event listener before leaving the page
+            // if (!init){
+            //     if(this.clickAvatarListener)
+            //         this.domManip.$off(avatar, "click", this.clickAvatarListener);
+            //     else
+            //         console.log("clickAvatarListener is not defined, cannot remove listener.");
+            //     return ;
+            // }
         },
 
         // Adding / Removing Event Listeners for the search bar
@@ -247,23 +247,25 @@ export default {
 
             // Adding theEventListener
             if (init){
-                this.domManip.$on(searchBar, "input", this.searchBarTypeListener);
-                this.domManip.$on(searchBar, "keydown", this.searchBarKeydownListener);
+                // this.domManip.$on(searchBar, "input", this.searchBarTypeListener);
+                // this.domManip.$on(searchBar, "keydown", this.searchBarKeydownListener);
+                EventListenerManager.linkEventListener("chat-view-searchbar", "chat", "input", this.searchBarTypeListener);
+                EventListenerManager.linkEventListener("chat-view-searchbar", "chat", "keydown", this.searchBarKeydownListener);
                 return ;
             }
 
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.searchBarTypeListener)
-                    this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
-                else
-                    console.log("searchBarListenerType is not defined, cannot remove listener.");
-                if(this.searchBarKeydownListener)
-                    this.domManip.$off(searchBar, "keydown", this.searchBarKeydownListener);
-                else
-                    console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
-                return ;
-            }
+            // // Remove the event listener before leaving the page
+            // if (!init){
+            //     if(this.searchBarTypeListener)
+            //         this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
+            //     else
+            //         console.log("searchBarListenerType is not defined, cannot remove listener.");
+            //     if(this.searchBarKeydownListener)
+            //         this.domManip.$off(searchBar, "keydown", this.searchBarKeydownListener);
+            //     else
+            //         console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
+            //     return ;
+            // }
         },
 
         // Adding / Removing Event Listeners for the mentions (@user, #game, #tournament)
@@ -277,18 +279,19 @@ export default {
 
             // Adding theEventListener
             if(init){
-                this.domManip.$on(container, "click", this.messageMeantionListener);
+                // this.domManip.$on(container, "click", this.messageMeantionListener);
+                EventListenerManager.linkEventListener("chat-view-messages-container", "chat", "click", this.messageMeantionListener);
                 return ;
             }
 
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.messageMeantionListener)
-                    this.domManip.$off(container, "click", this.messageMeantionListener);
-                else
-                    console.log("messageMeantionListener is not defined, cannot remove listener.");
-                return ;
-            }
+            // // Remove the event listener before leaving the page
+            // if (!init){
+            //     if(this.messageMeantionListener)
+            //         this.domManip.$off(container, "click", this.messageMeantionListener);
+            //     else
+            //         console.log("messageMeantionListener is not defined, cannot remove listener.");
+            //     return ;
+            // }
         },
 
         initEyeListener(init = true) {

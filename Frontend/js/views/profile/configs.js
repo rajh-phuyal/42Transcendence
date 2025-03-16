@@ -7,6 +7,7 @@ import { translate } from '../../locale/locale.js';
 import { $id } from '../../abstracts/dollars.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
@@ -251,8 +252,10 @@ export default {
                 if (this.buttonTopMiddle.method)
                     modalManager.on("button-top-middle", this.buttonTopMiddle.method);
                 if (this.buttonTopRight.method) {
-                    if (this.buttonTopRight.method == "logout")
-                        this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                    if (this.buttonTopRight.method == "logout") {
+                        // this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                        EventListenerManager.linkEventListener("button-top-right", "profile", "click", this.callbackLogout);
+                    }
                     else
                         modalManager.on("button-top-right", this.buttonTopRight.method);
                 }

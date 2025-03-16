@@ -3,6 +3,7 @@ import canvasData from './data.js'
 import call from '../../abstracts/call.js'
 import callToast from '../../abstracts/callToast.js'
 import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
@@ -60,13 +61,16 @@ export default {
             buildCanvas();
 
 			const homeView = this.domManip.$id('home-view');
-			this.domManip.$on(homeView, "keydown", this.escapeCallback);
+			// this.domManip.$on(homeView, "keydown", this.escapeCallback);
+            EventListenerManager.linkEventListener("home-view", "home", "keydown", this.escapeCallback);
 
             // for (let element of this.users)
                 // this.createInviteUserCard(element);
 
-            this.domManip.$on(document, "click", mouseClick);
-            this.domManip.$on(document, "mousemove", isHovering);
+            // this.domManip.$on(document, "click", mouseClick);
+            // this.domManip.$on(document, "mousemove", isHovering);
+            EventListenerManager.linkEventListener("barely-a-body", "home", "click", mouseClick);
+            EventListenerManager.linkEventListener("barely-a-body", "home", "mousemove", isHovering);
         },
     }
 }

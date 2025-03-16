@@ -1,6 +1,7 @@
 import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
