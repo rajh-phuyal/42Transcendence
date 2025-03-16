@@ -236,10 +236,17 @@ export default {
         },
 
         afterDomInsertion() {
-			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
+            call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
+                console.log("profileData ", this.result);
+        
+                // Convert lastLogin to local time using moment.js
+                if (res.lastLogin) {
+                    this.result.lastLoginFormatted = moment.utc(res.lastLogin).local().format("YYYY-MM-DD HH:mm:ss");
+                }
+        
                 WebSocketManager.setCurrentRoute("profile-" + this.result.id);
-                this.setViewAttributes(true)
+                this.setViewAttributes(true);
                 populateInfoAndStats(res);
                 this.populateButtons();
                 if (res.relationship.isBlocked)
