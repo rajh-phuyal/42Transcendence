@@ -19,7 +19,8 @@ const routes = [
     {
         path: "/tournament",
         view: "tournament",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["tournamentLocalJoin"]
     },
     {
         path: "/profile",

@@ -13,6 +13,7 @@ const modalFolders = [
     ["modal-tournament-create", "tournamentCreate"],
     ["modal-tournament-join", "tournamentJoin"],
     ["modal-tournament-history", "tournamentHistory"],
+    ["modal-tournament-local-join", "tournamentLocalJoin"],
     ["modal-template-image", "templateImage"],
     ["modal-avatar-cropper", "avatarCropper"],
 ];
