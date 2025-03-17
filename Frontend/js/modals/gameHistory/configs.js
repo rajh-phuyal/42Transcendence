@@ -10,6 +10,7 @@ TODO: THIS MODAL IS NOT DONE AT ALL!!!
 */
 import call from '../../abstracts/call.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
+import router from '../../navigation/router.js';
 import { createGameCard } from '../../views/tournament/methods.js';
 
 export default {
@@ -20,11 +21,17 @@ export default {
 
     methods: {
 
+        formatTimestamp(isoTimestamp) {
+            return moment(isoTimestamp).format('YYYY-MM-DD h:mm a').replace('am', 'a.m.').replace('pm', 'p.m.');
+        },
+
         cleanUpGameList() {
             let list = this.domManip.$queryAll(".modal-game-history-card");
 
-            for (let element of list)
+            for (let element of list) {
                 element.remove();
+                this.domManip.$on(element, "click", this.gameCardClickCallBack);
+            }
         },
 
         setAvatarOnGameCard (element, playerObject) {
@@ -33,29 +40,41 @@ export default {
                 element.style.filter = "brightness(50%)";
         },
 
+        gameCardClickCallBack(event) {
+            console.log("event:", event.srcElement.parentElement);
+            let gameId = event.srcElement.getAttribute("game-id");
+            if (gameId == null)
+                gameId = event.srcElement.parentElement.getAttribute("game-id");
+            console.log("game id:", gameId);
+            router('/game',  { id: gameId });
+        },
+
         createGameCard(gameObject) {
             const template = this.domManip.$id("modal-game-history-card-template").content.cloneNode(true);
             const container = template.querySelector(".modal-game-history-card");
+
+            container.setAttribute("game-id", gameObject.id);
+
+            this.domManip.$on(container, "click", this.gameCardClickCallBack);
 
             this.setAvatarOnGameCard(container.querySelector(".modal-game-history-card-playerLeft-avatar"), gameObject.playerLeft);
             this.setAvatarOnGameCard(container.querySelector(".modal-game-history-card-playerRight-avatar"), gameObject.playerRight);
 
             container.querySelector(".modal-game-history-card-playerLeft-username").textContent = gameObject.playerLeft.username;
             container.querySelector(".modal-game-history-card-playerRight-username").textContent = gameObject.playerRight.username;
-
             container.querySelector(".modal-game-history-card-score").textContent = `${gameObject.playerLeft.points}-${gameObject.playerRight.points}`;
 
             if (gameObject.finishTime)
-                container.querySelector(".modal-game-history-card-date").textContent = gameObject.finishTime;
+                container.querySelector(".modal-game-history-card-date").textContent = this.formatTimestamp(gameObject.finishTime);
             else
             container.querySelector(".modal-game-history-card-date").textContent = gameObject.state;
 
-            //TODO: Create an event listner for the ongoing games
+        //TODO: Create an event listner for the ongoing games
 
-            this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
-        }
+        this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
+    }
     },
-
+    
     hooks: {
         beforeOpen () {
             try {
@@ -73,7 +92,6 @@ export default {
                 console.log("data", data);
                 this.data = data;
 
-                this.cleanUpGameList();
                 if (data.games.length)
                     this.domManip.$id("modal-game-history-no-games").style.display = "none";
 
@@ -83,6 +101,7 @@ export default {
             return true;
         },
         afterClose () {
+            this.cleanUpGameList();
         }
     }
 }

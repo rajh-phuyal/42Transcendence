@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content image-modal-content">
             <div class="modal-body image-modal-body" id="modal-game-history-body">
-                <img src='../../assets/backgrounds/modal-create-game-lizard-people.png' class="image-modal-background-image" alt="Background Image">
+                <img src='../../assets/backgrounds/modal-background-blank-paper.png' class="image-modal-background-image" alt="Background Image">
                 <div id="modal-game-history-grid" class="view-overlay-grid">
                         <!-- Place your content here -->
 
@@ -35,10 +35,9 @@
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".     .     title  title  title  title  .      .      .      .      .      .      .      .      .      .      .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
-            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
@@ -57,7 +56,8 @@
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".     .     .      btntm  btntm  btntm  .      .      .      .      .      btnc   btnc   btnc   .      .      .     "
+            ".     btntm  btntm  btntm btntm  btntm  btntm  .      .      .      .      btnc   btnc   btnc   btnc   .      .     "
+            ".     btntm  btntm  btntm btntm  btntm  btntm  .      .      .      .      btnc   btnc   btnc   btnc   .      .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -73,12 +73,18 @@
         grid-area: lcont;
         display: block !important;
         overflow: auto !important;
-        padding: 0% 2% 0% 0%;
+        padding: 0% 2% 0% 2%;
+        border: 3px solid #000000;
+        background-color: rgba(0, 0, 0, 0.176);
     }
 
     .title {
         grid-area: title;
     }
+
+    /* #modal-game-history-game-list-container {
+
+    } */
 
     .modal-game-history-card {
         margin: 10px 0px;
