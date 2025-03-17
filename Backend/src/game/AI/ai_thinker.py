@@ -1,9 +1,9 @@
 import threading
 import logging
-from queue import Queue
+from queue import Queue, Empty
 from typing import List, Dict, Any, Tuple, Optional
 import math
-from game.constants import GAME_FPS
+from game.constants import GAME_FPS, GAME_STATE
 from .ai_utils import debugger_log, DIFFICULTY_CONFIGS
 from .ai_learner import Learner
 from .physics_engine import PhysicsEngine
@@ -13,10 +13,11 @@ class Thinker:
     A background 'Thinker' that generates actions for the AI player.
     """
 
-    def __init__(self, action_queue: Queue, difficulty: int = 1):
+    def __init__(self, action_queue: Queue, difficulty: int = 1, game_id: str = None):
         """Initialize the Thinker with action queue and difficulty level"""
         self.action_queue = action_queue
         self.difficulty = difficulty
+        self.game_id = game_id
         self.running = True
         self.waiting = False
         self.game_state: Dict[str, Any] = {}
@@ -26,16 +27,26 @@ class Thinker:
         self.last_predicted_frame = None
         self.last_paddle_pos = None
 
+        # Force clear queue to ensure we don't have lingering actions
+        while not self.action_queue.empty():
+            try:
+                self.action_queue.get_nowait()
+            except Empty:
+                break
+
         # difficulty controlles this
         # used for the prediction accuracy
         self.prediction_accuracy = 5
 
         # Create the learner
-        self.learner = Learner(difficulty=difficulty)
+        self.learner = Learner(difficulty=difficulty, game_id=game_id)
 
         # Start background thread
         self.thread = threading.Thread(target=self.compute_loop, daemon=True)
         self.thread.start()
+
+        # first compute with default game state
+        self.think(GAME_STATE)
 
     def set_prediction_accuracy(self, value: int) -> None:
         """Set the prediction accuracy level (0-10)"""

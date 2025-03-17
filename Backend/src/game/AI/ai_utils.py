@@ -1,5 +1,16 @@
 import os
 from app.settings import DEBUG
+from game.game_cache import set_game_data, get_game_data
+from datetime import datetime, timezone
+from django.core.cache import cache
+
+def difficulty_to_string(difficulty: int) -> str:
+    return {
+        0: "easy",
+        1: "medium",
+        2: "hard",
+    }[difficulty]
+
 
 # Common constants used by all AI classes
 DIFFICULTY_CONFIGS = {
@@ -51,6 +62,26 @@ def debugger_log(msg: str, file_path: str = DEBUG_FILE_PATH):
     # You may want to handle exceptions or concurrency more robustly in production.
     with open(file_path, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
+
+
+def save_ai_stats_to_cache(game_id: str, stats: dict) -> None:
+    """
+    Save AI stats to the game cache
+    """
+    cache.set(f"ai_stats_{game_id}", stats, timeout=3000)
+    debugger_log(f"Saved AI stats to cache for game {game_id}")
+
+def load_ai_stats_from_cache(game_id: str) -> dict:
+    """
+    Load AI stats from the game cache
+    """
+    return cache.get(f"ai_stats_{game_id}")
+
+def clear_ai_stats_cache(game_id: str) -> None:
+    """
+    Clear AI stats from the game cache
+    """
+    cache.delete(f"ai_stats_{game_id}")
 
 # Import the components, to avoid circular imports
 from .ai_learner import Learner

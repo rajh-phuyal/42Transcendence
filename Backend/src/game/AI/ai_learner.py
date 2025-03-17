@@ -1,20 +1,38 @@
 from typing import Dict, Any, Tuple, Optional, List, Deque
 from collections import deque
 import random
-from .ai_utils import debugger_log, DIFFICULTY_CONFIGS
+from .ai_utils import debugger_log, DIFFICULTY_CONFIGS, save_ai_stats_to_cache, load_ai_stats_from_cache
 
+GLOBAL_GAME_ID = None
+
+class CachedStatsDict(dict):
+    """A dictionary that automatically saves to cache when modified"""
+
+    def __init__(self, initial_dict, *args, **kwargs):
+        super().__init__(initial_dict or {}, *args, **kwargs)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        save_ai_stats_to_cache(GLOBAL_GAME_ID, self)
+
+    def update(self, *args, **kwargs):
+        super().update(*args, **kwargs)
+        save_ai_stats_to_cache(GLOBAL_GAME_ID, self)
 
 class Learner:
     """
     The AI's 'intelligence' component. Analyzes game data and opponent behavior.
     """
 
-    def __init__(self, difficulty: int = 1):
+    def __init__(self, difficulty: int = 1, game_id: str = None):
+        GLOBAL_GAME_ID = game_id
         self.difficulty = difficulty
         self.config = DIFFICULTY_CONFIGS.get(difficulty, DIFFICULTY_CONFIGS[1])
 
-        # Performance stats
-        self.ai_stats = {
+        raw_stats = load_ai_stats_from_cache(GLOBAL_GAME_ID) or {}
+        debugger_log(f"Raw stats: {raw_stats}")
+        # Define default stats
+        default_stats = {
             "consecutive_goals": 0,
             "consecutive_goals_against": 0,
             "missed_balls": 0,
@@ -23,8 +41,12 @@ class Learner:
             "last_ball_x": 50.0,
             "last_ball_y": 50.0,
             "last_direction_x": 0,
-            "success_rate": 0.5  # neutral assumption
+            "success_rate": 0.5
         }
+
+        # this is for handling constant caching
+        debugger_log(f"Starting stats: {default_stats | raw_stats} for game {GLOBAL_GAME_ID}")
+        self._stats = CachedStatsDict(default_stats | raw_stats)
 
         self.last_game_state = {}
         self.has_big_powerup = False
@@ -114,18 +136,18 @@ class Learner:
 
         # Point scored against AI
         if curr_score_left > last_score_left:
-            self.ai_stats["consecutive_goals_against"] += 1
-            self.ai_stats["consecutive_goals"] = 0
-            self.ai_stats["missed_balls"] += 1
-            self.ai_stats["total_balls_faced"] += 1  # Ensure this is incremented
-            debugger_log(f"AI MISSED a ball! Total misses: {self.ai_stats['missed_balls']}, "
-                        f"Total faced: {self.ai_stats['total_balls_faced']}")
+            self._stats["consecutive_goals_against"] += 1
+            self._stats["consecutive_goals"] = 0
+            self._stats["missed_balls"] += 1
+            self._stats["total_balls_faced"] += 1  # Ensure this is incremented
+            debugger_log(f"AI MISSED a ball! Total misses: {self._stats['missed_balls']}, "
+                        f"Total faced: {self._stats['total_balls_faced']}")
 
         # AI scored a point
         elif curr_score_right > last_score_right:
-            self.ai_stats["consecutive_goals"] += 1
-            self.ai_stats["consecutive_goals_against"] = 0
-            debugger_log(f"AI scored! Consecutive goals: {self.ai_stats['consecutive_goals']}")
+            self._stats["consecutive_goals"] += 1
+            self._stats["consecutive_goals_against"] = 0
+            debugger_log(f"AI scored! Consecutive goals: {self._stats['consecutive_goals']}")
 
     def detect_ball_interception(self, game_state: Dict[str, Any]) -> None:
         """
@@ -135,39 +157,39 @@ class Learner:
         curr_ball_dir_x = game_state.get("ball", {}).get("directionX", 0)
 
         # If ball direction reversed near AI paddle, count as intercept
-        if (self.ai_stats["last_direction_x"] > 0 and curr_ball_dir_x < 0 and
-            self.ai_stats["last_ball_x"] > 80):  # Reduced from 90 to catch more bounces
+        if (self._stats["last_direction_x"] > 0 and curr_ball_dir_x < 0 and
+            self._stats["last_ball_x"] > 80):  # Reduced from 90 to catch more bounces
 
             # Log the values for debugging
-            debugger_log(f"Ball bounce detected: last_x={self.ai_stats['last_ball_x']}, curr_x={curr_ball_x}, "
-                        f"last_dir_x={self.ai_stats['last_direction_x']}, curr_dir_x={curr_ball_dir_x}")
+            debugger_log(f"Ball bounce detected: last_x={self._stats['last_ball_x']}, curr_x={curr_ball_x}, "
+                        f"last_dir_x={self._stats['last_direction_x']}, curr_dir_x={curr_ball_dir_x}")
 
-            self.ai_stats["successful_intercepts"] += 1
-            debugger_log(f"AI intercepted the ball! Total intercepts: {self.ai_stats['successful_intercepts']}, "
-                        f"Total faced: {self.ai_stats['total_balls_faced'] + 1}")
+            self._stats["successful_intercepts"] += 1
+            debugger_log(f"AI intercepted the ball! Total intercepts: {self._stats['successful_intercepts']}, "
+                        f"Total faced: {self._stats['total_balls_faced'] + 1}")
 
     def update_ball_tracking(self, game_state: Dict[str, Any]) -> None:
         """
         Update tracking of ball position and direction
         """
-        self.ai_stats["last_ball_x"] = game_state.get("ball", {}).get("posX", 50)
-        self.ai_stats["last_ball_y"] = game_state.get("ball", {}).get("posY", 50)
-        self.ai_stats["last_direction_x"] = game_state.get("ball", {}).get("directionX", 0)
+        self._stats["last_ball_x"] = game_state.get("ball", {}).get("posX", 50)
+        self._stats["last_ball_y"] = game_state.get("ball", {}).get("posY", 50)
+        self._stats["last_direction_x"] = game_state.get("ball", {}).get("directionX", 0)
 
     def update_success_rate(self) -> None:
         """
         Update total balls faced and success rate statistics
         """
         # Update total number of balls faced for success rate calculation
-        self.ai_stats["total_balls_faced"] = (
-            self.ai_stats["successful_intercepts"] + self.ai_stats["missed_balls"]
+        self._stats["total_balls_faced"] = (
+            self._stats["successful_intercepts"] + self._stats["missed_balls"]
         )
 
-        if self.ai_stats["total_balls_faced"] > 0:
-            self.ai_stats["success_rate"] = (
-                self.ai_stats["successful_intercepts"] / self.ai_stats["total_balls_faced"]
+        if self._stats["total_balls_faced"] > 0:
+            self._stats["success_rate"] = (
+                self._stats["successful_intercepts"] / self._stats["total_balls_faced"]
             )
-            debugger_log(f"Success rate: {self.ai_stats['success_rate']:.2f}")
+            debugger_log(f"Success rate: {self._stats['success_rate']:.2f}")
 
     def update_powerup_states(self, game_state: Dict[str, Any]) -> None:
         """
@@ -193,8 +215,7 @@ class Learner:
         opponent_powerup_probability = self.predict_opponent_powerup_usage(game_state)
         debugger_log(f"Opponent powerup probability: {opponent_powerup_probability}")
 
-        # Determine recommended difficulty
-        recommended_difficulty = self.calculate_recommended_difficulty()
+        recommended_difficulty = self.calculate_new_difficulty()
 
         # Store metrics for future reference
         metrics = {
@@ -223,18 +244,18 @@ class Learner:
         if not has_big and not has_speed:
             return False, False
 
-        # For difficulty 0 (easy), use more random/less strategic powerup decisions
-        if self.difficulty == 0:
-            if random.random() < 0.1:
+        left_score = game_state.get("playerLeft", {}).get("points", 0)
+        right_score = game_state.get("playerRight", {}).get("points", 0)
+
+        # For difficulty 0 (easy), use more random/less strategic powerup decisions (probabalistic)
+        if self.difficulty == 0 and right_score > 5:
+            if random.random() < 0.1: # 10% chance to use powerups
                 use_big = has_big and random.random() < 0.5
                 use_speed = has_speed and random.random() < 0.5
                 debugger_log(f"Easy difficulty: random powerup decision - big={use_big}, speed={use_speed}")
                 return use_big, use_speed
 
         # Factor 1: Game score context
-        left_score = game_state.get("playerLeft", {}).get("points", 0)
-        right_score = game_state.get("playerRight", {}).get("points", 0)
-
         # If we're ahead by a lot, save powerups
         if right_score > left_score + 3:
             # At easier difficulties, don't strategically save powerups as much
@@ -278,7 +299,7 @@ class Learner:
                 speed_value += 0.1 * (self.difficulty + 1)
                 debugger_log(f"Close end game: further increasing powerup value")
 
-        # Factor 3: Ball position and direction context - reduced at lower difficulties
+        # Factor 3: Ball position and direction context
         if self.difficulty > 0:  # Only medium and hard use ball position strategically
             ball = game_state.get("ball", {})
             ball_x = ball.get("posX", 50)
@@ -296,7 +317,7 @@ class Learner:
                 speed_value += 0.05 * (self.difficulty + 1)
                 debugger_log(f"Ball moving to opponent: increasing speed powerup value (fast effect)")
 
-        # Factor 4: Opponent behavior analysis - only used at higher difficulties
+        # Factor 4: Opponent behavior analysis
         if len(self.opponent_ball_responses) >= 3 and self.difficulty == 2:
             # Only at hard difficulty does the AI analyze opponent behavior
             # Calculate how well opponent tracks the ball
@@ -314,20 +335,20 @@ class Learner:
 
         # Factor 5: AI performance - reduced at lower difficulties
         losing_streak_boost = 0.1 * (self.difficulty + 1)  # Scale by difficulty
-        if self.ai_stats["consecutive_goals_against"] >= 2:
+        if self._stats["consecutive_goals_against"] >= 2:
             # We're on a losing streak, use powerups more aggressively
             big_value += losing_streak_boost
             speed_value += losing_streak_boost
             debugger_log(f"AI losing streak: increasing powerup values (scaled by difficulty)")
 
-        # Make final decision (threshold-based) - lower threshold at easier difficulties
+        # Make final decision
         thresholds = {
             0: 0.5,  # Easy - more likely to use powerups
             1: 0.6,  # Medium
             2: 0.7   # Hard - more strategic
         }
 
-        use_threshold = thresholds.get(self.difficulty, 0.7)
+        use_threshold = thresholds.get(self.difficulty, 0.6)
         use_big = has_big and big_value > use_threshold
         use_speed = has_speed and speed_value > use_threshold
 
@@ -375,21 +396,21 @@ class Learner:
         debugger_log(f"Opponent powerup usage probability: {probability:.2f}")
         return probability
 
-    def calculate_recommended_difficulty(self) -> int:
+    def calculate_new_difficulty(self) -> int:
         """
         Calculate recommended difficulty based on AI performance
         """
         recommended_difficulty = self.difficulty
 
         # If AI is doing too well, increase difficulty
-        if self.ai_stats["success_rate"] > 0.8 and self.difficulty < 2:
+        if self._stats["success_rate"] > 0.8 and self.difficulty < 2:
             recommended_difficulty = self.difficulty + 1
-            debugger_log(f"AI too successful ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
+            debugger_log(f"AI too successful ({self._stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
 
         # If AI is struggling, decrease difficulty
-        elif self.ai_stats["success_rate"] < 0.3 and self.difficulty > 0:
+        elif self._stats["success_rate"] < 0.3 and self.difficulty > 0:
             recommended_difficulty = self.difficulty - 1
-            debugger_log(f"AI struggling ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
+            debugger_log(f"AI struggling ({self._stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
 
         return recommended_difficulty
 
@@ -438,3 +459,8 @@ class Learner:
             "position_bias": position_bias,
             "avg_position": avg_position
         }
+
+    @property
+    def ai_stats(self):
+        """Can access the stats as ai_stats"""
+        return self._stats

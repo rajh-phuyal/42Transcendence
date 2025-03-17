@@ -10,12 +10,13 @@ from asgiref.sync import async_to_sync
 # Services
 from services.send_ws_msg import send_ws_game_data_msg
 # User
-from user.constants import USER_ID_OVERLORDS
+from user.constants import USER_ID_OVERLORDS, USER_ID_AI
 # Tournament
 from tournament.models import Tournament
 # Game
 from game.models import Game, GameMember
 from game.utils_ws import update_game_state
+from game.AI import clear_ai_stats_cache
 # CHAT
 from chat.message_utils import create_and_send_overloards_pm
 
@@ -51,6 +52,12 @@ def check_overdue_tournament_games():
             # Set game to finished (this will also send the ws)
             async_to_sync(update_game_state)(game.id, Game.GameState.QUITED, USER_ID_OVERLORDS)
             async_to_sync(send_ws_game_data_msg)(game.id)
+
+            # if the games as ai in it, clear the ai stats cache
+            # asume ai is always the right player
+            if game_members[1].user.id == USER_ID_AI:
+                clear_ai_stats_cache(game.id)
+
     if not found_one:
         logging.info("No overdue games found.")
 
