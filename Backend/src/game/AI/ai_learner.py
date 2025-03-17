@@ -1,23 +1,15 @@
 from typing import Dict, Any, Tuple, Optional, List, Deque
 from collections import deque
 import random
-import math
-from game.constants import GAME_FPS
-from app.settings import DEBUG
-
-from .AI import debug_write, DIFFICULTY_CONFIGS
+from .ai_utils import debugger_log, DIFFICULTY_CONFIGS
 
 
 class Learner:
     """
-    The AI's 'intelligence' component. Analyzes game data and opponent behavior
-    to make strategic decisions about powerup usage and other gameplay elements.
+    The AI's 'intelligence' component. Analyzes game data and opponent behavior.
     """
 
     def __init__(self, difficulty: int = 1):
-        """
-        Initialize the Learner with the specified difficulty level
-        """
         self.difficulty = difficulty
         self.config = DIFFICULTY_CONFIGS.get(difficulty, DIFFICULTY_CONFIGS[1])
 
@@ -31,34 +23,30 @@ class Learner:
             "last_ball_x": 50.0,
             "last_ball_y": 50.0,
             "last_direction_x": 0,
-            "power_ups_used": 0,
-            "success_rate": 0.5  # Start with neutral assumption
+            "success_rate": 0.5  # neutral assumption
         }
 
-        # Game state tracking
         self.last_game_state = {}
-
-        # Powerup state tracking
         self.has_big_powerup = False
         self.has_speed_powerup = False
 
-        # Opponent behavior tracking (last N positions)
-        self.max_history = 50  # Store last 50 positions
+        # Opponent behavior (last N positions)
+        self.max_history = 50 * (difficulty + 1)  # Store last 50 * difficulty positions
         self.opponent_positions = deque(maxlen=self.max_history)
         self.opponent_movements = deque(maxlen=self.max_history-1)  # +1/-1/0 for movement direction
-        self.opponent_ball_responses = deque(maxlen=10)  # How opponent responds to ball approaches
+        self.opponent_ball_responses = deque(maxlen=10)
 
         # Strategic variables
-        self.big_powerup_value = 0.5  # Base value of using big powerup
-        self.speed_powerup_value = 0.5  # Base value of using speed powerup
-        self.last_metrics = None  # Store last computed metrics
+        self.big_powerup_value = 0.5
+        self.speed_powerup_value = 0.5
+        self.last_metrics = None
 
-    def update_with_game_state(self, game_state: Dict[str, Any]) -> None:
+    def learn(self, game_state: Dict[str, Any]) -> None:
         """
         Update internal state and tracking based on new game state
         """
         # Track opponent behavior
-        self.track_opponent_behavior(game_state)
+        self.learn_opponent_behavior(game_state)
 
         # Update performance stats
         if self.last_game_state:
@@ -75,9 +63,9 @@ class Learner:
         # Store current game state for next comparison
         self.last_game_state = game_state
 
-    def track_opponent_behavior(self, game_state: Dict[str, Any]) -> None:
+    def learn_opponent_behavior(self, game_state: Dict[str, Any]) -> None:
         """
-        Track opponent's position and movement patterns
+        Learn opponent's position and movement patterns
         """
         # Get current opponent position
         opponent = game_state.get("playerLeft", {})
@@ -101,19 +89,17 @@ class Learner:
         ball = game_state.get("ball", {})
         ball_dir_x = ball.get("directionX", 0)
 
-        if (ball_dir_x < 0 and ball.get("posX", 50) < 50 and
-            len(self.opponent_positions) >= 2):
+        if (ball_dir_x < 0 and ball.get("posX", 50) < 50 and len(self.opponent_positions) >= 2):
             # Ball is moving toward opponent
             ball_y = ball.get("posY", 50)
             paddle_y = current_pos
-            prev_paddle_y = self.opponent_positions[-2]
 
             # Record if opponent is moving toward ball
             if (ball_y > paddle_y and movement > 0) or (ball_y < paddle_y and movement < 0):
-                # Opponent is tracking ball
+                # slow opponent
                 self.opponent_ball_responses.append(1)
             else:
-                # Opponent not tracking ball well
+                # fast opponent
                 self.opponent_ball_responses.append(0)
 
     def check_for_scored_points(self, game_state: Dict[str, Any]) -> None:
@@ -131,13 +117,15 @@ class Learner:
             self.ai_stats["consecutive_goals_against"] += 1
             self.ai_stats["consecutive_goals"] = 0
             self.ai_stats["missed_balls"] += 1
-            debug_write(f"AI MISSED a ball! Total misses: {self.ai_stats['missed_balls']}")
+            self.ai_stats["total_balls_faced"] += 1  # Ensure this is incremented
+            debugger_log(f"AI MISSED a ball! Total misses: {self.ai_stats['missed_balls']}, "
+                        f"Total faced: {self.ai_stats['total_balls_faced']}")
 
         # AI scored a point
         elif curr_score_right > last_score_right:
             self.ai_stats["consecutive_goals"] += 1
             self.ai_stats["consecutive_goals_against"] = 0
-            debug_write(f"AI scored! Consecutive goals: {self.ai_stats['consecutive_goals']}")
+            debugger_log(f"AI scored! Consecutive goals: {self.ai_stats['consecutive_goals']}")
 
     def detect_ball_interception(self, game_state: Dict[str, Any]) -> None:
         """
@@ -148,9 +136,15 @@ class Learner:
 
         # If ball direction reversed near AI paddle, count as intercept
         if (self.ai_stats["last_direction_x"] > 0 and curr_ball_dir_x < 0 and
-            self.ai_stats["last_ball_x"] > 90 and curr_ball_x > 90):
+            self.ai_stats["last_ball_x"] > 80):  # Reduced from 90 to catch more bounces
+
+            # Log the values for debugging
+            debugger_log(f"Ball bounce detected: last_x={self.ai_stats['last_ball_x']}, curr_x={curr_ball_x}, "
+                        f"last_dir_x={self.ai_stats['last_direction_x']}, curr_dir_x={curr_ball_dir_x}")
+
             self.ai_stats["successful_intercepts"] += 1
-            debug_write(f"AI intercepted the ball! Total intercepts: {self.ai_stats['successful_intercepts']}")
+            debugger_log(f"AI intercepted the ball! Total intercepts: {self.ai_stats['successful_intercepts']}, "
+                        f"Total faced: {self.ai_stats['total_balls_faced'] + 1}")
 
     def update_ball_tracking(self, game_state: Dict[str, Any]) -> None:
         """
@@ -173,6 +167,7 @@ class Learner:
             self.ai_stats["success_rate"] = (
                 self.ai_stats["successful_intercepts"] / self.ai_stats["total_balls_faced"]
             )
+            debugger_log(f"Success rate: {self.ai_stats['success_rate']:.2f}")
 
     def update_powerup_states(self, game_state: Dict[str, Any]) -> None:
         """
@@ -183,10 +178,6 @@ class Learner:
         # Track which powerups are available - FIXED REFERENCES
         self.has_big_powerup = player_right.get("powerupBig") == "available"
         self.has_speed_powerup = player_right.get("powerupSpeed") == "available"
-
-        # Count usage if a powerup was used
-        if player_right.get("powerupBig") == "used" or player_right.get("powerupSpeed") == "used":
-            self.ai_stats["power_ups_used"] += 1
 
     def get_metrics(self, game_state: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
@@ -200,6 +191,7 @@ class Learner:
 
         # Calculate opponent powerup probability (chance they'll use a powerup soon)
         opponent_powerup_probability = self.predict_opponent_powerup_usage(game_state)
+        debugger_log(f"Opponent powerup probability: {opponent_powerup_probability}")
 
         # Determine recommended difficulty
         recommended_difficulty = self.calculate_recommended_difficulty()
@@ -231,86 +223,116 @@ class Learner:
         if not has_big and not has_speed:
             return False, False
 
+        # For difficulty 0 (easy), use more random/less strategic powerup decisions
+        if self.difficulty == 0:
+            if random.random() < 0.1:
+                use_big = has_big and random.random() < 0.5
+                use_speed = has_speed and random.random() < 0.5
+                debugger_log(f"Easy difficulty: random powerup decision - big={use_big}, speed={use_speed}")
+                return use_big, use_speed
+
         # Factor 1: Game score context
         left_score = game_state.get("playerLeft", {}).get("points", 0)
         right_score = game_state.get("playerRight", {}).get("points", 0)
 
         # If we're ahead by a lot, save powerups
         if right_score > left_score + 3:
-            big_value -= 0.3
-            speed_value -= 0.3
-            debug_write("Score advantage: reducing powerup value")
+            # At easier difficulties, don't strategically save powerups as much
+            if self.difficulty == 0:
+                big_value -= 0.1  # Small reduction at easy
+            elif self.difficulty == 1:
+                big_value -= 0.2  # Medium reduction at medium
+            else:
+                big_value -= 0.3  # Full strategic saving at hard
+
+            speed_value -= (0.1 * (self.difficulty + 1))  # Scale by difficulty
+            debugger_log(f"Score advantage: reducing powerup value (scaled by difficulty {self.difficulty})")
 
         # If we're behind, be more aggressive with powerups
         elif left_score > right_score:
-            big_value += 0.2
-            speed_value += 0.2
-            debug_write("Score disadvantage: increasing powerup value")
-
-            # If significantly behind, be even more aggressive
-            if left_score > right_score + 2:
+            # At easier difficulties, don't be as strategic about powerup usage when behind
+            if self.difficulty < 2:
+                big_value += 0.1 * (self.difficulty + 1)  # Scale by difficulty
+                speed_value += 0.1 * (self.difficulty + 1)  # Scale by difficulty
+            else:
                 big_value += 0.2
                 speed_value += 0.2
-                debug_write("Significant score disadvantage: further increasing powerup value")
+            debugger_log(f"Score disadvantage: increasing powerup value (scaled by difficulty {self.difficulty})")
+
+            # If significantly behind, be even more aggressive (scaled by difficulty)
+            if left_score > right_score + 2:
+                big_value += 0.1 * (self.difficulty + 1)
+                speed_value += 0.1 * (self.difficulty + 1)
+                debugger_log(f"Significant score disadvantage: further increasing powerup value")
 
         # Factor 2: End game scenario (close to match point)
         if left_score >= 9 or right_score >= 9:
-            # End game - use powerups more aggressively
-            big_value += 0.3
-            speed_value += 0.3
-            debug_write("End game scenario: increasing powerup value")
+            # End game - use powerups more aggressively, scaled by difficulty
+            big_value += 0.1 * (self.difficulty + 1)
+            speed_value += 0.1 * (self.difficulty + 1)
+            debugger_log(f"End game scenario: increasing powerup value")
 
             # Extra boost if score is close
             if abs(left_score - right_score) <= 1:
-                big_value += 0.2
-                speed_value += 0.2
-                debug_write("Close end game: further increasing powerup value")
+                big_value += 0.1 * (self.difficulty + 1)
+                speed_value += 0.1 * (self.difficulty + 1)
+                debugger_log(f"Close end game: further increasing powerup value")
 
-        # Factor 3: Ball position and direction context
-        ball = game_state.get("ball", {})
-        ball_x = ball.get("posX", 50)
-        ball_dir_x = ball.get("directionX", 0)
+        # Factor 3: Ball position and direction context - reduced at lower difficulties
+        if self.difficulty > 0:  # Only medium and hard use ball position strategically
+            ball = game_state.get("ball", {})
+            ball_x = ball.get("posX", 50)
+            ball_dir_x = ball.get("directionX", 0)
 
-        # Ball coming toward AI - want to use SLOW (same speed powerup)
-        if ball_dir_x > 0 and 40 < ball_x < 80:
-            # Middle of court, ball coming toward AI - slow effect is helpful
-            speed_value += 0.2
-            debug_write("Ball approaching AI: increasing speed powerup value (slow effect)")
+            # Ball coming toward AI - want to use SLOW (same speed powerup)
+            if ball_dir_x > 0 and 40 < ball_x < 80:
+                # Middle of court, ball coming toward AI - slow effect is helpful
+                speed_value += 0.1 * (self.difficulty + 1)
+                debugger_log(f"Ball approaching AI: increasing speed powerup value (slow effect)")
 
-        # Ball moving away - want to use FAST (same speed powerup)
-        elif ball_dir_x < 0 and ball_x < 40:
-            # Ball moving toward opponent side - fast effect is helpful
-            speed_value += 0.15
-            debug_write("Ball moving to opponent: increasing speed powerup value (fast effect)")
+            # Ball moving away - want to use FAST (same speed powerup)
+            elif ball_dir_x < 0 and ball_x < 40:
+                # Ball moving toward opponent side - fast effect is helpful
+                speed_value += 0.05 * (self.difficulty + 1)
+                debugger_log(f"Ball moving to opponent: increasing speed powerup value (fast effect)")
 
-        # Factor 4: Opponent behavior analysis
-        if len(self.opponent_ball_responses) >= 3:
+        # Factor 4: Opponent behavior analysis - only used at higher difficulties
+        if len(self.opponent_ball_responses) >= 3 and self.difficulty == 2:
+            # Only at hard difficulty does the AI analyze opponent behavior
             # Calculate how well opponent tracks the ball
             response_rate = sum(self.opponent_ball_responses) / len(self.opponent_ball_responses)
 
             # If opponent is good at tracking, use speed powerup more (fast effect)
             if response_rate > 0.7:
                 speed_value += 0.25
-                debug_write(f"Opponent tracks well ({response_rate:.2f}): increasing speed powerup value")
+                debugger_log(f"Opponent tracks well ({response_rate:.2f}): increasing speed powerup value")
 
             # If opponent is bad at tracking, use big paddle more
             elif response_rate < 0.4:
                 big_value += 0.2
-                debug_write(f"Opponent tracks poorly ({response_rate:.2f}): increasing big powerup value")
+                debugger_log(f"Opponent tracks poorly ({response_rate:.2f}): increasing big powerup value")
 
-        # Factor 5: AI performance
+        # Factor 5: AI performance - reduced at lower difficulties
+        losing_streak_boost = 0.1 * (self.difficulty + 1)  # Scale by difficulty
         if self.ai_stats["consecutive_goals_against"] >= 2:
             # We're on a losing streak, use powerups more aggressively
-            big_value += 0.2
-            speed_value += 0.2
-            debug_write("AI losing streak: increasing powerup values")
+            big_value += losing_streak_boost
+            speed_value += losing_streak_boost
+            debugger_log(f"AI losing streak: increasing powerup values (scaled by difficulty)")
 
-        # Make final decision (threshold-based)
-        use_big = has_big and big_value > 0.7
-        use_speed = has_speed and speed_value > 0.7
+        # Make final decision (threshold-based) - lower threshold at easier difficulties
+        thresholds = {
+            0: 0.5,  # Easy - more likely to use powerups
+            1: 0.6,  # Medium
+            2: 0.7   # Hard - more strategic
+        }
 
-        debug_write(f"Powerup decision: big_value={big_value:.2f}, speed_value={speed_value:.2f}")
-        debug_write(f"Final decision: use_big={use_big}, use_speed={use_speed}")
+        use_threshold = thresholds.get(self.difficulty, 0.7)
+        use_big = has_big and big_value > use_threshold
+        use_speed = has_speed and speed_value > use_threshold
+
+        debugger_log(f"Powerup decision: big_value={big_value:.2f}, speed_value={speed_value:.2f}, threshold={use_threshold}")
+        debugger_log(f"Final decision: use_big={use_big}, use_speed={use_speed}")
 
         return use_big, use_speed
 
@@ -350,7 +372,7 @@ class Learner:
         # Cap probability
         probability = min(0.9, probability)
 
-        debug_write(f"Opponent powerup usage probability: {probability:.2f}")
+        debugger_log(f"Opponent powerup usage probability: {probability:.2f}")
         return probability
 
     def calculate_recommended_difficulty(self) -> int:
@@ -362,12 +384,12 @@ class Learner:
         # If AI is doing too well, increase difficulty
         if self.ai_stats["success_rate"] > 0.8 and self.difficulty < 2:
             recommended_difficulty = self.difficulty + 1
-            debug_write(f"AI too successful ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
+            debugger_log(f"AI too successful ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
 
         # If AI is struggling, decrease difficulty
         elif self.ai_stats["success_rate"] < 0.3 and self.difficulty > 0:
             recommended_difficulty = self.difficulty - 1
-            debug_write(f"AI struggling ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
+            debugger_log(f"AI struggling ({self.ai_stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
 
         return recommended_difficulty
 

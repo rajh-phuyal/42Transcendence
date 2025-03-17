@@ -208,7 +208,7 @@ export default {
             gameObject.gameId = this.gameId;
             gameObject.wsConnection = false;
             gameObject.state = undefined;
-            gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
+            gameObject.frameTime = 1000/25; // NOTE: this means 25 frames per second which should match the backend FPS
             gameObject.lastFrameTime = 0;
             gameObject.animationId = null;
             gameObject.sound = null;

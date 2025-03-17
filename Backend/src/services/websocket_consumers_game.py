@@ -9,7 +9,7 @@ from core.decorators import barely_handle_ws_exceptions
 from user.constants import USER_ID_AI
 from game.constants import GAME_FPS, GAME_COUNTDOWN_MAX
 from game.models import Game
-from game.AI import AIPlayer
+from game.AI import AIPlayer, calculate_ai_difficulty
 from game.game_cache import set_player_input
 from game.utils import is_left_player, get_user_of_game
 from game.utils_ws import update_game_state
@@ -96,9 +96,14 @@ class GameConsumer(CustomWebSocketLogic):
                 # here we can asume the left user is not the AI, when game with ai
                 if self.game_id not in self.ai_players and self.rightUser.id == USER_ID_AI:
                     logging.info(f"AI player added to game: {self.game_id}")
+
+                    # we need to start the ai with some difficulty if mid game
+                    ai_score = get_game_data(self.game_id, 'playerRight', 'points') or 0
+                    player_score = get_game_data(self.game_id, 'playerLeft', 'points') or 0
+                    logging.info(f"Starting AI difficulty: {calculate_ai_difficulty(ai_score, player_score)}")
                     self.ai_players[self.game_id] = {
                         "stateSnapshotAt": datetime.now(timezone.utc),
-                        "player": AIPlayer(difficulty=0), # start strong
+                        "player": AIPlayer(difficulty=calculate_ai_difficulty(ai_score, player_score)),
                         "side": "playerRight"  # AI is always right player
                     }
 
