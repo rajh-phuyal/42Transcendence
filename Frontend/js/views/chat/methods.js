@@ -246,7 +246,7 @@ export function createMessage(element, prepend = true) {
     }
 
     // Set the content of the message
-    template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
+    template.querySelector(".chat-view-message-box").innerText = parsedContent;
 
     // Set the timestamp and the node id
     template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");

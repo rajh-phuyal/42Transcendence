@@ -1,5 +1,6 @@
 import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import router from '../../navigation/router.js';
 // import { createParticipantCard } from './methods.js';
@@ -123,6 +124,10 @@ export default {
         },
 
         afterDomInsertion() {
+            if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
+                router('/404');
+                return;
+            }
             WebSocketManager.setCurrentRoute("tournament");
             call(`tournament/lobby/${this.routeParams.id}/`, 'GET').then(data => {
                 // console.log("data:", data);
@@ -149,18 +154,18 @@ export default {
                 if (data.tournamentInfo.state !== "setup")
                     updateRankTable(data.tournamentMembers);
 
-                this.domManip.$on(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
-                this.domManip.$on(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
-                this.domManip.$on(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
-                this.domManip.$on(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
-                this.domManip.$on(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
-                this.domManip.$on(this.domManip.$id("tournament-history-button"), "click", this.openTournamentHistory);
-                this.domManip.$on(this.domManip.$id("tournament-go-to-current-game-button"), "click", this.routeToCurrentGame);
-                this.domManip.$on(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
-                this.domManip.$on(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
+                EventListenerManager.linkEventListener("tournament-leave-to-lobby",                         "tournament", "click", this.leaveLobbyButtonAction);
+                EventListenerManager.linkEventListener("tournament-middle-bottom-subscribe-start-button",   "tournament", "click", this.subscribeStartTournamentButtonAction);
+                EventListenerManager.linkEventListener("tournament-quit-cancel-button",                     "tournament", "click", this.quitCancelTournamentButtonAction);
+                EventListenerManager.linkEventListener("tournament-games-do-come-button",                   "tournament", "click", this.openCurrentGames);
+                EventListenerManager.linkEventListener("tournament-rank-button",                            "tournament", "click", this.openTournamentRank);
+                EventListenerManager.linkEventListener("tournament-history-button",                         "tournament", "click", this.openTournamentHistory);
+                EventListenerManager.linkEventListener("tournament-go-to-current-game-button",              "tournament", "click", this.routeToCurrentGame);
+                EventListenerManager.linkEventListener("tournament-round-robbin-button",                    "tournament", "click", this.openRoundRobbinTable);
+                EventListenerManager.linkEventListener("tournament-finals-button",                          "tournament", "click", this.openFinalsTable);
             }).catch(err => {
-                // console.log(err);
-                router("/404", {msg: "404 | " + err.message});
+                console.log(err);
+                router("/404", {msg: err.message});
             }
             );
         },

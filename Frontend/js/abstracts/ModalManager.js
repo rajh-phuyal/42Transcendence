@@ -14,6 +14,7 @@ const modalFolders = [
     ["modal-tournament-join", "tournamentJoin"],
     ["modal-tournament-history", "tournamentHistory"],
     ["modal-template-image", "templateImage"],
+    ["modal-avatar-cropper", "avatarCropper"],
 ];
 export default class ModalManager {
     static instance = null;     // Instance of the singleton

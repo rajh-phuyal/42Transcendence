@@ -1,7 +1,9 @@
 # Basic
 import logging
+from rest_framework import status
 # Django
 from django.utils.translation import gettext as _
+from django.db.models import Case, When, Value, IntegerField
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
@@ -9,8 +11,10 @@ from core.decorators import barely_handle_exceptions
 # User
 from user.models import User
 from user.utils import get_user_by_id
+from user.utils_relationship import is_blocking
 # Game
 from game.models import Game, GameMember
+from game.serializer import GameSerializer
 from game.utils import create_game, delete_or_quit_game, get_game_of_user
 
 class CreateGameView(BaseAuthenticatedView):
@@ -107,6 +111,41 @@ class LobbyView(BaseAuthenticatedView):
         return success_response(_('Lobby details'), **response_message)
         # The frontend will use this response to show the lobby details and
         # establish the WebSocket connection for this specific game
+
+class HistoryView(BaseAuthenticatedView):
+    @barely_handle_exceptions
+    def get(self, request, userid):
+        requester = request.user
+        try:
+            target = User.objects.get(id=userid)
+        except User.DoesNotExist:
+            return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
+        # Check if user is blocked:
+        if is_blocking(target, requester):
+            return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
+
+        # Get all games and sort them descending by finish_time
+        # Not finsihed games always need to be at the end
+        games = Game.objects.filter(
+            members__user=target
+        ).exclude(
+            state=Game.GameState.PENDING
+        ).annotate(
+            state_order=Case(
+                When(state__in=[Game.GameState.ONGOING, Game.GameState.COUNTDOWN], then=Value(1)),
+                When(state=Game.GameState.PAUSED, then=Value(2)),
+                When(state__in=[Game.GameState.FINISHED, Game.GameState.QUITED], then=Value(3)),
+                default=Value(4),
+                output_field=IntegerField(),
+            )
+        ).order_by(
+            'state_order',
+            '-finish_time'
+        )
+        serializer_games = GameSerializer(games, many=True)
+        return success_response(_("Game History fetched"), **{
+            'games': serializer_games.data,
+        })
 
 class PlayAgainView(BaseAuthenticatedView):
     @barely_handle_exceptions

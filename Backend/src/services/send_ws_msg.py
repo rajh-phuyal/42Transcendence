@@ -19,10 +19,11 @@ from chat.models import ConversationMember, Conversation
 from chat.serializers import MessageSerializer, ConversationsSerializer
 # Game
 from game.models import Game
+from game.serializer import GameSerializer
 from game.game_cache import get_game_data
 # Tournament
 from tournament.models import Tournament, TournamentMember
-from tournament.serializer import TournamentInfoSerializer, TournamentMemberSerializer, TournamentGameSerializer
+from tournament.serializer import TournamentInfoSerializer, TournamentMemberSerializer
 
 """ All WS Message should be send to the FE using one of the following functions:"""
 
@@ -247,7 +248,7 @@ def send_ws_tournament_game_msg(game):
         game = Game.objects.get(id=game)
     if game.tournament_id is None:
         return
-    serializerGame = TournamentGameSerializer(game)
+    serializerGame = GameSerializer(game)
     tournament_id_name = f"{PRE_GROUP_TOURNAMENT}{game.tournament.id}"
     try:
         async_to_sync(channel_layer.group_send)(

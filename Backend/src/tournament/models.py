@@ -29,7 +29,7 @@ class Tournament(models.Model):
 
 class TournamentMember(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='tournament_members')
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='tournaments')
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='members')
     tournament_alias = models.CharField(max_length=150, null=True, blank=True)
     is_admin = models.BooleanField(default=False)

@@ -18,10 +18,11 @@ from user.utils import get_user_by_id
 from user.utils_relationship import are_friends, is_blocking, is_blocked
 # Game
 from game.models import Game
+from game.serializer import GameSerializer
 # Tournament
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
 from tournament.models import Tournament, TournamentMember
-from tournament.serializer import TournamentGameSerializer, TournamentMemberSerializer
+from tournament.serializer import TournamentMemberSerializer
 # Chat
 from chat.message_utils import create_and_send_overloards_pm
 
@@ -84,8 +85,6 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
             raise BarelyAnException(_("You can't invite yourself to a tournament"))
         if opponent.id == USER_ID_FLATMATE:
             raise BarelyAnException(_("You can't invite this pal: {username} to a tournament").format(username=opponent.username))
-        if opponent.id == USER_ID_AI:
-            logging.error("TODO: Playing against AI in tournament is not supported yet! issue #216")
         if is_blocking(creator, opponent):
             raise BlockingException(_("You can't invite a user whom you have blocked: {opponent.username}").format(opponent=opponent))
         if is_blocked(creator, opponent):
@@ -118,6 +117,13 @@ def create_tournament(creator_id, name, local_tournament, public_tournament, map
                     tournament=tournament,
                     tournament_alias=user.username,
                     is_admin=True,
+                    accepted=True
+                )
+            elif user.id == USER_ID_AI:
+                tournament_member = TournamentMember.objects.create(
+                    user=user,
+                    tournament=tournament,
+                    tournament_alias=user.username,
                     accepted=True
                 )
             else:
