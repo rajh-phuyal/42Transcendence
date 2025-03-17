@@ -3,6 +3,8 @@ import { translate } from '../../locale/locale.js';
 import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 /*
  QUICK EXPLANATION:
@@ -183,124 +185,6 @@ export default {
             const moveY = percentageMoveY * maxMoveY;
             pupil.style.transform = `translate(-50%, -50%) translate(${moveX}px, ${moveY}px)`;
         },
-        // ADDIND / REMOVING EVENT LISTENERS
-        // -------------------------------------------
-        // Adding / Removing Event Listeners for the infinite scroll
-        initInfiniteScroll(init = true) {
-            const container = this.domManip.$id("chat-view-messages-container");
-            if(!container){
-                console.error("No chat-view-messages-container found. Unable to add infinite scroll.");
-                return ;
-            }
-            // Adding theEventListener
-            if (init){
-                this.domManip.$on(container, "scroll", this.scrollListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.scrollListener)
-                    this.domManip.$off(container, "scroll", this.scrollListener);
-                else
-                    console.log("handleScroll is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        // Adding / Removing Event Listeners for the avatar click
-        initAvatarClick(init = true) {
-            const avatar = this.domManip.$id("chat-view-header-avatar");
-            if(!avatar){
-                console.error("No chat-view-header-avatar found. Unable to add avatar click event listener.");
-                return ;
-            }
-            avatar.style.cursor = "pointer";
-
-            // Adding theEventListener
-            if (init){
-                this.domManip.$on(avatar, "click", this.clickAvatarListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.clickAvatarListener)
-                    this.domManip.$off(avatar, "click", this.clickAvatarListener);
-                else
-                    console.log("clickAvatarListener is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        // Adding / Removing Event Listeners for the search bar
-        initSearch(init = true) {
-            const searchBar = this.domManip.$id("chat-view-searchbar");
-            const conversationsContainer = this.domManip.$id("chat-view-conversations-container");
-
-            if (!searchBar || !conversationsContainer) {
-                console.error("No search bar or conversations container found. Unable to add search event listener.");
-                return ;
-            }
-
-            // Adding theEventListener
-            if (init){
-                this.domManip.$on(searchBar, "input", this.searchBarTypeListener);
-                this.domManip.$on(searchBar, "keydown", this.searchBarKeydownListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.searchBarTypeListener)
-                    this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
-                else
-                    console.log("searchBarListenerType is not defined, cannot remove listener.");
-                if(this.searchBarKeydownListener)
-                    this.domManip.$off(searchBar, "keydown", this.searchBarKeydownListener);
-                else
-                    console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        // Adding / Removing Event Listeners for the mentions (@user, #game, #tournament)
-        initMentionClick(init = true) {
-            const container = this.domManip.$id("chat-view-messages-container");
-
-            if (!container) {
-                console.error("No chat-view-messages-container found. Unable to add mention click event listener.");
-                return ;
-            }
-
-            // Adding theEventListener
-            if(init){
-                this.domManip.$on(container, "click", this.messageMeantionListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.messageMeantionListener)
-                    this.domManip.$off(container, "click", this.messageMeantionListener);
-                else
-                    console.log("messageMeantionListener is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        initEyeListener(init = true) {
-            if (init) {
-                document.addEventListener("mousemove", this.eyeListener);
-                return ;
-            }
-
-            if (!init)
-            {
-                document.removeEventListener("mousemove", this.eyeListener);
-                return ;
-            }
-        },
 
         // This will be called only once by afterDomInsertion to initalize the cards via REST API
         async loadConversations() {
@@ -369,21 +253,18 @@ export default {
         },
 
         beforeRouteLeave() {
-            // Remove all event listeners
-            this.initInfiniteScroll(false);
-            this.initAvatarClick(false);
-            this.initSearch(false);
-            this.initMentionClick(false);
-            this.initEyeListener(false);
-
+            modalManager.off("chat-view-btn-create-game", "modal-create-game");
             // Inform WebSocketManager that we are leaving the chat
             WebSocketManager.setCurrentRoute(undefined);
-
             // Remove all conversations
             deleteAllConversationCards();
-
             // Remove all messages
             resetConversationView();
+            // Remove the attributes which the createGameModal uses
+            const view = this.domManip.$id("router-view");
+            view.removeAttribute("data-user-id");
+            view.removeAttribute("data-user-username");
+            view.removeAttribute("data-user-avatar");
         },
 
         beforeDomInsertion() {
@@ -420,13 +301,22 @@ export default {
                     console.error("Error loading conversations:", error);
                 });
 
-
             // Add event listeners
-            this.initInfiniteScroll();
-            this.initAvatarClick();
-            this.initSearch()
-            this.initMentionClick();
-            this.initEyeListener();
+            // - for search bar
+            EventListenerManager.linkEventListener("chat-view-searchbar", "chat", "input", this.searchBarTypeListener);
+            EventListenerManager.linkEventListener("chat-view-searchbar", "chat", "keydown", this.searchBarKeydownListener);
+            // - for infinite scroll
+            EventListenerManager.linkEventListener("chat-view-messages-container", "chat", "scroll", this.scrollListener);
+            // - for avatar click
+            const avatar = this.domManip.$id("chat-view-header-avatar");
+            avatar.style.cursor = "pointer";
+            EventListenerManager.linkEventListener("chat-view-header-avatar", "chat", "click", this.clickAvatarListener);
+            // - for mentions
+            EventListenerManager.linkEventListener("chat-view-messages-container", "chat", "click", this.messageMeantionListener);
+            // - for eye
+            EventListenerManager.linkEventListener("barely-a-body", "chat", "mousemove", this.eyeListener);
+            // Add modal event listener
+            modalManager.on("chat-view-btn-create-game", "modal-create-game");
         },
     },
 };

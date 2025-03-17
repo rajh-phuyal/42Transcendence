@@ -227,10 +227,14 @@ function drawPlayerState(playerSide) {
         if (gameObject[playerSide].result === "won") {
             $id(playerSideDash + "-username").classList.remove("user-card-looser");
             $id(playerSideDash + "-username").classList.add("user-card-winner");
+            $id(playerSideDash + "-avatar").classList.remove("user-card-looser");
+            $id(playerSideDash + "-avatar").classList.add("user-card-winner");
         }
         if (gameObject[playerSide].result === "lost") {
             $id(playerSideDash + "-username").classList.remove("user-card-winner");
             $id(playerSideDash + "-username").classList.add("user-card-looser");
+            $id(playerSideDash + "-avatar").classList.remove("user-card-winner");
+            $id(playerSideDash + "-avatar").classList.add("user-card-looser");
         } else
             console.warn("finished game but I don't know if I won or lost");
     }
@@ -379,7 +383,7 @@ export function sendPlayerInput() {
 
 const gameCountdownImage = (timeDiff) => {
     const gameCountdownImage = $id("game-countdown-image");
-    const basePath = `${window.origin}/assets/game/countdown/`;
+    const basePath = `${window.origin}/assets/images/game/countdown/`;
     gameCountdownImage.src = basePath + timeDiff + ".png";
     gameCountdownImage.style.display = "block";
     audioPlayer.playSound("beep1");

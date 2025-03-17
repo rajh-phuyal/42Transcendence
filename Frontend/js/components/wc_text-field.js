@@ -44,6 +44,7 @@ class TextField extends HTMLElement {
     connectedCallback() {
         this.render();
         const inputElement = this.shadow.getElementById("textFieldButton");
+        // TODO: should use $on !
         inputElement.addEventListener('click', this.buttonclick.bind(this));
         const inputElement2 = this.shadow.getElementById("text-field");
         inputElement2.addEventListener('keydown', this.handleKeyPress.bind(this));

@@ -8,18 +8,18 @@ from user.constants import USER_ID_AI, USER_ID_FLATMATE
 
 class Game(models.Model):
     class GameState(models.TextChoices):
-        PENDING = 'pending', 'Pending'
-        COUNTDOWN = 'countdown', 'Countdown'
-        ONGOING = 'ongoing', 'Ongoing'
-        PAUSED = 'paused', 'Paused'
-        FINISHED = 'finished', 'Finished'
-        QUITED = 'quited', 'Quited'
+        PENDING     = 'pending',    'Pending'
+        COUNTDOWN   = 'countdown',  'Countdown'
+        ONGOING     = 'ongoing',    'Ongoing'
+        PAUSED      = 'paused',     'Paused'
+        FINISHED    = 'finished',   'Finished'
+        QUITED      = 'quited',     'Quited'
 
     class GameType(models.TextChoices):
-        NORMAL = 'normal', 'Normal'
-        SEMI_FINAL = 'semifinal', 'Semifinal'
+        NORMAL      = 'normal',     'Normal'
+        SEMI_FINAL  = 'semifinal',  'Semifinal'
         THIRD_PLACE = 'thirdplace', 'Third Place'
-        FINAL = 'final', 'Final'
+        FINAL       = 'final',      'Final'
 
     id = models.AutoField(primary_key=True)
     state = models.CharField(
@@ -70,8 +70,8 @@ class GameMember(models.Model):
         LOST = 'lost', 'Lost'
 
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='game_members')
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='game_members')
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='games')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='members')
     points = models.IntegerField(default=0)
     result = models.CharField(
         max_length=10,

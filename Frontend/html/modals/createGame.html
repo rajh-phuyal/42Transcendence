@@ -1,0 +1,118 @@
+<div class="modal fade" id="modal-create-game" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img id="modal-create-game-background" src='../../assets/backgrounds/modal-create-game-lizard-people.png' class="image-modal-background-image" alt="Background Image">
+                <div id="modal-create-game-image-grid" class="view-overlay-grid">
+                    <!-- Kind of header: -->
+                    <h4  id="modal-create-game-title"       class="grid-cell default-grid-area modal-title title" ></h4>
+                    <button type="button"                   class="grid-cell default-grid-area btn-close btnclo" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    <!-- Kind of body -->
+                    <h5                                             class="grid-cell default-grid-area maps">Maps</h5>
+                    <img id="modal-create-game-map-ufo"             class="grid-cell default-grid-area mufo modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="1" src="../assets/icons_128x128/icon_map_ufo.png" alt="ufo">
+                    <img id="modal-create-game-map-lizard-people"   class="grid-cell default-grid-area mliz modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="2" src="../assets/icons_128x128/icon_map_lizard-people.png" alt="error loading the image">
+                    <img id="modal-create-game-map-snowman"         class="grid-cell default-grid-area msno modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="3" src="../assets/icons_128x128/icon_map_snowman.png" alt="error loading the image">
+                    <img id="modal-create-game-map-lochness"        class="grid-cell default-grid-area mloc modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="4" src="../assets/icons_128x128/icon_map_lochness.png" alt="error loading the image">
+                    <button type="button" enabled="true"            class="grid-cell default-grid-area modal-button btnpu">Powerups</button>
+                    <!-- Kind of footer -->
+                    <div id="modal-create-game-opponent-search" class="grid-cell default-grid-area srch">
+                        <!-- TODO: TRANSLATION -->
+                        <search-bar
+                            placeholder="Invite a user"
+                            width="100%"
+                            search-type="users"
+                            on-click-event="modal-create-game-select-user"
+                            clear-on-click="true"
+                        >
+                        </search-bar>
+                    </div>
+                    <h5     id="modal-create-game-opponent-username"            class="grid-cell default-grid-area opp"></h5>
+                    <img    id="modal-create-game-opponent-avatar"              class="grid-cell default-grid-area avat" alt="avatar">
+                    <button id="modal-create-game-btn-pu"     type="button"     class="grid-cell default-grid-area btnpu  modal-button modal-toggle-button-enabled">Powerups</button>
+                    <button id="modal-create-game-btn-create" type="button"     class="grid-cell default-grid-area btncre modal-button">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-create-game-image-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btnclo .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      maps   maps   maps  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mufo   mufo  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mufo   mufo  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mliz   mliz  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mliz   mliz  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      msno   msno  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      msno   msno  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mloc   mloc  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      mloc   mloc  "
+            ".      btnpu  btnpu  btnpu  btnpu  .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      .      .      .      .     "
+            ".      srch   srch   srch   srch   .      avat   avat   avat   .      btncre btncre btncre .     "
+            ".      srch   srch   srch   srch   .      opp    opp    opp    .      btncre btncre btncre .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    .title {
+        grid-area: title;
+        color: black;
+    }
+    .btnclo {
+        grid-area: btnclo;
+    }
+    .maps {
+        grid-area: maps;
+        color: black;
+    }
+    .mufo {
+        grid-area: mufo;
+        height: 95%;
+    }
+    .mliz {
+        grid-area: mliz;
+        height: 95%;
+    }
+    .msno {
+        grid-area: msno;
+        height: 95%;
+    }
+    .mloc {
+        grid-area: mloc;
+        height: 95%;
+    }
+    .btnpu {
+        grid-area: btnpu;
+    }
+    .opp {
+        grid-area: opp;
+        color: black;
+    }
+    .srch {
+        grid-area: srch;
+        align-items: start !important;
+        align-content: start !important;
+        justify-content: start !important;
+    }
+    .avat {
+        grid-area: avat;
+        height: 100%;
+    }
+    .btncre {
+        grid-area: btncre;
+    }
+</style>

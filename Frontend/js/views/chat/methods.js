@@ -4,6 +4,7 @@ import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/do
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
+import router from '../../navigation/router.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -131,16 +132,18 @@ export function highlightConversationCard(conversationId) {
         card.classList.add("chat-view-conversation-card");
     }
 
-   // Find the specific card to highlight
-   const targetCard = $id("chat-view-conversation-card-" + conversationId);
-   if (targetCard) {
+    // Find the specific card to highlight
+    const targetCard = $id("chat-view-conversation-card-" + conversationId);
+    if (targetCard) {
         targetCard.classList.add("chat-view-conversation-card-highlighted");
         // Scroll to the highlighted card
         targetCard.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
         });
-   }
+        return true;
+    } else
+        return false
 }
 
 // Sort the conversation cards by the `last-message-time` attribute
@@ -243,7 +246,7 @@ export function createMessage(element, prepend = true) {
     }
 
     // Set the content of the message
-    template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
+    template.querySelector(".chat-view-message-box").innerText = parsedContent;
 
     // Set the timestamp and the node id
     template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
@@ -284,14 +287,18 @@ export async function selectConversation(conversationId){
     // Set variables
     $id("chat-view-text-field").setAttribute("conversation-id", conversationId);
 
-    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
-    history.pushState({}, "Chat", "/chat?id=" + conversationId);
-
     // Remove old messages
     resetConversationView();
 
     // Highlight the selected conversation card
-    highlightConversationCard(conversationId);
+    if (!highlightConversationCard(conversationId)) {
+        console.log("Conversation card not found:", conversationId);
+        router("/chat");
+        return;
+    }
+
+    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
+    history.pushState({}, "Chat", "/chat?id=" + conversationId);
 
     // Load the conversation header and messages
     await loadMessages(conversationId);
@@ -301,6 +308,8 @@ export async function selectConversation(conversationId){
     $id("chat-view-details-img").style.display = "flex";
     let inputField = $id("chat-view-text-field");
     inputField.style.display = "flex";
+    let createGameButton = $id("chat-view-btn-create-game");
+    createGameButton.style.display = "flex";
     console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
     inputField.setInput($id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft") || "");
     inputField.focus();
@@ -348,7 +357,13 @@ export function loadMessages(conversationId) {
                     $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">${translate("chat", "subject") + "<br>" + data.conversationName}</a>`;
                     $id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + data.conversationAvatar;
                     $id("chat-view-header-avatar").setAttribute("user-id", data.userId);
-                    $id("chat-view-header-online-icon").src = data.online ? "../assets/onlineIcon.png" : "../assets/offlineIcon.png";
+                    // Set the attributes for the createGameModal
+                    const view = $id("router-view");
+                    view.setAttribute("data-user-id", data.userId);
+                    view.setAttribute("data-user-avatar", data.conversationAvatar);
+                    view.setAttribute("data-user-username", data.conversationName);
+                    // Set the online status
+                    $id("chat-view-header-online-icon").src = data.online ? "../assets/icons_128x128/icon_online.png" : "../assets/icons_128x128/icon_offline.png";
                     // Load messages (prepend as they are in reverse order)
                     for (let element of data.data)
                         createMessage(element, true);
@@ -409,6 +424,9 @@ export function resetConversationView(){
     }
     inputField.setEnabled(false);
     inputField.style.display = "none";
+    // Hide create game button
+    let createGameButton = $id("chat-view-btn-create-game");
+    createGameButton.style.display = "none";
     // Delete all messages
     let toDelete = $queryAll(".chat-view-message-container, .spinner-grow")
     for (let element of toDelete)
@@ -433,36 +451,6 @@ export function createLoadingSpinner() {
     spinnerContainer.appendChild(spinner);
     return spinnerContainer;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export function updateConversationUnreadCounter(conversationId, value) {
     let element = $id("chat-view-conversation-card-" +  conversationId);
