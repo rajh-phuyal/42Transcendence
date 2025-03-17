@@ -215,10 +215,14 @@ function drawPlayerState(playerSide) {
         if (gameObject[playerSide].result === "won") {
             $id(playerSideDash + "-username").classList.remove("user-card-looser");
             $id(playerSideDash + "-username").classList.add("user-card-winner");
+            $id(playerSideDash + "-avatar").classList.remove("user-card-looser");
+            $id(playerSideDash + "-avatar").classList.add("user-card-winner");
         }
         if (gameObject[playerSide].result === "lost") {
             $id(playerSideDash + "-username").classList.remove("user-card-winner");
             $id(playerSideDash + "-username").classList.add("user-card-looser");
+            $id(playerSideDash + "-avatar").classList.remove("user-card-winner");
+            $id(playerSideDash + "-avatar").classList.add("user-card-looser");
         } else
             console.warn("finished game but I don't know if I won or lost");
     }

@@ -52,7 +52,10 @@ class SearchView(BaseAuthenticatedView):
 class ProfileView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, targetUserId):
-        user = User.objects.get(id=targetUserId)
+        try:
+            user = User.objects.get(id=targetUserId)
+        except User.DoesNotExist:
+            return error_response(_("Profile not found"))
         serializer = ProfileSerializer(user, context={'request': request})
         return success_response(_("User profile loaded"), **serializer.data)
 
