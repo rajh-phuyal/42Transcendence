@@ -81,7 +81,15 @@ export function changePlayerCardToAccepted(playerId) {
 
 export function createGameCard(gameObject) {
 
-    console.log("player", gameObject);
+    console.log("game", gameObject);
+
+    /*
+    The backend crreates all 4 finals at once as soon as round robin is over.
+    Therefore the backend doesn't know who is going to be playerLeft and playerRight.
+    The frontend will handle this by checking if the player not null
+     */
+    if(gameObject.playerLeft === null || gameObject.playerRight === null)
+        return ;
 
     const template = $id("tournament-game-card-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-game-card-container");
