@@ -13,6 +13,7 @@ import dollars from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import { audioPlayer } from '../abstracts/audio.js';
 import { modalManager } from '../abstracts/ModalManager.js';
+import { EventListenerManager } from '../abstracts/EventListenerManager.js';
 
 const simpleObjectToBind = () => {
     return {
@@ -109,6 +110,7 @@ async function router(path, params = null) {
         nav.style.display = 'none';
     }
 
+    EventListenerManager.unlinkEventListenersView(viewContainer.dataset.view);
     // Close all modals before switching routes
     modalManager.destroyAllModals();
     // Now add all modals to the view (the html part)

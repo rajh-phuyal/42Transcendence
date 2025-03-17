@@ -97,7 +97,7 @@ export default {
         afterClose () {
             this.domManip.$off(this.domManip.$id("modal-avatar-cropper-file-input"), "change", this.extractImageFile);
             this.domManip.$off(this.domManip.$id("modal-avatar-cropper-btn-open-file-explorer"), "click", this.openFileExplorer);
-            this.domManip.$off(this.domManip.$id("mmodal-avatar-cropper-btn-crop"), "click", this.submitAvatar);
+            this.domManip.$off(this.domManip.$id("modal-avatar-cropper-btn-crop"), "click", this.submitAvatar);
         }
     }
 }
