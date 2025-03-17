@@ -41,13 +41,13 @@
                     </div>
                 </div>
                 <!-- GAME FIELD -->
-                <div id="game-view-middle-side-container-top-text"          class="grid-cell default-grid-area field"></div>
-                <canvas id="game-field"                                     class="grid-cell default-grid-area field"></canvas>
-                <img id="game-countdown-image"                              class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;">
+                <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
+                <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
+                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;">
 
-                <barely-a-button id="button-play-again"  fontsize="1"  width="100" height="80"  class="grid-cell default-grid-area btnpa"   buttonclass="rect-button"></barely-a-button>
-                <barely-a-button id="button-leave-lobby" fontsize="1"  width="100" height="80"  class="grid-cell default-grid-area btnl"    buttonclass="rect-button"></barely-a-button>
-                <barely-a-button id="button-quit-game"   fontsize="1"  width="100" height="80"  class="grid-cell default-grid-area btnq"    buttonclass="rect-button"></barely-a-button>
+                <button id="button-play-again"                      class="grid-cell default-grid-area modal-button btnpa"></button>
+                <button id="button-leave-lobby"                     class="grid-cell default-grid-area modal-button btnl"></button>
+                <button id="button-quit-game"                       class="grid-cell default-grid-area modal-button btnq"></button>
             </div>
         </div>
     </div>
@@ -144,14 +144,15 @@
     /* BUTTONS */
     .btnl {
         grid-area: btnl;
-        height: 100%;
-        width: 100%;
+        height: 75%;
     }
     .btnq {
         grid-area: btnq;
+        height: 75%;
     }
     .btnpa {
         grid-area: btnpa;
+        height: 75%;
     }
 
     /* FIELD */

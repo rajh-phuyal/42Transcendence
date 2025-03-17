@@ -1,6 +1,5 @@
 import { $id, $on, $off, $class } from './dollars.js';
 import { objectToBind } from '../navigation/router.js';
-import { EventListenerManager } from './EventListenerManager.js';
 
 const modalFolders = [
     ["modal-new-conversation", "newConversation"],
@@ -90,7 +89,6 @@ export default class ModalManager {
         // Attach Bootstrap event listeners
         $on(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
         $on(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
-        $on(modalElement, 'hide.bs.modal', EventListenerManager.unlinkEventListenersView);
         }
 
     /* FUNCTIONS FOR THE ROUTER

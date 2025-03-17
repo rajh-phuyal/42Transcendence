@@ -17,17 +17,14 @@ export class EventListenerManager {
      */
     static linkEventListener(elementId, view, eventType, callback) {
         // Check if Element already exists in Event Listener line 2!!!
-        const newElementNode = {};
         if (!EventListenerManager.#activeListeners[elementId]) {
             EventListenerManager.#activeListeners[elementId] = {
                 view,
                 events: [],
             }
-        }
-        else
-        EventListenerManager.unlinkEventListener(elementId, eventType);
+        } else
+            EventListenerManager.unlinkEventListener(elementId, eventType);
         EventListenerManager.#addElementEventType(elementId, eventType, callback);
-        console.warn("full active listeners", EventListenerManager.#activeListeners);
     }
 
     /**

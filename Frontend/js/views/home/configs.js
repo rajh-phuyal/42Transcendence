@@ -60,10 +60,7 @@ export default {
             // build thexport e first frame
             buildCanvas();
 
-			const homeView = this.domManip.$id('home-view');
-			// this.domManip.$on(homeView, "keydown", this.escapeCallback);
-            EventListenerManager.linkEventListener("home-view", "home", "keydown", this.escapeCallback);
-
+            // TODO: whats that?
             // for (let element of this.users)
                 // this.createInviteUserCard(element);
 

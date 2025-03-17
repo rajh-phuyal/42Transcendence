@@ -111,7 +111,6 @@ async function router(path, params = null) {
     }
 
     EventListenerManager.unlinkEventListenersView(viewContainer.dataset.view);
-    EventListenerManager.unlinkEventListenersView("modal");
     // Close all modals before switching routes
     modalManager.destroyAllModals();
     // Now add all modals to the view (the html part)

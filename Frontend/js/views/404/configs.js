@@ -4,19 +4,23 @@ import router from '../../navigation/router.js';
 
 export default {
     attributes: {
-
     },
 
     methods: {
+        buttonCallback() {
+            router("/");
+        },
+        keydownCallback(event) {
+            if (event.key === "Enter" || event.key === " " || event.key === "Escape")
+                this.buttonCallback();
+        },
     },
 
     hooks: {
         beforeRouteEnter() {
-
         },
 
         beforeRouteLeave() {
-            // TODO: remove listener
         },
 
         beforeDomInsertion() {
@@ -24,17 +28,14 @@ export default {
         },
 
         afterDomInsertion() {
-            // Translate the page
-            if (this.routeParams.msg)
-                this.domManip.$id("404-title").innerText = this.routeParams.msg;
+            if (this.routeParams && this.routeParams.msg)
+                this.domManip.$id("404-title").innerText = "404 | "+ this.routeParams.msg;
             else
                 this.domManip.$id("404-title").innerText = translate("404", "title");
             let homeButton = this.domManip.$id("home-button");
-            // console.log("homebutton:",homeButton);
-            // TODO: @rajh is this the correct way to translate the button?
-            homeButton.name = translate("404", "homeButton");
-            homeButton.render();
-            EventListenerManager.linkEventListener("home-button", "404", "click", () => router("/"));
+            homeButton.innerText = translate("404", "homeButton");
+            EventListenerManager.linkEventListener("home-button", "404", "click", this.buttonCallback);
+            EventListenerManager.linkEventListener("barely-a-body", "404", "keydown", this.keydownCallback);
         },
     }
 }
