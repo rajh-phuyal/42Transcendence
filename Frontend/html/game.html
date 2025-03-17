@@ -24,6 +24,14 @@
                         <img id="player-left-powerups-big"    class="player-powerup-status" src=""></img>
                     </div>
                 </div>
+                <h5 id="player-left-controls" class="grid-cell default-grid-area ctrll">
+                    Controls<br>
+                    &nbsp;&nbsp;Up:     'W'<br>
+                    &nbsp;&nbsp;Down:   'S'<br>
+                    &nbsp;&nbsp;big:    '1'<br>
+                    &nbsp;&nbsp;slow:   '2' &larr;<br>
+                    &nbsp;&nbsp;fast:   '2' &rarr;<br>
+               </h5>
                 <!-- RIGHT PLAYER -->
                 <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user"></h2>
                 <div                           class="grid-cell default-grid-area rav user-card">
@@ -40,6 +48,14 @@
                         <img id="player-right-powerups-big"    class="player-powerup-status" src=""></img>
                     </div>
                 </div>
+                <h5 id="player-right-controls" class="grid-cell default-grid-area ctrlr">
+                    Controls<br>
+                    &nbsp;&nbsp;Up:     'W'<br>
+                    &nbsp;&nbsp;Down:   'S'<br>
+                    &nbsp;&nbsp;big:    '1'<br>
+                    &nbsp;&nbsp;slow:   '2' &larr;<br>
+                    &nbsp;&nbsp;fast:   '2' &rarr;<br>
+               </h5>
                 <!-- GAME FIELD -->
                 <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
                 <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
@@ -75,17 +91,30 @@
             ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
             ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
             ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
-            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
             ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
             ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
     }
 
 
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+
+    .ctrll {
+        grid-area: ctrll;
+        color: white;
+        text-align: left;
+    }
+
+    .ctrlr {
+        grid-area: ctrlr;
+        color: white;
+        text-align: left;
+    }
+
     .tname {
         grid-area: tname;
         background-color: rgba(20, 15, 15, 0.726);
