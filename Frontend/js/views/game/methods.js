@@ -134,7 +134,7 @@ export function changeGameState(state) {
             if (gameObject.tournamentId) {
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "redirTournament");
                 setTimeout(() => {
-                    router('/tounament', {id: gameObject.tournamentId});
+                    router('/tournament', {id: gameObject.tournamentId});
                 }, 5000);
             }
             break;
