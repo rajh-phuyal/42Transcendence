@@ -1,365 +1,100 @@
-<div id="tournament-view">
-	<div id="tournament-left-side">
-		<div id="tornament-left-upper-side">
-			<h2>
-				Tournament Name:
-			</h2>
-		</div>
-		<div id="tournament-left-bottom-side">
-			<button>
-				Go to chat
-			</button>
-			<button id="tournament-leave-to-lobby">
-				Leave lobby
-			</button>
-		</div>
-	</div>
-	<div id="tournament-middle">
-		<div id="tournament-middle-upper">
-            <div id="tournament-middle-upper-ongoing-stage" class="tournament-ongoing">
-                <button id="tournament-games-do-come-button" class="tournament-tabs">
-                    Game to come
-                </button>
-                <button id="tournament-rank-button" class="tournament-tabs">
-                    Tournament rank
-                </button>
-                <button id="tournament-history-button" class="tournament-tabs">
-                    Tournament History
-                </button>
+<div class="view-base">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img src="../assets/backgrounds/tournament.png" alt="Background Image" class="view-background-image">
+            <div class="view-overlay-grid">
+                <!-- LEFT SIDE -->
+                <!-- LEFT SIDE TOP -->
+                <h3 class="grid-cell default-grid-area tname">Tournament Name: long long long name of tournament .....</h3>
+                <button id="button-tab-rank"                    class="grid-cell default-grid-area modal-button btn-sidebar btnran tournament-tabs" tab="rank">Rank</button>
+                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button btn-sidebar btnhis tournament-tabs" tab="games-finished">Finished Games</button>
+                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button btn-sidebar btngam tournament-tabs" tab="games-upcoming">Upcoming Games</button>
+                <!-- LEFT SIDE BOTTOM -->
+                <button id="button-leave-lobby"         class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
+                <button id="button-unsubscribe-cancel"  class="grid-cell default-grid-area modal-button btn-sidebar btnuc tournament-setup">Unsubscribe / Cancel</button>
+                <!-- MIDDLE -->
+                <div id="container-participants"    class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <div id="container-rank"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <div id="container-games-finished"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <!-- RIGHT SIDE -->
+                <button id="button-subscribe-start"     class="grid-cell default-grid-area modal-button btn-sidebar btnss tournament-setup">Subscribe / Start</button>
             </div>
-            <div id="tournament-middle-upper-setup-stage" class="tournament-setup">
-                <h2>List of players</h2>
-            </div>
-		</div>
-		<div id="tournament-middle-center">
-            <!-- Players List -->
-            <div id="tournament-players-list-container" class="tournament-setup">
-				<template id="tournament-players-list-template">
-                    <div class="tournament-players-list-player-card">
-                        <img class="tournament-players-list-player-card-avatar" alt="image not found">
-                        <h6 class="tournament-players-list-player-card-username"></h6>
-                    </div>
-                </template>
-			</div>
-
-
-            <!-- Game card template -->
-            <template id="tournament-game-card-template">
-                <div class="tournament-game-card-container">
-                    <img class="tournament-game-card-player1-avatar" alt="image not found">
-                    <h5 class="tournament-game-card-player1-username"></h5>
-					<h4 class="tournament-game-card-player1-winner-tag">(W)</h4>
-					<div class="tournament-game-card-spinner">
-						<div class="spinner-border" role="status">
-							<span class="sr-only">Loading...</span>
-						</div>
-					</div>
-                    <h4 class="tournament-game-card-score"></h4>
-					<h4 class="tournament-game-card-player2-winner-tag">(W)</h4>
-                    <h5 class="tournament-game-card-player2-username"></h5>
-                    <img class="tournament-game-card-player2-avatar" alt="image not found">
-                </div>
-            </template>
-
-
-            <!-- Current Games -->
-            <div id="tournament-current-games-container" class="tournament-ongoing">
-				<p>Current Games</p>
-			</div>
-
-            <!-- Tournament Rank -->
-            <div id="tournament-rank-container">
-				<barely-a-button id="tournament-round-robbin-button" buttonclass="rect-button" name="Round Robbin"></barely-a-button>
-				<barely-a-button id="tournament-finals-button" buttonclass="rect-button" name="Finals"></barely-a-button>
-				<div id="tournament-finals-container">
-					<!-- Podium -->
-					<div id="tournament-podium-container">
-						<div id="tournament-podium-second" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found">
-							<h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
-						</div>
-						<div id="tournament-podium-first" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found">
-							<h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
-						</div>
-						<div id="tournament-podium-third" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found">
-							<h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
-						</div>
-					</div>
-					<!-- Finals Diagram -->
-
-					<div id="tournment-finals-diagram">
-						<template id="tournament-finals-template">
-							<div class="tournament-finals-diagram-container">
-								<h5 class="finals-title">Semi-Final</h5>
-								<img class="finals-player-left-avatar tournament-finals-diagram-avatar" alt="">
-								<h6 class="finals-player-left-username">player 1</h6>
-								<h5 class="finals-score">VS</h5>
-								<h6 class="finals-player-right-username">player 2</h6>
-								<img class="finals-player-right-avatar tournament-finals-diagram-avatar" alt="">
-							</div>
-						</template>
-					</div>
-				</div>
-				<div id="tournament-round-robbin-container">
-
-					<table id="tournament-rank-table">
-						<thead id="tournament-rank-table-header">
-							<tr>
-								<th>Rank</th>
-								<th>Player</th>
-								<th>Wins</th>
-								<th>Diff</th>
-								<th>Games</th>
-							</tr>
-						</thead>
-						<tbody id="tournament-rank-table-body">
-						<!-- where the rank rows will be -->
-						</tbody>
-						<template id="tournament-rank-row-template">
-							<tr class="tournament-rank-row">
-								<td class="tournament-rank-row-position"></td>
-								<td class="tournament-rank-row-user">
-									<div class="tournament-rank-row-user-wrapper">
-										<img class="tournament-rank-row-avatar" alt="image not found">
-										<h5 class="tournament-rank-row-username"></h5>
-									</div>
-								</td>
-								<td class="tournament-rank-row-wins"></td>
-								<td class="tournament-rank-row-diff"></td>
-								<td class="tournament-rank-row-games"></td>
-							</tr>
-						</template>
-					</table>
-				</div>
-			</div>
-
-            <!-- Tournament History -->
-			<div id="tournament-history-container">
-			</div>
-		</div>
-		<div id="tournament-middle-bottom">
-            <div id="tournament-middle-bottom-current-game-button" class="tournament-ongoing">
-                <barely-a-button id="tournament-go-to-current-game-button" buttonclass="rect-button" name="Go to your current game"></barely-a-button>
-            </div>
-            <div id="tournament-middle-bottom-subscribe-start-button" class="tournament-setup">
-                <button>
-                    Subscribe / Start
-                </button>
-            </div>
-		</div>
-	</div>
-	<div id="tournament-right-side">
-		<button id="tournament-quit-cancel-button" class="tournament-setup">
-			Quit tournament
-		</button>
-	</div>
+        </div>
+    </div>
 </div>
 <style>
+    .view-overlay-grid {
+        grid-template-columns: repeat(auto-fill, 5%);
+        grid-template-rows: repeat(auto-fill, 5%);
+        grid-template-areas:
+            ".      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            "btnran btnran btnran tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            "btnran btnran btnran cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btngam btngam btngam cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btngam btngam btngam cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnuc  btnuc  btnuc  cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnuc  btnuc  btnuc  cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnss  btnss  btnss "
+            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnss  btnss  btnss "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+    }
 
-	.tournament-finals-diagram-container {
-		display: grid;
-		color: white;
-		height: 20%;
-		width: 70%;
-		align-items: center;
-		background-color: black;
-		grid-template-rows: 50% 50%;
-		grid-template-areas:
-			"finals-title finals-title finals-title finals-title finals-title"
-			"finals-player-left-avatar finals-player-left-username finals-score finals-player-right-username finals-player-right-avatar";
+    .tname {
+        grid-area: tname;
+        background-color: black;
+        color: white;
+    }
+    .cont {
+        grid-area: cont;
+        overflow: auto !important;
+    }
 
-	}
-	.finals-title {
-		grid-area: finals-title;
-	}
+    /* BUTTONS */
+    .btn-sidebar {
+        height: 90%;
+        width:90%;
+    }
+    .btnran {
+        grid-area: btnran;
+    }
+    .btnhis {
+        grid-area: btnhis;
+    }
+    .btngam {
+        grid-area: btngam;
+    }
+    .btnl {
+        grid-area: btnl;
+    }
+    .btnuc {
+        grid-area: btnuc;
+    }
+    .btnss {
+        grid-area: btnss;
+    }
+</style>
 
-	.finals-player-left-avatar {
-		grid-area: finals-player-left-avatar;
-	}
+<!-- TEMPLATE PLAYER CARD-->
+<template id="tournament-players-list-template">
+    <div class="tournament-players-list-player-card">
+        <img class="tournament-players-list-player-card-avatar" alt="image not found">
+        <h6 class="tournament-players-list-player-card-username"></h6>
+    </div>
+</template>
+<style>
 
-	.finals-player-left-username {
-		grid-area: finals-player-left-username;
-	}
-
-	.finals-score {
-		grid-area: finals-score;
-	}
-
-	.finals-player-right-username {
-		grid-area: finals-player-right-username;
-	}
-
-	.finals-player-right-avatar {
-		grid-area: finals-player-right-avatar;
-	}
-
-	#tournment-finals-diagram {
-		display: flex;
-		flex-direction: column;
-		background-color: blue;
-		height: 100%;
-	}
-
-	.tournament-finals-diagram-avatar {
-		height: 80%;
-	}
-
-	#tournament-round-robbin-container {
-		display: none;
-	}
-
-	#tournament-podium-container {
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: end;
-		width: 100%;
-		height: 30%;
-	}
-
-	.tournament-podium-step {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-items: center;
-		background-color: black;
-		color: white;
-		margin: 2%;
-		border-radius: 10%;
-		width: 15%;
-	}
-
-	.tournament-podium-username {
-		display: none;
-	}
-
-	.tournament-podium-avatar {
-		height: 50%;
-		display: none;
-	}
-
-	#tournament-podium-second {
-		height: 90%;
-		color: silver;
-	}
-
-	#tournament-podium-first {
-		height: 100%;
-		color: gold;
-	}
-
-	#tournament-podium-third {
-		height: 80%;
-		color: #E1C16E;
-	}
-
-	.tournament-podium-question-mark {
-		color: white;
-	}
-
-	.tournament-rank-row-avatar {
-		height: 45px;
-	}
-
-	.tournament-rank-row-user-wrapper {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.tournament-rank-row {
-		display: table-row;
-		flex-direction: row;
-		width: 100%;
-		height: 20%;
-	}
-
-	#tournament-rank-table {
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.766);
-		color: white;
-		border: 2px solid white;
-		border-collapse: collapse;
-	}
-
-
-#tournament-rank-table,
-#tournament-rank-table th,
-#tournament-rank-table td {
-    border: 1px solid white; /* Adjust color as needed */
-}
-
-th, td {
-    padding: 8px; /* Adds spacing inside cells */
-    text-align: left; /* Aligns text to the left */
-}
-
-	#tournament-rank-list-cards-list {
-		display: flex;
-		flex-direction: column;
-		size: 90%;
-		width: 100%;
-	}
-
-	#tournament-rank-container {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		width: 100%;
-	}
-
-	#tournament-rank-list {
-		height: 60%;
-	}
-
-	#tournament-rank-list-header {
-		display: flex;
-		flex-direction: row;
-		height: 10%;
-		width: 100%;
-		background-color:black;
-		color: wheat;
-		border: white 4px;
-
-	}
-
-	.tournament-rank-card-container {
-		display: flex;
-		flex-direction: row;
-		height: 20%;
-		width: 100%;
-		color: black;
-		background-color: white;
-		border: black 4px;
-	}
-
-	#tournament-middle-upper-setup-stage {
-		background-color: black;
-		margin-top: 0.5rem;
-		padding: 0.3rem 2rem;
-		color: white;
-		border: 2px solid white;
-	}
-
-	#tournament-middle-upper-setup-stage > h2 {
-
-	}
-
-	#tournament-middle-center {
-		width: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 75%;
-		/* background-color: yellow; */
-	}
-
-    #tournament-players-list-container {
+     #container-participants {
         display: flex;
 		/* background-color: red; */
         flex-direction: column;
@@ -367,25 +102,9 @@ th, td {
 		max-height: 800px;
 		max-width: 1000px;
 		width: 30vw;
-		overflow-y: auto;
 		gap: 1rem;
 		align-items: center;
     }
-
-	#tournament-players-list-container::-webkit-scrollbar {
-    	width: 0.5rem;
-	}
-
-	#tournament-players-list-container::-webkit-scrollbar-track {
-		background-color: black;
-		border-radius: 0.25rem;
-	}
-
-	#tournament-players-list-container::-webkit-scrollbar-thumb {
-		background-color: rgb(176, 176, 176);
-		border-radius: 0.25rem;
-	}
-
     .tournament-players-list-player-card {
         display: flex;
         flex-direction: row;
@@ -403,135 +122,4 @@ th, td {
     .tournament-players-list-player-card-avatar {
         height: 90%;
     }
-
-    #tournament-players-list-container,
-    #tournament-current-games-container,
-    #tournament-matches-table-container{
-        height: 60%;
-		width: 80%;
-    }
-
-    #tournament-view {
-		height: 100%;
-		width: 100vw;
-        background-color: purple;
-		display: flex;
-    }
-
-	#tournament-left-side {
-		background-color: red;
-		width: 23%;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	#tornament-left-upper-side {
-		background-color: beige;
-		text-align: center;
-		margin-top: 1rem !important;
-		width: 90%;
-	}
-
-	#tournament-left-bottom-side {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		align-items: center;
-		width: 90%;
-	}
-
-	#tournament-left-bottom-side > button, #tournament-right-side > button,
-	#tournament-middle-bottom > button {
-		background-color: black;
-		color: white;
-		border: 2px solid white;
-		padding: 0.5rem !important;
-		width: 90%;
-	}
-
-	#tournament-left-bottom-side > :last-child, #tournament-right-side > :last-child,
-	#tournament-middle-bottom > :last-child {
-		margin-bottom: 1rem !important;
-	}
-
-	#tournament-middle {
-		background-color: green;
-        height: 100%;
-		width: 54%;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		align-items: center;
-	}
-
-	#tournament-middle-bottom {
-		display: flex;
-		justify-content: center;
-		width: 100%;
-		height: 15%;
-	}
-
-	#tournament-middle-upper {
-		width: 100%;
-		display: flex;
-		justify-content: space-around;
-	}
-
-	#tournament-middle-upper > #tournament-middle-upper-ongoing-stage > button {
-		background-color: black;
-		color: white;
-		border: 2px solid white;
-		padding: 0.5rem !important;
-		margin-top: 1rem !important;
-	}
-
-	#tournament-middle-upper > *.active {
-		background-color: red;
-		color: white;
-	}
-
-	#tournament-right-side {
-		background-color: blue;
-		width: 23%;
-		display: flex;
-		flex-direction: column;
-		flex-flow: column-reverse;
-		align-items: center;
-	}
-
-    .tournament-game-card-container {
-        display: flex;
-        flex-direction: row;
-        height: 6vh;
-        height: 20wh;
-        background-color: wheat;
-    }
-
-    .tournament-game-card-player1-avatar, .tournament-game-card-player2-avatar {
-        height: 90%;
-    }
-
-    #tournament-current-games-container, #tournament-history-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-	#tournament-middle-bottom-subscribe-start-button {
-		width: 55%;
-		height: 100%;
-		align-items: start;
-		display: flex;
-		max-width: 1000px;
-	}
-
-	#tournament-middle-bottom-subscribe-start-button > button {
-		background-color: black;
-		color: white;
-		border: 2px solid white;
-		width: 100%;
-		padding: 1rem;
-		margin-bottom: rem;
-	}
 </style>

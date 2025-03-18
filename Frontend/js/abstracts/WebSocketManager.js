@@ -1,7 +1,7 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods.js';
+import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods-old.js';
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
