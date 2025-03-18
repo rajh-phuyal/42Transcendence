@@ -2,7 +2,6 @@ import { $id } from '../../abstracts/dollars.js';
 import router from '../../navigation/router.js';
 import call from '../../abstracts/call.js'
 import data from './data.js';
-import { generateTournamentName } from './methods.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 
 export function AIModalCallback(){
@@ -42,7 +41,6 @@ function createJoinTournamentList() {
 }
 
 export function tournamentModalCallback(){
-    console.warn("tournamentModalCallback");
     modalManager.openModal("modal-tournament-create"); // TODO: change to main!
     // TODO: check if the code below is still needed!
 //    let modalElement = $id('home-modal');
