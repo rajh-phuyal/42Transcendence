@@ -1,6 +1,7 @@
 import { modalManager } from '../../abstracts/ModalManager.js';
 import $store from '../../store/store.js'
 import call from '../../abstracts/call.js'
+import router from '../../navigation/router.js';
 
 export default {
     attributes: {
