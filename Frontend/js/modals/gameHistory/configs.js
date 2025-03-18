@@ -1,17 +1,5 @@
-/*
-TODO: THIS MODAL IS NOT DONE AT ALL!!!
-    NEED TO:
-        - copy the right structure from the template modal
-        - double check all nodes/elements if needed?
-        - adjust the js code
-            - move it from original configs.js (profile/home) to congigs.js of modal!
-            - make sure the js code has all values. the idea is that the view stores the info as attribute and the modal takes it from there
-            - e.g. newConversation modal js!
-*/
 import call from '../../abstracts/call.js';
-import { modalManager } from '../../abstracts/ModalManager.js';
 import router from '../../navigation/router.js';
-import { createGameCard } from '../../views/tournament/methods.js';
 
 export default {
     attributes: {
@@ -20,7 +8,6 @@ export default {
     },
 
     methods: {
-
         formatTimestamp(isoTimestamp) {
             return moment(isoTimestamp).format('YYYY-MM-DD h:mm a').replace('am', 'a.m.').replace('pm', 'p.m.');
         },
@@ -29,8 +16,8 @@ export default {
             let list = this.domManip.$queryAll(".modal-game-history-card");
 
             for (let element of list) {
+                this.domManip.$off(element, "click", this.gameCardClickCallBack);
                 element.remove();
-                this.domManip.$on(element, "click", this.gameCardClickCallBack);
             }
         },
 
@@ -41,11 +28,11 @@ export default {
         },
 
         gameCardClickCallBack(event) {
-            console.log("event:", event.srcElement.parentElement);
+            // console.log("event:", event.srcElement.parentElement);
             let gameId = event.srcElement.getAttribute("game-id");
             if (gameId == null)
                 gameId = event.srcElement.parentElement.getAttribute("game-id");
-            console.log("game id:", gameId);
+            // console.log("game id:", gameId);
             router('/game',  { id: gameId });
         },
 
@@ -67,14 +54,12 @@ export default {
             if (gameObject.finishTime)
                 container.querySelector(".modal-game-history-card-date").textContent = this.formatTimestamp(gameObject.finishTime);
             else
-            container.querySelector(".modal-game-history-card-date").textContent = gameObject.state;
-
-        //TODO: Create an event listner for the ongoing games
-
-        this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
-    }
+                container.querySelector(".modal-game-history-card-date").textContent = gameObject.state;
+            this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
+            // TODO: Create an event listner for the ongoing games @xico what do u mean by this?
+        }
     },
-    
+
     hooks: {
         beforeOpen () {
             try {
@@ -89,17 +74,16 @@ export default {
                 return false;
             }
             call(`game/history/${this.userId}/`, 'GET').then(data => {
-                console.log("data", data);
+                // console.log("data", data);
                 this.data = data;
-
                 if (data.games.length)
                     this.domManip.$id("modal-game-history-no-games").style.display = "none";
-
                 for (let element of data.games)
                     this.createGameCard(element);
             })
             return true;
         },
+
         afterClose () {
             this.cleanUpGameList();
         }

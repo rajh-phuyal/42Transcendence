@@ -352,6 +352,12 @@ h5 {
     width: 100%;
     min-height: 0%;
 }
+.modal-btn-close {
+    background-color: white;
+    border: 2px solid black;
+    height: 70% !important;
+    width: 70% !important;
+}
 
 /* IMAGE MODAL LAYOUT AND GRID */
 .image-modal-content{
