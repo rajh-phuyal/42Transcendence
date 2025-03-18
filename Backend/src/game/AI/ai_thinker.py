@@ -2,7 +2,9 @@ import threading
 import logging
 from queue import Queue, Empty
 from typing import List, Dict, Any, Tuple, Optional
+import time
 import math
+from uuid import uuid4
 from game.constants import GAME_FPS, GAME_STATE
 from .ai_utils import debugger_log, DIFFICULTY_CONFIGS
 from .ai_learner import Learner
@@ -17,9 +19,15 @@ class Thinker:
         """Initialize the Thinker with action queue and difficulty level"""
         self.action_queue = action_queue
         self.difficulty = difficulty
+
+        # Ensure game_id is not None
+        if game_id is None:
+            game_id = str(uuid4())
+            debugger_log(f"Thinker generated new game_id: {game_id}")
+
         self.game_id = game_id
         self.running = True
-        self.waiting = False
+        self.waiting = True
         self.game_state: Dict[str, Any] = {}
 
         #  prediction state
@@ -38,15 +46,13 @@ class Thinker:
         # used for the prediction accuracy
         self.prediction_accuracy = 5
 
-        # Create the learner
-        self.learner = Learner(difficulty=difficulty, game_id=game_id)
+        # Create the learner with proper game_id
+        self.learner = Learner(difficulty=difficulty, game_id=self.game_id)
 
         # Start background thread
         self.thread = threading.Thread(target=self.compute_loop, daemon=True)
         self.thread.start()
 
-        # first compute with default game state
-        self.think(GAME_STATE)
 
     def set_prediction_accuracy(self, value: int) -> None:
         """Set the prediction accuracy level (0-10)"""
@@ -68,6 +74,7 @@ class Thinker:
         """Main computation loop running in background thread"""
         while self.running:
             if self.waiting:
+                time.sleep(0.05)
                 continue
 
             try:
@@ -82,10 +89,21 @@ class Thinker:
 
                 # see what the learner learned
                 metrics = self.learner.get_metrics(self.game_state)
+
+                # Validate recommended difficulty (ensure it's in a valid range)
+                if "recommendedDifficulty" in metrics:
+                    metrics["recommendedDifficulty"] = max(0, min(2, metrics["recommendedDifficulty"]))
+
                 debugger_log(f"Metrics: {metrics}")
 
                 # actions for the next second
                 actions = self.action_plan(self.game_state, metrics)
+
+                # Ensure we always have some actions to perform
+                if not actions:
+                    debugger_log("No actions returned from planning, adding fallback movement")
+                    actions = self.create_fallback_actions()
+
                 self.add_actions_to_queue(actions)
 
                 self.waiting = True
@@ -93,6 +111,33 @@ class Thinker:
             except Exception as e:
                 logging.error(f"Error in AI compute loop: {e}")
                 debugger_log(f"ERROR in compute loop: {str(e)}")
+
+                # Add fallback actions on error to ensure AI always moves
+                fallback_actions = self.create_fallback_actions()
+                self.add_actions_to_queue(fallback_actions)
+                debugger_log(f"Added {len(fallback_actions)} fallback actions after error")
+
+    def create_fallback_actions(self) -> List[Dict[str, Any]]:
+        """Create fallback actions that make the paddle move"""
+        actions = []
+
+        paddle_pos = self.game_state.get("playerRight", {}).get("paddlePos", 50.0)
+
+        for i in range(GAME_FPS):
+            if i < GAME_FPS // 3:
+                move = "+" if paddle_pos < 45 else ("-" if paddle_pos > 55 else "0")
+            else:
+                move = "+" if i % 3 == 0 else ("-" if i % 3 == 1 else "0")
+
+            action = {
+                "movePaddle": move,
+                "activatePowerupBig": False,
+                "activatePowerupSpeed": False
+            }
+            actions.append(action)
+
+        debugger_log(f"Created {len(actions)} fallback actions with varied movements")
+        return actions
 
     def action_plan(self, game_state: Dict[str, Any], metrics: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Plan a sequence of actions based on game state and metrics"""
@@ -117,12 +162,17 @@ class Thinker:
 
             # Generate actions
             actions = self.generate_action_sequence(movement_plan, powerup_decisions)
+            if not actions:
+                debugger_log("generate_action_sequence returned empty actions list")
+                return self.create_fallback_actions()
+
             return actions
 
         except Exception as e:
             logging.error(f"Error planning actions: {e}")
             debugger_log(f"ERROR planning actions: {str(e)}")
-            return []
+            # Return fallback actions instead of empty list
+            return self.create_fallback_actions()
 
     def check_paddle_position_changes(self, paddle_pos: float) -> None:
         """Check if paddle position has changed significantly"""

@@ -1,6 +1,7 @@
 from queue import Queue, Empty
 from typing import Dict, Any
 from game.constants import GAME_FPS
+from uuid import uuid4
 
 from .ai_utils import debugger_log, DIFFICULTY_CONFIGS
 from .ai_thinker import Thinker
@@ -14,6 +15,12 @@ class AIPlayer:
         self.difficulty = difficulty
         self.game_id = game_id
         self.action_queue = Queue() # main queue where moments are stored
+
+        # Pass game_id properly to the Thinker and ensure it's not None
+        if self.game_id is None:
+            self.game_id = str(uuid4())
+            debugger_log(f"Generated new game_id: {self.game_id}")
+
         self.thinker = Thinker(self.action_queue, difficulty, self.game_id) # my brain
         self.thinker.set_prediction_accuracy(8 - (difficulty * 3))
 
@@ -66,63 +73,40 @@ class AIPlayer:
         self.last_performance_check = self.action_count
 
         try:
-            # Get current game state information
-            current_ai_points = self.last_state.get("playerRight", {}).get("points", 0)
-            current_opponent_points = self.last_state.get("playerLeft", {}).get("points", 0)
-            score_diff = current_ai_points - current_opponent_points
+            # Check if a point was scored since last check
+            point_scored = False
+            if self.last_state:
+                current_left_score = self.last_state.get("playerLeft", {}).get("points", 0)
+                current_right_score = self.last_state.get("playerRight", {}).get("points", 0)
 
-            # ai's performance metrics
-            success_rate = self.thinker.learner.ai_stats.get("success_rate", 0.5)
-            total_balls = self.thinker.learner.ai_stats.get("total_balls_faced", 0)
-            intercepts = self.thinker.learner.ai_stats.get("successful_intercepts", 0)
-            misses = self.thinker.learner.ai_stats.get("missed_balls", 0)
+                # We'll track last checked scores to detect point scoring
+                last_checked_scores = getattr(self, 'last_checked_scores', (0, 0))
+                if (current_left_score, current_right_score) != last_checked_scores:
+                    point_scored = True
+                    self.last_checked_scores = (current_left_score, current_right_score)
+                    debugger_log(f"Score changed to {current_left_score}-{current_right_score}")
 
-            base_difficulty = self.difficulty
-            difficulty_float = base_difficulty
+            # Get Learner's recommended difficulty
+            learner_recommendation = self.thinker.learner.get_metrics().get("recommendedDifficulty", self.difficulty)
 
-            # Game progres
-            max_score = max(current_ai_points, current_opponent_points)
-            game_progress = min(1.0, max_score / 10.0)  # 0-1 range for game progression
-            difficulty_float += game_progress * 0.3  # Slight increase as game progresses
+            # Validate recommendation is in valid range (0-2)
+            learner_recommendation = max(0, min(2, learner_recommendation))
 
-            # Score difference
-            normalized_diff = max(-1.0, min(1.0, score_diff / 3.0))
-            difficulty_float -= normalized_diff * 0.4
+            # Log the recommendation
+            debugger_log(f"Learner recommended difficulty: {learner_recommendation} (current: {self.difficulty})")
 
-            # Success rate impact
-            if total_balls >= 2:  # Need minimum data
-                # 50% success rate = no change, 100% = +1 difficulty, 0% = -1 difficulty
-                success_modifier = (success_rate - 0.5) * 2.0
-                difficulty_float += success_modifier * 0.5
+            # Only apply difficulty changes when score changes and recommendation differs
+            if point_scored and self.difficulty != learner_recommendation:
+                self.apply_difficulty_change(learner_recommendation)
+                debugger_log(f"Applied difficulty change from {self.difficulty} to {learner_recommendation}")
 
-            # End game comeback mechanics
-            if current_opponent_points >= 8 and current_ai_points <= current_opponent_points - 2:
-                difficulty_float -= 0.5
-            elif current_ai_points >= 8 and current_opponent_points <= current_ai_points - 2:
-                difficulty_float += 0.3
-
-            # Clamp the float difficulty between 0 and 2
-            difficulty_float = max(0.0, min(2.0, difficulty_float))
-
-            # Round to get integer difficulty level
-            if difficulty_float > self.difficulty + 0.3:
-                new_difficulty = min(2, self.difficulty + 1)
-                debugger_log(f"Increasing difficulty to {new_difficulty} (float value: {difficulty_float:.2f})")
-                self.apply_difficulty_change(new_difficulty)
-            elif difficulty_float < self.difficulty - 0.3:
-                new_difficulty = max(0, self.difficulty - 1)
-                debugger_log(f"Decreasing difficulty to {new_difficulty} (float value: {difficulty_float:.2f})")
-                self.apply_difficulty_change(new_difficulty)
-            else:
-                debugger_log(f"Maintaining difficulty at {self.difficulty} (float value: {difficulty_float:.2f})")
-
-            # Prediction accuracy
-            prediction_accuracy = 8 - (self.difficulty * 3)
-            accuracy_adjustment = int((difficulty_float - self.difficulty) * 2)
-            new_accuracy = max(0, min(10, prediction_accuracy + accuracy_adjustment))
-            if new_accuracy != self.thinker.prediction_accuracy:
-                self.thinker.set_prediction_accuracy(new_accuracy)
-                debugger_log(f"Adjusted prediction accuracy to {new_accuracy} (based on float difficulty)")
+                # Prediction accuracy
+                prediction_accuracy = 8 - (self.difficulty * 3)
+                accuracy_adjustment = int((learner_recommendation - self.difficulty) * 2)
+                new_accuracy = max(0, min(10, prediction_accuracy + accuracy_adjustment))
+                if new_accuracy != self.thinker.prediction_accuracy:
+                    self.thinker.set_prediction_accuracy(new_accuracy)
+                    debugger_log(f"Adjusted prediction accuracy to {new_accuracy} (based on float difficulty)")
 
         except Exception as e:
             debugger_log(f"Error in difficulty adaptation: {e}")
@@ -133,7 +117,6 @@ class AIPlayer:
         """
         self.difficulty = new_difficulty
         self.thinker.difficulty = new_difficulty
-        self.thinker.set_prediction_accuracy(8 - (new_difficulty * 3))
         self.thinker.learner.difficulty = new_difficulty
         self.thinker.learner.config = DIFFICULTY_CONFIGS.get(new_difficulty, DIFFICULTY_CONFIGS[1])
         debugger_log(f"Difficulty adjusted to {new_difficulty}")

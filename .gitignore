@@ -19,6 +19,7 @@ Environments/*
 # Logs
 Logs/*
 **/*.log
+Backend/src/game/AI/ai_debug.txt
 
 # Database files
 Database/postgres-data

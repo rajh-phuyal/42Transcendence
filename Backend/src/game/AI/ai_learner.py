@@ -2,22 +2,28 @@ from typing import Dict, Any, Tuple, Optional, List, Deque
 from collections import deque
 import random
 from .ai_utils import debugger_log, DIFFICULTY_CONFIGS, save_ai_stats_to_cache, load_ai_stats_from_cache
-
-GLOBAL_GAME_ID = None
+from uuid import uuid4
 
 class CachedStatsDict(dict):
     """A dictionary that automatically saves to cache when modified"""
 
-    def __init__(self, initial_dict, *args, **kwargs):
+    def __init__(self, initial_dict, game_id, *args, **kwargs):
         super().__init__(initial_dict or {}, *args, **kwargs)
+        self["__game_id__"] = game_id
 
     def __setitem__(self, key, value):
         super().__setitem__(key, value)
-        save_ai_stats_to_cache(GLOBAL_GAME_ID, self)
+        self._save_to_cache()
 
     def update(self, *args, **kwargs):
         super().update(*args, **kwargs)
-        save_ai_stats_to_cache(GLOBAL_GAME_ID, self)
+        self._save_to_cache()
+
+    def _save_to_cache(self):
+        """Helper method to save the dictionary to cache"""
+        game_id = self.get("__game_id__")
+        if game_id:
+            save_ai_stats_to_cache(game_id, self)
 
 class Learner:
     """
@@ -25,13 +31,19 @@ class Learner:
     """
 
     def __init__(self, difficulty: int = 1, game_id: str = None):
-        GLOBAL_GAME_ID = game_id
+        # Ensure we always have a valid game_id
+        if game_id is None:
+            game_id = str(uuid4())
+            debugger_log(f"Learner generated new game_id: {game_id}")
+
+        self.game_id = game_id
         self.difficulty = difficulty
         self.config = DIFFICULTY_CONFIGS.get(difficulty, DIFFICULTY_CONFIGS[1])
 
-        raw_stats = load_ai_stats_from_cache(GLOBAL_GAME_ID) or {}
+        raw_stats = load_ai_stats_from_cache(self.game_id) or {}
         debugger_log(f"Raw stats: {raw_stats}")
-        # Define default stats
+
+        # Define default stats with ALL data that needs to be persistent
         default_stats = {
             "consecutive_goals": 0,
             "consecutive_goals_against": 0,
@@ -41,22 +53,26 @@ class Learner:
             "last_ball_x": 50.0,
             "last_ball_y": 50.0,
             "last_direction_x": 0,
-            "success_rate": 0.5
+            "success_rate": 0.5,
+            "opponent_positions": [],
+            "opponent_movements": [],
+            "opponent_ball_responses": []
         }
 
         # this is for handling constant caching
-        debugger_log(f"Starting stats: {default_stats | raw_stats} for game {GLOBAL_GAME_ID}")
-        self._stats = CachedStatsDict(default_stats | raw_stats)
+        debugger_log(f"Starting stats: {default_stats | raw_stats} for game {self.game_id}")
+        self._stats = CachedStatsDict(default_stats | raw_stats, self.game_id)
+
+        # Make sure game_id is properly set in stats even if loaded from cache
+        self._stats["__game_id__"] = self.game_id
 
         self.last_game_state = {}
         self.has_big_powerup = False
         self.has_speed_powerup = False
 
-        # Opponent behavior (last N positions)
-        self.max_history = 50 * (difficulty + 1)  # Store last 50 * difficulty positions
-        self.opponent_positions = deque(maxlen=self.max_history)
-        self.opponent_movements = deque(maxlen=self.max_history-1)  # +1/-1/0 for movement direction
-        self.opponent_ball_responses = deque(maxlen=10)
+        # Set max history sizes
+        self.max_history = 50 * (difficulty + 1)
+        self.max_responses = 10
 
         # Strategic variables
         self.big_powerup_value = 0.5
@@ -94,35 +110,52 @@ class Learner:
         current_pos = opponent.get("paddlePos", 50.0)
 
         # Add to position history
-        self.opponent_positions.append(current_pos)
+        positions = self._stats["opponent_positions"]
+        positions.append(current_pos)
+        if len(positions) > self.max_history:
+            positions = positions[-self.max_history:]
+        self._stats["opponent_positions"] = positions
 
         # Calculate movement direction if we have previous positions
-        if len(self.opponent_positions) >= 2:
-            prev_pos = self.opponent_positions[-2]
+        if len(positions) >= 2:
+            prev_pos = positions[-2]
             # Determine movement direction: +1 (down), -1 (up), 0 (static)
             movement = 0
             if current_pos > prev_pos + 0.5:  # Moving down
                 movement = 1
             elif current_pos < prev_pos - 0.5:  # Moving up
                 movement = -1
-            self.opponent_movements.append(movement)
+
+            # Add to movements (maintain max length manually)
+            movements = self._stats["opponent_movements"]
+            movements.append(movement)
+            if len(movements) > self.max_history - 1:
+                movements = movements[-(self.max_history-1):]
+            self._stats["opponent_movements"] = movements
 
         # Track how opponent responds to ball approaches
         ball = game_state.get("ball", {})
         ball_dir_x = ball.get("directionX", 0)
 
-        if (ball_dir_x < 0 and ball.get("posX", 50) < 50 and len(self.opponent_positions) >= 2):
+        if (ball_dir_x < 0 and ball.get("posX", 50) < 50 and len(positions) >= 2):
             # Ball is moving toward opponent
             ball_y = ball.get("posY", 50)
             paddle_y = current_pos
 
+            # Get the most recent movement value
+            movement = self._stats["opponent_movements"][-1] if self._stats["opponent_movements"] else 0
+
             # Record if opponent is moving toward ball
+            responses = self._stats["opponent_ball_responses"]
             if (ball_y > paddle_y and movement > 0) or (ball_y < paddle_y and movement < 0):
-                # slow opponent
-                self.opponent_ball_responses.append(1)
+                responses.append(1)
             else:
-                # fast opponent
-                self.opponent_ball_responses.append(0)
+                responses.append(0)
+
+            # Maintain max length
+            if len(responses) > self.max_responses:
+                responses = responses[-self.max_responses:]
+            self._stats["opponent_ball_responses"] = responses
 
     def check_for_scored_points(self, game_state: Dict[str, Any]) -> None:
         """
@@ -248,7 +281,7 @@ class Learner:
         right_score = game_state.get("playerRight", {}).get("points", 0)
 
         # For difficulty 0 (easy), use more random/less strategic powerup decisions (probabalistic)
-        if self.difficulty == 0 and right_score > 5:
+        if self.difficulty == 0 and left_score > 7:
             if random.random() < 0.1: # 10% chance to use powerups
                 use_big = has_big and random.random() < 0.5
                 use_speed = has_speed and random.random() < 0.5
@@ -258,15 +291,14 @@ class Learner:
         # Factor 1: Game score context
         # If we're ahead by a lot, save powerups
         if right_score > left_score + 3:
-            # At easier difficulties, don't strategically save powerups as much
             if self.difficulty == 0:
-                big_value -= 0.1  # Small reduction at easy
+                big_value -= 0.3
             elif self.difficulty == 1:
-                big_value -= 0.2  # Medium reduction at medium
+                big_value -= 0.2
             else:
-                big_value -= 0.3  # Full strategic saving at hard
+                big_value -= 0.1
 
-            speed_value -= (0.1 * (self.difficulty + 1))  # Scale by difficulty
+            speed_value -= (0.1 * (self.difficulty + 1))
             debugger_log(f"Score advantage: reducing powerup value (scaled by difficulty {self.difficulty})")
 
         # If we're behind, be more aggressive with powerups
@@ -318,10 +350,11 @@ class Learner:
                 debugger_log(f"Ball moving to opponent: increasing speed powerup value (fast effect)")
 
         # Factor 4: Opponent behavior analysis
-        if len(self.opponent_ball_responses) >= 3 and self.difficulty == 2:
+        responses = self._stats["opponent_ball_responses"]
+        if len(responses) >= 3 and self.difficulty == 2:
             # Only at hard difficulty does the AI analyze opponent behavior
             # Calculate how well opponent tracks the ball
-            response_rate = sum(self.opponent_ball_responses) / len(self.opponent_ball_responses)
+            response_rate = sum(responses) / len(responses)
 
             # If opponent is good at tracking, use speed powerup more (fast effect)
             if response_rate > 0.7:
@@ -340,6 +373,12 @@ class Learner:
             big_value += losing_streak_boost
             speed_value += losing_streak_boost
             debugger_log(f"AI losing streak: increasing powerup values (scaled by difficulty)")
+
+        # Critical moment: Match point for opponent
+        if left_score == 10 and right_score < 10:
+            big_value += random.random() * 0.2
+            speed_value -= random.random() * 0.2
+            debugger_log(f"Match point for opponent: slowing down")
 
         # Make final decision
         thresholds = {
@@ -398,19 +437,67 @@ class Learner:
 
     def calculate_new_difficulty(self) -> int:
         """
-        Calculate recommended difficulty based on AI performance
+        Calculate recommended difficulty based on AI performance and game context
         """
+        # Default to current difficulty if no change needed
         recommended_difficulty = self.difficulty
 
-        # If AI is doing too well, increase difficulty
-        if self._stats["success_rate"] > 0.8 and self.difficulty < 2:
-            recommended_difficulty = self.difficulty + 1
-            debugger_log(f"AI too successful ({self._stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
+        # Use cached recommendation if available and no new point was scored
+        if hasattr(self, '_last_recommended_difficulty'):
+            recommended_difficulty = self._last_recommended_difficulty
 
-        # If AI is struggling, decrease difficulty
-        elif self._stats["success_rate"] < 0.3 and self.difficulty > 0:
-            recommended_difficulty = self.difficulty - 1
-            debugger_log(f"AI struggling ({self._stats['success_rate']:.2f}): recommend difficulty {recommended_difficulty}")
+        # Get current score information
+        left_score = 0  # Player score
+        right_score = 0  # AI score
+
+        if self.last_game_state:
+            left_score = self.last_game_state.get("playerLeft", {}).get("points", 0)
+            right_score = self.last_game_state.get("playerRight", {}).get("points", 0)
+
+        point_scored = False
+        last_point_check = getattr(self, 'last_point_check', (0, 0))
+
+        if last_point_check != (left_score, right_score):
+            point_scored = True
+            self.last_point_check = (left_score, right_score)
+            debugger_log(f"Point scored! Score is now {left_score}-{right_score}")
+        else:
+            # If no point was scored, return last recommended difficulty
+            return recommended_difficulty
+
+        # Only calculate new difficulty if a point was scored
+        if point_scored:
+            success_rate = self._stats["success_rate"]
+
+            # Case 1: AI is doing too well - make it easier
+            if success_rate > 0.6 and right_score > left_score:
+                if left_score >= 8 or right_score >= 8:  # End game
+                    if right_score > left_score + 2:
+                        recommended_difficulty = self.difficulty - 1
+                        debugger_log(f"End game: AI dominating ({success_rate:.2f}): making it easier to {recommended_difficulty}")
+                else:
+                    recommended_difficulty = self.difficulty - 1
+                    debugger_log(f"AI too successful ({success_rate:.2f}): making it easier to {recommended_difficulty}")
+
+            # Case 2: AI is struggling badly - make it harder
+            elif success_rate < 0.3 and left_score > right_score:
+                if left_score >= 8 or right_score >= 8:  # End game
+                    if left_score > right_score + 2:
+                        recommended_difficulty = self.difficulty + 1
+                        debugger_log(f"End game: AI struggling ({success_rate:.2f}): making it harder to {recommended_difficulty}")
+                else:
+                    recommended_difficulty = self.difficulty + 1
+                    debugger_log(f"AI struggling ({success_rate:.2f}): making it harder to {recommended_difficulty}")
+
+            # Ensure difficulty is within valid range
+            recommended_difficulty = max(0, min(2, recommended_difficulty))
+
+            # Log clearly if changing difficulty
+            if recommended_difficulty != self.difficulty:
+                debugger_log(f"SCORE CHANGE: Recommending difficulty change from {self.difficulty} to {recommended_difficulty}")
+
+            # Store the recommendation for future calls
+            self._last_recommended_difficulty = recommended_difficulty
 
         return recommended_difficulty
 
@@ -418,14 +505,15 @@ class Learner:
         """
         Analyze opponent's movement patterns to detect strategy
         """
-        if len(self.opponent_movements) < 10:
+        movements = self._stats["opponent_movements"]
+        if len(movements) < 10:
             return {"pattern": "unknown", "confidence": 0.0}
 
         # Count different movement types
-        up_movements = self.opponent_movements.count(-1)
-        down_movements = self.opponent_movements.count(1)
-        static_movements = self.opponent_movements.count(0)
-        total_movements = len(self.opponent_movements)
+        up_movements = movements.count(-1)
+        down_movements = movements.count(1)
+        static_movements = movements.count(0)
+        total_movements = len(movements)
 
         # Calculate percentages
         up_percent = up_movements / total_movements
@@ -444,7 +532,7 @@ class Learner:
             confidence = (up_percent + down_percent) / 2
 
         # Check if opponent prefers a court position
-        positions = list(self.opponent_positions)
+        positions = self._stats["opponent_positions"]
         avg_position = sum(positions) / len(positions)
 
         position_bias = "middle"
