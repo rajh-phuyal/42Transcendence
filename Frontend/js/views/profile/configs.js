@@ -175,7 +175,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            WebSocketManager.setCurrentRoute(undefined);
             /* let element = this.domManip.$id("button-top-left");
             this.domManip.$off(element, "click", this.buttonTopLeft.method);
             element = this.domManip.$id("button-top-middle");
@@ -240,7 +239,6 @@ export default {
             }
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
-                WebSocketManager.setCurrentRoute("profile-" + this.result.id);
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();

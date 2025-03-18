@@ -55,6 +55,13 @@ export default {
 
     hooks: {
         beforeOpen () {
+            const currentRoute = $store.fromState("currentRoute");
+
+            if (currentRoute === "profile")
+                this.domManip.$id("modal-tournament-history-back-button").style.display = 'none';
+            else
+                this.domManip.$id("modal-tournament-history-game-history-button").style.display = 'none';
+
             call(`tournament/history/${$store.fromState("user").id}/`, 'GET').then(data => {
                 this.data = data;
                 if (!data.tournaments.length) {

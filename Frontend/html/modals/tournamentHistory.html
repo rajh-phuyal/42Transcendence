@@ -3,15 +3,15 @@
         <div id="modal-tournament-history-content" class="modal-content image-modal-content">
             <div class="modal-body image-modal-body">
                 <img src='../../assets/backgrounds/modal-tournament-history.png' class="image-modal-background-image" alt="Background Image">
-                <button class="btn" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button>
                 <div id="modal-tournament-history-grid" class="view-overlay-grid">
 
                     <div id="modal-tournament-history-tournament-list-container" class="barely-a-scroll-class lcont">
                         <h5 id="modal-tournament-history-no-tournaments">No tournaments played yet.</h5> <!-- TODO: translation -->
                     </div>
                     <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-history-title">Modal title</h5>
-                    <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <button type="button"                                           class="grid-cell default-grid-area modal-button btnb" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal" aria-label="Close">BACK</button>
+                    <button type="button"                                                       class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button"  id="modal-tournament-history-back-button"            class="grid-cell default-grid-area btn modal-button btnb" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal" aria-label="Close">BACK</button>
+                    <button type="button"  id="modal-tournament-history-game-history-button"    class="grid-cell default-grid-area btn modal-button btnb" data-bs-target="#modal-game-history" data-bs-toggle="modal" data-bs-dismiss="modal" aria-label="Close">Game History</button>
                     <template id="modal-tournament-history-card-template">
                         <div class="modal-tournament-history-card">
                             <h5     class="grid-cell default-grid-area modal-tournament-history-card-tournament-name tname"></h5>
@@ -52,8 +52,8 @@
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".     btnb  btnb   btnb   btnb   btnb   btnb   .      .      .      btngm  btngm  btngm  btngm  btngm  btngm  .     "
-            ".     btnb  btnb   btnb   btnb   btnb   btnb   .      .      .      btngm  btngm  btngm  btngm  btngm  btngm  .     "
+            ".     .     .      .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .      .     "
+            ".     .     .      .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .      .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 

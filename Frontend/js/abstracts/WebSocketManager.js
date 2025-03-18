@@ -10,7 +10,6 @@ const { hostname } = window.location;
 class WebSocketManager {
     constructor() {
         this.socket = null;
-        this.currentRoute = undefined;
     }
 
     // Connect to WebSocket with the provided token
@@ -81,6 +80,9 @@ class WebSocketManager {
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
         console.log("BE -> FE:", message);
+
+        const currentRoute = $store.fromState("currentRoute");
+
         switch (message.messageType) {
             // BASIC MESSAGES
             case "error":
@@ -93,7 +95,7 @@ class WebSocketManager {
             // CHAT RELATED MESSAGES
             case "chat":
                 audioPlayer.playSound("chat");
-                if (this.currentRoute == "chat")
+                if (currentRoute == "chat")
                     processIncomingWsChatMessage(message);
                 else
                     $callToast("error", "Need to implement the notification for chat as toast! issue #217");
@@ -101,7 +103,7 @@ class WebSocketManager {
             case "updateBadge":
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
-                else if (message.what == "conversation" && this.currentRoute == "chat")
+                else if (message.what == "conversation" && currentRoute == "chat")
                     updateConversationBadge(message.id, message.value);
                 return ;
             case "newConversation":
@@ -113,7 +115,7 @@ class WebSocketManager {
 
             // TOURNAMENT RELATED MESSAGES
             case "tournamentInfo":
-                if (this.currentRoute == "tournament"){
+                if (currentRoute == "tournament"){
                     buildView(message.state);
                 }
                 return ;
@@ -136,8 +138,8 @@ class WebSocketManager {
 
             // PROFILE RELATED MESSAGES
             case "reloadProfile":
-                if (this.currentRoute.startsWith("profile"))
-                    processIncomingReloadMsg(message, this.currentRoute);
+                if (currentRoute === "profile")
+                    processIncomingReloadMsg(message, currentRoute);
                 return ;
         }
 
@@ -161,14 +163,6 @@ class WebSocketManager {
 		if (value > 99)
 			value = "99+";
         $id("chat-nav-badge").textContent = value || "";
-    }
-
-    setCurrentRoute(route) {
-        this.currentRoute = route;
-    }
-
-    getCurrentRoute() {
-        return this.currentRoute;
     }
 
     reconnect() {
