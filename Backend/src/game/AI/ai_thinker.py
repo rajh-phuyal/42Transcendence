@@ -90,7 +90,6 @@ class Thinker:
                 # see what the learner learned
                 metrics = self.learner.get_metrics(self.game_state)
 
-                # Validate recommended difficulty (ensure it's in a valid range)
                 if "recommendedDifficulty" in metrics:
                     metrics["recommendedDifficulty"] = max(0, min(2, metrics["recommendedDifficulty"]))
 
@@ -99,7 +98,6 @@ class Thinker:
                 # actions for the next second
                 actions = self.action_plan(self.game_state, metrics)
 
-                # Ensure we always have some actions to perform
                 if not actions:
                     debugger_log("No actions returned from planning, adding fallback movement")
                     actions = self.create_fallback_actions()
@@ -127,7 +125,7 @@ class Thinker:
             if i < GAME_FPS // 3:
                 move = "+" if paddle_pos < 45 else ("-" if paddle_pos > 55 else "0")
             else:
-                move = "+" if i % 3 == 0 else ("-" if i % 3 == 1 else "0")
+                move = "0"
 
             action = {
                 "movePaddle": move,
@@ -154,13 +152,12 @@ class Thinker:
 
             powerup_decisions = self.determine_powerup_usage(paddle, metrics)
 
-            # Predict where ball will collide with paddle
+            # predict where ball will collide with paddle
             collision_info = self.predict_collision(ball)
 
-            # Plan paddle movement
+            # plan paddle movement
             movement_plan = self.plan_movement(ball, paddle, collision_info)
 
-            # Generate actions
             actions = self.generate_action_sequence(movement_plan, powerup_decisions)
             if not actions:
                 debugger_log("generate_action_sequence returned empty actions list")
@@ -171,7 +168,6 @@ class Thinker:
         except Exception as e:
             logging.error(f"Error planning actions: {e}")
             debugger_log(f"ERROR planning actions: {str(e)}")
-            # Return fallback actions instead of empty list
             return self.create_fallback_actions()
 
     def check_paddle_position_changes(self, paddle_pos: float) -> None:
@@ -189,15 +185,14 @@ class Thinker:
         use_big = metrics.get("useBig", False)
         use_speed = metrics.get("useSpeed", False)
 
-        # Check if powerups are available
         big_available = paddle.get("powerupBig") == "available"
         speed_available = paddle.get("powerupSpeed") == "available"
 
-        # Ball direction affects the EFFECT of the speed powerup, not which powerup to use
+        # ball direction affects the EFFECT of the speed powerup, not which powerup to use
         ball = self.game_state.get("ball", {})
         ball_coming_toward_ai = ball.get("directionX", 0) > 0
 
-        # Final decision on powerup usage
+        # decision
         activate_big = use_big and big_available
         activate_speed = use_speed and speed_available
 
@@ -367,7 +362,6 @@ class Thinker:
         """Generate a sequence of actions based on movement plan and powerup decisions"""
         actions = []
 
-        # Extract movement plan
         total_needed = movement_plan["total_needed"]
         frames_to_reach = movement_plan["frames_to_reach"]
         collision_frame = movement_plan["collision_frame"]
@@ -375,16 +369,14 @@ class Thinker:
         paddle_size = movement_plan["paddle_size"]
         paddle_speed = movement_plan["paddle_speed"]
 
-        # Extract powerup decisions
         use_big = powerup_decisions["activate_big"]
         use_speed = powerup_decisions["activate_speed"]
 
-        # Debug movement plan
+        # debug
         debugger_log(f"Movement plan: total={total_needed}, frames={frames_to_reach}, collision={collision_frame}")
 
-        # Create special first action for powerups if needed
+        # create special first action for powerups if needed
         if use_big or use_speed:
-            # Determine movement for first action
             if total_needed > 0.5:
                 move = "+"
                 current_pos += min(paddle_speed, total_needed / frames_to_reach)
@@ -394,11 +386,10 @@ class Thinker:
             else:
                 move = "0"
 
-            # Clamp position
+            # clamp position
             # this is to prevent the ai from going out of the screen
             current_pos = max(paddle_size/2, min(100 - paddle_size/2, current_pos))
 
-            # Create action
             action = {
                 "movePaddle": move,
                 "activatePowerupBig": use_big,
@@ -411,9 +402,8 @@ class Thinker:
         else:
             start_frame = 0
 
-        # Generate remaining actions
         for frame_i in range(start_frame, GAME_FPS):
-            # Determine movement - simplified to ensure clear movement
+            # simplified to ensure clear movement
             if abs(total_needed) < 0.3 or frame_i >= frames_to_reach:
                 move = "0"
             else:
@@ -441,7 +431,7 @@ class Thinker:
 
             actions.append(action)
 
-            # Log every few frames to avoid excessive logging
+            # avoid excessive logging
             if frame_i % 5 == 0:
                 debugger_log(f"Action {frame_i}: move={move}, pos={current_pos:.1f}, remaining={total_needed:.1f}")
 

@@ -204,7 +204,7 @@ class GameConsumer(CustomWebSocketLogic):
         GameConsumer.game_loops[self.game_id] = asyncio.create_task(GameConsumer.run_game_loop(self.game_id))
 
     @staticmethod
-    async def manage_ai(game_id):
+    async def ai_action(game_id):
         if game_id not in GameConsumer.ai_players:
             return None
 
@@ -258,7 +258,7 @@ class GameConsumer(CustomWebSocketLogic):
             try:
                 # Process AI input if this game has an AI player
                 if game_id in GameConsumer.ai_players:
-                    await GameConsumer.manage_ai(game_id)
+                    await GameConsumer.ai_action(game_id)
 
                 # Reset sound
                 set_game_data(game_id, 'gameData', 'sound', 'none')

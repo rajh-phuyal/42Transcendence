@@ -26,7 +26,7 @@ class AIPlayer:
 
         self.last_performance_check = 0
         self.action_count = 0
-        self.adapt_interval = 2  # Check for adaptation every 2 frames
+        self.adapt_interval = 10  # Check for adaptation every 10 frames
 
         # Game state tracking
         self.last_state = None

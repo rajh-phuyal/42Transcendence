@@ -56,7 +56,6 @@ def debugger_log(msg: str, file_path: str = DEBUG_FILE_PATH):
     if not DEBUG:
         return
 
-    # You may want to handle exceptions or concurrency more robustly in production.
     with open(file_path, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
 
