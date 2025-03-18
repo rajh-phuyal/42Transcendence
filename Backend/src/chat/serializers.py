@@ -9,6 +9,8 @@ from user.models import User
 # Chat
 from chat.models import Conversation, Message, ConversationMember
 from chat.utils import get_other_user
+# Tournament
+from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 
 def generate_template_msg(message):
     """
@@ -94,6 +96,10 @@ def generate_template_msg(message):
         "TDO": {
             "message": _("The overloards have deleted the tournament: {0} because there are not enough players left!"),
             "count": 1
+        },
+        "TGW": {
+            "message": _("The tournament {0}: game {1}: @{2} vs @{3} is scheduled. you have {DEADLINE_FOR_TOURNAMENT_GAME_START} minutes, from the time of this message, to start the game!"),
+            "count": 4
         }
     }
     if cmd_type not in message_templates:
