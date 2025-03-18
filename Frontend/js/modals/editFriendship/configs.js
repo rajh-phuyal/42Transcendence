@@ -8,11 +8,8 @@ TODO: THIS MODAL IS NOT DONE AT ALL!!!
             - make sure the js code has all values. the idea is that the view stores the info as attribute and the modal takes it from there
             - e.g. newConversation modal js!
 */
-
-import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import $callToast from '../../abstracts/callToast.js';
-import { modalManager } from '../../abstracts/ModalManager.js';
 import { buttonObjects } from "./buttonObjects.js"
 
 export default {

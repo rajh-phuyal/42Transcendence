@@ -23,18 +23,6 @@ export function battleModalCallback(){
     modalManager.openModal("modal-create-game");
 }
 
-
-// TODO: return a boolean and treat the data inside the call function
-function checkEnrolement() {
-    call('tournament/enrolment/','GET').then(data => {
-        console.log("enrolement:", data);
-        return data;
-    }).error( error => {
-        console.log(error);
-        return error; // TODO: maybe return a "error"
-    })
-}
-
 function createTournamentCard(element) {
     const template = $id("modal-tournament-tournament-template").content.cloneNode(true);
 
