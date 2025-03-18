@@ -105,6 +105,8 @@ async function router(path, params = null) {
         modals: [],
     };
 
+    $store.commit('setCurrentRoute', route.view);
+
     if (route.view == "auth" || route.view == "barely-responsive") {
         let nav = document.getElementById('navigator');
         nav.style.display = 'none';

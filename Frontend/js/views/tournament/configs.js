@@ -107,7 +107,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            WebSocketManager.setCurrentRoute(undefined);
             this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-middle-bottom-subscribe-start-button"), "click", this.subscribeStartTournamentButtonAction);
             this.domManip.$off(this.domManip.$id("tournament-quit-cancel-button"), "click", this.quitCancelTournamentButtonAction);
@@ -128,7 +127,6 @@ export default {
                 router('/404');
                 return;
             }
-            WebSocketManager.setCurrentRoute("tournament");
             call(`tournament/lobby/${this.routeParams.id}/`, 'GET').then(data => {
                 console.log("data:", data);
                 this.data = data;

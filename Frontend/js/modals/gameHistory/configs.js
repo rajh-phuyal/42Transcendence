@@ -56,7 +56,6 @@ export default {
             else
                 container.querySelector(".modal-game-history-card-date").textContent = gameObject.state;
             this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
-            // TODO: Create an event listner for the ongoing games @xico what do u mean by this?
         }
     },
 
@@ -74,10 +73,12 @@ export default {
                 return false;
             }
             call(`game/history/${this.userId}/`, 'GET').then(data => {
-                // console.log("data", data);
                 this.data = data;
-                if (data.games.length)
-                    this.domManip.$id("modal-game-history-no-games").style.display = "none";
+                if (!data.games.length) {
+                    this.domManip.$id("modal-game-history-no-games").style.display = "block";
+                    return ;
+                }
+                this.domManip.$id("modal-game-history-no-games").style.display = "none";
                 for (let element of data.games)
                     this.createGameCard(element);
             })
