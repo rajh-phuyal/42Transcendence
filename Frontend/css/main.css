@@ -319,6 +319,8 @@ h5 {
     align-content: center;
     justify-content: center;
     align-self: center;
+    justify-self: center;
+    text-align: center;
     width: 100%;
     height: 100%;
 }
@@ -349,6 +351,12 @@ h5 {
     font-size: 1.5em;
     width: 100%;
     min-height: 0%;
+}
+.modal-btn-close {
+    background-color: white;
+    border: 2px solid black;
+    height: 70% !important;
+    width: 70% !important;
 }
 
 /* IMAGE MODAL LAYOUT AND GRID */
