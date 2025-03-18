@@ -218,7 +218,7 @@ function drawPlayerState(playerSide) {
             $id(playerSideDash + "-avatar").classList.remove("user-card-looser");
             $id(playerSideDash + "-avatar").classList.add("user-card-winner");
         }
-        if (gameObject[playerSide].result === "lost") {
+        else if (gameObject[playerSide].result === "lost") {
             $id(playerSideDash + "-username").classList.remove("user-card-winner");
             $id(playerSideDash + "-username").classList.add("user-card-looser");
             $id(playerSideDash + "-avatar").classList.remove("user-card-winner");

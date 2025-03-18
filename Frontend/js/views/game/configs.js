@@ -137,6 +137,8 @@ export default {
 
                     // Set game data
                     gameObject.clientIsPlayer = data.gameData.clientIsPlayer;
+                    gameObject.playerLeft.id = data.playerLeft.userId;
+                    gameObject.playerRight.id = data.playerRight.userId;
                     gameObject.playerLeft.points = data.playerLeft.points;
                     gameObject.playerLeft.result = data.playerLeft.result;
                     gameObject.playerRight.points = data.playerRight.points;
@@ -159,6 +161,20 @@ export default {
                     if (data.gameData.state === "ongoing")
                         data.gameData.state = "paused";
                     changeGameState(data.gameData.state);
+
+                    // Show / Hide the controls
+                    const controlsLeft = this.domManip.$id("player-left-controls");
+                    const controlsRight = this.domManip.$id("player-right-controls");
+                    // Hide by default
+                    controlsLeft.style.display = "none";
+                    controlsRight.style.display = "none";
+                    // Show the controls if userid matches client if or is flatmate
+                    const clientId = this.$store.fromState('user').id
+                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3)
+                        controlsLeft.style.display = "block";
+                    console.warn(gameObject.playerRight.id );
+                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3)
+                        controlsRight.style.display = "block";
                 })
                 .catch(error => {
                     router('/404', {msg: error.message});
