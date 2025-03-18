@@ -9,6 +9,7 @@
                         <!-- Place your content here -->
 
                             <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-join-title">Modal title</h5>
+                            <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
                             <!-- <p>This is some text placed on top of the background image.</p> -->
                             <!-- Add more components, grids, etc. as needed -->
@@ -26,9 +27,9 @@
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      title  title  title  title  .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
+            "title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            "title  title  title  title  title  title  title  title  title  title  title  title  title  title "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
@@ -54,5 +55,8 @@
 
     .title {
         grid-area: title;
+    }
+    .btncl {
+        grid-area: btncl;
     }
 </style>
