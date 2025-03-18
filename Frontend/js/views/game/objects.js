@@ -24,6 +24,7 @@ export const gameObject = {
         powerupBig: undefined,
     },
     playerLeft: {
+        id: undefined,
         state: undefined,
         points: undefined,
         pos: undefined,
@@ -34,6 +35,7 @@ export const gameObject = {
         powerupFast: "unavailable"
     },
     playerRight: {
+        id: undefined,
         state: undefined,
         points: undefined,
         pos: undefined,
