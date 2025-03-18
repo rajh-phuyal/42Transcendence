@@ -61,17 +61,18 @@ ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #	| `test`  | Starts as script to test the backend api                                                                               |
 #
 # CONTAINER:
-ALLOWED_CONTAINERS=("fe" "be" "db" "pa" "redis")
+ALLOWED_CONTAINERS=("fe" "be" "db" "pa" "mb")
 #   The container is the service that should be affected by the command.
 #   If no container is specified ALL containers will be affected.
 #   The allowed containers are:
 #
-#	| Container  | Service  | Volumes          | Description                                  |
-#	|------------|----------|------------------|----------------------------------------------|
-#	| `fe`       | frontend | media-volume     | The frontend service (nginx, html, css, Js)  |
-#	| `be`       | backend  | media-volume     | The backend service (django)                 |
-#	| `db`       | database | db-volume        | The database service (postgres)              |
-#	| `pa`       | pgadmin  | pa-volume        | The pgadmin service (pgadmin)                |
+#	| Container  | Service  | Volumes                    | Description                                  |
+#	|------------|----------|----------------------------|----------------------------------------------|
+#	| `fe`       | frontend | media-volume fe-volume     | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  | media-volume               | The backend service (django)                 |
+#	| `db`       | database | db-volume                  | The database service (postgres)              |
+#	| `pa`       | pgadmin  | pa-volume                  | The pgadmin service (pgadmin)                |
+#	| `mb`       | redis    | -                          | The redis service                            |
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
@@ -82,8 +83,9 @@ OS_HOME_PATH=""
 VOLUME_FOLDER_NAME="barely-some-data"
 DB_VOLUME_NAME=db-volume
 PA_VOLUME_NAME=pa-volume
+FE_VOLUME_NAME=fe-volume
 MEDIA_VOLUME_NAME=media-volume
-export DB_VOLUME_NAME PA_VOLUME_NAME MEDIA_VOLUME_NAME
+export DB_VOLUME_NAME PA_VOLUME_NAME FE_VOLUME_NAME MEDIA_VOLUME_NAME
 #
 # THE SPINNER
 # To make thinks pretty we use a spinner to show that the script is working.
@@ -342,8 +344,8 @@ parse_args()
     export DOMAIN_NAMES
     echo -e "DOMAIN_NAMES:\t$DOMAIN_NAMES"
 	# Exporting the user and the group so that docker compse can use this
-	#export UID=$(id -u)
-	#export GID=$(id -g)
+	export UID=$(id -u)
+	export GID=$(id -g)
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
 }
 
@@ -509,6 +511,7 @@ check_volume_folders()
 	print_header "${YL}" "Checking paths for volumes..."
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$DB_VOLUME_NAME/"
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$PA_VOLUME_NAME/"
+    check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$FE_VOLUME_NAME/"
 	check_path_and_permission "$OS_HOME_PATH$VOLUME_FOLDER_NAME/$MEDIA_VOLUME_NAME/"
 	print_header "${GR}" "Checking paths for volumes...${GR}DONE${NC}"
 }
@@ -585,6 +588,7 @@ docker_fclean() {
 	print_header "${OR}" "Deleting docker volumes..."
 	docker volume rm "$DB_VOLUME_NAME" || true
 	docker volume rm "$PA_VOLUME_NAME" || true
+	docker volume rm "$FE_VOLUME_NAME" || true
 	docker volume rm "$MEDIA_VOLUME_NAME" || true
 	print_header "${OR}" "Deleting docker volumes...${GR}DONE${NC}"
 

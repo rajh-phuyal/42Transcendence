@@ -15,7 +15,8 @@ RUN mkdir -p /$MEDIA_VOLUME_NAME/
 # Changing the working directory (cd)
 WORKDIR /app
 
-# COPY src /app/ we might need it for later when the project is ready for submission
+# TODO: uncomment and test this for eval
+# COPY ./src/* /app/ we might need it for later when the project is ready for submission
 
 # We need the requirements file during the buildng phase of the image,
 # so we copy it and remove it after the requirements are installed.

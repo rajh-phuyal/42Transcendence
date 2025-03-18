@@ -1,20 +1,20 @@
 # This is the configuration for all docker services we use to stay:
 # BARELY ALIVE
-
 services:
   db:
     container_name: db
     image: db:latest
-    #user: "${UID}:${GID}"
+    user: "${UID}:${GID}"
     build:
       context: ./Database/Postgres
       dockerfile: postgres.dockerfile
+      args:
+        UID : $UID
+        GID : $GID
     environment:
       DB_NAME : $DB_NAME
       POSTGRES_USER : $DB_USER      #POSTGRES_USER is the default var name for the user and can not be changed
       POSTGRES_PASSWORD : $DB_PSWD  #POSTGRES_PASSWORD is the default var name for the password and can not be changed
-    ports:
-      - "${DB_PORT}:5432"
     volumes:
       - db-volume:/var/lib/postgresql/data
     restart: unless-stopped
@@ -27,7 +27,7 @@ services:
   pa:
     container_name: pa
     image: pa:latest
-    #user: "${UID}:${GID}"
+    user: "${UID}:${GID}"
     build:
       context: ./Database/PgAdmin
       dockerfile: pgadmin.dockerfile
@@ -43,8 +43,6 @@ services:
       PGADMIN_DEFAULT_EMAIL : $PA_MAIL
       PGADMIN_DEFAULT_PASSWORD : $PA_PSWD
       DOMAIN_NAMES : $DOMAIN_NAMES
-    ports:
-      - "1234:80"
     volumes:
       - pa-volume:/var/lib/pgadmin
     restart: unless-stopped
@@ -58,12 +56,12 @@ services:
   be:
     container_name: be
     image: be:latest
-    #user: "${UID}:${GID}"
+    user: "${UID}:${GID}"
     build:
       context: ./Backend
       dockerfile: django.dockerfile
     depends_on:
-      redis:
+      mb:
         condition: service_healthy
     environment:
       LOCAL_DEPLOY            : $LOCAL_DEPLOY
@@ -77,10 +75,8 @@ services:
       DJANGO_ALLOWED_HOSTS    : $DOMAIN_NAMES
       MEDIA_VOLUME_NAME       : $MEDIA_VOLUME_NAME
       REDIS_PORT              : $REDIS_PORT
-    ports:
-      - "8000:8000" #need to be changed. remove it after
     volumes:
-      - ./Backend/src:/app
+      - ./Backend/src:/app # TODO: change
       - media-volume:/$MEDIA_VOLUME_NAME
     restart: unless-stopped
     healthcheck:
@@ -104,11 +100,12 @@ services:
       LOCAL_DEPLOY : $LOCAL_DEPLOY
       DOMAIN_NAMES : $DOMAIN_NAMES
     ports:
-      - "80:80"   #For redirecting to https
-      - "443:443" #Maybe need to change later 443
+      - "80:80"   # For redirecting to https
+      - "443:443" # For https
     volumes:
       - media-volume:/media
       # TODO
+      #- fe-volume:/usr/share/nginx/
       # ----
       # All those mount points are usefull for development sincee we dont
       # have to restart the container if we do small changes.
@@ -131,24 +128,26 @@ services:
       retries: 3
       start_period: 10s
 
-  redis:
-    image: redis:7.0
-    container_name: redis
+# Message Broker redis
+  mb:
+    container_name: mb
+    image: mb:latest
+    user: "${UID}:${GID}"
+    build:
+      context: ./MessageBroker
+      dockerfile: redis.dockerfile
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
-    ports:
-      - "${REDIS_PORT}:6379"
 
 networks:
   default:
     name: $DOCKER_NETWORK
     driver: bridge
 
-# TODO
 # HERE WE CONFIGURE THE VOLUME BEFORE DELIVERING
 volumes:
   db-volume:
@@ -162,6 +161,12 @@ volumes:
     driver_opts:
       type: none
       device: ${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
+      o: bind
+  fe-volume:
+    name: fe-volume
+    driver_opts:
+      type: none
+      device: ${VOLUME_ROOT_PATH}${FE_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
       o: bind
   media-volume:
     name: media-volume
