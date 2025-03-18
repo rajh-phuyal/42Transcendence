@@ -53,9 +53,13 @@ class TextField extends HTMLElement {
 
     startSendingMessage(){
         const inputElement = this.shadow.getElementById("text-field");
-        const value = inputElement.value.trim();
+        let value = inputElement.value.trim();
         if (value === '')
             return;
+        /* To not be exposed to html injection we have to escape the html syntax */
+        value = value.replace(/[&<>"'`=\/]/g, function(s) {
+            return `&#${s.charCodeAt(0)};`;
+        });
         // Reset text box & hide the help message when the user sends a message
         inputElement.value = '';
         this.setEnabled(false);
