@@ -1,0 +1,138 @@
+import { $id , $class} from "../../abstracts/dollars.js";
+import { tournamentData } from "./objects.js";
+import router from "../../navigation/router.js";
+
+
+function createRankEntry(rankObject) {
+    const template = $id("tournament-rank-row-template").content.cloneNode(true);
+    const container = template.querySelector(".tournament-rank-row");
+
+    container.querySelector(".tournament-rank-row-position").textContent = rankObject.rank;
+    container.querySelector(".tournament-rank-row-avatar").src = window.origin + "/media/avatars/" + rankObject.avatarUrl;
+    container.querySelector(".tournament-rank-row-username").textContent = rankObject.username;
+    container.querySelector(".tournament-rank-row-wins").textContent = rankObject.wonGames;
+    container.querySelector(".tournament-rank-row-diff").textContent = rankObject.winPoints;
+    container.querySelector(".tournament-rank-row-games").textContent = rankObject.playedGames;
+
+    return container;
+}
+
+export function updateRankTable(rankObject) {
+    console.log("rank object:", rankObject);
+
+    const rankTableBody = $id("tournament-rank-table-body");
+
+    rankTableBody.innerHTML = "";
+
+    for (let element of rankObject)
+        rankTableBody.appendChild(createRankEntry(element));
+
+    // Sort the Table by rank position
+
+    const rows = Array.from(rankTableBody.querySelectorAll(".tournament-rank-row"));
+    rows.sort((rowA, rowB) => {
+        const rankA = parseInt(rowA.querySelector(".tournament-rank-row-position").textContent, 10);
+        const rankB = parseInt(rowB.querySelector(".tournament-rank-row-position").textContent, 10);
+        return rankA - rankB;
+    });
+
+    rankTableBody.innerHTML = "";
+    rows.forEach(row => rankTableBody.appendChild(row));
+}
+
+
+function createRankCard(rankCardObject) {
+    const template = $id("tournament-rank-row-template").content.cloneNode(true);
+
+
+    const container = template.querySelector(".tournament-rank-row");
+    template.querySelector(".tournament-rank-row-position").textContent = rankCardObject.rank;
+    template.querySelector(".tournament-rank-row-avatar").src = rankCardObject.avatarUrl;
+    template.querySelector(".tournament-rank-row-username").textContent = rankCardObject.username;
+    template.querySelector(".tournament-rank-row-wins").textContent = rankCardObject.wonGames;
+    template.querySelector(".tournament-rank-row-diff").textContent = rankCardObject.winPoints;
+    template.querySelector(".tournament-rank-row-games").textContent = rankCardObject.playedGames;
+
+    $id("tournament-rank-table").appendChild(container);
+}
+
+export function updateTournamentRank(rankObject) {
+
+    $id("tournament-rank-list-cards-list").innerHTML = "";
+
+    for (let element of rankObject)
+        createRankCard(element);
+}
+
+export function updatePodium(playerObject, position, flex = true) {
+
+    const podiumContainer = $id(`tournament-podium-${position}`);
+
+    podiumContainer.querySelector(".tournament-podium-avatar").src = window.origin + "/media/avatars/" + playerObject.avatarUrl;
+    podiumContainer.querySelector(".tournament-podium-username").textContent = playerObject.username;
+
+    if (flex) {
+        podiumContainer.querySelector(".tournament-podium-avatar").style.display = "flex";
+        podiumContainer.querySelector(".tournament-podium-username").style.display = "flex";
+        podiumContainer.querySelector(".tournament-podium-question-mark").style.display = "none";
+    }
+}
+
+function showThirdPlaceFinalsDiagram() {
+    // Flex the podium for third place in case it already exists. this is here for games without semi-finals
+    if ($id("tournament-podium-third").querySelector(".tournament-podium-username").textContent !== "") {
+        $id("tournament-podium-third").querySelector(".tournament-podium-avatar").style.display = "flex";
+        $id("tournament-podium-third").querySelector(".tournament-podium-username").style.display = "flex";
+        $id("tournament-podium-third").querySelector(".tournament-podium-question-mark").style.display = "none";
+    }
+}
+
+export function updateFinalsDiagram(gameObject) {
+    if (gameObject.type === "normal")
+        return ;
+    console.log("finals diagram:", gameObject);
+
+    let diagramContainer = $id(`tournament-${gameObject.type}-${gameObject.id}`);
+
+    if (!diagramContainer) {
+        const template = $id("tournament-finals-template").content.cloneNode(true);
+        diagramContainer = template.querySelector(".tournament-finals-diagram-container");
+        diagramContainer.setAttribute("id", `tournament-${gameObject.type}-${gameObject.id}`);
+        $id("tournment-finals-diagram").prepend(diagramContainer);
+    }
+
+    diagramContainer.querySelector(".finals-title").textContent = gameObject.type;
+    diagramContainer.querySelector(".finals-player-left-username").textContent = gameObject.playerLeft.username;
+    diagramContainer.querySelector(".finals-player-right-username").textContent = gameObject.playerRight.username;
+    diagramContainer.querySelector(".finals-player-left-avatar").src = window.origin + "/media/avatars/" + gameObject.playerLeft.avatarUrl;
+    diagramContainer.querySelector(".finals-player-right-avatar").src = window.origin + "/media/avatars/" + gameObject.playerRight.avatarUrl;
+
+    if (gameObject.state !== "pending") {
+        diagramContainer.querySelector(".finals-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
+    }
+
+    if (!(gameObject.state === "finished" || gameObject.state === "quited"))
+        return;
+    if (gameObject.playerLeft.result === "won") {
+        diagramContainer.querySelector(".finals-player-right-avatar").style.filter = "brightness(50%)";
+        if (gameObject.type === "final") {
+            updatePodium(gameObject.playerLeft, "first");
+            updatePodium(gameObject.playerRight, "second");
+            showThirdPlaceFinalsDiagram();
+        }
+        if (gameObject.type === "thirdplace") {
+            updatePodium(gameObject.playerLeft, "third");
+        }
+    }
+    else {
+        diagramContainer.querySelector(".finals-player-left-avatar").style.filter = "brightness(50%)";
+        if (gameObject.type === "final") {
+            updatePodium(gameObject.playerLeft, "second");
+            updatePodium(gameObject.playerRight, "first");
+            showThirdPlaceFinalsDiagram();
+        }
+        if (gameObject.type === "thirdplace") {
+            updatePodium(gameObject.playerRight, "third");
+        }
+    }
+}

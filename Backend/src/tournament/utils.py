@@ -216,7 +216,7 @@ def join_tournament(user, tournament_id):
             tournament_member.save()
 
     # Send the member update to tournament channel group
-    send_ws_tournament_member_msg(tournament_member)
+    send_ws_all_tournament_members_msg(tournament)
     # Send a PM between admin and new member
     message = f"**TJ,{tournament_member.user.id},{tournament_member.tournament.as_clickable()}**"
     create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)
@@ -238,7 +238,7 @@ def leave_tournament(user, tournament_id):
     if tournament_member.is_admin:
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
     # First inform the users via the group channel ...
-    send_ws_tournament_member_msg(tournament_member, leave=True)
+    send_ws_all_tournament_members_msg(tournament)
     # ... also send a PM to the admin ...
     message = f"**TL,{user.id},{tournament.as_clickable()}**"
     create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)

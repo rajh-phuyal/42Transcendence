@@ -1,10 +1,17 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods-old.js';
+import { updateView } from '../views/tournament/methodsView.js';
+import { updateMembers } from '../views/tournament/methodsMembers.js';
+import { updateRankTable, updateFinalsDiagram, updatePodium } from '../views/tournament/methodsRank.js';
+import { updateGameCard } from '../views/tournament/methodsGames.js';
+import { createGameList } from '../views/tournament/methodsGames.js';
+
+
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { tournamentData } from '../views/tournament/objects.js';
 const { hostname } = window.location;
 
 class WebSocketManager {
@@ -114,20 +121,22 @@ class WebSocketManager {
             // TOURNAMENT RELATED MESSAGES
             case "tournamentInfo":
                 if (this.currentRoute == "tournament"){
-                    buildView(message.state);
+                    updateView(message.state);
                 }
                 return ;
             case "tournamentMember":
-                updateParticipantsCard(message.tournamentMember);
+                // TODO: maybe this is not used anymore!
                 return ;
             case "tournamentMembers":
-                    updateRankTable(message.tournamentMembers);
+                tournamentData.all.tournamentMembers = message.tournamentMembers;
+                updateView();
+            /*         updateRankTable(message.tournamentMembers);
                 console.log("tournanemtMembers:", message.tournamentMembers);
                 console.log("Length!!!!", message.tournamentMembers.length);
                 if (message.tournamentMembers.length == 3) {
                     console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
                     updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
-                }
+                } */
                 return ;
             case "tournamentGame":
                 updateGameCard(message.TournamentGame);

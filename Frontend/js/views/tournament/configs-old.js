@@ -38,16 +38,10 @@ export default {
                 return
             if (this.data.clientRole === "admin") {
                 console.log("canceling tournament");
-                call(`tournament/delete/${this.routeParams.id}/`, 'DELETE').then(data => {
-                    console.log(data);
-                    $callToast("success", data.message);
-                })
+                delete Tournament
             }
             else {
-                call(`tournament/leave/${this.routeParams.id}/`, 'DELETE').then(data => {
-                    console.log(data);
-                    $callToast("success", data.message);
-                })
+                leave tournament
             }
         },
 
@@ -56,26 +50,14 @@ export default {
                 return;
             if (this.data.clientRole === "admin") {
                 console.log("starting tournament");
-                call(`tournament/start/${this.routeParams.id}/`, 'PUT').then(data => {
-                    console.log(data);
-                    $callToast("success", data.message);
-                })
+                start toruunament
             }
             else {
-                call(`tournament/join/${this.routeParams.id}/`, 'PUT').then(data => {
-                    console.log(data);
-                    $callToast("success", data.message);
-                })
+                join tournament
             }
         },
 
-        routeToCurrentGame() {
-            console.log("routing to current games");
-            call('tournament/go-to-game/', 'GET').then(data => {
-                console.log(data);
-                router(`/game`, { id: data.id });
-            })
-        },
+
 
         leaveLobbyButtonAction() {
             router("/home");
@@ -107,16 +89,7 @@ export default {
         },
 
         beforeRouteLeave() {
-            WebSocketManager.setCurrentRoute(undefined);
-            this.domManip.$off(this.domManip.$id("tournament-leave-to-lobby"), "click", this.leaveLobbyButtonAction);
-            this.domManip.$off(this.domManip.$id("button-subscribe-start"), "click", this.subscribeStartTournamentButtonAction);
-            this.domManip.$off(this.domManip.$id("button-unsubscribe-cancel"), "click", this.quitCancelTournamentButtonAction);
-            this.domManip.$off(this.domManip.$id("tournament-games-do-come-button"), "click", this.openCurrentGames);
-            this.domManip.$off(this.domManip.$id("tournament-rank-button"), "click", this.openTournamentRank);
-            this.domManip.$off(this.domManip.$id("tournament-history-button"), "click", this.openTournamentHistory);
-            this.domManip.$off(this.domManip.$id("tournament-go-to-current-game-button"), "click", this.routeToCurrentGame);
-            this.domManip.$off(this.domManip.$id("tournament-round-robbin-button"), "click", this.openRoundRobbinTable);
-            this.domManip.$off(this.domManip.$id("tournament-finals-button"), "click", this.openFinalsTable);
+
         },
 
         beforeDomInsertion() {

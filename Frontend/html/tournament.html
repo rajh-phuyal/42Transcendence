@@ -9,25 +9,31 @@
                     <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
                 </div>
                 <div class="grid-cell default-grid-area tstate">
-                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_state_finished.png" alt="Privacy Icon">
                 </div>
                 <div class="grid-cell default-grid-area ttype">
                     <img id="tournament-type-img" src="../assets/icons_128x128/icon_tournament_local.png" alt="Privacy Icon">
                 </div>
-                <button id="button-tab-rank"                    class="grid-cell default-grid-area modal-button btn-sidebar btnran tournament-tabs" tab="rank">Rank</button>
-                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button btn-sidebar btnhis tournament-tabs" tab="games-finished">Finished Games</button>
-                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button btn-sidebar btngam tournament-tabs" tab="games-upcoming">Upcoming Games</button>
+                <button id="button-tab-members"                 class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btnmem tournament-tabs" tab="members">Members</button>
+                <button id="button-tab-finals"                  class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btnfin tournament-tabs" tab="finals">Finals</button>
+                <button id="button-tab-round-robin"             class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btnrro tournament-tabs" tab="round-robin">Round Robin</button>
+                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btngup tournament-tabs" tab="games-upcoming">Upcoming Games</button>
+                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btngfi tournament-tabs" tab="games-finished">Finished Games</button>
                 <!-- LEFT SIDE BOTTOM -->
                 <button id="button-leave-lobby"         class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
-                <button id="button-unsubscribe-cancel"  class="grid-cell default-grid-area modal-button btn-sidebar btnuc tournament-setup">Unsubscribe / Cancel</button>
+
                 <!-- MIDDLE -->
-                <h3                                 class="grid-cell default-grid-area tname">Tournament Name: long long long name of tournament .....</h3>
-                <div id="container-participants"    class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
-                <div id="container-rank"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <h3  id="tournament-name"                   class="grid-cell default-grid-area tname">12345678901234567890123</h3>
+                <div id="container-members"                 class="grid-cell default-grid-area cont">
+                    <div id="container-members-list"        class="barely-a-scroll-class"></div>
+                    <button id="button-subscribe"           class="modal-button">Unsubscribe / Cancel</button>
+                </div>
+                <div id="container-finals"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <div id="container-round-robin"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <div id="container-games-finished"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <!-- RIGHT SIDE -->
-                <button id="button-subscribe-start"     class="grid-cell default-grid-area modal-button btn-sidebar btnss tournament-setup">Subscribe / Start</button>
+                <button id="button-subscribe-start"     class="grid-cell default-grid-area modal-button btn-sidebar btnss tournament-setup">Start Tournament</button>
             </div>
         </div>
     </div>
@@ -37,23 +43,23 @@
         grid-template-columns: repeat(auto-fill, 5%);
         grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
-            ".      .      .      tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .     "
-            "btnran btnran btnran tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .     "
-            "btnran btnran btnran cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btngam btngam btngam cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btngam btngam btngam cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            "btnmem btnmem btnmem tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            "btnmem btnmem btnmem cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tstate .      .     "
+            "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tstate .      .     "
+            "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tpriv  .      .     "
+            "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tpriv  .      .     "
+            "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
+            "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
+            "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnuc  btnuc  btnuc  cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnuc  btnuc  btnuc  cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnss  btnss  btnss "
             "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnss  btnss  btnss "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
@@ -93,47 +99,31 @@
         height: 90%;
         width:90%;
     }
-    .btnran {
-        grid-area: btnran;
+    .btnmem {
+        grid-area: btnmem;
     }
-    .btnhis {
-        grid-area: btnhis;
+    .btnfin {
+        grid-area: btnfin;
     }
-    .btngam {
-        grid-area: btngam;
+    .btnrro {
+        grid-area: btnrro;
     }
+    .btngup {
+        grid-area: btngup;
+    }
+    .btngfi {
+        grid-area: btngfi;
+    }
+
     .btnl {
         grid-area: btnl;
-    }
-    .btnuc {
-        grid-area: btnuc;
     }
     .btnss {
         grid-area: btnss;
     }
-</style>
 
-<!-- TEMPLATE PLAYER CARD-->
-<template id="tournament-players-list-template">
-    <div class="tournament-players-list-player-card">
-        <img class="tournament-players-list-player-card-avatar" alt="image not found">
-        <h6 class="tournament-players-list-player-card-username"></h6>
-    </div>
-</template>
-<style>
-
-     #container-participants {
-        display: flex;
-		/* background-color: red; */
-        flex-direction: column;
-		height: 70% !important;
-		max-height: 800px;
-		max-width: 1000px;
-		width: 30vw;
-		gap: 1rem;
-		align-items: center;
-    }
-    .tournament-players-list-player-card {
+    /* DEFAULT STYLE FOR ALL CARDS: Members, Games, Ranks */
+    .default-card-container {
         display: flex;
         flex-direction: row;
 		align-items: center;
@@ -143,11 +133,27 @@
 		max-height: 100px;
 		max-width: 1000px;
 		width: 29vw;
-        background-color: rgb(217, 217, 217);
+        background-color: rgba(217, 217, 217, 0.753);
 		border: 1px solid black;
+        border-radius: 2px;
+        cursor: pointer;
+        margin: 5px;
     }
+</style>
 
-    .tournament-players-list-player-card-avatar {
+<!-- TEMPLATE PARTICIPANTS CARD-->
+<template id="tournament-member-card-template">
+    <div class="default-card-container tournament-member-card-container" userid="">
+        <img class="tournament-member-card-avatar">
+        <h4 class="tournament-member-card-username"></h4>
+    </div>
+</template>
+<style>
+    #container-members {
+        display: flex;
+        align-items: center;
+    }
+    .tournament-member-card-avatar {
         height: 90%;
     }
 </style>
