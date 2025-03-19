@@ -1,13 +1,16 @@
 # Basics
-import logging, asyncio, json, math
+import logging, asyncio, json, math, random
 from datetime import datetime, timedelta, timezone
 # Django
 from django.utils.translation import gettext as _
 # Core
 from core.decorators import barely_handle_ws_exceptions
 # Game stuff
+from user.constants import USER_ID_AI
 from game.constants import GAME_FPS, GAME_COUNTDOWN_MAX
 from game.models import Game
+from game.AI import AIPlayer, calculate_ai_difficulty, difficulty_to_string
+from game.game_cache import set_player_input
 from game.utils import is_left_player, get_user_of_game
 from game.utils_ws import update_game_state
 from game.game_cache import get_game_data, set_game_data, init_game_on_cache, delete_game_from_cache
@@ -25,6 +28,7 @@ channel_layer = get_channel_layer()
 # Manages the temporary WebSocket connection for a single game
 class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
+    ai_players = {}
 
     @barely_handle_ws_exceptions
     async def connect(self):
@@ -88,6 +92,27 @@ class GameConsumer(CustomWebSocketLogic):
         await send_ws_game_data_msg(self.game_id)
         # If both users are ready start the loop
         if left_ready and right_ready:
+            try:
+                # here we can asume the left user is not the AI, when game with ai
+                if self.game_id not in self.ai_players and self.rightUser.id == USER_ID_AI:
+                    logging.info(f"AI player added to game: {self.game_id}")
+
+                    # we need to start the ai with some difficulty if mid game
+                    ai_score = get_game_data(self.game_id, 'playerRight', 'points') or 0
+                    player_score = get_game_data(self.game_id, 'playerLeft', 'points') or 0
+
+                    # calculate the difficulty
+                    difficulty = calculate_ai_difficulty(ai_score, player_score)
+                    logging.info(f"Starting AI difficulty: {difficulty_to_string(difficulty)}")
+                    self.ai_players[self.game_id] = {
+                        "stateSnapshotAt": datetime.now(timezone.utc),
+                        "player": AIPlayer(difficulty=difficulty, game_id=self.game_id),
+                        "side": "playerRight"  # AI is always right player
+                    }
+
+            except Exception as e:
+                logging.error(f"Error initializing AI player: {e}")
+
             asyncio.create_task(self.start_the_game()) # To not block the connect function
 
     @barely_handle_ws_exceptions
@@ -125,6 +150,11 @@ class GameConsumer(CustomWebSocketLogic):
             # Send the updated game state to FE
             await send_ws_game_data_msg(self.game_id)
             set_game_data(self.game_id, 'gameData', 'sound', 'none')
+
+        # Clean up AI player if it exists
+        if self.game_id in self.ai_players:
+            self.ai_players[self.game_id]['player'].cleanup()
+            del self.ai_players[self.game_id]
 
     @barely_handle_ws_exceptions
     async def receive(self, text_data):
@@ -174,6 +204,51 @@ class GameConsumer(CustomWebSocketLogic):
         GameConsumer.game_loops[self.game_id] = asyncio.create_task(GameConsumer.run_game_loop(self.game_id))
 
     @staticmethod
+    async def ai_action(game_id):
+        if game_id not in GameConsumer.ai_players:
+            return None
+
+        game_ai = GameConsumer.ai_players[game_id]
+        ai = game_ai['player']
+        ai_side = game_ai['side']  # Get the side the AI is playing on
+        last_state_snapshot_at = game_ai['stateSnapshotAt']
+
+        try:
+            # Update AI with fresh game state once per second
+            if (datetime.now(timezone.utc) - last_state_snapshot_at).total_seconds() > 1:
+                game_ai['stateSnapshotAt'] = datetime.now(timezone.utc)
+
+                # Get complete game state for the AI to make better decisions
+                game_state = {
+                    'gameData': get_game_data(game_id, 'gameData'),
+                    'ball': get_game_data(game_id, 'ball'),
+                    'playerLeft': get_game_data(game_id, 'playerLeft'),
+                    'playerRight': get_game_data(game_id, 'playerRight')
+                }
+
+                ai.update(game_state)
+
+            # Get the next action from AI - with proper await
+            action = await ai.action()
+
+            # Apply the action to the game
+            if action and isinstance(action, dict):
+                set_player_input(game_id, ai_side, action)
+                return
+
+            raise Exception("Invalid AI action")
+
+        except Exception as e:
+            logging.error(f"Error managing AI for game {game_id}: {e}")
+            # In case of error, use a default "do nothing" action
+            default_action = {
+                'movePaddle': "0",
+                'activatePowerupBig': False,
+                'activatePowerupSpeed': False
+            }
+            set_player_input(game_id, ai_side, default_action)
+
+    @staticmethod
     async def run_game_loop(game_id):
         # Start the game loop
         logging.info(f"Game loop starts now: {game_id}")
@@ -181,6 +256,10 @@ class GameConsumer(CustomWebSocketLogic):
         await update_game_state(game_id, Game.GameState.ONGOING)
         while get_game_data(game_id, 'gameData', 'state') == 'ongoing':
             try:
+                # Process AI input if this game has an AI player
+                if game_id in GameConsumer.ai_players:
+                    await GameConsumer.ai_action(game_id)
+
                 # Reset sound
                 set_game_data(game_id, 'gameData', 'sound', 'none')
                 # Activate PowerUps (if requested and allowed)
