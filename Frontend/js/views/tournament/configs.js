@@ -14,6 +14,10 @@ export default {
     },
 
     methods: {
+        hideButtons() {
+            /* Here i wanna show / hide all buttons */
+        },
+
         callbackRankButton(event) {
             console.warn(event);
             this.changeTabs(event.srcElement.getAttribute("tab"));

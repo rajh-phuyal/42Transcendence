@@ -5,7 +5,15 @@
             <div class="view-overlay-grid">
                 <!-- LEFT SIDE -->
                 <!-- LEFT SIDE TOP -->
-                <h3 class="grid-cell default-grid-area tname">Tournament Name: long long long name of tournament .....</h3>
+                <div class="grid-cell default-grid-area tpriv">
+                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                </div>
+                <div class="grid-cell default-grid-area tstate">
+                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                </div>
+                <div class="grid-cell default-grid-area ttype">
+                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                </div>
                 <button id="button-tab-rank"                    class="grid-cell default-grid-area modal-button btn-sidebar btnran tournament-tabs" tab="rank">Rank</button>
                 <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button btn-sidebar btnhis tournament-tabs" tab="games-finished">Finished Games</button>
                 <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button btn-sidebar btngam tournament-tabs" tab="games-upcoming">Upcoming Games</button>
@@ -13,6 +21,7 @@
                 <button id="button-leave-lobby"         class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
                 <button id="button-unsubscribe-cancel"  class="grid-cell default-grid-area modal-button btn-sidebar btnuc tournament-setup">Unsubscribe / Cancel</button>
                 <!-- MIDDLE -->
+                <h3                                 class="grid-cell default-grid-area tname">Tournament Name: long long long name of tournament .....</h3>
                 <div id="container-participants"    class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <div id="container-rank"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
@@ -28,8 +37,8 @@
         grid-template-columns: repeat(auto-fill, 5%);
         grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
-            ".      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
-            "btnran btnran btnran tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            ".      .      .      tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            "btnran btnran btnran tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
             "btnran btnran btnran cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
@@ -50,6 +59,15 @@
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
     }
 
+    .tpriv {
+        grid-area: tpriv;
+        background-color: black;
+    }
+    #tournament-privacy-img {
+        align-self: center;
+        height: 50% !important;
+        width: auto !important;
+    }
     .tname {
         grid-area: tname;
         background-color: black;
