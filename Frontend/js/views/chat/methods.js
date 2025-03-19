@@ -246,7 +246,7 @@ export function createMessage(element, prepend = true) {
     }
 
     // Set the content of the message
-    template.querySelector(".chat-view-message-box").innerText = parsedContent;
+    template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
     template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
@@ -499,10 +499,6 @@ export function createHelpMessage(input){
             htmlContent += translate("chat", "helpMessage/mention-tournament-game");
     }
 
-
-
-
-
     updateHelpMessage(htmlContent);
 }
 
@@ -529,4 +525,3 @@ export function updateHelpMessage(htmlContent="") {
             helpContainer.remove();
     }
 }
-
