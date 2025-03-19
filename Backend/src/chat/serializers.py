@@ -9,8 +9,6 @@ from user.models import User
 # Chat
 from chat.models import Conversation, Message, ConversationMember
 from chat.utils import get_other_user
-# Tournament
-from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 
 def generate_template_msg(message):
     """
@@ -98,7 +96,7 @@ def generate_template_msg(message):
             "count": 1
         },
         "TGW": {
-            "message": _("The tournament {0}: game {1}: @{2} vs @{3} is scheduled. you have {DEADLINE_FOR_TOURNAMENT_GAME_START} minutes, from the time of this message, to start the game!"),
+            "message": _("Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the game! Remember the overloards are not very patient!"),
             "count": 4
         }
     }

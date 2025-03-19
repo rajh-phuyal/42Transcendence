@@ -233,11 +233,12 @@ def update_deadline_of_game(game_id):
             game.save()
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Send warning chat message to conversation of the two players
-        player1_id = game.members.first().id
-        player2_id = game.members.last().id
+        player1_id = game.members.first().user.id
+        player2_id = game.members.last().user.id
+        logging.info(f"Send warning chat message to conversation of the two players {player1_id} and {player2_id}")
         tgw = "**TGW,{tournament_id},{game_id},{player1_id},{player2_id}**".format(
-            tournament_id=game.tournament_id,
-            game_id=game.id,
+            tournament_id=game.tournament.as_clickable(),
+            game_id=game.as_clickable(),
             player1_id=player1_id,
             player2_id=player2_id
         )
