@@ -9,10 +9,10 @@
                     <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
                 </div>
                 <div class="grid-cell default-grid-area tstate">
-                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
                 </div>
                 <div class="grid-cell default-grid-area ttype">
-                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                    <img id="tournament-type-img" src="../assets/icons_128x128/icon_tournament_local.png" alt="Privacy Icon">
                 </div>
                 <button id="button-tab-rank"                    class="grid-cell default-grid-area modal-button btn-sidebar btnran tournament-tabs" tab="rank">Rank</button>
                 <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button btn-sidebar btnhis tournament-tabs" tab="games-finished">Finished Games</button>
@@ -37,8 +37,8 @@
         grid-template-columns: repeat(auto-fill, 5%);
         grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
-            ".      .      .      tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
-            "btnran btnran btnran tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            ".      .      .      tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .     "
+            "btnran btnran btnran tpriv  tstate ttype  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .     "
             "btnran btnran btnran cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btnhis btnhis btnhis cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
@@ -63,9 +63,19 @@
         grid-area: tpriv;
         background-color: black;
     }
-    #tournament-privacy-img {
+    .ttype {
+        grid-area: ttype;
+        background-color: black;
+    }
+    .tstate {
+        grid-area: tstate;
+        background-color: black;
+    }
+    #tournament-privacy-img,
+    #tournament-state-img,
+    #tournament-type-img {
         align-self: center;
-        height: 50% !important;
+        height: 70% !important;
         width: auto !important;
     }
     .tname {
