@@ -1,18 +1,41 @@
-import { $id } from '../abstracts/dollars.js';
+import { $id, $class } from '../abstracts/dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
 
-export default function $callToast(type, message) {
-    const toast = $id(`${type}-toast`);
-    const toastMsg = $id(`${type}-toast-message`);
-    audioPlayer.playSound("toast");
-    if (message) {
-        toastMsg.textContent = message;
-        new bootstrap.Toast(toast, { autohide: true, delay: 10000 }).show();
-        return ;
+function createConversationToast(conversationId) {
+    const template = $id("message-toast-template").content.cloneNode(true);
+    const container = template.querySelector(".message-toast");
+    const toastId = `$message-toast-${conversationId}`;
+
+    container.setAttribute("id", toastId);
+
+    $class("toast-container").appendChild(container);
+    return container;
+}
+
+
+export default function $callToast(type, message, conversationId = null) {
+    console.warn("call toast entered")
+    let toast = $id(`${type}-toast`);
+    let toastMsg = $id(`${type}-toast-message`);
+
+    if (conversationId != null) {
+        if (!$id(`${type}-toast-${conversationId}`))
+            toast = createConversationToast(conversationId);
+        else
+            toast = `$message-toast-${conversationId}`;
+        toastMsg = toast.querySelector(".message-toast-message");
     }
-    // TODO: what is this for? still needed?
-    if (type == "success")
-        message = 'Sucess!!';
-    if (type == "error")
-        message = 'Error!!';
+
+    audioPlayer.playSound("toast");
+    if (!message)
+        return ;
+    toastMsg.textContent = message;
+    const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: 10000 }).show();
+
+    // remove the conversation toast after it closes
+    if (conversationId != null) {
+        toast.addEventListener('hidden.bs.toast', function () {
+            toast.remove();
+        });
+    }
 }

@@ -10,7 +10,7 @@ const { hostname } = window.location;
 class WebSocketManager {
     constructor() {
         this.socket = null;
-        this.currentRoute = undefined;
+            this.currentRoute = undefined;
     }
 
     // Connect to WebSocket with the provided token
@@ -95,8 +95,10 @@ class WebSocketManager {
                 audioPlayer.playSound("chat");
                 if (this.currentRoute == "chat")
                     processIncomingWsChatMessage(message);
-                else
-                    $callToast("error", "Need to implement the notification for chat as toast! issue #217");
+                else {
+                    console.log("message:", message);
+                    $callToast("message", message.content, message.conversationId);
+                }
                 return ;
             case "updateBadge":
                 if (message.what == "all")
