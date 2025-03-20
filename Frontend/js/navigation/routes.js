@@ -4,14 +4,12 @@ const routes = [
         view: "home",
         requireAuth: true,
         modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"],
-        backgroundColor: "black",
     },
     {
         path: "/home",
         view: "home",
         requireAuth: true,
         modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"],
-        backgroundColor: "black",
     },
     {
         path: "/game",
@@ -37,13 +35,11 @@ const routes = [
         view: "chat",
         requireAuth: true,
         modals: ["createGame"],
-        backgroundColor: "#fcf4e0",
     },
     {
         path: "/auth",
         view: "auth",
         requireAuth: false,
-        backgroundColor: "#fff7e6",
     },
     {
         path: "/404",
@@ -55,7 +51,6 @@ const routes = [
 		path: "/barely-responsive",
 		view: "barely-responsive",
 		requireAuth: false,
-        backgroundColor: "#fff7e6",
 	}
 ];
 

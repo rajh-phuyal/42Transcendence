@@ -142,9 +142,12 @@ async function router(path, params = null) {
     viewContainer.innerHTML = htmlContent;
 
     // Change background color
+    let backgroundColor = "#fcf4e0";    // Default color
+    if(route.backgroundColor)
+        backgroundColor = route.backgroundColor;
     const backgroundElements = $queryAll(".view-background-color");
     for (let element of backgroundElements)
-        element.style.backgroundColor = route.backgroundColor;
+        element.style.backgroundColor = backgroundColor;
 
     // Dom manipulation: after DOM insertion
     await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
