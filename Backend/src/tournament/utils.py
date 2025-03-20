@@ -8,7 +8,7 @@ from django.db import transaction
 # Core
 from core.exceptions import BarelyAnException
 # Services
-from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg
+from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg, send_ws_tournament_client_role_msg
 from services.channel_groups import delete_tournament_group
 # User
 from user.constants import USER_ID_AI, USER_ID_FLATMATE
@@ -214,9 +214,10 @@ def join_tournament(user, tournament_id):
             tournament_member = TournamentMember.objects.select_for_update().get(user_id=user.id, tournament_id=tournament_id)
             tournament_member.accepted = True
             tournament_member.save()
-
+    # The role of the client changed -> send him a ws message
+    send_ws_tournament_client_role_msg(tournament, user, "member")
     # Send the member update to tournament channel group
-    send_ws_all_tournament_members_msg(tournament)
+    send_ws_tournament_member_msg(tournament_member)
     # Send a PM between admin and new member
     message = f"**TJ,{tournament_member.user.id},{tournament_member.tournament.as_clickable()}**"
     create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)
@@ -237,8 +238,10 @@ def leave_tournament(user, tournament_id):
     # Admin can't leave (needs to delete the tournament instead)
     if tournament_member.is_admin:
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
+    # The role of the client changed -> send him a ws message
+    send_ws_tournament_client_role_msg(tournament, user, "fan")
     # First inform the users via the group channel ...
-    send_ws_all_tournament_members_msg(tournament)
+    send_ws_tournament_member_msg(tournament_member, leave=True)
     # ... also send a PM to the admin ...
     message = f"**TL,{user.id},{tournament.as_clickable()}**"
     create_and_send_overloards_pm(tournament_member.user, tournament_member.tournament.members.get(is_admin=True).user, message)

@@ -21,9 +21,9 @@ AI_FIRST_NAME="The"
 AI_LAST_NAME="AI Opponent"
 AI_AVATAR="670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"
 FLATMATE_ID=3
-FLATMATE_USERNAME="flatmate"
-FLATMATE_FIRST_NAME="The"
-FLATMATE_LAST_NAME="Flatmate"
+FLATMATE_USERNAME="theThing"
+FLATMATE_FIRST_NAME="The Thing"
+FLATMATE_LAST_NAME="under your bed"
 FLATMATE_AVATAR="4ca810c2-9b38-4bc8-ab87-d478cb1739f0.png"
 # CHANGE THE VALUES ABOVE FOR ANY ADJUSTMENTS!
 ################################################################################

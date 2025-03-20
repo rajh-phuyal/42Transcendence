@@ -83,7 +83,8 @@ class SearchBar extends HTMLElement {
                 <div id="user-item-${user.id}" class="user-item">
                     <img src="${window.origin}/media/avatars/${user.avatar_path}"
                          alt="${user.username}"
-                         class="user-image">
+                         class="user-image"
+                         draggable="false">
                     <span class="user-name">${user.username}</span>
                 </div>
             `).join('');

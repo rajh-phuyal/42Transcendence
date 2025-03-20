@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content image-modal-content">
             <div class="modal-body image-modal-body" id="modal-game-history-body">
-                <img src='../../assets/backgrounds/modal-background-blank-paper.png' class="image-modal-background-image" alt="Background Image">
+                <img src='../../assets/backgrounds/modal-background-blank-paper.png' class="image-modal-background-image" alt="Background Image" draggable="false">
                 <div id="modal-game-history-grid" class="view-overlay-grid">
                     <h5 class="modal-title grid-cell default-grid-area title" id="modal-game-history-title">GAME HISTORY</h5> <!-- TODO: translation -->
                     <button type="button" class="grid-cell default-grid-area btn-close btn-close-white modal-btn-close btnclo" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -14,11 +14,11 @@
                 </div>
                 <template id="modal-game-history-card-template">
                     <div class="modal-game-history-card">
-                        <img    class="grid-cell default-grid-area modal-game-history-card-playerLeft-avatar avt1"></img>
+                        <img    class="grid-cell default-grid-area modal-game-history-card-playerLeft-avatar avt1" draggable="false">
                         <h6     class="grid-cell default-grid-area modal-game-history-card-playerLeft-username usrn1"></h6>
                         <h4     class="grid-cell default-grid-area modal-game-history-card-score score"></h4>
                         <h6     class="grid-cell default-grid-area modal-game-history-card-playerRight-username usrn2"></h6>
-                        <img    class="grid-cell default-grid-area modal-game-history-card-playerRight-avatar avt2"></img>
+                        <img    class="grid-cell default-grid-area modal-game-history-card-playerRight-avatar avt2" draggable="false">
                         <h6     class="grid-cell default-grid-area modal-game-history-card-date dt"></h6>
                     </div>
                 </template>

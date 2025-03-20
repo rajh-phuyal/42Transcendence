@@ -30,7 +30,7 @@ class AvatarButton extends HTMLElement
             else
                 this.is_redir = false;
         }
-        
+
         this.render();
     }
 
@@ -57,7 +57,7 @@ class AvatarButton extends HTMLElement
                     height: 50px;
                 }
             </style>
-            <img class="image-div" src="${this.image}">
+            <img class="image-div" src="${this.image}" draggable="false">
             </img>
         `;
     }

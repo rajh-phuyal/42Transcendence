@@ -1,23 +1,47 @@
 import { $id , $class} from "../../abstracts/dollars.js";
-import { tournamentData } from "./objects.js";
+import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
 
-
-function createRankEntry(rankObject) {
-    const template = $id("tournament-rank-row-template").content.cloneNode(true);
-    const container = template.querySelector(".tournament-rank-row");
-
-    container.querySelector(".tournament-rank-row-position").textContent = rankObject.rank;
-    container.querySelector(".tournament-rank-row-avatar").src = window.origin + "/media/avatars/" + rankObject.avatarUrl;
-    container.querySelector(".tournament-rank-row-username").textContent = rankObject.username;
-    container.querySelector(".tournament-rank-row-wins").textContent = rankObject.wonGames;
-    container.querySelector(".tournament-rank-row-diff").textContent = rankObject.winPoints;
-    container.querySelector(".tournament-rank-row-games").textContent = rankObject.playedGames;
-
-    return container;
+export function updateRoundRobin() {
+    // Translate the table headers TODO:
+    $id("tournament-rank-table-header-rank").textContent    = "TRANSLATE";
+    $id("tournament-rank-table-header-player").textContent  = "TRANSLATE";
+    $id("tournament-rank-table-header-wins").textContent    = "TRANSLATE";
+    $id("tournament-rank-table-header-diff").textContent    = "TRANSLATE";
+    $id("tournament-rank-table-header-games").textContent   = "TRANSLATE";
+    // Delete all previous rows
+    $id("tournament-rank-table-body").innerHTML = "";
+    // Sort the members by rank
+    const sortedMembers = data.tournamentMembers.sort((a, b) => a.rank - b.rank);
+    // Create all rank table rows
+    for (let member of sortedMembers)
+        createRankEntry(member);
 }
 
-export function updateRankTable(rankObject) {
+function createRankEntry(member) {
+    const template = $id("tournament-rank-row-template").content.cloneNode(true);
+    const container = template.querySelector(".tournament-rank-row");
+    // Store the user id
+    container.setAttribute("userid", member.id)
+    // Add event listener to the row
+    container.addEventListener("click", rankRowCallback);
+    // Fill the row with data
+    container.querySelector(".tournament-rank-row-position").textContent = member.rank;
+    container.querySelector(".tournament-rank-row-avatar").src = window.origin + "/media/avatars/" + member.avatarUrl;
+    container.querySelector(".tournament-rank-row-username").textContent = member.username;
+    container.querySelector(".tournament-rank-row-wins").textContent = member.wonGames;
+    container.querySelector(".tournament-rank-row-diff").textContent = member.winPoints;
+    container.querySelector(".tournament-rank-row-games").textContent = member.playedGames;
+    // Append the row
+    $id("tournament-rank-table-body").appendChild(container);
+}
+
+function rankRowCallback(event) {
+    const userId = event.currentTarget.getAttribute("userid");
+    router(`/profile`, { id: userId });
+}
+/*
+ function updateRankTable(rankObject) {
     console.log("rank object:", rankObject);
 
     const rankTableBody = $id("tournament-rank-table-body");
@@ -38,9 +62,9 @@ export function updateRankTable(rankObject) {
 
     rankTableBody.innerHTML = "";
     rows.forEach(row => rankTableBody.appendChild(row));
-}
+} */
 
-
+/*
 function createRankCard(rankCardObject) {
     const template = $id("tournament-rank-row-template").content.cloneNode(true);
 
@@ -55,16 +79,16 @@ function createRankCard(rankCardObject) {
 
     $id("tournament-rank-table").appendChild(container);
 }
-
-export function updateTournamentRank(rankObject) {
+ */
+/*  function updateTournamentRank(rankObject) {
 
     $id("tournament-rank-list-cards-list").innerHTML = "";
 
     for (let element of rankObject)
         createRankCard(element);
-}
+} */
 
-export function updatePodium(playerObject, position, flex = true) {
+ function updatePodium(playerObject, position, flex = true) {
 
     const podiumContainer = $id(`tournament-podium-${position}`);
 
@@ -87,7 +111,7 @@ function showThirdPlaceFinalsDiagram() {
     }
 }
 
-export function updateFinalsDiagram(gameObject) {
+ function updateFinalsDiagram(gameObject) {
     if (gameObject.type === "normal")
         return ;
     console.log("finals diagram:", gameObject);

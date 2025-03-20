@@ -1,40 +1,55 @@
 <div class="view-base view-background-color">
     <div class="view-container">
         <div class="view-image-wrapper">
-            <img src="../assets/backgrounds/tournament.png" alt="Background Image" class="view-background-image">
+            <img src="../assets/backgrounds/tournament.png" alt="Background Image" class="view-background-image" draggable="false">
             <div class="view-overlay-grid">
                 <!-- LEFT SIDE -->
                 <!-- LEFT SIDE TOP -->
                 <div class="grid-cell default-grid-area tpriv">
-                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon">
+                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area tstate">
-                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_state_finished.png" alt="Privacy Icon">
+                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_state_finished.png" alt="Privacy Icon" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area ttype">
-                    <img id="tournament-type-img" src="../assets/icons_128x128/icon_tournament_local.png" alt="Privacy Icon">
+                    <img id="tournament-type-img" src="../assets/icons_128x128/icon_tournament_local.png" alt="Privacy Icon" draggable="false">
                 </div>
-                <button id="button-tab-members"                 class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btnmem tournament-tabs" tab="members">Members</button>
-                <button id="button-tab-finals"                  class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btnfin tournament-tabs" tab="finals">Finals</button>
-                <button id="button-tab-round-robin"             class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btnrro tournament-tabs" tab="round-robin">Round Robin</button>
-                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btngup tournament-tabs" tab="games-upcoming">Upcoming Games</button>
-                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btngfi tournament-tabs" tab="games-finished">Finished Games</button>
+                <button id="button-tab-members"                 class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnmem tournament-tabs" style="display: none;" tab="members">Members</button>
+                <button id="button-tab-finals"                  class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnfin tournament-tabs" style="display: none;" tab="finals">Finals</button>
+                <button id="button-tab-round-robin"             class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnrro tournament-tabs" style="display: none;" tab="round-robin">Round Robin</button>
+                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btngup tournament-tabs" style="display: none;" tab="games-upcoming">Upcoming Games</button>
+                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btngfi tournament-tabs" style="display: none;" tab="games-finished">Finished Games</button>
                 <!-- LEFT SIDE BOTTOM -->
-                <button id="button-delete"                      class="grid-cell default-grid-area modal-button btn-sidebar btnd" style="display: none;">Delete Tournament</button>
                 <button id="button-leave-lobby"                 class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
 
                 <!-- MIDDLE -->
                 <h3  id="tournament-name"                   class="grid-cell default-grid-area tname">12345678901234567890123</h3>
-                <div id="container-members"                 class="grid-cell default-grid-area cont">
+                <div id="container-members"                 class="grid-cell default-grid-area cont" style="display: none;">
                     <div id="container-members-list"        class="barely-a-scroll-class"></div>
-                    <button id="button-subscribe"           class="modal-button">Unsubscribe / Cancel</button>
+                    <button id="button-subscribe"           class="modal-button" style="display: none;">Unsubscribe / Cancel</button>
+                    <button id="button-start"               class="modal-button" style="display: none;">Start Tournament</button>
                 </div>
-                <div id="container-finals"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
-                <div id="container-round-robin"            class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
-                <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
-                <div id="container-games-finished"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
+                <div id="container-finals"                  class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;"></div>
+                <div id="container-round-robin"             class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;">
+                    <table id="tournament-rank-table">
+						<thead id="tournament-rank-table-header">
+							<tr>
+								<th id="tournament-rank-table-header-rank">Rank</th>
+								<th id="tournament-rank-table-header-player">Player</th>
+								<th id="tournament-rank-table-header-wins">Wins</th>
+								<th id="tournament-rank-table-header-diff">Diff</th>
+								<th id="tournament-rank-table-header-games">Total Games</th>
+							</tr>
+						</thead>
+						<tbody id="tournament-rank-table-body">
+						<!-- where the rank rows will be -->
+						</tbody>
+                    </table>
+                </div>
+                <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;"></div>
+                <div id="container-games-finished"  class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;"></div>
                 <!-- RIGHT SIDE -->
-                <button id="button-start"           class="grid-cell default-grid-area modal-button btn-sidebar btns tournament-setup" style="display: none;">Start Tournament</button>
+                <button id="button-delete"                      class="grid-cell default-grid-area modal-button btn-sidebar btnd" style="display: none;">Delete Tournament</button>
             </div>
         </div>
     </div>
@@ -44,25 +59,25 @@
         grid-template-columns: repeat(auto-fill, 5%);
         grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
-            ".      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             "btnmem btnmem btnmem tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
             "btnmem btnmem btnmem cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tstate .      .     "
             "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tstate .      .     "
             "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tpriv  .      .     "
             "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tpriv  .      .     "
             "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
-            "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
+            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
+            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnd   btnd   btnd   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnd   btnd   btnd   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btns   btns   btns  "
-            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btns   btns   btns  "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnd   btnd   btnd  "
+            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnd   btnd   btnd  "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
     }
 
@@ -87,7 +102,6 @@
     }
     .tname {
         grid-area: tname;
-        background-color: black;
         color: white;
     }
     .cont {
@@ -122,9 +136,6 @@
     .btnd {
         grid-area: btnd;
     }
-    .btns {
-        grid-area: btns;
-    }
 
     /* DEFAULT STYLE FOR ALL CARDS: Members, Games, Ranks */
     .default-card-container {
@@ -132,7 +143,7 @@
 		align-items: center;
 		padding: 5px 5px;
         height: 7vh;
-		width: 25vw;
+		width: 30vw;
         background-color: rgba(217, 217, 217, 0.753);
 		border: 1px solid black;
         border-radius: 4px;
@@ -144,7 +155,8 @@
 <!-- TEMPLATE PARTICIPANTS CARD-->
 <template id="tournament-member-card-template">
     <div class="default-card-container tournament-member-card-container" userid="">
-        <img class="tournament-member-card-avatar">
+        <img class="tournament-member-card-avatar" draggable="false">
+        <img class="tournament-member-admin-icon" src="../assets/icons_128x128/icon_tournament_admin.png" draggable="false" style="display: none;">
         <h4 class="tournament-member-card-username"></h4>
     </div>
 </template>
@@ -154,25 +166,27 @@
         align-items: center;
     }
     .tournament-member-card-avatar {
-        height: 90%;
+        height: 100%;
+        padding: 1px;
+    }
+    .tournament-member-admin-icon {
+        height: 100%;
+        padding: 5px;
+    }
+    .tournament-member-card-username {
+        padding: 5px;
     }
 </style>
 
 <!-- TEMPLATE GAME CARD -->
 <template id="tournament-game-card-template">
     <div class="default-card-container tournament-game-card-container" gameid="">
-        <img            class="grid-cell default-grid-area avt1 tournament-game-card-player1-avatar" alt="image not found">
-        <h5             class="grid-cell default-grid-area usrn1 tournament-game-card-player1-username"></h5>
-        <h4             class="grid-cell default-grid-area tournament-game-card-player1-winner-tag">(W)</h4>
-        <div            class="grid-cell default-grid-area tournament-game-card-spinner">
-            <div        class="grid-cell default-grid-area spinner-border" role="status">
-                <span   class="grid-cell default-grid-area sr-only">Loading...</span>
-            </div>
-        </div>
-        <h4             class="grid-cell default-grid-area score tournament-game-card-score"></h4>
-        <h4             class="grid-cell default-grid-area tournament-game-card-player2-winner-tag">(W)</h4>
-        <h5             class="grid-cell default-grid-area usrn2 tournament-game-card-player2-username"></h5>
-        <img            class="grid-cell default-grid-area avt2 tournament-game-card-player2-avatar" alt="image not found">
+        <img class="grid-cell default-grid-area avt1 tournament-game-card-player-left-avatar" alt="image not found">
+        <h5  class="grid-cell default-grid-area usrn1 tournament-game-card-player-left-username"></h5>
+        <div class="grid-cell default-grid-area spin spinner-grow spinner-grow-sm" style="display: none;"></div>
+        <h4  class="grid-cell default-grid-area score tournament-game-card-score"></h4>
+        <h5  class="grid-cell default-grid-area usrn2 tournament-game-card-player-right-username"></h5>
+        <img class="grid-cell default-grid-area avt2 tournament-game-card-player-right-avatar" alt="image not found" draggable="false">
     </div>
 </template>
 <style>
@@ -185,22 +199,21 @@
         display: grid;
         align-items: center;
         justify-content: space-between;
-        grid-template-columns: repeat(auto-fill, 12,5%);
+        grid-template-columns: repeat(auto-fill, 12.5%);
         grid-template-rows: repeat(auto-fill, 25%);
         grid-template-areas:
-            "avt1  .      .     .     .      .      .      avt2 "
+            "avt1  .      .     spin  spin   .      .      avt2 "
             "avt1  usrn1  usrn1 score score  usrn2  usrn2  avt2 "
             "avt1  usrn1  usrn1 score score  usrn2  usrn2  avt2 "
             "avt1  .      .     .     .      .      .      avt2 ";
     }
     .avt1{
         grid-area: avt1;
-        max-width: 100%;
-        max-height: 100%;
+        object-fit: contain;
     }
     .avt2{
         grid-area: avt2;
-        height: auto !important;
+        object-fit: contain;
     }
     .usrn1{
         grid-area: usrn1;
@@ -211,4 +224,68 @@
     .score{
         grid-area: score;
     }
+    .spin{
+        grid-area: spin;
+        width: 10px;
+        height: 10px;
+    }
+</style>
+
+<!-- TEMPLATE ROUND ROBIN RANK TABLE ROW -->
+<template id="tournament-rank-row-template">
+    <tr class="tournament-rank-row">
+        <td class="tournament-rank-row-position"></td>
+        <td class="tournament-rank-row-user">
+            <div class="tournament-rank-row-user-wrapper">
+                <img class="tournament-rank-row-avatar" alt="image not found" draggable="false">
+                <h5 class="tournament-rank-row-username"></h5>
+            </div>
+        </td>
+        <td class="tournament-rank-row-wins"></td>
+        <td class="tournament-rank-row-diff"></td>
+        <td class="tournament-rank-row-games"></td>
+    </tr>
+</template>
+<style>
+    .tournament-rank-row-avatar {
+		height: 45px;
+	}
+
+	.tournament-rank-row-user-wrapper {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.tournament-rank-row {
+		display: table-row;
+		flex-direction: row;
+		width: 100%;
+		height: 20%;
+        cursor: pointer;
+	}
+
+	#tournament-rank-table {
+        width: 30vw;
+		height: auto;
+        justify-self: center;
+        align-self: center;
+		background-color: rgba(0, 0, 0, 0.766);
+		color: white;
+		border: 2px solid white;
+		border-collapse: collapse;
+	}
+
+
+    #tournament-rank-table,
+#tournament-rank-table th,
+#tournament-rank-table td {
+    border: 1px solid white; /* Adjust color as needed */
+}
+
+th, td {
+    padding: 8px; /* Adds spacing inside cells */
+    text-align: left; /* Aligns text to the left */
+}
+
 </style>

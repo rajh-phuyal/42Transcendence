@@ -2,14 +2,14 @@
     <div class="view-container">
         <div class="view-image-wrapper">
             <!-- <img src="../assets/images/game/maps/lizard-people.png" alt="Background Image" class="view-background-image"> -->
-            <img id="view-game-background" src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image">
+            <img id="view-game-background" src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image" draggable="false">
             <div class="view-overlay-grid">
                 <!-- TOURNAMENT HEADING -->
                 <div id="game-view-tournament-name" class="grid-cell default-grid-area tname mention-tournament" style="display: none;"></div>
                 <!-- LEFT PLAYER -->
                 <h2 id="player-left-username" class="grid-cell default-grid-area lun user-card username mention-user"></h2>
                 <div                          class="grid-cell default-grid-area lav user-card">
-                    <img id="player-left-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/c0ff26c3-0acc-4c9c-ae69-a65e88421b75.png">
+                    <img id="player-left-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/c0ff26c3-0acc-4c9c-ae69-a65e88421b75.png" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area lst user-card user-state">
                     <h4  id="player-left-state"           class="user-state"></h4>
@@ -17,9 +17,9 @@
                         <span class="sr-only"></span>
                     </div>
                     <div id="player-left-powerups-status" class="player-powerup-status-container" >
-                        <img id="player-left-powerups-slow"   class="player-powerup-status" src=""></img>
-                        <img id="player-left-powerups-fast"   class="player-powerup-status" src=""></img>
-                        <img id="player-left-powerups-big"    class="player-powerup-status" src=""></img>
+                        <img id="player-left-powerups-slow"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-left-powerups-fast"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-left-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
                 <h5 id="player-left-controls" class="grid-cell default-grid-area ctrll">
@@ -33,7 +33,7 @@
                 <!-- RIGHT PLAYER -->
                 <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user"></h2>
                 <div                           class="grid-cell default-grid-area rav user-card">
-                    <img id="player-right-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/a75be01d-8f1f-4ab2-9527-880487ad48ea.png">
+                    <img id="player-right-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/a75be01d-8f1f-4ab2-9527-880487ad48ea.png" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area rst user-card user-state">
                     <h4  id="player-right-state"           class="user-state"></h4>
@@ -41,9 +41,9 @@
                         <span class="sr-only"></span>
                     </div>
                     <div id="player-right-powerups-status" class="player-powerup-status-container" >
-                        <img id="player-right-powerups-slow"   class="player-powerup-status" src=""></img>
-                        <img id="player-right-powerups-fast"   class="player-powerup-status" src=""></img>
-                        <img id="player-right-powerups-big"    class="player-powerup-status" src=""></img>
+                        <img id="player-right-powerups-slow"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-right-powerups-fast"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-right-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
                 <h5 id="player-right-controls" class="grid-cell default-grid-area ctrlr">
@@ -57,7 +57,7 @@
                 <!-- GAME FIELD -->
                 <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
                 <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
-                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;">
+                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;" draggable="false">
 
                 <button id="button-play-again"                      class="grid-cell default-grid-area modal-button btnpa"></button>
                 <button id="button-leave-lobby"                     class="grid-cell default-grid-area modal-button btnl"></button>

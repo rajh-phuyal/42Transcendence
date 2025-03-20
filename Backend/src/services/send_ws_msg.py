@@ -166,6 +166,24 @@ async def send_ws_chat_typing(receiver, conversation_id, is_typing):
 # ==============================================================================
 #     TOURNAMENT FUNCTIONS
 # ==============================================================================
+def send_ws_tournament_client_role_msg(tournament, user, role):
+    """ When a client joins / leaves a tournament it's role is updated """
+    if isinstance(tournament, int):
+        tournament = Tournament.objects.get(id=tournament)
+    if isinstance(user, int):
+        user = User.objects.get(id=user)
+
+    message_dict = {
+        "messageType": "clientRole",
+        "type": "client_role",
+        "tournamentId": tournament.id,
+        "clientRole": role
+    }
+    try:
+        async_to_sync(send_ws_msg_to_user)(user.id, **message_dict)
+    except Exception as e:
+        ...
+
 def send_ws_tournament_info_msg(tournament, deleted=False):
     """
     Since a deleted tournament is not in the db anymore we need to call this
@@ -217,6 +235,7 @@ def send_ws_tournament_member_msg(tournament_member, leave=False):
         {
             "messageType": "tournamentMember",
             "type": "tournament_member",
+            "tournamentId": tournament_member.tournament.id,
             "tournamentMember": member_data
         })
     except Exception as e:
@@ -238,6 +257,7 @@ def send_ws_all_tournament_members_msg(tournament):
         {
             "messageType": "tournamentMembers",
             "type": "tournament_members",
+            "tournamentId": tournament.id,
             "tournamentMembers": serializer_members.data
         })
     except Exception as e:
@@ -256,7 +276,8 @@ def send_ws_tournament_game_msg(game):
         {
             "messageType": "tournamentGame",
             "type": "tournament_game",
-            "TournamentGame": serializerGame.data
+            "tournamentId": game.tournament.id,
+            "tournamentGame": serializerGame.data
         })
     except Exception as e:
         ...

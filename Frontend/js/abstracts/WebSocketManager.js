@@ -3,9 +3,7 @@ import { $id } from './dollars.js';
 import $callToast from './callToast.js';
 import { updateView } from '../views/tournament/methodsView.js';
 import { updateMembers } from '../views/tournament/methodsMembers.js';
-import { updateRankTable, updateFinalsDiagram, updatePodium } from '../views/tournament/methodsRank.js';
-import { updateGameCard } from '../views/tournament/methodsGames.js';
-import { createGameList } from '../views/tournament/methodsGames.js';
+import { updateDataMember, updateDataGame } from '../views/tournament/methodsData.js';
 
 
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
@@ -121,18 +119,45 @@ class WebSocketManager {
                 return ;
 
             // TOURNAMENT RELATED MESSAGES
+            case "clientRole":
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received clientRole for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.clientRole = message.clientRole;
+                    updateView();
+                }
+                return ;
             case "tournamentInfo":
                 if (currentRoute == "tournament"){
-                    tournamentData.all.tournamentInfo = message.tournamentInfo;
+                    if (message.tournamentInfo.id !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentInfo for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.tournamentInfo = message.tournamentInfo;
                     updateView();
                 }
                 return ;
             case "tournamentMember":
-                // TODO: maybe this is not used anymore!
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    updateDataMember(message.tournamentMember);
+                    updateView();
+                }
                 return ;
             case "tournamentMembers":
-                tournamentData.all.tournamentMembers = message.tournamentMembers;
-                updateView();
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.tournamentMembers = message.tournamentMembers;
+                    updateView();
+                }
             /*         updateRankTable(message.tournamentMembers);
                 console.log("tournanemtMembers:", message.tournamentMembers);
                 console.log("Length!!!!", message.tournamentMembers.length);
@@ -142,8 +167,16 @@ class WebSocketManager {
                 } */
                 return ;
             case "tournamentGame":
-                updateGameCard(message.TournamentGame);
-                updateFinalsDiagram(message.TournamentGame);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    updateDataGame(message.tournamentGame);
+                    updateView();
+                    //updateGameCard(message.TournamentGame);
+                    //updateFinalsDiagram(message.TournamentGame);
+                }
                 return ;
 
             // PROFILE RELATED MESSAGES

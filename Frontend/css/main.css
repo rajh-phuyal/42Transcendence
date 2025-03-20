@@ -393,10 +393,12 @@ h5 {
     cursor: pointer;
     padding: 2px 4px;
     border: 2px solid #968503;
+    user-select: none;
 }
 .modal-image-button {
     background-color: #00000000;
     border: none !important;
+    cursor: pointer;
 }
 .modal-toggle-button-enabled {
     filter: brightness(100%) !important;

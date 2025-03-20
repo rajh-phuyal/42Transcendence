@@ -31,17 +31,17 @@
 					<div id="tournament-podium-container">
 						<div id="tournament-podium-second" class="tournament-podium-step">
 							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found">
+							<img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
 							<h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
 						</div>
 						<div id="tournament-podium-first" class="tournament-podium-step">
 							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found">
+							<img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
 							<h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
 						</div>
 						<div id="tournament-podium-third" class="tournament-podium-step">
 							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found">
+							<img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
 							<h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
 						</div>
 					</div>
@@ -51,45 +51,20 @@
 						<template id="tournament-finals-template">
 							<div class="tournament-finals-diagram-container">
 								<h5 class="finals-title">Semi-Final</h5>
-								<img class="finals-player-left-avatar tournament-finals-diagram-avatar" alt="">
+								<img class="finals-player-left-avatar tournament-finals-diagram-avatar" alt="" draggable="false">
 								<h6 class="finals-player-left-username">player 1</h6>
 								<h5 class="finals-score">VS</h5>
 								<h6 class="finals-player-right-username">player 2</h6>
-								<img class="finals-player-right-avatar tournament-finals-diagram-avatar" alt="">
+								<img class="finals-player-right-avatar tournament-finals-diagram-avatar" alt="" draggable="false">
 							</div>
 						</template>
 					</div>
 				</div>
 				<div id="tournament-round-robbin-container">
 
-					<table id="tournament-rank-table">
-						<thead id="tournament-rank-table-header">
-							<tr>
-								<th>Rank</th>
-								<th>Player</th>
-								<th>Wins</th>
-								<th>Diff</th>
-								<th>Games</th>
-							</tr>
-						</thead>
-						<tbody id="tournament-rank-table-body">
-						<!-- where the rank rows will be -->
-						</tbody>
-						<template id="tournament-rank-row-template">
-							<tr class="tournament-rank-row">
-								<td class="tournament-rank-row-position"></td>
-								<td class="tournament-rank-row-user">
-									<div class="tournament-rank-row-user-wrapper">
-										<img class="tournament-rank-row-avatar" alt="image not found">
-										<h5 class="tournament-rank-row-username"></h5>
-									</div>
-								</td>
-								<td class="tournament-rank-row-wins"></td>
-								<td class="tournament-rank-row-diff"></td>
-								<td class="tournament-rank-row-games"></td>
-							</tr>
-						</template>
-					</table>
+
+
+
 				</div>
 			</div>
 
@@ -156,9 +131,7 @@
 		height: 80%;
 	}
 
-	#tournament-round-robbin-container {
-		display: none;
-	}
+
 
 	#tournament-podium-container {
 		display: flex;
@@ -209,43 +182,7 @@
 		color: white;
 	}
 
-	.tournament-rank-row-avatar {
-		height: 45px;
-	}
-
-	.tournament-rank-row-user-wrapper {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-
-	.tournament-rank-row {
-		display: table-row;
-		flex-direction: row;
-		width: 100%;
-		height: 20%;
-	}
-
-	#tournament-rank-table {
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.766);
-		color: white;
-		border: 2px solid white;
-		border-collapse: collapse;
-	}
-
-
-#tournament-rank-table,
-#tournament-rank-table th,
-#tournament-rank-table td {
-    border: 1px solid white; /* Adjust color as needed */
-}
-
-th, td {
-    padding: 8px; /* Adds spacing inside cells */
-    text-align: left; /* Aligns text to the left */
-}
-
+	
 	#tournament-rank-list-cards-list {
 		display: flex;
 		flex-direction: column;

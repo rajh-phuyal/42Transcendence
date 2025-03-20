@@ -1,3 +1,4 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js'
@@ -7,6 +8,7 @@ import router from '../../navigation/router.js';
 import { initView, updateView } from './methodsView.js';
 import { tournamentData } from './objects.js';
 import { callbackTabButton } from './callbacks.js';
+import { clearAllGameCountdowns } from './methodsGames.js';
 
 export default {
     attributes: {
@@ -26,6 +28,8 @@ export default {
         },
 
         beforeRouteLeave() {
+            clearAllGameCountdowns();
+            audioPlayer.stop();
         },
 
         beforeDomInsertion() {
@@ -37,6 +41,8 @@ export default {
                 router('/404');
                 return;
             }
+            // Start music
+            audioPlayer.play(5); // Lobby music for tournaments
             // Add all event listeners
             EventListenerManager.linkEventListener("button-tab-members",          "tournament", "click", callbackTabButton);
             EventListenerManager.linkEventListener("button-tab-finals",           "tournament", "click", callbackTabButton);
@@ -59,7 +65,11 @@ export default {
             // Fetch the data from the API
             call(`tournament/lobby/${this.routeParams.id}/`, 'GET').then(data => {
                 // Store the data in the object
-                tournamentData.all = data;
+
+                tournamentData.clientRole           = data.clientRole
+                tournamentData.tournamentInfo       = data.tournamentInfo
+                tournamentData.tournamentMembers    = data.tournamentMembers
+                tournamentData.tournamentGames      = data.tournamentGames
                 console.log("API DATA LOBBY:", data);
                 // Initialize all view elements (usercards, gamecards, etc)
                 initView();
