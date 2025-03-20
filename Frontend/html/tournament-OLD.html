@@ -27,37 +27,10 @@
 				<barely-a-button id="tournament-round-robbin-button" buttonclass="rect-button" name="Round Robbin"></barely-a-button>
 				<barely-a-button id="tournament-finals-button" buttonclass="rect-button" name="Finals"></barely-a-button>
 				<div id="tournament-finals-container">
-					<!-- Podium -->
-					<div id="tournament-podium-container">
-						<div id="tournament-podium-second" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
-							<h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
-						</div>
-						<div id="tournament-podium-first" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
-							<h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
-						</div>
-						<div id="tournament-podium-third" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
-							<h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
-						</div>
-					</div>
 					<!-- Finals Diagram -->
 
 					<div id="tournment-finals-diagram">
-						<template id="tournament-finals-template">
-							<div class="tournament-finals-diagram-container">
-								<h5 class="finals-title">Semi-Final</h5>
-								<img class="finals-player-left-avatar tournament-finals-diagram-avatar" alt="" draggable="false">
-								<h6 class="finals-player-left-username">player 1</h6>
-								<h5 class="finals-score">VS</h5>
-								<h6 class="finals-player-right-username">player 2</h6>
-								<img class="finals-player-right-avatar tournament-finals-diagram-avatar" alt="" draggable="false">
-							</div>
-						</template>
+
 					</div>
 				</div>
 				<div id="tournament-round-robbin-container">
@@ -83,106 +56,15 @@
 </div>
 <style>
 
-	.tournament-finals-diagram-container {
-		display: grid;
-		color: white;
-		height: 20%;
-		width: 70%;
-		align-items: center;
-		background-color: black;
-		grid-template-rows: 50% 50%;
-		grid-template-areas:
-			"finals-title finals-title finals-title finals-title finals-title"
-			"finals-player-left-avatar finals-player-left-username finals-score finals-player-right-username finals-player-right-avatar";
+	
 
-	}
-	.finals-title {
-		grid-area: finals-title;
-	}
-
-	.finals-player-left-avatar {
-		grid-area: finals-player-left-avatar;
-	}
-
-	.finals-player-left-username {
-		grid-area: finals-player-left-username;
-	}
-
-	.finals-score {
-		grid-area: finals-score;
-	}
-
-	.finals-player-right-username {
-		grid-area: finals-player-right-username;
-	}
-
-	.finals-player-right-avatar {
-		grid-area: finals-player-right-avatar;
-	}
-
-	#tournment-finals-diagram {
-		display: flex;
-		flex-direction: column;
-		background-color: blue;
-		height: 100%;
-	}
-
-	.tournament-finals-diagram-avatar {
-		height: 80%;
-	}
-
-
-
-	#tournament-podium-container {
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: end;
-		width: 100%;
-		height: 30%;
-	}
-
-	.tournament-podium-step {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-items: center;
-		background-color: black;
-		color: white;
-		margin: 2%;
-		border-radius: 10%;
-		width: 15%;
-	}
-
-	.tournament-podium-username {
-		display: none;
-	}
-
-	.tournament-podium-avatar {
-		height: 50%;
-		display: none;
-	}
-
-	#tournament-podium-second {
-		height: 90%;
-		color: silver;
-	}
-
-	#tournament-podium-first {
-		height: 100%;
-		color: gold;
-	}
-
-	#tournament-podium-third {
-		height: 80%;
-		color: #E1C16E;
-	}
-
-	.tournament-podium-question-mark {
-		color: white;
-	}
 
 	
+
+
+
+
+
 	#tournament-rank-list-cards-list {
 		display: flex;
 		flex-direction: column;

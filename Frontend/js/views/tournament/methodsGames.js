@@ -26,14 +26,9 @@ export function updateGames() {
 
 /* This will create the html node */
 function createTemplateGameCard(game) {
-    /* TODO: make this work again! */
-    /*
-    The backend creates all 4 finals at once as soon as round robin is over.
-    Therefore the backend doesn't know who is going to be playerLeft and playerRight.
-    The frontend will handle this by checking if the player not null
-     */
-    // if(game.playerLeft === null || game.playerRight === null)
-    //     return ;
+    // This is for the final games wich come without the players first
+    if (!game.playerLeft || !game.playerRight)
+        return ;
     const template = $id("tournament-game-card-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-game-card-container");
     // Store the game id
@@ -54,12 +49,14 @@ function createTemplateGameCard(game) {
 }
 
 function updateGameCard(container, game) {
+    // This is for the final games wich come without the players first
+    if (!game.playerLeft || !game.playerRight)
+        return ;
     // Adjust the styling according to the state
     if (game.state === "pending") {
         if (game.deadline) {
             container.style.display = "grid";
             container.title = "Hurrry up! The game is only open for a limited time!"; // TODO: translate
-            container.querySelector(".spin").style.display = "flex";
             startGameCountdown(container, game.id, game.deadline);
         }
         else
@@ -68,14 +65,12 @@ function updateGameCard(container, game) {
     else if (game.state === "countdown" || game.state === "ongoing" || game.state === "paused") {
         container.style.display = "grid";
         container.title = "The game is ongoing!"; // TODO: translate
-        container.querySelector(".spin").style.display = "flex";
         container.querySelector(".tournament-game-card-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;
     }
     else {
         // Sate is finished or quited
         container.style.display = "grid";
         container.title = "The game is finished!"; // TODO: translate
-        container.querySelector(".spin").style.display = "none";
         container.querySelector(".tournament-game-card-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;
         // Highlight the winner
         if (game.playerLeft.result === "won") {

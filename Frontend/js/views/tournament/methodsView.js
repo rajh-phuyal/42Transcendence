@@ -3,7 +3,7 @@ import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
 import { updateMembers } from "./methodsMembers.js";
 import { updateGames } from "./methodsGames.js";
-import { updateRoundRobin } from "./methodsRank.js";
+import { updateRoundRobin } from "./methodsRankTable.js";
 import { deleteTournament, joinTournament, leaveTournament, startTournament } from "./methodsApi.js";
 
 /* This function should be called when routing to lobby it will create for
@@ -20,12 +20,7 @@ export function initView() {
     } */
     // TODO: uncomment this
     /* else {
-        if (data.tournamentMembers.length == 3)
-            updatePodium(data.tournamentMembers.find(member => member.rank === 3), "third", false);
-        for (let element of data.tournamentGames) {
-            createGameCard(element);
-            updateFinalsDiagram(element);
-        }
+
     }
 
     if (data.tournamentInfo.state !== "setup")
@@ -244,20 +239,22 @@ function updateButtons() {
     // Subscribe / Unsubscribe Button
     const buttonSubscribe = $id("button-subscribe");
     buttonSubscribe.style.display = "none"; // Hide by default
-    buttonSubscribe.removeEventListener("click", joinTournament);
-    buttonSubscribe.removeEventListener("click", leaveTournament);
-    console.log("ROLE:", data.clientRole);
-    if (data.clientRole === "member") {
-        buttonSubscribe.style.display = "block";
-        buttonSubscribe.innerText = "Unsubscribe"; // TODO: translate
-        buttonSubscribe.addEventListener("click", leaveTournament);
-    } else if (data.clientRole === "invited") {
-        buttonSubscribe.style.display = "block";
-        buttonSubscribe.innerText = "Subscribe";  // TODO: translate
-        buttonSubscribe.addEventListener("click", joinTournament);
-    } else if (data.clientRole === "fan" && data.tournamentInfo.public) {
-        buttonSubscribe.style.display = "block";
-        buttonSubscribe.innerText = "Subscribe";  // TODO: translate
-        buttonSubscribe.addEventListener("click", joinTournament);
+    if (data.tournamentInfo.state === "setup") {
+        buttonSubscribe.removeEventListener("click", joinTournament);
+        buttonSubscribe.removeEventListener("click", leaveTournament);
+        console.log("ROLE:", data.clientRole);
+        if (data.clientRole === "member") {
+            buttonSubscribe.style.display = "block";
+            buttonSubscribe.innerText = "Unsubscribe"; // TODO: translate
+            buttonSubscribe.addEventListener("click", leaveTournament);
+        } else if (data.clientRole === "invited") {
+            buttonSubscribe.style.display = "block";
+            buttonSubscribe.innerText = "Subscribe";  // TODO: translate
+            buttonSubscribe.addEventListener("click", joinTournament);
+        } else if (data.clientRole === "fan" && data.tournamentInfo.public) {
+            buttonSubscribe.style.display = "block";
+            buttonSubscribe.innerText = "Subscribe";  // TODO: translate
+            buttonSubscribe.addEventListener("click", joinTournament);
+        }
     }
 }

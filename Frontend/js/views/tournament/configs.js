@@ -9,6 +9,7 @@ import { initView, updateView } from './methodsView.js';
 import { tournamentData } from './objects.js';
 import { callbackTabButton } from './callbacks.js';
 import { clearAllGameCountdowns } from './methodsGames.js';
+import { updatePodium, updateFinalsDiagram } from './methodsRankFinals.js';
 
 export default {
     attributes: {
@@ -71,6 +72,12 @@ export default {
                 tournamentData.tournamentMembers    = data.tournamentMembers
                 tournamentData.tournamentGames      = data.tournamentGames
                 console.log("API DATA LOBBY:", data);
+                // XICOS FINALS LOGIC:
+                console.warn("XICOS FINALS LOGIC:", data.tournamentMembers);
+                if (data.tournamentMembers.length == 3)
+                    updatePodium(data.tournamentMembers.find(member => member.rank === 3), "third", false);
+                for (let element of data.tournamentGames)
+                    updateFinalsDiagram(element);
                 // Initialize all view elements (usercards, gamecards, etc)
                 initView();
                 // Update the view

@@ -4,6 +4,7 @@ import $callToast from './callToast.js';
 import { updateView } from '../views/tournament/methodsView.js';
 import { updateMembers } from '../views/tournament/methodsMembers.js';
 import { updateDataMember, updateDataGame } from '../views/tournament/methodsData.js';
+import { updatePodium, updateFinalsDiagram } from '../views/tournament/methodsRankFinals.js';
 
 
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
@@ -156,15 +157,12 @@ class WebSocketManager {
                         return ;
                     }
                     tournamentData.tournamentMembers = message.tournamentMembers;
+                    if (message.tournamentMembers.length == 3) {
+                        console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
+                        updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
+                    }
                     updateView();
                 }
-            /*         updateRankTable(message.tournamentMembers);
-                console.log("tournanemtMembers:", message.tournamentMembers);
-                console.log("Length!!!!", message.tournamentMembers.length);
-                if (message.tournamentMembers.length == 3) {
-                    console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
-                    updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
-                } */
                 return ;
             case "tournamentGame":
                 if (currentRoute == "tournament"){
@@ -173,9 +171,8 @@ class WebSocketManager {
                         return ;
                     }
                     updateDataGame(message.tournamentGame);
+                    updateFinalsDiagram(message.tournamentGame);
                     updateView();
-                    //updateGameCard(message.TournamentGame);
-                    //updateFinalsDiagram(message.TournamentGame);
                 }
                 return ;
 
