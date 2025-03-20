@@ -2,7 +2,8 @@ import { $id , $class} from "../../abstracts/dollars.js";
 import { tournamentData } from "./objects.js";
 import router from "../../navigation/router.js";
 import { updateMembers } from "./methodsMembers.js";
-import { callbackSubscribe, callbackUnsubscribe } from "./callbacks.js";
+import { updateGames } from "./methodsGames.js";
+import { deleteTournament, joinTournament, leaveTournament, startTournament } from "./methodsApi.js";
 
 /* This function should be called when routing to lobby it will create for
     all tabs all elements. The elements can than during the tournament be updated
@@ -51,13 +52,20 @@ export function initView() {
                 - hide all buttons
         */
 export function updateView() {
+    // If state is deleted, redirect to home
+    console.log("tournamentData:", tournamentData.all.tournamentInfo.state);
+    if (tournamentData.all.tournamentInfo.state === "deleted") {
+        // TODO: this doesnt work yet
+        router('/home');
+        return ;
+    }
     // set tournament details
     const nameElement = $id("tournament-name");
     console.warn("tournamentData:", tournamentData);
     nameElement.innerText = tournamentData.all.tournamentInfo.name;
     updateIcons();
     updateMembers();
-    // updateGames();// TODO:
+    updateGames();
     // updateRoundRobin();// TODO:
     // updateFinals();// TODO:
     updateButtons();
@@ -106,7 +114,7 @@ export function updateView() {
     if (tournamentState === "finished") {
         //$id("tournament-middle-bottom-current-game-button").style.display = "none";
         //$id("tournament-games-do-come-button").style.display = "none";
-        //$id("button-subscribe-start").style.display = "none";
+        //$id("button-start").style.display = "none";
         //$id("button-unsubscribe-cancel").style.display = "none";
         //$id("tournament-current-games-container").style.display = "none";
         //$id("tournament-rank-container").style.display = "flex";
@@ -145,42 +153,71 @@ function updateIcons() {
     const iconPrivacy   = $id("tournament-privacy-img");
     const iconType      = $id("tournament-type-img");
     /* STATE */
-    if (tournamentData.all.tournamentInfo.state === "setup")
+    if (tournamentData.all.tournamentInfo.state === "setup") {
         iconState.src = "../assets/icons_128x128/icon_tournament_state_setup.png";
-    else if (tournamentData.all.tournamentInfo.state === "ongoing")
+        iconState.setAttribute("title", "Tournament is in state: 'setup'"); // TODO: translate
+    }
+    else if (tournamentData.all.tournamentInfo.state === "ongoing") {
         iconState.src = "../assets/icons_128x128/icon_tournament_state_ongoing.png";
-    else
+        iconState.setAttribute("title", "Tournament is in state: 'ongoing'"); // TODO: translate
+    }
+    else {
         iconState.src = "../assets/icons_128x128/icon_tournament_state_finished.png";
+        iconState.setAttribute("title", "Tournament is in state: 'finished'"); // TODO: translate
+    }
     /* PRIVACY */
-    if (tournamentData.all.tournamentInfo.public)
+    if (tournamentData.all.tournamentInfo.public) {
         iconPrivacy.src = "../assets/icons_128x128/icon_tournament_public.png";
-    else
+        iconPrivacy.setAttribute("title", "Tournament is public"); // TODO: translate
+    }
+    else {
         iconPrivacy.src = "../assets/icons_128x128/icon_tournament_private.png";
+        iconPrivacy.setAttribute("title", "Tournament is private"); // TODO: translate
+    }
     /* TYPE */
-    if (tournamentData.all.tournamentInfo.local)
+    if (tournamentData.all.tournamentInfo.local) {
         iconType.src = "../assets/icons_128x128/icon_tournament_local.png";
-    else
+        iconType.setAttribute("title", "Tournament is a local tournament"); // TODO: translate
+    }
+    else {
         iconType.src = "../assets/icons_128x128/icon_tournament_remote.png";
+        iconType.setAttribute("title", "Tournament is a remote tournament"); // TODO: translate
+    }
 }
 
 function updateButtons() {
+    // Start & Delete Tournament Button
+    const buttonStart = $id("button-start");
+    buttonStart.style.display = "none"; // Hide by default
+    buttonStart.removeEventListener("click", startTournament);
+    const buttonDelete = $id("button-delete");
+    buttonDelete.style.display = "none"; // Hide by default
+    buttonDelete.removeEventListener("click", deleteTournament);
+    if (tournamentData.all.clientRole === "admin" && tournamentData.all.tournamentInfo.state === "setup") {
+        buttonStart.innerText = "Start Tournament"; // TODO: translate
+        buttonStart.style.display = "block";
+        buttonStart.addEventListener("click", startTournament);
+        buttonDelete.innerText = "Delete Tournament"; // TODO: translate
+        buttonDelete.style.display = "block";
+        buttonDelete.addEventListener("click", deleteTournament);
+    }
     // Subscribe / Unsubscribe Button
     const buttonSubscribe = $id("button-subscribe");
     buttonSubscribe.style.display = "none"; // Hide by default
-    buttonSubscribe.removeEventListener("click", callbackSubscribe);
-    buttonSubscribe.removeEventListener("click", callbackUnsubscribe);
+    buttonSubscribe.removeEventListener("click", joinTournament);
+    buttonSubscribe.removeEventListener("click", leaveTournament);
     console.log("ROLE:", tournamentData.all.clientRole);
     if (tournamentData.all.clientRole === "member") {
         buttonSubscribe.style.display = "block";
         buttonSubscribe.innerText = "Unsubscribe"; // TODO: translate
-        buttonSubscribe.addEventListener("click", callbackUnsubscribe);
+        buttonSubscribe.addEventListener("click", leaveTournament);
     } else if (tournamentData.all.clientRole === "invited") {
         buttonSubscribe.style.display = "block";
         buttonSubscribe.innerText = "Subscribe";  // TODO: translate
-        buttonSubscribe.addEventListener("click", callbackSubscribe);
+        buttonSubscribe.addEventListener("click", joinTournament);
     } else if (tournamentData.all.clientRole === "fan" && tournamentData.all.tournamentInfo.public) {
         buttonSubscribe.style.display = "block";
         buttonSubscribe.innerText = "Subscribe";  // TODO: translate
-        buttonSubscribe.addEventListener("click", callbackSubscribe);
+        buttonSubscribe.addEventListener("click", joinTournament);
     }
 }

@@ -2,45 +2,65 @@ import { $id , $class} from "../../abstracts/dollars.js";
 import { tournamentData } from "./objects.js";
 import router from "../../navigation/router.js";
 
-export function createGameCard(gameObject) {
+/* This function will fully deal with the games stored in:
+    tournamentData.all.tournamentGames
+*/
+export function updateGames() {
+    // Delete all games
+    $id("container-games-upcoming").innerHTML = "";
+    $id("container-games-finished").innerHTML = "";
+    // Create all games // TODO: split them for the views
+    for (let game of tournamentData.all.tournamentGames)
+        createGameCard(game);
+}
 
-    console.log("game", gameObject);
-
+function createGameCard(game) {
+    console.log("game", game);
     /*
     The backend crreates all 4 finals at once as soon as round robin is over.
     Therefore the backend doesn't know who is going to be playerLeft and playerRight.
     The frontend will handle this by checking if the player not null
      */
-    if(gameObject.playerLeft === null || gameObject.playerRight === null)
+    if(game.playerLeft === null || game.playerRight === null)
         return ;
 
     const template = $id("tournament-game-card-template").content.cloneNode(true);
     const container = template.querySelector(".tournament-game-card-container");
-
-    container.setAttribute("id", "tournament-game-" + gameObject.id)
-    template.querySelector(".tournament-game-card-player1-avatar").src = window.origin + "/media/avatars/" + gameObject.playerLeft.avatarUrl;
-    template.querySelector(".tournament-game-card-player2-avatar").src = window.origin + "/media/avatars/" + gameObject.playerRight.avatarUrl;
-    template.querySelector(".tournament-game-card-player1-username").textContent = gameObject.playerLeft.username;
-    template.querySelector(".tournament-game-card-player2-username").textContent = gameObject.playerRight.username;
+    container.setAttribute("gameid", game.id)
+    template.querySelector(".tournament-game-card-player1-avatar").src = window.origin + "/media/avatars/" + game.playerLeft.avatarUrl;
+    template.querySelector(".tournament-game-card-player2-avatar").src = window.origin + "/media/avatars/" + game.playerRight.avatarUrl;
+    template.querySelector(".tournament-game-card-player1-username").textContent = game.playerLeft.username;
+    template.querySelector(".tournament-game-card-player2-username").textContent = game.playerRight.username;
     template.querySelector(".tournament-game-card-spinner").style.display = "none";
     template.querySelector(".tournament-game-card-player1-winner-tag").style.display = "none";
     template.querySelector(".tournament-game-card-player2-winner-tag").style.display = "none";
+    // Add click listener
+    container.addEventListener("click", gameCardCallback);
 
-    if (gameObject.state === "pending")
-        template.querySelector(".tournament-game-card-score").textContent = "VS";
+    if (game.state === "pending")
+        template.querySelector(".tournament-game-card-score").textContent = "VS"; // TODO: translate
     else
-        template.querySelector(".tournament-game-card-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
+        template.querySelector(".tournament-game-card-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;
 
-    if (gameObject.state === "finished" || gameObject.state === "quited")
-        $id("tournament-history-container").appendChild(container);
+    if (game.state === "finished" || game.state === "quited")
+        $id("container-games-finished").appendChild(container);
     else
-        $id("tournament-current-games-container").appendChild(container);
+        $id("container-games-upcoming").appendChild(container);
 
-    if (!gameObject.deadline)
+    if (!game.deadline)
         container.style.display = "none";
 
 }
 
+function gameCardCallback(event) {
+    const gameId = event.currentTarget.getAttribute("gameid");
+    router(`/game`, { id: gameId });
+}
+
+
+
+
+/* BELOW IS OLD CODE!!! */
 
 function moveGameCardToHistory(gameId) {
     $id("tournament-history-container").appendChild($id("tournament-game-" + gameId));

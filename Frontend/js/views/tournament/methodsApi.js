@@ -1,5 +1,6 @@
 import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
+import router from '../../navigation/router.js';
 import { tournamentData } from "./objects.js";
 
 /* API CALLS */
@@ -29,5 +30,6 @@ export function startTournament() {
 export function deleteTournament() {
     call(`tournament/delete/${tournamentData.all.tournamentInfo.id}/`, 'DELETE').then(data => {
         $callToast("success", data.message);
+        router('/home');
     });
 }

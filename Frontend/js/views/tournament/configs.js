@@ -47,7 +47,7 @@ export default {
 
 // TODO: revise the listeners below
             //EventListenerManager.linkEventListener("tournament-leave-to-lobby",                         "tournament", "click", this.leaveLobbyButtonAction);
-            //EventListenerManager.linkEventListener("button-subscribe-start",   "tournament", "click", this.subscribeStartTournamentButtonAction);
+            //EventListenerManager.linkEventListener("button-start",   "tournament", "click", this.subscribeStartTournamentButtonAction);
             //EventListenerManager.linkEventListener("button-unsubscribe-cancel",                     "tournament", "click", this.quitCancelTournamentButtonAction);
             //EventListenerManager.linkEventListener("tournament-games-do-come-button",                   "tournament", "click", this.openCurrentGames);
             //EventListenerManager.linkEventListener("tournament-rank-button",                            "tournament", "click", this.openTournamentRank);

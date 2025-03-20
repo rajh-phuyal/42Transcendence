@@ -20,7 +20,8 @@
                 <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btngup tournament-tabs" tab="games-upcoming">Upcoming Games</button>
                 <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button modal-toggle-button btn-sidebar btngfi tournament-tabs" tab="games-finished">Finished Games</button>
                 <!-- LEFT SIDE BOTTOM -->
-                <button id="button-leave-lobby"         class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
+                <button id="button-delete"                      class="grid-cell default-grid-area modal-button btn-sidebar btnd" style="display: none;">Delete Tournament</button>
+                <button id="button-leave-lobby"                 class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
 
                 <!-- MIDDLE -->
                 <h3  id="tournament-name"                   class="grid-cell default-grid-area tname">12345678901234567890123</h3>
@@ -33,7 +34,7 @@
                 <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <div id="container-games-finished"  class="grid-cell default-grid-area cont barely-a-scroll-class"></div>
                 <!-- RIGHT SIDE -->
-                <button id="button-subscribe-start"     class="grid-cell default-grid-area modal-button btn-sidebar btnss tournament-setup">Start Tournament</button>
+                <button id="button-start"           class="grid-cell default-grid-area modal-button btn-sidebar btns tournament-setup" style="display: none;">Start Tournament</button>
             </div>
         </div>
     </div>
@@ -58,10 +59,10 @@
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnss  btnss  btnss "
-            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btnss  btnss  btnss "
+            "btnd   btnd   btnd   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnd   btnd   btnd   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btns   btns   btns  "
+            "btnl   btnl   btnl   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   btns   btns   btns  "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
     }
 
@@ -118,24 +119,23 @@
     .btnl {
         grid-area: btnl;
     }
-    .btnss {
-        grid-area: btnss;
+    .btnd {
+        grid-area: btnd;
+    }
+    .btns {
+        grid-area: btns;
     }
 
     /* DEFAULT STYLE FOR ALL CARDS: Members, Games, Ranks */
     .default-card-container {
         display: flex;
-        flex-direction: row;
 		align-items: center;
-		padding-left: 0.5rem;
-		gap: 0.5rem;
+		padding: 5px 5px;
         height: 7vh;
-		max-height: 100px;
-		max-width: 1000px;
-		width: 29vw;
+		width: 25vw;
         background-color: rgba(217, 217, 217, 0.753);
 		border: 1px solid black;
-        border-radius: 2px;
+        border-radius: 4px;
         cursor: pointer;
         margin: 5px;
     }
@@ -155,5 +155,60 @@
     }
     .tournament-member-card-avatar {
         height: 90%;
+    }
+</style>
+
+<!-- TEMPLATE GAME CARD -->
+<template id="tournament-game-card-template">
+    <div class="default-card-container tournament-game-card-container" gameid="">
+        <img            class="grid-cell default-grid-area avt1 tournament-game-card-player1-avatar" alt="image not found">
+        <h5             class="grid-cell default-grid-area usrn1 tournament-game-card-player1-username"></h5>
+        <h4             class="grid-cell default-grid-area tournament-game-card-player1-winner-tag">(W)</h4>
+        <div            class="grid-cell default-grid-area tournament-game-card-spinner">
+            <div        class="grid-cell default-grid-area spinner-border" role="status">
+                <span   class="grid-cell default-grid-area sr-only">Loading...</span>
+            </div>
+        </div>
+        <h4             class="grid-cell default-grid-area score tournament-game-card-score"></h4>
+        <h4             class="grid-cell default-grid-area tournament-game-card-player2-winner-tag">(W)</h4>
+        <h5             class="grid-cell default-grid-area usrn2 tournament-game-card-player2-username"></h5>
+        <img            class="grid-cell default-grid-area avt2 tournament-game-card-player2-avatar" alt="image not found">
+    </div>
+</template>
+<style>
+    #container-games-upcoming,
+    #container-games-finished {
+        display: flex;
+        align-items: center;
+    }
+    .tournament-game-card-container {
+        display: grid;
+        align-items: center;
+        justify-content: space-between;
+        grid-template-columns: repeat(auto-fill, 12,5%);
+        grid-template-rows: repeat(auto-fill, 25%);
+        grid-template-areas:
+            "avt1  .      .     .     .      .      .      avt2 "
+            "avt1  usrn1  usrn1 score score  usrn2  usrn2  avt2 "
+            "avt1  usrn1  usrn1 score score  usrn2  usrn2  avt2 "
+            "avt1  .      .     .     .      .      .      avt2 ";
+    }
+    .avt1{
+        grid-area: avt1;
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .avt2{
+        grid-area: avt2;
+        height: auto !important;
+    }
+    .usrn1{
+        grid-area: usrn1;
+    }
+    .usrn2{
+        grid-area: usrn2;
+    }
+    .score{
+        grid-area: score;
     }
 </style>

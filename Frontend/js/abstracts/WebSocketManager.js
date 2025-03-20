@@ -120,8 +120,10 @@ class WebSocketManager {
 
             // TOURNAMENT RELATED MESSAGES
             case "tournamentInfo":
+                console.log("route:", this.currentRoute);
                 if (this.currentRoute == "tournament"){
-                    updateView(message.state);
+                    tournamentData.all.tournamentInfo = message.tournamentInfo;
+                    updateView();
                 }
                 return ;
             case "tournamentMember":

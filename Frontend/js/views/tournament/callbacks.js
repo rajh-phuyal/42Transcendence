@@ -1,16 +1,8 @@
-import { joinTournament, leaveTournament } from "./methodsApi.js";
+import { joinTournament, leaveTournament, startTournament } from "./methodsApi.js";
 import { changeTabs } from "./methodsView.js";
 
 export function callbackTabButton(event) {
     changeTabs(event.srcElement.getAttribute("tab"));
-}
-
-export function callbackSubscribe(event) {
-    joinTournament();
-}
-
-export function callbackUnsubscribe(event) {
-    leaveTournament();
 }
 
 

@@ -28,7 +28,7 @@ const routes = [
         view: "profile",
         requireAuth: true,
         modals: ["editProfile", "createGame", "editFriendship", "newConversation", "friendsList", "gameHistory", "avatarCropper", "tournamentHistory"],
-        backgroundColor: "black",
+        backgroundColor: "black", // TODO: i guess blach here doesnt look nice
     },
     {
         path: "/chat",

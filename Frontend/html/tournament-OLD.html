@@ -14,23 +14,7 @@
 			</div>
 
 
-            <!-- Game card template -->
-            <template id="tournament-game-card-template">
-                <div class="tournament-game-card-container">
-                    <img class="tournament-game-card-player1-avatar" alt="image not found">
-                    <h5 class="tournament-game-card-player1-username"></h5>
-					<h4 class="tournament-game-card-player1-winner-tag">(W)</h4>
-					<div class="tournament-game-card-spinner">
-						<div class="spinner-border" role="status">
-							<span class="sr-only">Loading...</span>
-						</div>
-					</div>
-                    <h4 class="tournament-game-card-score"></h4>
-					<h4 class="tournament-game-card-player2-winner-tag">(W)</h4>
-                    <h5 class="tournament-game-card-player2-username"></h5>
-                    <img class="tournament-game-card-player2-avatar" alt="image not found">
-                </div>
-            </template>
+
 
 
             <!-- Current Games -->
@@ -421,37 +405,11 @@ th, td {
 		align-items: center;
 	}
 
-    .tournament-game-card-container {
-        display: flex;
-        flex-direction: row;
-        height: 6vh;
-        height: 20wh;
-        background-color: wheat;
-    }
 
-    .tournament-game-card-player1-avatar, .tournament-game-card-player2-avatar {
-        height: 90%;
-    }
 
     #tournament-current-games-container, #tournament-history-container {
         display: flex;
         flex-direction: column;
     }
 
-	#button-subscribe-start {
-		width: 55%;
-		height: 100%;
-		align-items: start;
-		display: flex;
-		max-width: 1000px;
-	}
-
-	#button-subscribe-start > button {
-		background-color: black;
-		color: white;
-		border: 2px solid white;
-		width: 100%;
-		padding: 1rem;
-		margin-bottom: rem;
-	}
 </style>
