@@ -97,7 +97,7 @@ class WebSocketManager {
                     processIncomingWsChatMessage(message);
                 else {
                     console.log("message:", message);
-                    $callToast("message", message.content, message.conversationId);
+                    $callToast("message", message.content, {id: message.conversationId, username: message.username, avatar: message.avatar});
                 }
                 return ;
             case "updateBadge":
