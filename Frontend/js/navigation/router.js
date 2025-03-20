@@ -1,7 +1,7 @@
 import { routes } from './routes.js';
 import { functionalRoutes } from './functionalRoutes.js';
 import { setViewLoading } from '../abstracts/loading.js';
-import { $id } from '../abstracts/dollars.js';
+import { $id, $queryAll } from '../abstracts/dollars.js';
 // bind store, auth and other singleton to 'this' in the hooks
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
@@ -103,6 +103,7 @@ async function router(path, params = null) {
         view: "404",
         requireAuth: false,
         modals: [],
+        backgroundColor: "black"
     };
 
     if (route.view == "auth" || route.view == "barely-responsive") {
@@ -136,9 +137,19 @@ async function router(path, params = null) {
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
     const pathWithParams = params ? `${path}?${params}` : path;
     history.pushState({}, 'newUrl', pathWithParams);
-    // DOM manipulation
+    // Dom manipulation: before DOM insertion
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
+
+    // Change background color
+    let backgroundColor = "#fcf4e0";    // Default color
+    if(route.backgroundColor)
+        backgroundColor = route.backgroundColor;
+    const backgroundElements = $queryAll(".view-background-color");
+    for (let element of backgroundElements)
+        element.style.backgroundColor = backgroundColor;
+
+    // Dom manipulation: after DOM insertion
     await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
     // set the view name to the container
     viewContainer.dataset.view = route.view;
