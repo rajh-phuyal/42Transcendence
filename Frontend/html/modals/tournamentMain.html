@@ -1,22 +1,15 @@
-<!-- TODO: do this -->
 <div class="modal fade" id="modal-tournament-main" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div id="modal-tournament-main-content" class="modal-content image-modal-content modal-tournament-content">
-            <div class="modal-body image-modal-body modal-tournament-body">
+        <div id="modal-tournament-main-content" class="modal-content image-modal-content">
+            <div id="modal-tournament-main-body" class="modal-body image-modal-body">
                 <img src='../../assets/backgrounds/modal-tournament-main.png' class="image-modal-background-image" alt="Background Image">
-                <button class="btn" type="button" data-bs-target="#modal-tournament-create"  data-bs-toggle="modal" data-bs-dismiss="modal">CREATE</button>
-                <button class="btn" type="button" data-bs-target="#modal-tournament-join"    data-bs-toggle="modal" data-bs-dismiss="modal">JOIN</button>
-                <button class="btn" type="button" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">HISTORY</button>
                 <div id="modal-tournament-main-grid" class="view-overlay-grid">
-
-                        <!-- Place your content here -->
-
-                            <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-main-title">Modal title</h5>
-                            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-                            <!-- <p>This is some text placed on top of the background image.</p> -->
-                            <!-- Add more components, grids, etc. as needed -->
-                            <!-- <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button> -->
-                            <!-- <button type="button" class="btn modal-button">Save changes</button> -->
+                    <h4     id="modal-tournament-main-title"                        class="modal-title grid-cell default-grid-area title" >TODO: title translate</h4>
+                    <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button id="modal-tournament-main-btn-lobby" type="button"      class="grid-cell default-grid-area btn1 modal-button">Lobby</button>
+                    <button id="modal-tournament-main-btn-create" type="button"     class="grid-cell default-grid-area btn1 modal-button" data-bs-target="#modal-tournament-create"  data-bs-toggle="modal" data-bs-dismiss="modal">Create</button>
+                    <button id="modal-tournament-main-btn-join" type="button"       class="grid-cell default-grid-area btnj modal-button" data-bs-target="#modal-tournament-join"    data-bs-toggle="modal" data-bs-dismiss="modal">Join</button>
+                    <button id="modal-tournament-main-btn-history" type="button"    class="grid-cell default-grid-area btnh modal-button" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">History</button>
 
                 </div>
             </div>
@@ -24,150 +17,64 @@
     </div>
 </div>
 <style>
+    #modal-tournament-main-content {
+        width: 800px !important;
+    }
+    #modal-tournament-main-body {
+        width: 800px !important;
+        height: 700px !important;
+        transform: translate(-150px, 0) !important;
+    }
     #modal-tournament-main-grid{
-        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-columns: repeat(auto-fill, 3.5%) !important;
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      title  title  title  title  .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btn1   btn1   btn1   btn1   btnj  btnj   btnj   btnj   btnh   btnh   btnh   btnh   btnh  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btn1   btn1   btn1   btn1   btnj  btnj   btnj   btnj   btnh   btnh   btnh   btnh   btnh  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btn1   btn1   btn1   btn1   btnj  btnj   btnj   btnj   btnh   btnh   btnh   btnh   btnh  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
     }
 
     .title {
         grid-area: title;
     }
+    .btncl {
+        grid-area: btncl;
+    }
+    .btn1 {
+        grid-area: btn1;
+        height: 90%;
+        width: 90%;
+    }
+    .btnj {
+        grid-area: btnj;
+        height: 90%;
+        width: 90%;
+    }
+    .btnh {
+        grid-area: btnh;
+        height: 90%;
+        width: 90%;
+    }
 </style>
-
-
-<!-- Tournament Modal -->
- <!--          <div id="modal-tournament">
-            <div id="modal-tournament-create-container">
-              <div class="modal-tournament-center create-modal">
-                <img id="modal-tournament-bigfoot-1" src="../../../assets/homeView/bigfootModal1.png" alt="big foot 1">
-                <img class="modal-tournament-bigfoot-2" src="../../../assets/homeView/bigfootModal2.png"
-                  alt="big foot 2">
-                <div id="modal-tournament-create-container-right-side">
-                  <div id="modal-tournament-create-form">
-                    <div id="modal-tournament-create-form-top">
-                      <h2>Host Tournament</h2>
-                    </div>
-                    <div id="modal-tournament-create-form-center">
-                      <div id="modal-tournament-create-form-name-container">
-                        <h5>Name: </h5>
-                        <input type="text" name="" id="modal-tournament-create-form-name-container-input">
-                      </div>
-                      <div id="modal-tournament-create-form-container-center">
-                        <div id="modal-tournament-create-form-left">
-                          <div id="modal-tournament-create-form-powerups-container">
-                            <h5>Powerups</h5>
-                            <input type="checkbox" name="" id="modal-tournament-create-form-name-container-checkbox">
-                          </div>
-                          <div id="modal-tournament-create-form-type-buttons-container">
-                            <barely-a-button class="modal-tournament-create-form-type-buttons" type="local" name="Local"
-                              width="3.6" buttonclass="rect-button">Left</barely-a-button>
-                            <barely-a-button class="modal-tournament-create-form-type-buttons" type="private"
-                              name="Private" width="3.6" buttonclass="rect-button">Middle</barely-a-button>
-                            <barely-a-button class="modal-tournament-create-form-type-buttons" type="public"
-                              name="Public" width="3.6" buttonclass="rect-button">Right</barely-a-button>
-                          </div>
-                          <div id="template-modal-tournament-create-form-invited-user-card-container" class="barely-a-scroll-class">
-                            <search-bar
-								placeholder="Invite a user"
-								width="250"
-								search-type="users"
-								on-click-event="select-user-invite"
-								clear-on-click="true"
-							>
-							</search-bar>
-                            <template id="template-modal-tournament-create-form-invited-user-card">
-                              <div class="modal-tournament-create-form-invited-user-card">
-                                <img class="modal-tournament-create-form-invited-user-card-avatar">
-                                <p class="modal-tournament-create-form-invited-user-card-username"></p>
-                                <img class="modal-tournament-create-form-invited-user-card-delete-user"
-                                  src="../assets/icons_128x128/icon_barely_a_logo_yellow.png">
-                              </div>
-                            </template>
-                          </div>
-                        </div>
-                        <div id="modal-tournament-create-form-right">
-                          <div id="modal-tournament-create-maps-container">
-                            <h3>Maps</h3>
-                            <img id="modal-tournament-create-map-ufo" name="ufo"
-                              class="modal-tournament-create-maps-button" src="../assets/icons_128x128/icon_map_ufo.png"
-                              alt="error loading the image">
-                            <img id="modal-tournament-create-map-lizard-people" name="lizard-people"
-                              class="modal-tournament-create-maps-button" src="../assets/icons_128x128/icon_map_lizard-people.png"
-                              alt="error loading the image">
-                            <img id="modal-tournament-create-map-snowman" name="snowman"
-                              class="modal-tournament-create-maps-button" src="../assets/icons_128x128/icon_map_snowman.png"
-                              alt="error loading the image">
-                            <img id="modal-tournament-create-map-lochness" name="lochness"
-                              class="modal-tournament-create-maps-button" src="../assets/icons_128x128/icon_map_lochness.png"
-                              alt="error loading the image">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div id="modal-tournament-create-form-bottom">
-                      <div id="modal-tournament-create-form-name-container-bottom-buttons">
-                        <button id="modal-tournament-create-form-create-button">Create</button>
-                        <button id='modal-tournament-create-form-join-button'>Join</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="modal-tournament-join-container">
-              <div class="modal-tournament-center join-modal">
-                <div id="modal-tournament-join-container-left-side">
-                  <div id="modal-tournament-join-container-left-side-top">
-                    <h1 id="modal-tournament-join-title">Join Tournament</h1>
-                  </div>
-                  <div id="modal-tournament-join-container-left-side-center">
-                    <template id="modal-tournament-join-tournament-cards-template">
-                      <div class="modal-tournament-join-tournament-card">
-                        <p class="modal-tournament-join-tournament-name"></p>
-                      </div>
-                    </template>
-                    <div id="modal-tournament-join-tournament-cards-container">
-                    </div>
-                  </div>
-                  <div id="modal-tournament-join-container-left-side-bottom">
-                    <button id="modal-tournament-join-form-host-button">Host</button>
-                  </div>
-                </div>
-                <img class="modal-tournament-bigfoot-2" id='modal-bigfoot-2'
-                  src="../../../assets/homeView/bigfootModal2.png" alt="big foot 2">
-                <img src="../../../assets/homeView/bigfootModal3.png" alt="big foot 3" id="modal-tournament-bigfoot-3">
-              </div>
-            </div>
-          </div>
-          <style>
-
- -->
-
-
-          </style>

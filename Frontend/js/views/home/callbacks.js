@@ -2,7 +2,6 @@ import { $id } from '../../abstracts/dollars.js';
 import router from '../../navigation/router.js';
 import call from '../../abstracts/call.js'
 import data from './data.js';
-import { generateTournamentName } from './methods.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 
 export function AIModalCallback(){
@@ -21,18 +20,6 @@ export function battleModalCallback(){
     view.removeAttribute("data-user-username");
     view.removeAttribute("data-user-avatar");
     modalManager.openModal("modal-create-game");
-}
-
-
-// TODO: return a boolean and treat the data inside the call function
-function checkEnrolement() {
-    call('tournament/enrolment/','GET').then(data => {
-        console.log("enrolement:", data);
-        return data;
-    }).error( error => {
-        console.log(error);
-        return error; // TODO: maybe return a "error"
-    })
 }
 
 function createTournamentCard(element) {
@@ -54,7 +41,7 @@ function createJoinTournamentList() {
 }
 
 export function tournamentModalCallback(){
-    modalManager.openModal("modal-tournament-main");
+    modalManager.openModal("modal-tournament-create"); // TODO: change to main!
     // TODO: check if the code below is still needed!
 //    let modalElement = $id('home-modal');
 //    let modalBody = $id('home-modal-body');

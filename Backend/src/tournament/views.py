@@ -22,6 +22,7 @@ from game.models import Game, GameMember
 from game.serializer import GameSerializer
 # Tournament
 from tournament.models import Tournament, TournamentMember
+from tournament.constants import MAX_LENGHT_OF_TOURNAMENT_NAME
 from tournament.serializer import TournamentMemberSerializer, TournamentInfoSerializer
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
 from user.utils_relationship import is_blocking
@@ -61,7 +62,7 @@ class HistoryView(BaseAuthenticatedView):
 
         # Get all tournaments of the target user
         tournaments = Tournament.objects.filter(
-            members__user=target, 
+            members__user=target,
             state__in=[Tournament.TournamentState.ONGOING, Tournament.TournamentState.FINISHED]
         ).order_by(
             'state',
@@ -112,15 +113,16 @@ class CreateTournamentView(BaseAuthenticatedView):
         logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
-        tournament_name = request.data.get('name')
+        tournament_name = request.data.get('name').trim()
 
         # Check if tournament name is not empty
         if not tournament_name:
             raise BarelyAnException(_("Tournament name cannot be empty"))
-
         # Validate tournament name using regex
         if not re.match(r'^[a-zA-Z0-9\-_]+$', tournament_name):
             raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
+        if tournament_name.len() > MAX_LENGHT_OF_TOURNAMENT_NAME:
+            raise BarelyAnException(_("Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters").format(MAX_LENGHT_OF_TOURNAMENT_NAME))
 
         tournament = create_tournament(
             creator_id=user.id,

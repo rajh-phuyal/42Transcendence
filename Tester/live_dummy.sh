@@ -503,11 +503,11 @@ echo -e "CREATING TOURNAMENTS:\tTournament 4: Round Robin Private in setup"
 TABLE_NAME="barelyaschema.tournament"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
-        (id, state,     name,                                           local_tournament, public_tournament, map_number, powerups,  finish_time) VALUES        \
-        (1, 'finished', 'Round Robin Tournament Players 8,9,10,11',     FALSE,            TRUE,              2,          TRUE,      '2024-07-01 20:30:00+00'), \
-        (2, 'finished', 'Round Robin Tournament Players 3-11',          FALSE,            FALSE,             4,          FALSE,     '2024-08-01 21:00:00+00'), \
-        (3, 'setup',    'Let’s play!?',                                 FALSE,            TRUE,              3,          TRUE,      NULL),                     \
-        (4, 'setup',    'This is a private one ;)',                     FALSE,            FALSE ,            1,          TRUE,      NULL);"
+        (id, state,     name,                       local_tournament, public_tournament, map_number, powerups,  finish_time) VALUES        \
+        (1, 'finished', 'Players 8,9,10,11',        FALSE,            TRUE,              2,          TRUE,      '2024-07-01 20:30:00+00'), \
+        (2, 'finished', 'Players 3-11',             FALSE,            FALSE,             4,          FALSE,     '2024-08-01 21:00:00+00'), \
+        (3, 'setup',    'Let’s play!?',             FALSE,            TRUE,              3,          TRUE,      NULL),                     \
+        (4, 'setup',    'This is private one! ;)',  FALSE,            FALSE ,            1,          TRUE,      NULL);"
 
 # Create the tournament members
 echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 1: Round Robin between players:9,10,11,12"
