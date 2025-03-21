@@ -20,7 +20,9 @@ html, body {
 	padding: 0.5em;
 	cursor: pointer;
 	background-color: #170100;
-	background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+    border: 1px solid white;
+    border-radius: 8px;
+    margin: 0px 10px !important;
 }
 
 .navbar-brand-custom {
@@ -218,6 +220,10 @@ h5 {
 }
 
 /* ALL NODES THAT HAVE SCROLL BARS SHOULD BE SET TO THIS CLASS */
+.barely-a-scroll-class {
+    height: 100%;
+    overflow-y: auto;
+}
 .barely-a-scroll-class::-webkit-scrollbar {
     width: 5px;
 }
@@ -371,16 +377,6 @@ h5 {
     background-color: rgba(0, 0, 0, 0) !important;
 }
 
-/* This is only for the tournament modals since it needs to be bigger then the default --bs-modal-width: 500px*/
-.modal-tournament-body {
-    width: 800px !important;
-    height: 700px !important;
-    transform: translate(-150px, 0) !important;
-}
-.modal-tournament-content {
-    width: 800px !important;
-}
-
 .image-modal-background-image {
     background-size: cover;
     background-repeat: no-repeat;
@@ -402,26 +398,34 @@ h5 {
     background-color: black;
     cursor: pointer;
     padding: 2px 4px;
-    border: 2px solid #968503;
+    border: 2px solid #ffffff;
+    user-select: none;
 }
 .modal-image-button {
-    background-color: #00000000;
+    background-color: #00000000 !important;
     border: none !important;
+    cursor: pointer;
 }
 .modal-toggle-button-enabled {
     filter: brightness(100%) !important;
+    background-color: #660202;
+    border: 2px solid white;
+}
+.modal-toggle-button-enabled:hover {
+    background-color: #560202 !important;
+    border: 2px solid white !important;
 }
 .modal-toggle-button-disabled {
     filter: brightness(30%) !important;
 }
 
 .modal-button:hover {
-    background-color: #4a4a4a !important;
-    border: 2px solid black !important;
+    background-color: #4a4a4a;
+    border: 2px solid black;
 }
 .modal-button:active{
-    background-color: #333333 !important;
-    border: 2px solid white !important;
+    background-color: #333333;
+    border: 2px solid white;
 }
 .modal-button:focus, .modal-button:focus-visible {
     background-color: #4a4a4a !important;
@@ -432,14 +436,15 @@ h5 {
 }
 
 /* Deactivate active and focus for toggle buttons */
-.modal-toggle-button-enabled:focus,
 .modal-toggle-button-enabled:active,
-.modal-toggle-button-disabled:focus,
 .modal-toggle-button-disabled:active {
-    outline: none !important;
-    box-shadow: none !important;
-    background-color: inherit !important; /* Ensures it keeps its default bg */
-    border: inherit !important; /* Ensures border doesn't change */
+    filter: brightness(130%) !important;
+}
+.modal-image-button:hover {
+    background-color: #660202 !important;
+    border: 2px solid white !important;
+    border-radius: 10px;
+    filter: brightness(100%) !important;
 }
 
 /* For flag selector dropdown */

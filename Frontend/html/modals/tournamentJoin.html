@@ -1,21 +1,15 @@
-<!-- TODO: do this -->
 <div class="modal fade" id="modal-tournament-join" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div id="modal-tournament-join-content" class="modal-content image-modal-content modal-tournament-content">
-            <div class="modal-body image-modal-body modal-tournament-body">
-                <img src='../../assets/backgrounds/modal-tournament-join.png' class="image-modal-background-image" alt="Background Image">
-                <button class="btn" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal">TEST</button>
+        <div id="modal-tournament-join-content" class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-tournament-join.png' class="image-modal-background-image" alt="Background Image" draggable="false">
                 <div id="modal-tournament-join-grid" class="view-overlay-grid">
-
-                        <!-- Place your content here -->
-
-                            <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-join-title">Modal title</h5>
-                            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-                            <!-- <p>This is some text placed on top of the background image.</p> -->
-                            <!-- Add more components, grids, etc. as needed -->
-                            <!-- <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button> -->
-                            <!-- <button type="button" class="btn modal-button">Save changes</button> -->
-
+                    <h4 class="modal-title grid-cell default-grid-area title" id="modal-tournament-join-title">Modal title TODO: translate</h4>
+                    <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div id="modal-tournament-join-list" class="grid-cell default-grid-area barely-a-scroll-class lst">
+                        asd
+                    </div>
+                    <button class="btn modal-button btnb" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button> <!-- TODO: translate -->
                 </div>
             </div>
         </div>
@@ -27,33 +21,87 @@
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      title  title  title  title  .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
+            "title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            "title  title  title  title  title  title  title  title  title  title  title  title  title  title "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
+            ".      lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    lst    .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      btnb   btnb   btnb   btnb   .      .      .      .      .      .      .      .      .      "
+            ".      btnb   btnb   btnb   btnb   .      .      .      .      .      .      .      .      .      "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      "
     }
 
     .title {
         grid-area: title;
+    }
+    .btncl {
+        grid-area: btncl;
+    }
+    .lst {
+        grid-area: lst;
+        border: 1px solid black;
+        border-radius: 5px;
+        flex-direction: row;
+    }
+    .btnb {
+        grid-area: btnb;
+    }
+</style>
+
+<!-- TEMPLATE FOR A TOURNAMENT -->
+<template id="modal-tournament-join-card-template">
+    <div class="modal-tournament-join-card-container">
+        <h5     class="grid-cell default-grid-area modal-tournament-join-card-tournament-name tname"></h5>
+        <img    class="grid-cell default-grid-area modal-tournament-join-card-tournament-type type" src="" draggable="false">
+        <h6     class="grid-cell default-grid-area modal-tournament-join-card-tournament-date dt"></h6>
+    </div>
+</template>
+<style>
+    .modal-tournament-join-card-container{
+        display: grid;
+        cursor: pointer;
+        background-color: #EFE7D3;
+        color: black;
+        margin: 10px 0px;
+        border:  3px solid  black;
+        border-radius: 5px;
+        align-items: center;
+        width: 90%;
+        height: 50px;
+        justify-content: space-between;
+        grid-template-columns: repeat(auto-fill, 10%);
+        grid-template-rows: repeat(auto-fill, 20%);
+        cursor: pointer;
+        grid-template-areas:
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+    }
+    .tname {
+        grid-area: tname;
+    }
+    .type {
+        grid-area: type;
+    }
+    .dt {
+        grid-area: dt;
     }
 </style>

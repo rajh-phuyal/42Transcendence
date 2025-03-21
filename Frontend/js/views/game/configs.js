@@ -168,13 +168,30 @@ export default {
                     // Hide by default
                     controlsLeft.style.display = "none";
                     controlsRight.style.display = "none";
+                    // Show bottom border for player cards
+                    const playerLeftBottomPiece = this.domManip.$class("lst")[0];
+                    playerLeftBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+                    playerLeftBottomPiece.style.borderBottomLeftRadius = "3px";
+                    playerLeftBottomPiece.style.borderBottomRightRadius = "3px";
+                    const playerRightBottomPiece = this.domManip.$class("rst")[0];
+                    playerRightBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+                    playerRightBottomPiece.style.borderBottomLeftRadius = "3px";
+                    playerRightBottomPiece.style.borderBottomRightRadius = "3px";
                     // Show the controls if userid matches client if or is flatmate
                     const clientId = this.$store.fromState('user').id
-                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3)
+                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3){
                         controlsLeft.style.display = "block";
+                        playerLeftBottomPiece.style.borderBottom = "none";
+                        playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
+                        playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
+                    }
                     console.warn(gameObject.playerRight.id );
-                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3)
+                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
                         controlsRight.style.display = "block";
+                        playerRightBottomPiece.style.borderBottom = "none";
+                    playerRightBottomPiece.style.borderBottomLeftRadius = "0px";
+                    playerRightBottomPiece.style.borderBottomRightRadius = "0px";
+                    }
                 })
                 .catch(error => {
                     router('/404', {msg: error.message});

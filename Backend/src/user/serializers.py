@@ -15,11 +15,10 @@ import datetime
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatar_path']
+        fields = ['id', 'username', 'avatar']
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
-    avatarUrl = serializers.CharField(source='avatar_path')
     firstName = serializers.CharField(source='first_name', default="John")
     lastName = serializers.CharField(source='last_name', default="Doe")
     online = serializers.SerializerMethodField()
@@ -31,13 +30,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
+        fields = ['id', 'username', 'avatar', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
 
     def get_lastLogin(self, obj):
         # Check if `last_login` is None or `online` is True
         if obj.last_login is None:
-            return datetime.datetime.now().isoformat()
-        #     return "under surveillance"
+            return "under surveillance"
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
         return obj.last_login #TODO: Issue #193
@@ -212,12 +210,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 class ListFriendsSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
-    avatarUrl = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
     class Meta:
         model = IsCoolWith
-        fields = ['id', 'username', 'avatarUrl', 'status']
+        fields = ['id', 'username', 'avatar', 'status']
 
     def get_other_user(self, obj):
         user_id = self.context.get('target_user_id')
@@ -231,9 +229,9 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         other_user = self.get_other_user(obj)
         return other_user.username
 
-    def get_avatarUrl(self, obj):
+    def get_avatar(self, obj):
         other_user = self.get_other_user(obj)
-        return other_user.avatar_path
+        return other_user.avatar
 
     def get_status(self, obj):
         # TODO: Friendship status should be from the perspective of the requester

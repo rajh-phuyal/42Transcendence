@@ -1,4 +1,5 @@
 import call from '../../abstracts/call.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 import router from '../../navigation/router.js';
 
 export default {
@@ -9,7 +10,7 @@ export default {
 
     methods: {
         formatTimestamp(isoTimestamp) {
-            return moment(isoTimestamp).format('YYYY-MM-DD h:mm a').replace('am', 'a.m.').replace('pm', 'p.m.');
+            return loadTimestamp(isoTimestamp, "YYYY-MM-DD h:mm a").replace('am', 'a.m.').replace('pm', 'p.m.');
         },
 
         cleanUpGameList() {
@@ -22,7 +23,7 @@ export default {
         },
 
         setAvatarOnGameCard (element, playerObject) {
-            element.src = `${window.origin}/media/avatars/${playerObject.avatarUrl}`;
+            element.src = `${window.origin}/media/avatars/${playerObject.avatar}`;
             if (playerObject.result === "lost")
                 element.style.filter = "brightness(50%)";
         },
@@ -56,7 +57,6 @@ export default {
             else
                 container.querySelector(".modal-game-history-card-date").textContent = gameObject.state;
             this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
-            // TODO: Create an event listner for the ongoing games @xico what do u mean by this?
         }
     },
 
@@ -74,10 +74,12 @@ export default {
                 return false;
             }
             call(`game/history/${this.userId}/`, 'GET').then(data => {
-                // console.log("data", data);
                 this.data = data;
-                if (data.games.length)
-                    this.domManip.$id("modal-game-history-no-games").style.display = "none";
+                if (!data.games.length) {
+                    this.domManip.$id("modal-game-history-no-games").style.display = "block";
+                    return ;
+                }
+                this.domManip.$id("modal-game-history-no-games").style.display = "none";
                 for (let element of data.games)
                     this.createGameCard(element);
             })

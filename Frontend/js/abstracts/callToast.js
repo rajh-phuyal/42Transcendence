@@ -52,7 +52,7 @@ export default function $callToast(type, message, conversation = null) {
     let toast = $id(`${type}-toast`);
     let toastMsg = $id(`${type}-toast-message`);
 
-    if (conversation.id != null) {
+    if (conversation) {
         if (!$id(`message-toast-${conversation.id}`))
             toast = createConversationToast(conversation);
         else
@@ -68,7 +68,7 @@ export default function $callToast(type, message, conversation = null) {
     const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: 10000 }).show();
 
     // remove the conversation toast after it closes
-    if (conversation.id != null) {
+    if (conversation != null) {
         toast.addEventListener('hidden.bs.toast', removeToast);
     }
 }

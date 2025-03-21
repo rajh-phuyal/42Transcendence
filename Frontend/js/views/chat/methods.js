@@ -5,6 +5,7 @@ import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
 import router from '../../navigation/router.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -249,7 +250,7 @@ export function createMessage(element, prepend = true) {
     template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
-    template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
+    template.querySelector(".chat-view-message-timestamp").textContent = loadTimestamp(element.lastMessageTime, "YYYY-MM-DD HH:mm");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
     // Prepend or append the message to the container

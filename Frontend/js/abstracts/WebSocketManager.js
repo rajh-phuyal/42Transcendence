@@ -1,16 +1,21 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods.js';
+import { updateView } from '../views/tournament/methodsView.js';
+import { updateMembers } from '../views/tournament/methodsMembers.js';
+import { updateDataMember, updateDataGame } from '../views/tournament/methodsData.js';
+import { updatePodium, updateFinalsDiagram } from '../views/tournament/methodsRankFinals.js';
+
+
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { tournamentData } from '../views/tournament/objects.js';
 const { hostname } = window.location;
 
 class WebSocketManager {
     constructor() {
         this.socket = null;
-        this.currentRoute = undefined;
     }
 
     // Connect to WebSocket with the provided token
@@ -81,6 +86,9 @@ class WebSocketManager {
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
         console.log("BE -> FE:", message);
+
+        const currentRoute = $store.fromState("currentRoute");
+
         switch (message.messageType) {
             // BASIC MESSAGES
             case "error":
@@ -93,7 +101,7 @@ class WebSocketManager {
             // CHAT RELATED MESSAGES
             case "chat":
                 audioPlayer.playSound("chat");
-                if (this.currentRoute == "chat")
+                if (currentRoute == "chat")
                     processIncomingWsChatMessage(message);
                 else {
                     console.log("message:", message);
@@ -103,7 +111,7 @@ class WebSocketManager {
             case "updateBadge":
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
-                else if (message.what == "conversation" && this.currentRoute == "chat")
+                else if (message.what == "conversation" && currentRoute == "chat")
                     updateConversationBadge(message.id, message.value);
                 return ;
             case "newConversation":
@@ -114,32 +122,66 @@ class WebSocketManager {
                 return ;
 
             // TOURNAMENT RELATED MESSAGES
+            case "clientRole":
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received clientRole for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.clientRole = message.clientRole;
+                    updateView();
+                }
+                return ;
             case "tournamentInfo":
-                if (this.currentRoute == "tournament"){
-                    buildView(message.state);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentInfo.id !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentInfo for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.tournamentInfo = message.tournamentInfo;
+                    updateView();
                 }
                 return ;
             case "tournamentMember":
-                updateParticipantsCard(message.tournamentMember);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    updateDataMember(message.tournamentMember);
+                    updateView();
+                }
                 return ;
             case "tournamentMembers":
-                    updateRankTable(message.tournamentMembers);
-                console.log("tournanemtMembers:", message.tournamentMembers);
-                console.log("Length!!!!", message.tournamentMembers.length);
-                if (message.tournamentMembers.length == 3) {
-                    console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
-                    updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.tournamentMembers = message.tournamentMembers;
+                    if (message.tournamentMembers.length == 3) {
+                        console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
+                        updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
+                    }
+                    updateView();
                 }
                 return ;
             case "tournamentGame":
-                updateGameCard(message.TournamentGame);
-                updateFinalsDiagram(message.TournamentGame);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    updateDataGame(message.tournamentGame);
+                    updateFinalsDiagram(message.tournamentGame);
+                    updateView();
+                }
                 return ;
 
             // PROFILE RELATED MESSAGES
             case "reloadProfile":
-                if (this.currentRoute.startsWith("profile"))
-                    processIncomingReloadMsg(message, this.currentRoute);
+                if (currentRoute === "profile")
+                    processIncomingReloadMsg(message, currentRoute);
                 return ;
         }
 
@@ -163,14 +205,6 @@ class WebSocketManager {
 		if (value > 99)
 			value = "99+";
         $id("chat-nav-badge").textContent = value || "";
-    }
-
-    setCurrentRoute(route) {
-        this.currentRoute = route;
-    }
-
-    getCurrentRoute() {
-        return this.currentRoute;
     }
 
     reconnect() {
