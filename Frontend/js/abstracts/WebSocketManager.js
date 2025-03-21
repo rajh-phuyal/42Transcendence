@@ -103,8 +103,10 @@ class WebSocketManager {
                 audioPlayer.playSound("chat");
                 if (currentRoute == "chat")
                     processIncomingWsChatMessage(message);
-                else
-                    $callToast("error", "Need to implement the notification for chat as toast! issue #217");
+                else {
+                    console.log("message:", message);
+                    $callToast("message", message.content, {id: message.conversationId, username: message.username, avatar: message.avatar});
+                }
                 return ;
             case "updateBadge":
                 if (message.what == "all")
