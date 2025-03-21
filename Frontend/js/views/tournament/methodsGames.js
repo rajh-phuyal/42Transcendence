@@ -2,6 +2,7 @@ import { $id } from "../../abstracts/dollars.js";
 import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
 import $store from '../../store/store.js';
+import { loadTimestamp } from "../../abstracts/timestamps.js";
 
 // Object to track active countdowns of games
 const countdownTimers = {};
@@ -59,7 +60,7 @@ function updateGameCard(container, game) {
         if (game.deadline) {
             container.style.display = "grid";
             container.title = "Hurrry up! The game is only open for a limited time!"; // TODO: translate
-            startGameCountdown(container, game.id, game.deadline);
+            startGameCountdown(container, game.id, loadTimestamp(game.deadline));
             // Animate the card if the user is part of the game
             if (container.getAttribute("player-left-id") == $store.fromState("user").id || container.getAttribute("player-right-id") == $store.fromState("user").id)
                 container.style.animation = "pulse-game-card 2s infinite";
