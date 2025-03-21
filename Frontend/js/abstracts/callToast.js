@@ -2,7 +2,7 @@ import { $id, $class, $on } from '../abstracts/dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
 import router from '../navigation/router.js'
 
-
+/* INTERNAL CHAT TOAST RELATED */
 function routeToConversation(event) {
     if (event.target.getAttribute("type") === "button")
         return ;
@@ -47,6 +47,7 @@ function removeToast(event) {
     event.target.remove();
 }
 
+/* DEFAULT TOAST RELATED */
 export default function $callToast(type, message, conversation = null) {
     let toast = $id(`${type}-toast`);
     let toastMsg = $id(`${type}-toast-message`);

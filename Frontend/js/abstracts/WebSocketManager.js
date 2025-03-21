@@ -10,7 +10,7 @@ const { hostname } = window.location;
 class WebSocketManager {
     constructor() {
         this.socket = null;
-            this.currentRoute = undefined;
+        this.currentRoute = undefined;
     }
 
     // Connect to WebSocket with the provided token
