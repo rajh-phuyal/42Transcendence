@@ -38,7 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             return "under surveillance"
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
-        return obj.last_login #TODO: Issue #193
+        return obj.last_login
     
     def get_online(self, user):
         # Check if the user's online status is in the cache

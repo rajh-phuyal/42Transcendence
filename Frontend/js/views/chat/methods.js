@@ -250,7 +250,7 @@ export function createMessage(element, prepend = true) {
     template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
-    template.querySelector(".chat-view-message-timestamp").textContent = loadTimestamp(element.lastMessageTime, "YYYY-MM-DD HH:mm");
+    template.querySelector(".chat-view-message-timestamp").textContent = loadTimestamp(element.createdAt, "YYYY-MM-DD HH:mm");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
     // Prepend or append the message to the container
