@@ -22,7 +22,7 @@ export default {
         },
 
         setAvatarOnGameCard (element, playerObject) {
-            element.src = `${window.origin}/media/avatars/${playerObject.avatarUrl}`;
+            element.src = `${window.origin}/media/avatars/${playerObject.avatar}`;
             if (playerObject.result === "lost")
                 element.style.filter = "brightness(50%)";
         },

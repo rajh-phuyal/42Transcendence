@@ -39,8 +39,8 @@ function createTemplateGameCard(game) {
     // Add click listener
     container.addEventListener("click", gameCardCallback);
     // Set the player's data
-    template.querySelector(".tournament-game-card-player-left-avatar").src = window.origin + "/media/avatars/" + game.playerLeft.avatarUrl;
-    template.querySelector(".tournament-game-card-player-right-avatar").src = window.origin + "/media/avatars/" + game.playerRight.avatarUrl;
+    template.querySelector(".tournament-game-card-player-left-avatar").src = window.origin + "/media/avatars/" + game.playerLeft.avatar;
+    template.querySelector(".tournament-game-card-player-right-avatar").src = window.origin + "/media/avatars/" + game.playerRight.avatar;
     template.querySelector(".tournament-game-card-player-left-username").textContent = game.playerLeft.username;
     template.querySelector(".tournament-game-card-player-right-username").textContent = game.playerRight.username;
     // Always add it to the upcoming tab the updateGameCard will move it to the finished tab if needed
@@ -79,12 +79,16 @@ function updateGameCard(container, game) {
         container.querySelector(".tournament-game-card-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;
         // Highlight the winner
         if (game.playerLeft.result === "won") {
-            container.querySelector(".tournament-game-card-player-left-avatar").style.filter    = "brightness(1.5)";
+            container.querySelector(".tournament-game-card-player-left-avatar").style.filter    = "brightness(1)";
             container.querySelector(".tournament-game-card-player-right-avatar").style.filter   = "brightness(0.5)";
+            container.querySelector(".tournament-game-card-player-left-username").style.color   = "black";
+            container.querySelector(".tournament-game-card-player-right-username").style.color  = "grey";
         }
         else {
             container.querySelector(".tournament-game-card-player-left-avatar").style.filter    = "brightness(0.5)";
-            container.querySelector(".tournament-game-card-player-right-avatar").style.filter   = "brightness(1.5)";
+            container.querySelector(".tournament-game-card-player-right-avatar").style.filter   = "brightness(1)";
+            container.querySelector(".tournament-game-card-player-left-username").style.color   = "grey";
+            container.querySelector(".tournament-game-card-player-right-username").style.color  = "black";
         }
     }
 

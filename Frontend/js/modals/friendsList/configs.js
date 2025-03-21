@@ -67,7 +67,7 @@ export default {
                 elementDiv.setAttribute("user-id", element.id);
                 elementDiv.setAttribute("id", "modal-friends-list-list-element-user-" + element.username);
 
-                container.querySelector("#modal-friends-list-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatarUrl;
+                container.querySelector("#modal-friends-list-list-element-avatar-image").src = window.origin + '/media/avatars/' + element.avatar;
                 container.querySelector(".modal-friends-list-list-element-username").textContent = element.username;
                 container.querySelector("#modal-friends-list-list-element-friendship-image").src = this.buttonSettings[element.status].path;
                 mainDiv.appendChild(container)

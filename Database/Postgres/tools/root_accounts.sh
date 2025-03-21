@@ -53,7 +53,7 @@ echo "STARTING ROOT ACCOUNTS SCRIPT..."
 if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user;" | grep -q "(0 rows)"; then
 	echo "Database is empty therfore create the root accounts..."
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "INSERT INTO barelyaschema.user \
-        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar_path) VALUES     \
+        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar) VALUES     \
 		($OVERLORDS_ID,     'hashed_password_1',    '2000-01-01 00:00:00+00',   TRUE,         '$OVERLORDS_USERNAME','$OVERLORDS_FIRST_NAME',    '$OVERLORDS_LAST_NAME', 'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$OVERLORDS_AVATAR'),   \
 		($AI_ID,            'hashed_password_2',    '2000-01-01 00:00:00+00',   TRUE,         '$AI_USERNAME',       '$AI_FIRST_NAME',           '$AI_LAST_NAME',        'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$AI_AVATAR'),          \
         ($FLATMATE_ID,      'hashed_password_3',    '2000-01-01 00:00:00+00',   TRUE,         '$FLATMATE_USERNAME', '$FLATMATE_FIRST_NAME',     '$FLATMATE_LAST_NAME',  'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$FLATMATE_AVATAR');"

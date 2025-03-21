@@ -84,7 +84,7 @@ class SearchBar extends HTMLElement {
             `).join('') : this.searchResults
             .map(user => `
                 <div id="user-item-${user.id}" class="user-item">
-                    <img src="${window.origin}/media/avatars/${user.avatar_path}"
+                    <img src="${window.origin}/media/avatars/${user.avatar}"
                          alt="${user.username}"
                          class="user-image"
                          draggable="false">

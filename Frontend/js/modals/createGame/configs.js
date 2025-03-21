@@ -54,7 +54,7 @@ export default {
             const user = event.detail.user;
             console.log(user);
             this.opponentId = user.id;
-            this.avatar = user.avatar_path;
+            this.avatar = user.avatar;
             this.username = user.username;
             console.log(this.opponentId, this.avatar, this.username);
             this.updateOpponentSection();

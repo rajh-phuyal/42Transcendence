@@ -8,37 +8,39 @@
                     <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
                     <!-- CHOOSE TITLE -->
-                    <h5                                                         class="grid-cell default-grid-area ttitle">Tournament Title</h5>
+                    <h6                                                         class="grid-cell default-grid-area ttitle">Tournament Title</h6>
                     <input  id="modal-tournament-tournament-title"              class="grid-cell default-grid-area ititle barely-an-input" maxlength="23" type="text" placeholder="Enter a title">
                     <button id="modal-tournament-btn-title-gen" type="button"   class="grid-cell default-grid-area ttgen modal-button">?</button>
                     <!-- CHOOSE PRIVACY -->
-                    <h5                                             class="grid-cell default-grid-area privt">Privacy</h5>
+                    <h6                                             class="grid-cell default-grid-area privt">Privacy</h6>
                     <img id="modal-tournament-create-priv-private"  class="grid-cell default-grid-area pri modal-button modal-image-button sound-button modal-toggle-button-disabled priv-button" datapublic="false" src="../assets/icons_128x128/icon_tournament_private.png" draggable="false">
                     <img id="modal-tournament-create-priv-public"   class="grid-cell default-grid-area pub modal-button modal-image-button sound-button modal-toggle-button-disabled priv-button" datapublic="true" src="../assets/icons_128x128/icon_tournament_public.png" draggable="false">
                     <!-- CHOOSE TYPE -->
-                    <h5                                             class="grid-cell default-grid-area typt">Type</h5>
+                    <h6                                             class="grid-cell default-grid-area typt">Type</h6>
                     <img id="modal-tournament-create-type-local"    class="grid-cell default-grid-area tyloc modal-button modal-image-button sound-button modal-toggle-button-disabled typ-button" datatype="local"    src="../assets/icons_128x128/icon_tournament_local.png" draggable="false">
                     <img id="modal-tournament-create-type-remote"   class="grid-cell default-grid-area tyrem modal-button modal-image-button sound-button modal-toggle-button-disabled typ-button" datatype="public"   src="../assets/icons_128x128/icon_tournament_remote.png" draggable="false">
                     <!-- CHOOSE MAP -->
-                    <h5                                                   class="grid-cell default-grid-area mapst">Maps</h5>
+                    <h6                                                   class="grid-cell default-grid-area mapst">Maps</h6>
                     <img id="modal-tournament-create-map-ufo"             class="grid-cell default-grid-area mufo modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="1" src="../assets/icons_128x128/icon_map_ufo.png" draggable="false">
                     <img id="modal-tournament-create-map-lizard-people"   class="grid-cell default-grid-area mliz modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="2" src="../assets/icons_128x128/icon_map_lizard-people.png" draggable="false">
                     <img id="modal-tournament-create-map-snowman"         class="grid-cell default-grid-area msno modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="3" src="../assets/icons_128x128/icon_map_snowman.png" draggable="false">
                     <img id="modal-tournament-create-map-lochness"        class="grid-cell default-grid-area mloc modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="4" src="../assets/icons_128x128/icon_map_lochness.png" draggable="false">
                     <!-- CHOOSE POWERUPS -->
-                    <h5                                                   class="grid-cell default-grid-area put">Powerups</h5>
+                    <h6                                                   class="grid-cell default-grid-area put">Powerups</h6>
                     <button id="modal-tournament-btn-pu" type="button" enabled="true" class="grid-cell default-grid-area modal-button btnpu">Powerups</button>
                     <!-- CHOOSE USERS -->
-                    <h5                                             class="grid-cell default-grid-area userst">Select Users</h5>
-                    <div class="grid-cell default-grid-area srch">
+                    <h6   id="modal-tournament-opponents-header"                                           class="grid-cell default-grid-area userst">Select Users</h6>
+                    <div  id="modal-tournament-opponents-content" class="grid-cell default-grid-area srch">
                         <search-bar
                             placeholder="Invite a user"
                             width="250"
+                            heigth="30"
                             search-type="users"
                             on-click-event="select-user-invite"
                             only-search-friends="true"
                             clear-on-click="true"
-                        >
+                        ></search-bar>
+                        <div id="modal-tournament-create-opponents-container" class="barely-a-scroll-class"></div>
                     </div>
                     <button class="grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button>
                     <button id="modal-tournament-create-btn-create" type="button"     class="grid-cell default-grid-area btnc modal-button">Create</button>
@@ -56,8 +58,8 @@
             ".      .      .      .      .      .      .      .      .      .      .      .      btncl  .      "
             "title  title  title  title  title  title  title  title  title  title  title  title  title  title  "
             "title  title  title  title  title  title  title  title  title  title  title  title  title  title  "
-            ".      ttitle ttitle ttitle ttitle ttitle ttitle ttitle .      privt  privt  privt  privt  .      "
-            ".      ititle ititle ititle ititle ititle ititle ttgen  .      pub    pub    pri    pri    .      "
+            ".      ttitle ttitle ttitle ttitle ttitle ttitle ttgen  .      privt  privt  privt  privt  .      "
+            ".      ititle ititle ititle ititle ititle ititle ititle .      pub    pub    pri    pri    .      "
             ".      .      .      .      .      .      .      .      .      pub    pub    pri    pri    .      "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      "
             ".      userst userst userst userst userst userst userst .      typt   typt   typt   typt   .      "
@@ -168,5 +170,45 @@
     }
     .btnc {
         grid-area: btnc;
+    }
+</style>
+
+<!-- TEMPLATE FOR INVITED USER CARD -->
+<template id="modal-tournament-create-opponent-template">
+    <div class="modal-tournament-create-opponent-container">
+        <img    class="modal-tournament-create-opponent-avatar">
+        <h6     class="modal-tournament-create-opponent-username"></h6>
+        <img    class="modal-tournament-create-btn-delete-opponent modal-button modal-image-button" src="../assets/icons_128x128/icon_barely_a_logo_yellow.png"> <!-- TODO: this button needs to go to icons folder -->
+    </div>
+</template>
+<style>
+    #modal-tournament-create-opponents-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 80%;
+        border: 1px solid black;
+        border-radius: 10px;
+    }
+    .modal-tournament-create-opponent-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        height: 60px;
+        margin: 5px;
+        padding: 5px;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-tournament-create-opponent-avatar {
+        height: 40px;
+        width: auto;
+    }
+    .modal-tournament-create-btn-delete-opponent {
+        height: 30px;
+        width: auto;
     }
 </style>

@@ -7,7 +7,7 @@ export function updatePodium(member, position, show = true) {
     const podiumContainer = $id(`tournament-podium-${position}`);
     if(!podiumContainer || !member)
         return ;
-    podiumContainer.querySelector(".tournament-podium-avatar").src = window.origin + "/media/avatars/" + member.avatarUrl;
+    podiumContainer.querySelector(".tournament-podium-avatar").src = window.origin + "/media/avatars/" + member.avatar;
     podiumContainer.querySelector(".tournament-podium-username").textContent = member.username;
     podiumContainer.setAttribute("userid", member.id);
     if (show) {
@@ -49,8 +49,8 @@ export function updateFinalsDiagram(game) {
     diagramContainer.querySelector(".finals-title").textContent = game.type;
     diagramContainer.querySelector(".finals-player-left-username").textContent = game.playerLeft.username;
     diagramContainer.querySelector(".finals-player-right-username").textContent = game.playerRight.username;
-    diagramContainer.querySelector(".finals-player-left-avatar").src = window.origin + "/media/avatars/" + game.playerLeft.avatarUrl;
-    diagramContainer.querySelector(".finals-player-right-avatar").src = window.origin + "/media/avatars/" + game.playerRight.avatarUrl;
+    diagramContainer.querySelector(".finals-player-left-avatar").src = window.origin + "/media/avatars/" + game.playerLeft.avatar;
+    diagramContainer.querySelector(".finals-player-right-avatar").src = window.origin + "/media/avatars/" + game.playerRight.avatar;
 
     if (game.state !== "pending") {
         diagramContainer.querySelector(".finals-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;

@@ -28,7 +28,7 @@ function createRankEntry(member) {
     container.addEventListener("click", rankRowCallback);
     // Fill the row with data
     container.querySelector(".tournament-rank-row-position").textContent = member.rank;
-    container.querySelector(".tournament-rank-row-avatar").src = window.origin + "/media/avatars/" + member.avatarUrl;
+    container.querySelector(".tournament-rank-row-avatar").src = window.origin + "/media/avatars/" + member.avatar;
     container.querySelector(".tournament-rank-row-username").textContent = member.username;
     container.querySelector(".tournament-rank-row-wins").textContent = member.wonGames;
     container.querySelector(".tournament-rank-row-diff").textContent = member.winPoints;

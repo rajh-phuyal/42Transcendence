@@ -144,7 +144,7 @@ function updateButtons() {
         buttonFinals.style.display          = "block";
         buttonRoundRobin.style.display      = "block";
         buttonGamesFinished.style.display   = "block";
-        buttonGamesUpcoming.style.display   = "block"; // TODO: change to none
+        buttonGamesUpcoming.style.display   = "none";
     }
 
     // Start & Delete Tournament Button

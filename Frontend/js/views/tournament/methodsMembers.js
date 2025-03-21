@@ -28,7 +28,7 @@ function createTemplateMemberCard(member) {
     container.addEventListener("click", memberCardCallback);
     // Set username and avatar
     container.querySelector(".tournament-member-card-username").textContent += member.username; // += to not overwrite the admin tag
-    container.querySelector(".tournament-member-card-avatar").src = window.origin + "/media/avatars/" + member.avatarUrl;
+    container.querySelector(".tournament-member-card-avatar").src = window.origin + "/media/avatars/" + member.avatar;
     // Highlight the admin
     if (member.id === data.tournamentInfo.adminId) {
         container.style.border = "3px solid black";

@@ -1,5 +1,5 @@
 # Basics
-import logging
+import logging, re
 from rest_framework import status
 # Django
 from django.utils import timezone
@@ -20,7 +20,7 @@ from user.utils_relationship import are_friends, is_blocking, is_blocked
 from game.models import Game
 from game.serializer import GameSerializer
 # Tournament
-from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
+from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT, MAX_LENGHT_OF_TOURNAMENT_NAME
 from tournament.models import Tournament, TournamentMember
 from tournament.serializer import TournamentMemberSerializer
 # Chat
@@ -29,6 +29,11 @@ from chat.message_utils import create_and_send_overloards_pm
 def validate_tournament_creation(name, map_number):
     if name is None or not isinstance(name, str):
         raise BarelyAnException(_("Can't create a tournament without a name"))
+    # Validate tournament name using regex
+    if not re.match(r'^[a-zA-Z0-9\-_]+$', name):
+        raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
+    if len(name) > MAX_LENGHT_OF_TOURNAMENT_NAME:
+        raise BarelyAnException(_("Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters").format(MAX_LENGHT_OF_TOURNAMENT_NAME))
     if map_number is None or not isinstance(map_number, int):
         raise BarelyAnException(_("Can't create a tournament without specifying a map number"))
     if map_number not in [1, 2, 3, 4]:
@@ -53,15 +58,12 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     if not opponent_ids:
         opponent_ids = None
 
-    # Validate tournament params for edge cases
-    if local_tournament and public_tournament:
-        raise BarelyAnException(_("Tournament can't be both local and public"))
-    if local_tournament and opponent_ids is None:
-        raise BarelyAnException(_("Local tournaments require opponent ids"))
+    # IF PRIVATE -> needs opponents
+    if not public_tournament and opponent_ids is None:
+        raise BarelyAnException(_("Private tournaments require opponent ids"))
+    # IF PUBLIC -> can't have opponents
     if public_tournament and opponent_ids is not None:
         raise BarelyAnException(_("Public tournaments can't have opponent ids"))
-    if not local_tournament and not public_tournament and opponent_ids is None:
-        raise BarelyAnException(_("You must invite opponents to a private tournament"))
     if opponent_ids is None:
         return tournament_user_objects
     if not isinstance(opponent_ids, list):

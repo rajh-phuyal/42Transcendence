@@ -109,7 +109,7 @@ class TempConversationMessage:
         self.conversation = conversation
         self.user = overlords_instance
         self.username = USERNAME_OVERLORDS
-        self.avatar_path = AVATAR_OVERLORDS
+        self.avatar = AVATAR_OVERLORDS
         self.created_at = created_at
         self.seen_at = None
         self.content = content
