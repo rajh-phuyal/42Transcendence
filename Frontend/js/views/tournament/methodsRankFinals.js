@@ -60,6 +60,7 @@ export function updateFinalsDiagram(game) {
         return;
     if (game.playerLeft.result === "won") {
         diagramContainer.querySelector(".finals-player-right-avatar").style.filter = "brightness(50%)";
+        diagramContainer.querySelector(".finals-player-right-username").style.filter = "brightness(50%)";
         if (game.type === "final") {
             updatePodium(game.playerLeft, "first");
             updatePodium(game.playerRight, "second");
@@ -71,6 +72,7 @@ export function updateFinalsDiagram(game) {
     }
     else {
         diagramContainer.querySelector(".finals-player-left-avatar").style.filter = "brightness(50%)";
+        diagramContainer.querySelector(".finals-player-left-username").style.filter = "brightness(50%)";
         if (game.type === "final") {
             updatePodium(game.playerLeft, "second");
             updatePodium(game.playerRight, "first");

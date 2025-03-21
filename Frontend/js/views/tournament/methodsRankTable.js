@@ -14,8 +14,9 @@ export function updateRoundRobin() {
     // Sort the members by rank
     const sortedMembers = data.tournamentMembers.sort((a, b) => a.rank - b.rank);
     // Create all rank table rows
-    for (let member of sortedMembers)
+    for (let member of sortedMembers) {
         createRankEntry(member);
+    }
 }
 
 function createRankEntry(member) {

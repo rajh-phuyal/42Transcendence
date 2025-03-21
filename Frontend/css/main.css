@@ -218,6 +218,10 @@ h5 {
 }
 
 /* ALL NODES THAT HAVE SCROLL BARS SHOULD BE SET TO THIS CLASS */
+.barely-a-scroll-class {
+    height: 100%;
+    overflow-y: auto;
+}
 .barely-a-scroll-class::-webkit-scrollbar {
     width: 5px;
 }

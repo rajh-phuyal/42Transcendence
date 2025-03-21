@@ -24,51 +24,59 @@
 
                 <!-- MIDDLE -->
                 <h3  id="tournament-name"                   class="grid-cell default-grid-area tname">12345678901234567890123</h3>
-                <div id="container-members"                 class="grid-cell default-grid-area cont" style="display: none;">
-                    <div id="container-members-list"        class="barely-a-scroll-class"></div>
-                    <button id="button-subscribe"           class="modal-button" style="display: none;">Unsubscribe / Cancel</button>
-                    <button id="button-start"               class="modal-button" style="display: none;">Start Tournament</button>
+                <div class="grid-cell default-grid-area cont">
+                    <div id="container-members"                 class="cont-centered barely-a-scroll-class"  style="display: none;">
+                        <div id="container-members-list"        class="barely-a-scroll-class"></div>
+                        <button id="button-subscribe"           class="modal-button" style="display: none;">Unsubscribe / Cancel</button>
+                        <button id="button-start"               class="modal-button" style="display: none;">Start Tournament</button>
+                    </div>
+                    <div id="container-finals"                 class="cont-centered barely-a-scroll-class" style="display: none;">
+                        <!-- Podium -->
+                        <div id="tournament-podium-container">
+                            <div id="tournament-podium-second" class="tournament-podium-step">
+                                <h1 class="tournament-podium-question-mark">?</h1>
+                                <img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
+                                <h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
+                            </div>
+                            <div id="tournament-podium-first" class="tournament-podium-step">
+                                <h1 class="tournament-podium-question-mark">?</h1>
+                                <img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
+                                <h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
+                            </div>
+                            <div id="tournament-podium-third" class="tournament-podium-step">
+                                <h1 class="tournament-podium-question-mark">?</h1>
+                                <img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
+                                <h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
+                            </div>
+                        </div>
+                        <!-- Final Games -->
+                        <div id="tournment-finals-diagram"></div>
+                    </div>
+                    <div id="container-round-robin"       class="cont-centered" style="display: none;">
+                        <div class="barely-a-scroll-class">
+                            <table id="tournament-rank-table">
+                                <thead id="tournament-rank-table-header">
+                                    <tr>
+                                        <th id="tournament-rank-table-header-rank">Rank</th>
+                                        <th id="tournament-rank-table-header-player">Player</th>
+                                        <th id="tournament-rank-table-header-wins">Wins</th>
+                                        <th id="tournament-rank-table-header-diff">Diff</th>
+                                        <th id="tournament-rank-table-header-games">Total Games</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tournament-rank-table-body">
+                                <!-- where the rank rows will be -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="container-games-upcoming" class="cont-centered barely-a-scroll-class" style="display: none;">
+                        <div id="container-games-upcoming-list" class="barely-a-scroll-class"></div>
+                    </div>
+                    <div id="container-games-finished" class="cont-centered barely-a-scroll-class" style="display: none;">
+                        <div id="container-games-finished-list" class="barely-a-scroll-class"></div>
+                    </div>
                 </div>
-                <div id="container-finals"                  class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;">
-                    <!-- Podium -->
-					<div id="tournament-podium-container">
-						<div id="tournament-podium-second" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
-							<h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
-						</div>
-						<div id="tournament-podium-first" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
-							<h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
-						</div>
-						<div id="tournament-podium-third" class="tournament-podium-step">
-							<h1 class="tournament-podium-question-mark">?</h1>
-							<img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
-							<h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
-						</div>
-					</div>
-                    <!-- Final Games -->
-                    <div id="tournment-finals-diagram"></div>
-                </div>
-                <div id="container-round-robin"             class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;">
-                    <table id="tournament-rank-table">
-						<thead id="tournament-rank-table-header">
-							<tr>
-								<th id="tournament-rank-table-header-rank">Rank</th>
-								<th id="tournament-rank-table-header-player">Player</th>
-								<th id="tournament-rank-table-header-wins">Wins</th>
-								<th id="tournament-rank-table-header-diff">Diff</th>
-								<th id="tournament-rank-table-header-games">Total Games</th>
-							</tr>
-						</thead>
-						<tbody id="tournament-rank-table-body">
-						<!-- where the rank rows will be -->
-						</tbody>
-                    </table>
-                </div>
-                <div id="container-games-upcoming"  class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;"></div>
-                <div id="container-games-finished"  class="grid-cell default-grid-area cont barely-a-scroll-class" style="display: none;"></div>
                 <!-- RIGHT SIDE -->
                 <button id="button-delete"                      class="grid-cell default-grid-area modal-button btn-sidebar btnd" style="display: none;">Delete Tournament</button>
             </div>
@@ -127,7 +135,6 @@
     }
     .cont {
         grid-area: cont;
-        overflow: auto !important;
     }
 
     /* BUTTONS */
@@ -158,18 +165,30 @@
         grid-area: btnd;
     }
 
+    /* CENTER THE CONT STUFF */
+    .cont-centered {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-self: center;
+        align-content: center;
+        justify-self: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
     /* DEFAULT STYLE FOR ALL CARDS: Members, Games, Ranks */
     .default-card-container {
         display: flex;
 		align-items: center;
 		padding: 5px 5px;
-        height: 7vh;
-		width: 30vw;
+        height: 70px;
         background-color: rgba(217, 217, 217, 0.753);
 		border: 1px solid black;
         border-radius: 4px;
         cursor: pointer;
         margin: 5px;
+        box-sizing: border-box; /* We need this: it fixes the scroll height */
     }
 
     /* STYLE FOR THE PODIUM */
@@ -228,9 +247,11 @@
     </div>
 </template>
 <style>
-    #container-members {
-        display: flex;
-        align-items: center;
+    #button-start {
+        margin: 5px;
+    }
+    .tournament-member-card-container {
+        width: 300px;
     }
     .tournament-member-card-avatar {
         height: 100%;
@@ -259,12 +280,14 @@
     #container-games-upcoming,
     #container-games-finished {
         display: flex;
+        flex-direction: column;
         align-items: center;
     }
     .tournament-game-card-container {
         display: grid;
         align-items: center;
         justify-content: space-between;
+        width: 500px;
         grid-template-columns: repeat(auto-fill, 12.5%);
         grid-template-rows: repeat(auto-fill, 25%);
         grid-template-areas:
@@ -290,6 +313,14 @@
     .score{
         grid-area: score;
     }
+    @keyframes pulse-game-card {
+        0% {
+            background-color: rgba(211, 228, 185, 0.753);
+        }
+        100% {
+            background-color: rgba(150, 167, 123, 0.753);
+        }
+}
 </style>
 
 <!-- TEMPLATE ROUND ROBIN RANK TABLE ROW -->
@@ -309,15 +340,15 @@
 </template>
 <style>
     .tournament-rank-row-avatar {
-		height: 45px;
+		height: 50px;
+        padding: 2px 2px;
 	}
-
 	.tournament-rank-row-user-wrapper {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+        gap: 5px;
 	}
-
 	.tournament-rank-row {
 		display: table-row;
 		flex-direction: row;
@@ -325,7 +356,6 @@
 		height: 20%;
         cursor: pointer;
 	}
-
 	#tournament-rank-table {
         width: 30vw;
 		height: auto;
@@ -336,17 +366,15 @@
 		border: 2px solid white;
 		border-collapse: collapse;
 	}
-
-
     #tournament-rank-table,
     #tournament-rank-table th,
     #tournament-rank-table td {
-        border: 1px solid white; /* Adjust color as needed */
+        border: 1px solid white;
     }
-
     th, td {
-        padding: 8px; /* Adds spacing inside cells */
-        text-align: left; /* Aligns text to the left */
+        padding: 8px;
+        text-align: center;
+        overflow: hidden;
     }
 </style>
 
