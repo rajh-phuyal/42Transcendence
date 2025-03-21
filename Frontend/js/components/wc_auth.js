@@ -217,7 +217,7 @@ class AuthCard extends HTMLElement {
             $store.commit('setUser', {
                 id: response.userId,
                 username: response.username,
-				avatar: response.userAvatar
+				avatar: response.avatar
             });
 
             // update the profile route params

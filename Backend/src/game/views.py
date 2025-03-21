@@ -87,7 +87,7 @@ class LobbyView(BaseAuthenticatedView):
             'playerLeft':{
                 'userId': memberLeft.user.id,
                 'username': memberLeft.user.username,
-                'avatar': memberLeft.user.avatar_path,
+                'avatar': memberLeft.user.avatar,
                 'points': memberLeft.points,
                 'result': memberLeft.result,
                 'ready': game.get_player_ready(memberLeft.user.id),
@@ -95,7 +95,7 @@ class LobbyView(BaseAuthenticatedView):
             'playerRight':{
                 'userId': memberRight.user.id,
                 'username': memberRight.user.username,
-                'avatar': memberRight.user.avatar_path,
+                'avatar': memberRight.user.avatar,
                 'points': memberRight.points,
                 'result': memberRight.result,
                 'ready': game.get_player_ready(memberRight.user.id),

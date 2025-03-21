@@ -254,8 +254,6 @@ export default {
 
         beforeRouteLeave() {
             modalManager.off("chat-view-btn-create-game", "modal-create-game");
-            // Inform WebSocketManager that we are leaving the chat
-            WebSocketManager.setCurrentRoute(undefined);
             // Remove all conversations
             deleteAllConversationCards();
             // Remove all messages
@@ -273,9 +271,6 @@ export default {
         async afterDomInsertion() {
             // Set translations
             this.setTranslations();
-
-            // Inform WebSocketManager that we are entering the chat
-            WebSocketManager.setCurrentRoute("chat");
 
             // Init everything conversation related (right side of view)
             resetConversationView();

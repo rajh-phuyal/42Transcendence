@@ -3,35 +3,37 @@ const routes = [
         path: "/",
         view: "home",
         requireAuth: true,
-        modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"]
+        modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"],
     },
     {
         path: "/home",
         view: "home",
         requireAuth: true,
-        modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"]
+        modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"],
     },
     {
         path: "/game",
         view: "game",
-        requireAuth: true
+        requireAuth: true,
+        backgroundColor: "black",
     },
     {
         path: "/tournament",
         view: "tournament",
-        requireAuth: true
+        requireAuth: true,
+        backgroundColor: "black",
     },
     {
         path: "/profile",
         view: "profile",
         requireAuth: true,
-        modals: ["editProfile", "createGame", "editFriendship", "newConversation", "friendsList", "gameHistory", "avatarCropper", "tournamentHistory"]
+        modals: ["editProfile", "createGame", "editFriendship", "newConversation", "friendsList", "gameHistory", "avatarCropper", "tournamentHistory"],
     },
     {
         path: "/chat",
         view: "chat",
         requireAuth: true,
-        modals: ["createGame"]
+        modals: ["createGame"],
     },
     {
         path: "/auth",
@@ -42,6 +44,7 @@ const routes = [
         path: "/404",
         view: "404",
         requireAuth: false,
+        backgroundColor: "black",
     },
 	{
 		path: "/barely-responsive",

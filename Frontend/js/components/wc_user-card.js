@@ -12,13 +12,13 @@ class UserCard extends HTMLElement
     {
         return["user", "onClickCallback", "image"];
     }
-    
+
     connectedCallback()
     {
         this.render();
         this.shadow.addEventListener('click', this.onClickCallback.bind(this));
     }
-    
+
 
     attributeChangedCallback(name, oldValue, newValue)
     {
@@ -70,13 +70,13 @@ class UserCard extends HTMLElement
                 }
             </style>
             <div class="user-card-container">
-            <img class = "image-div" src="${this.image}">
+            <img class = "image-div" src="${this.image}" draggable="false">
             <p class="user-div" > ${this.user} </p>
             </div>
         `;
     }
 
-    
+
 }
 
 

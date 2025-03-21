@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema.tournament
 (
 	id SERIAL PRIMARY KEY,
 	state barelyaschema.tournament_state NOT NULL DEFAULT 'setup',
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(23) NOT NULL,
 	local_tournament BOOLEAN NOT NULL,
 	public_tournament BOOLEAN NOT NULL,
 	map_number INT NOT NULL,
