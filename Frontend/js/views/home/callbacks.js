@@ -41,7 +41,7 @@ function createJoinTournamentList() {
 }
 
 export function tournamentModalCallback(){
-    modalManager.openModal("modal-tournament-create"); // TODO: change to main!
+    modalManager.openModal("modal-tournament-join"); // TODO: change to main!
     // TODO: check if the code below is still needed!
 //    let modalElement = $id('home-modal');
 //    let modalBody = $id('home-modal-body');

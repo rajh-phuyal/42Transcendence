@@ -85,26 +85,15 @@ class ToJoinView(BaseAuthenticatedView):
             user_id=user.id,
             accepted=False,
             tournament__state=Tournament.TournamentState.SETUP
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name')
-        ).values(
-            'tournamentId',
-            'tournamentName'
         )
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
             state=Tournament.TournamentState.SETUP
-        ).annotate(
-            tournamentId=models.F('id'),
-            tournamentName=models.F('name')
-        ).values(
-            'tournamentId',
-            'tournamentName'
         )
         # Merge the two querysets
         tournaments = list(invited_tournaments) + list(public_tournaments)
-        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
+        tournamentsSerializer = TournamentInfoSerializer(tournaments, many=True)
+        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournamentsSerializer.data})
 
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
