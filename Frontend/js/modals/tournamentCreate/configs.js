@@ -69,12 +69,14 @@ export default {
         updatePowerups() {
             const btn = this.domManip.$id("modal-tournament-btn-pu");
             if(this.powerups) {
-                this.domManip.$addClass(btn, "modal-toggle-button-disabled");
-                this.domManip.$removeClass(btn, "modal-toggle-button-enabled");
+                this.domManip.$removeClass(btn, "modal-toggle-button-disabled");
+                this.domManip.$addClass(btn, "modal-toggle-button-enabled");
+                btn.innerHTML = "Enabled"; // TODO: translate
             }
             else {
-                btn.classList.remove("modal-toggle-button-disabled");
-                btn.classList.add("modal-toggle-button-enabled");
+                this.domManip.$addClass(btn, "modal-toggle-button-disabled");
+                this.domManip.$removeClass(btn, "modal-toggle-button-enabled");
+                btn.innerHTML = "Disabled"; // TODO: translate
             }
         },
         updateOpponents() {
@@ -110,6 +112,8 @@ export default {
             this.updateMap();
         },
         callbackPowerups(event) {
+            // Deactive the button for asthetics
+            event.srcElement.blur();
             this.powerups = !this.powerups;
             this.updatePowerups();
         },
@@ -161,6 +165,7 @@ export default {
             this.updatePrivacy();
             this.updateType();
             this.updateOpponents();
+            this.updatePowerups();
             // Set a random name
             this.callbackGenerateName();
             // Add event listeners

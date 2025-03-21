@@ -5,6 +5,7 @@
             <div class="view-overlay-grid">
                 <!-- LEFT SIDE -->
                 <!-- LEFT SIDE TOP -->
+                <div class="grid-cell default-grid-area blk"></div>
                 <div class="grid-cell default-grid-area tpriv">
                     <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon" draggable="false">
                 </div>
@@ -88,18 +89,18 @@
         grid-template-columns: repeat(auto-fill, 5%);
         grid-template-rows: repeat(auto-fill, 5%);
         grid-template-areas:
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            "btnmem btnmem btnmem tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  .      .      .     "
-            "btnmem btnmem btnmem cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tstate .      .     "
-            "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tstate .      .     "
-            "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tpriv  .      .     "
-            "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   tpriv  .      .     "
-            "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
-            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   ttype  .      .     "
+            "blk    blk    blk    tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tstate tpriv  ttype "
+            "blk    blk    blk    tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tname  tstate tpriv  ttype "
+            "btnmem btnmem btnmem cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnmem btnmem btnmem cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnfin btnfin btnfin cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btnrro btnrro btnrro cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
+            "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btngfi btngfi btngfi cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             "btngup btngup btngup cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
-            ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
@@ -110,17 +111,21 @@
             ".      .      .      cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   cont   .      .      .     "
     }
 
+    .blk {
+        grid-area: blk;
+        background-color: rgba(0, 0, 0, 0.815);
+    }
     .tpriv {
         grid-area: tpriv;
-        background-color: black;
+        background-color: rgba(0, 0, 0, 0.815);
     }
     .ttype {
         grid-area: ttype;
-        background-color: black;
+        background-color: rgba(0, 0, 0, 0.815);
     }
     .tstate {
         grid-area: tstate;
-        background-color: black;
+        background-color: rgba(0, 0, 0, 0.815);
     }
     #tournament-privacy-img,
     #tournament-state-img,
@@ -131,6 +136,7 @@
     }
     .tname {
         grid-area: tname;
+        background-color: rgba(0, 0, 0, 0.815);
         color: white;
     }
     .cont {

@@ -19,11 +19,9 @@ export default {
         },
 
         createJoinTournamentCard(tournament) {
-            console.log(tournament);
             let template = this.domManip.$id("modal-tournament-join-card-template").content.cloneNode(true);
             const container = template.querySelector(".modal-tournament-join-card-container");
             container.setAttribute("tournament-id", tournament.id);
-            console.warn(container);
             // Set the name
             const nameElement = container.querySelector(".modal-tournament-join-card-tournament-name");
             nameElement.textContent = tournament.name;

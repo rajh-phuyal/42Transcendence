@@ -72,6 +72,8 @@ export default {
                 btn.classList.remove("modal-toggle-button-disabled");
                 btn.classList.add("modal-toggle-button-enabled");
             }
+            // Deactive the button for asthetics
+            event.srcElement.blur();
         },
 
         callbackSelectMap(event) {
