@@ -8,8 +8,9 @@
                     <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
                     <!-- CHOOSE TITLE -->
-                    <h5                                             class="grid-cell default-grid-area ttitle">Tournament Title</h5>
-                    <input  id="modal-tournament-tournament-title"  class="grid-cell default-grid-area ititle barely-an-input">
+                    <h5                                                         class="grid-cell default-grid-area ttitle">Tournament Title</h5>
+                    <input  id="modal-tournament-tournament-title"              class="grid-cell default-grid-area ititle barely-an-input" maxlength="23" type="text" placeholder="Enter a title">
+                    <button id="modal-tournament-btn-title-gen" type="button"   class="grid-cell default-grid-area ttgen modal-button">?</button>
                     <!-- CHOOSE PRIVACY -->
                     <h5                                             class="grid-cell default-grid-area privt">Privacy</h5>
                     <img id="modal-tournament-create-priv-private"  class="grid-cell default-grid-area pri modal-button modal-image-button sound-button modal-toggle-button-disabled priv-button" datapublic="false" src="../assets/icons_128x128/icon_tournament_private.png" draggable="false">
@@ -28,13 +29,14 @@
                     <h5                                                   class="grid-cell default-grid-area put">Powerups</h5>
                     <button id="modal-tournament-btn-pu" type="button" enabled="true" class="grid-cell default-grid-area modal-button btnpu">Powerups</button>
                     <!-- CHOOSE USERS -->
-                    <h5                                             class="grid-cell default-grid-area userst">Selcet Users</h5>
+                    <h5                                             class="grid-cell default-grid-area userst">Select Users</h5>
                     <div class="grid-cell default-grid-area srch">
                         <search-bar
                             placeholder="Invite a user"
                             width="250"
                             search-type="users"
                             on-click-event="select-user-invite"
+                            only-search-friends="true"
                             clear-on-click="true"
                         >
                     </div>
@@ -55,7 +57,7 @@
             "title  title  title  title  title  title  title  title  title  title  title  title  title  title  "
             "title  title  title  title  title  title  title  title  title  title  title  title  title  title  "
             ".      ttitle ttitle ttitle ttitle ttitle ttitle ttitle .      privt  privt  privt  privt  .      "
-            ".      ititle ititle ititle ititle ititle ititle ititle .      pub    pub    pri    pri    .      "
+            ".      ititle ititle ititle ititle ititle ititle ttgen  .      pub    pub    pri    pri    .      "
             ".      .      .      .      .      .      .      .      .      pub    pub    pri    pri    .      "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      "
             ".      userst userst userst userst userst userst userst .      typt   typt   typt   typt   .      "
@@ -88,6 +90,9 @@
     .ttitle {
         grid-area: ttitle;
         color: black;
+    }
+    .ttgen {
+        grid-area: ttgen;
     }
     .ititle {
         grid-area: ititle;

@@ -6,13 +6,14 @@ class SearchBar extends HTMLElement {
         this.shadow = this.attachShadow({ mode: "open" });
         this.searchResults = [];
         this.searchType = "users";
+        this.onlySearchFriends = false;
         this.width = "300";
         this.onClickEvent = "select-user";
         this.clearOnClick = false;
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "search-type", "on-click-event", "clear-on-click"];
+        return ["placeholder", "width", "search-type", "on-click-event", "clear-on-click", "only-search-friends"];
     }
 
     reRenderAndAttach() {
@@ -39,8 +40,10 @@ class SearchBar extends HTMLElement {
         }
 
         setTimeout(() => {
-            console.log(endpoint[this.searchType]);
-            call(endpoint[this.searchType], 'GET')
+            let filter = ""
+            if (this.onlySearchFriends)
+                filter = "?onlyFriends=true"
+            call(endpoint[this.searchType] + filter, 'GET')
                 .then(response => {
                     this.searchResults = response?.[this.searchType] || [];
                     this.updateSearchResults(this.searchType, value);
@@ -120,6 +123,8 @@ class SearchBar extends HTMLElement {
             this.onClickEvent = newValue;
         } else if (name === "clear-on-click") {
             this.clearOnClick = newValue;
+        } else if (name === "only-search-friends") {
+            this.onlySearchFriends = newValue === "true";
         }
         this.render();
     }
