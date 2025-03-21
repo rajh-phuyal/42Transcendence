@@ -41,8 +41,8 @@ insert_dummy()
   local table_name=$1
   local sql_query=$2
   #printf "\e[33mInserting dummy data into table '%s'...\e[0m\n" "$table_name"
-  docker exec -it db psql -U "admin" -d barelyalivedb -c "$sql_query" #> /dev/null \
-  	#|| err_msg "Failed to insert dummy data into table '$table_name'."
+  docker exec -it db psql -U "admin" -d barelyalivedb -c "$sql_query" > /dev/null \
+  	|| err_msg "Failed to insert dummy data into table '$table_name'."
   #printf "\e[32mInserted dummy data into table '%s':\e[0m\n" "$table_name"
   # TODO: this needs to come somehow from theenv file
   #docker exec -it db psql -U admin -d barelyalivedb -c "SELECT * FROM $table_name;"
