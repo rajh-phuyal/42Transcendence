@@ -85,7 +85,7 @@ class ToJoinView(BaseAuthenticatedView):
             user_id=user.id,
             accepted=False,
             tournament__state=Tournament.TournamentState.SETUP
-        )
+        ).tournament
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
             state=Tournament.TournamentState.SETUP
