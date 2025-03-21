@@ -143,10 +143,8 @@ function isContained(x, y, img){
 export async function isHovering(event){
 
     // This should prevent the background to respond if a modal is open
-    // TODO: since the refactoring of the modal system, this is not working anymore
-    // let modalElement = $id('home-modal');
-    // if (modalElement.classList.contains('show'))
-    //     return ;
+    if (document.querySelectorAll('.modal.show').length > 0)
+        return ;
 
     let canvas = canvasData.canvas;
 
@@ -192,10 +190,8 @@ export async function isHovering(event){
 export function mouseClick(event){
 
     // This should prevent the background to respond if a modal is open
-    // TODO: since the refactoring of the modal system, this is not working anymore
-    // let modalElement = $id('home-modal');
-    // if (modalElement.classList.contains('show'))
-    //     return ;
+    if (document.querySelectorAll('.modal.show').length > 0)
+        return ;
 
 	let mouseX = event.clientX;
     let mouseY = event.clientY;

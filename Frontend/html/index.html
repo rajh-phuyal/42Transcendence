@@ -29,7 +29,7 @@
             <div class="d-flex flex-row flex-row justify-content-between align-items-center w-100">
 				<div id='nav-left-side' class='d-flex flex-row justify-content-between align-items-center'>
 					<div id="home-nav" class="navbar-brand-custom-custom flex-row">
-						<img src="./assets/icons_128x128/icon_barely_a_logo.png" width="40" height="40" alt="">
+						<img src="./assets/icons_128x128/icon_barely_a_logo.png" width="40" height="40" alt="" draggable="false">
 					</div>
 					<!-- <p id="home-nav" class="navbar-brand-custom">Home</p> -->
 					<p id="chat-nav" class="navbar-brand-custom">Chat <span id="chat-nav-badge" class="badge bg-secondary"></span></p>
@@ -44,12 +44,13 @@
                         search-type="users"
                         on-click-event="select-user-nav"
                         clear-on-click="true"
+                        only-search-friends="false"
                         style="margin-right: 1em; margin-left: -17em;"
                     >
                     </search-bar>
-                    <img id="nav-music-icon" src="" class="navbar-brand-custom">
-                    <img id="nav-sound-icon" src="" class="navbar-brand-custom">
-					<img src='' alt='profile avatar' id="profile-nav-avatar" class="navbar-brand-custom"/>
+                    <img id="nav-music-icon" src="" class="navbar-brand-custom" draggable="false">
+                    <img id="nav-sound-icon" src="" class="navbar-brand-custom" draggable="false">
+					<img src='' alt='profile avatar' id="profile-nav-avatar" class="navbar-brand-custom" draggable="false">
 				</div>
             </div>
         </div>

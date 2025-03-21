@@ -7,8 +7,8 @@ from user.constants import USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE, AVAT
 
 @receiver(pre_save, sender=User)
 def set_default_avatar(sender, instance, **kwargs):
-    if not instance.avatar_path:
-        instance.avatar_path = random.choice(AVATAR_DEFAULTS)
+    if not instance.avatar:
+        instance.avatar = random.choice(AVATAR_DEFAULTS)
 
 @receiver(post_save, sender=User)
 def set_default_relationships(sender, instance, created, **kwargs):

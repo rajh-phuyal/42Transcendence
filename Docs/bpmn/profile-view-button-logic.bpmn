@@ -232,7 +232,7 @@ recievedRequest</bpmn:text>
       <bpmn:text>{
   "id": 4,
   "username": "fda-estr",
-  "avatarUrl": "http://dummyavatar.url",
+  "avatar": "http://dummyavatar.url",
   "firstName": "Francisco",
   "lastName": "Inácio",
   "online": false,

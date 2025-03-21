@@ -39,7 +39,7 @@ class SearchView(BaseAuthenticatedView):
             users = users.filter(
                 Q(requester_cool__requestee=current_user, requester_cool__status=IsCoolWith.CoolStatus.ACCEPTED) |
                 Q(requestee_cool__requester=current_user, requestee_cool__status=IsCoolWith.CoolStatus.ACCEPTED)
-            )
+            ).distinct()
         # Limit the result
         users = users[:NO_OF_USERS_TO_LOAD]
 

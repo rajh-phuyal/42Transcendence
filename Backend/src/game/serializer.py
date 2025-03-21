@@ -4,11 +4,11 @@ from game.models import Game, GameMember
 class GamePlayerSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
-    avatarUrl = serializers.CharField(source='user.avatar_path', read_only=True)
+    avatar = serializers.CharField(source='user.avatar', read_only=True)
 
     class Meta:
         model = GameMember
-        fields = ['id', 'username', 'avatarUrl', 'points', 'result']
+        fields = ['id', 'username', 'avatar', 'points', 'result']
 
 class GameSerializer(serializers.ModelSerializer):
     # TODO: ISSUE #193

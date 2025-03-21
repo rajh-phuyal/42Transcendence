@@ -23,7 +23,7 @@ class TournamentInfoSerializer(serializers.ModelSerializer):
 class TournamentMemberSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
-    avatarUrl = serializers.CharField(source='user.avatar_path', read_only=True)
+    avatar = serializers.CharField(source='user.avatar', read_only=True)
     state = serializers.SerializerMethodField()
     playedGames = serializers.IntegerField(source='played_games', read_only=True)
     wonGames = serializers.IntegerField(source='won_games', read_only=True)
@@ -32,7 +32,7 @@ class TournamentMemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TournamentMember
-        fields = ['id', 'username', 'avatarUrl', 'state', 'playedGames', 'wonGames', 'winPoints', 'rank']
+        fields = ['id', 'username', 'avatar', 'state', 'playedGames', 'wonGames', 'winPoints', 'rank']
 
     def get_state(self, obj):
         if not obj.accepted:
