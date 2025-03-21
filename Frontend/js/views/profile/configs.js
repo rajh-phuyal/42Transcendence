@@ -247,8 +247,7 @@ export default {
                     this.result.lastLoginFormatted = loadTimestamp(res.lastLogin);
                 }
         
-                WebSocketManager.setCurrentRoute("profile-" + this.result.id);
-                this.setViewAttributes(true);
+                this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();
                 if (res.relationship.isBlocked)
