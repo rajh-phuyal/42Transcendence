@@ -1,4 +1,4 @@
-import { $id , $class} from "../../abstracts/dollars.js";
+import { $id } from "../../abstracts/dollars.js";
 import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
 import $store from '../../store/store.js';
@@ -47,7 +47,6 @@ function createTemplateGameCard(game) {
     $id("container-games-upcoming-list").appendChild(container);
 
     // Return the container
-    console.log("Created game card with data: ", game);
     return container;
 }
 
@@ -123,93 +122,3 @@ export function clearAllGameCountdowns() {
     Object.values(countdownTimers).forEach(clearTimeout);
     Object.keys(countdownTimers).forEach((key) => delete countdownTimers[key]);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* BELOW IS OLD CODE!!! */
-
-
-function updateGameCardScore(gameObject) {
-    $id("tournament-game-" + gameId).querySelector(".tournament-game-card-score").textContent = gameObject.player1.points + "-" + gameObject.player2.points;
-}
-
-function gameUpdateScore(gameObject) {
-    $id("tournament-game-" + gameObject.gameId).querySelector(".tournament-game-card-score").textContent = gameObject.newScore;
-}
-
-function gameUpdateState(gameObject) {
-    const gameCard = $id("tournament-game-" + gameObject.id);
-
-    gameCard.querySelector(".tournament-game-card-spinner").style.display = "none";
-
-    if (gameObject.state === "pending") {
-        gameCard.querySelector(".tournament-game-card-score").textContent = "VS";
-        return ;
-    }
-
-    gameCard.querySelector(".tournament-game-card-score").textContent = gameObject.playerLeft.points + "-" + gameObject.playerRight.points;
-
-    if (gameObject.state === "paused")
-        gameCard.querySelector(".tournament-game-card-spinner").style.display = "flex";
-    else if (gameObject.state === "finished" || gameObject.state === "quited") {
-        moveGameCardToHistory(gameObject.id);
-    }
-}
-
-
-
-
-
-function createGameList(games) {
-    console.log("Creating game list with data: ", games);
-    for (let element of games) {
-        createTemplateGameCard(element);
-    }
-}
-

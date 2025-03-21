@@ -1,4 +1,3 @@
-import { updateMembers } from "./methodsMembers.js";
 import { tournamentData as data } from "./objects.js";
 
 /* This updates the Data of a member. NOT the view! */
@@ -21,7 +20,6 @@ export function updateDataMember(member) {
 /* This updates the Data of a game. NOT the view! */
 export function updateDataGame(game) {
     let found = false;
-    console.log("Updating game data: ", game);
     for (let i = 0; i < data.tournamentGames.length; i++) {
         if (data.tournamentGames[i].id === game.id) {
             // If game exists: update the member data

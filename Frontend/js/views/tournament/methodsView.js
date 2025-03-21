@@ -6,31 +6,6 @@ import { updateGames } from "./methodsGames.js";
 import { updateRoundRobin } from "./methodsRankTable.js";
 import { deleteTournament, joinTournament, leaveTournament, startTournament } from "./methodsApi.js";
 
-/* This function should be called when routing to lobby it will create for
-    all tabs all elements. The elements can than during the tournament be updated
-    by updateView function
-*/
-export function initView() {
-
-/*
-    if (data.tournamentInfo.state === "setup") {
-        for (let element of data.tournamentMembers)
-            createPlayerCard(element);
-        this.changeTabs("participants");
-    } */
-    // TODO: uncomment this
-    /* else {
-
-    }
-
-    if (data.tournamentInfo.state !== "setup")
-        updateRankTable(data.tournamentMembers);
-
-*/
-
-
-}
-
 /* This fucntion should be the main function to update the view according to the data
     Threfore it should:
         - set tournament details
@@ -49,7 +24,6 @@ export function initView() {
         */
 export function updateView() {
     // If state is deleted, redirect to home
-    console.log("tournamentData:", data);
     if (data.tournamentInfo.state === "deleted") {
         router('/home');
         return ;
@@ -73,53 +47,6 @@ export function updateView() {
         changeTabs("games-upcoming");
     else
         changeTabs("finals");
-
-
-    // updateFinals();// TODO:
-
-
-  /*   console.log("state:", tournamentState);
-
-    let flexDivs;
-    let hideDivs;
-
-    if (tournamentState === "setup") {
-        flexDivs = $class("tournament-setup")
-        hideDivs = $class("tournament-ongoing")
-    }
-    else if (tournamentState === "delete") {
-        router('/home');
-        return ;
-    }
-    else {
-        flexDivs = $class("tournament-ongoing")
-        hideDivs = $class("tournament-setup")
-    }
-
-
-    for (let element of flexDivs) {
-        console.log("flexing:", element.getAttribute("id"));
-        element.style.display = 'flex';
-    }
-    for (let element of hideDivs) {
-        console.log("hiding:", element.getAttribute("id"));
-        element.style.display = 'none';
-    }
-
-    if (tournamentState === "finished") {
-        //$id("tournament-middle-bottom-current-game-button").style.display = "none";
-        //$id("tournament-games-do-come-button").style.display = "none";
-        //$id("button-start").style.display = "none";
-        //$id("button-unsubscribe-cancel").style.display = "none";
-        //$id("tournament-current-games-container").style.display = "none";
-        //$id("tournament-rank-container").style.display = "flex";
-        //$id("tournament-history-container").style.display = "none";
-        return ;
-
-    }
-
-    $id("tournament-rank-container").style.display = "none";
-    $id("tournament-history-container").style.display = "none";*/
 }
 
 /* This function shows and hides the main div of the different tabs
@@ -153,11 +80,10 @@ export function changeTabs(tab) {
     $id("container-games-finished").style.display   = "none";
     // Show the selected tab
     container.style.display = "flex";
-    console.log("change to tab %s by showing %s", tab, container.getAttribute("id"));
 }
 
 /* This fucntion updates the tournament icons to the values stored in tournamentData.all */
-function    updateIcons() {
+function updateIcons() {
     const iconState     = $id("tournament-state-img");
     const iconPrivacy   = $id("tournament-privacy-img");
     const iconType      = $id("tournament-type-img");
@@ -242,7 +168,6 @@ function updateButtons() {
     if (data.tournamentInfo.state === "setup") {
         buttonSubscribe.removeEventListener("click", joinTournament);
         buttonSubscribe.removeEventListener("click", leaveTournament);
-        console.log("ROLE:", data.clientRole);
         if (data.clientRole === "member") {
             buttonSubscribe.style.display = "block";
             buttonSubscribe.innerText = "Unsubscribe"; // TODO: translate

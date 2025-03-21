@@ -1,5 +1,6 @@
-import { $id , $class} from "../../abstracts/dollars.js";
-import { tournamentData as data } from "./objects.js";
+/* TODO: This file and it's logic is not revised yet */
+
+import { $id } from "../../abstracts/dollars.js";
 import router from "../../navigation/router.js";
 
 export function updatePodium(member, position, show = true) {
@@ -33,7 +34,6 @@ export function updateFinalsDiagram(game) {
     // This is for the final games wich come without the players first
     if (!game.playerLeft || !game.playerRight)
         return ;
-    console.log("finals diagram:", game);
 
     let diagramContainer = $id(`tournament-${game.type}-${game.id}`);
 

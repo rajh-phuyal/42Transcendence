@@ -1,7 +1,6 @@
-import { $id , $class} from "../../abstracts/dollars.js";
+import { $id } from "../../abstracts/dollars.js";
 import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
-
 
 /* This function will fully deal with the participants stored in:
     tournamentData.all.tournamentMembers

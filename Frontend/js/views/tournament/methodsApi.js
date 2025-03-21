@@ -3,7 +3,6 @@ import $callToast from '../../abstracts/callToast.js';
 import router from '../../navigation/router.js';
 import { tournamentData as data } from "./objects.js";
 
-/* API CALLS */
 export function joinTournament() {
     call(`tournament/join/${data.tournamentInfo.id}/`, 'PUT').then(data => {
         $callToast("success", data.message);
