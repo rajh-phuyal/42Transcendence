@@ -232,6 +232,17 @@ def update_deadline_of_game(game_id):
             game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
             game.save()
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
+        # Send warning chat message to conversation of the two players
+        player1_id = game.members.first().user.id
+        player2_id = game.members.last().user.id
+        logging.info(f"Send warning chat message to conversation of the two players {player1_id} and {player2_id}")
+        tgw = "**TGW,{tournament_id},{game_id},{player1_id},{player2_id}**".format(
+            tournament_id=game.tournament.as_clickable(),
+            game_id=game.as_clickable(),
+            player1_id=player1_id,
+            player2_id=player2_id
+        )
+        create_and_send_overloards_pm(player1_id, player2_id, tgw)
         # Inform all users of the tournament
         send_ws_tournament_game_msg(game)
     except Game.DoesNotExist:

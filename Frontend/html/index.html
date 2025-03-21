@@ -17,7 +17,7 @@
 
 </head>
 
-<body>
+<body id="barely-a-body" class="view-background-color">
     <noscript>
         <strong>We're sorry but Bearly Alive doesn't work properly without JavaScript enabled.
             Please enable it to continue.</strong>
@@ -93,6 +93,22 @@
                     <span id="success-toast-message" >Δ</span>
                 </div>
             </div>
+            <!-- message Toast Container -->
+             <template id="message-toast-template">
+                <div class="toast custom-toast message-toast">
+                    <div class="toast-header">
+                        <span class="toast-symbol">👁️</span>
+                        <strong class="me-auto">Message from the Overseers</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <span class="mystic-symbol" >Δ</span>
+                        <img class="message-toast-avatar" alt="image not found" style="height: 4vh;">
+                        <span class="message-toast-message" ></span>
+                    </div>
+                </div>
+
+             </template>
         </div>
 
         <div id="view-loader">

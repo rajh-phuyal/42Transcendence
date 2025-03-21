@@ -1,6 +1,4 @@
-<!--                  THIS IS THE MAIN DIV FOR GAME VIEW                     -->
-<!-- ####################################################################### -->
-<div class="view-base">
+<div class="view-base  view-background-color">
     <div class="view-container">
         <div class="view-image-wrapper">
             <!-- <img src="../assets/images/game/maps/lizard-people.png" alt="Background Image" class="view-background-image"> -->
@@ -24,6 +22,14 @@
                         <img id="player-left-powerups-big"    class="player-powerup-status" src=""></img>
                     </div>
                 </div>
+                <h5 id="player-left-controls" class="grid-cell default-grid-area ctrll">
+                    Controls<br>
+                    &nbsp;&nbsp;'W' up     <br>
+                    &nbsp;&nbsp;'S' down   <br>
+                    &nbsp;&nbsp;'1' big    <br>
+                    &nbsp;&nbsp;'2' slow    &larr;<br>
+                    &nbsp;&nbsp;'2' fast    &rarr;<br>
+               </h5>
                 <!-- RIGHT PLAYER -->
                 <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user"></h2>
                 <div                           class="grid-cell default-grid-area rav user-card">
@@ -40,14 +46,22 @@
                         <img id="player-right-powerups-big"    class="player-powerup-status" src=""></img>
                     </div>
                 </div>
+                <h5 id="player-right-controls" class="grid-cell default-grid-area ctrlr">
+                    Controls<br>
+                    &nbsp;&nbsp;'O' Up     <br>
+                    &nbsp;&nbsp;'L' Down   <br>
+                    &nbsp;&nbsp;'8' big    <br>
+                    &nbsp;&nbsp;'9' slow    &larr;<br>
+                    &nbsp;&nbsp;'9' fast    &rarr;<br>
+               </h5>
                 <!-- GAME FIELD -->
-                <div id="game-view-middle-side-container-top-text"          class="grid-cell default-grid-area field"></div>
-                <canvas id="game-field"                                     class="grid-cell default-grid-area field"></canvas>
-                <img id="game-countdown-image"                              class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;">
+                <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
+                <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
+                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;">
 
-                <barely-a-button id="button-play-again"  fontsize="1"  width="100" height="80"  class="grid-cell default-grid-area btnpa"   buttonclass="rect-button"></barely-a-button>
-                <barely-a-button id="button-leave-lobby" fontsize="1"  width="100" height="80"  class="grid-cell default-grid-area btnl"    buttonclass="rect-button"></barely-a-button>
-                <barely-a-button id="button-quit-game"   fontsize="1"  width="100" height="80"  class="grid-cell default-grid-area btnq"    buttonclass="rect-button"></barely-a-button>
+                <button id="button-play-again"                      class="grid-cell default-grid-area modal-button btnpa"></button>
+                <button id="button-leave-lobby"                     class="grid-cell default-grid-area modal-button btnl"></button>
+                <button id="button-quit-game"                       class="grid-cell default-grid-area modal-button btnq"></button>
             </div>
         </div>
     </div>
@@ -75,17 +89,30 @@
             ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
             ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
             ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
-            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
             ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
             ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
     }
 
 
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+
+    .ctrll {
+        grid-area: ctrll;
+        color: white;
+        text-align: left;
+    }
+
+    .ctrlr {
+        grid-area: ctrlr;
+        color: white;
+        text-align: left;
+    }
+
     .tname {
         grid-area: tname;
         background-color: rgba(20, 15, 15, 0.726);
@@ -144,14 +171,15 @@
     /* BUTTONS */
     .btnl {
         grid-area: btnl;
-        height: 100%;
-        width: 100%;
+        height: 75%;
     }
     .btnq {
         grid-area: btnq;
+        height: 75%;
     }
     .btnpa {
         grid-area: btnpa;
+        height: 75%;
     }
 
     /* FIELD */
@@ -179,16 +207,11 @@
         text-align: center;
     }
     .user-card-winner {
-        border-top: 0.3vw solid rgb(5, 92, 24);
-        border-left: 0.3vw solid rgb(5, 92, 24);
-        border-right: 0.3vw solid rgb(5, 92, 24);
-        background-color: rgba(40, 235, 82, 0.733);
+        filter: brightness(110%);
+
     }
     .user-card-looser {
-        border-top: 0.3vw solid rgb(119, 15, 15);
-        border-left: 0.3vw solid rgb(119, 15, 15);
-        border-right: 0.3vw solid rgb(119, 15, 15);
-        background-color: rgb(199, 71, 71);
+        filter: brightness(50%);
     }
 
     .username {
@@ -222,6 +245,37 @@
     .player-powerup-status {
         margin: 5px;
         border-radius: 5px;
-        width: 30%
+        width: 30%;
+        transition: all 0.3s ease;
+    }
+
+    /* Powerup status styles */
+    .powerup-unavailable {
+        opacity: 0.5;
+        filter: grayscale(100%);
+    }
+
+    .powerup-available {
+        opacity: 1;
+        border: 2px solid #4CAF50;
+        box-shadow: 0 0 5px #4CAF50;
+    }
+
+    .powerup-using {
+        opacity: 1;
+        border: 2px solid #FF9800;
+        box-shadow: 0 0 10px #FF9800;
+    }
+
+    .powerup-used {
+        opacity: 0.7;
+        filter: sepia(50%);
+    }
+
+    /* Animation for active powerups */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
     }
 </style>

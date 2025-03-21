@@ -1,12 +1,9 @@
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
 import router from '../../navigation/router.js';
-import $auth from '../../auth/authentication.js';
-import $callToast from '../../abstracts/callToast.js';
-import { translate } from '../../locale/locale.js';
-import { $id } from '../../abstracts/dollars.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
@@ -236,7 +233,12 @@ export default {
         },
 
         afterDomInsertion() {
-            call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
+            console.warn(this.routeParams.id);
+            if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
+                router('/404');
+                return;
+            }
+			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log("profileData ", this.result);
         
@@ -258,15 +260,20 @@ export default {
                 if (this.buttonTopMiddle.method)
                     modalManager.on("button-top-middle", this.buttonTopMiddle.method);
                 if (this.buttonTopRight.method) {
-                    if (this.buttonTopRight.method == "logout")
-                        this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                    if (this.buttonTopRight.method == "logout") {
+                        // this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                        EventListenerManager.linkEventListener("button-top-right", "profile", "click", this.callbackLogout);
+                    }
                     else
                         modalManager.on("button-top-right", this.buttonTopRight.method);
                 }
                 modalManager.on("button-bottom-left", "modal-game-history");
                 modalManager.on("button-bottom-right", "modal-friends-list");
-            })
-            // TODO: on error?
+            }).catch(err => {
+                console.log(err);
+                router("/404", {msg: err.message});
+            }
+            );
         },
     }
 }

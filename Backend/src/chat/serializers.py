@@ -94,6 +94,10 @@ def generate_template_msg(message):
         "TDO": {
             "message": _("The overloards have deleted the tournament: {0} because there are not enough players left!"),
             "count": 1
+        },
+        "TGW": {
+            "message": _("Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the game! Remember the overloards are not very patient!"),
+            "count": 4
         }
     }
     if cmd_type not in message_templates:
