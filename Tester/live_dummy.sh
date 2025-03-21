@@ -370,11 +370,13 @@ insert_dummy "$TABLE_NAME"                                                      
         ( 268, 12, 110, '2024-03-01 14:10:00+00', '2024-03-01 14:40:00+00', 'Let’s apply together!');"
 
 # Creating finished tournament games
-# 41-48: Tournament 1: Round Robin between players:9,10,11,12
-# 49-75: Tournament 2: Round Robin between players:4-12
+# Tournament 1: Round Robin between players:9,10,11,12
+# Tournament 2: Round Robin between players:4-12
+# Tournament 3: Round Robin between players:4,5,6
 echo "Creating finished tournament games..."
 echo -e "CREATING GAMES:\tTournament 1: Round Robin between players:9,10,11,12"
 echo -e "CREATING GAMES:\tTournament 2: Round Robin between players:4,5,6,7,8,9,10,11,12"
+echo -e "CREATING GAMES:\tTournament 3: Round Robin between players:4,5,6"
 TABLE_NAME="barelyaschema.game"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
@@ -386,10 +388,12 @@ insert_dummy "$TABLE_NAME" \
         (103, 'finished',       'normal',          2, TRUE, 1, '2024-07-01 16:29:00+00', '2024-07-01 16:30:00+00'), \
         (104, 'finished',       'normal',          2, TRUE, 1, '2024-07-01 17:29:00+00', '2024-07-01 17:30:00+00'), \
         (105, 'finished',       'normal',          2, TRUE, 1, '2024-07-01 18:29:00+00', '2024-07-01 18:30:00+00'), \
-        -- Semi-Finale (1 game)
+        -- Semi-Finale
         (106, 'finished',       'semifinal',       2, TRUE, 1, '2024-07-01 19:29:00+00', '2024-07-01 19:30:00+00'), \
+        (140, 'finished',       'semifinal',       2, TRUE, 1, '2024-07-01 19:29:00+00', '2024-07-01 19:30:00+00'), \
         -- Finale (1 game)
-        (107, 'finished',       'final',           2, TRUE, 1, '2024-07-01 20:29:00+00', '2024-07-01 20:30:00+00'), \
+        (107, 'finished',       'thirdplace',      2, TRUE, 1, '2024-07-01 20:29:00+00', '2024-07-01 20:30:00+00'), \
+        (141, 'finished',       'final',           2, TRUE, 1, '2024-07-01 20:30:00+00', '2024-07-01 20:31:00+00'), \
         -- Tournament 2
         -- Round 1
         (108, 'finished',       'normal',          4, FALSE, 2, '2024-08-01 07:59:00+00', '2024-08-01 08:00:00+00'), \
@@ -423,11 +427,18 @@ insert_dummy "$TABLE_NAME" \
         -- Third Place
         (134, 'finished',       'thirdplace',      4, FALSE, 2, '2024-08-01 20:59:00+00', '2024-08-01 21:00:00+00'), \
         -- Finale
-        (135, 'finished',       'final',           4, FALSE, 2, '2024-08-01 20:59:00+00', '2024-08-01 21:00:00+00');"
+        (135, 'finished',       'final',           4, FALSE, 2, '2024-08-01 20:59:00+00', '2024-08-01 21:00:00+00'), \
+        -- Tournament 3
+        (136, 'finished',       'normal',          3, FALSE, 3, '2024-09-01 07:59:00+00', '2024-09-01 08:00:00+00'), \
+        (137, 'finished',       'normal',          3, FALSE, 3, '2024-09-01 08:29:00+00', '2024-09-01 08:30:00+00'), \
+        (138, 'finished',       'normal',          3, FALSE, 3, '2024-09-01 08:59:00+00', '2024-09-01 09:00:00+00'), \
+        -- Final
+        (139, 'finished',       'final',           3, FALSE, 3, '2024-09-01 12:29:00+00', '2024-09-01 12:29:00+00');"
 
 # Creating GameMembers for the tournament games
 echo -e "CREATING GAME MEMBERS\tTournament 1: Round Robin between players:9,10,11,12"
 echo -e "CREATING GAME MEMBERS\tTournament 2: Round Robin between players:4,5,6,7,8,9,10,11,12"
+echo -e "CREATING GAME MEMBERS\tTournament 3: Round Robin between players:4,5,6"
 TABLE_NAME="barelyaschema.game_member"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
@@ -450,11 +461,16 @@ insert_dummy "$TABLE_NAME" \
         -- Game 105
         (191, 11, 105, 11, 'won', FALSE, FALSE, TRUE), \
         (192, 12, 105, 9,  'lost', TRUE, TRUE, FALSE), \
-        -- Semi-Finale (Game 106)
+        -- Semi-Finales
         (193, 10, 106, 15, 'won', TRUE, FALSE, TRUE), \
         (194, 11, 106, 13, 'lost', FALSE, TRUE, FALSE), \
+        (261,  9, 140, 11, 'won', FALSE, TRUE, FALSE), \
+        (262, 12, 140, 9,  'lost', TRUE, FALSE, TRUE), \
         -- Finale (Game 107)
-        (195,  9, 107, 11, 'won', TRUE, TRUE, FALSE), \
+        (263,  9, 141, 11, 'won', TRUE, TRUE, FALSE), \
+        (264, 10, 141, 9,  'lost', FALSE, FALSE, TRUE), \
+        -- Third place
+        (195, 11, 107, 11, 'won', FALSE, FALSE, TRUE), \
         (196, 12, 107, 9,  'lost', FALSE, FALSE, TRUE), \
         -- Tournament 2
         -- Round 1
@@ -508,7 +524,7 @@ insert_dummy "$TABLE_NAME" \
         (244, 12, 131, 11, 'lost', FALSE, FALSE, FALSE), \
         -- Semi-Finale 1
         (245, 9, 132, 13, 'lost', FALSE, FALSE, FALSE), \
-        (246, 4, 132, 15, 'won', FALSE, FALSE, FALSE), \
+        (246, 4, 132, 15, 'won',  FALSE, FALSE, FALSE), \
         -- Semi-Finale 2
         (247, 6, 133, 11, 'won', FALSE, FALSE, FALSE), \
         (248, 8, 133, 9, 'lost', FALSE, FALSE, FALSE), \
@@ -516,28 +532,41 @@ insert_dummy "$TABLE_NAME" \
         (249, 9, 134, 11, 'won', FALSE, FALSE, FALSE), \
         (250, 8, 134, 9, 'lost', FALSE, FALSE, FALSE), \
         -- Finale
-        (251, 4, 135, 15, 'won', FALSE, FALSE, FALSE), \
-        (252, 6, 135, 13, 'lost', FALSE, FALSE, FALSE);"
+        (251, 4, 135, 15, 'won',  FALSE, FALSE, FALSE), \
+        (252, 6, 135, 13, 'lost', FALSE, FALSE, FALSE), \
+        -- Tournament 3
+        (253, 4, 136, 11, 'won',  FALSE, FALSE, FALSE), \
+        (254, 5, 136, 9, 'lost',  FALSE, FALSE, FALSE),
+        (255, 4, 137, 13, 'won',  FALSE, FALSE, FALSE), \
+        (256, 6, 137, 11, 'lost', FALSE, FALSE, FALSE), \
+        (257, 5, 138, 11, 'won',  FALSE, FALSE, FALSE), \
+        (258, 6, 138, 5,  'lost', FALSE, FALSE, FALSE), \
+        -- Final
+        (259, 4, 139, 2,  'lost', FALSE, FALSE, FALSE), \
+        (260, 5, 139, 11, 'won',  FALSE, FALSE, FALSE);"
 
 # Create the actual tournament
 echo -e "CREATING TOURNAMENTS:\tTournament 1: Round Robin between players:9,10,11,12"
 echo -e "CREATING TOURNAMENTS:\tTournament 2: Round Robin between players:4,5,6,7,8,9,10,11,12"
-echo -e "CREATING TOURNAMENTS:\tTournament 3: Round Robin Public in setup"
-echo -e "CREATING TOURNAMENTS:\tTournament 4: Round Robin Private in setup"
+echo -e "CREATING TOURNAMENTS:\tTournament 3: Round Robin between players:4,5,6"
+echo -e "CREATING TOURNAMENTS:\tTournament 4: Round Robin Public in setup"
+echo -e "CREATING TOURNAMENTS:\tTournament 5: Round Robin Private in setup"
 TABLE_NAME="barelyaschema.tournament"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
         (id, state,     name,                       local_tournament, public_tournament, map_number, powerups,  finish_time) VALUES        \
         (1, 'finished', 'Players 8,9,10,11',        FALSE,            TRUE,              2,          TRUE,      '2024-07-01 20:30:00+00'), \
-        (2, 'finished', 'Players 3-11',             FALSE,            FALSE,             4,          FALSE,     '2024-08-01 21:00:00+00'), \
-        (3, 'setup',    'Let’s play!?',             FALSE,            TRUE,              3,          TRUE,      NULL),                     \
-        (4, 'setup',    'This is private one! ;)',  FALSE,            FALSE ,            1,          TRUE,      NULL);"
+        (2, 'finished', 'Players 4-12',             FALSE,            FALSE,             4,          FALSE,     '2024-08-01 21:00:00+00'), \
+        (3, 'finished', 'Players 4,5,6',            FALSE,            FALSE,             3,          FALSE,     '2024-09-01 21:00:00+00'), \
+        (4, 'setup',    'Let’s play!?',             FALSE,            TRUE,              3,          TRUE,      NULL),                     \
+        (5, 'setup',    'This is private one! ;)',  FALSE,            FALSE ,            1,          TRUE,      NULL);"
 
 # Create the tournament members
 echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 1: Round Robin between players:9,10,11,12"
 echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 2: Round Robin between players:4,5,6,7,8,9,10,11,12"
-echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 3: Round Robin Public in setup"
-echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 4: Round Robin Private in setup"
+echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 3: Round Robin between players:4,5,6"
+echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 4: Round Robin Public in setup"
+echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 5: Round Robin Private in setup"
 TABLE_NAME="barelyaschema.tournament_member"
 insert_dummy "$TABLE_NAME"                                                                                                   \
     "INSERT INTO $TABLE_NAME                                                                                                 \
@@ -557,13 +586,16 @@ insert_dummy "$TABLE_NAME"                                                      
         (11,   5,        2,              'Player 5',     FALSE,   TRUE,         6,          2,          6,        7), \
         (12,   10,       2,              'Player 10',    FALSE,   TRUE,         6,          2,          6,        8), \
         (13,   12,       2,              'Player 12',    FALSE,   TRUE,         6,          1,          4,        9), \
-        -- Tournament 3 and 4 are in setup and no games are completed
-        (14,   11,       3,              'Player 11',    TRUE,    TRUE,         0,          0,          0,        0), \
-        (15,   12,       3,              'Player 12',    FALSE,   TRUE,         0,          0,          0,        0), \
-        (16,   4,        4,              'Player 4',     TRUE,    TRUE,         0,          0,          0,        0), \
-        (17,   5,        4,              'Player 5',     FALSE,   FALSE,        0,          0,          0,        0), \
-        (18,   6,        4,              'Player 6',     FALSE,   TRUE,         0,          0,          0,        0);"
-
+        -- Tournament 3 Members
+        (14,   4,        3,              'Player 4',     TRUE,    TRUE,         2,          2,          4,        1), \
+        (15,   5,        3,              'Player 5',     FALSE,   TRUE,         2,          1,          6,        2), \
+        (16,   6,        3,              'Player 6',     FALSE,   TRUE,         2,          0,          0,        3), \
+        -- Tournament 4 and 5 are in setup and no games are completed
+        (17,   11,       4,              'Player 11',    TRUE,    TRUE,         0,          0,          0,        0), \
+        (18,   12,       4,              'Player 12',    FALSE,   TRUE,         0,          0,          0,        0), \
+        (19,   4,        5,              'Player 4',     TRUE,    TRUE,         0,          0,          0,        0), \
+        (20,   5,        5,              'Player 5',     FALSE,   FALSE,        0,          0,          0,        0), \
+        (21,   6,        5,              'Player 6',     FALSE,   TRUE,         0,          0,          0,        0);"
 
 # Make some friends so that xico can create tournaments
 echo -e "CREATING FRIENDSHIPS:\tXico is friends with 4, 5, 6, 7, 8"
