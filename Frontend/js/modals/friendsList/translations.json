@@ -1,12 +1,34 @@
 {
     "title": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "en-US": "Friends List",
+        "pt-PT": "Lista de Amigos",
+        "pt-BR": "Lista de Amigos",
+        "de-DE": "Freundesliste",
+        "uk-UA": "Список друзів",
+        "ne-NP": "साथीहरूको सूची"
     },
+    "placeholderFilter": {
+        "en-US": "filter",
+        "pt-PT": "filtro",
+        "pt-BR": "filtro",
+        "de-DE": "Filter",
+        "uk-UA": "фільтр",
+        "ne-NP": "फल्टर"
+    },
+    "noFriends": {
+        "en-US": "User has no friends",
+        "pt-PT": "O usuário não tem amigos",
+        "pt-BR": "O usuário não tem amigos",
+        "de-DE": "Der Benutzer hat keine Freunde",
+        "uk-UA": "Користувач не має друзів",
+        "ne-NP": "प्रयोगकर्तासँग साथीहरू छैनन्"
+    },
+    "btnClose": {
+        "en-US": "Close",
+        "pt-PT": "Fechar",
+        "pt-BR": "Fechar",
+        "de-DE": "Schließen",
+        "uk-UA": "Закрити",
+        "ne-NP": "बन्द गर्नुहोस्"
+    }
 }
-
-

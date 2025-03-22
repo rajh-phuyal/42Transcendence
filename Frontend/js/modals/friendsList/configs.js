@@ -29,6 +29,10 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            this.domManip.$id("modal-friends-list-search-bar").placeholder = translate("friendsList", "placeholderFilter");
+        },
+
         hideElement(elementId){
             let element = this.domManip.$id(elementId)
             element.style.display = "none";
@@ -67,12 +71,9 @@ export default {
         fetchFriendList() {
 
             call(`/user/friend/list/${this.userId}/`, "GET").then((res) => {
-                console.log("Fetching friend list");
                 this.removeFriendsList();
-                console.log("Removed old friend list");
                 this.friendList = res.friends;
                 this.populateFriendList();
-                console.log("Populated new friend list");
                 this.domManip.$id("modal-friends-list-search-bar").value = "";
                 this.hideElement("modal-friends-list-list-result-not-found-message");
             }).catch((error) => {
@@ -120,7 +121,7 @@ export default {
 
     hooks: {
         beforeOpen () {
-            console.log("beforeOpen of modal-friend-list");
+            this.translateElements();
             // Fetching the attributes from view and store them locally
             try {
                 // Try to store userId as Number

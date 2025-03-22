@@ -22,7 +22,7 @@ export default {
     },
 
     methods: {
-        translateElement() {
+        translateElements() {
             // TODO: check if this transaltion works
             this.domManip.$id("modal-create-game-opponent-search").setAttribute("placeholder", translate("createGame", "placeholderSearchbar"));
         },
@@ -156,7 +156,7 @@ export default {
             return true;
         },
         async beforeOpen () {
-            this.translateElement();
+            this.translateElements();
 
             // Fetching the attributes from view and store them locally
             this.isOpponentFixed = false;

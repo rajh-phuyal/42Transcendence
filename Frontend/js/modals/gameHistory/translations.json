@@ -1,12 +1,26 @@
 {
     "title": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "en-US": "Game History",
+        "pt-PT": "Histórico de Jogos",
+        "pt-BR": "Histórico de Jogos",
+        "de-DE": "Spielhistorie",
+        "uk-UA": "Історія ігор",
+        "ne-NP": "खेल इतिहास"
     },
+    "noGames": {
+        "en-US": "No games yet played...",
+        "pt-PT": "Nenhum jogo jogado ainda...",
+        "pt-BR": "Nenhum jogo jogado ainda...",
+        "de-DE": "Noch keine Spiele gespielt...",
+        "uk-UA": "Ще не зіграно жодної гри...",
+        "ne-NP": "अझै खेलहरू खेलिएको छैन..."
+    },
+    "btnTournamentHistory": {
+        "en-US": "Tournament History",
+        "pt-PT": "Histórico de Torneios",
+        "pt-BR": "Histórico de Torneios",
+        "de-DE": "Turnierhistorie",
+        "uk-UA": "Історія турнірів",
+        "ne-NP": "टुर्नामेन्ट इतिहास"
+    }
 }
-
-

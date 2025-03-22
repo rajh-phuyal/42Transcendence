@@ -2,6 +2,7 @@ import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import $store from '../../store/store.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -9,6 +10,15 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            const usernameElement   = this.domManip.$id("modal-edit-profile-username");
+            const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
+            const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
+            // Placeholders
+            usernameElement.placeholder     = translate("editProfile", "placeholderUsername");
+            firstNameElement.placeholder    = translate("editProfile", "placeholderFirstName");
+            lastNameElement.placeholder     = translate("editProfile", "placeholderLastName");
+        },
 
         initTypeListeners(init) {
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
@@ -66,16 +76,13 @@ export default {
 
     hooks: {
         beforeOpen() {
+            this.translateElements();
             const avatarElement     = this.domManip.$id("modal-edit-profile-avatar");
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
             const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
             const languageElement   = this.domManip.$id("modal-edit-profile-language");
             const submitElement     = this.domManip.$id("modal-edit-profile-btn-save");
-            // Placeholders
-            usernameElement.placeholder = "username"; // TODO: translate
-            firstNameElement.placeholder = "first name"; // TODO: translate
-            lastNameElement.placeholder = "last name"; // TODO: translate
             // Values
             usernameElement.value = this.domManip.$id("router-view").getAttribute("data-user-username");
             firstNameElement.value = this.domManip.$id("router-view").getAttribute("data-user-first-name");

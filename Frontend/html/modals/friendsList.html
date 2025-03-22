@@ -4,46 +4,45 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content" id="modal-friends-list-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal-friends-list-title"></h5>
+                <h5 id="modal-friends-list-title" class="modal-title"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body barely-a-scroll-class" id="modal-friends-list-body">
                 <div id="modal-friends-list-search-bar-container">
-                    <input type="text" id="modal-friends-list-search-bar" placeholder="filter"> <!-- TODO: Translate -->
+                    <input type="text" id="modal-friends-list-search-bar">
                 </div>
                 <div>
                     <ul id="modal-friends-list-list" class="list-group">
-                        <template id="modal-friends-list-list-element-template">
-                            <div class="modal-friends-list-list-element">
-                                <img id="modal-friends-list-list-element-avatar-image" class="modal-friends-list-list-element-avatar-image" alt="error loading image" draggable="false">
-                                <h5 class="modal-friends-list-list-element-username"></h5>
-                                <img id="modal-friends-list-list-element-friendship-image" class="modal-friends-list-list-element-friendship-image" alt="error loading image" draggable="false">
-                            </div>
-                        </template>
                     </ul>
-                    <h3 id="modal-friends-list-list-result-not-found-message" style="padding: 10px 10px 10px 10px; color:black" >No Results Found</h3> <!-- TODO: translate -->
+                    <h5 id="modal-friends-list-list-result-not-found-message" style="padding: 10px 10px 10px 10px; color:black"></h5>
                 </div>
             </div>
             <div class="modal-footer">
-                <!-- TODO: Translate Button Text -->
-                <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button>
+                <button id="btn-close", type="button" class="btn modal-button" data-bs-dismiss="modal"></button>
             </div>
         </div>
     </div>
 </div>
 <style>
-
     /* This is needed so that the modal doesn't shrink when filtering */
     #modal-friends-list-content{
         height: 100% !important;
     }
-
     #modal-friends-list-search-bar{
         background-color: black;
         color: white;
         width: 100%;
     }
+</style>
 
+<template id="modal-friends-list-list-element-template">
+    <div class="modal-friends-list-list-element">
+        <img id="modal-friends-list-list-element-avatar-image" class="modal-friends-list-list-element-avatar-image" draggable="false">
+        <h5 class="modal-friends-list-list-element-username"></h5>
+        <img id="modal-friends-list-list-element-friendship-image" class="modal-friends-list-list-element-friendship-image" draggable="false">
+    </div>
+</template>
+<style>
     /* This is the style for a user card */
     .modal-friends-list-list-element{
         display: flex;

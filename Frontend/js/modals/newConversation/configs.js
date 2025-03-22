@@ -1,5 +1,6 @@
 import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
+import { translate } from '../../locale/locale.js';
 import router from '../../navigation/router.js';
 
 export default {
@@ -9,6 +10,9 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            this.domManip.$id("modal-new-conversation-textarea").placeholder = translate("newConversation", "placeholderTextarea");
+        },
         enableButtonCallback() {
             // Enable the button if the input is not empty
             const input = this.domManip.$id("modal-new-conversation-textarea");
@@ -30,10 +34,6 @@ export default {
     },
 
     hooks: {
-        /*
-        This function is called before opening the modal to check if the modal should be opened or not
-        In this case: if conversation already exists: Don't open modal but redir to conversation
-        */
         async allowedToOpen() {
             let conversationId = this.domManip.$id("router-view").getAttribute("data-user-conversation-id");
             if (conversationId && conversationId !== "null") {
@@ -44,11 +44,7 @@ export default {
         },
 
         beforeOpen () {
-            /* This function prepares the modal
-                On sucess returns true, on failure returns false
-                Will be called by the ModalManager
-            */
-
+            this.translateElements();
             // Fetching the attributes from view and store them locally
             try {
                 // Try to store userId as Number

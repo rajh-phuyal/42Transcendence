@@ -1,3 +1,5 @@
 {
-    "id":                       "key",
+    "modal-new-conversation-title":                       "title",
+    "modal-new-conversation-btn-close":                   "btnClose",
+    "modal-new-conversation-create-button":               "btnCcreateConversation"
 }

@@ -1,3 +1,5 @@
 {
-    "id":                       "key",
+    "modal-friends-list-title":                         "title",
+    "modal-friends-list-list-result-not-found-message": "noFriends",
+    "btn-close":                                        "btnClose"
 }
