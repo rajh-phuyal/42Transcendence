@@ -11,10 +11,8 @@ class GamePlayerSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'avatar', 'points', 'result']
 
 class GameSerializer(serializers.ModelSerializer):
-    # TODO: ISSUE #193
     finishTime = serializers.DateTimeField(source='finish_time', read_only=True)
-    # TODO: ISSUE #193
-    #deadline = serializers.DateTimeField(source='deadline', read_only=True)
+    deadline = serializers.DateTimeField(source='deadline', read_only=True)
     playerLeft = serializers.SerializerMethodField()
     playerRight = serializers.SerializerMethodField()
 

@@ -1,8 +1,13 @@
 
 function loadTimestamp(timestamp, format = "YYYY-MM-DD HH:mm:ss") {
     if (!timestamp) return "";
-    if (!format) return moment.utc(timestamp).local();
-    return moment.utc(timestamp).local().format(format);
+
+    const momentObj = moment.utc(timestamp);
+    if (!momentObj.isValid()) {
+        return timestamp;
+    }
+
+    return format ? momentObj.local().format(format) : momentObj.local();
 }
 
 export { loadTimestamp };

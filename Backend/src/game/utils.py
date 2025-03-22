@@ -165,7 +165,7 @@ def end_game(game, quit_user_id=None):
             game.state = Game.GameState.QUITED
         else:
             game.state = Game.GameState.FINISHED
-        game.finish_time = timezone.now() #TODO: Issue #193
+        game.finish_time = timezone.now()
         game.save()
         if game_members.count() != 2:
             logging.error(f"Game {game.id} has not 2 members")

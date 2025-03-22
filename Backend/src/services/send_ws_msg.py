@@ -130,7 +130,7 @@ async def send_ws_chat_temporary(user_id, conversation_id, content):
     except Conversation.DoesNotExist:
         logging.info(f"Conversation with ID {conversation_id} not found.")
         return
-    message = TempConversationMessage(overlords_instance=overloards, conversation=conversation, created_at=timezone.now().isoformat(), content=content) # TODO: Issue #193
+    message = TempConversationMessage(overlords_instance=overloards, conversation=conversation, created_at=timezone.now(), content=content)
     serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message).data)()
     await send_ws_msg_to_user(user_id, **serialized_message)
 
