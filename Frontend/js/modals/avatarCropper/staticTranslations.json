@@ -1,5 +1,6 @@
 {
-    "modal-avatar-cropper-title":       "title",
-    "modal-avatar-cropper-btn-crop":    "btn-crop",
-
+    "modal-avatar-cropper-title":                       "title",
+    "modal-avatar-cropper-btn-crop":                    "btn-crop",
+    "modal-avatar-cropper-btn-open-file-explorer":      "btn-choose",
+    "modal-avatar-cropper-btn-back":                    "btn-back"
 }

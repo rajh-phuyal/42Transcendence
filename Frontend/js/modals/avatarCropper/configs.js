@@ -20,7 +20,6 @@ export default {
             const file = event.target.files[0]; // Get the selected file
             if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
                 $callToast("error", "Invalid file type. Please select a PNG or JPEG file.");
-                // TODO: close modal or maybe not
                 return;
             }
             if (file) {

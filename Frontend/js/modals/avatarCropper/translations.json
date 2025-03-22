@@ -15,15 +15,22 @@
         "uk-UA": "",
         "ne-NP": ""
     },
-    "title": {
-        "en-US": "Crop the image",
+    "btn-choose": {
+        "en-US": "Choose a file",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
+    },
+    "btn-back": {
+        "en-US": "Back",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
         "uk-UA": "",
         "ne-NP": ""
     }
-
 }
 
 

@@ -1,6 +1,7 @@
 import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -21,6 +22,11 @@ export default {
     },
 
     methods: {
+        translateElement() {
+            // TODO: check if this transaltion works
+            this.domManip.$id("modal-create-game-opponent-search").setAttribute("placeholder", translate("createGame", "placeholderSearchbar"));
+        },
+
         /* This functions toggles between selecting a user and fixing it */
         updateOpponentSection() {
             const search = this.domManip.$id("modal-create-game-opponent-search");
@@ -99,13 +105,12 @@ export default {
         },
 
         createGame() {
-            /* TODO: This section needs translations!! */
             if (!this.opponentId) {
-                $callToast("error", "U need to select an opponent first");
+                $callToast("error", translate("createGame", "selectOpponent"));
                 return;
             }
             if(!this.map) {
-                $callToast("error", "U need to select a map first");
+                $callToast("error", translate("createGame", "selectMap"));
                 return;
             }
             const data = {
@@ -151,10 +156,7 @@ export default {
             return true;
         },
         async beforeOpen () {
-            console.log("beforeOpen of modal-create-game");
-
-            // Set modal title
-            this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //TODO: translate
+            this.translateElement();
 
             // Fetching the attributes from view and store them locally
             this.isOpponentFixed = false;

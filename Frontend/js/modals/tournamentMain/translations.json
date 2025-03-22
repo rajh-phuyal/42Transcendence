@@ -1,18 +1,12 @@
 {
-    "title-normal": {
-        "en-US": "Tournament",
+    "title": {
+        "en-US": "",
         "pt-PT": "",
         "pt-BR": "",
         "de-DE": "",
         "uk-UA": "",
         "ne-NP": ""
     },
-    "title-enrolled": {
-        "en-US": "Active Tournament: ",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    }
 }
+
+
