@@ -4,6 +4,7 @@ import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 export default {
     attributes: {
@@ -239,7 +240,13 @@ export default {
             }
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
-                console.warn(res);
+                console.log("profileData ", this.result);
+        
+                // Convert lastLogin to local time using moment.js
+                if (res.lastLogin) {
+                    this.result.lastLoginFormatted = loadTimestamp(res.lastLogin);
+                }
+        
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();

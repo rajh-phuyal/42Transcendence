@@ -56,6 +56,7 @@ function updateGameCard(container, game) {
         return ;
     // Adjust the styling according to the state
     if (game.state === "pending") {
+        // STATE: PENDING
         if (game.deadline) {
             container.style.display = "grid";
             container.title = "Hurrry up! The game is only open for a limited time!"; // TODO: translate
@@ -68,15 +69,34 @@ function updateGameCard(container, game) {
             container.style.display = "none";
     }
     else if (game.state === "countdown" || game.state === "ongoing" || game.state === "paused") {
+        // STATE: COUNTDOWN, ONGOING, PAUSED
+        // remove the countdown if it exists
+        stopGameCountdown(game.id);
         container.style.display = "grid";
         container.title = "The game is ongoing!"; // TODO: translate
-        container.querySelector(".tournament-game-card-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;
+        // Animate the score change
+        const scoreContainer = container.querySelector(".tournament-game-card-score");
+        const newScore = game.playerLeft.points + "-" + game.playerRight.points;
+        if(newScore !== scoreContainer.textContent) {
+            console.warn("Animate score change");
+            scoreContainer.textContent = newScore;
+            triggerScoreAnimation(scoreContainer);
+        }
     }
     else {
-        // Sate is finished or quited
+        // STATE: FINISHED, QUITED
+        // remove the countdown if it exists
+        stopGameCountdown(game.id);
         container.style.display = "grid";
         container.title = "The game is finished!"; // TODO: translate
-        container.querySelector(".tournament-game-card-score").textContent = game.playerLeft.points + "-" + game.playerRight.points;
+        // Animate the score change
+        const scoreContainer = container.querySelector(".tournament-game-card-score");
+        const newScore = game.playerLeft.points + "-" + game.playerRight.points;
+        if(newScore !== scoreContainer.textContent) {
+            console.warn("Animate score change");
+            scoreContainer.textContent = newScore;
+            triggerScoreAnimation(scoreContainer);
+        }
         // Highlight the winner
         if (game.playerLeft.result === "won") {
             container.querySelector(".tournament-game-card-player-left-avatar").style.filter    = "brightness(1)";
@@ -107,8 +127,8 @@ function startGameCountdown(gameCardContainer, gameid, deadlineISO) {
     const countdownElement = gameCardContainer.querySelector(".tournament-game-card-score");
 
     function updateGameCountdown() {
-        const now = moment.utc();
-        const deadline = moment.utc(deadlineISO);
+        const now = moment.utc().local();
+        const deadline = moment.utc(deadlineISO).local();
         let remainingSeconds = Math.max(0, Math.floor((deadline - now) / 1000));
         countdownElement.textContent = remainingSeconds;
         if (remainingSeconds > 0) {
@@ -121,8 +141,32 @@ function startGameCountdown(gameCardContainer, gameid, deadlineISO) {
     updateGameCountdown();
 }
 
+function stopGameCountdown(gameid) {
+    // Stop the countdown for the specific game by clearing the timeout
+    if (countdownTimers[gameid]) {
+        clearTimeout(countdownTimers[gameid]);
+        delete countdownTimers[gameid];
+    }
+}
+
 // Function to stop and clear all countdowns
 export function clearAllGameCountdowns() {
     Object.values(countdownTimers).forEach(clearTimeout);
     Object.keys(countdownTimers).forEach((key) => delete countdownTimers[key]);
+}
+
+// Used to trigger the animation of the score change
+function triggerScoreAnimation(scoreContainer) {
+    // TODO: this is not working super well. The animation is not always triggered
+    scoreContainer.style.animation = 'none';
+    scoreContainer.offsetHeight;
+    // Apply the animation (again)
+    scoreContainer.style.animation = "pulse-score 500ms ease-in-out";
+    // Listen for the animation to end and reset it
+    scoreContainer.addEventListener('animationend', function resetAnimation() {
+        scoreContainer.removeEventListener('animationend', resetAnimation);
+        scoreContainer.style.animation = 'none';
+        scoreContainer.offsetHeight;
+        console.warn("Score animation ended");
+    });
 }
