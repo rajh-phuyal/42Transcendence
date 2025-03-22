@@ -127,8 +127,8 @@ function startGameCountdown(gameCardContainer, gameid, deadlineISO) {
     const countdownElement = gameCardContainer.querySelector(".tournament-game-card-score");
 
     function updateGameCountdown() {
-        const now = moment.utc();
-        const deadline = moment.utc(deadlineISO);
+        const now = moment.utc().local();
+        const deadline = moment.utc(deadlineISO).local();
         let remainingSeconds = Math.max(0, Math.floor((deadline - now) / 1000));
         countdownElement.textContent = remainingSeconds;
         if (remainingSeconds > 0) {

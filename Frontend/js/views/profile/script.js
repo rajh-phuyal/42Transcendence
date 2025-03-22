@@ -16,7 +16,7 @@ function populateUserInfo(res) {
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_online.png";
     else
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_offline.png";
-    lastSeenText.textContent = translate("profile", "lastSeen") + res.lastLogin;
+    lastSeenText.textContent = translate("profile", "lastSeen") + res.lastLoginFormatted;
     let language =$id("language");
     language.textContent = translate("profile", "language") + res.language;
 }
