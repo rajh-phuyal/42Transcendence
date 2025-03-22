@@ -27,7 +27,3 @@ export function tournamentModalCallback(){
 export function chatRoomModalCallback(){
     router("/chat");
 }
-
-export function leaderboardModalCallback(){
-    modalManager.openModal("modal-leaderboard");
-}

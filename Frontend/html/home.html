@@ -1,18 +1,59 @@
-<div id="home-view  view-background-color">
-  <!-- Canvas -->
-  <canvas id="home-canvas"></canvas>
+<div class="view-base">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img src="../assets/backgrounds/home.png" alt="Background Image" class="view-background-image" draggable="false">
+            <div class="view-overlay-grid">
+                <canvas id="home-canvas" class="grid-cell default-grid-area canvas"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR XYZ VIEW                 -->
+<!--            NOTE: some styles are defined in main.css!                   -->
+<!-- ####################################################################### -->
 <style>
-     #home-canvas {
-      width: 100%;
-      height: 100%;
-      aspect-ratio: 20/9;
-      background-color: black;
-      background-image: url('../assets/backgrounds/home.png');
+    /* The basic valus of the grid are already set in main.css */
+    .view-overlay-grid {
+        grid-template-columns: repeat(auto-fill, 5%);
+        grid-template-rows: repeat(auto-fill, 5%);
+        grid-template-areas:
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas canvas"
+    }
+
+    .canvas {
+        grid-area: canvas;
+    }
+
+    #home-canvas {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 20/9;
+        background-color: black;
+        background-image: url('../assets/backgrounds/home.png');
     }
 
     #home-view {
-      width: 100%;
-      height: 100%;
+        width: 100%;
+        height: 100%;
     }
 </style>
