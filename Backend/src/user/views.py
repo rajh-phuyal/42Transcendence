@@ -180,4 +180,4 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         user.save()
 
         # Return the success response
-        return success_response(_("User info updated"))
+        return success_response(_("User info updated"), language=user.language)

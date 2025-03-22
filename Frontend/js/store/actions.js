@@ -51,7 +51,7 @@ export const actions = {
                 try {
                     if (translations[modal])
                         continue ;
-                    const modalTranslation = await fetch(`../js/modals/${modal}/translations.json`);
+                                        const modalTranslation = await fetch(`../js/modals/${modal}/translations.json`);
                     if (!modalTranslation.ok) {
                         translations[modal] = {};
                         continue;

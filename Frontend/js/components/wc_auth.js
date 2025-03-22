@@ -6,7 +6,6 @@ import router from '../navigation/router.js';
 import { $id } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import $callToast from '../abstracts/callToast.js';
-import call from '../abstracts/call.js';
 import { routes } from '../navigation/routes.js';
 
 // TODO put the css styling in a css file (for all web components)
@@ -195,7 +194,7 @@ class AuthCard extends HTMLElement {
 			passwordField = passwordField[0];
 		}
 
-        // todo: block if empty and other validations
+        // TODO: block if empty and other validations
 
         // usernameField.blur();
         // passwordField.blur();
@@ -219,6 +218,7 @@ class AuthCard extends HTMLElement {
                 username: response.username,
 				avatar: response.avatar
             });
+            $store.commit('setLocale', response.language);
 
             // update the profile route params
             $nav({ "/profile": { id: response.userId } });

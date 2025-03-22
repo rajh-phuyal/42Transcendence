@@ -157,7 +157,7 @@ async function router(path, params = null) {
     viewContainer.dataset.view = route.view;
 
     // translate static elements on the view
-    staticTranslator(route.view);
+    await staticTranslator(route.view);
 
     setViewLoading(false);
 }

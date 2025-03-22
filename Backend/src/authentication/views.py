@@ -14,6 +14,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from django.conf import settings
 from core.exceptions import BarelyAnException
 from authentication.utils import validate_username
+import logging
 
 class RegisterView(APIView):
     serializer_class = RegisterSerializer
@@ -86,15 +87,19 @@ class InternalTokenObtainPairView(TokenObtainPairView):
     @barely_handle_exceptions
     def post(self, request, *args, **kwargs):
         # Activate language from query params or fallback to default
-        # use like: /login/?language=en-us
-        preferred_language = request.query_params.get('language', 'en-us')
-        activate(preferred_language)
+        # use like: /login/?language=en-US
+        preferred_language = request.query_params.get('language')
+        if (preferred_language):
+            activate(preferred_language)
+        else:
+            activate('en-US')
 
         response = super().post(request, *args, **kwargs)
 
         if response.status_code == 200:
             user = self.get_user_from_request(request)
-            user.language = preferred_language
+            if (preferred_language):
+                user.language = preferred_language
 
             if not user:
                 return error_response(_("User not found"))
