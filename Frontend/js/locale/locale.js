@@ -51,6 +51,6 @@ export function staticTranslator(viewName) {
 
     if (!routeObject.modals)
         return ;
-    for (modal of routeObject.modals)
+    for (let modal of routeObject.modals)
         loadAndExecuteTranslations(modal);
 };
