@@ -1,12 +1,34 @@
 {
     "title": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "en-US": "Tournament History",
+        "pt-PT": "Histórico de Torneios",
+        "pt-BR": "Histórico de Torneios",
+        "de-DE": "Turnierhistorie",
+        "uk-UA": "Історія турнірів",
+        "ne-NP": "टुर्नामेन्ट इतिहास"
     },
+    "noTournaments": {
+        "en-US": "No tournaments yet played...",
+        "pt-PT": "Nenhum torneio jogado ainda...",
+        "pt-BR": "Nenhum torneio jogado ainda...",
+        "de-DE": "Noch keine Turniere gespielt...",
+        "uk-UA": "Ще не зіграно жодного турніру...",
+        "ne-NP": "अझै टुर्नामेन्टहरू खेलिएका छैनन्..."
+    },
+    "btnBack": {
+        "en-US": "Back",
+        "pt-PT": "Voltar",
+        "pt-BR": "Voltar",
+        "de-DE": "Zurück",
+        "uk-UA": "Назад",
+        "ne-NP": "फिर्ता"
+    },
+    "btnGameHistory": {
+        "en-US": "Game History",
+        "pt-PT": "Histórico de Jogos",
+        "pt-BR": "Histórico de Jogos",
+        "de-DE": "Spielhistorie",
+        "uk-UA": "Історія ігор",
+        "ne-NP": "खेल इतिहास"
+    }
 }
-
-

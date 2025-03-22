@@ -4,35 +4,35 @@
             <div class="modal-body image-modal-body">
                 <img src='../../assets/backgrounds/modal-tournament-create.png' class="image-modal-background-image" alt="Background Image" draggable="false">
                 <div id="modal-tournament-create-grid" class="view-overlay-grid">
-                    <h4 class="modal-title grid-cell default-grid-area title" id="modal-tournament-create-title">Modal title</h4>
+                    <h4 class="modal-title grid-cell default-grid-area title" id="modal-tournament-create-title"></h4>
                     <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
                     <!-- CHOOSE TITLE -->
-                    <h6                                                         class="grid-cell default-grid-area ttitle">Tournament Title</h6>
-                    <input  id="modal-tournament-tournament-title"              class="grid-cell default-grid-area ititle barely-an-input" maxlength="23" type="text" placeholder="Enter a title">
+                    <h6     id="modal-tournament-tournament-name"               class="grid-cell default-grid-area ttitle"></h6>
+                    <input  id="modal-tournament-tournament-title"              class="grid-cell default-grid-area ititle barely-an-input" maxlength="23" type="text">
                     <button id="modal-tournament-btn-title-gen" type="button"   class="grid-cell default-grid-area ttgen modal-button">?</button>
                     <!-- CHOOSE PRIVACY -->
-                    <h6                                             class="grid-cell default-grid-area privt">Privacy</h6>
+                    <h6  id="modal-tournament-create-priv-title"    class="grid-cell default-grid-area privt"></h6>
                     <img id="modal-tournament-create-priv-private"  class="grid-cell default-grid-area pri modal-button modal-image-button sound-button modal-toggle-button-disabled priv-button" datapublic="false"    src="../assets/icons_128x128/icon_tournament_private.png" draggable="false">
                     <img id="modal-tournament-create-priv-public"   class="grid-cell default-grid-area pub modal-button modal-image-button sound-button modal-toggle-button-disabled priv-button" datapublic="true"     src="../assets/icons_128x128/icon_tournament_public.png" draggable="false">
                     <!-- CHOOSE TYPE -->
-                    <h6                                             class="grid-cell default-grid-area typt">Type</h6>
+                    <h6  id="modal-tournament-create-type-title"    class="grid-cell default-grid-area typt"></h6>
                     <img id="modal-tournament-create-type-local"    class="grid-cell default-grid-area tyloc modal-button modal-image-button sound-button modal-toggle-button-disabled typ-button" datalocal="true"     src="../assets/icons_128x128/icon_tournament_local.png" draggable="false">
                     <img id="modal-tournament-create-type-remote"   class="grid-cell default-grid-area tyrem modal-button modal-image-button sound-button modal-toggle-button-disabled typ-button" datalocal="false"    src="../assets/icons_128x128/icon_tournament_remote.png" draggable="false">
                     <!-- CHOOSE MAP -->
-                    <h6                                                   class="grid-cell default-grid-area mapst">Maps</h6>
+                    <h6  id="modal-tournament-create-map-title"           class="grid-cell default-grid-area mapst"></h6>
                     <img id="modal-tournament-create-map-ufo"             class="grid-cell default-grid-area mufo modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="1" src="../assets/icons_128x128/icon_map_ufo.png" draggable="false">
                     <img id="modal-tournament-create-map-lizard-people"   class="grid-cell default-grid-area mliz modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="2" src="../assets/icons_128x128/icon_map_lizard-people.png" draggable="false">
                     <img id="modal-tournament-create-map-snowman"         class="grid-cell default-grid-area msno modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="3" src="../assets/icons_128x128/icon_map_snowman.png" draggable="false">
                     <img id="modal-tournament-create-map-lochness"        class="grid-cell default-grid-area mloc modal-button modal-image-button sound-button modal-toggle-button-disabled map-button" mapid="4" src="../assets/icons_128x128/icon_map_lochness.png" draggable="false">
                     <!-- CHOOSE POWERUPS -->
-                    <h6                                                   class="grid-cell default-grid-area put">Powerups</h6>
-                    <button id="modal-tournament-btn-pu" type="button" enabled="true" class="grid-cell default-grid-area modal-button modal-toggle-button btnpu">Powerups</button>
+                    <h6 id="modal-tournament-pu-title"                    class="grid-cell default-grid-area put"></h6>
+                    <button id="modal-tournament-btn-pu" type="button" enabled="true" class="grid-cell default-grid-area modal-button modal-toggle-button btnpu"></button>
                     <!-- CHOOSE USERS -->
-                    <h6   id="modal-tournament-opponents-header"                                           class="grid-cell default-grid-area userst">Select Users</h6>
+                    <h6   id="modal-tournament-opponents-header"  class="grid-cell default-grid-area userst"></h6>
                     <div  id="modal-tournament-opponents-content" class="grid-cell default-grid-area srch">
                         <search-bar
-                            placeholder="Invite a user"
+                            placeholder=""
                             width="250"
                             heigth="30"
                             search-type="users"
@@ -42,8 +42,8 @@
                         ></search-bar>
                         <div id="modal-tournament-create-opponents-container" class="barely-a-scroll-class"></div>
                     </div>
-                    <button class="grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal">BACK</button>
-                    <button id="modal-tournament-create-btn-create" type="button"     class="grid-cell default-grid-area btnc modal-button">Create</button>
+                    <button id="modal-tournament-create-btn-back" class="grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal"></button>
+                    <button id="modal-tournament-create-btn-create" type="button"     class="grid-cell default-grid-area btnc modal-button"></button>
                 </div>
             </div>
         </div>
