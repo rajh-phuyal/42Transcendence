@@ -21,7 +21,7 @@ class User(AbstractUser):
         db_table = '"barelyaschema"."user"'
 
     def update_last_seen(self):
-        self.last_login = timezone.now() #TODO: Issue #193
+        self.last_login = timezone.now()
         self.save(update_fields=['last_login'])
 
     def set_online_status(self, status, channel_name=None):
