@@ -21,9 +21,9 @@ AI_FIRST_NAME="The"
 AI_LAST_NAME="AI Opponent"
 AI_AVATAR="670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"
 FLATMATE_ID=3
-FLATMATE_USERNAME="flatmate"
-FLATMATE_FIRST_NAME="The"
-FLATMATE_LAST_NAME="Flatmate"
+FLATMATE_USERNAME="theThing"
+FLATMATE_FIRST_NAME="The Thing"
+FLATMATE_LAST_NAME="under your bed"
 FLATMATE_AVATAR="4ca810c2-9b38-4bc8-ab87-d478cb1739f0.png"
 # CHANGE THE VALUES ABOVE FOR ANY ADJUSTMENTS!
 ################################################################################
@@ -53,7 +53,7 @@ echo "STARTING ROOT ACCOUNTS SCRIPT..."
 if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user;" | grep -q "(0 rows)"; then
 	echo "Database is empty therfore create the root accounts..."
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "INSERT INTO barelyaschema.user \
-        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar_path) VALUES     \
+        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar) VALUES     \
 		($OVERLORDS_ID,     'hashed_password_1',    '2000-01-01 00:00:00+00',   TRUE,         '$OVERLORDS_USERNAME','$OVERLORDS_FIRST_NAME',    '$OVERLORDS_LAST_NAME', 'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$OVERLORDS_AVATAR'),   \
 		($AI_ID,            'hashed_password_2',    '2000-01-01 00:00:00+00',   TRUE,         '$AI_USERNAME',       '$AI_FIRST_NAME',           '$AI_LAST_NAME',        'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$AI_AVATAR'),          \
         ($FLATMATE_ID,      'hashed_password_3',    '2000-01-01 00:00:00+00',   TRUE,         '$FLATMATE_USERNAME', '$FLATMATE_FIRST_NAME',     '$FLATMATE_LAST_NAME',  'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$FLATMATE_AVATAR');"

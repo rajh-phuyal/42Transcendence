@@ -1,15 +1,15 @@
 import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import { keyPressCallback, keyReleaseCallback } from './callbacks.js';
-import { showPowerupStatus, sendPlayerInput, changeGameState } from './methods.js';
+import { drawPlayersState, sendPlayerInput, changeGameState } from './methods.js';
 import { gameRender } from './render.js';
 
 function gameLoop(currentTime) {
     if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
         gameObject.lastFrameTime = currentTime;
-        if (gameObject.state === "ongoing")
+        if (gameObject.state === "ongoing" && gameObject.clientIsPlayer)
             sendPlayerInput();
-            showPowerupStatus(true);
+        drawPlayersState();
         gameRender();
         // Check if the game is  still ongoing
         if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
@@ -24,12 +24,13 @@ function gameLoop(currentTime) {
 export function startGameLoop() {
     //Just in case we have an ongoing game loop end it
     endGameLoop();
-    //console.log("Starting game loop");
-    $on(document, 'keydown', keyPressCallback);
-    $on(document, 'keyup', keyReleaseCallback);
+    if (gameObject.clientIsPlayer) {
+        $on(document, 'keydown', keyPressCallback);
+        $on(document, 'keyup', keyReleaseCallback);
+    }
     gameObject.lastFrameTime = performance.now();
     gameObject.animationId = requestAnimationFrame(gameLoop);
-    showPowerupStatus(true);
+    drawPlayersState();
 }
 
 export function endGameLoop() {
@@ -48,10 +49,10 @@ export const animateImage = (
     timingFunction = "ease-in-out"
 ) => {
     const image = $id(id);
-    //image.style.animationDuration = duration;
-    //image.style.animationName = animationName;
-    //image.style.animationIterationCount = iterationCount;
-    //image.style.animationTimingFunction = timingFunction;
+    image.style.animationDuration = duration;
+    image.style.animationName = animationName;
+    image.style.animationIterationCount = iterationCount;
+    image.style.animationTimingFunction = timingFunction;
 };
 
 export const removeImageAnimation = (id) => {
@@ -74,7 +75,7 @@ export const showGame = (show) => {
         animateImage("game-view-map-image", "fadein", "3s");
     } else {
         // TODO: this doesn't work yet
-        gameViewImageContainer.style.backgroundImage = `${window.location.origin}/assets/game/lobby.png`;
+        gameViewImageContainer.style.backgroundImage = `${window.location.origin}/assets/images/game/lobby.png`;
         gameImage.style.display = "none";
         gameField.style.display = "none";
     }

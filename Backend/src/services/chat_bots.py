@@ -26,7 +26,7 @@ async def send_message_with_delay(sender, receiver, delay=None, message_txt = No
             message_txt = get_random_AI_message()
         elif sender.id == USER_ID_FLATMATE:
             delay = 0.1
-            message_txt = _("Hey! I'm am sitting next to you, let's chat in person!")
+            message_txt = _("~~grunt noises~~")
         else:
             return
     message_object = await sync_to_async(create_msg_db)(sender, conversation, message_txt)
@@ -141,4 +141,4 @@ def get_random_AI_message():
         _("No lag, no hesitation, just pure gaming focus."),
     ]
 
-    return random.choice(sentences) + " Anyways, create a game I wanna play!"
+    return random.choice(sentences) + "<br> ...Anyways, create a game I wanna play!"

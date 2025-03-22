@@ -18,6 +18,7 @@ TOTAL_TESTS_SUCCESS=0
 FAILED_TESTS=""
 TEST_TO_PERFORM=""
 UPPER_TEST_RANGE=""
+LOWER_TEST_RANGE=""
 
 # Files
 LOG_FILE="$(dirname "$(realpath "$0")")/results.log"
@@ -181,7 +182,7 @@ select_test(){
     echo "$(date '+%Y-%m-%dT%H:%M:%S')" > $LOG_FILE
     echo "--------------------------------------------" >> $LOG_FILE
 
-    echo -e "Enter test number\n\t${BOLD}return${RESET}\tfor all tests\n\t${BOLD}42${RESET}\tonly test with number: 42\n\t${BOLD}-42${RESET}\tfor range 1-42"
+    echo -e "Enter test number\n\t${BOLD}return${RESET}\tfor all tests\n\t${BOLD}42${RESET}\tonly test with number: 42\n\t${BOLD}-42${RESET}\tfor range 1-42n\n\t${BOLD}42-${RESET}\tfor range 42-max"
     read -p "choose: " INPUT
 
     local total_tests_num=$((10#$TOTAL_TESTS))
@@ -196,6 +197,17 @@ select_test(){
                 return
             fi
             print_and_log "" "Running tests 001-$UPPER_TEST_RANGE"
+            return
+        fi
+        if [[ $INPUT == *- ]]; then
+            LOWER_TEST_RANGE=${INPUT::-1}
+            if [[ $LOWER_TEST_RANGE -gt $LOWER_TEST_RANGE ]]; then
+                print_and_log "" "Test number $LOWER_TEST_RANGE does not exist"
+                print_and_log "" "Ignoring range aka running all tests"
+                LOWER_TEST_RANGE=""
+                return
+            fi
+            print_and_log "" "Running tests $LOWER_TEST_RANGE-$LOWER_TEST_RANGE"
             return
         fi
         TEST_TO_PERFORM=$INPUT
@@ -502,6 +514,11 @@ parse_lines(){
         # Check if only a range of tests should be run
         if [[ -n "$UPPER_TEST_RANGE" ]] && [[ "$test_num" -gt "$UPPER_TEST_RANGE" ]]; then
             break
+        fi
+
+        # Check if only a range of tests should be run
+        if [[ -n "$LOWER_TEST_RANGE" ]] && [[ "$test_num" -lt "$LOWER_TEST_RANGE" ]]; then
+            continue
         fi
 
         # Check if test is marekd as active

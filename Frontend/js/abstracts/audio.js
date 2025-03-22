@@ -17,7 +17,8 @@ export default class AudioPlayer {
             { mapId: 1, audio: new Audio("../assets/audio/ufo.mp3") },
             { mapId: 2, audio: new Audio("../assets/audio/lizard-people.mp3") },
             { mapId: 3, audio: new Audio("../assets/audio/snowman.mp3") },
-            { mapId: 4, audio: new Audio("../assets/audio/lochness.mp3") }
+            { mapId: 4, audio: new Audio("../assets/audio/lochness.mp3") },
+            { mapId: 5, audio: new Audio("../assets/audio/lobby-tournament.mp3") }
         ];
 
         this.sounds = [

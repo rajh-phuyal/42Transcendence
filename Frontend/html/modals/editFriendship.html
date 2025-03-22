@@ -1,0 +1,86 @@
+<div class="modal fade" id="modal-edit-friendship" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-edit-friendship-content" class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img id="modal-edit-friendship-background" src='../../assets/backgrounds/modal-edit-friendship.png' class="image-modal-background-image" alt="Background Image" draggable="false">
+                <div id="modal-edit-friendship-image-grid" class="view-overlay-grid">
+                    <!-- Kind of header: -->
+                    <h4 id="modal-edit-friendship-title"                                class="grid-cell default-grid-area modal-title title">Edit Friendship</h4>
+                    <button type="button"                                               class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="grid-cell default-grid-area flex">
+                        <h5 id="modal-edit-friendship-friendship-text"                      class="modal-edit-friendship-text">here the friendship text</h5>
+                        <div id="modal-edit-friendship-friendship-buttons">
+                            <button id="modal-edit-friendship-friendship-primary-button"    class="btn modal-button">YES</button>
+                            <button id="modal-edit-friendship-friendship-secondary-button"  class="btn modal-button">NO</button>
+                        </div>
+                        <div id="modal-edit-friendship-block">
+                            <h5 id="modal-edit-friendship-block-text" class="modal-edit-friendship-text">here the bblock text</h5>
+                            <div id="modal-edit-friendship-block-buttons">
+                                <button id="modal-edit-friendship-block-button" class="btn modal-button">YES</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-edit-friendship-content {
+        height: 400px !important;
+    }
+    #modal-edit-friendship-image-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 7%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+    }
+
+    .title {
+        grid-area: title;
+        color: black;
+    }
+    .btncl {
+        grid-area: btncl;
+    }
+    .flex {
+        grid-area: flex;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        color: black;
+    }
+
+    #modal-edit-friendship-friendship-text,
+    #modal-edit-friendship-block-text {
+        font-size: min(1.2vw, 15px) !important;
+        padding: 10px 10px 10px 10px;
+    }
+
+    #modal-edit-friendship-friendship-buttons,
+    #modal-edit-friendship-block-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    #modal-edit-friendship-friendship-primary-button,
+    #modal-edit-friendship-friendship-secondary-button,
+    #modal-edit-friendship-block-button {
+        width: 60px;
+        height: auto;
+    }
+</style>

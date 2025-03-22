@@ -1,8 +1,10 @@
 import call from '../../abstracts/call.js';
 import { translate } from '../../locale/locale.js';
-import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages } from './methods.js';
+import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
+import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 /*
  QUICK EXPLANATION:
@@ -106,28 +108,23 @@ export default {
 
             if (event.key === "Escape") {
                 // ESC clears the search bar
+                resetFilter();
+            } else if (event.key === "Enter") {
+            // ENTER selects the first visible card
+                const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
+                    .filter((card) => card.style.display !== "none"); // Only include visible cards
+
+                if (visibleCards.length > 0) {
+                    visibleCards[0].click(); // Simulate a click on the first filtered card
                     searchBar.value = ""; // Clear the search bar
-                    const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
 
-                    conversationCards.forEach((card) => {
-                        card.style.display = "flex"; // Show all cards
+                    // Show all cards again
+                    const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+                    allCards.forEach((card) => {
+                        card.style.display = "flex";
                     });
-                }else if (event.key === "Enter") {
-                // ENTER selects the first visible card
-                    const visibleCards = Array.from(conversationsContainer.querySelectorAll(".chat-view-conversation-card"))
-                        .filter((card) => card.style.display !== "none"); // Only include visible cards
-
-                    if (visibleCards.length > 0) {
-                        visibleCards[0].click(); // Simulate a click on the first filtered card
-                        searchBar.value = ""; // Clear the search bar
-
-                        // Show all cards again
-                        const allCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
-                        allCards.forEach((card) => {
-                            card.style.display = "flex";
-                        });
-                    }
                 }
+            }
         },
 
         // This is the Event Listener for the mentions (@user, #game, #tournament)
@@ -164,110 +161,29 @@ export default {
             }
         },
 
-        // ADDIND / REMOVING EVENT LISTENERS
-        // -------------------------------------------
-        // Adding / Removing Event Listeners for the infinite scroll
-        initInfiniteScroll(init = true) {
-            const container = this.domManip.$id("chat-view-messages-container");
-            if(!container){
-                console.error("No chat-view-messages-container found. Unable to add infinite scroll.");
-                return ;
-            }
-            // Adding theEventListener
-            if (init){
-                this.domManip.$on(container, "scroll", this.scrollListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.scrollListener)
-                    this.domManip.$off(container, "scroll", this.scrollListener);
-                else
-                    console.log("handleScroll is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        // Adding / Removing Event Listeners for the avatar click
-        initAvatarClick(init = true) {
-            const avatar = this.domManip.$id("chat-view-header-avatar");
-            if(!avatar){
-                console.error("No chat-view-header-avatar found. Unable to add avatar click event listener.");
-                return ;
-            }
-            avatar.style.cursor = "pointer";
-
-            // Adding theEventListener
-            if (init){
-                this.domManip.$on(avatar, "click", this.clickAvatarListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.clickAvatarListener)
-                    this.domManip.$off(avatar, "click", this.clickAvatarListener);
-                else
-                    console.log("clickAvatarListener is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        // Adding / Removing Event Listeners for the search bar
-        initSearch(init = true) {
-            const searchBar = this.domManip.$id("chat-view-searchbar");
-            const conversationsContainer = this.domManip.$id("chat-view-conversations-container");
-
-            if (!searchBar || !conversationsContainer) {
-                console.error("No search bar or conversations container found. Unable to add search event listener.");
-                return ;
-            }
-
-            // Adding theEventListener
-            if (init){
-                this.domManip.$on(searchBar, "input", this.searchBarTypeListener);
-                this.domManip.$on(searchBar, "keydown", this.searchBarKeydownListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.searchBarTypeListener)
-                    this.domManip.$off(searchBar, "input", this.searchBarTypeListener);
-                else
-                    console.log("searchBarListenerType is not defined, cannot remove listener.");
-                if(this.searchBarKeydownListener)
-                    this.domManip.$off(searchBar, "keydown", this.searchBarKeydownListener);
-                else
-                    console.log("searchBarListenerKeydown is not defined, cannot remove listener.");
-                return ;
-            }
-        },
-
-        // Adding / Removing Event Listeners for the mentions (@user, #game, #tournament)
-        initMentionClick(init = true) {
-            const container = this.domManip.$id("chat-view-messages-container");
-
-            if (!container) {
-                console.error("No chat-view-messages-container found. Unable to add mention click event listener.");
-                return ;
-            }
-
-            // Adding theEventListener
-            if(init){
-                this.domManip.$on(container, "click", this.messageMeantionListener);
-                return ;
-            }
-
-            // Remove the event listener before leaving the page
-            if (!init){
-                if(this.messageMeantionListener)
-                    this.domManip.$off(container, "click", this.messageMeantionListener);
-                else
-                    console.log("messageMeantionListener is not defined, cannot remove listener.");
-                return ;
-            }
+        eyeListener(event){
+            let backgroundImage = this.domManip.$id("chat-view-eye-background");
+            let pupil = this.domManip.$id("chat-view-eye-pupil");
+            const rect = backgroundImage.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const relativeX = Math.round(event.clientX - centerX);
+            const relativeY = Math.round(event.clientY - centerY);
+            const maxMoveX = backgroundImage.width * 0.25;
+            const maxMoveY = backgroundImage.height * 0.2;
+            let percentageMoveX = 0
+            let percentageMoveY = 0
+            if (relativeX > 0)
+                percentageMoveX = (relativeX / (window.innerWidth - centerX));
+            else
+                percentageMoveX = (relativeX / centerX);
+            if (relativeY > 0)
+                percentageMoveY = (relativeY / (window.innerHeight - centerY));
+            else
+                percentageMoveY = (relativeY / centerY);
+            const moveX = percentageMoveX * maxMoveX;
+            const moveY = percentageMoveY * maxMoveY;
+            pupil.style.transform = `translate(-50%, -50%) translate(${moveX}px, ${moveY}px)`;
         },
 
         // This will be called only once by afterDomInsertion to initalize the cards via REST API
@@ -337,20 +253,16 @@ export default {
         },
 
         beforeRouteLeave() {
-            // Remove all event listeners
-            this.initInfiniteScroll(false);
-            this.initAvatarClick(false);
-            this.initSearch(false);
-            this.initMentionClick(false);
-
-            // Inform WebSocketManager that we are leaving the chat
-            WebSocketManager.setCurrentRoute(undefined);
-
+            modalManager.off("chat-view-btn-create-game", "modal-create-game");
             // Remove all conversations
             deleteAllConversationCards();
-
             // Remove all messages
             resetConversationView();
+            // Remove the attributes which the createGameModal uses
+            const view = this.domManip.$id("router-view");
+            view.removeAttribute("data-user-id");
+            view.removeAttribute("data-user-username");
+            view.removeAttribute("data-user-avatar");
         },
 
         beforeDomInsertion() {
@@ -359,13 +271,6 @@ export default {
         async afterDomInsertion() {
             // Set translations
             this.setTranslations();
-
-            // Hide non MVP Elements
-            this.domManip.$id("chat-view-header-invite-for-game-image").style.display = "none";
-            this.domManip.$id("chat-view-header-group-chat-image").style.display = "none";
-
-            // Inform WebSocketManager that we are entering the chat
-            WebSocketManager.setCurrentRoute("chat");
 
             // Init everything conversation related (right side of view)
             resetConversationView();
@@ -391,12 +296,22 @@ export default {
                     console.error("Error loading conversations:", error);
                 });
 
-
             // Add event listeners
-            this.initInfiniteScroll();
-            this.initAvatarClick();
-            this.initSearch()
-            this.initMentionClick();
+            // - for search bar
+            EventListenerManager.linkEventListener("chat-view-searchbar", "chat", "input", this.searchBarTypeListener);
+            EventListenerManager.linkEventListener("chat-view-searchbar", "chat", "keydown", this.searchBarKeydownListener);
+            // - for infinite scroll
+            EventListenerManager.linkEventListener("chat-view-messages-container", "chat", "scroll", this.scrollListener);
+            // - for avatar click
+            const avatar = this.domManip.$id("chat-view-header-avatar");
+            avatar.style.cursor = "pointer";
+            EventListenerManager.linkEventListener("chat-view-header-avatar", "chat", "click", this.clickAvatarListener);
+            // - for mentions
+            EventListenerManager.linkEventListener("chat-view-messages-container", "chat", "click", this.messageMeantionListener);
+            // - for eye
+            EventListenerManager.linkEventListener("barely-a-body", "chat", "mousemove", this.eyeListener);
+            // Add modal event listener
+            modalManager.on("chat-view-btn-create-game", "modal-create-game");
         },
     },
 };

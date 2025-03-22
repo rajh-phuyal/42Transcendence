@@ -1,531 +1,184 @@
-<div id="profie-view">
-    <div id="background-image">
-        <!-- Left Block -->
-        <div id="main-left-div">
-            <h2 id="username">username</h2>
-            <img id="avatar"></img>
-            <h4 id="birth-name" class="blackout"> actual name</h4>
-            <div id="last-seen" class="blackout">
-                <h4 id="last-seen-text">last seen</h4>
-                <img id="last-seen-image" src="" alt="img not found">
-            </div>
-            <h4 id="language"  class="blackout"> language</h4>
-        </div>
-        <!-- Right Block -->
-        <div id="main-right-div">
-            <div id="top-buttons">
-                <img class="button" id="button-top-left"></img>
-                <img class="button" id="button-top-middle"></img>
-                <img class="button" id="button-top-right"></img>
-            </div>
-            <div id="stats-div">
+<div class="view-base  view-background-color">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img src="../assets/backgrounds/profile.png" alt="Background Image" class="view-background-image" draggable="false">
+            <div class="view-overlay-grid">
+                <!-- DETAILS LEFT -->
+                <h4  id="username"        class="grid-cell default-grid-area uname">TODO REMOVE</h4>
+                <img id="avatar"          class="grid-cell default-grid-area avatar" alt="Avatar" draggable="false">
+                <h5  id="birth-name"      class="grid-cell default-grid-area bname blackout">actual name</h5>
+                <h5  id="last-seen-text"  class="grid-cell default-grid-area lseent blackout">last seen</h5>
+                <img id="last-seen-image" class="grid-cell default-grid-area lseeni blackout" alt="Last seen" draggable="false">
+                <h5  id="language"        class="grid-cell default-grid-area lang blackout">lang</h5>
+                <!-- BUTTONS -->
+                <img id="button-top-left"     class="grid-cell default-grid-area btn1 modal-button modal-image-button sound-button" draggable="false">
+                <img id="button-top-middle"   class="grid-cell default-grid-area btn2 modal-button modal-image-button sound-button" draggable="false">
+                <img id="button-top-right"    class="grid-cell default-grid-area btn3 modal-button modal-image-button sound-button" draggable="false">
+                <img id="button-bottom-left"  class="grid-cell default-grid-area btn4 modal-button modal-image-button sound-button" draggable="false">
+                <img id="button-bottom-right" class="grid-cell default-grid-area btn5 modal-button modal-image-button sound-button" draggable="false">
                 <!-- STATS -->
-                <h2 class="blackout">STATS</h2>
-                <h3 class="game-stats-parameters" id="stats-games">Games won: 0/0</h3>
-                <h3 class="game-stats-parameters" id="stats-tournament-first-place">1st place: 0/0</h3>
-                <h3 class="game-stats-parameters" id="stats-tournament-second-place">2nd place: 0/0</h3>
-                <h3 class="game-stats-parameters" id="stats-tournament-third-place">3rd place: 0/0</h3>
-                <!-- Player's Grading -->
-                <div id="progress-grid" class="blackout">
-                    <!-- Skill section -->
-                    <h2 id="score-skill-name" class="progress-grid-name">Skill</h2>
-                    <div class="progress">
-                        <div id="score-skill-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h2 id="score-skill-percentage" class="progress-grid-percentage">0%</h2>
-                    <!-- game exp section -->
-                    <h2 id="score-game-exp-name" class="progress-grid-name">GExp</h2>
-                    <div class="progress">
-                        <div id="score-game-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h2 id="score-game-exp-percentage" class="progress-grid-percentage">0%</h2>
-                    <!-- tournament exp section -->
-                    <h2 id="score-tournament-exp-name" class="progress-grid-name">TExp</h2>
-                    <div class="progress">
-                        <div id="score-tournament-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h2 id="score-tournament-exp-percentage" class="progress-grid-percentage">0%</h2>
-                    <!-- total section -->
-                    <h2 id="score-total-name" class="progress-grid-name">Total</h2>
-                    <div class="progress">
-                        <div id="score-total-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <h2 id="score-total-percentage" class="progress-grid-percentage">0%</h2>
-                </div>
-                <div id="bottom-buttons" class="blackout">
-                    <img class="button" id="button-bottom-left"></img>
-                    <img class="button" id="button-bottom-right"></img>
-                </div>
-            </div>
-        </div>
-    </div>
+                <h4                                     class="grid-cell default-grid-area stath blackout">STATS</h4>
+                <h5 id="stats-games"                    class="grid-cell default-grid-area statg  game-stats-parameters">Games won: 0/0 </h5>
+                <h5 id="stats-tournament-first-place"   class="grid-cell default-grid-area statt1 game-stats-parameters">1st place: 0/0 </h5>
+                <h5 id="stats-tournament-second-place"  class="grid-cell default-grid-area statt2 game-stats-parameters ">2nd place: 0/0 </h5>
+                <h5 id="stats-tournament-third-place"   class="grid-cell default-grid-area statt3 game-stats-parameters">3rd place: 0/0 </h5>
+                <!-- EXPERIENCE -->
+                <h4 class="grid-cell default-grid-area exph blackout">EXPERIENCE</h4>
+                <!-- EXPERIENCE NAMES -->
+                <h5 id="score-skill-name"          class="grid-cell default-grid-area expns  progress-grid-name">Skill</h5>
+                <h5 id="score-game-exp-name"       class="grid-cell default-grid-area expng  progress-grid-name">GExp</h5>
+                <h5 id="score-tournament-exp-name" class="grid-cell default-grid-area expnt  progress-grid-name">TExp</h5>
+                <h5 id="score-total-name"          class="grid-cell default-grid-area expnsu progress-grid-name">Total</h5>
+                <!-- EXPERENCE PORGRESS BARS -->
 
 
-    <!-- Friendship Modal -->
-    <div class="modal fade" id="friendship-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body" id="friendship-modal-body">
-              <h3 id="friendshp-modal-friendship-text" class="friendship-modal-text"></h3>
-              <div id="friendship-modal-friendship-buttons">
-                    <barely-a-button id="friendship-modal-friendship-primary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
-                    <barely-a-button id="friendship-modal-friendship-secondary-button" class="friendship-modal-buttons" buttonclass="rect-button" name="No"></barely-a-button>
-              </div>
-              <div id="friendship-modal-block">
-                    <h3 id="friendshp-modal-block-text" class="friendship-modal-text"></h3>
-                    <barely-a-button id="friendship-modal-block-button" class="friendship-modal-buttons" buttonclass="rect-button" name="Yes"></barely-a-button>
-              </div>
-              <barely-a-button id="friendship-modal-cancel-button" class="friendship-modal-buttons" name="Cancel" buttonclass="rect-button"></barely-a-button>
+                <div class="grid-cell default-grid-area expps progress">
+                    <div id="score-skill-progress"      class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="grid-cell default-grid-area exppg progress">
+                    <div id="score-game-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="grid-cell default-grid-area exppt progress">
+                    <div id="score-tournament-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="grid-cell default-grid-area exppsu progress">
+                    <div id="score-total-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
 
-          </div>
         </div>
-      </div>
     </div>
-    <!-- Edit Profile Modal -->
-    <div class="modal fade" id="edit-profile-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" style="width: 32vw;">
-          <div class="modal-body" id="edit-profile-modal-body">
-            <!-- Form Body -->
-            <div id="edit-profile-modal-form">
-                <h2>Edit Profile</h2>
-                <barely-a-button id="edit-profile-modal-form-change-avatar-button" buttonclass="rect-button" name="avatar"></barely-a-button>
-                <barely-a-button id="edit-profile-modal-form-change-password-button" buttonclass="rect-button" name="password"></barely-a-button>
-                <!-- Bootstrap Form -->
-                <form class="needs-validation" novalidate>
-                  <div class="form-row">
-                    <div class="col-md-4 mb-3">
-                      <label for="validationCustom01">First name</label>
-                      <input type="text" class="form-control" id="edit-profile-modal-form-input-first-name" placeholder="First name" value="John" required>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                      <label for="validationCustom02">Last name</label>
-                      <input type="text" class="form-control" id="edit-profile-modal-form-input-last-name" placeholder="Last name" value="Doe" required>
-                      <div class="valid-feedback">
-                        Looks good!
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="col-md-4 mb-3">
-                      <label for="validationCustomUsername">Username</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        </div>
-                        <input type="text" class="form-control" id="edit-profile-modal-form-input-username" placeholder="Username" value="user" aria-describedby="inputGroupPrepend" required>
-                        <div class="invalid-feedback">
-                          Please choose a username.
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="exampleFormControlSelect1">Language</label>
-                      <select class="form-control" id="edit-profile-modal-form-language-selector">
-                        <option value="none">Chose a Language</option>
-                        <option value="de-DE">Deutsch(DE)</option>
-                        <option value="en-US">English(US)</option>
-                        <option value="ne-NP">Nepalese (NP)</option>
-                        <option value="pt-BR">Portugues(BR)</option>
-                        <option value="pt-PT">Portugues(PT)</option>
-                        <option value="uk-UA">Ukrainian (UK)</option>
-                      </select>
-                    </div>
-                  </div>
-                  <barely-a-button id="edit-profile-modal-form-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
-                </form>
-            </div>
-            <!-- Password Change Body -->
-            <div id="edit-profile-modal-password-change">
-              <form>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Old Password</label>
-                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-old-password" aria-describedby="emailHelp" placeholder="Password">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">New Password</label>
-                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-new-password" aria-describedby="emailHelp" placeholder="Password">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Repeat Password</label>
-                  <input type="password" class="form-control" id="edit-profile-modal-password-change-input-repeat-password" placeholder="Password">
-                </div>
-                <barely-a-button id="edit-profile-modal-password-change-submit-button" buttonclass="rect-button" name="submit"></barely-a-button>
-              </form>
-            </div>
-            <!--  Avatar Change Body -->
-            <div id="edit-profile-modal-avatar-change">
-              <button id="edit-profile-modal-avatar-change-upload-button">Upload Image</button>
-              <input type="file" id="edit-profile-modal-avatar-change-file-input" accept="image/*" style="display: none;">
-              <img id="edit-profile-modal-avatar-change-uploaded-image" src="" alt="Uploaded Image" style="display: none; width: 30vw; margin-top: 20px;"></img>
-              <barely-a-button id="edit-profile-modal-avatar-change-crop-image" buttonclass="rect-button" name="Submit"></barely-a-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Invite for game Modal -->
-    <div class="modal fade" id="invite-for-game-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" id="invite-for-game-modal-content">
-          <div class="modal-body" id="invite-for-game-modal-body">
-            <div id="invite-for-game-modal-title-container">
-              <h1 id="invite-for-game-modal-title">Friendly Match</h1>
-            </div>
-            <div id="invite-for-game-modal-maps-powerups-container">
-              <div id="invite-for-game-modal-powerups-container">
-                <h4>Powerups</h4>
-                <input id="invite-for-game-modal-powerups-checkbox" type="checkbox">
-              </div>
-              <div id="invite-for-game-modal-maps-container">
-                <h3>Maps</h3>
-                <img id="invite-for-game-modal-map-ufo" name="ufo" class="invite-for-game-modal-maps-button" src="../assets/homeView/UFOIcon.png" alt="error loading the image">
-                <img id="invite-for-game-modal-map-lizard-people" name="lizard-people" class="invite-for-game-modal-maps-button" src="../assets/homeView/lizardPeopleIcon.png" alt="error loading the image">
-                <img id="invite-for-game-modal-map-snowman" name="snowman" class="invite-for-game-modal-maps-button" src="../assets/homeView/snowmanIcon.png" alt="error loading the image">
-                <img id="invite-for-game-modal-map-lochness" name="lochness" class="invite-for-game-modal-maps-button" src="../assets/homeView/lochnessIcon.png" alt="error loading the image">
-              </div>
-            </div>
-            <div id="invite-for-game-modal-opponent-title-container">
-              <h4 id="invite-for-game-modal-opponent-title">Your Opponent:</h3>
-              <h4 id="invite-for-game-modal-opponent-name" style="margin-left: 1vw;"></h3>
-            </div>
-            <div id="invite-for-game-modal-opponent-start-container">
-              <img id="invite-for-game-modal-opponent-photo" alt="error loading the image">
-
-              <barely-a-button id="invite-for-game-modal-start-button"  buttonclass="rect-button" name="INVITE" height="7" fontsize="3"></barely-a-button>
-            </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-  <!-- New Chat Modal -->
-  <div class="modal fade" id="new-chat-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body" id="new-chat-modal-body">
-          <h3 id="new-chat-modal-new-chat-text" class="new-chat-modal-text"></h3>
-          <textarea id="new-chat-modal-textarea"></textarea>
-          <barely-a-button id="new-chat-modal-create-button" class="new-chat-modal-buttons" name="Create" buttonclass="rect-button"></barely-a-button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Friends List Modal -->
-  <div class="modal fade" id="friends-list-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content" id="friends-list-modal-content">
-        <div class="modal-body" id="friends-list-modal-body">
-          <h1>Friends List</h1>
-          <div id="friends-list-modal-search-bar-container">
-            <input type="text" id="friends-list-modal-search-bar" placeholder="search">
-            <barely-a-button id="friends-list-modal-search-bar-button" name="search" buttonclass="rect-button"></barely-a-button>
-          </div>
-          <div >
-            <ul id="friends-list-modal-list" class="list-group">
-              <template id="friends-list-modal-list-element-template">
-                <div class="friends-list-modal-list-element">
-                  <img id="friends-list-modal-list-element-avatar-image" class="friends-list-modal-list-element-image" alt="error loading image"></img>
-                  <h3 class="friends-list-modal-list-element-username"></h3>
-                  <img id="friends-list-modal-list-element-friendship-image" class="friends-list-modal-list-element-image" alt="error loading image"></img>
-                </div>
-              </template>
-            </ul>
-            <h3 id="friends-list-modal-list-result-not-found-message">No Results Found</h3>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
-
+<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR PROFILE VIEW                 -->
+<!--            NOTE: some styles are defined in main.css!                   -->
+<!-- ####################################################################### -->
 <style>
-    #profie-view {
-        height: 100%;
-        background-color: #ff00ff6c;
-        color: black;
+    /* The basic valus of the grid are already set in main.css */
+    .view-overlay-grid {
+        grid-template-columns: repeat(auto-fill, 5%);
+        grid-template-rows: repeat(auto-fill, 5%);
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      uname  uname  uname  uname  .      .      .      btn1   btn2   btn3   btn4   btn5   .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      btn1   btn2   btn3   btn4   btn5   .      .      .      .     "
+            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      avatar avatar .      .      .      .      stath  stath  stath  stath  stath  stath  .      .      .      .     "
+            ".      .      .      .      avatar avatar .      .      .      .      statg  statg  statg  statt1 statt2 statt3 .      .      .      .     "
+            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      statt1 statt2 statt3 .      .      .      .     "
+            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      statt1 statt2 statt3 .      .      .      .     "
+            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      exph   exph   exph   exph   exph   exph   .      .      .      .     "
+            ".      .      .      .      bname  bname  bname  bname  .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      lseeni lseent lseent lseent .      .      expns  expns  expns  expps  expps  expps  .      .      .      .     "
+            ".      .      .      .      lang   lang   lang   lang   .      .      expng  expng  expng  exppg  exppg  exppg  .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      expnt  expnt  expnt  exppt  exppt  exppt  .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      expnsu expnsu expnsu exppsu exppsu exppsu .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
-    /* New Chat  */
-    #new-chat-modal-body {
-      display: flex;
-      flex-direction: column;
+    /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+    /* DETAILS LEFT */
+    .avatar {
+        grid-area: avatar;
     }
 
-    /* Friends list */
-
-    #friends-list-modal-search-bar{
-      background-color: black;
-      color: white;
-      padding: 4% !important;
-      height: 90%;
-      width: 60%;
-      margin-right: 4% !important;
+    .uname {
+        grid-area: uname;
+        justify-self: center;
     }
 
-    #friends-list-modal-search-bar-container {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 3% !important;
-      height: 8%;
-      width: 90%;
+    .bname {
+        grid-area: bname;
     }
-
-    .friends-list-modal-list-element{
-      display: flex;
-      flex-direction: row;
-      margin: 1% 0% !important;
-      height: 8vh;
-      border:  3px solid  black;
-      background-color: #EFE7D3;
-      align-items: center;
+    .lseeni {
+        grid-area: lseeni;
+        height: 90%;
+        width: auto;
+        justify-self: center;
     }
-
-    .friends-list-modal-list-element-image {
-      height: 7vh;
-      margin: 0vh 1vw !important;
+    .lseent {
+        grid-area: lseent;
     }
-
-    #friends-list-modal-list-element-friendship-image {
-      height: 70%;
+    .lang {
+        grid-area: lang;
     }
-
-    .friends-list-modal-list-element-username {
-      margin: 0vh 6vw 0vh 2vw !important;
-      width: 4vw;
+    /* BUTTONS */
+    .btn1 {
+        grid-area: btn1;
     }
-
-    #friends-list-modal-list {
-      display: flex;
-      flex-direction: column;
-      height: 40vh;
-      overflow-y: auto;
+    .btn2 {
+        grid-area: btn2;
     }
-
-    #friends-list-modal-body {
-      display: flex;
-      flex-direction: column;
-      height: 70vh;
+    .btn3 {
+        grid-area: btn3;
     }
-
-    /* Invite for Game  */
-
-    #invite-for-game-modal-start-button {
-      margin: 2vh 0vw 0vh 4vw !important;
+    .btn4 {
+        grid-area: btn4;
     }
-
-    #invite-for-game-modal-title-container {
-      margin: 19vh 0vw 0vh 0vw !important;
-
+    .btn5 {
+        grid-area: btn5;
     }
-
-    #invite-for-game-modal-maps-powerups-container {
-      display: flex;
-      flex-direction: row;
+    /* STATS */
+    .stath {
+        grid-area: stath;
     }
-
-    #invite-for-game-modal-powerups-checkbox {
-      margin: 0vh 0vw 0vh 0.6vw !important;
+    .statg {
+        grid-area: statg;
     }
-
-    #invite-for-game-modal-powerups-container {
-      display: flex;
-      flex-direction: row;
-      margin: 30vh 0vw 0vh 1.5vw !important;
-      align-items: center;
+    .statt1 {
+        grid-area: statt1;
     }
-
-    #invite-for-game-modal-maps-container {
-      display: flex;
-      flex-direction: column;
-      margin: 0vh 0vw 0vh 10.7vw !important;
-      padding: 0vh 0vw 0vh 0.3vw !important;
+    .statt2 {
+        grid-area: statt2;
     }
-
-    #invite-for-game-modal-title {
-      text-align: center;
+    .statt3 {
+        grid-area: statt3;
     }
-
-    .invite-for-game-modal-maps-button {
-      margin: 0vh 0vw 1vh 0.3vw !important;
-      height: 7vh;
-      width: 7vh;
-      opacity: 0.7;
+    /* EXPERIENCE */
+    .exph {
+        grid-area: exph;
     }
-    .invite-for-game-modal-maps-button:hover {
-      margin: 0vh 0vw 0.6vh 0.1vw !important;
-      height: 7.4vh;
-      width: 7.4vh;
+    /* EXPERIENCE NAMES */
+    .expns {
+        grid-area: expns;
     }
-
-    #invite-for-game-modal-content {
-      background-color: transparent;
-      border: none;
-      background-image: url('../assets/homeView/lizardPeopleModal.png');
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
+    .expng {
+        grid-area: expng;
     }
-
-    #invite-for-game-modal-body {
-      display: flex;
-      flex-direction: column;
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      height: 90vh;
-      width: 30vw;
+    .expnt {
+        grid-area: expnt;
     }
-
-    #invite-for-game-modal-opponent-title-container {
-      display: flex;
-      flex-direction: row;
-      margin: 1vh 0vw 0vh 1.5vw !important;
+    .expnsu {
+        grid-area: expnsu;
     }
-
-    #invite-for-game-modal-opponent-start-container {
-      display: flex;
-      flex-direction: row;
-      margin: 1vh 0vw 0vh 1.5vw !important;
+    /* EXPERENCE PORGRESS BARS */
+    .expps {
+        grid-area: expps;
     }
-
-    #invite-for-game-modal-opponent-photo {
-      height: 12vh;
-      margin: 0vh 0vw 0vh 2vw !important;
+    .exppg {
+        grid-area: exppg;
     }
-
-
-
-    /* Edit Profile */
-
-    #edit-profile-modal-avatar-change-cropped-image {
-      width: 30vw; margin-top: 20px !important;
+    .exppt {
+        grid-area: exppt;
     }
-    .form-row {
-        display: flex;
-        flex-direction: row;
-    }
-
-    #edit-profile-modal-autentication-error {
-      display: none;
-    }
-
-    /******************************/
-
-    #friendship-modal-body {
-        text-align: center;
-    }
-
-    #friendship-modal-friendship-buttons {
-        display: flex;
-        display: row;
-    }
-
-    #top-buttons{
-        display:flex;
-        flex-direction: row;
-        margin: 12vh 0vh 8vh 1vw !important;
-        height: 5vh;
-    }
-
-    #bottom-buttons {
-        display:flex;
-        flex-direction: row;
-        margin: 12vh 0vh 8vh 7.5vw !important;
-        height: 8vh;
-    }
-
-    .button {
-        height: 8vh;
-        margin: 0vh 1vw !important;
-        background-image: "";
-    }
-
-    .button:hover {
-        height: 9vh;
-        margin: 0vh 0.75vw !important;
-
-        border-color: black;
-        border-radius: 3px;
-        border-width: 4px;
-        cursor: pointer;
-      }
-
-    /* .game-stats-parameters{
-        margin: 0vh 0vh 0vh 2vw;
-    } */
-
-    #progress-grid {
-        display: grid;
-        grid-template-columns: 4vw 10vw 4vw;
-        margin-top: 8vh !important;
-    }
-
-    .progress {
-        margin: 1.5vh 2vw !important;
-        height: 1vh;
-        background-color: rgb(150, 150, 150);
+    .exppsu {
+        grid-area: exppsu;
     }
 
     .progress-bar {
+        height: 1vh;
         background-color: black;
+        border-radius: 5px;
     }
 
-    #username {
-        padding: 15vh 0vh 0vh 4vw !important;
-    }
-    #avatar {
-        margin: 6vh 0vh 0vh 2.3vw !important;
-        width: 11.8vw;
-        height: 34vh;
-        background-image: url('../assets/profileView/testAvatar.png'); /* Set the path to your image */
-        background-size: cover; /* Cover the entire div */
-        background-position: center; /* Center the image */
-    }
-    #birth-name{
-        margin: 5vh 0vh 0vh 2vw !important;
-    }
-    #last-seen {
-        display: flex;
-        flex-direction: row;
-        margin: 2.3vh 0vh 0vh 2vw !important;
-    }
-    #last-seen-image {
-        background-size: cover; /* Cover the entire div */
-        background-position: center; /* Center the image */
-        width: 2.3vw;
-        height: 3vh;
-    }
-    #language {
-        margin: 2vh 0vh 0vh 2vw !important;
-    }
-
-    #main-left-div {
-        display: flex;
-        flex-direction: column;
-        width: 25vw;
-        height: 100vh;
-        margin: 0vh 0vh 0vh 25vw !important;
-    }
-    #main-right-div {
-        display: flex;
-        flex-direction: column;
-        width: 25vw;
-        height: 100vh;
-        margin: 0vh 25vw 0vh 5vw !important;
-    }
-    #background-image{
-        display: flex;
-        flex-direction: row;
-        width: 100vw; /* Set the desired width */
-        height: 100vh; /* Set the desired height */
-        background-image: url('../assets/profileView/profilePageBackground.png'); /* Set the path to your image */
-        background-size: cover; /* Cover the entire div */
-        background-position: center; /* Center the image */
+    .progress {
+        height: 1vh;
+        background-color: rgb(150, 150, 150);
     }
 </style>
+

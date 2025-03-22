@@ -142,8 +142,8 @@ function isContained(x, y, img){
 // deals with the hovering events
 export async function isHovering(event){
 
-    let modalElement = $id('home-modal');
-    if (modalElement.classList.contains('show'))
+    // This should prevent the background to respond if a modal is open
+    if (document.querySelectorAll('.modal.show').length > 0)
         return ;
 
     let canvas = canvasData.canvas;
@@ -189,9 +189,8 @@ export async function isHovering(event){
 // deals with the clicking events
 export function mouseClick(event){
 
-    let modalElement = $id('home-modal');
-
-    if (modalElement.classList.contains('show'))
+    // This should prevent the background to respond if a modal is open
+    if (document.querySelectorAll('.modal.show').length > 0)
         return ;
 
 	let mouseX = event.clientX;
@@ -206,5 +205,4 @@ export function mouseClick(event){
 
     if (!foundElement)
         return ;
-	modalElement.classList.remove('custom-modal');
 }

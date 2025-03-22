@@ -1,0 +1,79 @@
+<div class="modal fade" id="modal-tournament-main" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-tournament-main-content" class="modal-content image-modal-content">
+            <div id="modal-tournament-main-body" class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-tournament-main.png' class="image-modal-background-image" alt="Background Image" draggable="false">
+                <div id="modal-tournament-main-grid" class="view-overlay-grid">
+                    <h4     id="modal-tournament-main-title"                        class="modal-title grid-cell default-grid-area title" >TODO: title translate</h4>
+                    <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button id="modal-tournament-main-btn-lobby" type="button"      class="grid-cell default-grid-area btn1 modal-button">Lobby</button>
+                    <button id="modal-tournament-main-btn-create" type="button"     class="grid-cell default-grid-area btn1 modal-button" data-bs-target="#modal-tournament-create"  data-bs-toggle="modal" data-bs-dismiss="modal">Create</button>
+                    <button id="modal-tournament-main-btn-join" type="button"       class="grid-cell default-grid-area btnj modal-button" data-bs-target="#modal-tournament-join"    data-bs-toggle="modal" data-bs-dismiss="modal">Join</button>
+                    <button id="modal-tournament-main-btn-history" type="button"    class="grid-cell default-grid-area btnh modal-button" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">History</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-tournament-main-content {
+        width: 800px !important;
+    }
+    #modal-tournament-main-body {
+        width: 800px !important;
+        height: 700px !important;
+        transform: translate(-150px, 0) !important;
+    }
+    #modal-tournament-main-grid{
+        grid-template-columns: repeat(auto-fill, 3.5%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btn1   btn1   btn1   btn1   btnj  btnj   btnj   btnj   btnh   btnh   btnh   btnh   btnh  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btn1   btn1   btn1   btn1   btnj  btnj   btnj   btnj   btnh   btnh   btnh   btnh   btnh  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btn1   btn1   btn1   btn1   btnj  btnj   btnj   btnj   btnh   btnh   btnh   btnh   btnh  "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
+    }
+
+    .title {
+        grid-area: title;
+    }
+    .btncl {
+        grid-area: btncl;
+    }
+    .btn1 {
+        grid-area: btn1;
+        height: 90%;
+        width: 90%;
+    }
+    .btnj {
+        grid-area: btnj;
+        height: 90%;
+        width: 90%;
+    }
+    .btnh {
+        grid-area: btnh;
+        height: 90%;
+        width: 90%;
+    }
+</style>

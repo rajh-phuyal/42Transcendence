@@ -4,14 +4,12 @@ class BarelyAButton extends HTMLElement
     {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
-        this.height = 4;
-        this.width = 8;
-        this.fontSize = 2;
+        this.height = 100;      // 100% of parent
+        this.width = 100;       // 100% of parent
+        this.fontsize = 1;      // 1vh
         this.name = undefined;
         this.route = undefined;
         this.height = undefined;
-        this.height = undefined;
-        this.fontSize = undefined;
         this.method = undefined;
         this.datapayload = undefined;
         this.onresolve = undefined;
@@ -31,7 +29,12 @@ class BarelyAButton extends HTMLElement
 
     attributeChangedCallback(name, oldValue, newValue)
     {
-        this[name] = newValue;
+        if (["height", "width", "fontsize"].includes(name))
+            this[name] = Number(newValue);
+        else
+            this[name] = newValue;
+
+
         if (name === "highlight") {
             if (newValue === "true")
                 this.color = "#7B0101";
@@ -45,7 +48,7 @@ class BarelyAButton extends HTMLElement
     {
         this.shadow.innerHTML = `
             <style>
-                .round-button{
+               /*  .round-button{
                     display: flex;
                     font-family: 'Courier';
                     align-items: justify;
@@ -61,18 +64,18 @@ class BarelyAButton extends HTMLElement
                     border-radius: 100%;
                     background-color: #3D3D3D;
                     cursor: pointer;
-                }
+                } */
 
                 .rect-button{
                     font-family: 'Courier';
-                    font-size: ${this.fontSize}vh;
+                    font-size: ${this.fontsize}vh;
                     vertical-align: middle;
                     text-align: center;
                     align-items: justify;
                     font-weight: 700;
                     color: #FFFCE6;
-                    height: ${this.height}vh;
-                    width: ${this.width}vw;
+                    height: ${this.height}%;
+                    width: ${this.width}%;
                     background-color: ${this.color};
                     cursor: pointer;
                     padding: 2px 4px;

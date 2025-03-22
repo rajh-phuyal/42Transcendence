@@ -1,12 +1,4 @@
 {
-    "template": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
     "group": {
         "en-US": "group: ",
         "pt-PT": "grupo: ",
@@ -22,6 +14,14 @@
         "de-DE": "Betreff: ",
         "uk-UA": "Тема: ",
         "ne-NP": "विषय: "
+    },
+    "lastSeenHeader": {
+        "en-US": "last seen: ",
+        "pt-PT": "",
+        "pt-BR": "",
+        "de-DE": "",
+        "uk-UA": "",
+        "ne-NP": ""
     },
     "textAreaPlaceHolder": {
         "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / #",

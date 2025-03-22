@@ -66,11 +66,17 @@ class MainConsumer(CustomWebSocketLogic):
     async def new_conversation(self, event):
         await self.send(text_data=json.dumps({**event}))
 
+    async def typing(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
     # FOR PROFILE #
     async def reload_profile(self, event):
         await self.send(text_data=json.dumps({**event}))
 
     # FOR TOURNAMENT #
+    async def client_role(self, event):
+        await self.send(text_data=json.dumps({**event}))
+
     async def tournament_info(self, event):
         await self.send(text_data=json.dumps({**event}))
 

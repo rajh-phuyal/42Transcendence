@@ -1,8 +1,10 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
+import { showTypingIndicator } from './typingIndicator.js';
+import router from '../../navigation/router.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -19,6 +21,9 @@ export function processIncomingWsChatMessage(message) {
     // The conversation card is already selected so we can just add the message
     const currentConversationId = $id("chat-view-text-field").getAttribute("conversation-id");
     if (currentConversationId && currentConversationId == message.conversationId) {
+        // Remove the typing indicator
+        showTypingIndicator(Date.now());
+        // Create the message
         createMessage(message, false);
         // Scroll to the bottom
         let scrollContainer = $id("chat-view-messages-container");
@@ -112,6 +117,9 @@ export function coversationCardClickListener(event) {
     const cardId = event.currentTarget.id;
     // This will than give us the conversation_id in this case 9
     const conversationId = cardId.split('-').pop();
+    // Clear the searchbar
+    resetFilter();
+    // Update the selected conversation
     selectConversation(conversationId);
 }
 
@@ -124,16 +132,18 @@ export function highlightConversationCard(conversationId) {
         card.classList.add("chat-view-conversation-card");
     }
 
-   // Find the specific card to highlight
-   const targetCard = $id("chat-view-conversation-card-" + conversationId);
-   if (targetCard) {
+    // Find the specific card to highlight
+    const targetCard = $id("chat-view-conversation-card-" + conversationId);
+    if (targetCard) {
         targetCard.classList.add("chat-view-conversation-card-highlighted");
         // Scroll to the highlighted card
         targetCard.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
         });
-   }
+        return true;
+    } else
+        return false
 }
 
 // Sort the conversation cards by the `last-message-time` attribute
@@ -163,6 +173,17 @@ export function deleteAllConversationCards() {
     }
 }
 
+// Resets the filter
+export function resetFilter() {
+    const conversationsContainer = $id("chat-view-conversations-container");
+    const searchBar = $id("chat-view-searchbar");
+    searchBar.value = "";
+    const conversationCards = conversationsContainer.querySelectorAll(".chat-view-conversation-card");
+    conversationCards.forEach((card) => {
+        card.style.display = "flex"; // Show all cards
+    });
+}
+
 // -----------------------------------------------------------------------------
 // MESSAGE STUFF
 // -----------------------------------------------------------------------------
@@ -172,33 +193,37 @@ export function deleteAllConversationCards() {
 //    - by the REST API when selecting a conversation
 export function createMessage(element, prepend = true) {
     // Determine the correct template for the message
-    let elementId = "chat-view-sent-message-template";
-    let containerId = ".chat-view-sent-message-container";
-    if (element.username == "overlords"){
-        elementId = "chat-view-overlords-message-template";
-        containerId = ".chat-view-overlords-message-container";
-    }
-    else if (element.userId != $store.fromState("user").id){
-        elementId = "chat-view-incoming-message-template";
-        containerId = ".chat-view-incoming-message-container";
-    }
-
+    let elementId = "chat-view-message-template";
+    let containerId = ".chat-view-message-container";
     // Clone the template
     let template = $id(elementId).content.cloneNode(true);
 
+    // Add the right styling class for container
+    let messageContainer = template.querySelector(".chat-view-message-container");
+    if (element.username == "overlords")
+        messageContainer.classList.add("chat-view-message-container-overlords");
+    else if (element.userId == $store.fromState("user").id)
+        messageContainer.classList.add("chat-view-message-container-outgoing");
+    else
+        messageContainer.classList.add("chat-view-message-container-incoming");
+
+    // Add the right styling class for box
+    if (element.username == "overlords")
+        template.querySelector(".chat-view-message-box").classList.add("chat-view-message-box-overlords");
+    else if (element.userId != $store.fromState("user").id)
+        template.querySelector(".chat-view-message-box").classList.add("chat-view-message-box-outgoing");
+    else
+        template.querySelector(".chat-view-message-box").classList.add("chat-view-message-box-incoming");
+
     // Set the id of the node to the message id
-    let messageContainer = template.querySelector(".chat-view-sent-message-container");
-    if(!messageContainer)
-        messageContainer = template.querySelector(".chat-view-incoming-message-container");
-    if(!messageContainer)
-        messageContainer = template.querySelector(".chat-view-overlords-message-container");
+    messageContainer = template.querySelector(".chat-view-message-container");
     if(!messageContainer || element.id == undefined || element.id == "null")
         console.log("Can't find message container for element. Mostlikely this is not an issue since it is an overlord message");
     else
         messageContainer.id = "message-" + element.id;
-
-    if (element.userId != $store.fromState("user").id)
-        template.querySelector(".chat-view-messages-message-sender").textContent = element.username;
+    // Set username
+    template.querySelector(".chat-view-message-sender").textContent = element.username;
+    template.querySelector(".chat-view-message-sender").setAttribute("data-userid", element.userId);
 
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
@@ -221,21 +246,24 @@ export function createMessage(element, prepend = true) {
     }
 
     // Set the content of the message
-    if (element.userId == 1)
-        template.querySelector(".chat-view-messages-message-overlords-box").innerHTML = parsedContent;
-    else
-        template.querySelector(".chat-view-messages-message-box").innerHTML = parsedContent;
+    template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
-    template.querySelector(".chat-view-messages-message-time-stamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
+    template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
     // Prepend or append the message to the container
     const container = $id("chat-view-messages-container");
     if (prepend)
         container.prepend(template);
-    else
-        container.appendChild(template);
+    else {
+        // If the help message is already there, we need to insert the message before it
+        const lastChild = container.lastElementChild;
+        if (!lastChild || !lastChild.classList.contains("chat-view-help-message-container"))
+            container.appendChild(template);
+        else
+            container.insertBefore(template, lastChild);
+    }
 
     // Update the last message id (to be able to know where the next scroll load should start)
     const lastMessageId = container.getAttribute("last-message-id");
@@ -259,22 +287,32 @@ export async function selectConversation(conversationId){
     // Set variables
     $id("chat-view-text-field").setAttribute("conversation-id", conversationId);
 
-    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
-    history.pushState({}, "Chat", "/chat?id=" + conversationId);
-
-    // Highlight the selected conversation card
-    highlightConversationCard(conversationId);
-
     // Remove old messages
     resetConversationView();
+
+    // Highlight the selected conversation card
+    if (!highlightConversationCard(conversationId)) {
+        console.log("Conversation card not found:", conversationId);
+        router("/chat");
+        return;
+    }
+
+    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
+    history.pushState({}, "Chat", "/chat?id=" + conversationId);
 
     // Load the conversation header and messages
     await loadMessages(conversationId);
 
     // Show the chatElements
-    $id("chat-view-header-subject-container").style.display = "flex";
-    $id("chat-view-header-avatar").style.display = "block";
-    $id("chat-view-text-field-container").style.display = "block";
+    $id("chat-view-details").style.display = "flex";
+    $id("chat-view-details-img").style.display = "flex";
+    let inputField = $id("chat-view-text-field");
+    inputField.style.display = "flex";
+    let createGameButton = $id("chat-view-btn-create-game");
+    createGameButton.style.display = "flex";
+    console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
+    inputField.setInput($id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft") || "");
+    inputField.focus();
 
     // Scroll to the bottom
     let scrollContainer = $id("chat-view-messages-container");
@@ -316,12 +354,16 @@ export function loadMessages(conversationId) {
                 setTimeout(() => {
                     spinner.remove();
                     // Update conversation header
-                    //$id("chat-view-header-subject").textContent = "@" + data.conversationName;
-                    $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">@${data.conversationName}</a>`;
+                    $id("chat-view-header-subject").innerHTML = `<a href="` + window.origin + "/profile?id=" + data.userId + `" style="text-decoration: none; color: inherit;">${translate("chat", "subject") + "<br>" + data.conversationName}</a>`;
                     $id("chat-view-header-avatar").src = window.origin + '/media/avatars/' + data.conversationAvatar;
                     $id("chat-view-header-avatar").setAttribute("user-id", data.userId);
-                    $id("chat-view-header-online-icon").src = data.online ? "../assets/onlineIcon.png" : "../assets/offlineIcon.png";
-
+                    // Set the attributes for the createGameModal
+                    const view = $id("router-view");
+                    view.setAttribute("data-user-id", data.userId);
+                    view.setAttribute("data-user-avatar", data.conversationAvatar);
+                    view.setAttribute("data-user-username", data.conversationName);
+                    // Set the online status
+                    $id("chat-view-header-online-icon").src = data.online ? "../assets/icons_128x128/icon_online.png" : "../assets/icons_128x128/icon_offline.png";
                     // Load messages (prepend as they are in reverse order)
                     for (let element of data.data)
                         createMessage(element, true);
@@ -341,21 +383,54 @@ export function loadMessages(conversationId) {
 }
 
 // -----------------------------------------------------------------------------
+// TYPING INDICATOR STUFF
+// -----------------------------------------------------------------------------
+export function updateTypingState(element) {
+        // Check if the client is at chat view
+        const messagesContainer = $id("chat-view-messages-container");
+        if (!messagesContainer) {
+            // User is at another view
+            return;
+        }
+
+        // Check if the right conversation is selected
+        const currentConversationId = $id("chat-view-text-field").getAttribute("conversation-id");
+        if (currentConversationId != element.conversationId)
+            return;
+
+        // Update the typing indicator
+        if (element.isTyping)
+            showTypingIndicator(Date.now() + 2000); // 2 secs visible
+        else
+            showTypingIndicator(Date.now());        // Hide the typing indicator
+}
+
+// -----------------------------------------------------------------------------
 // HELPERS STUFF
 // -----------------------------------------------------------------------------
 
 // This deletes all messages and hides the chatElements (right side of the chat view)
 export function resetConversationView(){
     // Hide chatElements
-    $id("chat-view-header-subject-container").style.display = "none";
-    $id("chat-view-header-avatar").style.display = "none";
-    $id("chat-view-text-field-container").style.display = "none";
-
+    $id("chat-view-details").style.display = "none";
+    $id("chat-view-details-img").style.display = "none";
+    // Store input as attribute
+    let inputField = $id("chat-view-text-field");
+    let inputValue = inputField.getInput().trim();
+    if (inputValue) {
+        const highlightedCards = $queryAll(".chat-view-conversation-card-highlighted");
+        if (highlightedCards && highlightedCards.length > 0)
+            highlightedCards[0].setAttribute("message-draft", inputValue);
+    }
+    inputField.setEnabled(false);
+    inputField.style.display = "none";
+    // Hide create game button
+    let createGameButton = $id("chat-view-btn-create-game");
+    createGameButton.style.display = "none";
     // Delete all messages
-    let toDelete = $queryAll(".chat-view-sent-message-container, .chat-view-incoming-message-container, .chat-view-overlords-message-container, .spinner-grow")
+    let toDelete = $queryAll(".chat-view-message-container, .spinner-grow")
     for (let element of toDelete)
         element.remove();
-
     // Unset Attributes
     $id("chat-view-messages-container").setAttribute("last-message-id", 0);
     $id("chat-view-header-avatar").setAttribute("user-id", undefined);
@@ -376,36 +451,6 @@ export function createLoadingSpinner() {
     spinnerContainer.appendChild(spinner);
     return spinnerContainer;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export function updateConversationUnreadCounter(conversationId, value) {
     let element = $id("chat-view-conversation-card-" +  conversationId);
@@ -454,10 +499,6 @@ export function createHelpMessage(input){
             htmlContent += translate("chat", "helpMessage/mention-tournament-game");
     }
 
-
-
-
-
     updateHelpMessage(htmlContent);
 }
 
@@ -484,4 +525,3 @@ export function updateHelpMessage(htmlContent="") {
             helpContainer.remove();
     }
 }
-

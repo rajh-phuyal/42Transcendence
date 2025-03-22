@@ -2,42 +2,49 @@ const routes = [
     {
         path: "/",
         view: "home",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"],
     },
     {
         path: "/home",
         view: "home",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["createGame" , "tournamentMain", "tournamentCreate", "tournamentJoin", "tournamentHistory"],
     },
     {
         path: "/game",
         view: "game",
-        requireAuth: true
+        requireAuth: true,
+        backgroundColor: "black",
     },
     {
         path: "/tournament",
         view: "tournament",
-        requireAuth: true
+        requireAuth: true,
+        backgroundColor: "black",
     },
     {
         path: "/profile",
         view: "profile",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["editProfile", "createGame", "editFriendship", "newConversation", "friendsList", "gameHistory", "avatarCropper", "tournamentHistory"],
     },
     {
         path: "/chat",
         view: "chat",
-        requireAuth: true
+        requireAuth: true,
+        modals: ["createGame"],
     },
     {
         path: "/auth",
         view: "auth",
         requireAuth: false,
     },
-    { // TODO: @rajh: not sure if I should add 404 here but without the translation wasn't working
+    {
         path: "/404",
         view: "404",
         requireAuth: false,
+        backgroundColor: "black",
     },
 	{
 		path: "/barely-responsive",

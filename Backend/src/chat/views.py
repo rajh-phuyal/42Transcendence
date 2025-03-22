@@ -96,7 +96,7 @@ class LoadConversationView(BaseAuthenticatedView):
         # Serialize messages
         serialized_messages = MessageSerializer(messages, many=True)
         # Get the conversation avatar and name
-        conversation_avatar = other_user.avatar_path
+        conversation_avatar = other_user.avatar
         conversation_name = other_user.username
         # Prepare the response
         response_data = {

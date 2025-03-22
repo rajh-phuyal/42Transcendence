@@ -1,0 +1,118 @@
+<div class="modal fade" id="modal-tournament-history" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-tournament-history-content" class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-tournament-history.png' class="image-modal-background-image" alt="Background Image" draggable="false">
+                <div id="modal-tournament-history-grid" class="view-overlay-grid">
+                    <div id="modal-tournament-history-tournament-list-container" class="barely-a-scroll-class lcont">
+                        <h5 id="modal-tournament-history-no-tournaments">No tournaments played yet.</h5> <!-- TODO: translation -->
+                    </div>
+                    <h5 class="modal-title grid-cell default-grid-area title" id="modal-tournament-history-title">Modal title</h5>
+                    <button type="button"                                                       class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button"  id="modal-tournament-history-back-button"            class="grid-cell default-grid-area btn modal-button btnb" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal" aria-label="Close">BACK</button>
+                    <button type="button"  id="modal-tournament-history-game-history-button"    class="grid-cell default-grid-area btn modal-button btnb" data-bs-target="#modal-game-history" data-bs-toggle="modal" data-bs-dismiss="modal" aria-label="Close">Game History</button>
+                    <template id="modal-tournament-history-card-template">
+                        <div class="modal-tournament-history-card">
+                            <h5     class="grid-cell default-grid-area modal-tournament-history-card-tournament-name tname"></h5>
+                            <img    class="grid-cell default-grid-area modal-tournament-history-card-tournament-type type" src="" alt="image not found" draggable="false">
+                            <h6     class="grid-cell default-grid-area modal-tournament-history-card-tournament-date dt"></h6>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-tournament-history-grid{
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 5.9%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
+            "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".     .     .      .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .      .     "
+            ".     .     .      .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .      .     "
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    .lcont {
+        grid-area: lcont;
+        display: block !important;
+        overflow: auto !important;
+        padding: 0% 2% 0% 2%;
+        border: 3px solid #000000;
+        background-color: rgba(0, 0, 0, 0.176);
+    }
+
+    .title {
+        grid-area: title;
+    }
+    .btncl {
+        grid-area: btncl;
+    }
+
+    .btncb {
+        grid-area: btncb;
+    }
+
+    .btngm {
+        grid-area: btngm;
+    }
+
+    .btnb {
+        grid-area: btnb;
+    }
+
+    .modal-tournament-history-card{
+        display: grid;
+        height: 8vh;
+        cursor: pointer;
+        background-color: #EFE7D3;
+        color: black;
+        margin: 10px 0px;
+        border:  3px solid  black;
+        align-items: center;
+        justify-content: space-between;
+        grid-template-columns: repeat(auto-fill, 10%);
+        grid-template-rows: repeat(auto-fill, 20%);
+        grid-template-areas:
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "tname  tname  tname  tname  tname  tname  tname  tname  tname  type   "
+            "dt     dt     dt     dt     dt     dt     dt     dt     dt     type   "
+    }
+
+    .tname {
+        grid-area: tname;
+    }
+    .type {
+        grid-area: type;
+        height: auto;
+        width: 70%;
+    }
+    .dt {
+        grid-area: dt;
+    }
+</style>

@@ -1,283 +1,285 @@
-<div id="game-view">
-	<div id="game-view-map-image">
-		<img src='' alt="Game Map">
-		<canvas id="game-field"></canvas>
-	</div>
-
-    <!-- Image container to maintain aspect ratio -->
-    <div id="game-view-image-container">
-        <!-- Left Section -->
-        <div id="game-view-left-side-container">
-            <div class="game-view-left-side-container-top">
-                <!-- Left User Card -->
-                <div class="user-card" id="user-card-player-left">
-                    <h2 id="player-left-username" class="username"></h2>
-                    <img id="player-left-avatar" alt="User Image" class="user-image">
-                    <h3 id="player-left-state" class="user-state"></h3>
-                    <div id="player-left-state-spinner" class="spinner-grow" role="status">
+<div class="view-base  view-background-color">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <!-- <img src="../assets/images/game/maps/lizard-people.png" alt="Background Image" class="view-background-image"> -->
+            <img id="view-game-background" src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image" draggable="false">
+            <div class="view-overlay-grid">
+                <!-- TOURNAMENT HEADING -->
+                <div id="game-view-tournament-name" class="grid-cell default-grid-area tname mention-tournament" style="display: none;"></div>
+                <!-- LEFT PLAYER -->
+                <h2 id="player-left-username" class="grid-cell default-grid-area lun user-card username mention-user"></h2>
+                <div                          class="grid-cell default-grid-area lav user-card">
+                    <img id="player-left-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/c0ff26c3-0acc-4c9c-ae69-a65e88421b75.png" draggable="false">
+                </div>
+                <div class="grid-cell default-grid-area lst user-card user-state">
+                    <h4  id="player-left-state"           class="user-state"></h4>
+                    <div id="player-left-state-spinner"   class="spinner-grow" style="align-self: center;" role="status">
                         <span class="sr-only"></span>
                     </div>
-                    <div id="player-left-powerups-status" class="player-powerup-status" >
-                        <img id="player-left-powerups-slow" class="powerup-status" src=""></img>
-                        <img id="player-left-powerups-fast" class="powerup-status" src=""></img>
-                        <img id="player-left-powerups-big" class="powerup-status" src=""></img>
+                    <div id="player-left-powerups-status" class="player-powerup-status-container" >
+                        <img id="player-left-powerups-slow"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-left-powerups-fast"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-left-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
-            </div>
-            <div id="game-view-left-side-container-bottom" class="game-view-left-side-container-bottom"></div>
-        </div>
-
-        <!-- Middle Section -->
-        <div id="game-view-middle-side-container">
-            <div class="game-view-middle-side-container-top">
-                <img id="game-countdown-image" src="" alt="Game countdown" width="150px" height="150px">
-                <h2 id="game-view-middle-side-container-top-text"></h2>
-                <barely-a-button buttonclass="rect-button" id="button-play-again"></barely-a-button>
-			</div>
-            <div class="game-view-middle-side-container-bottom">
-            </div>
-        </div>
-
-        <!-- Right Section -->
-        <div id="game-view-right-side-container">
-            <div class="game-view-right-side-container-top">
-                <div class="user-card" id="user-card-player-right">
-                    <h2 id="player-right-username" class="username"></h2>
-                    <img id="player-right-avatar" alt="User Image" class="user-image">
-                    <h3 id="player-right-state" class="user-state"></h3>
-                    <div id="player-right-state-spinner" class="spinner-grow" role="status">
+                <h5 id="player-left-controls" class="grid-cell default-grid-area user-card ctrll">
+                    Controls<br>
+                    &nbsp;&nbsp;'W' up     <br>
+                    &nbsp;&nbsp;'S' down   <br>
+                    &nbsp;&nbsp;'1' big    <br>
+                    &nbsp;&nbsp;'2' slow    &larr;<br>
+                    &nbsp;&nbsp;'2' fast    &rarr;<br>
+               </h5>
+                <!-- RIGHT PLAYER -->
+                <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user"></h2>
+                <div                           class="grid-cell default-grid-area rav user-card">
+                    <img id="player-right-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/a75be01d-8f1f-4ab2-9527-880487ad48ea.png" draggable="false">
+                </div>
+                <div class="grid-cell default-grid-area rst user-card user-state">
+                    <h4  id="player-right-state"           class="user-state"></h4>
+                    <div id="player-right-state-spinner"   class="spinner-grow" style="align-self: center;" role="status">
                         <span class="sr-only"></span>
                     </div>
-                    <div id="player-right-powerups-status" class="player-powerup-status" >
-                        <img id="player-right-powerups-slow" class="powerup-status" src=""></img>
-                        <img id="player-right-powerups-fast" class="powerup-status" src=""></img>
-                        <img id="player-right-powerups-big" class="powerup-status" src=""></img>
+                    <div id="player-right-powerups-status" class="player-powerup-status-container" >
+                        <img id="player-right-powerups-slow"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-right-powerups-fast"   class="player-powerup-status" src="" draggable="false">
+                        <img id="player-right-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
-            </div>
-            <div class="game-view-right-side-container-bottom">
-                <barely-a-button buttonclass="rect-button"id="button-leave-lobby"></barely-a-button>
-                <barely-a-button buttonclass="rect-button"id="button-quit-game"></barely-a-button>
+                <h5 id="player-right-controls" class="grid-cell default-grid-area user-card ctrlr">
+                    Controls<br>
+                    &nbsp;&nbsp;'O' Up     <br>
+                    &nbsp;&nbsp;'L' Down   <br>
+                    &nbsp;&nbsp;'8' big    <br>
+                    &nbsp;&nbsp;'9' slow    &larr;<br>
+                    &nbsp;&nbsp;'9' fast    &rarr;<br>
+               </h5>
+                <!-- GAME FIELD -->
+                <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
+                <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
+                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;" draggable="false">
+
+                <button id="button-play-again"                      class="grid-cell default-grid-area modal-button btnpa"></button>
+                <button id="button-leave-lobby"                     class="grid-cell default-grid-area modal-button btnl"></button>
+                <button id="button-quit-game"                       class="grid-cell default-grid-area modal-button btnq"></button>
             </div>
         </div>
     </div>
 </div>
 
+<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR GAME VIEW                 -->
+<!--            NOTE: some styles are defined in main.css!                   -->
+<!-- ####################################################################### -->
 <style>
-    /* Main game view container */
-#game-view {
-    display: flex;
-    justify-content: center; /* Centers the image horizontally */
-    align-items: center; /* Centers everything vertically */
-    width: 100%;
-    height: calc(100vh - 100px); /* Adjust for navbar */
-    background-color: rgb(255, 255, 255); /* Fallback background */
-    position: relative;
-}
-
-/* Image container with correct aspect ratio */
-#game-view-image-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 80%;
-    height: calc(100vh - 100px);
-    aspect-ratio: 16 / 9; /* Ensures the image maintains ratio */
-    background: url('../assets/game/lobby.png') no-repeat center center;
-    background-size: 100% 100%;
-}
-
-/* Ensure the sections are on top of the image */
-#game-view-left-side-container,
-#game-view-middle-side-container,
-#game-view-right-side-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    flex-grow: 1;
-    position: relative;
-}
-
-#game-view-middle-side-container-top-text{
-    /*Background color for text-align: ;*/
-    background-color: rgba(194, 182, 182, 0.815);
-    /*Text color*/
-    color: rgb(0, 0, 0);
-}
-/* Sidebar Widths */
-#game-view-left-side-container   {
-	background-color: rgba(0, 0, 0, 1);
-	width: 20%;
-	max-width: 200px;
-}
-
-#game-view-middle-side-container {
-	/* background-color: rgba(0, 255, 0, 0.3); */
-	width: 60%;
-}
-
-#game-view-right-side-container  {
-	background-color: rgba(0, 0, 0, 1);
-	width: 20%;
-	max-width: 200px;
-}
+    /* The basic valus of the grid are already set in main.css */
+    .view-overlay-grid {
+        grid-template-columns: repeat(auto-fill, 2.5%);
+        grid-template-rows: repeat(auto-fill, 5%);
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname tname  tname  tname  tname  tname  tname  tname  tname tname   .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      tname  tname  tname  tname  tname  tname  tname  tname  tname tname  tname  tname  tname  tname  tname  tname  tname tname   .      .      .      .      .      .      .      .      .      .      .     "
+            ".      lun    lun    lun    lun    .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      run    run    run    run    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lav    lav    lav    lav    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rav    rav    rav    rav    .     "
+            ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
+            ".      lst    lst    lst    lst    .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      rst    rst    rst    rst    .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
+            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
+    }
 
 
-/* Top Containers Take Most of the Space */
-.game-view-left-side-container-top,
-.game-view-right-side-container-top {
-    flex-grow: 1;
-    width: 100%;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+    .tname {
+        grid-area: tname;
+        background-color: rgba(20, 15, 15, 0.726);
+        color: rgb(255, 255, 255) !important;
+        border: 0.1vw solid white;
+        border-radius: 3px;
+        height: 90%;
+        font-size: min(10vw, 20px);
+        font-weight: bold;
+        text-align: center;
+    }
+    .lun {
+        grid-area: lun;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-top: 0.3vw solid rgb(143, 148, 112);
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .lav {
+        grid-area: lav;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .lst {
+        grid-area: lst;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .ctrlr {
+        grid-area: ctrlr;
+        color: white;
+        text-align: left !important;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+        border-bottom: 0.3vw solid rgb(143, 148, 112);
+        padding: 5px;
+    }
+    .ctrll {
+        grid-area: ctrll;
+        color: white;
+        text-align: left !important;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+        border-bottom: 0.3vw solid rgb(143, 148, 112);
+        padding: 5px;
+    }
 
-.game-view-middle-side-container-top {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    width: 100%;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-}
+    .run {
+        grid-area: run;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-top: 0.3vw solid rgb(143, 148, 112);
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .rav {
+        grid-area: rav;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
+    .rst {
+        grid-area: rst;
+        border-left: 0.3vw solid rgb(143, 148, 112);
+        border-right: 0.3vw solid rgb(143, 148, 112);
+    }
 
-/* Bottom Containers */
-.game-view-left-side-container-bottom,
-.game-view-middle-side-container-bottom,
-.game-view-right-side-container-bottom {
-    height: 20%;
-    width: 100%;
+    /* BUTTONS */
+    .btnl {
+        grid-area: btnl;
+        height: 75%;
+    }
+    .btnq {
+        grid-area: btnq;
+        height: 75%;
+    }
+    .btnpa {
+        grid-area: btnpa;
+        height: 75%;
+    }
 
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-}
+    /* FIELD */
+    .field {
+        grid-area: field;
+        background-color: #3f323f00;
+        border: 1px solid black;
+        justify-content: center;
+        align-items: center;
+        border: none;
+    }
 
-/* User Card Styling */
-.user-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgb(63, 62, 18);
-    color: white;
-    border: 2px solid white;
-    padding: 10px;
-    border-radius: 8px;
-    width: 50%;
-    text-align: center;
-}
+    /* COSTOM STYLE FOR ELEMENTS BELOW */
+    #game-view-middle-side-container-top-text{
+        width: 100%;
+        height: auto;
+        background-color: rgba(0, 0, 0, 0.815);
+        color: white;
+        padding: 5px;
+        text-align: center;
+    }
 
-.user-card-winner {
-    border: 2px solid rgb(5, 92, 24);
-}
+    .user-card {
+        background-color: #f8ebd7b2;
+        color: black !important;
+        text-align: center;
+    }
+    .user-card-winner {
+        filter: brightness(110%);
 
-.user-card-looser {
-    border: 2px solid rgb(119, 15, 15);
-}
+    }
+    .user-card-looser {
+        filter: brightness(50%);
+    }
 
-/* Username Styling */
-.username {
-    font-size: 18px;
-}
+    .username {
+        font-size: 1.3vw;
+        padding-top: 5%;
+        align-self: center;
+    }
+    .user-image {
+        width: 80%;
+        border-radius: 3px;
+        object-fit: contain;
+        align-self: center;
+    }
 
-/* User Image Styling */
-.user-image {
-    width: 80%;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 2px solid white;
-}
+    .countdown-image {
+        height: 50%;
+        object-fit: contain;
+    }
 
-.player-powerup-status {
-    display: flex;
-    flex: row;
-    width: 80%;
-    height: auto;
-    justify-content: center;
-    align-items: center;
-    margin-top: 5px;
-    background-color: rgba(136, 21, 21, 0.2);
-    border-radius: 5px;
-}
+    .player-powerup-status-container {
+        display: flex;
+        flex: row;
+        width: 80%;
+        height: 80%;
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+        background-color: rgba(90, 90, 70, 0.2);
+        border-radius: 5px;
+    }
+    .player-powerup-status {
+        margin: 5px;
+        border-radius: 5px;
+        width: 30%;
+        transition: all 0.3s ease;
+    }
 
-.powerup-status {
-    margin: 5px;
-    border-radius: 5px;
-    width: 30%
-}
+    /* Powerup status styles */
+    .powerup-unavailable {
+        opacity: 0.5;
+        filter: grayscale(100%);
+    }
 
-/* User State Styling */
-.user-state {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 5px;
-}
+    .powerup-available {
+        opacity: 1;
+        border: 2px solid #4CAF50;
+        box-shadow: 0 0 5px #4CAF50;
+    }
 
-/* Game Field Styling */
+    .powerup-using {
+        opacity: 1;
+        border: 2px solid #FF9800;
+        box-shadow: 0 0 10px #FF9800;
+    }
 
-#game-view-map-image {
-	position: absolute;
-	width: 65%;
-	height: 90%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+    .powerup-used {
+        opacity: 0.7;
+        filter: sepia(50%);
+    }
 
-#game-view-map-image > img {
-	display: none;
-	height: 100%;
-	max-width: 1080px;
-	aspect-ratio: 16 / 9;
-	background-size: 100% 100%;
-	position: relative;
-}
-
-
-#game-field {
-	display: none;
-	height: 42%;
-	width: 42%;
-	margin-bottom: 3%;
-	/* aspect-ratio: 19 / 12; */
-	background-color: black;
-	position: absolute;
-}
-
-#game-countdown-image {
-    position: absolute;
-	width: 150px;
-	height: 150px;
-    display: none;
-	justify-content: center;
-	align-items: center;
-}
-
-@keyframes pulsate {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-@keyframes fadein {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes fadeout {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
+    /* Animation for active powerups */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
 </style>
-

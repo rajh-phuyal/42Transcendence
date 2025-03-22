@@ -5,15 +5,17 @@ import $store from '../../store/store.js';
 function populateUserInfo(res) {
     let username = $id("username");
     username.textContent = translate("profile", "subject") + res.username;
+    const element = $id("avatar");
+    element.src = window.origin + '/media/avatars/' + res.avatar;
     let birthName =$id("birth-name");
     birthName.textContent = translate("profile", "birthName") + res.lastName + ", " + res.firstName;
     let lastSeenText =$id("last-seen-text");
     let lastSeenImg =$id("last-seen-image");
 
     if (res.online)
-        lastSeenImg.src = "../../../../assets/onlineIcon.png";
+        lastSeenImg.src = "../../../../assets/icons_128x128/icon_online.png";
     else
-        lastSeenImg.src = "../../../../assets/offlineIcon.png";
+        lastSeenImg.src = "../../../../assets/icons_128x128/icon_offline.png";
     lastSeenText.textContent = translate("profile", "lastSeen") + res.lastLogin;
     let language =$id("language");
     language.textContent = translate("profile", "language") + res.language;
@@ -32,14 +34,15 @@ function populateStats(res) {
 
 function populateProgress(res, identity) {
     let id = identity + "progress";
-    let percentageValue = res * 100;
+    let percentageValue = res;
 
     let progressBar =$id(id);
     progressBar.style.width =  percentageValue + '%';
 
-    id = identity + "percentage";
-    let percentage =$id(id);
-    percentage.textContent = percentageValue + "%";
+    // TODO: check if still needed
+    //id = identity + "percentage";
+    //let percentage =$id(id);
+    //percentage.textContent = percentageValue + "%";
 }
 
 function populateInfoAndStats(res) {

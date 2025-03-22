@@ -1,0 +1,130 @@
+<div class="modal fade" id="modal-game-history" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body" id="modal-game-history-body">
+                <img src='../../assets/backgrounds/modal-background-blank-paper.png' class="image-modal-background-image" alt="Background Image" draggable="false">
+                <div id="modal-game-history-grid" class="view-overlay-grid">
+                    <h5 class="modal-title grid-cell default-grid-area title" id="modal-game-history-title">GAME HISTORY</h5> <!-- TODO: translation -->
+                    <button type="button" class="grid-cell default-grid-area btn-close btn-close-white modal-btn-close btnclo" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div id="modal-game-history-game-list-container" class="grid-cell default-grid-area barely-a-scroll-class lcont">
+                        <!-- Game list will be here -->
+                        <h5 id="modal-game-history-no-games">No games played yet.</h5> <!-- TODO: translation -->
+                    </div>
+                    <button type="button" class="grid-cell default-grid-area btn modal-button btntm" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">Tournament History</button>
+                </div>
+                <template id="modal-game-history-card-template">
+                    <div class="modal-game-history-card">
+                        <img    class="grid-cell default-grid-area modal-game-history-card-playerLeft-avatar avt1" draggable="false">
+                        <h6     class="grid-cell default-grid-area modal-game-history-card-playerLeft-username usrn1"></h6>
+                        <h4     class="grid-cell default-grid-area modal-game-history-card-score score"></h4>
+                        <h6     class="grid-cell default-grid-area modal-game-history-card-playerRight-username usrn2"></h6>
+                        <img    class="grid-cell default-grid-area modal-game-history-card-playerRight-avatar avt2" draggable="false">
+                        <h6     class="grid-cell default-grid-area modal-game-history-card-date dt"></h6>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-game-history-grid{
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 5.9%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      btnclo .     "
+            "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".     .     .      .      .      btntm  btntm  btntm  btntm  btntm  btntm  btntm  .      .      .      .      .     "
+            ".     .     .      .      .      btntm  btntm  btntm  btntm  btntm  btntm  btntm  .      .      .      .      .     "
+            ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    .btnclo {
+        grid-area: btnclo;
+    }
+    .title {
+        grid-area: title;
+    }
+    .lcont {
+        grid-area: lcont;
+        display: block !important;
+        overflow: auto !important;
+        padding: 0% 2% 0% 2%;
+        border: 3px solid #000000;
+        background-color: rgba(0, 0, 0, 0.176);
+    }
+    .btnc {
+        grid-area: btnc;
+    }
+    .btntm {
+        grid-area: btntm;
+    }
+
+    /* For the card template */
+    .modal-game-history-card{
+        display: grid;
+        height: 8vh;
+        cursor: pointer;
+        background-color: #EFE7D3;
+        color: black;
+        margin: 10px 0px;
+        border:  3px solid  black;
+        align-items: center;
+        justify-content: space-between;
+        grid-template-columns: repeat(auto-fill, 9%);
+        grid-template-rows: repeat(auto-fill, 14.2%);
+        grid-template-areas:
+            "avt1   .      .      .      .      .      .      .      .      .      avt2   "
+            "avt1   .      .      .      .      .      .      .      .      .      avt2   "
+            "avt1   usrn1  usrn1  usrn1  score  score  score  usrn2  usrn2  usrn2  avt2   "
+            "avt1   usrn1  usrn1  usrn1  score  score  score  usrn2  usrn2  usrn2  avt2   "
+            "avt1   usrn1  usrn1  usrn1  score  score  score  usrn2  usrn2  usrn2  avt2   "
+            "avt1   dt     dt     dt     dt     dt     dt     dt     dt     dt     avt2   "
+            "avt1   dt     dt     dt     dt     dt     dt     dt     dt     dt     avt2   "
+    }
+
+    .modal-game-history-card-playerLeft-avatar{
+        grid-area: avt1;
+    }
+    .modal-game-history-card-playerLeft-username{
+        grid-area: usrn1;
+        text-align: left !important;
+    }
+    .modal-game-history-card-score{
+        grid-area: score;
+    }
+    .modal-game-history-card-playerRight-username{
+        grid-area: usrn2;
+        text-align: right !important;
+    }
+    .modal-game-history-card-playerRight-avatar{
+        grid-area: avt2;
+    }
+    .modal-game-history-card-date{
+        grid-area: dt;
+    }
+    .avt1, .avt2{
+        height: auto;
+        width: 90%;
+    }
+</style>
