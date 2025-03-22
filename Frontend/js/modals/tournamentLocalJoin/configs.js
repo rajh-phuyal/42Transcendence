@@ -1,18 +1,6 @@
-/*
-TODO: THIS MODAL IS NOT DONE AT ALL!!!
-    NEED TO:
-        - copy the right structure from the template modal
-        - double check all nodes/elements if needed?
-        - adjust the js code
-            - move it from original configs.js (profile/home) to congigs.js of modal!
-            - make sure the js code has all values. the idea is that the view stores the info as attribute and the modal takes it from there
-            - e.g. newConversation modal js!
-*/
-
 import { modalManager } from '../../abstracts/ModalManager.js';
 import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
-import router from '../../navigation/router.js';
 
 export default {
     attributes: {
@@ -27,16 +15,8 @@ export default {
 
         joinTournament(tournamentId) {
             call(`tournament/join/${tournamentId}/`, 'PUT').then(data => {
-                console.log(data);
                 $callToast("success", data.message);
                 modalManager.closeModal("modal-tournament-local-join");
-            })
-        },
-
-        startTournament(tournamentId) {
-            call(`tournament/start/${tournamentId}/`, 'PUT').then(data => {
-                console.log(data);
-                $callToast("success", data.message);
             })
         },
     },
@@ -55,16 +35,15 @@ export default {
 
             if (tournamentState !== "setup")
                 return false;
-            if (tournamentClientRole === "admin") {
-                console.log("starting tournament");
-                this.startTournament(tournamentId);
-                return false;
-            }
-            else {
+            if (tournamentClientRole === "fan" || tournamentClientRole === "invited") {
                 if (tournamentLocal == "true")
                     return true;
-                this.joinTournament(tournamentId);
+                else {
+                    this.joinTournament(tournamentId);
+                    return false;
+                }
             }
+            return false
         },
 
         beforeOpen () {
