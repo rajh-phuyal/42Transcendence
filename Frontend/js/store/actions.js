@@ -1,3 +1,5 @@
+import { routes } from "../navigation/routes.js";
+
 /**
  * @param {Object} $store - the store object
  * @param {Array} views - the views to load the translations for
@@ -19,6 +21,7 @@ export const actions = {
             console.error("Error loading global translations", error);
         }
 
+        // Load translations of the views
         for (const view of views) {
             try {
                 const viewTranslation = await fetch(`../js/views/${view}/translations.json`);
@@ -27,7 +30,6 @@ export const actions = {
                     translations[view] = {};
                     continue;
                 }
-
                 const translationData = await viewTranslation.json();
                 translations[view] = translationData;
 
@@ -37,6 +39,33 @@ export const actions = {
             }
         }
 
+        // Load translations of the modals
+
+        const modals = routes.map(route => route.modals);
+
+        for (let modalsArray of modals) {
+            console.log("modals array:", modalsArray);
+            if (!modalsArray)
+                continue ;
+            for (let modal of modalsArray) {
+                try {
+                    if (translations[modal])
+                        continue ;
+                    const modalTranslation = await fetch(`../js/modals/${modal}/translations.json`);
+                    if (!modalTranslation.ok) {
+                        translations[modal] = {};
+                        continue;
+                    }
+                    const modalTranslationData = await modalTranslation.json();
+                    translations[modal] = modalTranslationData;
+                } catch (error) {
+                    translations[modal] = {};
+                    console.error("Error loading view translations", error);
+                }
+            }
+        }
+
+        console.log("translations:", translations);
         $store.commit('setTranslations', translations);
     }
 }
