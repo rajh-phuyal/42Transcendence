@@ -105,8 +105,8 @@ class CreateTournamentView(BaseAuthenticatedView):
         tournament = create_tournament(
             creator_id=user.id,
             name=tournament_name,
-            local_tournament=request.data.get('localTournament'),
-            public_tournament=request.data.get('publicTournament'),
+            local_tournament=request.data.get('local'),
+            public_tournament=request.data.get('public'),
             map_number=request.data.get('mapNumber'),
             powerups=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')
