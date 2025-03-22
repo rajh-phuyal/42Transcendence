@@ -1,4 +1,6 @@
 import $store from '../store/store.js';
+import { routes } from '../navigation/routes.js';
+import { $id } from '../abstracts/dollars.js'
 
 /**
  *
@@ -27,4 +29,28 @@ export const translate = (namespace, key, params = null) => {
     }
 
     return translation;
+};
+
+async function loadAndExecuteTranslations(subject) {
+    try {
+        let translationMap = await fetch(`../views/${subject}/staticTranslations.json`);
+        if (translationMap.ok) {
+            const translationData = await translationMap.json();
+            for (const [key, value] of translationData)
+                $id(key) = translate(subject, value);
+        }
+    } catch(error) {
+        console.error("Error on translation:", error);
+    }
+}
+
+export function staticTranslator(viewName) {
+    const routeObject = routes.find(route => route.view === viewName);
+
+    loadAndExecuteTranslations(viewName);
+
+    if (!routeObject.modals)
+        return ;
+    for (modal of routeObject.modals)
+        loadAndExecuteTranslations(modal);
 };

@@ -4,6 +4,7 @@ import { routes } from "../navigation/routes.js";
  * @param {Object} $store - the store object
  * @param {Array} views - the views to load the translations for
  */
+
 export const actions = {
     loadTranslations: async ($store, views) => {
         let translations = {};
@@ -44,7 +45,6 @@ export const actions = {
         const modals = routes.map(route => route.modals);
 
         for (let modalsArray of modals) {
-            console.log("modals array:", modalsArray);
             if (!modalsArray)
                 continue ;
             for (let modal of modalsArray) {
@@ -65,7 +65,6 @@ export const actions = {
             }
         }
 
-        console.log("translations:", translations);
         $store.commit('setTranslations', translations);
     }
 }
