@@ -15,9 +15,9 @@
                     <ul id="modal-friends-list-list" class="list-group">
                         <template id="modal-friends-list-list-element-template">
                             <div class="modal-friends-list-list-element">
-                                <img id="modal-friends-list-list-element-avatar-image" class="modal-friends-list-list-element-avatar-image" alt="error loading image"></img>
+                                <img id="modal-friends-list-list-element-avatar-image" class="modal-friends-list-list-element-avatar-image" alt="error loading image" draggable="false">
                                 <h5 class="modal-friends-list-list-element-username"></h5>
-                                <img id="modal-friends-list-list-element-friendship-image" class="modal-friends-list-list-element-friendship-image" alt="error loading image"></img>
+                                <img id="modal-friends-list-list-element-friendship-image" class="modal-friends-list-list-element-friendship-image" alt="error loading image" draggable="false">
                             </div>
                         </template>
                     </ul>
@@ -55,6 +55,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 10px;
+        cursor: pointer;
     }
 
     /* Those are the styles for inside the usercard */

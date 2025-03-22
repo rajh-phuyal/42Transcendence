@@ -5,6 +5,7 @@ import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { changeGameState, drawPlayersState } from './methods.js';
 import { gameObject } from './objects.js';
 import { endGameLoop } from './loop.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
@@ -102,59 +103,20 @@ export default {
 
         },
 
-        initListeners(init = true) {
-            const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
-            const buttonQuitGame = this.domManip.$id("button-quit-game");
-            const buttonPlayAgain = this.domManip.$id("button-play-again");
-            const leftUsername = this.domManip.$id("player-left-username");
-            const leftAvatar = this.domManip.$id("player-left-avatar");
-            const rightUsername = this.domManip.$id("player-right-username");
-            const rightAvatar = this.domManip.$id("player-right-avatar");
-            const tournamentName = this.domManip.$id("game-view-tournament-name");
-
-            if (init) {
-                // TODO: translation for buttons should be done in with the abstraction tool TBC
-                buttonLeaveLobby.name = translate("game", "button-leave-lobby");
-                buttonLeaveLobby.render();
-                buttonQuitGame.name = translate("game", "button-quit-game");
-                buttonQuitGame.render();
-                buttonPlayAgain.name = translate("game", "button-play-again");
-                buttonPlayAgain.render();
-                this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
-                this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
-                this.domManip.$on(buttonPlayAgain, "click", this.playAgainCallback);
-                this.domManip.$on(document, 'keydown', this.menuKeysCallback);
-                this.domManip.$on(leftUsername, 'click', this.mentionClickCallback);
-                this.domManip.$on(leftAvatar, 'click', this.mentionClickCallback);
-                this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
-                this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
-                this.domManip.$on(tournamentName, 'click', this.mentionClickCallback);
-                return ;
-            }
-
-            if (!init) {
-                if (buttonLeaveLobby) {
-                    // Remove the event listener if exists
-                    if (buttonLeaveLobby.eventListeners)
-                        this.domManip.$off(buttonLeaveLobby, "click");
-                    if (buttonQuitGame.eventListeners)
-                        this.domManip.$off(buttonQuitGame, "click");
-                    if (buttonPlayAgain.eventListeners)
-                        this.domManip.$off(buttonPlayAgain, "click");
-                    if (document.eventListeners)
-                        this.domManip.$off(document, 'keydown', this.menuKeysCallback);
-                    if (leftUsername.eventListeners)
-                        this.domManip.$off(leftUsername, 'click', this.mentionClickCallback);
-                    if (leftAvatar.eventListeners)
-                        this.domManip.$off(leftAvatar, 'click', this.mentionClickCallback);
-                    if (rightUsername.eventListeners)
-                        this.domManip.$off(rightUsername, 'click', this.mentionClickCallback);
-                    if (rightAvatar.eventListeners)
-                        this.domManip.$off(rightAvatar, 'click', this.mentionClickCallback);
-                    if (tournamentName.eventListeners)
-                        this.domManip.$off(tournamentName, 'click', this.mentionClickCallback);
-                }
-            }
+        initListeners() {
+            // TODO: translation for buttons should be done in with the abstraction tool TBC
+            this.domManip.$id("button-play-again").innerText = translate("game", "button-play-again");
+            this.domManip.$id("button-leave-lobby").innerText = translate("game", "button-leave-lobby");
+            this.domManip.$id("button-quit-game").innerText = translate("game", "button-quit-game");
+            EventListenerManager.linkEventListener("button-leave-lobby",        "game", "click",    this.leaveLobbyCallback);
+            EventListenerManager.linkEventListener("button-quit-game",          "game", "click",    this.quitGameCallback);
+            EventListenerManager.linkEventListener("button-play-again",         "game", "click",    this.playAgainCallback);
+            EventListenerManager.linkEventListener("barely-a-body",             "game", "keydown",  this.menuKeysCallback);
+            EventListenerManager.linkEventListener("player-left-username",      "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("player-left-avatar",        "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("player-right-username",     "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("player-right-avatar",       "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("game-view-tournament-name", "game", "click",    this.mentionClickCallback);
         },
 
         async loadDetails() {
@@ -175,6 +137,8 @@ export default {
 
                     // Set game data
                     gameObject.clientIsPlayer = data.gameData.clientIsPlayer;
+                    gameObject.playerLeft.id = data.playerLeft.userId;
+                    gameObject.playerRight.id = data.playerRight.userId;
                     gameObject.playerLeft.points = data.playerLeft.points;
                     gameObject.playerLeft.result = data.playerLeft.result;
                     gameObject.playerRight.points = data.playerRight.points;
@@ -197,10 +161,40 @@ export default {
                     if (data.gameData.state === "ongoing")
                         data.gameData.state = "paused";
                     changeGameState(data.gameData.state);
+
+                    // Show / Hide the controls
+                    const controlsLeft = this.domManip.$id("player-left-controls");
+                    const controlsRight = this.domManip.$id("player-right-controls");
+                    // Hide by default
+                    controlsLeft.style.display = "none";
+                    controlsRight.style.display = "none";
+                    // Show bottom border for player cards
+                    const playerLeftBottomPiece = this.domManip.$class("lst")[0];
+                    playerLeftBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+                    playerLeftBottomPiece.style.borderBottomLeftRadius = "3px";
+                    playerLeftBottomPiece.style.borderBottomRightRadius = "3px";
+                    const playerRightBottomPiece = this.domManip.$class("rst")[0];
+                    playerRightBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+                    playerRightBottomPiece.style.borderBottomLeftRadius = "3px";
+                    playerRightBottomPiece.style.borderBottomRightRadius = "3px";
+                    // Show the controls if userid matches client if or is flatmate
+                    const clientId = this.$store.fromState('user').id
+                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3){
+                        controlsLeft.style.display = "block";
+                        playerLeftBottomPiece.style.borderBottom = "none";
+                        playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
+                        playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
+                    }
+                    console.warn(gameObject.playerRight.id );
+                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
+                        controlsRight.style.display = "block";
+                        playerRightBottomPiece.style.borderBottom = "none";
+                    playerRightBottomPiece.style.borderBottomLeftRadius = "0px";
+                    playerRightBottomPiece.style.borderBottomRightRadius = "0px";
+                    }
                 })
                 .catch(error => {
-                        const msg = "404 | " + error.message;
-                        router('/404', {msg: msg});
+                    router('/404', {msg: error.message});
                 });
         },
 
@@ -208,7 +202,7 @@ export default {
             gameObject.gameId = this.gameId;
             gameObject.wsConnection = false;
             gameObject.state = undefined;
-            gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
+            gameObject.frameTime = 1000/25; // NOTE: this means 25 frames per second which should match the backend FPS
             gameObject.lastFrameTime = 0;
             gameObject.animationId = null;
             gameObject.sound = null;
@@ -239,7 +233,6 @@ export default {
 
     hooks: {
         beforeRouteEnter() {
-
         },
 
         beforeRouteLeave() {
@@ -249,23 +242,21 @@ export default {
                 gameObject.countDownInterval = undefined;
                 this.domManip.$id("game-countdown-image").style.display = "none";
             }
-            this.initListeners(false);
             endGameLoop();
             this.audioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId)
         },
 
         beforeDomInsertion() {
-
         },
 
         async afterDomInsertion() {
-            this.initListeners();
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
-                console.warn("Invalid game id '%s' from routeParams?.id -> redir to home", this.routeParams.id);
-                router('/');
+                router('/404');
                 return;
             }
+            // Initialize the event listeners
+            this.initListeners();
             // Setting the gameId from the route params
             this.gameId = this.routeParams.id;
             // Initialize the game object

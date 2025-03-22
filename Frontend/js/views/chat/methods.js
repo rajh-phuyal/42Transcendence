@@ -499,10 +499,6 @@ export function createHelpMessage(input){
             htmlContent += translate("chat", "helpMessage/mention-tournament-game");
     }
 
-
-
-
-
     updateHelpMessage(htmlContent);
 }
 
@@ -529,4 +525,3 @@ export function updateHelpMessage(htmlContent="") {
             helpContainer.remove();
     }
 }
-

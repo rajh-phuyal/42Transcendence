@@ -1,3 +1,4 @@
+from tournament.constants import MAX_LENGHT_OF_TOURNAMENT_NAME
 from django.db import models
 
 class Tournament(models.Model):
@@ -12,7 +13,7 @@ class Tournament(models.Model):
         choices=TournamentState.choices,
         default=TournamentState.SETUP
     )
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=MAX_LENGHT_OF_TOURNAMENT_NAME)
     local_tournament = models.BooleanField()
     public_tournament = models.BooleanField()
     map_number = models.IntegerField()

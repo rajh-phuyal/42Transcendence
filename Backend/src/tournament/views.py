@@ -1,5 +1,5 @@
 # Basics
-import re, logging
+import logging
 from rest_framework import status
 # Django
 from django.db import transaction
@@ -24,6 +24,7 @@ from game.serializer import GameSerializer
 from tournament.models import Tournament, TournamentMember
 from tournament.serializer import TournamentMemberSerializer, TournamentInfoSerializer
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
+from user.utils_relationship import is_blocking
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -46,17 +47,31 @@ class EnrolmentView(BaseAuthenticatedView):
 # History of tournaments of user including all tournament states
 class HistoryView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def get(self, request):
-        user = request.user
-        # Get all tournaments of the user
+    def get(self, request, userid):
+        requester = request.user
+
+        try:
+            target = User.objects.get(id=userid)
+        except User.DoesNotExist:
+            return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
+
+        # Check if the requester is blocked by the target user
+        if is_blocking(target, requester):
+            return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
+
+        # Get all tournaments of the target user
         tournaments = Tournament.objects.filter(
-            members__user=user
-        ).order_by('-finish_time')
+            members__user=target,
+            state__in=[Tournament.TournamentState.ONGOING, Tournament.TournamentState.FINISHED]
+        ).order_by(
+            'state',
+            '-finish_time'
+        )
 
         # Serialize the tournaments using TournamentInfoSerializer
         serializer_tournaments = TournamentInfoSerializer(tournaments, many=True)
 
-        return success_response(_("User's tournament history fetched successfully"), **{
+        return success_response(_("Tournament history fetched successfully"), **{
             'tournaments': serializer_tournaments.data
         })
 
@@ -70,26 +85,15 @@ class ToJoinView(BaseAuthenticatedView):
             user_id=user.id,
             accepted=False,
             tournament__state=Tournament.TournamentState.SETUP
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name')
-        ).values(
-            'tournamentId',
-            'tournamentName'
-        )
+        ).values_list('tournament', flat=True)
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
             state=Tournament.TournamentState.SETUP
-        ).annotate(
-            tournamentId=models.F('id'),
-            tournamentName=models.F('name')
-        ).values(
-            'tournamentId',
-            'tournamentName'
         )
         # Merge the two querysets
         tournaments = list(invited_tournaments) + list(public_tournaments)
-        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
+        tournamentsSerializer = TournamentInfoSerializer(tournaments, many=True)
+        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournamentsSerializer.data})
 
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -97,16 +101,7 @@ class CreateTournamentView(BaseAuthenticatedView):
         logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
-        tournament_name = request.data.get('name')
-
-        # Check if tournament name is not empty
-        if not tournament_name:
-            raise BarelyAnException(_("Tournament name cannot be empty"))
-
-        # Validate tournament name using regex
-        if not re.match(r'^[a-zA-Z0-9\-_]+$', tournament_name):
-            raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
-
+        tournament_name = request.data.get('name').strip()
         tournament = create_tournament(
             creator_id=user.id,
             name=tournament_name,

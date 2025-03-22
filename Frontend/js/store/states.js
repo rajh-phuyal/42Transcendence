@@ -8,4 +8,5 @@ export const state = {
     locale: 'en-US',
     translations: {},
     webSocketIsAlive: false,
+    currentRoute: 'auth',
 };

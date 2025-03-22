@@ -2,18 +2,11 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content image-modal-content">
             <div class="modal-body image-modal-body">
-                <img src='../../assets/backgrounds/modal-create-game-lizard-people.png' class="image-modal-background-image" alt="Background Image">
+                <img src='../../assets/backgrounds/modal-create-game-lizard-people.png' class="image-modal-background-image" alt="Background Image" draggable="false">
                 <div id="modal-template-image-grid" class="view-overlay-grid">
-
-                        <!-- Place your content here -->
-
-                            <h5 class="modal-title grid-cell default-grid-area title" id="modal-template-image-title">Modal title</h5>
-                            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-                            <!-- <p>This is some text placed on top of the background image.</p> -->
-                            <!-- Add more components, grids, etc. as needed -->
-                            <!-- <button type="button" class="btn modal-button" data-bs-dismiss="modal">Close</button> -->
-                            <!-- <button type="button" class="btn modal-button">Save changes</button> -->
-
+                    <!-- Place your content here -->
+                    <h5 class="modal-title grid-cell default-grid-area title" id="modal-template-image-title">Modal title</h5>
+                    <button type="button" class="grid-cell default-grid-area btn-close btn-close-white modal-btn-close btnclo" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             </div>
         </div>
@@ -25,7 +18,7 @@
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      title  title  title  title  .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  .      .      .      .      .      .      .      btnclo .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
@@ -53,5 +46,8 @@
 
     .title {
         grid-area: title;
+    }
+    .btnclo {
+        grid-area: btnclo;
     }
 </style>

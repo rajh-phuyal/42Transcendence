@@ -1,12 +1,9 @@
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
 import router from '../../navigation/router.js';
-import $auth from '../../auth/authentication.js';
-import $callToast from '../../abstracts/callToast.js';
-import { translate } from '../../locale/locale.js';
-import { $id } from '../../abstracts/dollars.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
@@ -63,7 +60,7 @@ export default {
                 view.setAttribute("data-user-first-name", this.result.firstName);
                 view.setAttribute("data-user-last-name", this.result.lastName);
                 view.setAttribute("data-user-language", this.result.language);
-                view.setAttribute("data-user-avatar", this.result.avatarUrl);
+                view.setAttribute("data-user-avatar", this.result.avatar);
                 view.setAttribute("data-user-conversation-id", this.result.chatId);
                 view.setAttribute("data-relationship", JSON.stringify(this.result.relationship));
             } else {
@@ -178,7 +175,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            WebSocketManager.setCurrentRoute(undefined);
             /* let element = this.domManip.$id("button-top-left");
             this.domManip.$off(element, "click", this.buttonTopLeft.method);
             element = this.domManip.$id("button-top-middle");
@@ -236,9 +232,14 @@ export default {
         },
 
         afterDomInsertion() {
+            console.warn(this.routeParams.id);
+            if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
+                router('/404');
+                return;
+            }
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
-                WebSocketManager.setCurrentRoute("profile-" + this.result.id);
+                console.warn(res);
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();
@@ -251,15 +252,20 @@ export default {
                 if (this.buttonTopMiddle.method)
                     modalManager.on("button-top-middle", this.buttonTopMiddle.method);
                 if (this.buttonTopRight.method) {
-                    if (this.buttonTopRight.method == "logout")
-                        this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                    if (this.buttonTopRight.method == "logout") {
+                        // this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                        EventListenerManager.linkEventListener("button-top-right", "profile", "click", this.callbackLogout);
+                    }
                     else
                         modalManager.on("button-top-right", this.buttonTopRight.method);
                 }
                 modalManager.on("button-bottom-left", "modal-game-history");
                 modalManager.on("button-bottom-right", "modal-friends-list");
-            })
-            // TODO: on error?
+            }).catch(err => {
+                console.log(err);
+                router("/404", {msg: err.message});
+            }
+            );
         },
     }
 }

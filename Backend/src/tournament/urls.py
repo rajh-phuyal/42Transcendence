@@ -15,7 +15,7 @@ from tournament.views import (
 
 urlpatterns = [
     path('enrolment/', EnrolmentView.as_view(), name='enrolment'),
-    path('history/', HistoryView.as_view(), name='history'),
+    path('history/<int:userid>/', HistoryView.as_view(), name='history'),
     path('to-join/', ToJoinView.as_view(), name='to_join'),
     path('create/', CreateTournamentView.as_view(), name='create_tournament'),
     path('delete/<int:id>/', DeleteTournamentView.as_view(), name='delete_tournament'),

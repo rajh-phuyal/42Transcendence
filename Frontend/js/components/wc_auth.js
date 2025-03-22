@@ -217,7 +217,7 @@ class AuthCard extends HTMLElement {
             $store.commit('setUser', {
                 id: response.userId,
                 username: response.username,
-				avatar: response.userAvatar
+				avatar: response.avatar
             });
 
             // update the profile route params
@@ -535,7 +535,7 @@ class AuthCard extends HTMLElement {
 				<section id="login-section" style="display:none;" class="fade">
 					<input id="username-login-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
 					<input id="password-login-input" class="passwordInput" placeholder="${this.passwordPlaceholder}" type="Password">
-					<button class="show-password-button">${this.passwordVisibilityButton}</button>
+					<button class="show-password-button" tabindex='-1'>${this.passwordVisibilityButton}</button>
 					<div class="buttons-container">
 						<button id="submit-login" class="submit-button">${this.submitButton}</button>
 						<button class="back-to-main-button">${this.backButton}</button>
@@ -545,9 +545,9 @@ class AuthCard extends HTMLElement {
 				<section id="register-section" style="display:none;" class="fade">
 					<input id="username-register-input" class="usernameInput" placeholder="${this.usernamePlaceholder}"/>
 					<input id="password-register-input" class="passwordInput password-register" placeholder="${this.passwordPlaceholder}" type="Password">
-					<button id="password-register-visibility-toogle-button" class="show-password-button">${this.passwordVisibilityButton}</button>
+					<button id="password-register-visibility-toogle-button" class="show-password-button" tabindex='-1'>${this.passwordVisibilityButton}</button>
 					<input class="password-confirmation-input passwordInput password-register" placeholder="${this.passwordConfirmationPlaceholder}" type="Password">
-					<button id="password-confirmation-visibility-toogle-button" class="show-password-button">${this.passwordVisibilityButton}</button>
+					<button id="password-confirmation-visibility-toogle-button" class="show-password-button" tabindex='-1'>${this.passwordVisibilityButton}</button>
 					<div class="buttons-container">
 						<button id="submit-register" class="submit-button">${this.submitButton}</button>
 						<button class="back-to-main-button">${this.backButton}</button>

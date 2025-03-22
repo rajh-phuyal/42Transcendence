@@ -87,7 +87,7 @@ class LobbyView(BaseAuthenticatedView):
             'playerLeft':{
                 'userId': memberLeft.user.id,
                 'username': memberLeft.user.username,
-                'avatar': memberLeft.user.avatar_path,
+                'avatar': memberLeft.user.avatar,
                 'points': memberLeft.points,
                 'result': memberLeft.result,
                 'ready': game.get_player_ready(memberLeft.user.id),
@@ -95,7 +95,7 @@ class LobbyView(BaseAuthenticatedView):
             'playerRight':{
                 'userId': memberRight.user.id,
                 'username': memberRight.user.username,
-                'avatar': memberRight.user.avatar_path,
+                'avatar': memberRight.user.avatar,
                 'points': memberRight.points,
                 'result': memberRight.result,
                 'ready': game.get_player_ready(memberRight.user.id),
@@ -126,13 +126,22 @@ class HistoryView(BaseAuthenticatedView):
 
         # Get all games and sort them descending by finish_time
         # Not finsihed games always need to be at the end
-        games = Game.objects.filter(members__user=target).annotate(
-                finish_time_nulls=Case(
-                When(finish_time__isnull=True, then=Value(1)),  # Assign 1 for NULL values
-                default=Value(0),  # Assign 0 for non-NULL values
+        games = Game.objects.filter(
+            members__user=target
+        ).exclude(
+            state=Game.GameState.PENDING
+        ).annotate(
+            state_order=Case(
+                When(state__in=[Game.GameState.ONGOING, Game.GameState.COUNTDOWN], then=Value(1)),
+                When(state=Game.GameState.PAUSED, then=Value(2)),
+                When(state__in=[Game.GameState.FINISHED, Game.GameState.QUITED], then=Value(3)),
+                default=Value(4),
                 output_field=IntegerField(),
             )
-        ).order_by('-finish_time', 'finish_time_nulls')
+        ).order_by(
+            'state_order',
+            '-finish_time'
+        )
         serializer_games = GameSerializer(games, many=True)
         return success_response(_("Game History fetched"), **{
             'games': serializer_games.data,
