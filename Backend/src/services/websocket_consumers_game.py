@@ -50,9 +50,11 @@ class GameConsumer(CustomWebSocketLogic):
             return
 
         # Check if game is part of a local tournament...
-        if self.game.tournament and self.game.tournament.local_tournament:
+        # We need to fetch the tournament from the database since its a lazy load field
+        tournament = await database_sync_to_async(lambda: self.game.tournament)()
+        if tournament and tournament.local_tournament:
             # ... only the admin can connect to the game
-            admin = await database_sync_to_async(lambda: self.game.tournament.members.filter(is_admin=True).first())()
+            admin = await database_sync_to_async(lambda: tournament.members.filter(is_admin=True).first())()
             if self.user.id != admin.user.id:
                 logging.info(f"User {self.user.id} is not the admin of the local tournament game {self.game_id}. CONNECTION CLOSED.")
                 await self.close()
@@ -78,7 +80,7 @@ class GameConsumer(CustomWebSocketLogic):
         await send_ws_game_data_msg(self.game_id)
 
         # SETTING PLAYER(S) READY
-        if self.game.tournament and self.game.tournament.local_tournament:
+        if tournament and tournament.local_tournament:
             # CASE: A local tournament game: so we need to set both players ready
             await database_sync_to_async(self.game.set_player_ready)(self.leftUser.id, True)
             await database_sync_to_async(self.game.set_player_ready)(self.rightUser.id, True)

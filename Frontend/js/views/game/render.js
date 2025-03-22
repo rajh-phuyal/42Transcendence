@@ -305,9 +305,7 @@ export function toggleGamefieldVisible(visible) {
         const ctx = gameField.getContext('2d');
         ctx.clearRect(0, 0, gameField.width, gameField.height);
         gameRender(gameField, ctx);
-        // Hide the tournament banner if it is a tournament game
-        if (gameObject.tournamentId)
-            tournamentBanner.style.display = "none";
+        tournamentBanner.style.display = "none";
     } else {
         // Load the background lobby image
         imgPath = window.location.origin + '/assets/backgrounds/game.png';
