@@ -12,7 +12,6 @@ class GamePlayerSerializer(serializers.ModelSerializer):
 
 class GameSerializer(serializers.ModelSerializer):
     finishTime = serializers.DateTimeField(source='finish_time', read_only=True)
-    deadline = serializers.DateTimeField(source='deadline', read_only=True)
     playerLeft = serializers.SerializerMethodField()
     playerRight = serializers.SerializerMethodField()
 

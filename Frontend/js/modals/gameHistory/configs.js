@@ -10,7 +10,7 @@ export default {
 
     methods: {
         formatTimestamp(isoTimestamp) {
-            return loadTimestamp(isoTimestamp, "YYYY-MM-DD h:mm a").replace('am', 'a.m.').replace('pm', 'p.m.');
+            return loadTimestamp(isoTimestamp, "YY-MM-DD hh:mm");
         },
 
         cleanUpGameList() {
