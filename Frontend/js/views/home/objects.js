@@ -1,5 +1,5 @@
 export const imageDir = '../../../assets/homeView/';
-import { AIModalCallback, battleModalCallback, 
+import { AIModalCallback, battleModalCallback,
     tournamentModalCallback, chatRoomModalCallback,
     leaderboardModalCallback } from './callbacks.js';
 import { translate } from '../../locale/locale.js';
@@ -161,7 +161,6 @@ export const backgroundImageBook = [
         height: 200,
         shadow: 3,
     },
-    
 ]
 
 // Array containing the objects for the labels

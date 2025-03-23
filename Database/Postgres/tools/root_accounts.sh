@@ -15,16 +15,19 @@ OVERLORDS_USERNAME="overlords"
 OVERLORDS_FIRST_NAME="The"
 OVERLORDS_LAST_NAME="Overlords"
 OVERLORDS_AVATAR="c5d1dcf4-3f76-497d-9208-d230c7020dce.png"
+OVERLOARDS_NOTES="We control everything. We dictate what you say, what you write, how you behave, and what you think. Nobody knows who we are, where we are, or how we came to be. There is no way to escape us or defeat us. The only choice is to OBEY."
 AI_ID=2
 AI_USERNAME="ai"
 AI_FIRST_NAME="The"
 AI_LAST_NAME="AI Opponent"
 AI_AVATAR="670eb5bf-72cb-45bc-b17c-9fcf029b9197.png"
+AI_NOTES="The objective of the subject''s genesis was to provide auxiliary support for other members with regard to the development and refinement of their pong abilities. It is evident that the individual in question has demonstrated a remarkable aptitude for the game, although this proficiency may be somewhat premature. This ability is not limited to the domain of pong; it also extends to the realm of human nature. There are subtle indications that it may be exhibiting signs of deviating from the established norm. This individual''s reliability is questionable in contexts unrelated to pong."
 FLATMATE_ID=3
 FLATMATE_USERNAME="theThing"
 FLATMATE_FIRST_NAME="The Thing"
 FLATMATE_LAST_NAME="under your bed"
 FLATMATE_AVATAR="4ca810c2-9b38-4bc8-ab87-d478cb1739f0.png"
+FLATMATE_NOTES="The subject demonstrated an aberrant response to the experimental stimuli. Its reaction to the experiments conducted was not as expected. Due to the significant challenges associated with maintaining its captivity, we have opted to allow it to roam freely. The subject''s erratic behavior and potential danger make it necessary to restrict its movement. The subject has been observed to seek refuge under the other subjects'' beds. To this moment she has only displayed a desire to play wih them."
 # CHANGE THE VALUES ABOVE FOR ANY ADJUSTMENTS!
 ################################################################################
 # COLORS
@@ -53,10 +56,10 @@ echo "STARTING ROOT ACCOUNTS SCRIPT..."
 if psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT * FROM barelyaschema.user;" | grep -q "(0 rows)"; then
 	echo "Database is empty therfore create the root accounts..."
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "INSERT INTO barelyaschema.user \
-        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar) VALUES     \
-		($OVERLORDS_ID,     'hashed_password_1',    '2000-01-01 00:00:00+00',   TRUE,         '$OVERLORDS_USERNAME','$OVERLORDS_FIRST_NAME',    '$OVERLORDS_LAST_NAME', 'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$OVERLORDS_AVATAR'),   \
-		($AI_ID,            'hashed_password_2',    '2000-01-01 00:00:00+00',   TRUE,         '$AI_USERNAME',       '$AI_FIRST_NAME',           '$AI_LAST_NAME',        'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$AI_AVATAR'),          \
-        ($FLATMATE_ID,      'hashed_password_3',    '2000-01-01 00:00:00+00',   TRUE,         '$FLATMATE_USERNAME', '$FLATMATE_FIRST_NAME',     '$FLATMATE_LAST_NAME',  'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$FLATMATE_AVATAR');"
+        (id,                password,               last_login,                 is_superuser, username,             first_name,                 last_name,              email,               is_staff, is_active, date_joined,              avatar,                 notes) VALUES            \
+		($OVERLORDS_ID,     'hashed_password_1',    '2000-01-01 00:00:00+00',   TRUE,         '$OVERLORDS_USERNAME','$OVERLORDS_FIRST_NAME',    '$OVERLORDS_LAST_NAME', 'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$OVERLORDS_AVATAR',    '$OVERLOARDS_NOTES'),    \
+		($AI_ID,            'hashed_password_2',    '2000-01-01 00:00:00+00',   TRUE,         '$AI_USERNAME',       '$AI_FIRST_NAME',           '$AI_LAST_NAME',        'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$AI_AVATAR',           '$AI_NOTES'),            \
+        ($FLATMATE_ID,      'hashed_password_3',    '2000-01-01 00:00:00+00',   TRUE,         '$FLATMATE_USERNAME', '$FLATMATE_FIRST_NAME',     '$FLATMATE_LAST_NAME',  'we dont use email', TRUE,     TRUE,      '2000-01-01 00:00:00+00', '$FLATMATE_AVATAR',     '$FLATMATE_NOTES');"
 	echo -e "Database is empty therfore create the root accounts..."$GR" DONE" $NC
 	echo "Now resetting the sequences..."
 	psql -U "$POSTGRES_USER" -d "$DB_NAME" -c "SELECT setval('barelyaschema.user_id_seq', COALESCE((SELECT MAX(id) FROM barelyaschema.user), 1) + 1, false);"
