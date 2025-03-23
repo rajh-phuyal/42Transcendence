@@ -67,7 +67,7 @@ export default {
                                 }
                             })
                             .catch(error => {
-                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
+                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connectionError");
                             });
                     }
                     break;
@@ -104,10 +104,6 @@ export default {
         },
 
         initListeners() {
-            // TODO: translation for buttons should be done in with the abstraction tool TBC
-            this.domManip.$id("button-play-again").innerText = translate("game", "button-play-again");
-            this.domManip.$id("button-leave-lobby").innerText = translate("game", "button-leave-lobby");
-            this.domManip.$id("button-quit-game").innerText = translate("game", "button-quit-game");
             EventListenerManager.linkEventListener("button-leave-lobby",        "game", "click",    this.leaveLobbyCallback);
             EventListenerManager.linkEventListener("button-quit-game",          "game", "click",    this.quitGameCallback);
             EventListenerManager.linkEventListener("button-play-again",         "game", "click",    this.playAgainCallback);

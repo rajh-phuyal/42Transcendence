@@ -1,52 +1,52 @@
 <div class="view-base view-background-color">
     <div class="view-container">
         <div class="view-image-wrapper">
-            <img src="../assets/backgrounds/tournament.png" alt="Background Image" class="view-background-image" draggable="false">
+            <img src="../assets/backgrounds/tournament.png" class="view-background-image" draggable="false">
             <div class="view-overlay-grid">
                 <!-- LEFT SIDE -->
                 <!-- LEFT SIDE TOP -->
                 <div class="grid-cell default-grid-area blk"></div>
                 <div class="grid-cell default-grid-area tpriv">
-                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" alt="Privacy Icon" draggable="false">
+                    <img id="tournament-privacy-img" src="../assets/icons_128x128/icon_tournament_private.png" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area tstate">
-                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_state_finished.png" alt="Privacy Icon" draggable="false">
+                    <img id="tournament-state-img" src="../assets/icons_128x128/icon_tournament_state_finished.png" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area ttype">
-                    <img id="tournament-type-img" src="../assets/icons_128x128/icon_tournament_local.png" alt="Privacy Icon" draggable="false">
+                    <img id="tournament-type-img" src="../assets/icons_128x128/icon_tournament_local.png" draggable="false">
                 </div>
-                <button id="button-tab-members"                 class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnmem tournament-tabs" style="display: none;" tab="members">Members</button>
-                <button id="button-tab-finals"                  class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnfin tournament-tabs" style="display: none;" tab="finals">Finals</button>
-                <button id="button-tab-round-robin"             class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnrro tournament-tabs" style="display: none;" tab="round-robin">Round Robin</button>
-                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btngup tournament-tabs" style="display: none;" tab="games-upcoming">Upcoming Games</button>
-                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btngfi tournament-tabs" style="display: none;" tab="games-finished">Finished Games</button>
+                <button id="button-tab-members"                 class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnmem tournament-tabs" style="display: none;" tab="members"></button>
+                <button id="button-tab-finals"                  class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnfin tournament-tabs" style="display: none;" tab="finals"></button>
+                <button id="button-tab-round-robin"             class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnrro tournament-tabs" style="display: none;" tab="round-robin"></button>
+                <button id="button-tab-games-upcoming"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btngup tournament-tabs" style="display: none;" tab="games-upcoming"></button>
+                <button id="button-tab-games-finished"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btngfi tournament-tabs" style="display: none;" tab="games-finished"></button>
                 <!-- LEFT SIDE BOTTOM -->
-                <button id="button-leave-lobby"                 class="grid-cell default-grid-area modal-button btn-sidebar btnl">Leave Lobby</button>
+                <button id="button-leave-lobby"                 class="grid-cell default-grid-area modal-button btn-sidebar btnl"></button>
 
                 <!-- MIDDLE -->
                 <h3  id="tournament-name"                   class="grid-cell default-grid-area tname"></h3>
                 <div class="grid-cell default-grid-area cont">
                     <div id="container-members"                 class="cont-centered barely-a-scroll-class"  style="display: none;">
                         <div id="container-members-list"        class="barely-a-scroll-class"></div>
-                        <button id="button-subscribe"           class="modal-button" style="display: none;">Unsubscribe / Cancel</button>
-                        <button id="button-start"               class="modal-button" style="display: none;">Start Tournament</button>
+                        <button id="button-subscribe"           class="modal-button" style="display: none;"></button>
+                        <button id="button-start"               class="modal-button" style="display: none;"></button>
                     </div>
                     <div id="container-finals"                 class="cont-centered barely-a-scroll-class" style="display: none;">
                         <!-- Podium -->
                         <div id="tournament-podium-container">
                             <div id="tournament-podium-second" class="tournament-podium-step">
                                 <h1 class="tournament-podium-question-mark">?</h1>
-                                <img id="tournament-podium-second-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
+                                <img id="tournament-podium-second-avatar" class="tournament-podium-avatar" draggable="false">
                                 <h5 id="tournament-podium-second-username" class="tournament-podium-username"></h5>
                             </div>
                             <div id="tournament-podium-first" class="tournament-podium-step">
                                 <h1 class="tournament-podium-question-mark">?</h1>
-                                <img id="tournament-podium-first-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
+                                <img id="tournament-podium-first-avatar" class="tournament-podium-avatar" draggable="false">
                                 <h5 id="tournament-podium-first-username" class="tournament-podium-username"></h5>
                             </div>
                             <div id="tournament-podium-third" class="tournament-podium-step">
                                 <h1 class="tournament-podium-question-mark">?</h1>
-                                <img id="tournament-podium-third-avatar" class="tournament-podium-avatar" alt="image not found" draggable="false">
+                                <img id="tournament-podium-third-avatar" class="tournament-podium-avatar" draggable="false">
                                 <h5 id="tournament-podium-third-username" class="tournament-podium-username"></h5>
                             </div>
                         </div>
@@ -58,11 +58,11 @@
                             <table id="tournament-rank-table">
                                 <thead id="tournament-rank-table-header">
                                     <tr>
-                                        <th id="tournament-rank-table-header-rank">Rank</th>
-                                        <th id="tournament-rank-table-header-player">Player</th>
-                                        <th id="tournament-rank-table-header-wins">Wins</th>
-                                        <th id="tournament-rank-table-header-diff">Diff</th>
-                                        <th id="tournament-rank-table-header-games">Total Games</th>
+                                        <th id="tournament-rank-table-header-rank"></th>
+                                        <th id="tournament-rank-table-header-player"></th>
+                                        <th id="tournament-rank-table-header-wins"></th>
+                                        <th id="tournament-rank-table-header-diff"></th>
+                                        <th id="tournament-rank-table-header-games"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tournament-rank-table-body">
@@ -79,7 +79,7 @@
                     </div>
                 </div>
                 <!-- RIGHT SIDE -->
-                <button id="button-delete"                      class="grid-cell default-grid-area modal-button btn-sidebar btnd" style="display: none;">Delete Tournament</button>
+                <button id="button-delete"                      class="grid-cell default-grid-area modal-button btn-sidebar btnd" style="display: none;"></button>
             </div>
         </div>
     </div>
@@ -276,11 +276,11 @@
 <!-- TEMPLATE GAME CARD -->
 <template id="tournament-game-card-template">
     <div class="default-card-container tournament-game-card-container" gameid="">
-        <img class="grid-cell default-grid-area avt1 tournament-game-card-player-left-avatar" alt="image not found">
+        <img class="grid-cell default-grid-area avt1 tournament-game-card-player-left-avatar" >
         <h5  class="grid-cell default-grid-area usrn1 tournament-game-card-player-left-username"></h5>
         <h4  class="grid-cell default-grid-area score tournament-game-card-score"></h4>
         <h5  class="grid-cell default-grid-area usrn2 tournament-game-card-player-right-username"></h5>
-        <img class="grid-cell default-grid-area avt2 tournament-game-card-player-right-avatar" alt="image not found" draggable="false">
+        <img class="grid-cell default-grid-area avt2 tournament-game-card-player-right-avatar"  draggable="false">
     </div>
 </template>
 <style>
@@ -349,7 +349,7 @@
         <td class="tournament-rank-row-position"></td>
         <td class="tournament-rank-row-user">
             <div class="tournament-rank-row-user-wrapper">
-                <img class="tournament-rank-row-avatar" alt="image not found" draggable="false">
+                <img class="tournament-rank-row-avatar"  draggable="false">
                 <h5 class="tournament-rank-row-username"></h5>
             </div>
         </td>
@@ -401,12 +401,12 @@
 <!-- TEMPLATE FINAL GAME -->
 <template id="tournament-finals-template">
     <div class="default-card-container tournament-finals-diagram-container">
-        <h5 class="finals-title">Semi-Final</h5>
-        <img class="finals-player-left-avatar tournament-finals-diagram-avatar" alt="" draggable="false">
-        <h6 class="finals-player-left-username">player 1</h6>
-        <h5 class="finals-score">VS</h5>
-        <h6 class="finals-player-right-username">player 2</h6>
-        <img class="finals-player-right-avatar tournament-finals-diagram-avatar" alt="" draggable="false">
+        <h5 class="finals-title"></h5>
+        <img class="finals-player-left-avatar tournament-finals-diagram-avatar" draggable="false">
+        <h6 class="finals-player-left-username"></h6>
+        <h5 class="finals-score"></h5>
+        <h6 class="finals-player-right-username"></h6>
+        <img class="finals-player-right-avatar tournament-finals-diagram-avatar" draggable="false">
     </div>
 </template>
 <style>

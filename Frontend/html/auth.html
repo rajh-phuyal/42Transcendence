@@ -1,3 +1,122 @@
+<div class="view-base">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img src="../assets/backgrounds/auth.png" class="view-background-image" draggable="false">
+            <div class="view-overlay-grid">
+                <button id="button-local-us"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-enabled  btn-sidebar btnus"   value="en-US">🇺🇸</button>
+                <button id="button-local-ptp"         class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnptp"  value="pt-PT">🇵🇹</button>
+                <button id="button-local-ptb"         class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnptb"  value="pt-BR">🇧🇷</button>
+                <button id="button-local-de"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnde"   value="de-DE">🇩🇪</button>
+                <button id="button-local-uk"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnuk"   value="uk-UA">🇺🇦</button>
+                <button id="button-local-ne"          class="grid-cell default-grid-area modal-button modal-toggle-button modal-toggle-button-disabled btn-sidebar btnne"   value="ne-NP">🇳🇵</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR XYZ VIEW                 -->
+<!--            NOTE: some styles are defined in main.css!                   -->
+<!-- ####################################################################### -->
+<style>
+    /* Somehow this is neccesarry since this is the only view where we don't
+    show the NavBar which height is 10vh! So here we need to change the heigt */
+    html, body {
+        height: 90vh !important;
+    }
+    .view-overlay-grid {
+        grid-template-columns: repeat(auto-fill, 2.5%);
+        grid-template-rows: repeat(auto-fill, 5%);
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btnus  .      btnptp btnptb btnde  btnuk  btnne  .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+
+    /* FLAGS */
+    .btnus {
+        grid-area: btnus;
+    }
+    .btnptp {
+        grid-area: btnptp;
+    }
+    .btnptb {
+        grid-area: btnptb;
+    }
+    .btnde {
+        grid-area: btnde;
+    }
+    .btnuk {
+        grid-area: btnuk;
+    }
+    .btnne {
+        grid-area: btnne;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="out-div view-background-color">
     <div id="auth-view">
 		<img src="../assets/backgrounds/auth.png" alt="Autentication Box" draggable="false">

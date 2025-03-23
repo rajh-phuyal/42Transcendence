@@ -1,5 +1,6 @@
-import { $id } from "../../abstracts/dollars.js";
 import { tournamentData as data } from "./objects.js";
+import { translate } from '../../locale/locale.js';
+import { $id } from "../../abstracts/dollars.js";
 import router from "../../navigation/router.js";
 import $store from '../../store/store.js';
 
@@ -59,7 +60,7 @@ function updateGameCard(container, game) {
         // STATE: PENDING
         if (game.deadline) {
             container.style.display = "grid";
-            container.title = "Hurrry up! The game is only open for a limited time!"; // TODO: translate
+            container.title = translate("tournament", "tooltipGameDeadline");
             startGameCountdown(container, game.id, game.deadline);
             // Animate the card if the user is part of the game
             if (container.getAttribute("player-left-id") == $store.fromState("user").id || container.getAttribute("player-right-id") == $store.fromState("user").id)
@@ -73,7 +74,12 @@ function updateGameCard(container, game) {
         // remove the countdown if it exists
         stopGameCountdown(game.id);
         container.style.display = "grid";
-        container.title = "The game is ongoing!"; // TODO: translate
+        if(game.state === "paused") {
+            container.title = translate("tournament", "tooltipGamePaused");
+            // TODO: maybe show spinner
+        } else {
+            container.title = translate("tournament", "tooltipGameOngoing");
+        }
         // Animate the score change
         const scoreContainer = container.querySelector(".tournament-game-card-score");
         const newScore = game.playerLeft.points + "-" + game.playerRight.points;
@@ -88,7 +94,7 @@ function updateGameCard(container, game) {
         // remove the countdown if it exists
         stopGameCountdown(game.id);
         container.style.display = "grid";
-        container.title = "The game is finished!"; // TODO: translate
+        container.title = translate("tournament", "tooltipGameFinished");
         // Animate the score change
         const scoreContainer = container.querySelector(".tournament-game-card-score");
         const newScore = game.playerLeft.points + "-" + game.playerRight.points;

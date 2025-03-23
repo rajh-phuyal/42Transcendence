@@ -1,10 +1,10 @@
 {
-	"title": {
-		"en-US": "Why resize?",
-		"pt-BR": "Por que redimensionar?",
-		"pt-PT": "Por que redimensionar?",
-		"de-DE": "Warum die Größe ändern?",
-		"uk-UA": "Чому змінювати розмір?",
-		"ne-NP": "किन आकार परिवर्तन गर्ने?"
-	}
+    "title": {
+        "en-US": "The overlords need more space! It's getting cramped in here. Resize the window please!",
+        "pt-BR": "Os senhores precisam de mais espaço! Está ficando apertado aqui. Redimensione a janela, por favor!",
+        "pt-PT": "Os senhores precisam de mais espaço! Está a ficar apertado aqui. Redimensione a janela, por favor!",
+        "de-DE": "Die Overlords brauchen mehr Platz! Es wird hier eng. Bitte vergrößern Sie das Fenster!",
+        "uk-UA": "Панове потребують більше простору! Тут стає тісно. Будь ласка, змініть розмір вікна!",
+        "ne-NP": "अधिपतिहरूलाई बढी स्थानको आवश्यकता छ! यहाँ निकै भीडभाड भइरहेको छ। कृपया विन्डो आकार परिवर्तन गर्नुहोस्!"
+    }
 }

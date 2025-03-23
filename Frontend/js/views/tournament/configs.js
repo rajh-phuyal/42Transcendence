@@ -1,7 +1,7 @@
-import { audioPlayer } from '../../abstracts/audio.js';
-import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
+import { audioPlayer } from '../../abstracts/audio.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import { updateView } from './methodsView.js';
 import { tournamentData } from './objects.js';
 import { callbackTabButton } from './callbacks.js';

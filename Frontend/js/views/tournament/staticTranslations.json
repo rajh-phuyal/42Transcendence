@@ -1,3 +1,15 @@
 {
-    "id":                       "key",
+    "button-tab-members":                   "btnTabMembers",
+    "button-tab-finals":                    "btnTabFinals",
+    "button-tab-round-robin":               "btnTabRoundRobin",
+    "button-tab-games-upcoming":            "btnTabUpcomingGames",
+    "button-tab-games-finished":            "btnTabFinishedGames",
+    "button-leave-lobby":                   "btnLeaveLobby",
+    "button-start":                         "btnStart",
+    "button-delete":                        "btnDelete",
+    "tournament-rank-table-header-rank":    "tableRank",
+    "tournament-rank-table-header-player":  "tablePlayer",
+    "tournament-rank-table-header-wins":    "tableWins",
+    "tournament-rank-table-header-diff":    "tableDiff",
+    "tournament-rank-table-header-games":   "tableTotalGames"
 }

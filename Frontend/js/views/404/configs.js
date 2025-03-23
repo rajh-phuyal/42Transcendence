@@ -32,8 +32,6 @@ export default {
                 this.domManip.$id("404-title").innerText = "404 | "+ this.routeParams.msg;
             else
                 this.domManip.$id("404-title").innerText = translate("404", "title");
-            let homeButton = this.domManip.$id("home-button");
-            homeButton.innerText = translate("404", "homeButton");
             EventListenerManager.linkEventListener("home-button", "404", "click", this.buttonCallback);
             EventListenerManager.linkEventListener("barely-a-body", "404", "keydown", this.keydownCallback);
         },

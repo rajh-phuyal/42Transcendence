@@ -1,6 +1,6 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
@@ -277,7 +277,7 @@ export function createMessage(element, prepend = true) {
         - client clicking on a conversation card
         - route param in the URL (e.g /chat?id=9)
     This function will then:
-        - set the conversation id to other functions where we need them: TODO: not sure if this is a smart approach
+        - set the conversation id to other functions where we need them
         - clear the current conversation
         - load the conversation from the server
         - set the info section about the conversation (chat name, avatar, etc)
