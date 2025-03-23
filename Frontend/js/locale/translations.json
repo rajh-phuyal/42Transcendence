@@ -28,14 +28,6 @@
         }
     },
     "nav": {
-        "chat": {
-            "en-US": "Chat",
-            "pt-PT": "Chat",
-            "pt-BR": "Chat",
-            "de-DE": "Chat",
-            "uk-UA": "Чат",
-            "ne-NP": "च्याट"
-        },
         "placeholderSearchbar": {
             "en-US": "Search for users",
             "pt-PT": "Procurar utilizadores",

@@ -115,6 +115,5 @@ export default function $nav(navigationPathParams = null) {
     }
 
     // Transalate the navbar
-    $id("chat-nav-title").innerHTML =                   translate("global:nav", "chat");
     $id("nav-search-bar").setAttribute("placeholder",   translate("global:nav", "placeholderSearchbar"));
 }

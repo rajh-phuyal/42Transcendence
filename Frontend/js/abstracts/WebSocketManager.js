@@ -204,7 +204,8 @@ class WebSocketManager {
     updateNavBarBadge(value) {
 		if (value > 99)
 			value = "99+";
-        $id("chat-nav-badge").textContent = value || "";
+        console.warn($id("chat-nav-badge"));
+        $id("chat-nav-badge").innerHTML = value || "";
     }
 
     reconnect() {
