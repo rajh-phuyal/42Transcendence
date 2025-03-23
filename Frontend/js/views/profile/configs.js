@@ -61,6 +61,7 @@ export default {
                 view.setAttribute("data-user-first-name", this.result.firstName);
                 view.setAttribute("data-user-last-name", this.result.lastName);
                 view.setAttribute("data-user-language", this.result.language);
+                view.setAttribute("data-user-notes", this.result.notes);
                 view.setAttribute("data-user-avatar", this.result.avatar);
                 view.setAttribute("data-user-conversation-id", this.result.chatId);
                 view.setAttribute("data-relationship", JSON.stringify(this.result.relationship));
@@ -71,6 +72,7 @@ export default {
                 view.removeAttribute("data-user-first-name");
                 view.removeAttribute("data-user-last-name");
                 view.removeAttribute("data-user-language");
+                view.removeAttribute("data-user-notes");
                 view.removeAttribute("data-user-avatar");
                 view.removeAttribute("data-user-conversation-id");
                 view.removeAttribute("data-relationship");
@@ -241,12 +243,12 @@ export default {
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log("profileData ", this.result);
-        
+
                 // Convert lastLogin to local time using moment.js
                 if (res.lastLogin) {
                     this.result.lastLoginFormatted = loadTimestamp(res.lastLogin);
                 }
-        
+
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();
