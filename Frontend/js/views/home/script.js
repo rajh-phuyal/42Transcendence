@@ -60,7 +60,7 @@ async function drawImageBook(){
 }
 
 // draw the label in the canvas
-function drawLabel(label){
+async function drawLabel(label){
 
     let context = canvasData.context;
 
@@ -85,7 +85,7 @@ function drawLabel(label){
 }
 
 // draw a line in the canvas
-function drawLine(line){
+async function drawLine(line){
 
     let context = canvasData.context;
 
@@ -107,14 +107,14 @@ function drawLine(line){
 // build the whole canvas
 export async function buildCanvas(){
     await drawImageBook();
-    for (const element of backgroundImageBook)
-        await drawImg(element);
+        for (const element of backgroundImageBook)
+            await drawImg(element);
 
-    for (const element of labels)
-        drawLabel(element);
+        for (const element of labels)
+            await drawLabel(element);
 
-    for (const element of lines)
-        drawLine(element);
+        for (const element of lines)
+            await drawLine(element);
 }
 
 async function redraw(image)
@@ -122,7 +122,7 @@ async function redraw(image)
     await drawImg(image);
     for (let element of image.lines)
     {
-        drawLine(lines[element]);
+        await drawLine(lines[element]);
     }
 
 }

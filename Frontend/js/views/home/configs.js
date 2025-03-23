@@ -38,7 +38,7 @@ export default {
         beforeDomInsertion() {
         },
 
-        afterDomInsertion() {
+        async afterDomInsertion() {
             // stores the id of the element currently highlighted
             canvasData.highlitedImageID = 0;
 
@@ -58,7 +58,7 @@ export default {
             canvasData.context.scale(scale, scale);
 
             // build thexport e first frame
-            buildCanvas();
+            await buildCanvas();
 
             // TODO: whats that?
             // for (let element of this.users)

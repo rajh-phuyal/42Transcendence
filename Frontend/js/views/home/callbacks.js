@@ -11,6 +11,15 @@ export function AIModalCallback(){
     modalManager.openModal("modal-create-game");
 }
 
+export function LocalModalCallback(){
+    // Set the opponent to AI
+    const view = $id("router-view");
+    view.setAttribute("data-user-id", "3");
+    view.setAttribute("data-user-username", "theThing"); // TODO: the username of theThing doesnt appear fully in the modal                                 // TODO: maybe this should be saved somewhere else as a constant
+    view.setAttribute("data-user-avatar", "4ca810c2-9b38-4bc8-ab87-d478cb1739f0.png"); // TODO: maybe this should be saved somewhere else as a constant
+    modalManager.openModal("modal-create-game");
+}
+
 export function battleModalCallback(){
     // Remove the attributes from the view so that the user can select a friend in the modal
     const view = $id("router-view");
