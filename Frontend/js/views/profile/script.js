@@ -8,22 +8,30 @@ function populateUserInfo(res) {
     const element = $id("avatar");
     element.src = window.origin + '/media/avatars/' + res.avatar;
     let birthName =$id("birth-name");
-    birthName.innerHTML = `<b>${translate("profile", "birthName")}<b>${res.lastName}, ${res.firstName}`;
+    birthName.innerHTML = `<b>${translate("profile", "birthName")}</b>${res.lastName}, ${res.firstName}`;
     let notes =$id("notes");
     if (res.notes !== "")
-        notes.innerHTML = `<b>${translate("profile", "notes")}<b>${res.notes}`;
+        notes.innerHTML = `<b>${translate("profile", "notes")}</b>${res.notes}`;
     let lastSeenText =$id("last-seen-text");
     let lastSeenImg =$id("last-seen-image");
     if (res.online)
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_online.png";
     else
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_offline.png";
-    lastSeenText.innerHTML =`<b>${translate("profile", "lastSeen")}</b>${res.lastLoginFormatted}`;
+    if (!res.lastLoginFormatted)
+        lastSeenText.innerHTML =`<b>${translate("profile", "lastSeen")}</b>.`;
+    else
+        lastSeenText.innerHTML =`<b>${translate("profile", "lastSeen")}</b>${res.lastLoginFormatted}`;
     let language =$id("language");
-    language.innerHTML = `<b>${translate("profile", "language")}</b>${res.language}`;
+    if (!res.language)
+        language.innerHTML = `<b>${translate("profile", "language")}</b>.`;
+    else
+        language.innerHTML = `<b>${translate("profile", "language")}</b>${res.language}`;
 }
 
 function populateStats(res) {
+    if (res.stats === "")
+        return ;
     let element = $id("stats-games");
     element.innerHTML = `${translate("profile", "gamesWon")}${res.stats.game.won}/${res.stats.game.played}`;
     element = $id("stats-tournament-first-place");
@@ -50,6 +58,8 @@ function populateProgress(res, identity) {
 function populateInfoAndStats(res) {
     populateUserInfo(res);
     populateStats(res);
+    if (res.stats === "")
+        return ;
     populateProgress(res.stats.score.skill, "score-skill-");
     populateProgress(res.stats.score.experience, "score-game-exp-");
     populateProgress(res.stats.score.performance, "score-tournament-exp-");
