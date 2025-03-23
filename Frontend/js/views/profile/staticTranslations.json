@@ -1,3 +1,8 @@
 {
-    "id":                       "key",
+    "stats-title":                       "titleStats",
+    "progress-title":                    "titleProgress",
+    "score-skill-name":                  "titleSkill",
+    "score-game-exp-name":               "titleGame",
+    "score-tournament-exp-name":         "titleTournament",
+    "score-total-name":                  "titleTotal"
 }

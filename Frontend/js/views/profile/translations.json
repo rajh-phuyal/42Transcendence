@@ -1,8 +1,88 @@
 {
+    "titleStats": {
+        "en-US": "STATS",
+        "pt-PT": "ESTATÍSTICAS",
+        "pt-BR": "ESTATÍSTICAS",
+        "de-DE": "STATISTIKEN",
+        "uk-UA": "СТАТИСТИКА",
+        "ne-NP": "आँकडा"
+    },
+    "titleProgress": {
+        "en-US": "PROGRESS",
+        "pt-PT": "PROGRESSO",
+        "pt-BR": "PROGRESSO",
+        "de-DE": "FORTSCHRITT",
+        "uk-UA": "ПРОГРЕС",
+        "ne-NP": "प्रगति"
+    },
+    "titleSkill": {
+        "en-US": "Skill",
+        "pt-PT": "Habilidade",
+        "pt-BR": "Habilidade",
+        "de-DE": "Fähigkeit",
+        "uk-UA": "Навичка",
+        "ne-NP": "सीप"
+    },
+    "titleGame": {
+        "en-US": "Game",
+        "pt-PT": "Jogo",
+        "pt-BR": "Jogo",
+        "de-DE": "Spiel",
+        "uk-UA": "Гра",
+        "ne-NP": "खेल"
+    },
+    "titleTournament": {
+        "en-US": "Tournament",
+        "pt-PT": "Torneio",
+        "pt-BR": "Torneio",
+        "de-DE": "Turnier",
+        "uk-UA": "Турнір",
+        "ne-NP": "टुर्नामेन्ट"
+    },
+    "titleTotal": {
+        "en-US": "Total",
+        "pt-PT": "Total",
+        "pt-BR": "Total",
+        "de-DE": "Gesamt",
+        "uk-UA": "Загалом",
+        "ne-NP": "कुल"
+    },
+    "gamesWon": {
+        "en-US": "games won",
+        "pt-PT": "jogos ganhos",
+        "pt-BR": "jogos ganhos",
+        "de-DE": "Gewonnene Spiele",
+        "uk-UA": "виграні ігри",
+        "ne-NP": "जितेका खेलहरू"
+    },
+    "firstPlace": {
+        "en-US": "1st places in tournament",
+        "pt-PT": "1º lugares no torneio",
+        "pt-BR": "1º lugares no torneio",
+        "de-DE": "1. Plätze im Turnier",
+        "uk-UA": "1-ші місця в турнірі",
+        "ne-NP": "1 औं स्थानहरू टुर्नामेन्टमा"
+    },
+    "secondPlace": {
+        "en-US": "2nd places in tournament",
+        "pt-PT": "2º lugares no torneio",
+        "pt-BR": "2º lugares no torneio",
+        "de-DE": "2. Plätze im Turnier",
+        "uk-UA": "2-ге місця в турнірі",
+        "ne-NP": "2 औं स्थानहरू टुर्नामेन्टमा"
+    },
+    "thirdPlace": {
+        "en-US": "3rd places in tournament",
+        "pt-PT": "3º lugares no torneio",
+        "pt-BR": "3º lugares no torneio",
+        "de-DE": "3. Plätze im Turnier",
+        "uk-UA": "3-тє місце в турнірі",
+        "ne-NP": "3 औं स्थानहरू टुर्नामेन्टमा"
+    },
     "subject": {
         "en-US": "Subject: ",
-        "pt-PT": "Sujeito: ",
-        "pt-BR": "Sujeito: ",
+        "pt-PT": "Assunto: ",
+        "pt-BR": "Assunto: ",
         "de-DE": "Betreff: ",
         "uk-UA": "Тема: ",
         "ne-NP": "विषय: "
@@ -30,38 +110,6 @@
         "de-DE": "Sprache: ",
         "uk-UA": "Мова: ",
         "ne-NP": "भाषा: "
-    },
-    "gamesWon": {
-        "en-US": "Games won: ",
-        "pt-PT": "Jogos ganhos: ",
-        "pt-BR": "Jogos ganhos: ",
-        "de-DE": "Gewonnene Spiele: ",
-        "uk-UA": "Перемоги: ",
-        "ne-NP": "जितिएका खेलहरू: "
-    },
-    "firstPlace": {
-        "en-US": "1st place in tournament: ",
-        "pt-PT": "1º lugar no torneio: ",
-        "pt-BR": "1º lugar no torneio: ",
-        "de-DE": "1. Platz im Turnier: ",
-        "uk-UA": "1-е місце на турнірі: ",
-        "ne-NP": "प्रतियोगितामा पहिलो स्थान: "
-    },
-    "secondPlace": {
-        "en-US": "2nd place in tournament: ",
-        "pt-PT": "2º lugar no torneio: ",
-        "pt-BR": "2º lugar no torneio: ",
-        "de-DE": "2. Platz im Turnier: ",
-        "uk-UA": "2-е місце на турнірі: ",
-        "ne-NP": "प्रतियोगितामा दोस्रो स्थान: "
-    },
-    "thirdPlace": {
-        "en-US": "3rd place in tournament: ",
-        "pt-PT": "3º lugar no torneio: ",
-        "pt-BR": "3º lugar no torneio: ",
-        "de-DE": "3. Platz im Turnier: ",
-        "uk-UA": "3-е місце на турнірі: ",
-        "ne-NP": "प्रतियोगितामा तेस्रो स्थान: "
     },
     "createNewConversation": {
         "en-US": "Send a Message to open a new conversation with ",
