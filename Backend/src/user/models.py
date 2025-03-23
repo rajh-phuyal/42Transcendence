@@ -16,12 +16,13 @@ class User(AbstractUser):
     # during the database container build.
     avatar = models.CharField(max_length=40)
     language = models.CharField(max_length=5, default='en-US', blank=True)
+    notes = models.CharField(max_length=600, default='', blank=True)
 
     class Meta:
         db_table = '"barelyaschema"."user"'
 
     def update_last_seen(self):
-        self.last_login = timezone.now() #TODO: Issue #193
+        self.last_login = timezone.now()
         self.save(update_fields=['last_login'])
 
     def set_online_status(self, status, channel_name=None):

@@ -5,6 +5,7 @@ import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
 import router from '../../navigation/router.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -21,8 +22,9 @@ export function processIncomingWsChatMessage(message) {
     // The conversation card is already selected so we can just add the message
     const currentConversationId = $id("chat-view-text-field").getAttribute("conversation-id");
     if (currentConversationId && currentConversationId == message.conversationId) {
-        // Remove the typing indicator
-        showTypingIndicator(Date.now());
+        // Remove the typing indicator if its form the other user
+        if (message.userId != $store.fromState("user").id)
+            showTypingIndicator(Date.now());
         // Create the message
         createMessage(message, false);
         // Scroll to the bottom
@@ -229,6 +231,9 @@ export function createMessage(element, prepend = true) {
     // Match @<username>@<userid>@ pattern
     let parsedContent = element.content;
     if (element.content != null) {
+        // Make new lines work
+        parsedContent = parsedContent.replace(/\n/g, '<br>');
+        // Match @<username>@<userid>@ pattern
         parsedContent = element.content.replace(
             /@([^@]+)@([^@]+)@/g,
             `<span class="mention-user" data-userid="$2">@$1</span>`
@@ -249,7 +254,7 @@ export function createMessage(element, prepend = true) {
     template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
-    template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
+    template.querySelector(".chat-view-message-timestamp").textContent = loadTimestamp(element.createdAt, "YYYY-MM-DD HH:mm");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
     // Prepend or append the message to the container

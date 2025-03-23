@@ -4,6 +4,7 @@ import router from '../../navigation/router.js';
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 export default {
     attributes: {
@@ -60,6 +61,7 @@ export default {
                 view.setAttribute("data-user-first-name", this.result.firstName);
                 view.setAttribute("data-user-last-name", this.result.lastName);
                 view.setAttribute("data-user-language", this.result.language);
+                view.setAttribute("data-user-notes", this.result.notes);
                 view.setAttribute("data-user-avatar", this.result.avatar);
                 view.setAttribute("data-user-conversation-id", this.result.chatId);
                 view.setAttribute("data-relationship", JSON.stringify(this.result.relationship));
@@ -70,6 +72,7 @@ export default {
                 view.removeAttribute("data-user-first-name");
                 view.removeAttribute("data-user-last-name");
                 view.removeAttribute("data-user-language");
+                view.removeAttribute("data-user-notes");
                 view.removeAttribute("data-user-avatar");
                 view.removeAttribute("data-user-conversation-id");
                 view.removeAttribute("data-relationship");
@@ -137,10 +140,10 @@ export default {
 
         /* If user is blocked, the page is blacked out */
         blackout() {
-            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right");
-            for (let element of elements) {
-                element.style.backgroundColor = "black";
-            }
+            this.domManip.$id("profile-view-background-image").src = "../assets/backgrounds/profile-blackout.png";
+            let skillBars = this.domManip.$queryAll(".progress, .game-stats-parameters, .lseeni");
+            for (let element of skillBars)
+                element.style.display = "none";
         },
 
         hideElement(elementId){
@@ -239,7 +242,11 @@ export default {
             }
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
-                console.warn(res);
+                console.log("profileData ", this.result);
+                // Convert lastLogin to local time using moment.js
+                if (res.lastLogin) {
+                    this.result.lastLoginFormatted = loadTimestamp(res.lastLogin);
+                }
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();

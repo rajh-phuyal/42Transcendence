@@ -121,17 +121,16 @@ async def send_ws_chat(message_object):
     try:
         await channel_layer.group_send(group_name, serialized_message)
     except Exception as e:
-        # Mostlikely this is not a big problem
-        ...
+        logging.info(f"Error sending chat message to group {group_name} (Mostlikely this is not a big problem): {e}")
 
 async def send_ws_chat_temporary(user_id, conversation_id, content):
     overloards = await sync_to_async(User.objects.get)(id=USER_ID_OVERLORDS)
     try:
         conversation = await sync_to_async(Conversation.objects.get)(id=conversation_id)
     except Conversation.DoesNotExist:
-        logging.error(f"Conversation with ID {conversation_id} not found.")
+        logging.info(f"Conversation with ID {conversation_id} not found.")
         return
-    message = TempConversationMessage(overlords_instance=overloards, conversation=conversation, created_at=timezone.now().isoformat(), content=content) # TODO: Issue #193
+    message = TempConversationMessage(overlords_instance=overloards, conversation=conversation, created_at=timezone.now(), content=content)
     serialized_message = await sync_to_async(lambda: MessageSerializer(instance=message).data)()
     await send_ws_msg_to_user(user_id, **serialized_message)
 
@@ -182,7 +181,7 @@ def send_ws_tournament_client_role_msg(tournament, user, role):
     try:
         async_to_sync(send_ws_msg_to_user)(user.id, **message_dict)
     except Exception as e:
-        ...
+        logging.info(f"Error sending tournament client role to user {user.id}: {e}")
 
 def send_ws_tournament_info_msg(tournament, deleted=False):
     """
@@ -210,7 +209,7 @@ def send_ws_tournament_info_msg(tournament, deleted=False):
             "tournamentInfo": info_data
         })
     except Exception as e:
-        ...
+        logging.info(f"Error sending tournament info to group {tournament_id_name}: {e}")
 
 def send_ws_tournament_member_msg(tournament_member, leave=False):
     """
@@ -239,7 +238,7 @@ def send_ws_tournament_member_msg(tournament_member, leave=False):
             "tournamentMember": member_data
         })
     except Exception as e:
-        ...
+        logging.info(f"Error sending tournament member to group {tournament_id_name}: {e}")
 
 def send_ws_all_tournament_members_msg(tournament):
     """
@@ -261,7 +260,7 @@ def send_ws_all_tournament_members_msg(tournament):
             "tournamentMembers": serializer_members.data
         })
     except Exception as e:
-        ...
+        logging.info(f"Error sending tournament members to group {tournament_id_name}: {e}")
 
 def send_ws_tournament_game_msg(game):
     if isinstance(game, int):
@@ -280,7 +279,7 @@ def send_ws_tournament_game_msg(game):
             "tournamentGame": serializerGame.data
         })
     except Exception as e:
-        ...
+        logging.info(f"Error sending tournament game to group {tournament_id_name}: {e}")
 
 def send_ws_tournament_pm(tournament_id, message):
     """
@@ -317,12 +316,13 @@ async def send_ws_game_players_ready_msg(game_id, left_ready, right_ready, start
             }
         )
     except Exception as e:
-        ...
+        logging.info(f"Error sending game players ready to group {group_name}: {e}")
 
 async def send_ws_game_data_msg(game_id):
     game_state_data = get_game_data(game_id)
+    logging.info(f"Sending game state to game {game_id}: {game_state_data}")
     if not game_state_data:
-        logging.error(f"Game state not found for game {game_id} so it can't be send as a ws message!")
+        logging.info(f"Game state not found for game {game_id} so it can't be send as a ws message!")
         return
     group_name = f"{PRE_GROUP_GAME}{game_id}"
     try:
@@ -335,13 +335,11 @@ async def send_ws_game_data_msg(game_id):
             }
         )
     except Exception as e:
-        ...
-        # Not a problem if the game is already finished
+        logging.info(f"Error sending game state to group {group_name} (Not a problem if the game is already finished): {e}")
 
 async def send_ws_game_finished(game_id):
     group_name = f"{PRE_GROUP_GAME}{game_id}"
     try:
         await channel_layer.group_send(group_name, {"type": "game_finished"})
     except Exception as e:
-        ...
-        # Not a problem if the game is already finished
+        logging.info(f"Error sending game finished to group {group_name} (Not a problem if the game is already finished): {e}")
