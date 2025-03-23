@@ -12,6 +12,7 @@ import { zoomIn } from './views/barely-responsive/methods.js';
 setViewLoading(true);
 
 try {
+    console.error("FIRST FIRST FIRST");
     // import all web components
     for (const component of webComponents) {
         import(`./components/${component}.js`);
@@ -86,7 +87,6 @@ window.addEventListener('select-user-nav', (event) => {
 
 
 /* DESABLE ZOOM*/
-
 document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=')) {
         event.preventDefault();

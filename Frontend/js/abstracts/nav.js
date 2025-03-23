@@ -2,6 +2,7 @@ import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id, $on, $off } from './dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { translate } from '../locale/locale.js';
 
 function updateUserInfo() {
     $id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
@@ -89,9 +90,6 @@ export default function $nav(navigationPathParams = null) {
     const routeFinder = (path) => navigationBarMap.find(route => route.path === path);
 
     routeFinder('/profile').params = { id: $store.fromState("user").id };
-    // TODO: @astein: I guess we don't need this line below since
-    // clickig on chat in navbar should not have any params
-    // routeFinder('/chat').params = { id: undefined };
 
     // additional data and styles
     styleUpdateMap?.[routeFinder('/profile').path]?.();
@@ -115,4 +113,8 @@ export default function $nav(navigationPathParams = null) {
 
         $on(navbarObject, 'click', navbarObject._clickHandler);
     }
+
+    // Transalate the navbar
+    $id("chat-nav-title").innerHTML =                   translate("global:nav", "chat");
+    $id("nav-search-bar").setAttribute("placeholder",   translate("global:nav", "placeholderSearchbar"));
 }

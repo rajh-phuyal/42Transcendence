@@ -31,23 +31,27 @@
 					<div id="home-nav" class="navbar-brand-custom-custom flex-row">
 						<img src="./assets/icons_128x128/icon_barely_a_logo.png" width="40" height="40" alt="" draggable="false">
 					</div>
+                    <div id="chat-nav" class="navbar-brand-custom flex-row">
+                        <p id="chat-nav-title"></p>
+                        <span id="chat-nav-badge" class="badge bg-secondary"></span>
+                    </div>
 					<!-- <p id="home-nav" class="navbar-brand-custom">Home</p> -->
-					<p id="chat-nav" class="navbar-brand-custom">Chat <span id="chat-nav-badge" class="badge bg-secondary"></span></p>
+					<!-- <p id="" class="navbar-brand-custom">Chat <span id="chat-nav-badge" class="badge bg-secondary"></span></p> -->
 				</div>
 				<div id="nav-mid-side">
 					<h2 id='site-title'>Barely Alive</h2>
 				</div>
 				<div id="nav-right-side" class='d-flex flex-row justify-content-between align-items-center'>
-                    <search-bar
-                        placeholder="Search for a user"
-                        width="250"
-                        search-type="users"
-                        on-click-event="select-user-nav"
-                        clear-on-click="true"
-                        only-search-friends="false"
-                        style="margin-right: 1em; margin-left: -17em;"
-                    >
-                    </search-bar>
+                    <div id="nav-search-bar">
+                        <search-bar
+                            width="250"
+                            search-type="users"
+                            on-click-event="select-user-nav"
+                            clear-on-click="true"
+                            only-search-friends="false"
+                            style="margin-right: 1em; margin-left: -17em;"
+                        ></search-bar>
+                    </div>
                     <img id="nav-music-icon" src="" class="navbar-brand-custom" draggable="false">
                     <img id="nav-sound-icon" src="" class="navbar-brand-custom" draggable="false">
 					<img src='' alt='profile avatar' id="profile-nav-avatar" class="navbar-brand-custom" draggable="false">
@@ -63,18 +67,18 @@
             <div id="logged-in-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
-                    <strong class="me-auto">Message from the Overseers</strong>
+                    <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
-                    <span class="mystic-symbol">Δ</span> Welcome back, Seeker. The gates are open.
+                    <span class="mystic-symbol">Δ</span> Welcome back, Seeker. The gates are open. <!-- TODO: translate -->
                 </div>
             </div>
         <!-- Error Toast Container -->
             <div id="error-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
-                    <strong class="me-auto">Message from the Overseers</strong>
+                    <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
@@ -86,7 +90,7 @@
             <div id="success-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
-                    <strong class="me-auto">Message from the Overseers</strong>
+                    <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
@@ -99,7 +103,7 @@
                 <div class="toast custom-toast message-toast">
                     <div class="toast-header">
                         <span class="toast-symbol">👁️</span>
-                        <strong class="me-auto">Message from the Overseers</strong>
+                        <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
