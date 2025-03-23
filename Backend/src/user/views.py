@@ -14,7 +14,7 @@ from core.exceptions import BarelyAnException
 # Authentication
 from authentication.utils import validate_username
 # User
-from user.constants import NO_OF_USERS_TO_LOAD, USER_ID_AI
+from user.constants import NO_OF_USERS_TO_LOAD, USER_ID_AI, USER_ID_OVERLORDS
 from user.models import User, IsCoolWith
 from user.serializers import ProfileSerializer, ListFriendsSerializer, SearchSerializer
 from user.exceptions import ValidationException
@@ -53,11 +53,26 @@ class ProfileView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, targetUserId):
         try:
-            user = User.objects.get(id=targetUserId)
+            target = User.objects.get(id=targetUserId)
         except User.DoesNotExist:
             return error_response(_("Profile not found"))
-        serializer = ProfileSerializer(user, context={'request': request})
-        return success_response(_("User profile loaded"), **serializer.data)
+        serializer = ProfileSerializer(target, context={'request': request})
+        data = serializer.data
+        # If client is blocked remove all data but the username and the avatar
+        if is_blocking(target, request.user):
+            logging.info(f"User: {request.user}, Target User: {target}")
+            data['firstName'] = ''
+            data['lastName'] = ''
+            data['online'] = False
+            data['lastLogin'] = None
+            data['language'] = ''
+            data['chatId'] = ''
+            data['newMessage'] = False
+            data['stats'] = ''
+            # Send the notes only if the profile is of the overloards
+            if target.id != USER_ID_OVERLORDS:
+                data['notes'] = ''
+        return success_response(_("User profile loaded"), **data)
 
 class RelationshipView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -149,6 +164,7 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         new_first_name = request.data.get('firstName')
         new_last_name = request.data.get('lastName')
         new_language = request.data.get('language')
+        new_notes = request.data.get('notes')
 
         # Check if all fields are not empty
         if not new_username or not new_first_name or not new_last_name or not new_language:
@@ -171,10 +187,11 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             async_to_sync(send_message_with_delay)(USER_ID_AI, user, 0, _("Okay, I will now speak in ur new favorite language! ;)"))
 
         # Update the user info
-        user.username = new_username
-        user.first_name = new_first_name
-        user.last_name = new_last_name
-        user.language = new_language
+        user.username           = new_username
+        user.first_name         = new_first_name[:10]
+        user.last_name          = new_last_name[:10]
+        user.language           = new_language
+        user.notes              = new_notes[:600] if new_notes else ''
 
         # Save the user object
         user.save()

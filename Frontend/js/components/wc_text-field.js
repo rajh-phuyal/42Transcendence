@@ -1,10 +1,8 @@
-import { createMessage, createHelpMessage, updateHelpMessage } from '../views/chat/methods.js';
+import { createHelpMessage, updateHelpMessage } from '../views/chat/methods.js';
 import { $id, $queryAll } from '../abstracts/dollars.js';
-import $store from '../store/store.js';
 import { translate } from '../locale/locale.js';
 import router from '../navigation/router.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
-import { showTypingIndicator } from '../views/chat/typingIndicator.js';
 
 class TextField extends HTMLElement {
     constructor() {
@@ -57,7 +55,7 @@ class TextField extends HTMLElement {
         if (value === '')
             return;
         /* To not be exposed to html injection we have to escape the html syntax */
-        value = value.replace(/[&<>"'`=\/]/g, function(s) {
+        value = value.replace(/[&<>"'`=]/g, function(s) {
             return `&#${s.charCodeAt(0)};`;
         });
         // Reset text box & hide the help message when the user sends a message
