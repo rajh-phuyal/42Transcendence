@@ -73,11 +73,20 @@ export default {
 
         /*  Submits the avatar to the backend */
         submitAvatar() {
+            // check if any image as been selected
+            if (!this.cropper || !this.cropper.getImageData().naturalWidth) {
+                $callToast("error", "You need to select an image");
+                return ;
+            }
             // Extract the cropped portion of the selected image
             const croppedCanvas = this.cropper.getCroppedCanvas({
                 width: 186,
                 height: 208
             });
+            if (!croppedCanvas) {
+                $callToast("error", "failed to load image");
+                return ;
+            }
             // prepare image to send to backend
             croppedCanvas.toBlob(this.callFormData, 'image/png');
         }
