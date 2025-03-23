@@ -138,10 +138,10 @@ export default {
 
         /* If user is blocked, the page is blacked out */
         blackout() {
-            let elements = this.domManip.$queryAll(".blackout, .game-stats-parameters, .progress, .last-seen-image, .button-bottom-left, .button-bottom-right");
-            for (let element of elements) {
-                element.style.backgroundColor = "black";
-            }
+            this.domManip.$id("profile-view-background-image").src = "../assets/backgrounds/profile-blackout.png";
+            let skillBars = this.domManip.$queryAll(".progress, .game-stats-parameters, .lseeni");
+            for (let element of skillBars)
+                element.style.display = "none";
         },
 
         hideElement(elementId){
@@ -241,12 +241,10 @@ export default {
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 console.log("profileData ", this.result);
-        
                 // Convert lastLogin to local time using moment.js
                 if (res.lastLogin) {
                     this.result.lastLoginFormatted = loadTimestamp(res.lastLogin);
                 }
-        
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();

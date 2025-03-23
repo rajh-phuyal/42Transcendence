@@ -8,10 +8,12 @@ function populateUserInfo(res) {
     const element = $id("avatar");
     element.src = window.origin + '/media/avatars/' + res.avatar;
     let birthName =$id("birth-name");
-    birthName.innerHTML = `<b>${translate("profile", "birthName")}</b>${res.lastName}, ${res.firstName}`;
+    birthName.innerHTML = `<b>${translate("profile", "birthName")}<b>${res.lastName}, ${res.firstName}`;
+    let notes =$id("notes");
+    if (res.notes !== "")
+        notes.innerHTML = `<b>${translate("profile", "notes")}<b>${res.notes}`;
     let lastSeenText =$id("last-seen-text");
     let lastSeenImg =$id("last-seen-image");
-
     if (res.online)
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_online.png";
     else
