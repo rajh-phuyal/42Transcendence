@@ -16,6 +16,7 @@ class User(AbstractUser):
     # during the database container build.
     avatar = models.CharField(max_length=40)
     language = models.CharField(max_length=5, default='en-US', blank=True)
+    notes = models.CharField(max_length=600, default='', blank=True)
 
     class Meta:
         db_table = '"barelyaschema"."user"'

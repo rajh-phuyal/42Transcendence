@@ -45,12 +45,14 @@ export default {
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
             const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
             const languageElement   = this.domManip.$id("modal-edit-profile-language");
+            const noteElement       = this.domManip.$id("modal-edit-profile-notes");
 
             call("user/update-user-info/", "PUT", {
-                username: usernameElement.value.trim(),
-                firstName: firstNameElement.value.trim(),
-                lastName: lastNameElement.value.trim(),
-                language: languageElement.value.trim(),
+                username:   usernameElement.value.trim(),
+                firstName:  firstNameElement.value.trim(),
+                lastName:   lastNameElement.value.trim(),
+                language:   languageElement.value.trim(),
+                notes:      noteElement.value.trim()
             }).then(data => {
                 console.warn(data);
                 if (!data.status === "success")
@@ -71,16 +73,19 @@ export default {
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
             const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
             const languageElement   = this.domManip.$id("modal-edit-profile-language");
+            const noteElement       = this.domManip.$id("modal-edit-profile-notes");
             const submitElement     = this.domManip.$id("modal-edit-profile-btn-save");
             // Placeholders
             usernameElement.placeholder = "username"; // TODO: translate
             firstNameElement.placeholder = "first name"; // TODO: translate
             lastNameElement.placeholder = "last name"; // TODO: translate
+            // TODO: add a toolitip text for the notes!!!
             // Values
-            usernameElement.value = this.domManip.$id("router-view").getAttribute("data-user-username");
-            firstNameElement.value = this.domManip.$id("router-view").getAttribute("data-user-first-name");
-            lastNameElement.value = this.domManip.$id("router-view").getAttribute("data-user-last-name");
-            languageElement.value = this.domManip.$id("router-view").getAttribute("data-user-language");
+            usernameElement.value   = this.domManip.$id("router-view").getAttribute("data-user-username");
+            firstNameElement.value  = this.domManip.$id("router-view").getAttribute("data-user-first-name");
+            lastNameElement.value   = this.domManip.$id("router-view").getAttribute("data-user-last-name");
+            languageElement.value   = this.domManip.$id("router-view").getAttribute("data-user-language");
+            noteElement.value       = this.domManip.$id("router-view").getAttribute("data-user-notes");
             // Avatar
             avatarElement.src = window.origin + '/media/avatars/' + this.domManip.$id("router-view").getAttribute("data-user-avatar");
             // Add Event Listeners

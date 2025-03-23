@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS barelyaschema."user" (
     is_active BOOLEAN NOT NULL,
     date_joined TIMESTAMP WITH TIME ZONE NOT NULL,
 	avatar CHAR(40) NOT NULL,
+    notes VARCHAR(600) NOT NULL,
 	language CHAR(5) DEFAULT 'en-US' NOT NULL
 );
 

@@ -30,7 +30,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatar', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
+        fields = ['id', 'username', 'avatar', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats', 'notes']
 
     def get_lastLogin(self, obj):
         # Check if `last_login` is None or `online` is True
@@ -39,7 +39,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
         return obj.last_login
-    
+
     def get_online(self, user):
         # Check if the user's online status is in the cache
         return user.get_online_status()
