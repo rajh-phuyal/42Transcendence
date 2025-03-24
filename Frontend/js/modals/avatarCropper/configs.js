@@ -75,7 +75,7 @@ export default {
         submitAvatar() {
             // check if any image as been selected
             if (!this.cropper || !this.cropper.getImageData().naturalWidth) {
-                $callToast("error", "You need to select an image");
+                $callToast("error", "You need to select an image"); /* TODO: translate */
                 return ;
             }
             // Extract the cropped portion of the selected image
@@ -84,7 +84,7 @@ export default {
                 height: 208
             });
             if (!croppedCanvas) {
-                $callToast("error", "failed to load image");
+                $callToast("error", "failed to load image"); /* TODO: translate */
                 return ;
             }
             // prepare image to send to backend
