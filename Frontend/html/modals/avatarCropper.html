@@ -9,9 +9,9 @@
                     <div class="grid-cell default-grid-area imgc">
                         <img        id="modal-avatar-cropper-image-to-crop" src="" draggable="false">
                     </div>
-                    <button     id="modal-avatar-cropper-btn-crop"                  class="grid-cell default-grid-area btnc modal-button"></button>
+                    <button     id="modal-avatar-cropper-btn-crop"                  class="grid-cell default-grid-area btnc   modal-button"></button>
                     <button     id="modal-avatar-cropper-btn-open-file-explorer"    class="grid-cell default-grid-area btnexp modal-button"></button>
-                    <button     id="modal-avatar-cropper-btn-back"                  class="btn grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal"></button>
+                    <button     id="modal-avatar-cropper-btn-back" type="button"    class="grid-cell default-grid-area btnb   modal-button"  data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal"></button>
                 </div>
             </div>
         </div>
@@ -28,8 +28,9 @@
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      title  title  title  title  title  title  title  title  .      .      .      .      .     "
-            ".      title  title  title  title  title  title  title  title  .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
@@ -47,10 +48,9 @@
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp .      btnc   btnc   btnc   .      .     "
-            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp .      btnc   btnc   btnc   .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp btnexp .      btnc   btnc   btnc   .     "
+            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp btnexp .      btnc   btnc   btnc   .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -77,8 +77,6 @@
     #imodal-avatar-cropper-image-to-cropmg {
         max-width: 100%;
         max-height: 100%;
-        width: auto;
-        height: auto;
         object-fit: contain;
     }
 </style>
