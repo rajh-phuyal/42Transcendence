@@ -181,7 +181,6 @@ export default {
                         playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
                         playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
                     }
-                    console.warn(gameObject.playerRight.id );
                     if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
                         controlsRight.style.display = "block";
                         playerRightBottomPiece.style.borderBottom = "none";

@@ -218,7 +218,8 @@ class AuthCard extends HTMLElement {
                 username: response.username,
 				avatar: response.avatar
             });
-            $store.commit('setLocale', response.language);
+            // console.error("User logged in / registered. Trying to set local to:", response.locale);
+            $store.commit('setLocale', response.locale);
 
             // update the profile route params
             $nav({ "/profile": { id: response.userId } });

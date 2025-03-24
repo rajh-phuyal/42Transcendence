@@ -46,7 +46,7 @@ class RegisterView(APIView):
             response = success_response(_("User registered successfully"), **{
                 "userId": user.id,
                 "username": user.username,
-                "language": user.language,
+                "locale": user.language,
                 "avatar": user.avatar,
             })
 
@@ -107,7 +107,7 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             custom_response = success_response(_("User logged in successfully"), **{
                 "userId": user.id,
                 "username": user.username,
-                "language": user.language,
+                "locale": user.language,
                 "avatar": user.avatar,
             })
 
@@ -161,7 +161,8 @@ class TokenVerifyView(BaseAuthenticatedView):
         return success_response(_("Token is valid"), **{
             'userId': request.user.id,
             'username': request.user.username,
-            'isAuthenticated': True
+            'isAuthenticated': True,
+            'locale': request.user.language,
         })
 
 class InternalTokenRefreshView(TokenRefreshView):

@@ -193,7 +193,7 @@ export default {
             }
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
-                console.warn("profileData ", this.result);
+                // console.error("profileData ", this.result);
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();

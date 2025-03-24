@@ -35,7 +35,8 @@ class Auth {
 
                 this.isAuthenticated = response.isAuthenticated;
                 $store.commit('setIsAuthenticated', this.isAuthenticated);
-                console.log("Auth check successful");
+                $store.commit('setLocale', response.locale);
+                // console.error("Auth check successful");
 
                 if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
                     console.log("Connecting WebSocket");
