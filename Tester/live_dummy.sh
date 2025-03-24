@@ -555,11 +555,11 @@ TABLE_NAME="barelyaschema.tournament"
 insert_dummy "$TABLE_NAME" \
     "INSERT INTO $TABLE_NAME \
         (id, state,     name,                       local_tournament, public_tournament, map_number, powerups,  finish_time) VALUES        \
-        (1, 'finished', 'Players 8,9,10,11',        FALSE,            TRUE,              2,          TRUE,      '2024-07-01 20:30:00+00'), \
-        (2, 'finished', 'Players 4-12',             FALSE,            FALSE,             4,          FALSE,     '2024-08-01 21:00:00+00'), \
-        (3, 'finished', 'Players 4,5,6',            FALSE,            FALSE,             3,          FALSE,     '2024-09-01 21:00:00+00'), \
-        (4, 'setup',    'Let’s play!?',             FALSE,            TRUE,              3,          TRUE,      NULL),                     \
-        (5, 'setup',    'This is private one! ;)',  FALSE,            FALSE ,            1,          TRUE,      NULL);"
+        (1, 'finished', 'Players-8,9,10,11',        FALSE,            TRUE,              2,          TRUE,      '2024-07-01 20:30:00+00'), \
+        (2, 'finished', 'Players-4-12',             FALSE,            FALSE,             4,          FALSE,     '2024-08-01 21:00:00+00'), \
+        (3, 'finished', 'Players-4,5,6',            FALSE,            FALSE,             3,          FALSE,     '2024-09-01 21:00:00+00'), \
+        (4, 'setup',    'Let’s-play!?',             FALSE,            TRUE,              3,          TRUE,      NULL),                     \
+        (5, 'setup',    'This-is-privateone!;)',    FALSE,            FALSE ,            1,          TRUE,      NULL);"
 
 # Create the tournament members
 echo -e "CREATING TOURNAMENT MEMBERS:\tTournament 1: Round Robin between players:9,10,11,12"

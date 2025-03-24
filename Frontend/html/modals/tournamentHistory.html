@@ -5,8 +5,12 @@
                 <img src='../../assets/backgrounds/modal-tournament-history.png' class="image-modal-background-image" alt="Background Image" draggable="false">
                 <div id="modal-tournament-history-grid" class="view-overlay-grid">
                     <h5 id="modal-tournament-history-title" class="modal-title grid-cell default-grid-area title"></h5>
+                    <div id="modal-tournament-history-search-bar-container" class="grid-cell default-grid-area srchb">
+                        <input type="text" id="modal-tournament-history-search-bar" class="barely-an-input">
+                    </div>
                     <div id="modal-tournament-history-tournament-list-container" class="barely-a-scroll-class lcont">
                         <h5 id="modal-tournament-history-no-tournaments"></h5>
+                        <h5 id="modal-tournament-list-list-result-not-found-message" style="padding: 10px 10px 10px 10px; color:black; display: none;"></h5>
                     </div>
                     <button type="button"                                                       class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <button type="button"  id="modal-tournament-history-back-button"            class="grid-cell default-grid-area btn modal-button btnb" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal"></button>
@@ -26,8 +30,8 @@
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
             "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
             "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
-            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
-            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     srchb srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  .     "
+            ".     srchb srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
@@ -44,8 +48,8 @@
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".     .     .      .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .      .     "
-            ".     .     .      .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .      .     "
+            ".     .     .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .     "
+            ".     .     .      .      btnb   btnb   btnb   btnb   btnb   btnb   btnb   btnb   btnb   .      .      .      .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -57,7 +61,9 @@
         border: 3px solid #000000;
         background-color: rgba(0, 0, 0, 0.176);
     }
-
+    .srchb {
+        grid-area: srchb;
+    }
     .title {
         grid-area: title;
     }

@@ -1,14 +1,21 @@
 import call from '../../abstracts/call.js';
 import { loadTimestamp } from '../../abstracts/timestamps.js';
 import router from '../../navigation/router.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
         userId: undefined,
+        username: undefined,
         data: undefined,
+        opponents: [],
     },
 
     methods: {
+        translateElements() {
+            this.domManip.$id("modal-game-history-search-bar").placeholder = translate("gameHistory", "placeholderFilter");
+        },
+
         formatTimestamp(isoTimestamp) {
             return loadTimestamp(isoTimestamp, "YY-MM-DD hh:mm");
         },
@@ -43,6 +50,15 @@ export default {
 
             container.setAttribute("game-id", gameObject.id);
 
+            if (!this.username)
+                this.username = gameObject.playerLeft.id === this.userId ? gameObject.playerLeft.username : gameObject.playerRight.username;
+            const opponent = gameObject.playerRight.id === this.userId ? gameObject.playerLeft.username : gameObject.playerRight.username;
+
+            if (!this.opponents.includes(opponent))
+                this.opponents.push(opponent);
+
+            this.domManip.$addClass(container, `${this.username}-${opponent}`);
+
             this.domManip.$on(container, "click", this.gameCardClickCallBack);
 
             this.setAvatarOnGameCard(container.querySelector(".modal-game-history-card-playerLeft-avatar"), gameObject.playerLeft);
@@ -57,6 +73,25 @@ export default {
             else
                 container.querySelector(".modal-game-history-card-date").textContent = gameObject.state;
             this.domManip.$id("modal-game-history-game-list-container").appendChild(container);
+        },
+        searchBarTypeListener() {
+            const searchBarElement = this.domManip.$id("modal-game-history-search-bar")
+            let inputValue = searchBarElement.value.trim();
+
+            const gameCards = this.domManip.$class("modal-game-history-card");
+            for (let element of gameCards)
+                element.style.display = 'none';
+
+            this.domManip.$id("modal-game-list-list-result-not-found-message").style.display = 'none';
+            const filteredArray =  this.opponents.filter(value => value.startsWith(inputValue));
+            if (!filteredArray.length)
+                this.domManip.$id("modal-game-list-list-result-not-found-message").style.display = 'flex';
+
+            for (let names of filteredArray) {
+                const elementsToFilter = this.domManip.$class(`${this.username}-${names}`)
+                for (let element of elementsToFilter)
+                    element.style.display = 'grid';
+            }
         }
     },
 
@@ -75,6 +110,7 @@ export default {
             }
             call(`game/history/${this.userId}/`, 'GET').then(data => {
                 this.data = data;
+                this.translateElements();
                 if (!data.games.length) {
                     this.domManip.$id("modal-game-history-no-games").style.display = "block";
                     return ;
@@ -83,11 +119,13 @@ export default {
                 for (let element of data.games)
                     this.createGameCard(element);
             })
+            this.domManip.$on(this.domManip.$id("modal-game-history-search-bar"), "input", this.searchBarTypeListener);
             return true;
         },
 
         afterClose () {
             this.cleanUpGameList();
+            this.domManip.$off(this.domManip.$id("modal-game-history-search-bar"), "input", this.searchBarTypeListener);
         }
     }
 }
