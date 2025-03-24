@@ -30,5 +30,21 @@
         "de-DE": "Spielhistorie",
         "uk-UA": "Історія ігор",
         "ne-NP": "खेल इतिहास"
+    },
+    "placeholderFilter": {
+        "en-US": "tournament history",
+        "pt-PT": "histórico de torneios",
+        "pt-BR": "histórico de torneios",
+        "de-DE": "Turnierverlauf",
+        "uk-UA": "Історія турнірів",
+        "ne-NP": "टुर्नामेन्टको इतिहास"
+    },
+    "noResults": {
+        "en-US": "No results found",
+        "pt-PT": "Nenhum resultado encontrado",
+        "pt-BR": "Nenhum resultado encontrado",
+        "de-DE": "Keine Ergebnisse gefunden",
+        "uk-UA": "Результатів не знайдено",
+        "ne-NP": "कुनै नतिजा भेटिएन"
     }
 }
