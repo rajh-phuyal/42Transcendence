@@ -1,6 +1,7 @@
 import { $id, $class, $on } from '../abstracts/dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
 import router from '../navigation/router.js'
+import { translate } from '../locale/locale.js';
 
 /* INTERNAL CHAT TOAST RELATED */
 function routeToConversation(event) {
@@ -50,6 +51,7 @@ function removeToast(event) {
 /* DEFAULT TOAST RELATED */
 export default function $callToast(type, message, conversation = null) {
     let toast = $id(`${type}-toast`);
+    let toastTitle = toast.querySelector(".toast-title");
     let toastMsg = $id(`${type}-toast-message`);
 
     if (conversation) {
@@ -60,13 +62,13 @@ export default function $callToast(type, message, conversation = null) {
         toastMsg = toast.querySelector(".message-toast-message");
         message = `${conversation.username}: ${message}`;
     }
-
     audioPlayer.playSound("toast");
     if (!message)
         return ;
     toastMsg.textContent = message;
-    const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: 10000 }).show();
-
+    toastTitle.textContent = translate("global:toast", "title");
+    // Create a new toast instance
+    new bootstrap.Toast(toast, { autohide: true, delay: 10000 }).show();
     // remove the conversation toast after it closes
     if (conversation != null) {
         toast.addEventListener('hidden.bs.toast', removeToast);

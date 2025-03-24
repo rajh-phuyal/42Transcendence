@@ -29,12 +29,22 @@
     },
     "nav": {
         "placeholderSearchbar": {
-            "en-US": "Search for users",
-            "pt-PT": "Procurar utilizadores",
-            "pt-BR": "Procurar utilizadores",
-            "de-DE": "Benutzer suchen",
-            "uk-UA": "Пошук користувачів",
-            "ne-NP": "प्रयोगकर्ताहरू खोज्नुहोस्"
+            "en-US": "Search for users...",
+            "pt-PT": "Procurar utilizadores...",
+            "pt-BR": "Procurar utilizadores...",
+            "de-DE": "Benutzer suchen...",
+            "uk-UA": "Пошук користувачів...",
+            "ne-NP": "प्रयोगकर्ताहरू खोज्नुहोस्..."
+        }
+    },
+    "toast": {
+        "title": {
+            "en-US": "Message from the Overlords",
+            "pt-PT": "Mensagem dos Senhores",
+            "pt-BR": "Mensagem dos Senhores",
+            "de-DE": "Nachricht von den Overlords",
+            "uk-UA": "Повідомлення від Повелителів",
+            "ne-NP": "अधिपतिहरूको सन्देश"
         }
     }
 }

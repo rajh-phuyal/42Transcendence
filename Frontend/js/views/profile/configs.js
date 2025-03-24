@@ -186,7 +186,6 @@ export default {
         },
 
         afterDomInsertion() {
-            console.warn(this.routeParams.id);
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
                 router('/404');
                 return;

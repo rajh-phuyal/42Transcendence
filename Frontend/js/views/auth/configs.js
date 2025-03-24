@@ -262,6 +262,10 @@ export default {
         flagCallback(event) {
             this.language = event.target.value;
             $store.commit('setLocale', this.language);
+            // Translate all filter inputs // TODO: doesnt work!
+            const filerElements = this.domManip.$class("search-box");
+            for (const element of filerElements)
+                element.setAttribute("placeholder", translate("global:nav", "placeholderSearchbar"));
             this.updateFlags();
             // Translate view
             router("/auth");

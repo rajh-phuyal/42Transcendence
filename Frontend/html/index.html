@@ -31,6 +31,7 @@
 					<div id="home-nav" class="navbar-brand-custom">
 						<img id="home-nav-icon" src="./assets/icons_128x128/icon_barely_a_logo.png" draggable="false">
 					</div>
+                    <!-- TODO: CHAT BADGE IS BROKEN -->
                     <div id="chat-nav" class="navbar-brand-custom">
                         <img id="chat-nav-icon" src="./assets/icons_128x128/icon_chat.png" draggable="false">
                         <span id="chat-nav-badge" class="badge bg-secondary">123</span>
@@ -67,24 +68,13 @@
     </nav>
 
     <main>
-        <!-- Login Toast Container -->
+        <!-- MAIN Toast Container -->
         <div class="toast-container">
-            <!-- this toast currently only for the login, needs to be dynamic -->
-            <div id="logged-in-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <span class="toast-symbol">👁️</span>
-                    <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    <span class="mystic-symbol">Δ</span> Welcome back, Seeker. The gates are open. <!-- TODO: translate -->
-                </div>
-            </div>
         <!-- Error Toast Container -->
             <div id="error-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
-                    <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
+                    <strong class="me-auto toast-title"></strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
@@ -96,7 +86,7 @@
             <div id="success-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
-                    <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
+                    <strong class="me-auto toast-title"></strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
@@ -105,11 +95,11 @@
                 </div>
             </div>
             <!-- message Toast Container -->
-             <template id="message-toast-template">
+            <template id="message-toast-template">
                 <div class="toast custom-toast message-toast">
                     <div class="toast-header">
                         <span class="toast-symbol">👁️</span>
-                        <strong class="me-auto">Message from the Overseers</strong> <!-- TODO: translate -->
+                        <strong class="me-auto toast-title"></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
@@ -118,8 +108,7 @@
                         <span class="message-toast-message" ></span>
                     </div>
                 </div>
-
-             </template>
+            </template>
         </div>
 
         <div id="view-loader">

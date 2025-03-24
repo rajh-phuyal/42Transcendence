@@ -42,7 +42,6 @@ $store.dispatch('loadTranslations', routes.map(route => route.view));
 // Initializes the nav bar
 $nav();
 
-
 // go to path only after the translations are loaded
 $store.addMutationListener('setTranslations', () => {
     // get the current route and its params

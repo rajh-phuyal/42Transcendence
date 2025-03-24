@@ -2,6 +2,8 @@ import $store from '../store/store.js';
 import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
+import { $class } from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
 
 class Auth {
     constructor() {
@@ -33,6 +35,10 @@ class Auth {
                 this.isAuthenticated = response.isAuthenticated;
                 $store.commit('setIsAuthenticated', this.isAuthenticated);
                 $store.commit('setLocale', response.locale);
+                // Translate all filter inputs // TODO: doesnt work!
+                const filerElements = $class("search-box");
+                for (const element of filerElements)
+                    element.setAttribute("placeholder", translate("global:nav", "placeholderSearchbar"));
                 if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
                     console.log("Connecting WebSocket");
                     WebSocketManager.connect();

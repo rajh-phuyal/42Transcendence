@@ -113,7 +113,4 @@ export default function $nav(navigationPathParams = null) {
 
         $on(navbarObject, 'click', navbarObject._clickHandler);
     }
-
-    // Transalate the navbar
-    $id("nav-search-bar").setAttribute("placeholder",   translate("global:nav", "placeholderSearchbar"));
 }
