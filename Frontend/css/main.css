@@ -288,6 +288,10 @@ h5 {
     font-size: min(1vw, 15px);
     background-color: black;
     color: white;
+    resize: none;
+    border: 2px solid white;
+    padding: 7px 10px;
+    text-align: left;
 }
 .barely-an-input:disabled, .barely-an-input[disabled]{
     background-color:rgba(145, 143, 143, 0.9);

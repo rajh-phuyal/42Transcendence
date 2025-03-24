@@ -61,7 +61,7 @@ export default {
             this.username = this.domManip.$id("router-view").getAttribute("data-user-username");
 
             // Set modal title
-            this.domManip.$id("modal-new-conversation-title").innerText = `Create new conversation with ${this.username}`;
+            this.domManip.$id("modal-new-conversation-title").innerText = `${translate("newConversation", "title")} ${this.username}`;
             this.domManip.$id("modal-new-conversation-title").setAttribute("data-user-id", this.userId);
 
             // Add event listener to the create conversation button

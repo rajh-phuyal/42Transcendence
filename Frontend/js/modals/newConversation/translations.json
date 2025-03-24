@@ -1,11 +1,11 @@
 {
     "title": {
-        "en-US": "Create Conversation",
-        "pt-PT": "Criar Conversa",
-        "pt-BR": "Criar Conversa",
-        "de-DE": "Konversation erstellen",
-        "uk-UA": "Створити розмову",
-        "ne-NP": "वार्ता सिर्जना गर्नुहोस्"
+        "en-US": "Create Conversation with",
+        "pt-PT": "Criar Conversa com",
+        "pt-BR": "Criar Conversa com",
+        "de-DE": "Gespräch erstellen mit",
+        "uk-UA": "Створити розмову з",
+        "ne-NP": "सँग कुराकानी सिर्जना गर्नुहोस्"
     },
     "placeholderTextarea": {
         "en-US": "Write your message here. The overloards will make sure that it will be delivered...",
@@ -24,11 +24,11 @@
         "ne-NP": "बन्द गर्नुहोस्"
     },
     "btnCreateConversation": {
-        "en-US": "Create Conversation",
-        "pt-PT": "Criar Conversa",
-        "pt-BR": "Criar Conversa",
-        "de-DE": "Konversation erstellen",
-        "uk-UA": "Створити розмову",
-        "ne-NP": "वार्ता सिर्जना गर्नुहोस्"
+        "en-US": "Create",
+        "pt-PT": "Criar",
+        "pt-BR": "Criar",
+        "de-DE": "Erstellen",
+        "uk-UA": "Створити",
+        "ne-NP": "सिर्जना गर्नुहोस्"
     }
 }

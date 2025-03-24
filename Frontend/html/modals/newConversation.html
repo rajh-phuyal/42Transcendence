@@ -1,4 +1,80 @@
 <div class="modal fade" id="modal-new-conversation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-new-conversation-content" class="modal-content image-modal-content">
+            <div id="modal-new-conversation-body" class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-avatar-cropper-background.png' class="image-modal-background-image" draggable="false">
+                <div id="modal-new-conversation-grid" class="view-overlay-grid">
+                    <h5 id="modal-new-conversation-title"                           class="grid-cell default-grid-area modal-title grid-cell default-grid-area title"></h5>
+                    <button type="button"                                           class="grid-cell default-grid-area btn-close btnc"                                          data-bs-dismiss="modal" aria-label="Close"></button>
+                    <textarea id="modal-new-conversation-textarea"                  class="grid-cell default-grid-area barely-a-scroll-class barely-an-input txta"></textarea>
+                    <button id="modal-new-conversation-btn-close" type="button"     class="grid-cell default-grid-area btns modal-button btncl"                                  data-bs-dismiss="modal"></button>
+                    <button id="modal-new-conversation-create-button" type="button" class="grid-cell default-grid-area btns modal-button btncr"                                  disabled></button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-new-conversation-content {
+        height: 400px !important;
+        width: 400px !important;
+    }
+
+    #modal-new-conversation-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 4%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      title  title  title  title  title  title  title  title  title  title  btnc   .     "
+            ".      .      title  title  title  title  title  title  title  title  title  title  btnc   .     "
+            ".      .      title  title  title  title  title  title  title  title  title  title  btnc   .     "
+            ".      .      title  title  title  title  title  title  title  title  title  title  btnc   .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   txta   .     "
+            ".      btncr  btncr  btncr  btncr  btncr  .      .      btncl  btncl  btncl  btncl  btncl  .     "
+            ".      btncr  btncr  btncr  btncr  btncr  .      .      btncl  btncl  btncl  btncl  btncl  .     "
+            ".      btncr  btncr  btncr  btncr  btncr  .      .      btncl  btncl  btncl  btncl  btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+    .title {
+        grid-area: title;
+    }
+    .btnc {
+        grid-area: btnc;
+    }
+    .txta {
+        grid-area: txta;
+    }
+    .btncr {
+        grid-area: btncr;
+        align-items: center !important;
+        height: 70%;
+    }
+    .btncl {
+        grid-area: btncl;
+        align-items: center !important;
+        height: 70%;
+    }
+
+
+
+
+
+/* <div class="modal fade" id="modal-new-conversation" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,4 +100,4 @@
         border: 1px solid black;
         border-radius: 5px;
     }
-</style>
+</style> */
