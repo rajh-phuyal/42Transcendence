@@ -399,7 +399,7 @@ h5 {
     font-size: min(1vw, 20px);
     vertical-align: middle;
     text-align: center;
-    align-items: justify;
+    align-items: center;
     font-weight: 700;
     color: #FFFCE6;
     background-color: black;
