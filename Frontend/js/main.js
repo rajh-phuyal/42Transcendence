@@ -12,7 +12,6 @@ import { zoomIn } from './views/barely-responsive/methods.js';
 setViewLoading(true);
 
 try {
-    console.error("FIRST FIRST FIRST");
     // import all web components
     for (const component of webComponents) {
         import(`./components/${component}.js`);

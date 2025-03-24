@@ -15,39 +15,31 @@
         "uk-UA": "РЕЄСТРАЦІЯ",
         "ne-NP": "दर्ता गर्नुहोस्"
     },
-	"submitButton": {
-		"en-US": "SUBMIT",
-		"pt-PT": "SUBMETER",
-		"pt-BR": "SUBMETER",
-		"de-DE": "EINREICHEN",
-		"uk-UA": "ПОДАТИ",
-		"ne-NP": "पेश गर्नुहोस्"
-	},
-	"backButton": {
-		"en-US": "BACK",
-		"pt-PT": "VOLTAR",
-		"pt-BR": "VOLTAR",
-		"de-DE": "ZURÜCK",
-		"uk-UA": "НАЗАД",
-		"ne-NP": "फर्किनुहोस्"
-	},
-	"displayPassword": {
-		"en-US": "SHOW",
-		"pt-PT": "MOSTRAR",
-		"pt-BR": "MOSTRAR",
-		"de-DE": "ZEIGEN",
-		"uk-UA": "ПОКАЗАТИ",
-		"ne-NP": "देखाउनुहोस्"
-	},
-	"hidePassword": {
-		"en-US": "HIDE",
-		"pt-PT": "ESCONDER",
-		"pt-BR": "ESCONDER",
-		"de-DE": "VERSTECKEN",
-		"uk-UA": "ПРИХОВАТИ",
-		"ne-NP": "लुकाउनुहोस्"
-	},
-    "usernamePlaceholder": {
+    "submitButton": {
+        "en-US": "SUBMIT",
+        "pt-PT": "SUBMETER",
+        "pt-BR": "SUBMETER",
+        "de-DE": "EINREICHEN",
+        "uk-UA": "ПОДАТИ",
+        "ne-NP": "पेश गर्नुहोस्"
+    },
+    "backButton": {
+        "en-US": "BACK",
+        "pt-PT": "VOLTAR",
+        "pt-BR": "VOLTAR",
+        "de-DE": "ZURÜCK",
+        "uk-UA": "НАЗАД",
+        "ne-NP": "फर्किनुहोस्"
+    },
+    "pswdMissmatch": {
+        "en-US": "Passwords do not match",
+        "pt-PT": "As senhas não coincidem",
+        "pt-BR": "As senhas não coincidem",
+        "de-DE": "Passwörter stimmen nicht überein",
+        "uk-UA": "Паролі не співпадають",
+        "ne-NP": "पासवर्डहरू मेल खान्दैनन्"
+    },
+    "placeholderUsername": {
         "en-US": "username",
         "pt-PT": "nome de utilizador",
         "pt-BR": "nome de utilizador",
@@ -55,7 +47,7 @@
         "uk-UA": "ім'я користувача",
         "ne-NP": "प्रयोगकर्ता नाम"
     },
-    "passwordPlaceholder": {
+    "placeholderPassword": {
         "en-US": "password",
         "pt-PT": "senha",
         "pt-BR": "senha",
@@ -63,12 +55,60 @@
         "uk-UA": "пароль",
         "ne-NP": "पासवर्ड"
     },
-	"passwordConfirmationPlaceholder": {
-		"en-US": "confirm password",
-		"pt-PT": "confirmar senha",
-		"pt-BR": "confirmar senha",
-		"de-DE": "Passwort bestätigen",
-		"uk-UA": "підтвердити пароль",
-		"ne-NP": "पासवर्ड पुष्टि गर्नुहोस्"
-	}
+    "placeholderConfirmPassword": {
+        "en-US": "confirm password",
+        "pt-PT": "confirmar senha",
+        "pt-BR": "confirmar senha",
+        "de-DE": "Passwort bestätigen",
+        "uk-UA": "підтвердити пароль",
+        "ne-NP": "पासवर्ड पुष्टि गर्नुहोस्"
+    },
+    "userNameExists": {
+        "en-US": "Account was found",
+        "pt-PT": "Conta encontrada",
+        "pt-BR": "Conta encontrada",
+        "de-DE": "Konto gefunden",
+        "uk-UA": "Обліковий запис знайдено",
+        "ne-NP": "खाता भेटियो"
+    },
+    "userNameDoesNotExists": {
+        "en-US": "No Account was found with that username",
+        "pt-PT": "Nenhuma conta foi encontrada com esse nome de usuário",
+        "pt-BR": "Nenhuma conta foi encontrada com esse nome de usuário",
+        "de-DE": "Kein Konto mit diesem Benutzernamen gefunden",
+        "uk-UA": "Не знайдено обліковий запис з таким ім'ям користувача",
+        "ne-NP": "त्यो प्रयोगकर्ता नामको साथ कुनै खाता भेटिएन"
+    },
+    "userNameIsAvailable": {
+        "en-US": "Username is available :tada:",
+        "pt-PT": "Nome de utilizador disponível :tada:",
+        "pt-BR": "Nome de usuário disponível :tada:",
+        "de-DE": "Benutzername verfügbar :tada:",
+        "uk-UA": "Ім'я користувача доступне :tada:",
+        "ne-NP": "प्रयोगकर्ता नाम उपलब्ध छ :tada:"
+    },
+    "userNameIsNotAvailable": {
+        "en-US": "The Overlords have spoken! Username is not available",
+        "pt-PT": "Os senhores disseram! Nome de utilizador não disponível",
+        "pt-BR": "Os senhores disseram! Nome de usuário não disponível",
+        "de-DE": "Die Overlords haben gesprochen! Benutzername nicht verfügbar",
+        "uk-UA": "Повелителі сказали! Ім'я користувача недоступне",
+        "ne-NP": "अधिपतिहरूले भनेका छन्! प्रयोगकर्ता नाम उपलब्ध छैन"
+    },
+    "hurryUp": {
+        "en-US": "Hurry up! The overlords are waiting...",
+        "pt-PT": "Apressa-te! Os senhores estão esperando...",
+        "pt-BR": "Apressa-se! Os senhores estão esperando...",
+        "de-DE": "Beeil dich! Die Overlords warten...",
+        "uk-UA": "Поспішай! Повелителі чекають...",
+        "ne-NP": "चाँडो गर्नुहोस्! अधिपतिहरू पर्खिरहेका छन्..."
+    },
+    "pswdPolicy": {
+        "en-US": "password must contain at least 8 characters, including at least one uppercase letter, one lowercase letter, one number and one special character",
+        "pt-PT": "a senha deve conter pelo menos 8 caracteres, incluindo pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial",
+        "pt-BR": "a senha deve conter pelo menos 8 caracteres, incluindo pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial",
+        "de-DE": "Das Passwort muss mindestens 8 Zeichen enthalten, einschließlich mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen",
+        "uk-UA": "пароль повинен містити не менше 8 символів, включаючи хоча б одну велику літеру, одну малу літеру, одну цифру та один спеціальний символ",
+        "ne-NP": "पासवर्डमा कम्तिमा ८ अक्षर हुनु पर्छ, जसमा कम्तिमा एकवटा ठूला अक्षर, एकवटा सानो अक्षर, एकवटा संख्या र एक विशेष वर्ण समावेश हुनुपर्छ"
+    }
 }

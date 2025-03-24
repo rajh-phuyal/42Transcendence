@@ -93,8 +93,10 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             activate(preferred_language)
         else:
             activate('en-US')
-
-        response = super().post(request, *args, **kwargs)
+        try:
+            response = super().post(request, *args, **kwargs)
+        except Exception as e:
+            raise BarelyAnException(_("Username / Password is incorrect"))
 
         if response.status_code == 200:
             user = self.get_user_from_request(request)

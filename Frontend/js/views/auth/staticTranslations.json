@@ -1,3 +1,6 @@
 {
-    "id":                       "key",
+    "auth-btn-login":                       "loginButton",
+    "auth-btn-register":                    "registerButton",
+    "auth-btn-back":                        "backButton",
+    "auth-btn-submit":                      "submitButton"
 }

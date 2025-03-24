@@ -71,8 +71,6 @@ async function router(path, params = null) {
     }
 
     const userAuthenticated = await $auth.isUserAuthenticated();
-    console.log("User authenticated:", userAuthenticated);
-
     if (path === "/barely-responsive") {
         console.log("TODO: check if we need this if!");
     } else if (userAuthenticated && path === '/auth') {

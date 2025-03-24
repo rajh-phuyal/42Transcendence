@@ -4,6 +4,8 @@ import logging
 from django.utils.translation import gettext as _, activate
 from django.db import transaction
 from rest_framework import status, viewsets
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 # Core
@@ -47,6 +49,19 @@ class SearchView(BaseAuthenticatedView):
             return success_response(_("No users found"), users=[])
         serializer = SearchSerializer(users, many=True)
         return success_response(_("The following users were found"), users=serializer.data)
+
+# UsernameView for checking if a username exists for auth page
+class UsernameView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []  # No authentication required for registration
+    @barely_handle_exceptions
+    def get(self, request, search):
+        if not search:
+            error_response(_("key 'search' must be provided!"))
+        user = User.objects.filter(username=search)
+        if user.exists():
+            return success_response(_("Username exists"), exists=True)
+        return success_response(_("Username does not exist"), exists=False)
 
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
