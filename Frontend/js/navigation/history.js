@@ -5,7 +5,8 @@ export default class HistoryManager {
         if (HistoryManager.instance) {
             return HistoryManager.instance;
         }
-        this.lastPage = null;
+        this.lastPath = null;
+        this.lastParams = null;
         HistoryManager.instance = this;
     }
 
@@ -16,8 +17,7 @@ export default class HistoryManager {
     }
 
     updateHistory(path, params) {
-        console.warn("HistoryManager.updateHistory: ", path);
-        console.warn("HistoryManager.updateHistory: ", params);
+        console.warn(path, params);
         // So since we are not using the prams in the bes way, we have the
         // situation that sometimes they are mandatory and sometimes they are not.
         // This is a bad practice and should be fixed.
@@ -35,32 +35,45 @@ export default class HistoryManager {
         //    "/barely-responsive"     -          -
 
         // 1.Get the right path
-        let pathForHistory = path;
+        let pathForHistory = "";
+        let paramForHistory = JSON.stringify(params);
         let title = "";
         if (path === "/" || path === "/home") {
             title = "Home";
             pathForHistory = "/home";
+            paramForHistory = "";
         } else if (path === "/game") {
             title = "Game";
-            pathForHistory = path + "?" + params;
+            pathForHistory = path;
         } else if (path === "/tournament") {
             title = "Tournament";
-            pathForHistory = path + "?" + params;
+            pathForHistory = path;
         } else if (path === "/profile") {
             title = "Profile";
-            pathForHistory = path + "?" + params;
+            pathForHistory = path;
         } else if (path === "/chat") {
             title = "Chat";
             pathForHistory = "/chat";
-        } else
+            paramForHistory = "";
+        } else {
+            console.log("HistoryManager.updateHistory: Path: '%s' should not be pushed to history", path);
             return;
+        }
         // 2. Compare the path with the last page
         // 3. If the paths differ, push the new path to the history
-        console.error("HistoryManager.updateHistory: ", pathForHistory);
-        if (path !== this.lastPage) {
-            this.lastPage = path;
-            window.history.pushState({ path: pathForHistory }, title, pathForHistory);
-        }
+        if (pathForHistory !== this.lastPath || paramForHistory !== this.lastParams) {
+            console.warn("HistoryManager.updateHistory: '%s', '%s'", pathForHistory, paramForHistory);
+            this.lastPath = path;
+            this.lastParams = paramForHistory;
+            window.history.pushState(
+                {   path:   pathForHistory,
+                    params: paramForHistory,
+                },
+                title,
+                pathForHistory
+            );
+        } else
+            console.log("HistoryManager.updateHistory: Paths are the same");
     }
 }
 

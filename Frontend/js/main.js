@@ -49,14 +49,17 @@ window.addEventListener("click", (event) => {
 // });
 
 
-// 1. popstate listener
+// For the Back/Forward buttons in the browser (aka history navigation)
 window.addEventListener('popstate', (event) => {
-    console.log('SUPER EVENT', event);
-    console.log('popstate triggered', event.state);
-    console.log('NAVIGATION:', event.target?.navigation);
+    // The state stored in pushState will be available as `event.state`
+    const state = event.state;
 
-    // If we stored route info in the state:
-    router(event.state?.route, event.state?.params, false);
+    if (state && state.path) {
+        // Call the router with the path from the state
+        const params = state.params ? JSON.parse(state.params) : null;
+        console.warn("fetched apra,s:", state.params);
+        router(state.path, params); // You may want to pass params here if needed
+    }
 });
 
 

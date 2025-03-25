@@ -58,7 +58,7 @@ async function getViewHooks(viewName) {
     });
 }
 
-async function router(path, params = null, instant = false) {
+async function router(path, params = null) {
     if(!path)
         return;
     setViewLoading(true);
@@ -145,7 +145,7 @@ async function router(path, params = null, instant = false) {
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
     // reduce the params to a query string
-    params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
+    const paramsString = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
     const pathWithParams = params ? `${path}?${params}` : path;
 
 
