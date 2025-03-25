@@ -81,7 +81,7 @@ export default class ModalManager {
         // Load the hooks for the modal
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
-        const modalConfig = objectToBind(modalHooks); // TODO: check if this function is not an overkill
+        const modalConfig = objectToBind(modalHooks);
 
         // Prevent duplicate event listeners by removing them first
         $off(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));

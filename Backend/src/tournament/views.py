@@ -1,16 +1,12 @@
 # Basics
-import logging
 from rest_framework import status
 # Django
-from django.db import transaction
 from django.utils.translation import gettext as _
-from django.db import models
 from asgiref.sync import async_to_sync
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
 from core.decorators import barely_handle_exceptions
-from core.exceptions import BarelyAnException
 # User
 from user.models import User
 from user.utils_relationship import is_blocking

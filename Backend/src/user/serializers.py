@@ -3,14 +3,11 @@ from django.db.models import Q
 from user.models import User, IsCoolWith
 from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
-from django.core.cache import cache
-from django.utils import timezone
 from chat.models import Conversation
 from game.models import GameMember
 from tournament.models import TournamentMember, Tournament
 from game.models import GameMember, Game
-from django.db.models import Count, Subquery, Sum, IntegerField
-from django.db.models.functions import Coalesce
+from django.db.models import Count
 from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP, USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE
 
 class SearchSerializer(serializers.ModelSerializer):
@@ -46,7 +43,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         return obj.last_login
 
     def get_online(self, user):
-        # Check if the user's online status is in the cache
         return user.get_online_status()
 
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'

@@ -286,7 +286,7 @@ export function createMessage(element, prepend = true) {
         - load the messages and display them
         - show the chatElements like the input box, etc
 */
-export async function selectConversation(conversationId, selectedFromChat = true){
+export async function selectConversation(conversationId){
     // Set variables
     $id("chat-view-text-field").setAttribute("conversation-id", conversationId);
 
@@ -300,17 +300,6 @@ export async function selectConversation(conversationId, selectedFromChat = true
         return;
     }
 
-    // TODO: history stuff that doesnt work
-    /* const path = window.location.pathname;
-    // We can store the data in state if needed
-    // console.debug("window.location.href != window.location.origin + /chat:", window.href != window.location.origin + "/chat");
-    if (selectedFromChat) {
-        const obj = { path: path, route: path, params: null };
-        console.debug("push object into history state:", obj);
-        history.pushState(obj, '', path);
-    }
-    // if (selectedFromChat)
-    //     history.pushState(null, "", window.location.origin + window.location.pathname); */
     // Load the conversation header and messages
     await loadMessages(conversationId);
 
@@ -344,7 +333,7 @@ export function loadMessages(conversationId) {
 
     // Prevent duplicate requests
     if (messageContainer.getAttribute("loading") === "true") {
-        console.warn("Messages are already loading. Please wait.");
+        console.log("Messages are already loading. Please wait.");
         return Promise.resolve();
     }
 

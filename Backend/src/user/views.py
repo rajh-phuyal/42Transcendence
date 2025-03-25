@@ -1,18 +1,16 @@
 # Basics
-import logging
+# import logging
 # Django
+from django.db.models import Q
 from django.utils.translation import gettext as _, activate
-from django.db import transaction
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
+from asgiref.sync import async_to_sync
 # Core
 from core.decorators import barely_handle_exceptions
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
-from core.exceptions import BarelyAnException
 # Authentication
 from authentication.utils import validate_username
 # User
@@ -25,7 +23,6 @@ from user.utils_img import process_avatar
 from user.utils_relationship import is_blocking, block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
 # Services
 from services.chat_bots import send_message_with_delay
-from asgiref.sync import async_to_sync
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
