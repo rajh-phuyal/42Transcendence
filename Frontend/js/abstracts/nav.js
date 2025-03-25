@@ -53,7 +53,6 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
  * }
  */
 export default function $nav(navigationPathParams = null) {
-    console.log("Navigattion :", navigationPathParams, $store.fromState("user"));
     // nav bar route to Dom elements map
     const navigationBarMap = [
         { id: 'nav-home', path: '/home' },

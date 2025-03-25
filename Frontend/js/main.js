@@ -66,14 +66,14 @@ $store.addMutationListener('setTranslations', () => {
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
-        console.log("Web socket is connected!");
+        // console.log("Web socket is connected!");
         if (setInervalId) {
             $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
-        console.log("Web socket is disconnected!");
+        // console.log("Web socket is disconnected!");
         if (!setInervalId && $store.fromState('isAuthenticated')) {
             $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {

@@ -21,7 +21,7 @@ class WebSocketManager {
     // Connect to WebSocket with the provided token
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("WebSocket already connected.");
+            console.log("WebSocket already connected...");
             return;
         }
 
@@ -37,14 +37,12 @@ class WebSocketManager {
 
         const host = hostname;
         const socketUrl = `wss://${host}/ws/app/main/`;
-
-        console.log("Connecting to WebSocket:", socketUrl);
         try {
             this.socket = new WebSocket(socketUrl);
 
             // Log connection events
             this.socket.onopen = () => {
-                console.log("WebSocket connected.");
+                console.log("WebSocket connected:", socketUrl);
                 $store.commit("setWebSocketIsAlive", true);
             };
 
@@ -64,8 +62,6 @@ class WebSocketManager {
             console.error("WebSocket error:", error);
             $store.commit("setWebSocketIsAlive", false);
         };
-
-        // this.socket.addEventListner("message", this.receiveMessage);
     }
 
     // Allowd types are:
@@ -74,7 +70,7 @@ class WebSocketManager {
     // - typing (for sending typing indicator)
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        console.log("FE -> BE:", message);
+        //console.log("FE -> BE:", message);
     }
 
     // The backend send:
@@ -85,7 +81,7 @@ class WebSocketManager {
 
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
-        console.log("BE -> FE:", message);
+        // console.log("BE -> FE:", message);
 
         const currentRoute = $store.fromState("currentRoute");
 

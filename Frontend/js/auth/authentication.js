@@ -39,11 +39,8 @@ class Auth {
                 const filerElements = $class("search-box");
                 for (const element of filerElements)
                     element.setAttribute("placeholder", translate("global:nav", "placeholderSearchbar"));
-                if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
-                    console.log("Connecting WebSocket");
+                if (this.isAuthenticated && !$store.fromState('webSocketIsAlive'))
                     WebSocketManager.connect();
-                }
-
                 this._lastCheckTimestamp = now;
             } catch (error) {
                 console.log("Auth check failed: User not authenticated");

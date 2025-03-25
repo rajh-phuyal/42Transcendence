@@ -136,6 +136,7 @@ h6 {
 /* LOADING VIEW STUFF  */
 /* -------------------------------------------------------------------------- */
 #view-loader {
+    display: none; /* This is important for the router to work!  */
 	height: 80vh;
     width: 100vw;
     justify-content: center;

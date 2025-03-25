@@ -86,7 +86,6 @@ export default class AudioPlayer {
     }
 
     playSound(name) {
-        console.warn("Playing sound:", name);
         if (!$store.fromState('sound')) return;
         if (!name || name === "none") return;
 

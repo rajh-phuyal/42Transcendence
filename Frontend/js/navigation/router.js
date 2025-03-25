@@ -1,6 +1,6 @@
 import { routes } from './routes.js';
 import { functionalRoutes } from './functionalRoutes.js';
-import { setViewLoading } from '../abstracts/loading.js';
+import { setViewLoading, isViewLoading } from '../abstracts/loading.js';
 import { $id, $queryAll } from '../abstracts/dollars.js';
 // bind store, auth and other singleton to 'this' in the hooks
 import $store from '../store/store.js';
@@ -8,7 +8,6 @@ import $auth from '../auth/authentication.js';
 import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
-// import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
 import { translate, staticTranslator } from '../locale/locale.js';
 import { audioPlayer } from '../abstracts/audio.js';
@@ -22,7 +21,6 @@ const simpleObjectToBind = () => {
         $auth: $auth,
         $syncer: $syncer,
         call: call,
-        // loading: loading,
         webSocketManager: WebSocketManager,
         translate: translate,
         domManip: dollars,
@@ -59,8 +57,20 @@ async function getViewHooks(viewName) {
     });
 }
 
-async function router(path, params = null) {
+async function router(path, params = null, instant = false) {
     setViewLoading(true);
+
+    // TODO: prevent router to be called multiple times -> only if the view is loaded
+    // THE CODE BELOW DOES NOT WORK
+    // ---
+    //if($store.fromState('currentRoute') && $store.fromState('currentRoute') === 'loading') {
+    //    console.log("Router: View is still loading, ignoring navigation to", path);
+    //    return;
+    //}
+    //$store.commit('setCurrentRoute', 'loading');
+    //console.error($store.fromState('currentRoute'));
+    //
+    // I also create this function isViewLoading but it doesnt work for the first load
 
     // check for routes pre authentication check
     const functionalRoute = functionalRoutes.find(route => route.path === path);
@@ -70,6 +80,7 @@ async function router(path, params = null) {
         return;
     }
 
+    // Auth check
     const userAuthenticated = await $auth.isUserAuthenticated();
     if (path === "/barely-responsive") {
         console.log("TODO: check if we need this if!");
@@ -77,9 +88,7 @@ async function router(path, params = null) {
         console.log("Redirecting to home");
         path = '/home';
         params = null;
-    }
-
-    else if (!userAuthenticated && path !== '/auth') {
+    } else if (!userAuthenticated && path !== '/auth') {
         console.log("Redirecting to auth");
         path = '/auth';
         params = null;
@@ -117,7 +126,7 @@ async function router(path, params = null) {
     // Now add all modals to the view (the html part)
     modalContainer.innerHTML = "";
     for (const modal of route.modals || []) {
-        console.log("Router: Loading html of modal:", modal);
+        // console.log("Router: Loading html of modal:", modal);
         modalContainer.innerHTML += await fetch(`./modals/${modal}.html`).then(response => response.text());
     }
     // Setup the js for all modals
@@ -157,6 +166,7 @@ async function router(path, params = null) {
     // translate static elements on the view
     await staticTranslator(route.view);
 
+    console.log("Router: View loaded:", route.view);
     setViewLoading(false);
 }
 

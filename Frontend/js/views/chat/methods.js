@@ -64,15 +64,13 @@ export function updateConversationBadge(conversationId, value) {
 export function createConversationCard(element, highlight = false) {
     const container = $id("chat-view-conversations-container");
     if (!container) {
-        console.error("Conversations container not found.");
+        console.log("Conversations container not found.");
         return;
     }
 
     // Check if card already exists
-    if ($id("chat-view-conversation-card-" + element.conversationId)) {
-        console.warn("Conversation card already exists:", element.conversationId);
+    if ($id("chat-view-conversation-card-" + element.conversationId))
         return;
-    }
 
     // Clone the template
     const conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);

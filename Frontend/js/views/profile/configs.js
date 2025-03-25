@@ -51,7 +51,6 @@ export default {
                     console.warn("profile: setViewAttributes: this.result is not defined");
                     return;
                 }
-                console.log(this.result);
                 // Set the attributes
                 view.setAttribute("data-user-id", this.result.id);
                 view.setAttribute("data-user-username", this.result.username);
