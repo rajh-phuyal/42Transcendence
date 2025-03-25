@@ -175,7 +175,7 @@ class WebSocketManager {
             // PROFILE RELATED MESSAGES
             case "reloadProfile":
                 if (currentRoute === "profile")
-                    processIncomingReloadMsg(message, currentRoute);
+                    processIncomingReloadMsg(message);
                 return ;
         }
 

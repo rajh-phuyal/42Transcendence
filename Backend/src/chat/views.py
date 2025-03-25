@@ -36,7 +36,7 @@ class LoadConversationsView(BaseAuthenticatedView):
         # Serialize the conversations
         serializer = ConversationsSerializer(conversations, many=True, context={'user': user})
         if not serializer.data or len(serializer.data) == 0:
-            return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
+            return success_response(_('No conversations found...'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
 class LoadConversationView(BaseAuthenticatedView):

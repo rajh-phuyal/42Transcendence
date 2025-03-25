@@ -1,4 +1,5 @@
 import call from '../../abstracts/call.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 import router from '../../navigation/router.js';
 
 export default {
@@ -9,7 +10,7 @@ export default {
 
     methods: {
         formatTimestamp(isoTimestamp) {
-            return moment(isoTimestamp).format('YYYY-MM-DD h:mm a').replace('am', 'a.m.').replace('pm', 'p.m.');
+            return loadTimestamp(isoTimestamp, "YY-MM-DD hh:mm");
         },
 
         cleanUpGameList() {

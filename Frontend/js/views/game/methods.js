@@ -8,6 +8,7 @@ import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { audioPlayer } from '../../abstracts/audio.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
 import router from '../../navigation/router.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
@@ -275,7 +276,7 @@ export function updateReadyStatefromWS(readyStateObject) {
             } */
 
 
-        }, 1000, new Date(readyStateObject.startTime));
+        }, 1000, loadTimestamp(readyStateObject.startTime, null));
     }
 }
 

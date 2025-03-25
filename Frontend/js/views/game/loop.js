@@ -7,6 +7,7 @@ import { gameRender } from './render.js';
 function gameLoop(currentTime) {
     if (currentTime - gameObject.lastFrameTime >= gameObject.frameTime) {
         gameObject.lastFrameTime = currentTime;
+        // console.log("Game loop running");
         if (gameObject.state === "ongoing" && gameObject.clientIsPlayer)
             sendPlayerInput();
         drawPlayersState();

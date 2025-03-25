@@ -21,6 +21,7 @@ const routes = [
         path: "/tournament",
         view: "tournament",
         requireAuth: true,
+        modals: ["tournamentLocalJoin"],
         backgroundColor: "black",
     },
     {

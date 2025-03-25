@@ -217,6 +217,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'core.cookies.CookieJWTAuthentication',
     ],
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ"
 }
 
 SIMPLE_JWT = {

@@ -10,7 +10,7 @@ import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 // import loading from '../abstracts/loading.js'; TODO this should be added later
 import dollars from '../abstracts/dollars.js';
-import { translate } from '../locale/locale.js';
+import { translate, staticTranslator } from '../locale/locale.js';
 import { audioPlayer } from '../abstracts/audio.js';
 import { modalManager } from '../abstracts/ModalManager.js';
 import { EventListenerManager } from '../abstracts/EventListenerManager.js';
@@ -173,6 +173,10 @@ async function router(path, params = null, updateHistory = true) {
     await viewHooks?.hooks?.afterDomInsertion?.bind(viewConfigWithoutHooks)();
     // set the view name to the container
     viewContainer.dataset.view = route.view;
+
+    // translate static elements on the view
+    staticTranslator(route.view);
+
     setViewLoading(false);
 }
 

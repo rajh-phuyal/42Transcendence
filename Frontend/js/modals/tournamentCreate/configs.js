@@ -41,7 +41,7 @@ export default {
             const typeRemote = this.domManip.$id("modal-tournament-create-type-remote");
             const enabled = "modal-toggle-button-enabled";
             const disabled = "modal-toggle-button-disabled";
-            if(this.type === "local") {
+            if(this.local) {
                 this.domManip.$removeClass(typeLocal, disabled);
                 this.domManip.$addClass(typeLocal, enabled);
                 this.domManip.$removeClass(typeRemote, enabled);
@@ -104,7 +104,8 @@ export default {
             this.updatePrivacy();
         },
         callbackSelectType(event) {
-            this.type = event.srcElement.attributes.datatype.value;
+            const value = event.srcElement.attributes.datalocal.value;
+            this.local = value === "true";
             this.updateType();
         },
         callbackSelectMap(event) {
@@ -144,8 +145,8 @@ export default {
             const tournamentName = this.domManip.$id("modal-tournament-tournament-title").value.trim();
             call('tournament/create/', "POST", {
                 "name":             tournamentName,
-                "publicTournament": this.public,
-                "localTournament":  this.local,
+                "public":           this.public,
+                "local":            this.local,
                 "mapNumber":        this.map,
                 "powerups":         this.powerups,
                 "opponentIds":      this.opponentIds.map(opponent => opponent.id),

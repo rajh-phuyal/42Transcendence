@@ -2,11 +2,18 @@ import call from '../../abstracts/call.js'
 import $callToast from '../../abstracts/callToast.js';
 import router from '../../navigation/router.js';
 import { tournamentData as data } from "./objects.js";
+import { modalManager } from '../../abstracts/ModalManager.js';
+import { $id } from '../../abstracts/dollars.js';
 
 export function joinTournament() {
-    call(`tournament/join/${data.tournamentInfo.id}/`, 'PUT').then(data => {
-        $callToast("success", data.message);
-    })
+    console.warn(data.tournamentInfo.local);
+    // Let the modal decide if we need an approval
+    const view = $id("router-view");
+    view.setAttribute("data-tournament-id",             data.tournamentInfo.id);
+    view.setAttribute("data-tournament-state",          data.tournamentInfo.state);
+    view.setAttribute("data-tournament-local",          data.tournamentInfo.local);
+    view.setAttribute("data-tournament-client-role",    data.clientRole);
+    modalManager.openModal("modal-tournament-local-join");
 }
 
 export function leaveTournament() {

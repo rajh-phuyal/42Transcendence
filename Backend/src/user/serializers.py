@@ -10,7 +10,7 @@ from game.models import GameMember, Game
 from django.db.models import Count, Subquery, Sum, IntegerField
 from django.db.models.functions import Coalesce
 from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP
-import logging
+import datetime
 
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,15 +30,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatar', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
+        fields = ['id', 'username', 'avatar', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats', 'notes']
 
     def get_lastLogin(self, obj):
         # Check if `last_login` is None or `online` is True
-        if obj.last_login is None or self.get_online(obj):
+        if obj.last_login is None:
             return "under surveillance"
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
-        return obj.last_login.strftime("%Y-%m-%d %H:%M") #TODO: Issue #193
+        return obj.last_login
 
     def get_online(self, user):
         # Check if the user's online status is in the cache

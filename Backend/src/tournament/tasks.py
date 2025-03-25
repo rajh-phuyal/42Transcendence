@@ -32,7 +32,7 @@ def check_overdue_tournament_games():
         deadline__isnull=False
     )
     found_one = False
-    current_time = timezone.now() #TODO: Issue #193
+    current_time = timezone.now()
     for game in pending_games:
         if timezone.is_naive(game.deadline):
             game_deadline_aware = timezone.make_aware(game.deadline)
