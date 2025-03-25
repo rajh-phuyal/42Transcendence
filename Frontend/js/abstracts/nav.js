@@ -5,16 +5,18 @@ import { audioPlayer } from '../abstracts/audio.js';
 import { translate } from '../locale/locale.js';
 
 function updateUserInfo() {
-    $id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
+    $id('nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
     // Music Sound icons
-    // Update icons based on initial settings
-    $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
-        ? '/assets/icons_128x128/icon_music-on.png'
-        : '/assets/icons_128x128/icon_music-off.png');
-
-    $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
-        ? '/assets/icons_128x128/icon_sound-on.png'
-        : '/assets/icons_128x128/icon_sound-off.png');
+    // Add a mutation listener for music and sound
+    $store.addMutationListener('setMusic', (music) => {
+        audioPlayer.toggleMusic();
+    });
+    $store.addMutationListener('setSound', (sound) => {
+        audioPlayer.toggleSound();
+    });
+    // Set the music and sound icons
+    audioPlayer.toggleMusic();
+    audioPlayer.toggleSound();
 }
 
 const styleUpdateMap = {
@@ -54,28 +56,19 @@ export default function $nav(navigationPathParams = null) {
     console.log("Navigattion :", navigationPathParams, $store.fromState("user"));
     // nav bar route to Dom elements map
     const navigationBarMap = [
-        { id: 'home-nav', path: '/home' },
-        { id: 'game-nav', path: '/game' },
-        { id: 'tournament-nav', path: '/tournament' },
-        { id: 'chat-nav', path: '/chat' },
-        { id: 'logout-nav', path: '/logout' },
-        { id: 'profile-nav-avatar', path: '/profile' },
-        { id: 'login-nav', path: '/auth' },
-        { id: 'register-nav', path: '/auth' },
-        { id: 'nav-music-icon',
+        { id: 'nav-home', path: '/home' },
+        { id: 'nav-chat', path: '/chat' },
+        { id: 'nav-avatar', path: '/profile' },
+        { id: 'nav-music',
             callback: () => {
-                audioPlayer.toggleMusic();
-                $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
-                    ? '/assets/icons_128x128/icon_music-on.png'
-                    : '/assets/icons_128x128/icon_music-off.png');
+                let music = $store.fromState('music');
+                $store.commit('setMusic', !music);
             }
 		},
-        { id: 'nav-sound-icon',
+        { id: 'nav-sound',
             callback: () => {
-                audioPlayer.toggleSound();
-                $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
-                    ? '/assets/icons_128x128/icon_sound-on.png'
-                    : '/assets/icons_128x128/icon_sound-off.png');
+                let sound = $store.fromState('sound');
+                $store.commit('setSound', !sound);
             }
         }
     ];

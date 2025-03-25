@@ -21,7 +21,6 @@ function populateUserInfo(res) {
     if (res.firstName)
         fullName = res.firstName + ", ";
     fullName += res.lastName;
-    console.error(fullName);
     if(fullName == "")
         fullName = "&nbsp;";
     birthName.innerHTML = `<b>${translate("profile", "birthName")}</b>${fullName}`;

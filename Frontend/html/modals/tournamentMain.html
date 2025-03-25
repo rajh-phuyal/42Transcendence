@@ -5,7 +5,6 @@
                 <img src='../../assets/backgrounds/modal-tournament-main.png' class="image-modal-background-image" alt="Background Image" draggable="false">
                 <div id="modal-tournament-main-grid" class="view-overlay-grid">
                     <h4     id="modal-tournament-main-title"                        class="modal-title grid-cell default-grid-area title" ></h4>
-                    <button type="button"                                           class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <button id="modal-tournament-main-btn-lobby" type="button"      class="grid-cell default-grid-area btn1 modal-button"></button>
                     <button id="modal-tournament-main-btn-create" type="button"     class="grid-cell default-grid-area btn1 modal-button" data-bs-target="#modal-tournament-create"  data-bs-toggle="modal" data-bs-dismiss="modal"></button>
                     <button id="modal-tournament-main-btn-join" type="button"       class="grid-cell default-grid-area btnj modal-button" data-bs-target="#modal-tournament-join"    data-bs-toggle="modal" data-bs-dismiss="modal"></button>
@@ -28,8 +27,8 @@
         grid-template-columns: repeat(auto-fill, 3.5%) !important;
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      title  title  title  title  title title  title  title  title  title  title  title  title "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .     "
@@ -57,9 +56,6 @@
 
     .title {
         grid-area: title;
-    }
-    .btncl {
-        grid-area: btncl;
     }
     .btn1 {
         grid-area: btn1;

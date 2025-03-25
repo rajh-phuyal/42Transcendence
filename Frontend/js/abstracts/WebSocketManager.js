@@ -100,10 +100,10 @@ class WebSocketManager {
 
             // CHAT RELATED MESSAGES
             case "chat":
-                audioPlayer.playSound("chat");
-                if (currentRoute == "chat")
+                if (currentRoute == "chat") {
+                    audioPlayer.playSound("chat");
                     processIncomingWsChatMessage(message);
-                else {
+                } else {
                     console.log("message:", message);
                     $callToast("message", message.content, {id: message.conversationId, username: message.username, avatar: message.avatar});
                 }
@@ -189,7 +189,6 @@ class WebSocketManager {
         $callToast("sucess", message.message);
     }
 
-    // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
             this.socket.close();
@@ -204,8 +203,7 @@ class WebSocketManager {
     updateNavBarBadge(value) {
 		if (value > 99)
 			value = "99+";
-        // console.warn($id("chat-nav-badge"));
-        $id("chat-nav-badge").innerHTML = value || "";
+        $id("nav-chat-badge").innerHTML = value || "";
     }
 
     reconnect() {

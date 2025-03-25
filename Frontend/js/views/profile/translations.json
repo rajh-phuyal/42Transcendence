@@ -118,5 +118,13 @@
         "de-DE": "Senden Sie eine Nachricht, um ein neues Gespräch mit zu beginnen ",
         "uk-UA": "Надішліть повідомлення, щоб розпочати нову розмову з ",
         "ne-NP": "सन्देश पठाउनुहोस् नयाँ कुराकानी सुरु गर्नको लागि "
+    },
+    "notes": {
+        "en-US": "Notes:",
+        "pt-PT": "Notas:",
+        "pt-BR": "Notas:",
+        "de-DE": "Anmerkungen:",
+        "uk-UA": "Примітки:",
+        "ne-NP": "टिप्पणीहरू:"
     }
 }

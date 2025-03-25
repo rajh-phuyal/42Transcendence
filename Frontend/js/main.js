@@ -21,14 +21,20 @@ try {
 }
 
 window.addEventListener("click", (event) => {
-    // TODO: maybe add the class 'sound-button' to the elements that should play a sound
-    // MAYBE we can somehow define a a list of classes which should make sounds....
-    // oris there a better way to do this?
-    let target = event.target.closest(".sound-button");
-    if(!target)
-        target = event.target.closest(".modal-button");
+    // Handle sound button clicks
+    let soundClasses = [
+        ".click-sound",
+        ".modal-button",
+        ".mention-user",
+        ".mention-game",
+        ".mention-tournament"];
+    let target = null;
+    for (let i = 0; i < soundClasses.length; i++) {
+        target = event.target.closest(soundClasses[i]);
+        if (target) break;
+    }
     if (target) {
-        audioPlayer.playSound("toggle"); // Replace with actual sound name
+        audioPlayer.playSound("click");
     }
 });
 

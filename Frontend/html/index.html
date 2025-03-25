@@ -23,45 +23,31 @@
             Please enable it to continue.</strong>
     </noscript>
 
-    <!-- this navigation is temporary -->
     <nav id="navigator" class="navbar">
         <div class="d-flex flex-row justify-content-between vw-100 h-100 flex-nowrap" id='main-nav-container'>
             <div class="d-flex flex-row flex-row justify-content-between align-items-center w-100">
-				<div id='nav-left-side' class='d-flex flex-row justify-content-between align-items-center'>
-					<div id="home-nav" class="navbar-brand-custom">
-						<img id="home-nav-icon" src="./assets/icons_128x128/icon_barely_a_logo.png" draggable="false">
-					</div>
-                    <!-- TODO: CHAT BADGE IS BROKEN -->
-                    <div id="chat-nav" class="navbar-brand-custom">
-                        <img id="chat-nav-icon" src="./assets/icons_128x128/icon_chat.png" draggable="false">
-                        <span id="chat-nav-badge" class="badge bg-secondary">123</span>
-
-                        <!-- <p id="chat-nav-title" height="40" ></p> -->
-                    </div>
-
-                    <!-- THIS IS GOOD ONE -->
-                    <!-- <p id="chat-nav" class="navbar-brand-custom">Chat <span id="chat-nav-badge" class="badge bg-secondary"></span></p> -->
-
-					<!-- <p id="home-nav" class="navbar-brand-custom">Home</p> -->
-					<!-- <p id="" class="navbar-brand-custom">Chat <span id="chat-nav-badge" class="badge bg-secondary"></span></p> -->
-				</div>
-				<div id="nav-mid-side">
-					<h2 id='site-title'>Barely Alive</h2>
-				</div>
-				<div id="nav-right-side" class='d-flex flex-row justify-content-between align-items-center'>
-                    <div id="nav-search-bar">
+                <div id='nav-left-side' class='d-flex flex-row justify-content-between align-items-center'>
+                    <img id="nav-home" src="./assets/icons_128x128/icon_barely_a_logo.png" class="modal-button barely-a-nav-element" draggable="false">
+                    <div id="nav-search">
                         <search-bar
-                            width="250"
-                            search-type="users"
-                            on-click-event="select-user-nav"
-                            clear-on-click="true"
-                            only-search-friends="false"
-                            style="margin-right: 1em; margin-left: -17em;"
+                        width="250"
+                        search-type="users"
+                        on-click-event="select-user-nav"
+                        clear-on-click="true"
+                        only-search-friends="false"
+                        style="margin-right: 1em; margin-left: -17em;"
                         ></search-bar>
                     </div>
-                    <img id="nav-music-icon" src="" class="navbar-brand-custom" draggable="false">
-                    <img id="nav-sound-icon" src="" class="navbar-brand-custom" draggable="false">
-					<img src='' alt='profile avatar' id="profile-nav-avatar" class="navbar-brand-custom" draggable="false">
+				</div>
+                <h2 id='nav-title'>Barely Alive</h2>
+				<div id="nav-right-side" class='d-flex flex-row justify-content-between align-items-center'>
+                    <img id="nav-music" src="" class="modal-button barely-a-nav-element" draggable="false">
+                    <img id="nav-sound" src="" class="modal-button barely-a-nav-element" draggable="false">
+                    <div id="nav-chat">
+                        <img  id="nav-chat-icon" src="./assets/icons_128x128/icon_chat.png" class="modal-button barely-a-nav-element" draggable="false">
+                        <span id="nav-chat-badge" class="badge bg-secondary"></span>
+                    </div>
+					<img id="nav-avatar" alt='profile avatar'  class="modal-button barely-a-nav-element" draggable="false">
 				</div>
             </div>
         </div>
@@ -69,9 +55,9 @@
 
     <main>
         <!-- MAIN Toast Container -->
-        <div class="toast-container">
+        <div class="toast-container-left">
         <!-- Error Toast Container -->
-            <div id="error-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="error-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
                     <strong class="me-auto toast-title"></strong>
@@ -83,7 +69,7 @@
                 </div>
             </div>
         <!-- success Toast Container -->
-            <div id="success-toast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="success-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <span class="toast-symbol">👁️</span>
                     <strong class="me-auto toast-title"></strong>
@@ -94,16 +80,17 @@
                     <span id="success-toast-message" >Δ</span>
                 </div>
             </div>
+        </div>
+        <div class="toast-container-right">
             <!-- message Toast Container -->
             <template id="message-toast-template">
-                <div class="toast custom-toast message-toast">
+                <div class="toast message-toast">
                     <div class="toast-header">
                         <span class="toast-symbol">👁️</span>
                         <strong class="me-auto toast-title"></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body">
-                        <span class="mystic-symbol" >Δ</span>
                         <img class="message-toast-avatar" alt="image not found" style="height: 4vh;">
                         <span class="message-toast-message" ></span>
                     </div>

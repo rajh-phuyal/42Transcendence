@@ -46,6 +46,12 @@ h5 {
     font-size: min(1.5vw, 20px);
     margin: 0 0 0 0;
 }
+h6 {
+    font-family: 'Courier';
+	text-align: center;
+    font-size: min(1.2vw, 15px);
+    margin: 0 0 0 0;
+}
 
 /* NAV BAR STUFF */
 /* -------------------------------------------------------------------------- */
@@ -76,65 +82,56 @@ h5 {
 }
 
 /* BASIC NAV BAR ICON */
-.navbar-brand-custom {
+.barely-a-nav-element {
 	margin: 0 !important;
 	padding: 0 !important;
 	padding: 5px !important;
-	border: 1px solid white;
 	border-radius: 8px;
-	background-color: #3c2803;
+	background-color: #3c2803 !important;
 	color: white;
 }
-/* HOME ICON */
-#home-nav {
-    position: relative;
-	height: 100%;
-    width: 100%;
+.barely-a-nav-element:hover {
+    border: 2px solid #660202 !important;
 }
-#home-nav-icon {
+#nav-home {
     height: 100%;
-}
-/* CHAT ICON */
-#chat-nav {
-    height: 80%;
-    width: 100%;
-}
-#chat-nav-icon {
-    height: 100%;
-}
-#chat-nav-badge {
-	position: relative;
-	top: -100%;
-	right: +100%;
-	background-color: red !important;
-	width: auto;
-	height: auto;
-	text-align: center;
-	border-radius: 0.3rem;
-	padding-top: 1px !important;
-	padding: 0.2rem !important;
 }
 /* TITLE */
-#site-title {
+#nav-title {
     color: white;
 }
-/* SEARCH BAR */
 /* SOUND & MUSIC */
-#nav-music-icon, #nav-sound-icon {
+#nav-music, #nav-sound {
     height: 80%;
     padding: 0.2rem !important;
 }
+/* CHAT ICON */
+#nav-chat {
+    display: inline-block;
+    position: relative;
+    height: 80%;
+    width: 100%;
+}
+#nav-chat-icon {
+    height: 100%;
+    width: 100%;
+}
+#nav-chat-badge {
+	position: absolute;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    font-size: 12px;
+    padding: 2px 5px;
+	background-color: rgb(255, 0, 0) !important;
+	width: auto;
+	height: auto;
+}
 /* PROFILE */
-#profile-nav-avatar {
+#nav-avatar {
 	height: 100%;
 }
-/* #chat-nav {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    height: 40px !important;
-}*/
-
 
 /* LOADING VIEW STUFF  */
 /* -------------------------------------------------------------------------- */
@@ -222,17 +219,35 @@ h5 {
 
 /* Toast notifications */
 /* -------------------------------------------------------------------------- */
-.toast-container {
+/* Container for all toasts */
+.toast-container-left {
 	position: fixed;
-	top: 20px;
-	right: 20px;
-	z-index: 1050;
+	top: 11vh;
+	left: 20px;
+	z-index: 5050;
 }
+.toast-container-right {
+	position: fixed;
+	top: 11vh;
+	right: 20px;
+	z-index: 5050;
+}
+
 .toast {
 	background-color: #111;
 	border: 2px solid #f5c518;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 	font-family: 'Courier New', Courier, monospace;
+}
+.message-toast {
+    background-color: #dac9a1;
+    border: 2px solid #000000 !important;
+}
+.toast-success {
+    border: 2px solid white !important;
+}
+.toast-error {
+    border: 2px solid #660202 !important;
 }
 .toast-header {
 	background-color: #000;
@@ -242,11 +257,6 @@ h5 {
 .toast-body {
 	font-size: 14px;
 	color: #fff;
-}
-.custom-toast {
-	border: 2px solid #f5c518;
-	color: #f5c518;
-	background-color: #1a1a1a;
 }
 .toast-symbol {
 	font-size: 18px;
@@ -396,7 +406,7 @@ h5 {
 /* THIS IS OUR MAIN BUTTON NOTE: even if it says "modal" its used outside of modals as well! */
 .modal-button {
     font-family: 'Courier';
-    font-size: min(1vw, 20px);
+    font-size: min(0.8vw, 15px);
     vertical-align: middle;
     text-align: center;
     align-items: center;

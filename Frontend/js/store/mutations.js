@@ -53,5 +53,19 @@ export const mutations = {
         onUpdate: (state, value) => {
             state.currentRoute = value;
         }
+    },
+    setMusic: {
+        stateName: 'music',
+        onUpdate: (state, value) => {
+            state.music = value;
+        },
+        presistence: true,
+    },
+    setSound: {
+        stateName: 'sound',
+        onUpdate: (state, value) => {
+            state.sound = value;
+        },
+        presistence: true,
     }
 };

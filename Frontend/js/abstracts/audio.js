@@ -1,3 +1,7 @@
+import { translate } from '../locale/locale.js';
+import $store from '../store/store.js';
+import { $id } from './dollars.js';
+
 export default class AudioPlayer {
     static instance = null;
 
@@ -8,8 +12,6 @@ export default class AudioPlayer {
 
         this.maxVolumeMusic = 0.3;
         this.maxVolumeSounds = 0.5;
-        this.soundsEnabled = true;
-        this.musicEnabled = true;
         this.currentSong = null;
         this.playing = false;
         this.songs = [
@@ -33,24 +35,35 @@ export default class AudioPlayer {
             { name: "score", audio: new Audio("../assets/audio/score.mp3") },
             { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") },
             { name: "chat", audio: new Audio("../assets/audio/chat.mp3") },
+            { name: "chatToast", audio: new Audio("../assets/audio/chat_toast.mp3") },
             { name: "toast", audio: new Audio("../assets/audio/toast.mp3") },
-            { name: "no", audio: new Audio("../assets/audio/no.mp3") }
+            { name: "no", audio: new Audio("../assets/audio/no.mp3") },
+            { name: "click", audio: new Audio("../assets/audio/click.mp3") }
         ];
 
         AudioPlayer.instance = this;
     }
 
     static getInstance() {
-        if (!AudioPlayer.instance) {
+        if (!AudioPlayer.instance)
             AudioPlayer.instance = new AudioPlayer();
-        }
         return AudioPlayer.instance;
     }
 
     toggleMusic() {
+        let newValue = $store.fromState('music');
+        // Update the icon
+        const iconElement = $id("nav-music");
+        if (newValue) {
+            iconElement.src     = window.origin + '/assets/icons_128x128/icon_music-on.png';
+            iconElement.title   = translate("global:nav", "musicOn");
+        } else {
+            iconElement.src     = window.origin + '/assets/icons_128x128/icon_music-off.png';
+            iconElement.title   = translate("global:nav", "musicOff");
+        }
+        // Play or stop the music
         this.playSound("toggle");
-        this.musicEnabled = !this.musicEnabled;
-        if (!this.musicEnabled) {
+        if (!$store.fromState('music')) {
             this.stop();
         } else {
             if (this.currentSong)
@@ -59,23 +72,23 @@ export default class AudioPlayer {
     }
 
     toggleSound() {
-        this.soundsEnabled = !this.soundsEnabled;
+        let newValue = $store.fromState('sound');
+        // Update the icon
+        const iconElement = $id("nav-sound");
+        if (newValue) {
+            iconElement.src     = window.origin + '/assets/icons_128x128/icon_sound-on.png';
+            iconElement.title   = translate("global:nav", "soundOn");
+        } else {
+            iconElement.src     = window.origin + '/assets/icons_128x128/icon_sound-off.png';
+            iconElement.title   = translate("global:nav", "soundOff");
+        }
         this.playSound("toggle");
     }
 
-    setAudioPreferences({ music = this.musicEnabled, sounds = this.soundsEnabled }) {
-        this.musicEnabled = music;
-        this.soundsEnabled = sounds;
-
-        if (!this.musicEnabled && this.currentSong) {
-            this.stop();
-        }
-    }
-
     playSound(name) {
-        if (!this.soundsEnabled) return;
-        if (!name) return;
-        if (name === "none") return;
+        console.warn("Playing sound:", name);
+        if (!$store.fromState('sound')) return;
+        if (!name || name === "none") return;
 
         const sound = this.sounds.find(sound => sound.name === name);
         if (sound) {
@@ -84,12 +97,11 @@ export default class AudioPlayer {
             sound.audio.loop = false;
             sound.audio.play();
         } else {
-            console.error("Sound not found:", name);
+            console.log("Sound not found:", name);
         }
     }
 
     play(mapId) {
-        if (!this.musicEnabled) return;
         const newSong = this.songs.find(song => song.mapId === mapId);
         if (!newSong) {
             console.error("Song not found:", mapId);
@@ -98,10 +110,14 @@ export default class AudioPlayer {
 
         // Make sure the song is looped
         newSong.audio.loop = true;
+        // So that if the client turns it on later, the right song is played
+        if (!$store.fromState('music')) {
+            this.currentSong = newSong;
+            return;
+        }
 
         if (this.playing && this.currentSong === newSong)
             return;
-
         if (this.playing)
             this.crossfade(this.currentSong, newSong);
         else {
@@ -111,14 +127,12 @@ export default class AudioPlayer {
     }
 
     crossfade(oldSong, newSong) {
-        if (!this.musicEnabled) return;
-
+        if (!$store.fromState('music')) return;
         this.startFadeOut(oldSong, 1000, () => {
             oldSong.audio.pause();
             oldSong.audio.currentTime = 0;
             oldSong.audio.volume = this.maxVolumeMusic;
         });
-
         this.startFadeIn(newSong, 1000);
     }
 

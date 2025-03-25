@@ -36,14 +36,14 @@ export function initClient(createUser=false, username, password, language) {
         // console.error("User logged in / registered. Trying to set local to:", response.locale);
         $store.commit('setLocale', response.locale);
         // Translate all filter inputs // TODO: doesnt work!
-        const filerElements = $class("search-box");
-        console.error("filerElements", filerElements);
-        for (const element of filerElements)
-            element.setAttribute("placeholder", translate("global:nav", "placeholderSearchbar"));
+        //const filerElements = $class("search-box");
+        //console.error("filerElements", filerElements);
+        //for (const element of filerElements)
+        //    element.setAttribute("placeholder", translate("global:nav", "placeholderSearchbar"));
 
         // update the profile route params
         $nav({ "/profile": { id: response.userId } });
-        $id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
+        $id('nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
         showNav();
 
         // broadcast login to other tabs
