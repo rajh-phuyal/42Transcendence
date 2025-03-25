@@ -58,6 +58,8 @@ async function getViewHooks(viewName) {
 }
 
 async function router(path, params = null, instant = false) {
+    if(!path)
+        return;
     setViewLoading(true);
 
     // TODO: prevent router to be called multiple times -> only if the view is loaded
@@ -85,11 +87,10 @@ async function router(path, params = null, instant = false) {
     if (path === "/barely-responsive") {
         console.log("TODO: check if we need this if!");
     } else if (userAuthenticated && path === '/auth') {
-        console.log("Redirecting to home");
+        // console.log("Redirecting to home");
         path = '/home';
         params = null;
     } else if (!userAuthenticated && path !== '/auth') {
-        console.log("Redirecting to auth");
         path = '/auth';
         params = null;
     }
@@ -143,10 +144,24 @@ async function router(path, params = null, instant = false) {
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
     // reduce the params to a query string
+
+
+    // We can store the data in state if needed
+    const tmp = JSON.parse(JSON.stringify(params));
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
     const pathWithParams = params ? `${path}?${params}` : path;
-    history.pushState({}, 'newUrl', pathWithParams);
-    // Dom manipulation: before DOM insertion
+
+    let isSame = window.location.origin + pathWithParams === window.location.href;
+
+    // console.debug("full:", window.location.origin + pathWithParams, `href:${window.location.href}`);
+    // console.debug("isSame:", isSame);
+
+    if ((updateHistory && !isSame) || !history.state) {
+        const obj = { path: pathWithParams, route: path, params: tmp };
+        history.pushState(obj, '', pathWithParams);
+    }
+
+    // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
     viewContainer.innerHTML = htmlContent;
 

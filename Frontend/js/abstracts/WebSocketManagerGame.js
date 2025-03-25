@@ -24,15 +24,12 @@ class WebSocketManagerGame {
         }
         this.gameId = gameId;
 
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("GAME WebSocket already connected.");
-            // TODO: check if connected to correct game
+        if (this.socket && this.socket.readyState === WebSocket.OPEN)
             return;
-        }
+        // TODO: check if connected to correct game
 
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
-            console.log("Not connecting GAME WebSocket - user not authenticated");
             $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
                 if (!isAuthenticated) return;
                 this.connect();
@@ -43,13 +40,12 @@ class WebSocketManagerGame {
         const host = hostname;
         const socketUrl = `wss://${host}/ws/app/game/${gameId}/`;
 
-        console.log("Connecting to GAME WebSocket:", socketUrl);
         try {
             this.socket = new WebSocket(socketUrl);
 
             // Log connection events
             this.socket.onopen = () => {
-                console.log("GAME WebSocket connected: ", gameId);
+                // console.log("GAME WebSocket connected: ", gameId);
             };
 
             this.socket.onmessage = (event) => {
@@ -95,9 +91,9 @@ class WebSocketManagerGame {
         if (this.socket) {
             this.socket.close();
             this.socket = null;
-            console.log("GAME WebSocket connection closed.");
+            // console.log("GAME WebSocket connection closed.");
         } else {
-            console.log("GAME WebSocket is not connected.");
+            // console.log("GAME WebSocket is not connected.");
         }
     }
 

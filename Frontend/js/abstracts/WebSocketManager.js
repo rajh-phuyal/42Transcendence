@@ -21,13 +21,11 @@ class WebSocketManager {
     // Connect to WebSocket with the provided token
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("WebSocket already connected...");
             return;
         }
 
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
-            console.log("Not connecting WebSocket - user not authenticated");
             $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
                 if (!isAuthenticated) return;
                 this.connect();
@@ -70,7 +68,6 @@ class WebSocketManager {
     // - typing (for sending typing indicator)
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        //console.log("FE -> BE:", message);
     }
 
     // The backend send:
@@ -82,7 +79,6 @@ class WebSocketManager {
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
         // console.log("BE -> FE:", message);
-
         const currentRoute = $store.fromState("currentRoute");
 
         switch (message.messageType) {
@@ -189,9 +185,6 @@ class WebSocketManager {
         if (this.socket) {
             this.socket.close();
             this.socket = null;
-            console.log("WebSocket connection closed.");
-        } else {
-            console.log("WebSocket is not connected.");
         }
         // this.socket.removeEventListner("message", this.receiveMessage);
     }

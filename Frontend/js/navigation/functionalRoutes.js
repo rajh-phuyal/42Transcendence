@@ -25,7 +25,7 @@ const functionalRoutes = [
 				nav.classList.remove("d-flex", "flex-row", "justify-content-center");
 				nav.style.display = 'none';
 				this.$store.addMutationListener("setTranslations", (e) => {
-					console.log("mutation state", e);
+					// console.log("mutation state", e);
 					this.router("/auth");
 				});
             }

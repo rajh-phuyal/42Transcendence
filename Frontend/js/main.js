@@ -38,9 +38,29 @@ window.addEventListener("click", (event) => {
     }
 });
 
-window.addEventListener('popstate', () => {
-    router(window.location.pathname)
+// window.addEventListener('popstate', (event) => {
+//     const path = event.state?.path || "/";
+//     const params = event.state?.params || null;
+
+//     console.log("SUPER EVENT:", event);
+
+//     // make the current params an object
+//     router(path, params);
+// });
+
+
+// 1. popstate listener
+window.addEventListener('popstate', (event) => {
+    console.log('SUPER EVENT', event);
+    console.log('popstate triggered', event.state);
+    console.log('NAVIGATION:', event.target?.navigation);
+
+    // If we stored route info in the state:
+    router(event.state?.route, event.state?.params, false);
 });
+
+
+
 
 // get the translations for all the registered views
 $store.dispatch('loadTranslations', routes.map(route => route.view));
@@ -66,14 +86,12 @@ $store.addMutationListener('setTranslations', () => {
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
-        // console.log("Web socket is connected!");
         if (setInervalId) {
             $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
-        // console.log("Web socket is disconnected!");
         if (!setInervalId && $store.fromState('isAuthenticated')) {
             $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {

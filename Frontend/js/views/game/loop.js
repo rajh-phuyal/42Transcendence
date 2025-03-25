@@ -14,7 +14,7 @@ function gameLoop(currentTime) {
         gameRender();
         // Check if the game is  still ongoing
         if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
-            console.log("Game is not ongoing/coutdown anymore: ending game loop");
+            // console.log("Game is not ongoing/coutdown anymore: ending game loop");
             cancelAnimationFrame(gameObject.animationId);
             return;
         }
