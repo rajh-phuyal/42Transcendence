@@ -1,6 +1,5 @@
 export const imageDir = '../../../assets/images/home/';
 import { AIModalCallback, LocalModalCallback, battleModalCallback, tournamentModalCallback, chatRoomModalCallback } from './callbacks.js';
-import { translate } from '../../locale/locale.js';
 
 // Array containing the objects for each element of the home-view that should be responsive
 export const imageBook = [
@@ -173,42 +172,42 @@ export const backgroundImageBook = [
 // Array containing the objects for the labels
 export const labels = [
     {
-        text: translate("home", "gamePlay"),
+        text: "gamePlay",
         x: 185,
         y: 80,
         width: 300,
         height: 50,
     },
     {
-        text: translate("home", "A.I."),
+        text: "A.I.",
         x: imageBook[0].x,
         y: imageBook[0].y + imageBook[0].height + 15,
         width: imageBook[0].width,
         height: 50,
     },
     {
-        text: translate("home", "inviteFriends"),
+        text: "inviteFriends",
         x: imageBook[1].x,
         y: imageBook[1].y + imageBook[1].height + 15,
         width: imageBook[1].width,
         height: 50,
     },
     {
-        text: translate("home", "localGame"),
+        text: "localGame",
         x: imageBook[2].x,
         y: imageBook[2].y + imageBook[2].height + 15,
         width: imageBook[2].width,
         height: 50,
     },
     {
-        text: translate("home", "chatRoom"),
+        text: "chatRoom",
         x: imageBook[3].x,
         y: imageBook[3].y + imageBook[3].height + 15,
         width: imageBook[3].width,
         height: 50,
     },
     {
-        text: translate("home", "tournament"),
+        text: "tournament",
         x: imageBook[4].x,
         y: imageBook[4].y + imageBook[4].height + 15,
         width: imageBook[4].width,

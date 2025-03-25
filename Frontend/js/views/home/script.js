@@ -1,6 +1,7 @@
 import {imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
 import { $id } from '../../abstracts/dollars.js';
+import { translate } from '../../locale/locale.js';
 
 /*
 *************************************************************
@@ -78,7 +79,7 @@ async function drawLabel(label){
     context.font = "bold 16px Chalkduster";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(label.text, label.x + (label.width / 2), label.y + (label.height / 2))
+    context.fillText(translate("home", label.text), label.x + (label.width / 2), label.y + (label.height / 2))
     context.closePath();
 
 
