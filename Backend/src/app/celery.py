@@ -12,6 +12,7 @@ app = Celery('app')
 # the configuration object to child processes.
 # All celery-related config keys should have the `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
+app.conf.broker_connection_retry_on_startup = True
 
 # Auto-discover tasks from all installed apps.
 app.autodiscover_tasks()
