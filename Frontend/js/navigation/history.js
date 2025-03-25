@@ -69,6 +69,26 @@ export default class HistoryManager {
         } else
             console.log("HistoryManager: path is the same as the last one, not pushing to history");
     }
+
+    /* Converts a string of parameters to an object
+        "?id=1&name=John"0 => { id: 1, name: "John" }
+    */
+    argsStringToObject(argsString) {
+        let paramsObject = {};
+        if (argsString) {
+            // First remove the question at index 1 if it exists
+            if (argsString[0] === '?')
+                argsString = argsString.slice(1);
+            paramsObject = argsString
+                .split('&')                 // Split by '&' if there are multiple parameters (but I guess we don't have this)
+                .reduce((acc, param) => {
+                  const [key, value] = param.split('=');    // Split each key-value pair
+                  acc[key] = decodeURIComponent(value);     // Assign the key-value pair to the accumulator
+                  return acc;
+                }, {});
+        }
+        return paramsObject;
+    }
 }
 
 // Create and export a single instance

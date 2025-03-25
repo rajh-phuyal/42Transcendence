@@ -55,17 +55,10 @@ export default {
             // Get the canvas element and its context
             canvasData.canvas = this.domManip.$id("home-canvas");
             let canvas = canvasData.canvas;
-
             canvasData.context = canvas.getContext('2d');
-
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            // Adjust the pixel ratio so it draws the images with higher resolution
-            const scale = window.devicePixelRatio;
-
+            canvas.width = 2000;
+            canvas.height = 900;
             canvasData.context.imageSmoothingEnabled = true;
-            canvasData.context.scale(scale, scale);
 
             // build thexport e first frame
             await buildCanvas();

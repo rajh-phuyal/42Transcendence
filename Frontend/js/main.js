@@ -9,6 +9,7 @@ import $callToast from './abstracts/callToast.js';
 import { translate } from './locale/locale.js';
 import { audioPlayer } from './abstracts/audio.js';
 import { rescaleCanvas } from './views/home/methods.js';
+import { historyManager } from './navigation/history.js';
 setViewLoading(true);
 
 try {
@@ -40,23 +41,17 @@ window.addEventListener("click", (event) => {
 
 // For the Back/Forward buttons in the browser (aka history navigation)
 window.addEventListener('popstate', (event) => {
+    // If barely responsive, do not do anything
+    if ($store.fromState('markbook')) {
+        /* prevent default */
+        event.preventDefault();
+        return;
+    }
     // The state stored in pushState will be available as `event.state`
     const state = event.state;
     if (state && state.path) {
         // transform params string back to object: "id=1&name=John" => { id: 1, name: "John" }
-        let paramsObject = {};
-        if (state.params) {
-            // First remove the question at index 1 if it exists
-            if (state.params[0] === '?')
-                state.params = state.params.slice(1);
-            paramsObject = state.params
-                .split('&')                 // Split by '&' if there are multiple parameters (but I guess we don't have this)
-                .reduce((acc, param) => {
-                  const [key, value] = param.split('=');    // Split each key-value pair
-                  acc[key] = decodeURIComponent(value);     // Assign the key-value pair to the accumulator
-                  return acc;
-                }, {});
-        }
+        let paramsObject = historyManager.argsStringToObject(state.params);
         router(state.path, paramsObject, false);
     }
 });
@@ -120,22 +115,31 @@ document.addEventListener('wheel', function(event) {
     }
 }, { passive: false });
 
-
-window.onresize = async () => {
-	if (window.outerHeight < 1020 || window.outerWidth < 1020){
-        //zoomIn(window.outerHeight, window.outerWidth); Is in the barely-responsive view methods.js but doesn't work well
-        if (window.location.pathname != "/barely-responsive") {
-            $store.commit("setMarkBook", window.location.pathname);
-            router("/barely-responsive");
+window.addEventListener('resize', async () => {
+    if (window.outerHeight < 1020 || window.outerWidth < 1020) {
+        // Handle the small window size here
+        if (!$store.fromState('markbook')) {
+            $store.commit("setMarkBook", (window.location.pathname + window.location.search));
+            await router("/barely-responsive", {}, false);
         }
-        return ;
-	}
-    if (window.outerHeight >= 1020 && window.outerWidth >= 1020
-        && window.location.pathname == "/barely-responsive") {
-           const path = $store.state.markbook;
-            $store.commit("setMarkBook", "");
-            router(path);
+        return;
     }
-    if (window.location.pathname == "/home")
+
+    if (window.outerHeight >= 1020 && window.outerWidth >= 1020 && $store.fromState('markbook')) {
+        const href = $store.state.markbook;
+        $store.commit("setMarkBook", "");
+        /* Split by first ? if exists */
+        const path = href.split('?')[0];
+        const params = href.split('?')[1];
+        let paramsObject = historyManager.argsStringToObject(params);
+        await router(path, paramsObject, false);
+    }
+
+    if (window.location.pathname == "/home") {
+        // Rescale the canvas when the window is resized
         await rescaleCanvas();
-}
+    }
+});
+
+// Trigger the resize event manually when the page loads
+window.dispatchEvent(new Event('resize'));
