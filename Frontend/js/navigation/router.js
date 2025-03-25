@@ -64,8 +64,11 @@ async function router(path, params = null, updateHistory = true) {
     setViewLoading(true);
 
     // TODO: prevent router to be called multiple times -> only if the view is loaded
-    // THE CODE BELOW DOES NOT WORK
     // ---
+    // THE CODE BELOW DOES NOT WORK
+    //if (isViewLoading()) {
+    //    return;
+    //}
     //if($store.fromState('currentRoute') && $store.fromState('currentRoute') === 'loading') {
     //    console.log("Router: View is still loading, ignoring navigation to", path);
     //    return;
@@ -115,7 +118,9 @@ async function router(path, params = null, updateHistory = true) {
         backgroundColor: "black"
     };
 
-    $store.commit('setCurrentRoute', route.view);
+    // Only update if valid!
+    if (route && route.view !== "404")
+        $store.commit('setCurrentRoute', route.view);
 
     if (route.view == "auth" || route.view == "barely-responsive") {
         let nav = document.getElementById('navigator');

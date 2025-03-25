@@ -38,48 +38,28 @@ window.addEventListener("click", (event) => {
     }
 });
 
-// window.addEventListener('popstate', (event) => {
-//     const path = event.state?.path || "/";
-//     const params = event.state?.params || null;
-
-//     console.log("SUPER EVENT:", event);
-
-//     // make the current params an object
-//     router(path, params);
-// });
-
-
 // For the Back/Forward buttons in the browser (aka history navigation)
 window.addEventListener('popstate', (event) => {
     // The state stored in pushState will be available as `event.state`
     const state = event.state;
-    console.log("popstate: state:", state);
-
     if (state && state.path) {
-        console.log("popstate: PATH:", state.path);
-        console.log("popstate: PARAMS:", state.params);
         // transform params string back to object: "id=1&name=John" => { id: 1, name: "John" }
         let paramsObject = {};
         if (state.params) {
-            // Firs remove the question at index 1 if it exists
+            // First remove the question at index 1 if it exists
             if (state.params[0] === '?')
                 state.params = state.params.slice(1);
             paramsObject = state.params
-                .split('&') // Split by '&' if there are multiple parameters
+                .split('&')                 // Split by '&' if there are multiple parameters (but I guess we don't have this)
                 .reduce((acc, param) => {
-                  const [key, value] = param.split('='); // Split each key-value pair
-                  acc[key] = value; // Assign the key-value pair to the accumulator
+                  const [key, value] = param.split('=');    // Split each key-value pair
+                  acc[key] = decodeURIComponent(value);     // Assign the key-value pair to the accumulator
                   return acc;
                 }, {});
         }
-        console.log("popstate: PARAMS OBJECT:", paramsObject);
-        console.log(window.history);
         router(state.path, paramsObject, false);
     }
 });
-
-
-
 
 // get the translations for all the registered views
 $store.dispatch('loadTranslations', routes.map(route => route.view));
@@ -96,7 +76,7 @@ $store.addMutationListener('setTranslations', () => {
     // make the current params an object
     const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
 
-    router(currentRoute, currentParamsObject);
+    router(currentRoute, currentParamsObject, false);
 
     // set the loading to false
     setViewLoading(false);

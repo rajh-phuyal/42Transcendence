@@ -17,7 +17,6 @@ export default class HistoryManager {
     }
 
     updateHistory(path, paramsString) {
-        console.warn(path, paramsString);
         // So since we are not using the prams in the bes way, we have the
         // situation that sometimes they are mandatory and sometimes they are not.
         // This is a bad practice and should be fixed.
@@ -57,8 +56,9 @@ export default class HistoryManager {
         if (pathForHistory !== this.lastPath || paramsString !== this.lastParams) {
             this.lastPath = pathForHistory;
             this.lastParams = paramsString;
-            const fullUrl = pathForHistory + paramsString;
-            console.warn("HistoryManager: pushingState: '%s', '%s' as '%s'", pathForHistory, paramsString, fullUrl);
+            const fullUrl = paramsString ? pathForHistory + paramsString : pathForHistory;
+
+            console.log("HistoryManager: pushingState: '%s', '%s' as '%s'", pathForHistory, paramsString, fullUrl);
             window.history.pushState(
                 {   path:   pathForHistory,
                     params: paramsString,
@@ -66,9 +66,8 @@ export default class HistoryManager {
                 "",
                 fullUrl
             );
-            console.log(window.history);
         } else
-            console.log("HistoryManager: ", pathForHistory, paramsString);
+            console.log("HistoryManager: path is the same as the last one, not pushing to history");
     }
 }
 
