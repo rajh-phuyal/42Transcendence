@@ -235,7 +235,6 @@ export default {
                 this.domManip.$id("game-countdown-image").style.display = "none";
             }
             endGameLoop();
-            this.audioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId)
         },
 

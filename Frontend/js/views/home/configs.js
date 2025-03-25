@@ -1,3 +1,4 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
 import canvasData from './data.js'
 import call from '../../abstracts/call.js'
@@ -49,6 +50,8 @@ export default {
         },
 
         afterDomInsertion() {
+            // Start music
+            audioPlayer.playMusic("home");
             // stores the id of the element currently highlighted
             canvasData.highlitedImageID = 0;
 

@@ -1,3 +1,4 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js';
@@ -305,7 +306,7 @@ export default {
     },
     hooks: {
         beforeRouteEnter() {
-
+            audioPlayer.stop();
         },
 
         beforeRouteLeave() {

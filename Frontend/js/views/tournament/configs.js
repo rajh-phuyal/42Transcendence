@@ -25,7 +25,6 @@ export default {
 
         beforeRouteLeave() {
             clearAllGameCountdowns();
-            audioPlayer.stop();
         },
 
         beforeDomInsertion() {
