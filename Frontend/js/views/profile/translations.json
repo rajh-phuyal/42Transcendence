@@ -1,56 +1,88 @@
 {
-    "confirmRemoveFriend": {
-        "en-US": "Do you want to remove this user from your friends list?",
-        "pt-PT": "Deseja remover este utilizador da sua lista de amigos?",
-        "pt-BR": "Deseja remover este usuário da sua lista de amigos?",
-        "de-DE": "Möchten Sie diesen Benutzer aus Ihrer Freundesliste entfernen?",
-        "uk-UA": "Ви хочете видалити цього користувача зі свого списку друзів?",
-        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई आफ्नो साथी सूचीबाट हटाउन चाहनुहुन्छ?"
+    "titleStats": {
+        "en-US": "STATS",
+        "pt-PT": "ESTATÍSTICAS",
+        "pt-BR": "ESTATÍSTICAS",
+        "de-DE": "STATISTIKEN",
+        "uk-UA": "СТАТИСТИКА",
+        "ne-NP": "आँकडा"
     },
-    "sendRequest": {
-        "en-US": "Do you want to send this user a friend request?",
-        "pt-PT": "Deseja enviar um pedido de amizade a este utilizador?",
-        "pt-BR": "Deseja enviar um pedido de amizade para este usuário?",
-        "de-DE": "Möchten Sie diesem Benutzer eine Freundschaftsanfrage senden?",
-        "uk-UA": "Ви хочете надіслати цьому користувачу запит на дружбу?",
-        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई साथी अनुरोध पठाउन चाहनुहुन्छ?"
+    "titleProgress": {
+        "en-US": "PROGRESS",
+        "pt-PT": "PROGRESSO",
+        "pt-BR": "PROGRESSO",
+        "de-DE": "FORTSCHRITT",
+        "uk-UA": "ПРОГРЕС",
+        "ne-NP": "प्रगति"
     },
-    "acceptRequest": {
-        "en-US": "Do you want to accept this user's friend request?",
-        "pt-PT": "Deseja aceitar o pedido de amizade deste utilizador?",
-        "pt-BR": "Deseja aceitar o pedido de amizade deste usuário?",
-        "de-DE": "Möchten Sie die Freundschaftsanfrage dieses Benutzers annehmen?",
-        "uk-UA": "Ви хочете прийняти запит на дружбу від цього користувача?",
-        "ne-NP": "तपाईंले यो प्रयोगकर्ताको साथी अनुरोध स्वीकार गर्न चाहनुहुन्छ?"
+    "titleSkill": {
+        "en-US": "Skill",
+        "pt-PT": "Habilidade",
+        "pt-BR": "Habilidade",
+        "de-DE": "Fähigkeit",
+        "uk-UA": "Навичка",
+        "ne-NP": "सीप"
     },
-    "cancelRequest": {
-        "en-US": "Do you want to cancel your friend request?",
-        "pt-PT": "Deseja cancelar o seu pedido de amizade?",
-        "pt-BR": "Deseja cancelar o seu pedido de amizade?",
-        "de-DE": "Möchten Sie Ihre Freundschaftsanfrage abbrechen?",
-        "uk-UA": "Ви хочете скасувати свій запит на дружбу?",
-        "ne-NP": "तपाईंले आफ्नो साथी अनुरोध रद्द गर्न चाहनुहुन्छ?"
+    "titleGame": {
+        "en-US": "Game",
+        "pt-PT": "Jogo",
+        "pt-BR": "Jogo",
+        "de-DE": "Spiel",
+        "uk-UA": "Гра",
+        "ne-NP": "खेल"
     },
-    "blockUser": {
-        "en-US": "Do you want to block this user?",
-        "pt-PT": "Deseja bloquear este utilizador?",
-        "pt-BR": "Deseja bloquear este usuário?",
-        "de-DE": "Möchten Sie diesen Benutzer blockieren?",
-        "uk-UA": "Ви хочете заблокувати цього користувача?",
-        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई ब्लक गर्न चाहनुहुन्छ?"
+    "titleTournament": {
+        "en-US": "Tournament",
+        "pt-PT": "Torneio",
+        "pt-BR": "Torneio",
+        "de-DE": "Turnier",
+        "uk-UA": "Турнір",
+        "ne-NP": "टुर्नामेन्ट"
     },
-    "unblockUser": {
-        "en-US": "Do you want to unblock this user?",
-        "pt-PT": "Deseja desbloquear este utilizador?",
-        "pt-BR": "Deseja desbloquear este usuário?",
-        "de-DE": "Möchten Sie diesen Benutzer entsperren?",
-        "uk-UA": "Ви хочете розблокувати цього користувача?",
-        "ne-NP": "तपाईंले यो प्रयोगकर्तालाई अनब्लक गर्न चाहनुहुन्छ?"
+    "titleTotal": {
+        "en-US": "Total",
+        "pt-PT": "Total",
+        "pt-BR": "Total",
+        "de-DE": "Gesamt",
+        "uk-UA": "Загалом",
+        "ne-NP": "कुल"
+    },
+    "gamesWon": {
+        "en-US": "games won",
+        "pt-PT": "jogos ganhos",
+        "pt-BR": "jogos ganhos",
+        "de-DE": "Gewonnene Spiele",
+        "uk-UA": "виграні ігри",
+        "ne-NP": "जितेका खेलहरू"
+    },
+    "firstPlace": {
+        "en-US": "1st places in tournament",
+        "pt-PT": "1º lugares no torneio",
+        "pt-BR": "1º lugares no torneio",
+        "de-DE": "1. Plätze im Turnier",
+        "uk-UA": "1-ші місця в турнірі",
+        "ne-NP": "1 औं स्थानहरू टुर्नामेन्टमा"
+    },
+    "secondPlace": {
+        "en-US": "2nd places in tournament",
+        "pt-PT": "2º lugares no torneio",
+        "pt-BR": "2º lugares no torneio",
+        "de-DE": "2. Plätze im Turnier",
+        "uk-UA": "2-ге місця в турнірі",
+        "ne-NP": "2 औं स्थानहरू टुर्नामेन्टमा"
+    },
+    "thirdPlace": {
+        "en-US": "3rd places in tournament",
+        "pt-PT": "3º lugares no torneio",
+        "pt-BR": "3º lugares no torneio",
+        "de-DE": "3. Plätze im Turnier",
+        "uk-UA": "3-тє місце в турнірі",
+        "ne-NP": "3 औं स्थानहरू टुर्नामेन्टमा"
     },
     "subject": {
         "en-US": "Subject: ",
-        "pt-PT": "Sujeito: ",
-        "pt-BR": "Sujeito: ",
+        "pt-PT": "Assunto: ",
+        "pt-BR": "Assunto: ",
         "de-DE": "Betreff: ",
         "uk-UA": "Тема: ",
         "ne-NP": "विषय: "
@@ -79,38 +111,6 @@
         "uk-UA": "Мова: ",
         "ne-NP": "भाषा: "
     },
-    "gamesWon": {
-        "en-US": "Games won: ",
-        "pt-PT": "Jogos ganhos: ",
-        "pt-BR": "Jogos ganhos: ",
-        "de-DE": "Gewonnene Spiele: ",
-        "uk-UA": "Перемоги: ",
-        "ne-NP": "जितिएका खेलहरू: "
-    },
-    "firstPlace": {
-        "en-US": "1st place in tournament: ",
-        "pt-PT": "1º lugar no torneio: ",
-        "pt-BR": "1º lugar no torneio: ",
-        "de-DE": "1. Platz im Turnier: ",
-        "uk-UA": "1-е місце на турнірі: ",
-        "ne-NP": "प्रतियोगितामा पहिलो स्थान: "
-    },
-    "secondPlace": {
-        "en-US": "2nd place in tournament: ",
-        "pt-PT": "2º lugar no torneio: ",
-        "pt-BR": "2º lugar no torneio: ",
-        "de-DE": "2. Platz im Turnier: ",
-        "uk-UA": "2-е місце на турнірі: ",
-        "ne-NP": "प्रतियोगितामा दोस्रो स्थान: "
-    },
-    "thirdPlace": {
-        "en-US": "3rd place in tournament: ",
-        "pt-PT": "3º lugar no torneio: ",
-        "pt-BR": "3º lugar no torneio: ",
-        "de-DE": "3. Platz im Turnier: ",
-        "uk-UA": "3-е місце на турнірі: ",
-        "ne-NP": "प्रतियोगितामा तेस्रो स्थान: "
-    },
     "createNewConversation": {
         "en-US": "Send a Message to open a new conversation with ",
         "pt-PT": "Envie uma mensagem para iniciar uma nova conversa com ",
@@ -118,5 +118,21 @@
         "de-DE": "Senden Sie eine Nachricht, um ein neues Gespräch mit zu beginnen ",
         "uk-UA": "Надішліть повідомлення, щоб розпочати нову розмову з ",
         "ne-NP": "सन्देश पठाउनुहोस् नयाँ कुराकानी सुरु गर्नको लागि "
+    },
+    "notes": {
+        "en-US": "Notes:",
+        "pt-PT": "Notas:",
+        "pt-BR": "Notas:",
+        "de-DE": "Anmerkungen:",
+        "uk-UA": "Примітки:",
+        "ne-NP": "टिप्पणीहरू:"
+    },
+    "blocked": {
+        "en-US": "This user is blocking you!",
+        "pt-PT": "Este usuário está bloqueando você!",
+        "pt-BR": "Este usuário está bloqueando você!",
+        "de-DE": "Dieser Benutzer blockiert Sie!",
+        "uk-UA": "Цей користувач блокує вас!",
+        "ne-NP": "यो प्रयोगकर्ताले तपाईंलाई ब्लक गरिरहेको छ!"
     }
 }

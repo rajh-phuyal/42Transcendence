@@ -2,26 +2,22 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div id="modal-avatar-cropper-content" class="modal-content image-modal-content">
             <div class="modal-body image-modal-body">
-                <img src='../../assets/backgrounds/modal-avatar-cropper-background.png' class="image-modal-background-image" alt="Background Image" draggable="false">
+                <img src='../../assets/backgrounds/modal-avatar-cropper-background.png' class="image-modal-background-image" draggable="false">
                 <div id="modal-avatar-cropper-grid" class="view-overlay-grid">
-
-                        <!-- Place your content here -->
-
-                    <h5 class="modal-title grid-cell default-grid-area title" id="modal-avatar-cropper-title">Crop the image</h5>
+                    <h5 id="modal-avatar-cropper-title" class="modal-title grid-cell default-grid-area title"></h5>
                     <input type="file" id="modal-avatar-cropper-file-input" accept="image/*" style="display: none;">
                     <div class="grid-cell default-grid-area imgc">
                         <img        id="modal-avatar-cropper-image-to-crop" src="" draggable="false">
                     </div>
-                    <button     id="modal-avatar-cropper-btn-crop" class="grid-cell default-grid-area btnc modal-button">Submit</button>
-                    <button     id="modal-avatar-cropper-btn-open-file-explorer" class="grid-cell default-grid-area btnexp modal-button">Select</button>
-                    <button class="btn grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
+                    <button     id="modal-avatar-cropper-btn-crop"                  class="grid-cell default-grid-area modal-button btnc"></button>
+                    <button     id="modal-avatar-cropper-btn-open-file-explorer"    class="grid-cell default-grid-area modal-button btnexp"></button>
+                    <button     id="modal-avatar-cropper-btn-back" type="button"    class="grid-cell default-grid-area modal-button btnb"  data-bs-target="#modal-edit-profile" data-bs-toggle="modal" data-bs-dismiss="modal"></button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <style>
-
     #modal-avatar-cropper-content {
         height: 400px !important;
         width: 400px !important;
@@ -32,8 +28,9 @@
         grid-template-rows: repeat(auto-fill, 4%) !important;
         grid-template-areas:
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      title  title  title  title  title  title  title  title  .      .      .      .      .     "
-            ".      title  title  title  title  title  title  title  title  .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
@@ -50,11 +47,10 @@
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
             ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   imgc   .     "
-            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp .      btnc   btnc   btnc   .      .     "
-            ".      btnb   btnb   btnb   .      btnexp btnexp btnexp .      btnc   btnc   btnc   .      .     "
+            ".      btnb   btnb   btnb   btnb   btnexp btnexp btnexp btnexp btnc   btnc   btnc   btnc   .     "
+            ".      btnb   btnb   btnb   btnb   btnexp btnexp btnexp btnexp btnc   btnc   btnc   btnc   .     "
+            ".      btnb   btnb   btnb   btnb   btnexp btnexp btnexp btnexp btnc   btnc   btnc   btnc   .     "
+            ".      btnb   btnb   btnb   btnb   btnexp btnexp btnexp btnexp btnc   btnc   btnc   btnc   .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -64,25 +60,31 @@
 
     .btnb {
         grid-area: btnb;
+        height: 90%;
+        width: 90%;
     }
 
     .btnc {
         grid-area: btnc;
+        height: 90%;
+        width: 90%;
     }
 
     .imgc {
         grid-area: imgc;
+        height: 90%;
+        width: 90%;
     }
 
     .btnexp {
         grid-area: btnexp;
+        height: 90%;
+        width: 90%;
     }
 
     #imodal-avatar-cropper-image-to-cropmg {
         max-width: 100%;
         max-height: 100%;
-        width: auto;
-        height: auto;
         object-fit: contain;
     }
 </style>

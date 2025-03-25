@@ -1,6 +1,7 @@
-import { $id } from "../../abstracts/dollars.js";
-import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
+import { $id } from "../../abstracts/dollars.js";
+import { translate } from '../../locale/locale.js';
+import { tournamentData as data } from "./objects.js";
 
 /* This function will fully deal with the participants stored in:
     tournamentData.all.tournamentMembers
@@ -34,7 +35,7 @@ function createTemplateMemberCard(member) {
         container.style.border = "3px solid black";
         container.querySelector(".tournament-member-admin-icon").style.display = "block";
         container.querySelector(".tournament-member-admin-icon").style.height = "90%";
-        container.querySelector(".tournament-member-admin-icon").title = "This is the admin of the tournament"; // TODO: Translate
+        container.querySelector(".tournament-member-admin-icon").title = translate("tournament", "tooltipTournamentAdmin");
     }
     // Append the container
     $id("container-members-list").appendChild(container);

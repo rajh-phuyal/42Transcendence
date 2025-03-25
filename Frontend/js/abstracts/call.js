@@ -4,47 +4,52 @@ import $callToast from './callToast.js';
 
 async function call(url, method, data = null, showToast = true) {
     const fullUrl = `${window.location.origin}/api/${url}`;
-
     const headers = {
         'Content-Type': 'application/json'
     };
-
-    console.log("data to send:", data);
-
     let payload = {
         method: method,
         headers: headers,
         credentials: 'include',
-        ...(data && method !== 'GET' && method !== 'DELETE') ? {
+/*        ...(data && method !== 'GET' && method !== 'DELETE') ? {
             body: JSON.stringify(data),
-        } : {},
+        } : {}, */
     };
 
-    const response = await fetch(fullUrl, payload);
-    console.log("response:", response);
-
-    if (!response.ok) {
-        let errorMessage;
-
-        try {
-            const errorData = await response.json();
-            errorMessage = errorData.message;
-        } catch (e) {
-            // If parsing the JSON fails, fall back to a generic message
-            errorMessage = translate("global:call", "requestFailed");
-        }
-
-        if (!errorMessage)
-            errorMessage = translate("global:call", "requestFailed");
-
-        if (showToast) {
-            $callToast("error", errorMessage)
-        }
-
-        throw new Error(errorMessage);
+    // Add body only when appropriate
+    if (data && method !== 'GET' && method !== 'DELETE') {
+        payload.body = JSON.stringify(data);
     }
 
-    return await response.json();
+    let response;
+    let jsonData = null;
+    try {
+        response = await fetch(fullUrl, payload);
+        // Try to parse the JSON regardless of response.ok
+        try {
+            jsonData = await response.json();
+        } catch (e) {
+            jsonData = null;
+        }
+
+        if (!response.ok) {
+            let errorMessage;
+            errorMessage = jsonData?.message || translate("global:call", "requestFailed");
+            if (showToast)
+                $callToast("error", errorMessage)
+            throw new Error(errorMessage);
+        }
+    } catch (error) {
+        console.log("Error calling the API (doesn't need to be a bad thing...)");
+        throw error;
+    }
+    if (jsonData === null) {
+        if (showToast) {
+            $callToast("error", translate("global:call", "badJson"));
+        }
+        throw new Error("Invalid JSON response");
+    }
+    return jsonData;
 }
 
 export default call;

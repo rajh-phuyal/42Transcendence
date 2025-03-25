@@ -1,6 +1,7 @@
 import { generateTournamentName } from './generateName.js';
 import call from '../../abstracts/call.js'
 import callToast from '../../abstracts/callToast.js'
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -12,6 +13,12 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            // TODO: check if this transaltion works
+            this.domManip.$id("modal-tournament-tournament-title").setAttribute("placeholder", translate("tournamentCreate", "placeholderName"));
+            this.domManip.$id("modal-tournament-opponents-content").setAttribute("placeholder", translate("tournamentCreate", "placeholderInviteUser"));
+        },
+
         updatePrivacy() {
             const privImgPublic     = this.domManip.$id("modal-tournament-create-priv-public");
             const privImgPrivate    = this.domManip.$id("modal-tournament-create-priv-private");
@@ -71,19 +78,19 @@ export default {
             if(this.powerups) {
                 this.domManip.$removeClass(btn, "modal-toggle-button-disabled");
                 this.domManip.$addClass(btn, "modal-toggle-button-enabled");
-                btn.innerHTML = "Enabled"; // TODO: translate
+                btn.innerHTML = translate("tournamentCreate", "enabled");
             }
             else {
                 this.domManip.$addClass(btn, "modal-toggle-button-disabled");
                 this.domManip.$removeClass(btn, "modal-toggle-button-enabled");
-                btn.innerHTML = "Disabled"; // TODO: translate
+                btn.innerHTML = translate("tournamentCreate", "disabled");
             }
         },
         updateOpponents() {
             const opponentListContainer = this.domManip.$id("modal-tournament-create-opponents-container");
             opponentListContainer.innerHTML = "";
             if (this.opponentIds.length === 0) {
-                opponentListContainer.innerHTML = "<h6 style='color: black; padding 5px;'>No opponents selected</h6>"; /* TODO:: translate */
+                opponentListContainer.innerHTML = `<h6 style='color: black; padding 5px;'>${translate("tournamentCreate", "noOpponents")}</h6>`;
                 return;
             }
             for (let opponent of this.opponentIds) {
@@ -161,6 +168,7 @@ export default {
 
     hooks: {
         beforeOpen () {
+            this.translateElements();
             // Init the toogle images
             this.updateMap();
             this.updatePrivacy();

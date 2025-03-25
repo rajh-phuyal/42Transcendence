@@ -1,13 +1,13 @@
+import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
+import router from '../../navigation/router.js';
+import { $id } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
-import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
-import { animateImage, removeImageAnimation, showGame } from './loop.js';
+import { animateImage } from './loop.js';
 import { endGameLoop } from './loop.js';
 import { startGameLoop} from './loop.js';
-import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
 import { audioPlayer } from '../../abstracts/audio.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
-import router from '../../navigation/router.js';
 import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 export const percentageToPixels = (side, percentage) => {
@@ -28,13 +28,13 @@ export function changeGameState(state) {
         $id("game-countdown-image").style.display = "none";
     }
 
-    console.log("changeGameState", state);
+    // console.log("changeGameState", state);
     const lastState = gameObject.state;
     gameObject.state = state;
     switch (state) {
         case undefined:
             //Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             //Buttons
             $id("button-play-again").style.display = "none";
             // Main Info text
@@ -45,7 +45,7 @@ export function changeGameState(state) {
 
         case "pending":
             //Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             // Buttons
             $id("button-play-again").style.display = "none";
             // Show game field
@@ -53,20 +53,20 @@ export function changeGameState(state) {
             // Main Info text
             if (gameObject.wsConnection) {
                 if(gameObject.clientIsPlayer)
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "connectedWaiting");
                 else
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-waiting");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectatorWaiting");
             } else {
                 if(gameObject.clientIsPlayer)
                     $id("game-view-middle-side-container-top-text").innerText = translate("game", "pending");
                 else
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-connect");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectatorConnect");
             }
             break;
 
         case "countdown":
             // Audio
-            audioPlayer.play(gameObject.mapId);
+            audioPlayer.playMusic(gameObject.mapName);
             if (lastState === "paused")
                 audioPlayer.playSound("unpause");
             // Buttons
@@ -94,7 +94,7 @@ export function changeGameState(state) {
 
         case "paused":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("pause");
             // Buttons
@@ -104,20 +104,20 @@ export function changeGameState(state) {
             // Main Info text
             if (gameObject.wsConnection){
                 if(gameObject.clientIsPlayer)
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "connected-waiting");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "connectedWaiting");
                 else
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-waiting");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectatorWaiting");
             } else {
                 if(gameObject.clientIsPlayer)
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "paused-connect");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "pausedConnect");
                 else
-                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectator-connect");
+                    $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectatorConnect");
             }
             break;
 
         case "finished":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("gameover");
             // Buttons
@@ -142,7 +142,7 @@ export function changeGameState(state) {
 
         case "quited":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("gameover");
             // Buttons
@@ -159,7 +159,7 @@ export function changeGameState(state) {
 
         case "aboutToBeDeleted":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("no");
             // Main Info text

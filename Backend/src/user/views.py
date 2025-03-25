@@ -1,16 +1,16 @@
 # Basics
-import logging
+# import logging
 # Django
-from django.utils.translation import gettext as _, activate
-from django.db import transaction
-from rest_framework import status, viewsets
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import gettext as _, activate
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+from asgiref.sync import async_to_sync
 # Core
 from core.decorators import barely_handle_exceptions
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
-from core.exceptions import BarelyAnException
 # Authentication
 from authentication.utils import validate_username
 # User
@@ -23,7 +23,6 @@ from user.utils_img import process_avatar
 from user.utils_relationship import is_blocking, block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
 # Services
 from services.chat_bots import send_message_with_delay
-from asgiref.sync import async_to_sync
 
 # SearchView for searching users by username
 class SearchView(BaseAuthenticatedView):
@@ -48,6 +47,19 @@ class SearchView(BaseAuthenticatedView):
         serializer = SearchSerializer(users, many=True)
         return success_response(_("The following users were found"), users=serializer.data)
 
+# UsernameView for checking if a username exists for auth page
+class UsernameView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []  # No authentication required for registration
+    @barely_handle_exceptions
+    def get(self, request, search):
+        if not search:
+            error_response(_("key 'search' must be provided!"))
+        user = User.objects.filter(username=search)
+        if user.exists():
+            return success_response(_("Username exists"), exists=True)
+        return success_response(_("Username does not exist"), exists=False)
+
 # ProfileView for retrieving a single user's profile by ID
 class ProfileView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -60,13 +72,13 @@ class ProfileView(BaseAuthenticatedView):
         data = serializer.data
         # If client is blocked remove all data but the username and the avatar
         if is_blocking(target, request.user):
-            logging.info(f"User: {request.user}, Target User: {target}")
+           # logging.info(f"User: {request.user}, Target User: {target}")
             data['firstName'] = ''
             data['lastName'] = ''
             data['online'] = False
             data['lastLogin'] = None
             data['language'] = ''
-            data['chatId'] = ''
+            # data['chatId'] = '' Deliver the chat id so the client can redir to chat
             data['newMessage'] = False
             data['stats'] = ''
             # Send the notes only if the profile is of the overloards
@@ -136,8 +148,8 @@ class ListFriendsView(BaseAuthenticatedView):
     def get(self, request, targetUserId):
         user = request.user
         target_user = get_user_by_id(targetUserId)
-        logging.info(f"User: {user}, Target User: {target_user}")
-        logging.info(f"is_blocking: {is_blocking(target_user, user)}")
+       # logging.info(f"User: {user}, Target User: {target_user}")
+       # logging.info(f"is_blocking: {is_blocking(target_user, user)}")
         if is_blocking(target_user, user):
             return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
@@ -197,4 +209,4 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         user.save()
 
         # Return the success response
-        return success_response(_("User info updated"))
+        return success_response(_("User info updated"), language=user.language)

@@ -1,15 +1,66 @@
+/* GLOBAL STUFF */
+/* -------------------------------------------------------------------------- */
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 }
-
 html, body {
 	height: 100vh;
 	width: 100vw;
 	background-color: #fff7e6;
 }
+h1 {
+	text-align: center;
+	font-size: min(2vw, 50px);
+    font-weight: bold;
+	margin-bottom: 20px;
+}
+h2 {
+    font-family: 'Courier';
+    font-weight: bold;
+	text-align: center;
+    font-size: min(2vw, 35px);
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
+h3 {
+    font-family: 'Courier';
+    font-weight: bold;
+	text-align: center;
+    font-size: min(1.7vw, 30px);
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
+h4 {
+    font-family: 'Courier';
+    font-weight: bold;
+	text-align: center;
+    font-size: min(1.7vw, 28px);
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
+h5 {
+    font-family: 'Courier';
+	text-align: center;
+    font-size: min(1.5vw, 20px);
+    margin: 0 0 0 0;
+}
+h6 {
+    font-family: 'Courier';
+	text-align: center;
+    font-size: min(1.2vw, 15px);
+    margin: 0 0 0 0;
+}
 
+/* NAV BAR STUFF */
+/* -------------------------------------------------------------------------- */
+#main-nav-container {
+	width: 95vw !important;
+}
+#main-nav-container > * {
+	flex: 1;
+}
 #navigator {
 	margin: 0 !important;
 	padding: 0 !important;
@@ -24,25 +75,79 @@ html, body {
     border-radius: 8px;
     margin: 0px 10px !important;
 }
+#nav-left-side,
+#nav-right-side {
+    height: 80%;
+	gap: 15px;
+}
 
-.navbar-brand-custom {
+/* BASIC NAV BAR ICON */
+.barely-a-nav-element {
 	margin: 0 !important;
 	padding: 0 !important;
-	padding: 0.7rem !important;
-	border: 1px solid white;
+	padding: 5px !important;
 	border-radius: 8px;
-	background-color: #3c2803;
+	background-color: #3c2803 !important;
 	color: white;
 }
+.barely-a-nav-element:hover {
+    border: 2px solid #660202 !important;
+}
+#nav-home {
+    height: 100%;
+}
+/* TITLE */
+#nav-title {
+    color: white;
+}
+/* SOUND & MUSIC */
+#nav-music, #nav-sound {
+    height: 80%;
+    padding: 0.2rem !important;
+}
+/* CHAT ICON */
+#nav-chat {
+    display: inline-block;
+    position: relative;
+    height: 80%;
+    width: 100%;
+}
+#nav-chat-icon {
+    height: 100%;
+    width: 100%;
+}
+#nav-chat-badge {
+	position: absolute;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    font-size: 12px;
+    padding: 2px 5px;
+	background-color: rgb(255, 0, 0) !important;
+	width: auto;
+	height: auto;
+}
+/* PROFILE */
+#nav-avatar {
+	height: 100%;
+}
 
+/* LOADING VIEW STUFF  */
+/* -------------------------------------------------------------------------- */
 #view-loader {
-	height: 95vh;
+    display: none; /* This is important for the router to work!  */
+	height: 80vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
 	color: white;
-	background-color: black;
 }
 
+/* THIS IS WHERE WE INSERT EACH VIEW */
+/* -------------------------------------------------------------------------- */
 #router-view {
-	display: flex;
+    display: flex;
 	justify-content: center;
     margin: 1vh 1vw 1vh 1vw;
 	align-items: flex-start;
@@ -52,53 +157,81 @@ html, body {
     overflow: hidden;
 }
 
-h1 {
-	text-align: center;
-	font-size: min(2vw, 50px);
-    font-weight: bold;
-	margin-bottom: 20px;
+/* BASIC SETUP FOR EACH VIEW */
+/* -------------------------------------------------------------------------- */
+/* EACH VIEW HAS THE SAME STRUCUTRE: BACKGROUND IMAGE WITH OVERLAYING GRID */
+/* HERE WE HAVE ALL CLASSES THAT EACH VIEW SHOULD HAVE */
+/* MAIN CONTAINER OF VIEW */
+.view-base {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+/* CONTAINER FOR THE CHAT VIEW */
+.view-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* IMAGE WRAPPER FOR THE BACKGROUND IMAGE */
+.view-image-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 90%;
+    max-height: 100%;
+    aspect-ratio: 20 / 9;
+    overflow: hidden;
+}
+/* BACKGROUND IMAGE */
+.view-background-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+/* THE GRID LAYOUT */
+.view-overlay-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    width: 100%;
+    height: 100%;
+}
+/* ALL GRID AREAS SHOULD MANUALLY ALSO HAVE THOSE CLASS ADDED */
+.default-grid-area {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    align-content: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
 }
 
-h2 {
-    font-family: 'Courier';
-    font-weight: bold;
-	text-align: center;
-    font-size: min(2vw, 35px);
-    padding: 0 0 0 0;
-    margin: 0 0 0 0;
-}
-
-h3 {
-    font-family: 'Courier';
-    font-weight: bold;
-	text-align: center;
-    font-size: min(1.7vw, 30px);
-    padding: 0 0 0 0;
-    margin: 0 0 0 0;
-}
-
-h4 {
-    font-family: 'Courier';
-    font-weight: bold;
-	text-align: center;
-    font-size: min(1.7vw, 28px);
-    padding: 0 0 0 0;
-    margin: 0 0 0 0;
-}
-
-h5 {
-    font-family: 'Courier';
-	text-align: center;
-    font-size: min(1.5vw, 20px);
-    margin: 0 0 0 0;
-}
-
-/* toast notifications */
-.toast-container {
+/* Toast notifications */
+/* -------------------------------------------------------------------------- */
+/* Container for all toasts */
+.toast-container-left {
 	position: fixed;
-	top: 20px;
+	top: 11vh;
+	left: 20px;
+	z-index: 5050;
+}
+.toast-container-right {
+	position: fixed;
+	top: 11vh;
 	right: 20px;
-	z-index: 1050;
+	z-index: 5050;
 }
 
 .toast {
@@ -107,34 +240,33 @@ h5 {
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 	font-family: 'Courier New', Courier, monospace;
 }
-
+.message-toast {
+    background-color: #dac9a1;
+    border: 2px solid #000000 !important;
+}
+.toast-success {
+    border: 2px solid white !important;
+}
+.toast-error {
+    border: 2px solid #660202 !important;
+}
 .toast-header {
 	background-color: #000;
 	color: #f5c518;
 	font-weight: bold;
 }
-
 .toast-body {
 	font-size: 14px;
 	color: #fff;
 }
-
-.custom-toast {
-	border: 2px solid #f5c518;
-	color: #f5c518;
-	background-color: #1a1a1a;
-}
-
 .toast-symbol {
 	font-size: 18px;
 	color: #f5c518;
 	margin-right: 10px;
 }
-
 .btn-close {
 	filter: invert(1);
 }
-
 .mystic-symbol {
 	display: block;
 	font-size: 24px;
@@ -143,82 +275,8 @@ h5 {
 	color: #f5c518;
 }
 
-#home-nav {
-	gap: 0.5rem;
-	padding: 0.2rem !important;
-	background-color: #3c2803;
-	color: white;
-	border: 1px solid white;
-	border-radius: 8px;
-}
-
-#main-nav-container {
-	width: 95vw !important;
-}
-
-#main-nav-container > * {
-	flex: 1;
-}
-
-.nav-username {
-	padding: 0.5rem !important;
-}
-
-#nav-left-side {
-	gap: 0.5rem;
-}
-
-#nav-right-side {
-	height: 80%;
-    gap: 5px;
-}
-
-#nav-mid-side {
-
-}
-
-#nav-music-icon, #nav-sound-icon {
-    height: 80%;
-    padding: 0.2rem !important;
-}
-
-#profile-nav-avatar {
-	/* width: 100%; */
-	height: 100%;
-	/* border-radius: 50%; */
-}
-
-#site-title {
-	color: white;
-}
-
-#chat-nav {
-	position: relative;
-}
-
-#chat-nav-badge {
-	position: absolute;
-	top: -0.3rem;
-	right: -0.3rem;
-	background-color: red !important;
-	width: auto;
-	height: auto;
-	text-align: center;
-	border-radius: 0.3rem;
-	padding-top: 1px !important;
-	padding: 0.2rem !important;
-}
-
-/* All single line text input fields for e.g. filters shoud use this class! */
-.barely-an-input {
-    font-size: min(1vw, 15px);
-    background-color: black;
-    color: white;
-}
-.barely-an-input:disabled, .barely-an-input[disabled]{
-    background-color:rgba(145, 143, 143, 0.9);
-}
-
+/* SCROLL DIVS */
+/* -------------------------------------------------------------------------- */
 /* ALL NODES THAT HAVE SCROLL BARS SHOULD BE SET TO THIS CLASS */
 .barely-a-scroll-class {
     height: 100%;
@@ -234,6 +292,25 @@ h5 {
     background-color: black;
 }
 
+/* INPUT FIELD */
+/* -------------------------------------------------------------------------- */
+/* All single line text input fields for e.g. filters shoud use this class! */
+.barely-an-input {
+    font-size: min(1vw, 15px);
+    background-color: black;
+    color: white;
+    resize: none;
+    border: 2px solid white;
+    padding: 7px 10px;
+    text-align: left;
+}
+.barely-an-input:disabled, .barely-an-input[disabled]{
+    background-color:rgba(145, 143, 143, 0.9);
+}
+
+
+/* CLICKABLE USERNAMES TOURNAMENTS GAMES */
+/* -------------------------------------------------------------------------- */
 /* ALL NODES THAT CONTAIN CLICKABLE MENTIONS LIKE USERNAME GAME TOURNAMENT */
 .mention-user {
     color: rgb(159, 144, 144) !important;
@@ -266,71 +343,9 @@ h5 {
     text-decoration: none !important;
 }
 
-/* EACH VIEW HAS THE SAME STRUCUTRE: BACKGROUND IMAGE WITH OVERLAYING GRID */
-/* HERE WE HAVE ALL CLASSES THAT EACH VIEW SHOULD HAVE */
-/* MAIN CONTAINER OF VIEW */
-.view-base {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-/* CONTAINER FOR THE CHAT VIEW */
-.view-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* IMAGE WRAPPER FOR THE BACKGROUND IMAGE */
-.view-image-wrapper {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 90%;
-    max-height: 100%;
-    aspect-ratio: 20 / 9;
-    overflow: hidden;
-}
-
-/* BACKGROUND IMAGE */
-.view-background-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-/* THE GRID LAYOUT */
-.view-overlay-grid {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: grid;
-    width: 100%;
-    height: 100%;
-}
-
-/* ALL GRID AREAS SHOULD MANUALLY ALSO HAVE THOSE CLASS ADDED */
-.default-grid-area {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    align-content: center;
-    justify-content: center;
-    align-self: center;
-    justify-self: center;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-}
-
 /* MODAL STYLES */
+/* -------------------------------------------------------------------------- */
+/* NORMAL MODAL */
 .modal-content {
     border: 3px solid #000000;
     border-radius: 10px;
@@ -364,6 +379,8 @@ h5 {
     width: 70% !important;
 }
 
+/* MODAL STYLES */
+/* -------------------------------------------------------------------------- */
 /* IMAGE MODAL LAYOUT AND GRID */
 .image-modal-content{
     width: 400px !important;
@@ -371,12 +388,10 @@ h5 {
     border: none !important;
     background-color: rgba(0, 0, 0, 0) !important;
 }
-
 .image-modal-body {
     padding: 0 !important;
     background-color: rgba(0, 0, 0, 0) !important;
 }
-
 .image-modal-background-image {
     background-size: cover;
     background-repeat: no-repeat;
@@ -387,12 +402,15 @@ h5 {
     padding: 0 0 0 0;
 }
 
+/* BUTTONS */
+/* -------------------------------------------------------------------------- */
+/* THIS IS OUR MAIN BUTTON NOTE: even if it says "modal" its used outside of modals as well! */
 .modal-button {
     font-family: 'Courier';
-    font-size: min(1vw, 20px);
+    font-size: min(0.8vw, 15px);
     vertical-align: middle;
     text-align: center;
-    align-items: justify;
+    align-items: center;
     font-weight: 700;
     color: #FFFCE6;
     background-color: black;
@@ -401,24 +419,6 @@ h5 {
     border: 2px solid #ffffff;
     user-select: none;
 }
-.modal-image-button {
-    background-color: #00000000 !important;
-    border: none !important;
-    cursor: pointer;
-}
-.modal-toggle-button-enabled {
-    filter: brightness(100%) !important;
-    background-color: #660202;
-    border: 2px solid white;
-}
-.modal-toggle-button-enabled:hover {
-    background-color: #560202 !important;
-    border: 2px solid white !important;
-}
-.modal-toggle-button-disabled {
-    filter: brightness(30%) !important;
-}
-
 .modal-button:hover {
     background-color: #4a4a4a;
     border: 2px solid black;
@@ -435,10 +435,11 @@ h5 {
     background-color:rgba(145, 143, 143, 0.9);
 }
 
-/* Deactivate active and focus for toggle buttons */
-.modal-toggle-button-enabled:active,
-.modal-toggle-button-disabled:active {
-    filter: brightness(130%) !important;
+/* A BUTTON WITH AN IMAGE INSTEAD OF AN TEXT */
+.modal-image-button {
+    background-color: #00000000 !important;
+    border: none !important;
+    cursor: pointer;
 }
 .modal-image-button:hover {
     background-color: #660202 !important;
@@ -447,8 +448,27 @@ h5 {
     filter: brightness(100%) !important;
 }
 
+/* A BUTTON THAN CAN BE ON AN OFF */
+.modal-toggle-button-enabled {
+    filter: brightness(100%) !important;
+    background-color: #660202;
+    border: 2px solid white;
+}
+.modal-toggle-button-enabled:hover {
+    background-color: #560202 !important;
+    border: 2px solid white !important;
+}
+.modal-toggle-button-disabled {
+    filter: brightness(30%) !important;
+}
+.modal-toggle-button-enabled:active,
+.modal-toggle-button-disabled:active {
+    filter: brightness(130%) !important;
+}
+
+/* FLAG SELECTOR */
+/* -------------------------------------------------------------------------- */
 /* For flag selector dropdown */
-/* TODO: use this style on auth page! */
 .barely-an-flag-selector {
     font-size: min(1vw, 15px);
     background-color: black;

@@ -3,12 +3,6 @@ import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
 
 export function updateRoundRobin() {
-    // Translate the table headers TODO:
-    $id("tournament-rank-table-header-rank").textContent    = "TRANSLATE";
-    $id("tournament-rank-table-header-player").textContent  = "TRANSLATE";
-    $id("tournament-rank-table-header-wins").textContent    = "TRANSLATE";
-    $id("tournament-rank-table-header-diff").textContent    = "TRANSLATE";
-    $id("tournament-rank-table-header-games").textContent   = "TRANSLATE";
     // Delete all previous rows
     $id("tournament-rank-table-body").innerHTML = "";
     // Sort the members by rank

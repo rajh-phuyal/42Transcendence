@@ -1,10 +1,242 @@
 {
-    "template": {
-        "en-US": "",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+    "btnTabMembers": {
+        "en-US": "MEMBERS",
+        "pt-PT": "MEMBROS",
+        "pt-BR": "MEMBROS",
+        "de-DE": "MITGLIEDER",
+        "uk-UA": "УЧАСНИКИ",
+        "ne-NP": "सदस्यहरू"
+    },
+    "btnTabFinals": {
+        "en-US": "FINALS",
+        "pt-PT": "FINAIS",
+        "pt-BR": "FINAIS",
+        "de-DE": "FINALE",
+        "uk-UA": "ФІНАЛ",
+        "ne-NP": "फाइनलहरू"
+    },
+    "btnTabRoundRobin": {
+        "en-US": "ROUND ROBIN",
+        "pt-PT": "RODADA",
+        "pt-BR": "RODADA",
+        "de-DE": "RUNDEN ROBIN",
+        "uk-UA": "КРУГОВИЙ ТУРНІР",
+        "ne-NP": "राउण्ड रोबिन"
+    },
+    "btnTabUpcomingGames": {
+        "en-US": "UPCOMING GAMES",
+        "pt-PT": "PRÓXIMOS JOGOS",
+        "pt-BR": "PRÓXIMOS JOGOS",
+        "de-DE": "KOMMENDE SPIELE",
+        "uk-UA": "НАСТУПНІ ІГРИ",
+        "ne-NP": "आगामी खेलहरू"
+    },
+    "btnTabFinishedGames": {
+        "en-US": "FINISHED GAMES",
+        "pt-PT": "JOGOS FINALIZADOS",
+        "pt-BR": "JOGOS FINALIZADOS",
+        "de-DE": "ABGESCHLOSSENE SPIELE",
+        "uk-UA": "ЗАВЕРШЕНІ ІГРИ",
+        "ne-NP": "समाप्त खेलहरू"
+    },
+    "btnLeaveLobby": {
+        "en-US": "Leave Lobby",
+        "pt-PT": "Sair do Lobby",
+        "pt-BR": "Sair do Lobby",
+        "de-DE": "Lobby Verlassen",
+        "uk-UA": "Покинути лобі",
+        "ne-NP": "लबी छोड्नुहोस्"
+    },
+    "btnSubscribe": {
+        "en-US": "Subscribe",
+        "pt-PT": "Inscrever-se",
+        "pt-BR": "Inscrever-se",
+        "de-DE": "Abonnieren",
+        "uk-UA": "Підписатися",
+        "ne-NP": "सदस्यता लिनुहोस्"
+    },
+    "btnUnsubscribe": {
+        "en-US": "Unsubscribe",
+        "pt-PT": "Cancelar Inscrição",
+        "pt-BR": "Cancelar Inscrição",
+        "de-DE": "Abonnement kündigen",
+        "uk-UA": "Відписатися",
+        "ne-NP": "सदस्यता रद्द गर्नुहोस्"
+    },
+    "btnStart": {
+        "en-US": "Start Tournament",
+        "pt-PT": "Iniciar Torneio",
+        "pt-BR": "Iniciar Torneio",
+        "de-DE": "Turnier starten",
+        "uk-UA": "Почати турнір",
+        "ne-NP": "टुर्नामेन्ट सुरु गर्नुहोस्"
+    },
+    "btnDelete": {
+        "en-US": "Delete Tournament",
+        "pt-PT": "Excluir Torneio",
+        "pt-BR": "Excluir Torneio",
+        "de-DE": "Turnier löschen",
+        "uk-UA": "Видалити турнір",
+        "ne-NP": "टुर्नामेन्ट मेटाउनुहोस्"
+    },
+    "tableRank": {
+        "en-US": "Rank",
+        "pt-PT": "Classificação",
+        "pt-BR": "Classificação",
+        "de-DE": "Rang",
+        "uk-UA": "Рейтинг",
+        "ne-NP": "रैंक"
+    },
+    "tablePlayer": {
+        "en-US": "Player",
+        "pt-PT": "Jogador",
+        "pt-BR": "Jogador",
+        "de-DE": "Spieler",
+        "uk-UA": "Гравець",
+        "ne-NP": "खिलाडी"
+    },
+    "tableWins": {
+        "en-US": "Games Won",
+        "pt-PT": "Jogos Ganhos",
+        "pt-BR": "Jogos Ganhos",
+        "de-DE": "Gewonnene Spiele",
+        "uk-UA": "Виграні ігри",
+        "ne-NP": "जितेका खेलहरू"
+    },
+    "tableDiff": {
+        "en-US": "Score Difference",
+        "pt-PT": "Diferença de Pontuação",
+        "pt-BR": "Diferença de Pontuação",
+        "de-DE": "Punktdifferenz",
+        "uk-UA": "Різниця у рахунку",
+        "ne-NP": "स्कोर भिन्नता"
+    },
+    "tableTotalGames": {
+        "en-US": "Games Played",
+        "pt-PT": "Jogos Jogados",
+        "pt-BR": "Jogos Jogados",
+        "de-DE": "Gespielte Spiele",
+        "uk-UA": "Зіграні ігри",
+        "ne-NP": "खेल खेले"
+    },
+    "titleGameFinal": {
+        "en-US": "FINAL",
+        "pt-PT": "FINAL",
+        "pt-BR": "FINAL",
+        "de-DE": "FINALE",
+        "uk-UA": "ФІНАЛ",
+        "ne-NP": "फाइनल"
+    },
+    "titleGameSemiFinal": {
+        "en-US": "SEMI FINAL",
+        "pt-PT": "SEMI FINAL",
+        "pt-BR": "SEMI FINAL",
+        "de-DE": "HALBFINALE",
+        "uk-UA": "ПІВФІНАЛ",
+        "ne-NP": "सेमीफाइनल"
+    },
+    "titleGameThirdPlace": {
+        "en-US": "THIRD PLACE MATCH",
+        "pt-PT": "JOGO DE TERCEIRO LUGAR",
+        "pt-BR": "JOGO DE TERCEIRO LUGAR",
+        "de-DE": "DRITTES PLATZ SPIEL",
+        "uk-UA": "МАТЧ ЗА ТРЕТЄ МІСТО",
+        "ne-NP": "तेस्रो स्थानको खेल"
+    },
+    "tooltipGameDeadline": {
+        "en-US": "Hurry up! This game is only open for a limited time!",
+        "pt-PT": "Apressa-se! Este jogo está aberto por tempo limitado!",
+        "pt-BR": "Apressa-se! Este jogo está aberto por tempo limitado!",
+        "de-DE": "Beeil dich! Dieses Spiel ist nur für eine begrenzte Zeit geöffnet!",
+        "uk-UA": "Поспішайте! Ця гра відкрита лише на обмежений час!",
+        "ne-NP": "चाँडो गर्नुहोस्! यो खेल सीमित समयको लागि मात्र खुला छ!"
+    },
+    "tooltipGameOngoing": {
+        "en-US": "This game is ongoing!",
+        "pt-PT": "Este jogo está em andamento!",
+        "pt-BR": "Este jogo está em andamento!",
+        "de-DE": "Dieses Spiel ist im Gange!",
+        "uk-UA": "Ця гра триває!",
+        "ne-NP": "यो खेल चलिरहेको छ!"
+    },
+    "tooltipGameFinished": {
+        "en-US": "This game is finished!",
+        "pt-PT": "Este jogo está finalizado!",
+        "pt-BR": "Este jogo está finalizado!",
+        "de-DE": "Dieses Spiel ist beendet!",
+        "uk-UA": "Ця гра завершена!",
+        "ne-NP": "यो खेल समाप्त भएको छ!"
+    },
+    "tooltipGamePaused": {
+        "en-US": "This game is paused!",
+        "pt-PT": "Este jogo está pausado!",
+        "pt-BR": "Este jogo está pausado!",
+        "de-DE": "Dieses Spiel ist pausiert!",
+        "uk-UA": "Ця гра на паузі!",
+        "ne-NP": "यो खेल रोकिनु भएको छ!"
+    },
+    "tooltipTournamentAdmin": {
+        "en-US": "This is the admin of this tournament!",
+        "pt-PT": "Este é o administrador deste torneio!",
+        "pt-BR": "Este é o administrador deste torneio!",
+        "de-DE": "Dies ist der Administrator dieses Turniers!",
+        "uk-UA": "Це адміністратор цього турніру!",
+        "ne-NP": "यो यस टुर्नामेन्टको व्यवस्थापक हो!"
+    },
+    "tooltipTournamentStateSetup": {
+        "en-US": "Tournament is in state: 'setup'",
+        "pt-PT": "O torneio está no estado: 'configuração'",
+        "pt-BR": "O torneio está no estado: 'configuração'",
+        "de-DE": "Das Turnier ist im Zustand: 'Setup'",
+        "uk-UA": "Турнір у стані: 'налаштування'",
+        "ne-NP": "टुर्नामेन्टको अवस्था: 'सेटअप'"
+    },
+    "tooltipTournamentStateOngoing": {
+        "en-US": "Tournament is in state: 'ongoing'",
+        "pt-PT": "O torneio está no estado: 'em andamento'",
+        "pt-BR": "O torneio está no estado: 'em andamento'",
+        "de-DE": "Das Turnier ist im Zustand: 'laufend'",
+        "uk-UA": "Турнір у стані: 'триває'",
+        "ne-NP": "टुर्नामेन्टको अवस्था: 'चलिरहेको'"
+    },
+    "tooltipTournamentStateFinished": {
+        "en-US": "Tournament is in state: 'finished'",
+        "pt-PT": "O torneio está no estado: 'finalizado'",
+        "pt-BR": "O torneio está no estado: 'finalizado'",
+        "de-DE": "Das Turnier ist im Zustand: 'beendet'",
+        "uk-UA": "Турнір у стані: 'завершено'",
+        "ne-NP": "टुर्नामेन्टको अवस्था: 'समाप्त'"
+    },
+    "tooltipTournamentPrivate": {
+        "en-US": "Tournament is private",
+        "pt-PT": "O torneio é privado",
+        "pt-BR": "O torneio é privado",
+        "de-DE": "Das Turnier ist privat",
+        "uk-UA": "Турнір є приватним",
+        "ne-NP": "टुर्नामेन्ट निजी हो"
+    },
+    "tooltipTournamentPublic": {
+        "en-US": "Tournament is public",
+        "pt-PT": "O torneio é público",
+        "pt-BR": "O torneio é público",
+        "de-DE": "Das Turnier ist öffentlich",
+        "uk-UA": "Турнір є публічним",
+        "ne-NP": "टुर्नामेन्ट सार्वजनिक हो"
+    },
+    "tooltipTournamentLocal": {
+        "en-US": "Tournament is a local tournament",
+        "pt-PT": "O torneio é um torneio local",
+        "pt-BR": "O torneio é um torneio local",
+        "de-DE": "Das Turnier ist ein lokales Turnier",
+        "uk-UA": "Турнір є місцевим турніром",
+        "ne-NP": "टुर्नामेन्ट एक स्थानीय टुर्नामेन्ट हो"
+    },
+    "tooltipTournamentRemote": {
+        "en-US": "Tournament is a remote tournament",
+        "pt-PT": "O torneio é um torneio remoto",
+        "pt-BR": "O torneio é um torneio remoto",
+        "de-DE": "Das Turnier ist ein Fernturnier",
+        "uk-UA": "Турнір є віддаленим турніром",
+        "ne-NP": "टुर्नामेन्ट एक रिमोट टुर्नामेन्ट हो"
     }
 }

@@ -1,15 +1,14 @@
 <div class="view-base  view-background-color">
     <div class="view-container">
         <div class="view-image-wrapper">
-            <!-- <img src="../assets/images/game/maps/lizard-people.png" alt="Background Image" class="view-background-image"> -->
-            <img id="view-game-background" src="../assets/backgrounds/game.png" alt="Background Image" class="view-background-image" draggable="false">
+            <img id="view-game-background" src="../assets/backgrounds/game.png" class="view-background-image" draggable="false">
             <div class="view-overlay-grid">
                 <!-- TOURNAMENT HEADING -->
                 <div id="game-view-tournament-name" class="grid-cell default-grid-area tname mention-tournament" style="display: none;"></div>
                 <!-- LEFT PLAYER -->
                 <h2 id="player-left-username" class="grid-cell default-grid-area lun user-card username mention-user"></h2>
                 <div                          class="grid-cell default-grid-area lav user-card">
-                    <img id="player-left-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/c0ff26c3-0acc-4c9c-ae69-a65e88421b75.png" draggable="false">
+                    <img id="player-left-avatar" class="user-image mention-user" src="/media/avatars/c0ff26c3-0acc-4c9c-ae69-a65e88421b75.png" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area lst user-card user-state">
                     <h4  id="player-left-state"           class="user-state"></h4>
@@ -22,18 +21,11 @@
                         <img id="player-left-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
-                <h5 id="player-left-controls" class="grid-cell default-grid-area user-card ctrll">
-                    Controls<br>
-                    &nbsp;&nbsp;'W' up     <br>
-                    &nbsp;&nbsp;'S' down   <br>
-                    &nbsp;&nbsp;'1' big    <br>
-                    &nbsp;&nbsp;'2' slow    &larr;<br>
-                    &nbsp;&nbsp;'2' fast    &rarr;<br>
-               </h5>
+                <h5 id="player-left-controls" class="grid-cell default-grid-area user-card ctrll"></h5>
                 <!-- RIGHT PLAYER -->
                 <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user"></h2>
                 <div                           class="grid-cell default-grid-area rav user-card">
-                    <img id="player-right-avatar" class="user-image mention-user" alt="User Avatar" src="/media/avatars/a75be01d-8f1f-4ab2-9527-880487ad48ea.png" draggable="false">
+                    <img id="player-right-avatar" class="user-image mention-user" src="/media/avatars/a75be01d-8f1f-4ab2-9527-880487ad48ea.png" draggable="false">
                 </div>
                 <div class="grid-cell default-grid-area rst user-card user-state">
                     <h4  id="player-right-state"           class="user-state"></h4>
@@ -46,18 +38,11 @@
                         <img id="player-right-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
-                <h5 id="player-right-controls" class="grid-cell default-grid-area user-card ctrlr">
-                    Controls<br>
-                    &nbsp;&nbsp;'O' Up     <br>
-                    &nbsp;&nbsp;'L' Down   <br>
-                    &nbsp;&nbsp;'8' big    <br>
-                    &nbsp;&nbsp;'9' slow    &larr;<br>
-                    &nbsp;&nbsp;'9' fast    &rarr;<br>
-               </h5>
+                <h5 id="player-right-controls" class="grid-cell default-grid-area user-card ctrlr"></h5>
                 <!-- GAME FIELD -->
                 <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
                 <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
-                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" alt="Countdown Image" style="display: none;" draggable="false">
+                <img id="game-countdown-image"                      class="grid-cell default-grid-area field countdown-image" style="display: none;" draggable="false">
 
                 <button id="button-play-again"                      class="grid-cell default-grid-area modal-button btnpa"></button>
                 <button id="button-leave-lobby"                     class="grid-cell default-grid-area modal-button btnl"></button>
@@ -66,10 +51,6 @@
         </div>
     </div>
 </div>
-
-<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR GAME VIEW                 -->
-<!--            NOTE: some styles are defined in main.css!                   -->
-<!-- ####################################################################### -->
 <style>
     /* The basic valus of the grid are already set in main.css */
     .view-overlay-grid {
@@ -97,7 +78,6 @@
             ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
             ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
     }
-
 
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
     .tname {

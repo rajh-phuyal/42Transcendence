@@ -2,6 +2,7 @@ from django.urls import path
 
 from user.views import (
     SearchView,
+    UsernameView,
     ProfileView,
 	RelationshipView,
     ListFriendsView,
@@ -11,6 +12,7 @@ from user.views import (
 
 urlpatterns = [
     path('search/<str:search>/', SearchView.as_view(), name='search'),
+    path('usernameExists/<str:search>/', UsernameView.as_view(), name='username_exists'),
     path('profile/<int:targetUserId>/', ProfileView.as_view(), name='profile'),
     path('relationship/<str:action>/<int:targetUserId>/', RelationshipView.as_view(), name='relationship'),
     path('friend/list/<int:targetUserId>/', ListFriendsView.as_view(), name='list_friends'),

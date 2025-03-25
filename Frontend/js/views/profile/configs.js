@@ -1,10 +1,8 @@
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
 import router from '../../navigation/router.js';
-import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
-import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 export default {
     attributes: {
@@ -41,7 +39,6 @@ export default {
                 path: "../../../../assets/icons_128x128/icon_rel_send.png",
                 index: 3,
             },
-
         }
     },
 
@@ -54,7 +51,6 @@ export default {
                     console.warn("profile: setViewAttributes: this.result is not defined");
                     return;
                 }
-                console.log(this.result);
                 // Set the attributes
                 view.setAttribute("data-user-id", this.result.id);
                 view.setAttribute("data-user-username", this.result.username);
@@ -151,26 +147,15 @@ export default {
             element.style.display = "none";
         },
 
-        //TODO: this function needs to be removed
-        hideModal(modalToHide) {
-            let modalElement = this.domManip.$id(modalToHide);
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            modal.hide();
-        },
-
         showElement(elementId, flex = null){
             let element = this.domManip.$id(elementId)
             element.style.display = flex || "block";
         },
 
-
         callbackLogout() {
             router("/logout");
         },
     },
-
-
-
 
     hooks: {
         beforeRouteEnter() {
@@ -178,41 +163,6 @@ export default {
         },
 
         beforeRouteLeave() {
-            /* let element = this.domManip.$id("button-top-left");
-            this.domManip.$off(element, "click", this.buttonTopLeft.method);
-            element = this.domManip.$id("button-top-middle");
-            this.domManip.$off(element, "click", this.buttonTopMiddle.method);
-            element = this.domManip.$id("button-top-right");
-            this.domManip.$off(element, "click", this.buttonTopRight.method);
-            element = this.domManip.$id("edit-profile-modal-form-change-avatar-button");
-            this.domManip.$off(element, "click", this.changeAvatarMethod);
-            element = this.domManip.$id("edit-profile-modal-avatar-change-upload-button");
-            this.domManip.$off(element, "click", this.openFileExplorer);
-            element = this.domManip.$id("edit-profile-modal-avatar-change-file-input");
-            this.domManip.$off(element, "change", this.extractFile);
-            element = this.domManip.$id("edit-profile-modal-avatar-change-crop-image");
-            this.domManip.$off(element, "click", this.submitAvatar);
-            element = this.domManip.$id("edit-profile-modal-form-submit-button");
-            this.domManip.$off(element, "click", this.submitForm);
-            element = this.domManip.$id("modal-edit-friendship-friendship-primary-button");
-            this.domManip.$off(element, "click", this.changeFrendshipPrimaryMethod);
-            element = this.domManip.$class("modal-create-game-maps-button");
-            for (let individualElement of element)
-                this.domManip.$off(individualElement, "click", this.selectMap);
-            element = this.domManip.$id("modal-create-game-start-button");
-            this.domManip.$off(element, "click", this.submitInvitation);
-            element = this.domManip.$id("modal-edit-friendship-friendship-secondary-button");
-            this.domManip.$off(element, "click", this.changeFrendshipSecondaryMethod);
-            element = this.domManip.$id("modal-edit-friendship-block-button");
-            this.domManip.$off(element, "click", this.changeBlockMethod);
-            element = this.domManip.$id("modal-new-conversation-create-button");
-            this.domManip.$off(element, "click", this.createConversation);
-            element = this.domManip.$id("button-bottom-right");
-            this.domManip.$off(element, "click", this.openFriendList);
-            element = this.domManip.$id("modal-friends-list-search-bar");
-            this.domManip.$off(element, "keydown", this.searchFriend); */
-
-
             // Unlink the modal buttons to the methods
             modalManager.off("button-top-left", this.buttonTopLeft.method)
             modalManager.off("button-top-middle", this.buttonTopMiddle.method)
@@ -235,18 +185,13 @@ export default {
         },
 
         afterDomInsertion() {
-            console.warn(this.routeParams.id);
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
                 router('/404');
                 return;
             }
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
-                console.log("profileData ", this.result);
-                // Convert lastLogin to local time using moment.js
-                if (res.lastLogin) {
-                    this.result.lastLoginFormatted = loadTimestamp(res.lastLogin);
-                }
+                // console.error("profileData ", this.result);
                 this.setViewAttributes(true)
                 populateInfoAndStats(res);
                 this.populateButtons();
@@ -259,10 +204,8 @@ export default {
                 if (this.buttonTopMiddle.method)
                     modalManager.on("button-top-middle", this.buttonTopMiddle.method);
                 if (this.buttonTopRight.method) {
-                    if (this.buttonTopRight.method == "logout") {
-                        // this.domManip.$on(this.domManip.$id("button-top-right"), "click", this.callbackLogout);
+                    if (this.buttonTopRight.method == "logout")
                         EventListenerManager.linkEventListener("button-top-right", "profile", "click", this.callbackLogout);
-                    }
                     else
                         modalManager.on("button-top-right", this.buttonTopRight.method);
                 }

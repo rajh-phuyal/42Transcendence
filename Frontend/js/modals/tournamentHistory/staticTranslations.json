@@ -1,0 +1,7 @@
+{
+    "modal-tournament-history-title":               "title",
+    "modal-tournament-history-no-tournaments":      "noTournaments",
+    "modal-tournament-history-back-button":         "btnBack",
+    "modal-tournament-history-game-history-button": "btnGameHistory",
+    "modal-tournament-list-list-result-not-found-message": "noResults"
+}

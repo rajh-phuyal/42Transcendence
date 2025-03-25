@@ -1,0 +1,34 @@
+{
+    "title": {
+        "en-US": "Create Conversation with",
+        "pt-PT": "Criar Conversa com",
+        "pt-BR": "Criar Conversa com",
+        "de-DE": "Gespräch erstellen mit",
+        "uk-UA": "Створити розмову з",
+        "ne-NP": "सँग कुराकानी सिर्जना गर्नुहोस्"
+    },
+    "placeholderTextarea": {
+        "en-US": "Write your message here. The overloards will make sure that it will be delivered...",
+        "pt-PT": "Escreva sua mensagem aqui. Os sobrecarregados garantirão que ela seja entregue...",
+        "pt-BR": "Escreva sua mensagem aqui. Os sobrecarregados garantirão que ela seja entregue...",
+        "de-DE": "Schreiben Sie hier Ihre Nachricht. Die Überlords werden dafür sorgen, dass sie zugestellt wird...",
+        "uk-UA": "Напишіть ваше повідомлення тут. Повелителі подбають про його доставку...",
+        "ne-NP": "यहाँ तपाईंको सन्देश लेख्नुहोस्। अधिपतिहरूले यसलाई सफलतापूर्वक पुर्‍याउनेछन्..."
+    },
+    "btnClose": {
+        "en-US": "Close",
+        "pt-PT": "Fechar",
+        "pt-BR": "Fechar",
+        "de-DE": "Schließen",
+        "uk-UA": "Закрити",
+        "ne-NP": "बन्द गर्नुहोस्"
+    },
+    "btnCreateConversation": {
+        "en-US": "Create",
+        "pt-PT": "Criar",
+        "pt-BR": "Criar",
+        "de-DE": "Erstellen",
+        "uk-UA": "Створити",
+        "ne-NP": "सिर्जना गर्नुहोस्"
+    }
+}

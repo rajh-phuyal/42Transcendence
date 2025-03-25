@@ -1,6 +1,7 @@
-import { $id , $addClass, $removeClass, $class} from "../../abstracts/dollars.js";
-import { tournamentData as data } from "./objects.js";
 import router from "../../navigation/router.js";
+import { $id , $addClass, $removeClass, $class} from "../../abstracts/dollars.js";
+import { translate } from '../../locale/locale.js';
+import { tournamentData as data } from "./objects.js";
 import { updateMembers } from "./methodsMembers.js";
 import { updateGames } from "./methodsGames.js";
 import { updateRoundRobin } from "./methodsRankTable.js";
@@ -90,33 +91,33 @@ function updateIcons() {
     /* STATE */
     if (data.tournamentInfo.state === "setup") {
         iconState.src = "../assets/icons_128x128/icon_tournament_state_setup.png";
-        iconState.setAttribute("title", "Tournament is in state: 'setup'"); // TODO: translate
+        iconState.title = translate("tournament", "tooltipTournamentStateSetup");
     }
     else if (data.tournamentInfo.state === "ongoing") {
         iconState.src = "../assets/icons_128x128/icon_tournament_state_ongoing.png";
-        iconState.setAttribute("title", "Tournament is in state: 'ongoing'"); // TODO: translate
+        iconState.title = translate("tournament", "tooltipTournamentStateOngoing");
     }
     else {
         iconState.src = "../assets/icons_128x128/icon_tournament_state_finished.png";
-        iconState.setAttribute("title", "Tournament is in state: 'finished'"); // TODO: translate
+        iconState.title = translate("tournament", "tooltipTournamentStateFinished");
     }
     /* PRIVACY */
     if (data.tournamentInfo.public) {
         iconPrivacy.src = "../assets/icons_128x128/icon_tournament_public.png";
-        iconPrivacy.setAttribute("title", "Tournament is public"); // TODO: translate
+        iconPrivacy.title = translate("tournament", "tooltipTournamentPublic");
     }
     else {
         iconPrivacy.src = "../assets/icons_128x128/icon_tournament_private.png";
-        iconPrivacy.setAttribute("title", "Tournament is private"); // TODO: translate
+        iconPrivacy.title = translate("tournament", "tooltipTournamentPrivate");
     }
     /* TYPE */
     if (data.tournamentInfo.local) {
         iconType.src = "../assets/icons_128x128/icon_tournament_local.png";
-        iconType.setAttribute("title", "Tournament is a local tournament"); // TODO: translate
+        iconType.title = translate("tournament", "tooltipTournamentLocal");
     }
     else {
         iconType.src = "../assets/icons_128x128/icon_tournament_remote.png";
-        iconType.setAttribute("title", "Tournament is a remote tournament"); // TODO: translate
+        iconType.title = translate("tournament", "tooltipTournamentRemote");
     }
 }
 
@@ -155,10 +156,8 @@ function updateButtons() {
     buttonDelete.style.display = "none"; // Hide by default
     buttonDelete.removeEventListener("click", deleteTournament);
     if (data.clientRole === "admin" && data.tournamentInfo.state === "setup") {
-        buttonStart.innerText = "Start Tournament"; // TODO: translate
         buttonStart.style.display = "block";
         buttonStart.addEventListener("click", startTournament);
-        buttonDelete.innerText = "Delete Tournament"; // TODO: translate
         buttonDelete.style.display = "block";
         buttonDelete.addEventListener("click", deleteTournament);
     }
@@ -170,15 +169,15 @@ function updateButtons() {
         buttonSubscribe.removeEventListener("click", leaveTournament);
         if (data.clientRole === "member") {
             buttonSubscribe.style.display = "block";
-            buttonSubscribe.innerText = "Unsubscribe"; // TODO: translate
+            buttonSubscribe.innerText = translate("tournament", "btnUnsubscribe");
             buttonSubscribe.addEventListener("click", leaveTournament);
         } else if (data.clientRole === "invited") {
             buttonSubscribe.style.display = "block";
-            buttonSubscribe.innerText = "Subscribe";  // TODO: translate
+            buttonSubscribe.innerText = translate("tournament", "btnSubscribe");
             buttonSubscribe.addEventListener("click", joinTournament);
         } else if (data.clientRole === "fan" && data.tournamentInfo.public) {
             buttonSubscribe.style.display = "block";
-            buttonSubscribe.innerText = "Subscribe";  // TODO: translate
+            buttonSubscribe.innerText = translate("tournament", "btnSubscribe");
             buttonSubscribe.addEventListener("click", joinTournament);
         }
     }

@@ -1,11 +1,14 @@
+# Basics
+import logging
+# Django
 from django.contrib.auth.models import AnonymousUser
+from django.utils.translation import gettext as _
 from channels.middleware import BaseMiddleware
 from asgiref.sync import sync_to_async
-import logging
 from rest_framework import status
-from core.cookies import CookieJWTAuthentication
-from django.utils.translation import gettext as _
+# Core
 from core.exceptions import BarelyAnException
+from core.cookies import CookieJWTAuthentication
 
 class FailedWebSocketAuthentication(BarelyAnException):
     def __init__(self, detail=None, status_code=status.HTTP_403_FORBIDDEN):

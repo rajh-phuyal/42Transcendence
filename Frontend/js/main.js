@@ -21,19 +21,44 @@ try {
 }
 
 window.addEventListener("click", (event) => {
-    // TODO: maybe add the class 'sound-button' to the elements that should play a sound
-    // MAYBE we can somehow define a a list of classes which should make sounds....
-    // oris there a better way to do this?
-    let target = event.target.closest(".sound-button");
-    if(!target)
-        target = event.target.closest(".modal-button");
+    // Handle sound button clicks
+    let soundClasses = [
+        ".click-sound",
+        ".modal-button",
+        ".mention-user",
+        ".mention-game",
+        ".mention-tournament"];
+    let target = null;
+    for (let i = 0; i < soundClasses.length; i++) {
+        target = event.target.closest(soundClasses[i]);
+        if (target) break;
+    }
     if (target) {
-        audioPlayer.playSound("toggle"); // Replace with actual sound name
+        audioPlayer.playSound("click");
     }
 });
 
-window.addEventListener('popstate', () => {
-    router(window.location.pathname)
+// For the Back/Forward buttons in the browser (aka history navigation)
+window.addEventListener('popstate', (event) => {
+    // The state stored in pushState will be available as `event.state`
+    const state = event.state;
+    if (state && state.path) {
+        // transform params string back to object: "id=1&name=John" => { id: 1, name: "John" }
+        let paramsObject = {};
+        if (state.params) {
+            // First remove the question at index 1 if it exists
+            if (state.params[0] === '?')
+                state.params = state.params.slice(1);
+            paramsObject = state.params
+                .split('&')                 // Split by '&' if there are multiple parameters (but I guess we don't have this)
+                .reduce((acc, param) => {
+                  const [key, value] = param.split('=');    // Split each key-value pair
+                  acc[key] = decodeURIComponent(value);     // Assign the key-value pair to the accumulator
+                  return acc;
+                }, {});
+        }
+        router(state.path, paramsObject, false);
+    }
 });
 
 // get the translations for all the registered views
@@ -41,7 +66,6 @@ $store.dispatch('loadTranslations', routes.map(route => route.view));
 
 // Initializes the nav bar
 $nav();
-
 
 // go to path only after the translations are loaded
 $store.addMutationListener('setTranslations', () => {
@@ -52,7 +76,7 @@ $store.addMutationListener('setTranslations', () => {
     // make the current params an object
     const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
 
-    router(currentRoute, currentParamsObject);
+    router(currentRoute, currentParamsObject, false);
 
     // set the loading to false
     setViewLoading(false);
@@ -61,14 +85,12 @@ $store.addMutationListener('setTranslations', () => {
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
-        console.log("Web socket is connected!");
         if (setInervalId) {
             $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
-        console.log("Web socket is disconnected!");
         if (!setInervalId && $store.fromState('isAuthenticated')) {
             $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {
@@ -86,7 +108,6 @@ window.addEventListener('select-user-nav', (event) => {
 
 
 /* DESABLE ZOOM*/
-
 document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=')) {
         event.preventDefault();

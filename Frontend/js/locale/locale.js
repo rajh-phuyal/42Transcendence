@@ -10,10 +10,15 @@ import { $id } from '../abstracts/dollars.js'
  * @returns {String} string mapped to the key and replaced with the param
  */
 export const translate = (namespace, key, params = null) => {
+    // Trying to get clients local language e.g. en-US
     const locale = $store.state.locale;
+    if(!locale) {
+        console.warn("No locale set in store");
+        return key;
+    }
 
+    // Trying to load the translation dict from store
     let translation = $store.state.translations?.[namespace]?.[key]?.[locale];
-
     if (!translation) {
         console.warn(`Translation for ${namespace}.${key} not found for locale ${locale}`);
         return key;
@@ -31,26 +36,39 @@ export const translate = (namespace, key, params = null) => {
     return translation;
 };
 
-async function loadAndExecuteTranslations(subject) {
+async function loadAndExecuteTranslations(subject, modal=false) {
     try {
-        let translationMap = await fetch(`../views/${subject}/staticTranslations.json`);
+        let filePath = "";
+        if (modal)
+            filePath = `../js/modals/${subject}/staticTranslations.json`;
+
+        else
+            filePath = `../js/views/${subject}/staticTranslations.json`;
+        const translationMap = await fetch(filePath);
+
         if (translationMap.ok) {
-            const translationData = await translationMap.json();
-            for (const [key, value] of translationData)
-                $id(key) = translate(subject, value);
+            const translationMapData = await translationMap.json();
+            for (const key in translationMapData) {
+                let targetElement = $id(key)
+                if(!targetElement) {
+                    console.error("Error in staticTranslation.js for view: %s; html element '%s' not found", subject, key);
+                    continue;
+                }
+                let translatedString = translate(subject, translationMapData[key]);
+                // console.log("Static element translated: %s; translation: %s", key, translatedString);
+                targetElement.innerHTML = translatedString;
+            }
         }
     } catch(error) {
-        console.error("Error on translation:", error);
+        console.error("Error on translation: Check if file: 'staticTranslations.json' exists for this subject: %s; error: %s", subject, error);
     }
 }
 
-export function staticTranslator(viewName) {
+export async function staticTranslator(viewName) {
     const routeObject = routes.find(route => route.view === viewName);
-
-    loadAndExecuteTranslations(viewName);
-
+    await loadAndExecuteTranslations(viewName);
     if (!routeObject.modals)
         return ;
     for (let modal of routeObject.modals)
-        loadAndExecuteTranslations(modal);
+        await loadAndExecuteTranslations(modal, true);
 };

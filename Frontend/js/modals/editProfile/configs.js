@@ -2,6 +2,7 @@ import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import $store from '../../store/store.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -9,6 +10,18 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            const usernameElement   = this.domManip.$id("modal-edit-profile-username");
+            const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
+            const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
+            const notesElement      = this.domManip.$id("modal-edit-profile-notes");
+            // Placeholders
+            usernameElement.placeholder     = translate("editProfile", "placeholderUsername");
+            firstNameElement.placeholder    = translate("editProfile", "placeholderFirstName");
+            lastNameElement.placeholder     = translate("editProfile", "placeholderLastName");
+            // Tooltips
+            notesElement.placeholder        = translate("editProfile", "placeholderNotes");
+        },
 
         initTypeListeners(init) {
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
@@ -68,6 +81,7 @@ export default {
 
     hooks: {
         beforeOpen() {
+            this.translateElements();
             const avatarElement     = this.domManip.$id("modal-edit-profile-avatar");
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
@@ -75,11 +89,6 @@ export default {
             const languageElement   = this.domManip.$id("modal-edit-profile-language");
             const noteElement       = this.domManip.$id("modal-edit-profile-notes");
             const submitElement     = this.domManip.$id("modal-edit-profile-btn-save");
-            // Placeholders
-            usernameElement.placeholder = "username"; // TODO: translate
-            firstNameElement.placeholder = "first name"; // TODO: translate
-            lastNameElement.placeholder = "last name"; // TODO: translate
-            // TODO: add a toolitip text for the notes!!!
             // Values
             usernameElement.value   = this.domManip.$id("router-view").getAttribute("data-user-username");
             firstNameElement.value  = this.domManip.$id("router-view").getAttribute("data-user-first-name");

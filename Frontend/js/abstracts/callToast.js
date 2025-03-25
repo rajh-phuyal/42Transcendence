@@ -1,6 +1,7 @@
 import { $id, $class, $on } from '../abstracts/dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
 import router from '../navigation/router.js'
+import { translate } from '../locale/locale.js';
 
 /* INTERNAL CHAT TOAST RELATED */
 function routeToConversation(event) {
@@ -38,7 +39,7 @@ function createConversationToast(conversation) {
 
     container.querySelector(".message-toast-avatar").src = `${window.origin}/media/avatars/${conversation.avatar}`;
 
-    $class("toast-container")[0].appendChild(container);
+    $class("toast-container-right")[0].appendChild(container);
     $on(container, "click", routeToConversation);
     return container;
 }
@@ -49,26 +50,45 @@ function removeToast(event) {
 
 /* DEFAULT TOAST RELATED */
 export default function $callToast(type, message, conversation = null) {
-    let toast = $id(`${type}-toast`);
-    let toastMsg = $id(`${type}-toast-message`);
-
+    let toastElement = "";
+    let toastMsgElement = "";
+    let toastTitle = "";
+    let duration = "";
     if (conversation) {
-        if (!$id(`message-toast-${conversation.id}`))
-            toast = createConversationToast(conversation);
-        else
-            toast = $id(`message-toast-${conversation.id}`);
-        toastMsg = toast.querySelector(".message-toast-message");
-        message = `${conversation.username}: ${message}`;
+        /* CHAT MESSAGE TOAST */
+        duration = 2000
+        if (!$id(`message-toast-${conversation.id}`)) {
+            toastElement = createConversationToast(conversation);
+            audioPlayer.playSound("chatToast");
+        } else
+        toastElement = $id(`message-toast-${conversation.id}`);
+        toastMsgElement = toastElement.querySelector(".message-toast-message");
+        message = message; // TODO: Parse the message for usernames
+        toastTitle = translate("global:toast", "titleChat") + conversation.username;
+    } else {
+        /* SUCCESS / ERROR TOAST */
+        duration = 5000
+        if(!message)
+            return;
+        toastElement = $id(`${type}-toast`);
+        toastMsgElement = $id(`${type}-toast-message`);
+        toastTitle = translate("global:toast", "title");
+        audioPlayer.playSound("toast");
+        if  (type === "error")
+            toastElement.classList.add("toast-error");
+        else if (type === "success")
+            toastElement.classList.add("toast-success");
+
     }
-
-    audioPlayer.playSound("toast");
-    if (!message)
-        return ;
-    toastMsg.textContent = message;
-    const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: 10000 }).show();
-
+    let toastTitleElement = ""
+    toastTitleElement = toastElement.querySelector(".toast-title");
+    toastTitleElement.textContent = toastTitle;
+    toastMsgElement.textContent = message;
+    // Set duration
+    // Create a new toast instance
+    new bootstrap.Toast(toastElement, { autohide: true, delay: duration }).show();
     // remove the conversation toast after it closes
     if (conversation != null) {
-        toast.addEventListener('hidden.bs.toast', removeToast);
+        toastElement.addEventListener('hidden.bs.toast', removeToast);
     }
 }

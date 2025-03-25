@@ -1,0 +1,18 @@
+{
+    "title": {
+        "en-US": "Join Tournament",
+        "pt-PT": "Participar no Torneio",
+        "pt-BR": "Participar no Torneio",
+        "de-DE": "Torneo beitreten",
+        "uk-UA": "Приєднатися до турніру",
+        "ne-NP": "टुर्नामेन्टमा सामेल हुनुहोस्"
+    },
+    "btnBack": {
+        "en-US": "Back",
+        "pt-PT": "Voltar",
+        "pt-BR": "Voltar",
+        "de-DE": "Zurück",
+        "uk-UA": "Назад",
+        "ne-NP": "फिर्ता"
+    }
+}
