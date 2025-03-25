@@ -8,7 +8,7 @@ import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
 import { translate } from './locale/locale.js';
 import { audioPlayer } from './abstracts/audio.js';
-import { zoomIn } from './views/barely-responsive/methods.js';
+import { rescaleCanvas } from './views/home/methods.js';
 setViewLoading(true);
 
 try {
@@ -121,17 +121,21 @@ document.addEventListener('wheel', function(event) {
 }, { passive: false });
 
 
-window.onresize = () => {
+window.onresize = async () => {
 	if (window.outerHeight < 1020 || window.outerWidth < 1020){
-        zoomIn(window.outerHeight, window.outerWidth);
+        //zoomIn(window.outerHeight, window.outerWidth); Is in the barely-responsive view methods.js but doesn't work well
         if (window.location.pathname != "/barely-responsive") {
             $store.commit("setMarkBook", window.location.pathname);
             router("/barely-responsive");
         }
-	} else if (window.outerHeight >= 1020 && window.outerWidth >= 1020
-		&& window.location.pathname == "/barely-responsive") {
-			const path = $store.state.markbook;
-			$store.commit("setMarkBook", "");
-			router(path);
-		}
+        return ;
+	}
+    if (window.outerHeight >= 1020 && window.outerWidth >= 1020
+        && window.location.pathname == "/barely-responsive") {
+           const path = $store.state.markbook;
+            $store.commit("setMarkBook", "");
+            router(path);
+    }
+    if (window.location.pathname == "/home")
+        await rescaleCanvas();
 }

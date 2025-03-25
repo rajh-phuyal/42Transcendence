@@ -117,7 +117,7 @@ export async function buildCanvas(){
             await drawLine(element);
 }
 
-async function redraw(image)
+export async function redraw(image)
 {
     await drawImg(image);
     for (let element of image.lines)
