@@ -11,6 +11,7 @@ import WebSocketManager from '../abstracts/WebSocketManager.js';
 import dollars from '../abstracts/dollars.js';
 import { translate, staticTranslator } from '../locale/locale.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { historyManager } from './history.js';
 import { modalManager } from '../abstracts/ModalManager.js';
 import { EventListenerManager } from '../abstracts/EventListenerManager.js';
 
@@ -144,14 +145,15 @@ async function router(path, params = null, instant = false) {
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
     // reduce the params to a query string
-
-
-    // We can store the data in state if needed
-    const tmp = JSON.parse(JSON.stringify(params));
     params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
     const pathWithParams = params ? `${path}?${params}` : path;
 
-    let isSame = window.location.origin + pathWithParams === window.location.href;
+
+ /*    // We can store the data in state if needed
+    const tmp = JSON.parse(JSON.stringify(params));
+    params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
+
+
 
     // console.debug("full:", window.location.origin + pathWithParams, `href:${window.location.href}`);
     // console.debug("isSame:", isSame);
@@ -159,7 +161,7 @@ async function router(path, params = null, instant = false) {
     if ((updateHistory && !isSame) || !history.state) {
         const obj = { path: pathWithParams, route: path, params: tmp };
         history.pushState(obj, '', pathWithParams);
-    }
+    } */
 
     // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
@@ -181,8 +183,13 @@ async function router(path, params = null, instant = false) {
     // translate static elements on the view
     await staticTranslator(route.view);
 
+    // Update the history
+    historyManager.updateHistory(path, params);
+
     console.log("Router: View loaded:", route.view);
     setViewLoading(false);
 }
 
 export default router;
+
+
