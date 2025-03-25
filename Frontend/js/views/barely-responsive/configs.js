@@ -22,8 +22,6 @@ export default {
         },
 
         afterDomInsertion() {
-			let text = this.domManip.$id("dont-resize");
-			text.innerText = translate("barely-responsive", "title");
         }
     }
 }

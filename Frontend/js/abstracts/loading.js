@@ -9,8 +9,12 @@ function setViewLoading(isLoading) {
         false: 'none'
     };
 
-    view.style.display = display[!isLoading];
     loading.style.display = display[isLoading];
+    view.style.display = display[!isLoading];
 }
 
-export { setViewLoading };
+function isViewLoading() {
+    return $id('view-loader').style.display === 'flex';
+}
+
+export { setViewLoading, isViewLoading };

@@ -9,4 +9,6 @@ export const state = {
     translations: {},
     webSocketIsAlive: false,
     currentRoute: 'auth',
+    music: true,
+    sound: true,
 };

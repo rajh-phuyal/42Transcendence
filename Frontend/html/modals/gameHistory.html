@@ -2,26 +2,20 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content image-modal-content">
             <div class="modal-body image-modal-body" id="modal-game-history-body">
-                <img src='../../assets/backgrounds/modal-background-blank-paper.png' class="image-modal-background-image" alt="Background Image" draggable="false">
+                <img src='../../assets/backgrounds/modal-background-blank-paper.png' class="image-modal-background-image" draggable="false">
                 <div id="modal-game-history-grid" class="view-overlay-grid">
-                    <h5 class="modal-title grid-cell default-grid-area title" id="modal-game-history-title">GAME HISTORY</h5> <!-- TODO: translation -->
+                    <h5 id="modal-game-history-title" class="modal-title grid-cell default-grid-area title"></h5>
+                    <div id="modal-game-history-search-bar-container" class="grid-cell default-grid-area srchb">
+                        <input type="text" id="modal-game-history-search-bar" class="barely-an-input">
+                    </div>
                     <button type="button" class="grid-cell default-grid-area btn-close btn-close-white modal-btn-close btnclo" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div id="modal-game-history-game-list-container" class="grid-cell default-grid-area barely-a-scroll-class lcont">
                         <!-- Game list will be here -->
-                        <h5 id="modal-game-history-no-games">No games played yet.</h5> <!-- TODO: translation -->
+                        <h5 id="modal-game-list-list-result-not-found-message" style="padding: 10px 10px 10px 10px; color:black; display: none;"></h5>
+                        <h5 id="modal-game-history-no-games"></h5>
                     </div>
-                    <button type="button" class="grid-cell default-grid-area btn modal-button btntm" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal">Tournament History</button>
+                    <button id="modal-game-history-btn-tournament-history" type="button" class="grid-cell default-grid-area btn modal-button btntm" data-bs-target="#modal-tournament-history" data-bs-toggle="modal" data-bs-dismiss="modal"></button>
                 </div>
-                <template id="modal-game-history-card-template">
-                    <div class="modal-game-history-card">
-                        <img    class="grid-cell default-grid-area modal-game-history-card-playerLeft-avatar avt1" draggable="false">
-                        <h6     class="grid-cell default-grid-area modal-game-history-card-playerLeft-username usrn1"></h6>
-                        <h4     class="grid-cell default-grid-area modal-game-history-card-score score"></h4>
-                        <h6     class="grid-cell default-grid-area modal-game-history-card-playerRight-username usrn2"></h6>
-                        <img    class="grid-cell default-grid-area modal-game-history-card-playerRight-avatar avt2" draggable="false">
-                        <h6     class="grid-cell default-grid-area modal-game-history-card-date dt"></h6>
-                    </div>
-                </template>
             </div>
         </div>
     </div>
@@ -36,8 +30,8 @@
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      btnclo .     "
             "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
             "title title title  title  title  title  title  title  title  title  title  title  title  title  title  title  title "
-            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
-            ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
+            ".     srchb srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  .     "
+            ".     srchb srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  srchb  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
@@ -54,8 +48,8 @@
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     lcont lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  lcont  .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".     .     .      .      .      btntm  btntm  btntm  btntm  btntm  btntm  btntm  .      .      .      .      .     "
-            ".     .     .      .      .      btntm  btntm  btntm  btntm  btntm  btntm  btntm  .      .      .      .      .     "
+            ".     .     .      .      btntm  btntm  btntm  btntm  btntm  btntm  btntm  btntm  btntm  .      .      .      .     "
+            ".     .     .      .      btntm  btntm  btntm  btntm  btntm  btntm  btntm  btntm  btntm  .      .      .      .     "
             ".     .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
@@ -67,6 +61,7 @@
     }
     .lcont {
         grid-area: lcont;
+        align-content: start;
         display: block !important;
         overflow: auto !important;
         padding: 0% 2% 0% 2%;
@@ -127,4 +122,18 @@
         height: auto;
         width: 90%;
     }
+</style>
+
+<template id="modal-game-history-card-template">
+    <div class="modal-game-history-card">
+        <img    class="grid-cell default-grid-area modal-game-history-card-playerLeft-avatar avt1" draggable="false">
+        <h6     class="grid-cell default-grid-area modal-game-history-card-playerLeft-username usrn1"></h6>
+        <h4     class="grid-cell default-grid-area modal-game-history-card-score score"></h4>
+        <h6     class="grid-cell default-grid-area modal-game-history-card-playerRight-username usrn2"></h6>
+        <img    class="grid-cell default-grid-area modal-game-history-card-playerRight-avatar avt2" draggable="false">
+        <h6     class="grid-cell default-grid-area modal-game-history-card-date dt"></h6>
+    </div>
+</template>
+<style>
+
 </style>

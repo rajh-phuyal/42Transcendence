@@ -1,0 +1,34 @@
+{
+    "title": {
+        "en-US": "Crop the image",
+        "pt-PT": "Cortar a imagem",
+        "pt-BR": "Cortar a imagem",
+        "de-DE": "Bild zuschneiden",
+        "uk-UA": "Обрізати зображення",
+        "ne-NP": "तस्बिर काट्नुहोस्"
+    },
+    "btn-crop": {
+        "en-US": "Submit",
+        "pt-PT": "Submeter",
+        "pt-BR": "Enviar",
+        "de-DE": "Absenden",
+        "uk-UA": "Надіслати",
+        "ne-NP": "पेश गर्नुहोस्"
+    },
+    "btn-choose": {
+        "en-US": "Choose a file",
+        "pt-PT": "Escolher um arquivo",
+        "pt-BR": "Escolher um arquivo",
+        "de-DE": "Datei wählen",
+        "uk-UA": "Вибрати файл",
+        "ne-NP": "फाइल छान्नुहोस्"
+    },
+    "btn-back": {
+        "en-US": "Back",
+        "pt-PT": "Voltar",
+        "pt-BR": "Voltar",
+        "de-DE": "Zurück",
+        "uk-UA": "Назад",
+        "ne-NP": "फिर्ता"
+    }
+}

@@ -2,7 +2,6 @@ import call from '../../abstracts/call.js';
 import { translate } from '../../locale/locale.js';
 import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
-import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
@@ -23,7 +22,6 @@ export default {
     methods: {
         setTranslations() {
             this.domManip.$id("chat-view-searchbar").placeholder = translate("chat", "filterConversations");
-            this.domManip.$id("chat-room-heading").innerText = translate("chat", "ChatRoom");
         },
 
         // THE LISTENERS

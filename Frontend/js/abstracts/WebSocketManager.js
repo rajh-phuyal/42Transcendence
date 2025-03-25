@@ -21,13 +21,11 @@ class WebSocketManager {
     // Connect to WebSocket with the provided token
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("WebSocket already connected.");
             return;
         }
 
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
-            console.log("Not connecting WebSocket - user not authenticated");
             $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
                 if (!isAuthenticated) return;
                 this.connect();
@@ -37,14 +35,12 @@ class WebSocketManager {
 
         const host = hostname;
         const socketUrl = `wss://${host}/ws/app/main/`;
-
-        console.log("Connecting to WebSocket:", socketUrl);
         try {
             this.socket = new WebSocket(socketUrl);
 
             // Log connection events
             this.socket.onopen = () => {
-                console.log("WebSocket connected.");
+                console.log("WebSocket connected:", socketUrl);
                 $store.commit("setWebSocketIsAlive", true);
             };
 
@@ -64,8 +60,6 @@ class WebSocketManager {
             console.error("WebSocket error:", error);
             $store.commit("setWebSocketIsAlive", false);
         };
-
-        // this.socket.addEventListner("message", this.receiveMessage);
     }
 
     // Allowd types are:
@@ -74,7 +68,6 @@ class WebSocketManager {
     // - typing (for sending typing indicator)
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        console.log("FE -> BE:", message);
     }
 
     // The backend send:
@@ -85,8 +78,7 @@ class WebSocketManager {
 
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
-        console.log("BE -> FE:", message);
-
+        // console.log("BE -> FE:", message);
         const currentRoute = $store.fromState("currentRoute");
 
         switch (message.messageType) {
@@ -100,10 +92,10 @@ class WebSocketManager {
 
             // CHAT RELATED MESSAGES
             case "chat":
-                audioPlayer.playSound("chat");
-                if (currentRoute == "chat")
+                if (currentRoute == "chat") {
+                    audioPlayer.playSound("chat");
                     processIncomingWsChatMessage(message);
-                else {
+                } else {
                     console.log("message:", message);
                     $callToast("message", message.content, {id: message.conversationId, username: message.username, avatar: message.avatar});
                 }
@@ -189,14 +181,10 @@ class WebSocketManager {
         $callToast("sucess", message.message);
     }
 
-    // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
             this.socket.close();
             this.socket = null;
-            console.log("WebSocket connection closed.");
-        } else {
-            console.log("WebSocket is not connected.");
         }
         // this.socket.removeEventListner("message", this.receiveMessage);
     }
@@ -204,7 +192,7 @@ class WebSocketManager {
     updateNavBarBadge(value) {
 		if (value > 99)
 			value = "99+";
-        $id("chat-nav-badge").textContent = value || "";
+        $id("nav-chat-badge").innerHTML = value || "";
     }
 
     reconnect() {

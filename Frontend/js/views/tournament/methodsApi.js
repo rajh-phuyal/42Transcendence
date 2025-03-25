@@ -1,9 +1,9 @@
 import call from '../../abstracts/call.js'
-import $callToast from '../../abstracts/callToast.js';
 import router from '../../navigation/router.js';
+import $callToast from '../../abstracts/callToast.js';
+import { $id } from '../../abstracts/dollars.js';
 import { tournamentData as data } from "./objects.js";
 import { modalManager } from '../../abstracts/ModalManager.js';
-import { $id } from '../../abstracts/dollars.js';
 
 export function joinTournament() {
     console.warn(data.tournamentInfo.local);

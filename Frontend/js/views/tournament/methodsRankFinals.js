@@ -1,7 +1,7 @@
 /* TODO: This file and it's logic is not revised yet */
-
-import { $id } from "../../abstracts/dollars.js";
 import router from "../../navigation/router.js";
+import { $id } from "../../abstracts/dollars.js";
+import { translate } from '../../locale/locale.js';
 
 export function updatePodium(member, position, show = true) {
     const podiumContainer = $id(`tournament-podium-${position}`);
@@ -45,8 +45,13 @@ export function updateFinalsDiagram(game) {
         diagramContainer.addEventListener("click", gameFinalsCallback);
         $id("tournment-finals-diagram").prepend(diagramContainer);
     }
+    if (game.type === "final")
+        diagramContainer.querySelector(".finals-title").textContent = translate("tournament", "titleGameFinal");
+    else if (game.type === "semifinal")
+        diagramContainer.querySelector(".finals-title").textContent = translate("tournament", "titleGameSemiFinal");
+    else if (game.type === "thirdplace")
+        diagramContainer.querySelector(".finals-title").textContent = translate("tournament", "titleGameThirdPlace");
 
-    diagramContainer.querySelector(".finals-title").textContent = game.type;
     diagramContainer.querySelector(".finals-player-left-username").textContent = game.playerLeft.username;
     diagramContainer.querySelector(".finals-player-right-username").textContent = game.playerRight.username;
     diagramContainer.querySelector(".finals-player-left-avatar").src = window.origin + "/media/avatars/" + game.playerLeft.avatar;

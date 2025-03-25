@@ -64,7 +64,7 @@ def create_initial_games(tournament, tournament_members):
 #   (2x semi-finals, final, third place)
 # Note: this is only creating the games not the game members!
 def create_final_games(tournament):
-    logging.info(f"Creating final games for tournament {tournament.id}")
+    # logging.info(f"Creating final games for tournament {tournament.id}")
     tournament_members = TournamentMember.objects.filter(tournament_id=tournament.id)
     if tournament_members.count() == 3:
         # Only one final
@@ -96,7 +96,7 @@ def create_final_games(tournament):
             game.save()
 
 def start_semi_finals(tournament, semi_finals):
-    logging.info(f"Starting semi-finals for tournament {tournament.id}")
+    # logging.info(f"Starting semi-finals for tournament {tournament.id}")
     # Get the players
     player_rank_1 = TournamentMember.objects.get(tournament_id=tournament.id, rank=1)
     player_rank_2 = TournamentMember.objects.get(tournament_id=tournament.id, rank=2)
@@ -149,7 +149,7 @@ def start_semi_finals(tournament, semi_finals):
 def start_finals(tournament, all_finals):
     # We need to generate the final and the third place game
     # By setting their members and updating the deadlines
-    logging.info(f"Starting finals for tournament {tournament.id}")
+    # logging.info(f"Starting finals for tournament {tournament.id}")
     final_player_1 = GameMember.objects.filter(
             game = all_finals[0].id,
             result = GameMember.GameResult.WON

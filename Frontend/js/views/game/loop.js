@@ -1,7 +1,7 @@
-import { $id, $on, $off, $class } from '../../abstracts/dollars.js';
+import { $id, $on, $off } from '../../abstracts/dollars.js';
 import { gameObject } from './objects.js';
 import { keyPressCallback, keyReleaseCallback } from './callbacks.js';
-import { drawPlayersState, sendPlayerInput, changeGameState } from './methods.js';
+import { drawPlayersState, sendPlayerInput } from './methods.js';
 import { gameRender } from './render.js';
 
 function gameLoop(currentTime) {
@@ -14,7 +14,7 @@ function gameLoop(currentTime) {
         gameRender();
         // Check if the game is  still ongoing
         if (gameObject.state != "ongoing" && gameObject.state != "countdown") {
-            console.log("Game is not ongoing/coutdown anymore: ending game loop");
+            // console.log("Game is not ongoing/coutdown anymore: ending game loop");
             cancelAnimationFrame(gameObject.animationId);
             return;
         }

@@ -34,7 +34,7 @@ export default {
         },
         playAgainCallback() {
             call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
-                console.log("data:", data);
+                // console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game
                     router(`/game`, {id: data.gameId});
@@ -45,7 +45,6 @@ export default {
             switch (event.key) {
                 case " ":
                     // If game is finished the space key will create a new game
-                    console.log("gameObject.state:", gameObject.state);
                     if (gameObject.state === "finished" || gameObject.state === "quited")
                        this.playAgainCallback();
                     // Only if no connection exists and
@@ -67,7 +66,7 @@ export default {
                                 }
                             })
                             .catch(error => {
-                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
+                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connectionError");
                             });
                     }
                     break;
@@ -104,10 +103,6 @@ export default {
         },
 
         initListeners() {
-            // TODO: translation for buttons should be done in with the abstraction tool TBC
-            this.domManip.$id("button-play-again").innerText = translate("game", "button-play-again");
-            this.domManip.$id("button-leave-lobby").innerText = translate("game", "button-leave-lobby");
-            this.domManip.$id("button-quit-game").innerText = translate("game", "button-quit-game");
             EventListenerManager.linkEventListener("button-leave-lobby",        "game", "click",    this.leaveLobbyCallback);
             EventListenerManager.linkEventListener("button-quit-game",          "game", "click",    this.quitGameCallback);
             EventListenerManager.linkEventListener("button-play-again",         "game", "click",    this.playAgainCallback);
@@ -123,8 +118,6 @@ export default {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
-                    console.log("data:", data);
-
                     // Set user cards
                     this.domManip.$id("player-left-username").innerText = data.playerLeft.username;
                     this.domManip.$id("player-left-username").setAttribute("data-userid", data.playerLeft.userId);
@@ -185,7 +178,6 @@ export default {
                         playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
                         playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
                     }
-                    console.warn(gameObject.playerRight.id );
                     if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
                         controlsRight.style.display = "block";
                         playerRightBottomPiece.style.borderBottom = "none";

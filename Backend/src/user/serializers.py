@@ -1,16 +1,14 @@
+from django.utils.translation import gettext as _
 from django.db.models import Q
 from user.models import User, IsCoolWith
 from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
-from django.core.cache import cache
 from chat.models import Conversation
 from game.models import GameMember
 from tournament.models import TournamentMember, Tournament
 from game.models import GameMember, Game
-from django.db.models import Count, Subquery, Sum, IntegerField
-from django.db.models.functions import Coalesce
-from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP
-import datetime
+from django.db.models import Count
+from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP, USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE
 
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,14 +32,17 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_lastLogin(self, obj):
         # Check if `last_login` is None or `online` is True
-        if obj.last_login is None:
-            return "under surveillance"
+        if obj.id == USER_ID_OVERLORDS or obj.id == USER_ID_AI or obj.id == USER_ID_FLATMATE:
+            return _("always here...")
+        else:
+            if obj.last_login is None:
+                return _("Under surveillance")
+            return obj.last_login
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
         return obj.last_login
 
     def get_online(self, user):
-        # Check if the user's online status is in the cache
         return user.get_online_status()
 
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'

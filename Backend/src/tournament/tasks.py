@@ -59,6 +59,6 @@ def check_overdue_tournament_games():
                 clear_ai_stats_cache(game.id)
 
     if not found_one:
-        logging.info("No overdue games found.")
+        logging.warning("Tournament Manager: No overdue games found.")
 
 

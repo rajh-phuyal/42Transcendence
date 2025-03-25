@@ -9,18 +9,14 @@ export default {
 
     methods: {
         updateModalView() {
-            /*
-            This function shows / hides the buttons
+            /* This function shows / hides the buttons
             depending on if the client is already enrolled in a tournament
                 enrolled:       show history & lobby buttons
                 not enrolled:   show history,create & join buttons
-            This function also updates the title
-            */
-           console.log("updateModalView");
-           console.log(this.tournamentId);
+            This function also updates the title */
             if(this.tournamentId){
                 // Enrolled
-                this.domManip.$id("modal-tournament-main-title").textContent = translate("tournamentMain", "title-enrolled");
+                this.domManip.$id("modal-tournament-main-title").textContent = translate("tournamentMain", "titleSubscribed");
                 this.domManip.$id("modal-tournament-main-btn-create").style.display = "none";
                 this.domManip.$id("modal-tournament-main-btn-join").style.display = "none";
                 this.domManip.$id("modal-tournament-main-btn-history").style.display = "block";
@@ -29,7 +25,7 @@ export default {
                 this.domManip.$on(btnLobby, "click", this.callBackLobby);
             } else{
                 // Not enrolled
-                this.domManip.$id("modal-tournament-main-title").textContent = translate("tournamentMain", "title-normal");
+                this.domManip.$id("modal-tournament-main-title").textContent = translate("tournamentMain", "titleNormal");
                 this.domManip.$id("modal-tournament-main-btn-create").style.display = "block";
                 this.domManip.$id("modal-tournament-main-btn-join").style.display = "block";
                 this.domManip.$id("modal-tournament-main-btn-history").style.display = "block";
@@ -47,7 +43,7 @@ export default {
         beforeOpen () {
             // Check if client is already enrolled in a tournament
             call('tournament/enrolment/','GET').then(data => {
-                console.log("enrolement:", data);
+                //console.log("enrolement:", data);
                 this.tournamentId = data.tournamentId
                 this.updateModalView();
             }).catch((error) => {

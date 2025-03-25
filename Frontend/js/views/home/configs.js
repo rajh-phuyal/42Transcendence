@@ -4,14 +4,24 @@ import call from '../../abstracts/call.js'
 import callToast from '../../abstracts/callToast.js'
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
+import $store from '../../store/store.js';
 
 export default {
     attributes: {
     },
 
     methods: {
-
-
+        /* This function sets/unsets the atrributes so that the modals can get the data */
+        setViewAttributes(set) {
+            const view = this.domManip.$id("router-view");
+            if(set) {
+                // Set the attributes
+                view.setAttribute("data-user-id", $store.fromState("user").id);
+            } else {
+                // Unset the attributes
+                view.removeAttribute("data-user-id");
+            }
+        }
     },
 
     hooks: {
@@ -32,7 +42,7 @@ export default {
 
             this.domManip.$off(document, "click", mouseClick);
             this.domManip.$off(document, "mousemove", isHovering);
-
+            this.setViewAttributes(false);
         },
 
         beforeDomInsertion() {
@@ -60,14 +70,12 @@ export default {
             // build thexport e first frame
             buildCanvas();
 
-            // TODO: whats that?
-            // for (let element of this.users)
-                // this.createInviteUserCard(element);
-
             // this.domManip.$on(document, "click", mouseClick);
             // this.domManip.$on(document, "mousemove", isHovering);
             EventListenerManager.linkEventListener("barely-a-body", "home", "click", mouseClick);
             EventListenerManager.linkEventListener("barely-a-body", "home", "mousemove", isHovering);
+            // Set the attributes for the modals
+            this.setViewAttributes(true);
         },
     }
 }

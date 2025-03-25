@@ -1,18 +1,15 @@
 # Basics
-import logging
 from rest_framework import status
 # Django
-from django.db import transaction
 from django.utils.translation import gettext as _
-from django.db import models
 from asgiref.sync import async_to_sync
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
 from core.decorators import barely_handle_exceptions
-from core.exceptions import BarelyAnException
 # User
 from user.models import User
+from user.utils_relationship import is_blocking
 # Services
 from services.constants import PRE_GROUP_TOURNAMENT
 from services.send_ws_msg import send_ws_tournament_pm
@@ -24,7 +21,6 @@ from game.serializer import GameSerializer
 from tournament.models import Tournament, TournamentMember
 from tournament.serializer import TournamentMemberSerializer, TournamentInfoSerializer
 from tournament.utils import create_tournament, delete_tournament, join_tournament, leave_tournament, start_tournament
-from user.utils_relationship import is_blocking
 
 # Checks if user has an active tournament
 class EnrolmentView(BaseAuthenticatedView):
@@ -49,12 +45,10 @@ class HistoryView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def get(self, request, userid):
         requester = request.user
-
         try:
             target = User.objects.get(id=userid)
         except User.DoesNotExist:
             return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
-
         # Check if the requester is blocked by the target user
         if is_blocking(target, requester):
             return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
@@ -98,7 +92,7 @@ class ToJoinView(BaseAuthenticatedView):
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
-        logging.info(f"Request data: {request.data}")
+        # logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
         tournament_name = request.data.get('name').strip()

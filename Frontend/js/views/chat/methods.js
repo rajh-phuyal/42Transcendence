@@ -1,6 +1,6 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
@@ -64,15 +64,13 @@ export function updateConversationBadge(conversationId, value) {
 export function createConversationCard(element, highlight = false) {
     const container = $id("chat-view-conversations-container");
     if (!container) {
-        console.error("Conversations container not found.");
+        console.log("Conversations container not found.");
         return;
     }
 
     // Check if card already exists
-    if ($id("chat-view-conversation-card-" + element.conversationId)) {
-        console.warn("Conversation card already exists:", element.conversationId);
+    if ($id("chat-view-conversation-card-" + element.conversationId))
         return;
-    }
 
     // Clone the template
     const conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
@@ -281,7 +279,7 @@ export function createMessage(element, prepend = true) {
         - client clicking on a conversation card
         - route param in the URL (e.g /chat?id=9)
     This function will then:
-        - set the conversation id to other functions where we need them: TODO: not sure if this is a smart approach
+        - set the conversation id to other functions where we need them
         - clear the current conversation
         - load the conversation from the server
         - set the info section about the conversation (chat name, avatar, etc)
@@ -297,13 +295,10 @@ export async function selectConversation(conversationId){
 
     // Highlight the selected conversation card
     if (!highlightConversationCard(conversationId)) {
-        console.log("Conversation card not found:", conversationId);
+        // console.log("Conversation card not found:", conversationId);
         router("/chat");
         return;
     }
-
-    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
-    history.pushState({}, "Chat", "/chat?id=" + conversationId);
 
     // Load the conversation header and messages
     await loadMessages(conversationId);
@@ -315,7 +310,7 @@ export async function selectConversation(conversationId){
     inputField.style.display = "flex";
     let createGameButton = $id("chat-view-btn-create-game");
     createGameButton.style.display = "flex";
-    console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
+    // console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
     inputField.setInput($id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft") || "");
     inputField.focus();
 
@@ -338,7 +333,7 @@ export function loadMessages(conversationId) {
 
     // Prevent duplicate requests
     if (messageContainer.getAttribute("loading") === "true") {
-        console.warn("Messages are already loading. Please wait.");
+        console.log("Messages are already loading. Please wait.");
         return Promise.resolve();
     }
 
@@ -480,7 +475,7 @@ export function createHelpMessage(input){
         if(input.startsWith("/G")) {
             // Count the typed "," to determine the step of the game creation
             const commaCount = input.split(",").length - 1;
-            console.log("Comma count:", commaCount);
+            // console.log("Comma count:", commaCount);
             if (commaCount < 2)
                 htmlContent = translate("chat", "helpMessage/G0");
             else if (commaCount == 2) {

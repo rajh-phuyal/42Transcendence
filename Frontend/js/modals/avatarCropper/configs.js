@@ -20,7 +20,6 @@ export default {
             const file = event.target.files[0]; // Get the selected file
             if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
                 $callToast("error", "Invalid file type. Please select a PNG or JPEG file.");
-                // TODO: close modal or maybe not
                 return;
             }
             if (file) {
@@ -65,7 +64,7 @@ export default {
                 return response.json();
             }).then(data => {
                 $store.commit("setUser", { ...$store.fromState("user"), avatar: data.avatar_url.avatar_url });
-                this.domManip.$id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${data.avatar_url.avatar_url}`;
+                this.domManip.$id('nav-avatar').src = `${window.location.origin}/media/avatars/${data.avatar_url.avatar_url}`;
                 $callToast("success", data.message);
                 router('/profile', { id: $store.fromState("user").id});
             });

@@ -1,0 +1,114 @@
+{
+    "title": {
+        "en-US": "Create Tournament",
+        "pt-PT": "Criar Torneio",
+        "pt-BR": "Criar Torneio",
+        "de-DE": "Turnier erstellen",
+        "uk-UA": "Створити турнір",
+        "ne-NP": "टुर्नामेन्ट सिर्जना गर्नुहोस्"
+    },
+    "name": {
+        "en-US": "Tournament Name",
+        "pt-PT": "Nome do Torneio",
+        "pt-BR": "Nome do Torneio",
+        "de-DE": "Turniername",
+        "uk-UA": "Назва турніру",
+        "ne-NP": "टुर्नामेन्टको नाम"
+    },
+    "placeholderName": {
+        "en-US": "enter tournament name...",
+        "pt-PT": "insira o nome do torneio...",
+        "pt-BR": "insira o nome do torneio...",
+        "de-DE": "Turniernamen eingeben...",
+        "uk-UA": "введіть назву турніру...",
+        "ne-NP": "टुर्नामेन्टको नाम राख्नुहोस्..."
+    },
+    "titlePrivacy": {
+        "en-US": "Privacy",
+        "pt-PT": "Privacidade",
+        "pt-BR": "Privacidade",
+        "de-DE": "Privatsphäre",
+        "uk-UA": "Приватність",
+        "ne-NP": "गोपनीयता"
+    },
+    "titleType": {
+        "en-US": "Type",
+        "pt-PT": "Tipo",
+        "pt-BR": "Tipo",
+        "de-DE": "Typ",
+        "uk-UA": "Тип",
+        "ne-NP": "प्रकार"
+    },
+    "titleMap": {
+        "en-US": "Map",
+        "pt-PT": "Mapa",
+        "pt-BR": "Mapa",
+        "de-DE": "Karte",
+        "uk-UA": "Карта",
+        "ne-NP": "नक्सा"
+    },
+    "titlePu": {
+        "en-US": "Powerups",
+        "pt-PT": "Powerups",
+        "pt-BR": "Powerups",
+        "de-DE": "Powerups",
+        "uk-UA": "Пауер-апи",
+        "ne-NP": "पावरअपहरू"
+    },
+    "titleUsers": {
+        "en-US": "Select Opponents",
+        "pt-PT": "Selecione os Oponentes",
+        "pt-BR": "Selecione os Oponentes",
+        "de-DE": "Gegner auswählen",
+        "uk-UA": "Виберіть супротивників",
+        "ne-NP": "विपक्षी चयन गर्नुहोस्"
+    },
+    "placeholderInviteUser": {
+        "en-US": "Invite a user...",
+        "pt-PT": "Convide um usuário...",
+        "pt-BR": "Convide um usuário...",
+        "de-DE": "Einen Benutzer einladen...",
+        "uk-UA": "Запросіть користувача...",
+        "ne-NP": "एक प्रयोगकर्तालाई आमन्त्रित गर्नुहोस्..."
+    },
+    "btnBack": {
+        "en-US": "Back",
+        "pt-PT": "Voltar",
+        "pt-BR": "Voltar",
+        "de-DE": "Zurück",
+        "uk-UA": "Назад",
+        "ne-NP": "फिर्ता"
+    },
+    "btnCreate": {
+        "en-US": "Create Tournament",
+        "pt-PT": "Criar Torneio",
+        "pt-BR": "Criar Torneio",
+        "de-DE": "Turnier erstellen",
+        "uk-UA": "Створити турнір",
+        "ne-NP": "टुर्नामेन्ट सिर्जना गर्नुहोस्"
+    },
+    "enabled": {
+        "en-US": "Enabled",
+        "pt-PT": "Ativado",
+        "pt-BR": "Ativado",
+        "de-DE": "Aktiviert",
+        "uk-UA": "Увімкнено",
+        "ne-NP": "सक्षम"
+    },
+    "disabled": {
+        "en-US": "Disabled",
+        "pt-PT": "Desativado",
+        "pt-BR": "Desativado",
+        "de-DE": "Deaktiviert",
+        "uk-UA": "Вимкнено",
+        "ne-NP": "अक्षम"
+    },
+    "noOpponents": {
+        "en-US": "No opponents selected",
+        "pt-PT": "Nenhum oponente selecionado",
+        "pt-BR": "Nenhum oponente selecionado",
+        "de-DE": "Keine Gegner ausgewählt",
+        "uk-UA": "Не вибрано супротивників",
+        "ne-NP": "कुनै विपक्षी चयन गरिएको छैन"
+    }
+}

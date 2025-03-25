@@ -1,6 +1,7 @@
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import { translate } from '../../locale/locale.js';
+import $callToast from '../../abstracts/callToast.js';
 
 export default {
     attributes: {
@@ -29,6 +30,10 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            this.domManip.$id("modal-friends-list-search-bar").placeholder = translate("friendsList", "placeholderFilter");
+        },
+
         hideElement(elementId){
             let element = this.domManip.$id(elementId)
             element.style.display = "none";
@@ -67,12 +72,9 @@ export default {
         fetchFriendList() {
 
             call(`/user/friend/list/${this.userId}/`, "GET").then((res) => {
-                console.log("Fetching friend list");
                 this.removeFriendsList();
-                console.log("Removed old friend list");
                 this.friendList = res.friends;
                 this.populateFriendList();
-                console.log("Populated new friend list");
                 this.domManip.$id("modal-friends-list-search-bar").value = "";
                 this.hideElement("modal-friends-list-list-result-not-found-message");
             }).catch((error) => {
@@ -119,8 +121,26 @@ export default {
     },
 
     hooks: {
+        async allowedToOpen() {
+            // If the parent view is the profile, we need to check if the target has blocked the client
+            /* If target blocked u don,t open modal */
+            try {
+                let dataRel = this.domManip.$id("router-view").getAttribute("data-relationship");
+                dataRel = JSON.parse(dataRel);
+                if (!dataRel) {
+                    throw new Error("Attribute 'data-relationship' is missing or empty");
+                }
+                if(dataRel && dataRel?.isBlocked) {
+                    $callToast("error", translate("profile", "blocked")); // TODO: translate files
+                    return false;
+                }
+            } catch (error) {
+                //console.log("Not a problem since we are not on the profile view - I hope");
+            }
+            return true;
+        },
         beforeOpen () {
-            console.log("beforeOpen of modal-friend-list");
+            this.translateElements();
             // Fetching the attributes from view and store them locally
             try {
                 // Try to store userId as Number

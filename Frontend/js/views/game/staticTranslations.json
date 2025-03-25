@@ -1,0 +1,7 @@
+{
+    "player-left-controls":                         "controlsLeft",
+    "player-right-controls":                        "controlsRight",
+    "button-leave-lobby":                           "btnLeaveLobby",
+    "button-quit-game":                             "btnQuitGame",
+    "button-play-again":                            "btnPlayAgain"
+}
