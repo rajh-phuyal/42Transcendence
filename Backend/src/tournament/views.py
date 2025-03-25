@@ -96,7 +96,7 @@ class ToJoinView(BaseAuthenticatedView):
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
-        logging.info(f"Request data: {request.data}")
+        # logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
         tournament_name = request.data.get('name').strip()

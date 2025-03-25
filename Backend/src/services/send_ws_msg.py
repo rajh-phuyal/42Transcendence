@@ -320,7 +320,6 @@ async def send_ws_game_players_ready_msg(game_id, left_ready, right_ready, start
 
 async def send_ws_game_data_msg(game_id):
     game_state_data = get_game_data(game_id)
-    logging.info(f"Sending game state to game {game_id}: {game_state_data}")
     if not game_state_data:
         logging.info(f"Game state not found for game {game_id} so it can't be send as a ws message!")
         return

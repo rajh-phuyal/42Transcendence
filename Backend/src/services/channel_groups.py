@@ -31,7 +31,7 @@ async def update_client_in_group(user, object_id, group_pre, add = True):
 def update_client_in_all_conversation_groups(user, add = True):
     # Get all conversation IDs where the user is a member
     conversation_memberships = list(ConversationMember.objects.filter(user=user))
-    logging.info(f"Adding/removing user ({user}) to all their conversation groups. Adding: {add}. Total: {len(conversation_memberships)}")
+    # logging.info(f"Adding/removing user ({user}) to all their conversation groups. Adding: {add}. Total: {len(conversation_memberships)}")
     for membership in conversation_memberships:
         async_to_sync(update_client_in_group)(user, membership.conversation.id, PRE_GROUP_CONVERSATION, add)
 
@@ -39,7 +39,7 @@ def update_client_in_all_conversation_groups(user, add = True):
 def update_client_in_all_tournament_groups(user, add = True):
     # Get all tournament IDs where the user is a member and state is not 'finished'
     tournament_memberships = list(TournamentMember.objects.filter(user=user, tournament__state__in=['setup', 'ongoing']))
-    logging.info(f"Adding/removing user ({user}) to all their tournament groups. Adding: {add}. Total: {len(tournament_memberships)}")
+    # logging.info(f"Adding/removing user ({user}) to all their tournament groups. Adding: {add}. Total: {len(tournament_memberships)}")
     for membership in tournament_memberships:
         async_to_sync(update_client_in_group)(user, membership.tournament.id, PRE_GROUP_TOURNAMENT, add)
 

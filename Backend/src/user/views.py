@@ -75,7 +75,7 @@ class ProfileView(BaseAuthenticatedView):
         data = serializer.data
         # If client is blocked remove all data but the username and the avatar
         if is_blocking(target, request.user):
-            logging.info(f"User: {request.user}, Target User: {target}")
+           # logging.info(f"User: {request.user}, Target User: {target}")
             data['firstName'] = ''
             data['lastName'] = ''
             data['online'] = False
@@ -151,8 +151,8 @@ class ListFriendsView(BaseAuthenticatedView):
     def get(self, request, targetUserId):
         user = request.user
         target_user = get_user_by_id(targetUserId)
-        logging.info(f"User: {user}, Target User: {target_user}")
-        logging.info(f"is_blocking: {is_blocking(target_user, user)}")
+       # logging.info(f"User: {user}, Target User: {target_user}")
+       # logging.info(f"is_blocking: {is_blocking(target_user, user)}")
         if is_blocking(target_user, user):
             return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
         cool_with_entries = IsCoolWith.objects.filter(Q(requester=target_user) | Q(requestee=target_user))
