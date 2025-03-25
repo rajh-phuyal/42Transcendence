@@ -53,9 +53,15 @@
     }
     .lst {
         grid-area: lst;
-        border: 1px solid black;
+        /* border: 1px solid black;
         border-radius: 5px;
-        flex-direction: row;
+        flex-direction: column; */
+        align-content: start;
+        display: block !important;
+        overflow: auto !important;
+        padding: 0% 2% 0% 2%;
+        border: 3px solid #000000;
+        background-color: rgba(0, 0, 0, 0.176);
     }
     .btnb {
         grid-area: btnb;
@@ -80,7 +86,6 @@
         border:  3px solid  black;
         border-radius: 5px;
         align-items: center;
-        width: 90%;
         height: 50px;
         justify-content: space-between;
         grid-template-columns: repeat(auto-fill, 10%);
