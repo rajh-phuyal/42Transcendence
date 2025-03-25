@@ -34,7 +34,7 @@ export function changeGameState(state) {
     switch (state) {
         case undefined:
             //Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             //Buttons
             $id("button-play-again").style.display = "none";
             // Main Info text
@@ -45,7 +45,7 @@ export function changeGameState(state) {
 
         case "pending":
             //Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             // Buttons
             $id("button-play-again").style.display = "none";
             // Show game field
@@ -66,7 +66,7 @@ export function changeGameState(state) {
 
         case "countdown":
             // Audio
-            audioPlayer.play(gameObject.mapId);
+            audioPlayer.playMusic(gameObject.mapName);
             if (lastState === "paused")
                 audioPlayer.playSound("unpause");
             // Buttons
@@ -94,7 +94,7 @@ export function changeGameState(state) {
 
         case "paused":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("pause");
             // Buttons
@@ -117,7 +117,7 @@ export function changeGameState(state) {
 
         case "finished":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("gameover");
             // Buttons
@@ -142,7 +142,7 @@ export function changeGameState(state) {
 
         case "quited":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("gameover");
             // Buttons
@@ -159,7 +159,7 @@ export function changeGameState(state) {
 
         case "aboutToBeDeleted":
             // Audio
-            audioPlayer.play(0); // Lobby music
+            audioPlayer.playMusic("lobbyGame");
             if (lastState === "ongoing")
                 audioPlayer.playSound("no");
             // Main Info text

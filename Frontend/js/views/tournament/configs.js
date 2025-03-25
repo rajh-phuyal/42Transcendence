@@ -38,7 +38,7 @@ export default {
                 return;
             }
             // Start music
-            audioPlayer.play(5); // Lobby music for tournaments
+            audioPlayer.playMusic("lobbyTournament");
             // Add all event listeners
             EventListenerManager.linkEventListener("button-tab-members",          "tournament", "click", callbackTabButton);
             EventListenerManager.linkEventListener("button-tab-finals",           "tournament", "click", callbackTabButton);

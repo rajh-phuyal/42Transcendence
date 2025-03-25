@@ -15,30 +15,30 @@ export default class AudioPlayer {
         this.currentSong = null;
         this.playing = false;
         this.songs = [
-            { mapId: 0, audio: new Audio("../assets/audio/lobby.mp3") },
-            { mapId: 1, audio: new Audio("../assets/audio/ufo.mp3") },
-            { mapId: 2, audio: new Audio("../assets/audio/lizard-people.mp3") },
-            { mapId: 3, audio: new Audio("../assets/audio/snowman.mp3") },
-            { mapId: 4, audio: new Audio("../assets/audio/lochness.mp3") },
-            { mapId: 5, audio: new Audio("../assets/audio/lobby-tournament.mp3") }
+            { title: "lobbyGame",            audio: new Audio("../assets/audio/lobby.mp3") },
+            { title: "lobbyTournament",      audio: new Audio("../assets/audio/lobby-tournament.mp3") },
+            { title: "ufo",                  audio: new Audio("../assets/audio/ufo.mp3") },
+            { title: "lizard-people",        audio: new Audio("../assets/audio/lizard-people.mp3") },
+            { title: "snowman",              audio: new Audio("../assets/audio/snowman.mp3") },
+            { title: "lochness",             audio: new Audio("../assets/audio/lochness.mp3") },
         ];
 
         this.sounds = [
-            { name: "beep1", audio: new Audio("../assets/audio/beep1.mp3") },
-            { name: "beep2", audio: new Audio("../assets/audio/beep2.mp3") },
-            { name: "paddle", audio: new Audio("../assets/audio/paddle.mp3") },
-            { name: "powerup", audio: new Audio("../assets/audio/powerup.mp3") },
-            { name: "wall", audio: new Audio("../assets/audio/wall.mp3") },
-            { name: "gameover", audio: new Audio("../assets/audio/gameover.mp3") },
-            { name: "pause", audio: new Audio("../assets/audio/pause.mp3") },
-            { name: "unpause", audio: new Audio("../assets/audio/unpause.mp3") },
-            { name: "score", audio: new Audio("../assets/audio/score.mp3") },
-            { name: "toggle", audio: new Audio("../assets/audio/toggle.mp3") },
-            { name: "chat", audio: new Audio("../assets/audio/chat.mp3") },
-            { name: "chatToast", audio: new Audio("../assets/audio/chat_toast.mp3") },
-            { name: "toast", audio: new Audio("../assets/audio/toast.mp3") },
-            { name: "no", audio: new Audio("../assets/audio/no.mp3") },
-            { name: "click", audio: new Audio("../assets/audio/click.mp3") }
+            { name: "beep1",        audio: new Audio("../assets/audio/beep1.mp3") },
+            { name: "beep2",        audio: new Audio("../assets/audio/beep2.mp3") },
+            { name: "paddle",       audio: new Audio("../assets/audio/paddle.mp3") },
+            { name: "powerup",      audio: new Audio("../assets/audio/powerup.mp3") },
+            { name: "wall",         audio: new Audio("../assets/audio/wall.mp3") },
+            { name: "gameover",     audio: new Audio("../assets/audio/gameover.mp3") },
+            { name: "pause",        audio: new Audio("../assets/audio/pause.mp3") },
+            { name: "unpause",      audio: new Audio("../assets/audio/unpause.mp3") },
+            { name: "score",        audio: new Audio("../assets/audio/score.mp3") },
+            { name: "toggle",       audio: new Audio("../assets/audio/toggle.mp3") },
+            { name: "chat",         audio: new Audio("../assets/audio/chat.mp3") },
+            { name: "chatToast",    audio: new Audio("../assets/audio/chat_toast.mp3") },
+            { name: "toast",        audio: new Audio("../assets/audio/toast.mp3") },
+            { name: "no",           audio: new Audio("../assets/audio/no.mp3") },
+            { name: "click",        audio: new Audio("../assets/audio/click.mp3") }
         ];
 
         AudioPlayer.instance = this;
@@ -67,7 +67,7 @@ export default class AudioPlayer {
             this.stop();
         } else {
             if (this.currentSong)
-                this.play(this.currentSong.mapId);
+                this.playMusic(this.currentSong.title);
         }
     }
 
@@ -100,10 +100,10 @@ export default class AudioPlayer {
         }
     }
 
-    play(mapId) {
-        const newSong = this.songs.find(song => song.mapId === mapId);
+    playMusic(title) {
+        const newSong = this.songs.find(song => song.title === title);
         if (!newSong) {
-            console.error("Song not found:", mapId);
+            console.log("AudioManager: Song not found:", title);
             return;
         }
 
