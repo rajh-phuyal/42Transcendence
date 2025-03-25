@@ -1,14 +1,11 @@
-export const imageDir = '../../../assets/homeView/';
-import { AIModalCallback, battleModalCallback,
-    tournamentModalCallback, chatRoomModalCallback,
-    leaderboardModalCallback } from './callbacks.js';
-import { translate } from '../../locale/locale.js';
+export const imageDir = '../../../assets/images/home/';
+import { AIModalCallback, LocalModalCallback, battleModalCallback, tournamentModalCallback, chatRoomModalCallback } from './callbacks.js';
 
 // Array containing the objects for each element of the home-view that should be responsive
 export const imageBook = [
     {
         id: 1,
-        src: imageDir + 'AICard.png',
+        src: imageDir + 'card_ai.png',
         highleted: false,
         x: 65,
         y: 210,
@@ -20,7 +17,7 @@ export const imageBook = [
     },
     {
         id: 2,
-        src: imageDir + 'lizardPeopleCard.png',
+        src: imageDir + 'card_game.png',
         highleted: false,
         x: 250,
         y: 210,
@@ -32,21 +29,21 @@ export const imageBook = [
     },
     {
         id: 3,
-        src: imageDir + 'bigfootCard.png',
+        src: imageDir + 'card_thing.png',
         highleted: false,
         x: 450,
         y: 210,
         width: 160,
         height: 300,
         shadow: 5,
-        lines: [2, 4, 5],
-        callback: tournamentModalCallback,
+        lines: [2],
+        callback: LocalModalCallback,
     },
     {
         id: 4,
-        src: imageDir + 'chatroomCard.png',
+        src: imageDir + 'card_chat.png',
         highleted: false,
-        x: 800,
+        x: 900,
         y: 90,
         width: 260,
         height: 290,
@@ -56,15 +53,15 @@ export const imageBook = [
     },
     {
         id: 5,
-        src: imageDir + 'area51Map.png',
+        src: imageDir + 'card_tournament.png',
         highleted: false,
-        x: 1450,
-        y: 100,
-        width: 260,
-        height: 260,
+        x: 650,
+        y: 210,
+        width: 160,
+        height: 300,
         shadow: 5,
-        lines: [10, 11, 13, 14],
-        callback: leaderboardModalCallback,
+        lines: [4, 5],
+        callback: tournamentModalCallback,
     },
 ]
 
@@ -72,8 +69,8 @@ export const imageBook = [
 export const backgroundImageBook = [
     {
         // index: 0
-        src: imageDir + 'alienKidsPolaroid.png',
-        x: 1250,
+        src: imageDir + 'polaroid_1.png', // alien kids
+        x: 1350,
         y: 170,
         width: 100,
         height: 100,
@@ -81,8 +78,8 @@ export const backgroundImageBook = [
     },
     {
         // index: 1
-        src: imageDir + 'bigfootFootPrintPolaroid.png',
-        x: 800,
+        src: imageDir + 'polaroid_2.png', // big foot print
+        x: 900,
         y: 500,
         width: 110,
         height: 110,
@@ -90,7 +87,7 @@ export const backgroundImageBook = [
     },
     {
         // index: 2
-        src: imageDir + 'newspaperLizardPeople.png',
+        src: imageDir + 'img_1.png', // lizard peeps newspaper
         x: 700,
         y: 620,
         width: 460,
@@ -99,8 +96,8 @@ export const backgroundImageBook = [
     },
     {
         // index: 3
-        src: imageDir + 'georgeWBushPolaroid.png',
-        x: 1255,
+        src: imageDir + 'polaroid_3.png', // GWBush
+        x: 1355,
         y: 370,
         width: 100,
         height: 100,
@@ -108,9 +105,9 @@ export const backgroundImageBook = [
     },
     {
         // index: 4
-        src: imageDir + 'swampMonsterPolaroid.png',
-        x: 1270,
-        y: 560,
+        src: imageDir + 'polaroid_4.png', // swamp monster
+        x: 1370,
+        y: 500,
         width: 100,
         height: 100,
         shadow: 3,
@@ -118,16 +115,16 @@ export const backgroundImageBook = [
 
     {
         // index: 5
-        src: imageDir + 'bigfootPolaroid.png',
-        x: 120,
-        y: 660,
+        src: imageDir + 'polaroid_5.png', // big foot
+        x: 210,
+        y: 710,
         width: 130,
         height: 130,
         shadow: 3,
     },
     {
         // index: 6
-        src: imageDir + 'powerPlantPolaroid.png',
+        src: imageDir + 'polaroid_6.png', // power plant
         x: 450,
         y: 650,
         width: 90,
@@ -136,7 +133,7 @@ export const backgroundImageBook = [
     },
     {
         // index: 7
-        src: imageDir + 'toxicWastePolaroid.png',
+        src: imageDir + 'polaroid_7.png', // toxic waste
         x: 520,
         y: 770,
         width: 110,
@@ -145,7 +142,7 @@ export const backgroundImageBook = [
     },
     {
         // index: 8
-        src: imageDir + 'missingPerson.png',
+        src: imageDir + 'img_3.png', // missing person
         x: 1680,
         y: 400,
         width: 200,
@@ -154,11 +151,20 @@ export const backgroundImageBook = [
     },
     {
         // index: 9
-        src: imageDir + 'galacticMap.png',
+        src: imageDir + 'img_4.png', // galactic map
         x: 1450,
         y: 650,
         width: 200,
         height: 200,
+        shadow: 3,
+    },
+    {
+        // index: 10
+        src: imageDir + 'img_2.png', // area 51
+        x: 1550,
+        y: 100,
+        width: 260,
+        height: 260,
         shadow: 3,
     },
 ]
@@ -166,42 +172,42 @@ export const backgroundImageBook = [
 // Array containing the objects for the labels
 export const labels = [
     {
-        text: translate("home", "gamePlay"),
+        text: "gamePlay",
         x: 185,
         y: 80,
         width: 300,
         height: 50,
     },
     {
-        text: translate("home", "A.I."),
+        text: "A.I.",
         x: imageBook[0].x,
         y: imageBook[0].y + imageBook[0].height + 15,
         width: imageBook[0].width,
         height: 50,
     },
     {
-        text: translate("home", "inviteFriends"),
+        text: "inviteFriends",
         x: imageBook[1].x,
         y: imageBook[1].y + imageBook[1].height + 15,
         width: imageBook[1].width,
         height: 50,
     },
     {
-        text: translate("home", "tournament"),
+        text: "localGame",
         x: imageBook[2].x,
         y: imageBook[2].y + imageBook[2].height + 15,
         width: imageBook[2].width,
         height: 50,
     },
     {
-        text: translate("home", "chatRoom"),
+        text: "chatRoom",
         x: imageBook[3].x,
         y: imageBook[3].y + imageBook[3].height + 15,
         width: imageBook[3].width,
         height: 50,
     },
     {
-        text: translate("home", "leaderboard"),
+        text: "tournament",
         x: imageBook[4].x,
         y: imageBook[4].y + imageBook[4].height + 15,
         width: imageBook[4].width,
@@ -228,7 +234,7 @@ export const lines = [
     },
     {
         //index: 2
-        // Game Play to bigfoot card
+        // Game Play to local card
         x1: labels[0].x + (labels[0].width / 2),
         y1: labels[0].y + 40,
         x2: imageBook[2].x + (imageBook[2].width / 2),
@@ -244,23 +250,23 @@ export const lines = [
     },
     {
         //index: 4
-        // bigfoot card to bigfoot foot print polaroid 
-        x1: imageBook[2].x + 50,
-        y1: imageBook[2].y + 290,
+        // bigfoot card to bigfoot foot print polaroid
+        x1: imageBook[4].x + 50,
+        y1: imageBook[4].y + 290,
         x2: backgroundImageBook[1].x + 60,
         y2: backgroundImageBook[1].y + 10,
     },
     {
         //index: 5
-        // bigfoot card to bigfoot polaroid 
-        x1: imageBook[2].x + 50,
-        y1: imageBook[2].y + 290,
+        // bigfoot card to bigfoot polaroid
+        x1: imageBook[4].x + 50,
+        y1: imageBook[4].y + 290,
         x2: backgroundImageBook[5].x + 60,
         y2: backgroundImageBook[5].y + 20,
     },
     {
         //index: 6
-        // bigfoot foot print polaroid  to bigfoot polaroid 
+        // bigfoot foot print polaroid  to bigfoot polaroid
         x1: backgroundImageBook[1].x + 60,
         y1: backgroundImageBook[1].y + 10,
         x2: backgroundImageBook[5].x + 60,
@@ -268,7 +274,7 @@ export const lines = [
     },
     {
         //index: 7
-        // power plant polaroid  to toxic waste polaroid 
+        // power plant polaroid  to toxic waste polaroid
         x1: backgroundImageBook[6].x + 60,
         y1: backgroundImageBook[6].y + 10,
         x2: backgroundImageBook[7].x + 60,
@@ -295,14 +301,14 @@ export const lines = [
         // missing person to area 51 map
         x1: backgroundImageBook[8].x + 90,
         y1: backgroundImageBook[8].y + 60,
-        x2: imageBook[4].x + 20,
-        y2: imageBook[4].y + 180,
+        x2: backgroundImageBook[10].x + 20,
+        y2: backgroundImageBook[10].y + 180,
     },
     {
         //index: 11
         // area 51 map to chat room
-        x1: imageBook[4].x + 20,
-        y1: imageBook[4].y + 180,
+        x1: backgroundImageBook[10].x + 20,
+        y1: backgroundImageBook[10].y + 180,
         x2: imageBook[3].x + 110,
         y2: imageBook[3].y + 187,
     },
@@ -319,14 +325,14 @@ export const lines = [
         // galactic map to area 51 map
         x2: backgroundImageBook[9].x + 20,
         y2: backgroundImageBook[9].y + 180,
-        x1: imageBook[4].x + 20,
-        y1: imageBook[4].y + 180,
+        x1: backgroundImageBook[10].x + 20,
+        y1: backgroundImageBook[10].y + 180,
     },
     {
         //index: 14
         // area 51 map to george w bush
-        x1: imageBook[4].x + 20,
-        y1: imageBook[4].y + 180,
+        x1: backgroundImageBook[10].x + 20,
+        y1: backgroundImageBook[10].y + 180,
         x2: backgroundImageBook[3].x + 45,
         y2: backgroundImageBook[3].y + 5,
     },

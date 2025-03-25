@@ -51,7 +51,7 @@ async function loadAndExecuteTranslations(subject, modal=false) {
             for (const key in translationMapData) {
                 let targetElement = $id(key)
                 if(!targetElement) {
-                    console.error("Error in staticTranslation.js for view: %s; html element '%s' not found", subject, key);
+                    console.log("Error in staticTranslation.js for view: %s; html element '%s' not found", subject, key);
                     continue;
                 }
                 let translatedString = translate(subject, translationMapData[key]);
@@ -60,7 +60,7 @@ async function loadAndExecuteTranslations(subject, modal=false) {
             }
         }
     } catch(error) {
-        console.error("Error on translation: Check if file: 'staticTranslations.json' exists for this subject: %s; error: %s", subject, error);
+        console.log("Error on translation: Check if file: 'staticTranslations.json' exists for this subject: %s; error: %s", subject, error);
     }
 }
 
