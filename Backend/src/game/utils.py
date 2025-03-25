@@ -87,18 +87,18 @@ def get_game_of_user(user1, user2):
     """
     This function returns the game between user1 and user2 if it exists.
     The game:
-     - must be in a pending, ongoing or paused state.
+     - must be in a pending, ongoing, countdown or paused state.
      - can't be a tournament game.
     """
     user1_games = GameMember.objects.filter(
         user=user1.id,
         game__tournament_id=None,
-        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED, Game.GameState.COUNTDOWN]
     ).values_list('game_id', flat=True)
     user2_games = GameMember.objects.filter(
         user=user2.id,
         game__tournament_id=None,
-        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED, Game.GameState.COUNTDOWN]
     ).values_list('game_id', flat=True)
     if user1_games and user2_games:
         common_games = set(user1_games).intersection(user2_games)
