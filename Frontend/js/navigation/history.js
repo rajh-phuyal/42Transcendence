@@ -16,8 +16,8 @@ export default class HistoryManager {
         return HistoryManager.instance;
     }
 
-    updateHistory(path, params) {
-        console.warn(path, params);
+    updateHistory(path, paramsString) {
+        console.warn(path, paramsString);
         // So since we are not using the prams in the bes way, we have the
         // situation that sometimes they are mandatory and sometimes they are not.
         // This is a bad practice and should be fixed.
@@ -36,44 +36,39 @@ export default class HistoryManager {
 
         // 1.Get the right path
         let pathForHistory = "";
-        let paramForHistory = JSON.stringify(params);
-        let title = "";
         if (path === "/" || path === "/home") {
-            title = "Home";
             pathForHistory = "/home";
-            paramForHistory = "";
+            paramsString = "";
         } else if (path === "/game") {
-            title = "Game";
             pathForHistory = path;
         } else if (path === "/tournament") {
-            title = "Tournament";
             pathForHistory = path;
         } else if (path === "/profile") {
-            title = "Profile";
             pathForHistory = path;
         } else if (path === "/chat") {
-            title = "Chat";
             pathForHistory = "/chat";
-            paramForHistory = "";
+            paramsString = "";
         } else {
-            console.log("HistoryManager.updateHistory: Path: '%s' should not be pushed to history", path);
+            console.log("HistoryManager: Path: '%s' should not be pushed to history", path);
             return;
         }
         // 2. Compare the path with the last page
         // 3. If the paths differ, push the new path to the history
-        if (pathForHistory !== this.lastPath || paramForHistory !== this.lastParams) {
-            console.warn("HistoryManager.updateHistory: '%s', '%s'", pathForHistory, paramForHistory);
-            this.lastPath = path;
-            this.lastParams = paramForHistory;
+        if (pathForHistory !== this.lastPath || paramsString !== this.lastParams) {
+            this.lastPath = pathForHistory;
+            this.lastParams = paramsString;
+            const fullUrl = pathForHistory + paramsString;
+            console.warn("HistoryManager: pushingState: '%s', '%s' as '%s'", pathForHistory, paramsString, fullUrl);
             window.history.pushState(
                 {   path:   pathForHistory,
-                    params: paramForHistory,
+                    params: paramsString,
                 },
-                title,
-                pathForHistory
+                "",
+                fullUrl
             );
+            console.log(window.history);
         } else
-            console.log("HistoryManager.updateHistory: Paths are the same");
+            console.log("HistoryManager: ", pathForHistory, paramsString);
     }
 }
 

@@ -53,12 +53,28 @@ window.addEventListener("click", (event) => {
 window.addEventListener('popstate', (event) => {
     // The state stored in pushState will be available as `event.state`
     const state = event.state;
+    console.log("popstate: state:", state);
 
     if (state && state.path) {
-        // Call the router with the path from the state
-        const params = state.params ? JSON.parse(state.params) : null;
-        console.warn("fetched apra,s:", state.params);
-        router(state.path, params); // You may want to pass params here if needed
+        console.log("popstate: PATH:", state.path);
+        console.log("popstate: PARAMS:", state.params);
+        // transform params string back to object: "id=1&name=John" => { id: 1, name: "John" }
+        let paramsObject = {};
+        if (state.params) {
+            // Firs remove the question at index 1 if it exists
+            if (state.params[0] === '?')
+                state.params = state.params.slice(1);
+            paramsObject = state.params
+                .split('&') // Split by '&' if there are multiple parameters
+                .reduce((acc, param) => {
+                  const [key, value] = param.split('='); // Split each key-value pair
+                  acc[key] = value; // Assign the key-value pair to the accumulator
+                  return acc;
+                }, {});
+        }
+        console.log("popstate: PARAMS OBJECT:", paramsObject);
+        console.log(window.history);
+        router(state.path, paramsObject, false);
     }
 });
 

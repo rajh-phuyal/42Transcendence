@@ -58,7 +58,7 @@ async function getViewHooks(viewName) {
     });
 }
 
-async function router(path, params = null) {
+async function router(path, params = null, updateHistory = true) {
     if(!path)
         return;
     setViewLoading(true);
@@ -145,23 +145,9 @@ async function router(path, params = null) {
     // about to change route
     await viewHooks?.hooks?.beforeRouteEnter?.bind(viewConfigWithoutHooks)();
     // reduce the params to a query string
-    const paramsString = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
-    const pathWithParams = params ? `${path}?${params}` : path;
-
-
- /*    // We can store the data in state if needed
-    const tmp = JSON.parse(JSON.stringify(params));
-    params = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
-
-
-
-    // console.debug("full:", window.location.origin + pathWithParams, `href:${window.location.href}`);
-    // console.debug("isSame:", isSame);
-
-    if ((updateHistory && !isSame) || !history.state) {
-        const obj = { path: pathWithParams, route: path, params: tmp };
-        history.pushState(obj, '', pathWithParams);
-    } */
+    let paramsString = params ? Object.keys(params).map(key => `${key}=${params[key]}`).join('&') : null;
+    if (paramsString)
+        paramsString = "?" + paramsString;
 
     // DOM manipulation
     await viewHooks?.hooks?.beforeDomInsertion?.bind(viewConfigWithoutHooks)();
@@ -184,7 +170,8 @@ async function router(path, params = null) {
     await staticTranslator(route.view);
 
     // Update the history
-    historyManager.updateHistory(path, params);
+    if(updateHistory)
+        historyManager.updateHistory(path, paramsString);
 
     console.log("Router: View loaded:", route.view);
     setViewLoading(false);

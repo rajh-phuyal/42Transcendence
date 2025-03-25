@@ -84,7 +84,7 @@ function updateGameCard(container, game) {
         const scoreContainer = container.querySelector(".tournament-game-card-score");
         const newScore = game.playerLeft.points + "-" + game.playerRight.points;
         if(newScore !== scoreContainer.textContent) {
-            console.warn("Animate score change");
+            // console.warn("Animate score change");
             scoreContainer.textContent = newScore;
             triggerScoreAnimation(scoreContainer);
         }
@@ -99,7 +99,7 @@ function updateGameCard(container, game) {
         const scoreContainer = container.querySelector(".tournament-game-card-score");
         const newScore = game.playerLeft.points + "-" + game.playerRight.points;
         if(newScore !== scoreContainer.textContent) {
-            console.warn("Animate score change");
+            // console.warn("Animate score change");
             scoreContainer.textContent = newScore;
             triggerScoreAnimation(scoreContainer);
         }
@@ -121,7 +121,7 @@ function updateGameCard(container, game) {
     // If finsihsed or quited move to the finished tab
     if(game.state === "finished" || game.state === "quited")
         $id("container-games-finished-list").appendChild(container);
-    console.log("Updated game card with data: ", game);
+    // console.log("Updated game card with data: ", game);
 }
 
 function gameCardCallback(event) {

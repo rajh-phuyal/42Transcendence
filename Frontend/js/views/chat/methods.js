@@ -300,7 +300,8 @@ export async function selectConversation(conversationId, selectedFromChat = true
         return;
     }
 
-    const path = window.location.pathname;
+    // TODO: history stuff that doesnt work
+    /* const path = window.location.pathname;
     // We can store the data in state if needed
     // console.debug("window.location.href != window.location.origin + /chat:", window.href != window.location.origin + "/chat");
     if (selectedFromChat) {
@@ -309,7 +310,7 @@ export async function selectConversation(conversationId, selectedFromChat = true
         history.pushState(obj, '', path);
     }
     // if (selectedFromChat)
-    //     history.pushState(null, "", window.location.origin + window.location.pathname);
+    //     history.pushState(null, "", window.location.origin + window.location.pathname); */
     // Load the conversation header and messages
     await loadMessages(conversationId);
 
