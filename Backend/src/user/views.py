@@ -81,7 +81,7 @@ class ProfileView(BaseAuthenticatedView):
             data['online'] = False
             data['lastLogin'] = None
             data['language'] = ''
-            data['chatId'] = ''
+            # data['chatId'] = '' Deliver the chat id so the client can redir to chat
             data['newMessage'] = False
             data['stats'] = ''
             # Send the notes only if the profile is of the overloards

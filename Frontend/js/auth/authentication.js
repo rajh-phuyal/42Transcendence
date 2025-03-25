@@ -21,7 +21,7 @@ class Auth {
         const now = Date.now();
         // Return cached result if within timeout window
         if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
-            console.log("Using cached auth result:", this.isAuthenticated);
+            // console.log("Using cached auth result:", this.isAuthenticated);
             return this.isAuthenticated;
         }
 

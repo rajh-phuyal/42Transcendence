@@ -126,5 +126,13 @@
         "de-DE": "Anmerkungen:",
         "uk-UA": "Примітки:",
         "ne-NP": "टिप्पणीहरू:"
+    },
+    "blocked": {
+        "en-US": "This user is blocking you!",
+        "pt-PT": "Este usuário está bloqueando você!",
+        "pt-BR": "Este usuário está bloqueando você!",
+        "de-DE": "Dieser Benutzer blockiert Sie!",
+        "uk-UA": "Цей користувач блокує вас!",
+        "ne-NP": "यो प्रयोगकर्ताले तपाईंलाई ब्लक गरिरहेको छ!"
     }
 }

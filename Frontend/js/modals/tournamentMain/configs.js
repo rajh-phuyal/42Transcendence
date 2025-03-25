@@ -14,8 +14,6 @@ export default {
                 enrolled:       show history & lobby buttons
                 not enrolled:   show history,create & join buttons
             This function also updates the title */
-           console.log("updateModalView");
-           console.log(this.tournamentId);
             if(this.tournamentId){
                 // Enrolled
                 this.domManip.$id("modal-tournament-main-title").textContent = translate("tournamentMain", "titleSubscribed");
@@ -45,7 +43,7 @@ export default {
         beforeOpen () {
             // Check if client is already enrolled in a tournament
             call('tournament/enrolment/','GET').then(data => {
-                console.log("enrolement:", data);
+                //console.log("enrolement:", data);
                 this.tournamentId = data.tournamentId
                 this.updateModalView();
             }).catch((error) => {

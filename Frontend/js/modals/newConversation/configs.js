@@ -35,10 +35,26 @@ export default {
 
     hooks: {
         async allowedToOpen() {
+            // Reidr to conversation if already exists
             let conversationId = this.domManip.$id("router-view").getAttribute("data-user-conversation-id");
             if (conversationId && conversationId !== "null") {
                 router(`/chat`, {id: conversationId});
                 return false;
+            }
+            // If the parent view is the profile, we need to check if the target has blocked the client
+            /* If target blocked u don,t open modal */
+            try {
+                let dataRel = this.domManip.$id("router-view").getAttribute("data-relationship");
+                dataRel = JSON.parse(dataRel);
+                if (!dataRel) {
+                    throw new Error("Attribute 'data-relationship' is missing or empty");
+                }
+                if(dataRel && dataRel?.isBlocked) {
+                    $callToast("error", translate("profile", "blocked")); // TODO: translate files
+                    return false;
+                }
+            } catch (error) {
+                //console.log("Not a problem since we are not on the profile view - I hope");
             }
             return true;
         },
