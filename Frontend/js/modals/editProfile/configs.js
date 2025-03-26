@@ -71,7 +71,7 @@ export default {
                 if (!data.status === "success")
                     return;
                 $callToast("success", data.message);
-                this.$store.commit("setLocale", language);
+                this.$store.commit("setLocale", data.locale);
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);
