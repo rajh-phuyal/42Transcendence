@@ -150,6 +150,9 @@ export default {
         callbackCreateTournament() {
             this.domManip.$id("modal-tournament-tournament-title").value = this.domManip.$id("modal-tournament-tournament-title").value.trim();
             const tournamentName = this.domManip.$id("modal-tournament-tournament-title").value.trim();
+            // For public tournaments remove the opponents
+            if(this.public)
+                this.opponentIds = [];
             call('tournament/create/', "POST", {
                 "name":             tournamentName,
                 "public":           this.public,

@@ -5,7 +5,7 @@ import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import { updateView } from './methodsView.js';
 import { tournamentData } from './objects.js';
 import { callbackTabButton } from './callbacks.js';
-import { clearAllGameCountdowns } from './methodsGames.js';
+import { clearAllGameDeadlines } from './methodsGames.js';
 import { updatePodium, updateFinalsDiagram } from './methodsRankFinals.js';
 
 export default {
@@ -14,6 +14,14 @@ export default {
     },
 
     methods: {
+        initObjects() {
+            tournamentData.clientRole          = undefined;
+            tournamentData.tournamentInfo      = undefined;
+            tournamentData.tournamentMembers   = undefined;
+            tournamentData.tournamentGames     = undefined;
+            tournamentData.podiumMembers       = [];
+        },
+
         routeToHome() {
             router('/');
         },
@@ -24,7 +32,8 @@ export default {
         },
 
         beforeRouteLeave() {
-            clearAllGameCountdowns();
+            clearAllGameDeadlines();
+            this.initObjects();
         },
 
         beforeDomInsertion() {
@@ -36,6 +45,8 @@ export default {
                 router('/404');
                 return;
             }
+            // Reset the tournamentData object
+            this.initObjects();
             // Start music
             audioPlayer.playMusic("lobbyTournament");
             // Add all event listeners

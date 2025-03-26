@@ -40,6 +40,7 @@ def update_game_state(game_id, state, quit_user_id=None):
             game.state = state
             if(state == Game.GameState.ONGOING):
                 game.deadline = None # So the recconection deadline is gone
+                set_game_data(game_id, 'gameData', 'deadline', None)
         game.save()
 
     # If the game is finished the finish_game function already sends the ws with send_ws_tournament_game_msg

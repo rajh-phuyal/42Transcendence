@@ -5,10 +5,11 @@ from datetime import datetime, timedelta, timezone
 from django.utils.translation import gettext as _
 # Core
 from core.decorators import barely_handle_ws_exceptions
-# Game stuff
+# User
 from user.constants import USER_ID_AI
-from game.constants import GAME_FPS, GAME_COUNTDOWN_MAX
+# Game stuff
 from game.models import Game
+from game.constants import GAME_FPS, GAME_COUNTDOWN_MAX, RECONNECT_TIMEOUT
 from game.AI import AIPlayer, calculate_ai_difficulty, difficulty_to_string
 from game.game_cache import set_player_input
 from game.utils import is_left_player, get_user_of_game
@@ -135,10 +136,13 @@ class GameConsumer(CustomWebSocketLogic):
         right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
         await send_ws_game_players_ready_msg(self.game_id, left_ready, right_ready)
         # If the game was ongoing, pause it
-        if get_game_data(self.game_id, 'gameData', 'state') == 'ongoing':
-            # # TODO: issue#307
-            # Set deadline to reconnection time
-
+        if get_game_data(self.game_id, 'gameData', 'state') == Game.GameState.ONGOING or get_game_data(self.game_id, 'gameData', 'state') == Game.GameState.COUNTDOWN:
+            # Set the deadline to reconnection time
+            new_deadline = datetime.now() + RECONNECT_TIMEOUT
+            await database_sync_to_async(lambda: setattr(self.game, 'deadline', new_deadline))()
+            await database_sync_to_async(self.game.save)()
+            # logging.info(f"Game {self.game_id} was paused because of a disconnect with timestamp: {self.game.deadline}")
+            set_game_data(self.game_id, 'gameData', 'deadline', new_deadline)
             # Set game to paused
             await update_game_state(self.game_id, Game.GameState.PAUSED)
             set_game_data(self.game_id, 'gameData', 'sound', 'pause')

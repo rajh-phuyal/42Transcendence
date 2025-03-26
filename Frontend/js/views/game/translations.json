@@ -134,5 +134,12 @@
         "de-DE": "Spiel ist vorbei\nIn 5 Sekunden erfolgt eine Weiterleitung zur Turnier-Lobby...",
         "uk-UA": "Гра завершена\nЧерез 5 секунд буде перенаправлено в турнірну лобі...",
         "ne-NP": "खेल सकियो\n५ सेकेण्डमा टुर्नामेन्ट लबीमा पुनःनिर्देशित गरिनेछ..."
+    },
+    "tooltipHurryUp": {
+        "en-US": "Hurry up! You need to connect in time to not lose the game!",
+        "pt-PT": "Pressa! Você precisa se conectar a tempo para não perder o jogo!",
+        "pt-BR": "Pressa! Você precisa se conectar a tempo para não perder o jogo!",
+        "de-DE": "Beeil dich! Sie müssen rechtzeitig eine Verbindung herstellen, um das Spiel nicht zu verlieren!",
+        "uk-UA": "Поспішайте! Вам потрібно підключитися вчасно, щоб не програти гру!"
     }
 }

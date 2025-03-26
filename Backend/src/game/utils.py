@@ -202,6 +202,8 @@ def end_game(game, quit_user_id=None):
         game_member_1.save()
         game_member_2.save()
 
+    # If a player is in lobby while the change happens, inform him
+    async_to_sync(send_ws_game_data_msg)(game.id)
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
     # Below is for tournament games only:
@@ -213,7 +215,7 @@ def end_game(game, quit_user_id=None):
         db_update_tournament_ranks(game.tournament)
         # Send the updated tournament ranking to all users of the tournament
         send_ws_all_tournament_members_msg(game.tournament)
-    check_tournament_routine(game.tournament_id)
+    check_tournament_routine(game.tournament.id)
     return winner, looser
 
 def update_deadline_of_game(game_id):
@@ -229,8 +231,10 @@ def update_deadline_of_game(game_id):
                 logging.info(f"ERROR: Game {game_id} is not a tournament game")
                 return
 
-            game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
+            new_deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
+            game.deadline = new_deadline
             game.save()
+        set_game_data(game_id, 'gameData', 'deadline', new_deadline)
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Send warning chat message to conversation of the two players
         player1_id = game.members.first().user.id

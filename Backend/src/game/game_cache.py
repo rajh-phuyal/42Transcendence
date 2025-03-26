@@ -1,5 +1,6 @@
 # Basics
 import logging, random
+from datetime import datetime
 from copy import deepcopy
 # DJANGO STUFF
 from django.core.cache import cache
@@ -32,6 +33,7 @@ async def init_game_on_cache(game, leftMember, rightMember):
         cache.set(cache_key, deepcopy(GAME_STATE), timeout=3000)
         # Initialize the game data to match the db:
         set_game_data(game.id, 'gameData', 'state', game.state)
+        set_game_data(game.id, 'gameData', 'deadline', game.deadline)
         set_game_data(game.id, 'playerLeft', 'points', leftMember.points)
         set_game_data(game.id, 'playerRight', 'points', rightMember.points)
         set_game_data(game.id, 'playerLeft', 'result', leftMember.result)
@@ -101,6 +103,9 @@ def set_game_data(game_id, key1, key2, new_value, timeout=3000):
     cache_key = f'{PRE_DATA_GAME}{game_id}'
     if (game_state_data := cache.get(cache_key)):
         if key1 in game_state_data and key2 in game_state_data[key1]:
+            # If it's a datetime, convert it to iso format string
+            if isinstance(new_value, datetime):
+                new_value = new_value.isoformat()
             game_state_data[key1][key2] = new_value
             cache.set(cache_key, game_state_data, timeout=timeout)
             return True

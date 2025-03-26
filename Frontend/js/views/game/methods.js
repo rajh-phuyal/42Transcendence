@@ -10,6 +10,9 @@ import { audioPlayer } from '../../abstracts/audio.js';
 import { toggleGamefieldVisible, gameRender } from './render.js';
 import { loadTimestamp } from '../../abstracts/timestamps.js';
 
+// Object to track active deadline of game
+const deadlineTimers = {};
+
 export const percentageToPixels = (side, percentage) => {
     const gameField = $id("game-field");
     if (side === "x")
@@ -41,6 +44,7 @@ export function changeGameState(state) {
             $id("game-view-middle-side-container-top-text").innerText = "";
             // Show game field
             toggleGamefieldVisible(false);
+            toggleDeadline(false);
             break;
 
         case "pending":
@@ -62,9 +66,14 @@ export function changeGameState(state) {
                 else
                     $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectatorConnect");
             }
+            toggleDeadline(true);
             break;
 
         case "countdown":
+            if (!gameObject.wsConnection){
+                changeGameState("pending");
+                break;
+            }
             // Audio
             audioPlayer.playMusic(gameObject.mapName);
             if (lastState === "paused")
@@ -78,6 +87,7 @@ export function changeGameState(state) {
             // Update player states
             gameObject.playerLeft.state = "ongoing";
             gameObject.playerRight.state = "ongoing";
+            toggleDeadline(false);
             break;
 
         case "ongoing":
@@ -90,6 +100,7 @@ export function changeGameState(state) {
             // Update player states
             gameObject.playerLeft.state = "ongoing";
             gameObject.playerRight.state = "ongoing";
+            toggleDeadline(false);
             break;
 
         case "paused":
@@ -113,6 +124,7 @@ export function changeGameState(state) {
                 else
                     $id("game-view-middle-side-container-top-text").innerText = translate("game", "spectatorConnect");
             }
+            toggleDeadline(true);
             break;
 
         case "finished":
@@ -131,13 +143,14 @@ export function changeGameState(state) {
             // Update the player states
             gameObject.playerLeft.state = "finished"
             gameObject.playerRight.state = "finished"
-            // If game is part of tournament redir to tournament page
-            if (gameObject.tournamentId) {
+            // If game is part of tournament and previous state was ongoing, redirect to tournament
+            if (gameObject.tournamentId && lastState === "ongoing") {
                 $id("game-view-middle-side-container-top-text").innerText = translate("game", "redirTournament");
                 setTimeout(() => {
                     router('/tournament', {id: gameObject.tournamentId});
                 }, 5000);
             }
+            toggleDeadline(false);
             break;
 
         case "quited":
@@ -293,8 +306,9 @@ export function updateGameObjects(beMessage) {
     // The first time we get the state ongoing we need to set it
     if ( beMessage?.gameData?.state === "ongoing" && gameObject.state !== "ongoing")
         changeGameState("ongoing");
-    gameObject.state = beMessage?.gameData?.state;
-    gameObject.sound = beMessage?.gameData?.sound;
+    gameObject.state        = beMessage?.gameData?.state;
+    gameObject.sound        = beMessage?.gameData?.sound;
+    gameObject.deadline     = beMessage?.gameData?.deadline;
     gameObject.playerLeft.points = beMessage?.playerLeft?.points;
     gameObject.playerLeft.result = beMessage?.playerLeft?.result;
     gameObject.playerLeft.size = percentageToPixels('y', beMessage?.playerLeft?.paddleSize);
@@ -354,4 +368,59 @@ const gameCountdownImage = (timeDiff) => {
         audioPlayer.playSound("beep2");
         gameCountdownImage.style.display = "none";
     }
+}
+
+function toggleDeadline(visible) {
+    stopGameDeadline(1);
+    const countdown = $id("game-view-deadline");
+    if (visible){
+        if (gameObject.deadline){
+            const container = $id("game-view-deadline");
+            startGameDeadline(container, 1, gameObject.deadline);
+            container.title = translate("game", "tooltipHurryUp");
+            countdown.style.display = "flex";
+            return ;
+        }
+    }
+
+    if (!visible){
+        stopGameDeadline(1);
+        countdown.style.display = "none";
+    }
+}
+
+/* THE FUNCTIONS BELOW ARE COPIED FROM TOURNAMENT
+    IF WE HAVE TIME WE COULD SIMPLYFY THEM HERE SINCE WE ONLY HAVE ONE GAME
+*/
+function startGameDeadline(container, id, deadlineISO) {
+    function updateGameDeadline() {
+        const now = moment.utc().local();
+        const deadline = moment.utc(deadlineISO).local();
+        let remainingSeconds = Math.floor((deadline - now) / 1000);
+        if (remainingSeconds >= 0) {
+            container.textContent = remainingSeconds;
+            deadlineTimers[id] = setTimeout(updateGameDeadline, 1000);
+        } else if (remainingSeconds < -6) {
+            // If the deadline is over 6 seconds ago, we reload the game
+            router(`/game`, { id: gameObject.gameId });
+            stopGameDeadline(id);
+        } else {
+            container.textContent = "0"; // Stop deadline at 0
+            deadlineTimers[id] = setTimeout(updateGameDeadline, 1000);
+        }
+    }
+    // Start deadline
+    updateGameDeadline();
+}
+function stopGameDeadline(gameid) {
+    // Stop the deadline for the specific game by clearing the timeout
+    if (deadlineTimers[gameid]) {
+        clearTimeout(deadlineTimers[gameid]);
+        delete deadlineTimers[gameid];
+    }
+}
+// Function to stop and clear all deadline
+export function clearAllGameDeadlines() {
+    Object.values(deadlineTimers).forEach(clearTimeout);
+    Object.keys(deadlineTimers).forEach((key) => delete deadlineTimers[key]);
 }

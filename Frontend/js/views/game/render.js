@@ -313,9 +313,10 @@ export function toggleGamefieldVisible(visible) {
         gameField.style.display = "none";
         // Show the tournament banner if it is a tournament game
         if (gameObject.tournamentId)
-            tournamentBanner.style.display = "block";
+            tournamentBanner.style.display = "flex";
+        else
+            tournamentBanner.style.display = "none";
     }
-    // TODO: maybe here we can make a smooth transition
     const gameImage = $id("view-game-background");
     gameImage.src = imgPath;
 }

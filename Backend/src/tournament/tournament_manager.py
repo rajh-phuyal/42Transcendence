@@ -11,7 +11,6 @@ from core.exceptions import BarelyAnException
 # Services
 from services.send_ws_msg import send_ws_tournament_game_msg
 # Tournament
-from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.models import Tournament, TournamentMember
 from tournament.utils import finish_tournament
 # Game

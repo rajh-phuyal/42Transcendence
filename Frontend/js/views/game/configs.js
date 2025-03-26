@@ -2,7 +2,7 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { changeGameState, drawPlayersState } from './methods.js';
+import { changeGameState, drawPlayersState, clearAllGameDeadlines } from './methods.js';
 import { gameObject } from './objects.js';
 import { endGameLoop } from './loop.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
@@ -137,13 +137,16 @@ export default {
                     gameObject.playerRight.points = data.playerRight.points;
                     gameObject.playerRight.result = data.playerRight.result;
                     gameObject.mapName = this.maps[data.gameData.mapNumber];
+                    gameObject.deadline = data.gameData.deadline;
 
                     // Check if game is part of tournament
                     if (data.gameData.tournamentId) {
                         gameObject.tournamentId = data.gameData.tournamentId;
                         this.domManip.$id("game-view-tournament-name").innerText = translate("game", "partOfTournament") + data.gameData.tournamentName;
                         this.domManip.$id("game-view-tournament-name").setAttribute("data-tournamentid", data.gameData.tournamentId);
-                        this.domManip.$id("game-view-tournament-name").style.display = "block";
+                        this.domManip.$id("game-view-tournament-name").style.display = "flex";
+                    } else {
+                        this.domManip.$id("game-view-tournament-name").style.display = "none";
                     }
 
                     // I send the ready state also via REST NOW
@@ -192,39 +195,59 @@ export default {
 
         initObjects() {
             gameObject.gameId = this.gameId;
+            gameObject.countDownInterval = undefined;
+            gameObject.tournamentId = undefined;
+            gameObject.mapName = undefined;
             gameObject.wsConnection = false;
             gameObject.state = undefined;
-            gameObject.frameTime = 1000/25; // NOTE: this means 25 frames per second which should match the backend FPS
+            gameObject.frameTime = 1000/25; // NOTE = this means 25 frames per second which should match the backend FPS
             gameObject.lastFrameTime = 0;
-            gameObject.animationId = null;
-            gameObject.sound = null;
+            gameObject.animationId = undefined;
+            gameObject.deadline = undefined;
+            gameObject.sound = undefined;
+            gameObject.paddleWidth = 1;     //  This means 1% of the game field width. If changed; also change the BE = PADDLE_OFFSET
+            gameObject.paddleSpacing = 2;   //  This means 1% of the game field width is keept as a distance btween wall and paddle. If changed; also change the BE = PADDLE_OFFSET
+            gameObject.borderStrokeWidth = 2;
+            gameObject.clientIsPlayer = false; // Since all users can watch the lobby, this is used to determine if the client is a player or a spectator
+
             gameObject.playerInputLeft.paddleMovement = 0;
             gameObject.playerInputLeft.powerupSpeed = false;
             gameObject.playerInputLeft.powerupBig = false;
+
             gameObject.playerInputRight.paddleMovement = 0;
-            gameObject.playerInputRight.powerupFast = false;
             gameObject.playerInputRight.powerupSpeed = false;
+            gameObject.playerInputRight.powerupBig = false;
+
+            gameObject.playerLeft.id = undefined;
             gameObject.playerLeft.state = undefined;
-            gameObject.playerLeft.points = 0
+            gameObject.playerLeft.points = 0;
             gameObject.playerLeft.pos = 50;
             gameObject.playerLeft.size = 10;
+            gameObject.playerLeft.result = undefined;
             gameObject.playerLeft.powerupBig = "unavailable";
             gameObject.playerLeft.powerupSlow = "unavailable";
             gameObject.playerLeft.powerupFast = "unavailable";
-            gameObject.playerLeft.points = 0
+
+            gameObject.playerRight.id = undefined;
             gameObject.playerRight.state = undefined;
+            gameObject.playerRight.points = 0;
             gameObject.playerRight.pos = 50;
             gameObject.playerRight.size = 10;
+            gameObject.playerRight.result = undefined;
             gameObject.playerRight.powerupBig = "unavailable";
             gameObject.playerRight.powerupSlow = "unavailable";
             gameObject.playerRight.powerupFast = "unavailable";
-			gameObject.ball.posX = 50;
-			gameObject.ball.posY = 50;
+
+            gameObject.ball.posX = 50;
+            gameObject.ball.posY = 50;
+            gameObject.ball.height = 1;
+            gameObject.ball.width = 1;
         },
     },
 
     hooks: {
         beforeRouteEnter() {
+            clearAllGameDeadlines();
         },
 
         beforeRouteLeave() {
@@ -236,6 +259,8 @@ export default {
             }
             endGameLoop();
             WebSocketManagerGame.disconnect(this.gameId)
+            // Reset Game Object
+            this.initObjects();
         },
 
         beforeDomInsertion() {
