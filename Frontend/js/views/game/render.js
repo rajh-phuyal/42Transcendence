@@ -283,6 +283,8 @@ const drawField = (gameField, ctx) => {
 
 export function gameRender () {
 	const gameField = $id("game-field");
+    if(!gameField)
+        return
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx);
@@ -313,9 +315,10 @@ export function toggleGamefieldVisible(visible) {
         gameField.style.display = "none";
         // Show the tournament banner if it is a tournament game
         if (gameObject.tournamentId)
-            tournamentBanner.style.display = "block";
+            tournamentBanner.style.display = "flex";
+        else
+            tournamentBanner.style.display = "none";
     }
-    // TODO: maybe here we can make a smooth transition
     const gameImage = $id("view-game-background");
     gameImage.src = imgPath;
 }

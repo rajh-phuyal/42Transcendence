@@ -64,12 +64,12 @@
         "ne-NP": "विपक्षी चयन गर्नुहोस्"
     },
     "placeholderInviteUser": {
-        "en-US": "Invite a user...",
-        "pt-PT": "Convide um usuário...",
-        "pt-BR": "Convide um usuário...",
-        "de-DE": "Einen Benutzer einladen...",
-        "uk-UA": "Запросіть користувача...",
-        "ne-NP": "एक प्रयोगकर्तालाई आमन्त्रित गर्नुहोस्..."
+        "en-US": "Search for users to invite...",
+        "pt-PT": "Procure utilizadores para convidar...",
+        "pt-BR": "Procure usuários para convidar...",
+        "de-DE": "Suche nach Benutzern, die du einladen möchtest...",
+        "uk-UA": "Шукайте користувачів для запрошення...",
+        "ne-NP": "आमंत्रण गर्नका लागि प्रयोगकर्ताहरू खोज्नुहोस्..."
     },
     "btnBack": {
         "en-US": "Back",

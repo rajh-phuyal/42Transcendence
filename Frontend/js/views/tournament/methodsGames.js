@@ -5,7 +5,7 @@ import router from "../../navigation/router.js";
 import $store from '../../store/store.js';
 
 // Object to track active countdowns of games
-const countdownTimers = {};
+const deadlineTimers = {};
 
 /* This function will fully deal with the games stored in:
     tournamentData.all.tournamentGames
@@ -61,7 +61,7 @@ function updateGameCard(container, game) {
         if (game.deadline) {
             container.style.display = "grid";
             container.title = translate("tournament", "tooltipGameDeadline");
-            startGameCountdown(container, game.id, game.deadline);
+            startGameDeadline(container, game.id, game.deadline);
             // Animate the card if the user is part of the game
             if (container.getAttribute("player-left-id") == $store.fromState("user").id || container.getAttribute("player-right-id") == $store.fromState("user").id)
                 container.style.animation = "pulse-game-card 2s infinite";
@@ -71,12 +71,12 @@ function updateGameCard(container, game) {
     }
     else if (game.state === "countdown" || game.state === "ongoing" || game.state === "paused") {
         // STATE: COUNTDOWN, ONGOING, PAUSED
-        // remove the countdown if it exists
-        stopGameCountdown(game.id);
+        // remove the deadline if it exists
+        stopGameDeadline(game.id);
         container.style.display = "grid";
         if(game.state === "paused") {
             container.title = translate("tournament", "tooltipGamePaused");
-            // TODO: maybe show spinner
+            startGameDeadline(container, game.id, game.deadline);
         } else {
             container.title = translate("tournament", "tooltipGameOngoing");
         }
@@ -91,18 +91,20 @@ function updateGameCard(container, game) {
     }
     else {
         // STATE: FINISHED, QUITED
-        // remove the countdown if it exists
-        stopGameCountdown(game.id);
+        // remove the deadline if it exists
+        stopGameDeadline(game.id);
         container.style.display = "grid";
         container.title = translate("tournament", "tooltipGameFinished");
         // Animate the score change
         const scoreContainer = container.querySelector(".tournament-game-card-score");
         const newScore = game.playerLeft.points + "-" + game.playerRight.points;
-        if(newScore !== scoreContainer.textContent) {
-            // console.warn("Animate score change");
+        // Clean up old animation
+        scoreContainer.style.animation = "none";
+        scoreContainer.offsetHeight;
+        scoreContainer.style.removeProperty("animation");
+        // Update the score
+        if(newScore !== scoreContainer.textContent)
             scoreContainer.textContent = newScore;
-            triggerScoreAnimation(scoreContainer);
-        }
         // Highlight the winner
         if (game.playerLeft.result === "won") {
             container.querySelector(".tournament-game-card-player-left-avatar").style.filter    = "brightness(1)";
@@ -119,8 +121,10 @@ function updateGameCard(container, game) {
     }
 
     // If finsihsed or quited move to the finished tab
-    if(game.state === "finished" || game.state === "quited")
+    if(game.state === "finished" || game.state === "quited") {
+        container.style.animation = "none"; // Remove the pulse animation
         $id("container-games-finished-list").appendChild(container);
+    }
     // console.log("Updated game card with data: ", game);
 }
 
@@ -129,36 +133,36 @@ function gameCardCallback(event) {
     router(`/game`, { id: gameId });
 }
 
-function startGameCountdown(gameCardContainer, gameid, deadlineISO) {
-    const countdownElement = gameCardContainer.querySelector(".tournament-game-card-score");
+function startGameDeadline(gameCardContainer, gameid, deadlineISO) {
+    const deadlineElement = gameCardContainer.querySelector(".tournament-game-card-score");
 
-    function updateGameCountdown() {
+    function updateGameDeadline() {
         const now = moment.utc().local();
         const deadline = moment.utc(deadlineISO).local();
         let remainingSeconds = Math.max(0, Math.floor((deadline - now) / 1000));
-        countdownElement.textContent = remainingSeconds;
+        deadlineElement.textContent = remainingSeconds;
         if (remainingSeconds > 0) {
-            countdownTimers[gameid] = setTimeout(updateGameCountdown, 1000);
+            deadlineTimers[gameid] = setTimeout(updateGameDeadline, 1000);
         } else {
-            countdownElement.textContent = "0"; // Stop countdown at 0
+            deadlineElement.textContent = "0"; // Stop deadline at 0
         }
     }
-    // Start countdown
-    updateGameCountdown();
+    // Start deadline
+    updateGameDeadline();
 }
 
-function stopGameCountdown(gameid) {
-    // Stop the countdown for the specific game by clearing the timeout
-    if (countdownTimers[gameid]) {
-        clearTimeout(countdownTimers[gameid]);
-        delete countdownTimers[gameid];
+function stopGameDeadline(gameid) {
+    // Stop the deadline for the specific game by clearing the timeout
+    if (deadlineTimers[gameid]) {
+        clearTimeout(deadlineTimers[gameid]);
+        delete deadlineTimers[gameid];
     }
 }
 
-// Function to stop and clear all countdowns
-export function clearAllGameCountdowns() {
-    Object.values(countdownTimers).forEach(clearTimeout);
-    Object.keys(countdownTimers).forEach((key) => delete countdownTimers[key]);
+// Function to stop and clear all deadline
+export function clearAllGameDeadlines() {
+    Object.values(deadlineTimers).forEach(clearTimeout);
+    Object.keys(deadlineTimers).forEach((key) => delete deadlineTimers[key]);
 }
 
 // Used to trigger the animation of the score change

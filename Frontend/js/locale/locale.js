@@ -11,14 +11,14 @@ import { $id } from '../abstracts/dollars.js'
  */
 export const translate = (namespace, key, params = null) => {
     // Trying to get clients local language e.g. en-US
-    const locale = $store.state.locale;
+    const locale = $store.fromState('locale');
     if(!locale) {
         console.warn("No locale set in store");
         return key;
     }
 
     // Trying to load the translation dict from store
-    let translation = $store.state.translations?.[namespace]?.[key]?.[locale];
+    let translation = $store.fromState('translations')?.[namespace]?.[key]?.[locale];
     if (!translation) {
         console.warn(`Translation for ${namespace}.${key} not found for locale ${locale}`);
         return key;

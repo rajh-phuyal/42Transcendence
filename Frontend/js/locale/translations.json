@@ -28,13 +28,37 @@
         }
     },
     "nav": {
-        "placeholderSearchbar": {
+        "search": {
             "en-US": "Search for users...",
             "pt-PT": "Procurar utilizadores...",
             "pt-BR": "Procurar utilizadores...",
             "de-DE": "Benutzer suchen...",
             "uk-UA": "Пошук користувачів...",
             "ne-NP": "प्रयोगकर्ताहरू खोज्नुहोस्..."
+        },
+        "home": {
+            "en-US": "Go to Home",
+            "pt-PT": "Ir para Início",
+            "pt-BR": "Ir para Início",
+            "de-DE": "Zur Startseite",
+            "uk-UA": "Перейти на головну",
+            "ne-NP": "घरमा जानुहोस्"
+        },
+        "chat": {
+            "en-US": "Go to Chat",
+            "pt-PT": "Ir para Chat",
+            "pt-BR": "Ir para Chat",
+            "de-DE": "Zum Chat",
+            "uk-UA": "Перейти до чату",
+            "ne-NP": "च्याटमा जानुहोस्"
+        },
+        "profile": {
+            "en-US": "Go to your Profile",
+            "pt-PT": "Ir para o seu Perfil",
+            "pt-BR": "Ir para o seu Perfil",
+            "de-DE": "Zum Profil",
+            "uk-UA": "Перейти до вашого профілю",
+            "ne-NP": "तपाईंको प्रोफाइलमा जानुहोस्"
         },
         "musicOn": {
             "en-US": "Music is on",

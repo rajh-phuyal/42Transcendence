@@ -31,8 +31,11 @@ class SearchView(BaseAuthenticatedView):
         if not search:
             error_response(_("key 'search' must be provided!"))
         onlyFriends = request.query_params.get('onlyFriends', 'false')
+        includeSelf = request.query_params.get('includeSelf', 'false')
         current_user = request.user
-        users = User.objects.filter(username__istartswith=search).exclude(id=current_user.id)
+        users = User.objects.filter(username__istartswith=search)
+        if includeSelf == 'false':
+            users = users.exclude(id=current_user.id)
         if onlyFriends == 'true':
             # Filter to find users who have an ACCEPTED status in the 'IsCoolWith' table
             users = users.filter(

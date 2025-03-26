@@ -5,7 +5,7 @@ from celery import shared_task
 # Django
 from django.db import transaction
 from django.utils.translation import gettext as _
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from asgiref.sync import async_to_sync
 # Services
 from services.send_ws_msg import send_ws_game_data_msg
@@ -22,18 +22,14 @@ from chat.message_utils import create_and_send_overloards_pm
 
 @shared_task(ignore_result=True)
 def check_overdue_tournament_games():
-    # Check all tournament games that have passed their deadline
-    active_tournaments_ids = Tournament.objects.filter(
-        state=Tournament.TournamentState.ONGOING
-    ).values_list('id', flat=True)
-    pending_games = Game.objects.filter(
-        tournament_id__in=active_tournaments_ids,
-        state=Game.GameState.PENDING,
+    # Check all games that have passed their deadline
+    game_objects = Game.objects.filter(
+        state__in=[Game.GameState.PENDING, Game.GameState.PAUSED],
         deadline__isnull=False
     )
     found_one = False
     current_time = timezone.now()
-    for game in pending_games:
+    for game in game_objects:
         if timezone.is_naive(game.deadline):
             game_deadline_aware = timezone.make_aware(game.deadline)
         else:
@@ -49,7 +45,7 @@ def check_overdue_tournament_games():
                 return
             gde = "**GDE,{game}**".format(game=game.as_clickable())
             create_and_send_overloards_pm(game_members[0].user, game_members[1].user, gde)
-            # Set game to finished (this will also send the ws)
+            # Set game to quited (this will also send the ws)
             async_to_sync(update_game_state)(game.id, Game.GameState.QUITED, USER_ID_OVERLORDS)
             async_to_sync(send_ws_game_data_msg)(game.id)
 

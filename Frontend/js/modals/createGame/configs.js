@@ -23,8 +23,7 @@ export default {
 
     methods: {
         translateElements() {
-            // TODO: check if this transaltion works
-            this.domManip.$id("modal-create-game-opponent-search").setAttribute("placeholder", translate("createGame", "placeholderSearchbar"));
+            this.domManip.$id("modal-create-game-opponent-search").title = translate("createGame", "placeholderSearchbar");
         },
 
         /* This functions toggles between selecting a user and fixing it */

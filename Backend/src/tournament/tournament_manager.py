@@ -2,8 +2,7 @@
 from itertools import combinations
 import random, logging
 # Django
-from django.utils import timezone
-from django.utils.timezone import localtime
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.utils.translation import gettext as _
 from django.db import transaction
 # Core
@@ -11,7 +10,6 @@ from core.exceptions import BarelyAnException
 # Services
 from services.send_ws_msg import send_ws_tournament_game_msg
 # Tournament
-from tournament.constants import DEADLINE_FOR_TOURNAMENT_GAME_START
 from tournament.models import Tournament, TournamentMember
 from tournament.utils import finish_tournament
 # Game
@@ -282,6 +280,9 @@ def check_final_games(tournament):
         check_final_games_with_more_than_3_members(tournament, final_games)
 
 def is_user_available(user):
+    if not user:
+        logging.error("is_user_available: user is None")
+        return False
     # No ongoing/paused tournament games...
     ongoing_games = GameMember.objects.filter(
         user=user,
@@ -297,7 +298,6 @@ def is_user_available(user):
     available=True
     if (ongoing_games + deadline_games) > 0:
         available=False
-    logging.info(f"User {user.username} has {ongoing_games} ongoing games and {deadline_games} games with a deadline and is {'available' if available else 'NOT available'} to play")
     return available
 
 def is_tournament_finals_started(tournament):
@@ -314,10 +314,12 @@ def update_deadline_normal_tournament(tournament, pending_games):
     logging.info(f"Tournament Manager logic: NORMAL for tournament {tournament.id}")
      # Update the deadline for all pending games
     for game in pending_games:
-        logging.info(f"Checking game {game.id}")
         # Check if both users are free to play
         game_member1 = GameMember.objects.filter(game_id=game.id).select_related('user').first()
         game_member2 = GameMember.objects.filter(game_id=game.id).select_related('user').last()
+        if not game_member1 or not game_member2:
+            logging.error(f"Game {game.id} has not 2 members")
+            continue
         if not is_user_available(game_member1.user) or not is_user_available(game_member2.user):
             logging.info(f"User {game_member1.user.username} or {game_member2.user.username} is not available to play")
             continue

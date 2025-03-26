@@ -79,13 +79,14 @@ class ToJoinView(BaseAuthenticatedView):
             user_id=user.id,
             accepted=False,
             tournament__state=Tournament.TournamentState.SETUP
-        ).values_list('tournament', flat=True)
+        ).select_related('tournament')
+        invited_tournament_objects = [tournament_member.tournament for tournament_member in invited_tournaments]
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
             state=Tournament.TournamentState.SETUP
         )
         # Merge the two querysets
-        tournaments = list(invited_tournaments) + list(public_tournaments)
+        tournaments = invited_tournament_objects + list(public_tournaments)
         tournamentsSerializer = TournamentInfoSerializer(tournaments, many=True)
         return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournamentsSerializer.data})
 

@@ -1,3 +1,4 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import call from '../../abstracts/call.js';
 import { translate } from '../../locale/locale.js';
 import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
@@ -267,6 +268,8 @@ export default {
         },
 
         async afterDomInsertion() {
+            // Start music
+            audioPlayer.playMusic("chat");
             // Set translations
             this.setTranslations();
 

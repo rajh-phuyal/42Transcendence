@@ -106,3 +106,22 @@ export default function $nav(navigationPathParams = null) {
         $on(navbarObject, 'click', navbarObject._clickHandler);
     }
 }
+
+export function loadTranslationsForTooltips() {
+    $id('nav-home').title   = translate('global:nav', 'home');
+    $id('nav-chat').title   = translate('global:nav', 'chat');
+    $id('nav-avatar').title = translate('global:nav', 'profile');
+    $id('nav-search').title = translate('global:nav', 'search');
+
+    let soundOn = $store.fromState('sound');
+    if (soundOn)
+        $id('nav-sound').title   = translate("global:nav", "soundOn");
+    else
+        $id('nav-sound').title   = translate("global:nav", "soundOff");
+
+    let musicOn = $store.fromState('music');
+    if (musicOn)
+        $id('nav-music').title   = translate("global:nav", "musicOn");
+    else
+        $id('nav-music').title   = translate("global:nav", "musicOff");
+}

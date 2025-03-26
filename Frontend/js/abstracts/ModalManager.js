@@ -186,6 +186,10 @@ export default class ModalManager {
 
     /* This can be used from a configs.js of a view to open a modal when a button is clicked */
     on(buttonId, modalId) {
+        if(!buttonId || !modalId) {
+            console.warn("ModalManager: on: need arguments buttonId and modalId");
+            return
+        }
         let element = $id(buttonId);
         if (element) {
             element.setAttribute("target-modal-id", modalId);

@@ -3,6 +3,7 @@ import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
 import $store from '../../store/store.js';
 import { translate } from '../../locale/locale.js';
+import { loadTranslationsForTooltips } from '../../abstracts/nav.js';
 
 export default {
     attributes: {
@@ -72,6 +73,8 @@ export default {
                     return;
                 $callToast("success", data.message);
                 this.$store.commit("setLocale", data.locale);
+                // Translate Navbar elements
+                loadTranslationsForTooltips();
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);

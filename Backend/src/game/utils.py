@@ -3,7 +3,7 @@ import logging, random
 # DJANGO
 from rest_framework import status
 from django.db import transaction
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.utils.translation import gettext as _
 from asgiref.sync import async_to_sync
 # CORE
@@ -87,18 +87,18 @@ def get_game_of_user(user1, user2):
     """
     This function returns the game between user1 and user2 if it exists.
     The game:
-     - must be in a pending, ongoing or paused state.
+     - must be in a pending, ongoing, countdown or paused state.
      - can't be a tournament game.
     """
     user1_games = GameMember.objects.filter(
         user=user1.id,
         game__tournament_id=None,
-        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED, Game.GameState.COUNTDOWN]
     ).values_list('game_id', flat=True)
     user2_games = GameMember.objects.filter(
         user=user2.id,
         game__tournament_id=None,
-        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED]
+        game__state__in=[Game.GameState.PENDING, Game.GameState.ONGOING, Game.GameState.PAUSED, Game.GameState.COUNTDOWN]
     ).values_list('game_id', flat=True)
     if user1_games and user2_games:
         common_games = set(user1_games).intersection(user2_games)
@@ -157,7 +157,9 @@ def end_game(game, quit_user_id=None):
 
     If there is a quitter we set the state to QUITED if not to FINISHED.
     """
-
+    if not game:
+        logging.error("end_game: game is None")
+        return
     game_members = GameMember.objects.filter(game=game.id)
 
     with transaction.atomic():
@@ -202,6 +204,8 @@ def end_game(game, quit_user_id=None):
         game_member_1.save()
         game_member_2.save()
 
+    # If a player is in lobby while the change happens, inform him
+    async_to_sync(send_ws_game_data_msg)(game.id)
     winner = game_members.filter(result=GameMember.GameResult.WON).first()
     looser = game_members.filter(result=GameMember.GameResult.LOST).first()
     # Below is for tournament games only:
@@ -213,7 +217,8 @@ def end_game(game, quit_user_id=None):
         db_update_tournament_ranks(game.tournament)
         # Send the updated tournament ranking to all users of the tournament
         send_ws_all_tournament_members_msg(game.tournament)
-    check_tournament_routine(game.tournament_id)
+    if game.tournament is not None:
+        check_tournament_routine(game.tournament.id)
     return winner, looser
 
 def update_deadline_of_game(game_id):
@@ -229,8 +234,10 @@ def update_deadline_of_game(game_id):
                 logging.info(f"ERROR: Game {game_id} is not a tournament game")
                 return
 
-            game.deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
+            new_deadline = timezone.now() + DEADLINE_FOR_TOURNAMENT_GAME_START
+            game.deadline = new_deadline
             game.save()
+        set_game_data(game_id, 'gameData', 'deadline', new_deadline)
         logging.info(f"Game {game.id} now has the deadline {game.deadline}")
         # Send warning chat message to conversation of the two players
         player1_id = game.members.first().user.id

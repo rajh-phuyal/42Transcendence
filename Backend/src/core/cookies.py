@@ -1,6 +1,6 @@
 import logging
 from django.conf import settings
-from datetime import datetime
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.http import HttpResponse
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
@@ -40,7 +40,7 @@ def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: st
     response.set_cookie(
         JAR['ACCESS_COOKIE_NAME'],
         access_token,
-        expires=datetime.now() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+        expires=(timezone.now() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME']).replace(tzinfo=None), # best practice to use timezone.now() instead of datetime.now() but django expects naive UTC here
         secure=JAR['ACCESS_COOKIE_SECURE'],
         httponly=JAR['ACCESS_COOKIE_HTTPONLY'],
         samesite=JAR['ACCESS_COOKIE_SAMESITE'],
@@ -52,7 +52,7 @@ def set_jwt_cookies(response: HttpResponse, access_token: str, refresh_token: st
         response.set_cookie(
             JAR['REFRESH_COOKIE_NAME'],
             refresh_token,
-            expires=datetime.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+            expires=(timezone.now() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']).replace(tzinfo=None),  # best practice to use timezone.now() instead of datetime.now() but django expects naive UTC here
             secure=JAR['REFRESH_COOKIE_SECURE'],
             httponly=JAR['REFRESH_COOKIE_HTTPONLY'],
             samesite=JAR['REFRESH_COOKIE_SAMESITE'],
