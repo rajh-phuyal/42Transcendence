@@ -90,7 +90,8 @@ class GameConsumer(CustomWebSocketLogic):
         # Init game on cache and send the game data
         await init_game_on_cache(self.game, self.leftMember, self.rightMember)
         await send_ws_game_data_msg(self.game_id)
-
+        # Logg left and right player
+        logging.info(f"Game {self.game_id} - Left player: {self.leftUser.id} - Right player: {self.rightUser.id}")
         # SETTING PLAYER(S) READY
         if tournament and tournament.local_tournament:
             # CASE: A local tournament game: so we need to set both players ready
