@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from core.exceptions import BarelyAnException
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from asgiref.sync import sync_to_async
 from django.utils.translation import gettext as _
 from django.core.cache import cache

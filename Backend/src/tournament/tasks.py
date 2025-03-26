@@ -5,7 +5,7 @@ from celery import shared_task
 # Django
 from django.db import transaction
 from django.utils.translation import gettext as _
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from asgiref.sync import async_to_sync
 # Services
 from services.send_ws_msg import send_ws_game_data_msg

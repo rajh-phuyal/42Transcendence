@@ -1,7 +1,7 @@
 # Basics
 import logging
 # Django
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.db.models import Sum
 from django.utils.translation import gettext as _
 # Asgiref
@@ -39,7 +39,8 @@ async def send_ws_msg_to_user(user, **message):
         channel_layer = get_channel_layer()
         await channel_layer.send(channel_name, message)
     else:
-        logging.warning(f"No active WebSocket connection found for user ID {user}.")
+        ...
+        # logging.warning(f"No active WebSocket connection found for user ID {user}.")
 
 async def send_ws_info_msg(user_id, content):
     message_dict = {

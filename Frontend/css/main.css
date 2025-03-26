@@ -280,6 +280,9 @@ h6 {
 	text-align: center;
 	color: #f5c518;
 }
+.message-toast-message {
+    color: #000000;
+}
 
 /* SCROLL DIVS */
 /* -------------------------------------------------------------------------- */

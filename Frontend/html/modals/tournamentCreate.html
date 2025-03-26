@@ -31,15 +31,16 @@
                     <!-- CHOOSE USERS -->
                     <h6   id="modal-tournament-opponents-header"  class="grid-cell default-grid-area userst"></h6>
                     <div  id="modal-tournament-opponents-content" class="grid-cell default-grid-area srch">
-                        <search-bar
-                            placeholder=""
-                            width="250"
-                            heigth="30"
-                            search-type="users"
-                            on-click-event="select-user-invite"
-                            only-search-friends="true"
-                            clear-on-click="true"
-                        ></search-bar>
+                        <div>
+                            <search-bar
+                                width="250"
+                                heigth="30"
+                                search-type="users"
+                                on-click-event="select-user-invite"
+                                only-search-friends="true"
+                                clear-on-click="true"
+                            ></search-bar>
+                        </div>
                         <div id="modal-tournament-create-opponents-container" class="barely-a-scroll-class"></div>
                     </div>
                     <button id="modal-tournament-create-btn-back" class="grid-cell default-grid-area btnb modal-button" type="button" data-bs-target="#modal-tournament-main" data-bs-toggle="modal" data-bs-dismiss="modal"></button>

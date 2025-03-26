@@ -3,7 +3,7 @@ import logging, random
 # DJANGO
 from rest_framework import status
 from django.db import transaction
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.utils.translation import gettext as _
 from asgiref.sync import async_to_sync
 # CORE
@@ -157,7 +157,9 @@ def end_game(game, quit_user_id=None):
 
     If there is a quitter we set the state to QUITED if not to FINISHED.
     """
-
+    if not game:
+        logging.error("end_game: game is None")
+        return
     game_members = GameMember.objects.filter(game=game.id)
 
     with transaction.atomic():

@@ -1,4 +1,4 @@
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from rest_framework.views import APIView
 from core.cookies import CookieJWTAuthentication
 from rest_framework.permissions import IsAuthenticated

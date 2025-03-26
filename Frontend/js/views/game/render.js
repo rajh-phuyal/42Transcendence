@@ -283,6 +283,8 @@ const drawField = (gameField, ctx) => {
 
 export function gameRender () {
 	const gameField = $id("game-field");
+    if(!gameField)
+        return
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx);

@@ -238,7 +238,7 @@ function drawPlayerState(playerSide) {
             $id(playerSideDash + "-avatar").classList.remove("user-card-winner");
             $id(playerSideDash + "-avatar").classList.add("user-card-looser");
         } else
-            console.warn("finished game but I don't know if I won or lost");
+            console.log("finished game but I don't know if I won or lost: ", gameObject[playerSide].result);
     }
 }
 
@@ -401,8 +401,13 @@ function startGameDeadline(container, id, deadlineISO) {
             container.textContent = remainingSeconds;
             deadlineTimers[id] = setTimeout(updateGameDeadline, 1000);
         } else if (remainingSeconds < -6) {
-            // If the deadline is over 6 seconds ago, we reload the game
-            router(`/game`, { id: gameObject.gameId });
+            // If the deadline is over 6 seconds ago, we reload the game or redir to tournament lobby1
+            if(gameObject.tournamentId)
+                router(`/tournament`, { id: gameObject.tournamentId });
+            // This else triggers a reload loop!!!
+            //else
+                //router(`/game`, { id: gameObject.gameId });
+            // Not sure if this is needed after the router call
             stopGameDeadline(id);
         } else {
             container.textContent = "0"; // Stop deadline at 0

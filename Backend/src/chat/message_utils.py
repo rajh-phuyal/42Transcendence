@@ -3,7 +3,7 @@ import logging
 # Django
 from django.db import transaction
 from django.db.models import F
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 # User

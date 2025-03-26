@@ -1,9 +1,11 @@
 # Basics
-import logging, asyncio, json, math, random
-from datetime import datetime, timedelta, timezone
+import logging, asyncio, json, math
+from datetime import timedelta
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 # Django
 from django.utils.translation import gettext as _
 # Core
+from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 # User
 from user.constants import USER_ID_AI
@@ -63,6 +65,15 @@ class GameConsumer(CustomWebSocketLogic):
         if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:
             await self.close()
             logging.info(f"Game {self.game_id} is not in the right state to be played. CONNECTION CLOSED.")
+
+        # Check if the client is already connected to the game (e.g. in a different tab)
+        # Doesnt work
+        #already_connected = await database_sync_to_async(self.game.get_player_ready)(self.user.id)
+        #if already_connected:
+        #    logging.warning(f"User {self.user.id} attempted to connect to game {self.game_id} multiple times.")
+        #    await self.close()
+        #    raise BarelyAnException(_("You're already playing this game in another tab."))
+
         # Add client to the channel layer group
         # Note: here i can't use update_client_in_group since this always uses the main ws connection!
         group_name = f"{PRE_GROUP_GAME}{self.game_id}"
@@ -108,7 +119,7 @@ class GameConsumer(CustomWebSocketLogic):
                     difficulty = calculate_ai_difficulty(ai_score, player_score)
                     logging.info(f"Starting AI difficulty: {difficulty_to_string(difficulty)}")
                     self.ai_players[self.game_id] = {
-                        "stateSnapshotAt": datetime.now(timezone.utc),
+                        "stateSnapshotAt": timezone.now(),
                         "player": AIPlayer(difficulty=difficulty, game_id=self.game_id),
                         "side": "playerRight"  # AI is always right player
                     }
@@ -138,7 +149,7 @@ class GameConsumer(CustomWebSocketLogic):
         # If the game was ongoing, pause it
         if get_game_data(self.game_id, 'gameData', 'state') == Game.GameState.ONGOING or get_game_data(self.game_id, 'gameData', 'state') == Game.GameState.COUNTDOWN:
             # Set the deadline to reconnection time
-            new_deadline = datetime.now() + RECONNECT_TIMEOUT
+            new_deadline = timezone.now() + RECONNECT_TIMEOUT
             await database_sync_to_async(lambda: setattr(self.game, 'deadline', new_deadline))()
             await database_sync_to_async(self.game.save)()
             # logging.info(f"Game {self.game_id} was paused because of a disconnect with timestamp: {self.game.deadline}")
@@ -185,7 +196,7 @@ class GameConsumer(CustomWebSocketLogic):
     async def start_the_game(self):
         # Start / Continue the loop
         # 1. Set start time and send it to channel
-        start_time = datetime.now(timezone.utc) + timedelta(seconds=GAME_COUNTDOWN_MAX)
+        start_time = timezone.now() + timedelta(seconds=GAME_COUNTDOWN_MAX)
         start_time_formated = start_time.isoformat()
         logging.info(f"Game will start at: {start_time_formated}")
         await send_ws_game_players_ready_msg(self.game_id, True, True, start_time_formated)
@@ -193,7 +204,7 @@ class GameConsumer(CustomWebSocketLogic):
         await update_game_state(self.game_id, Game.GameState.COUNTDOWN)
         await send_ws_game_data_msg(self.game_id)
         # 2. Calculate the delay so the game loop start not before the start time
-        delay = (start_time - datetime.now(timezone.utc)).total_seconds()
+        delay = (start_time - timezone.now()).total_seconds()
         if delay > 0:
             await asyncio.sleep(math.floor(delay))  # Wait until the start time
         # 3. Start the game loop
@@ -221,8 +232,8 @@ class GameConsumer(CustomWebSocketLogic):
 
         try:
             # Update AI with fresh game state once per second
-            if (datetime.now(timezone.utc) - last_state_snapshot_at).total_seconds() > 1:
-                game_ai['stateSnapshotAt'] = datetime.now(timezone.utc)
+            if (timezone.now() - last_state_snapshot_at).total_seconds() > 1:
+                game_ai['stateSnapshotAt'] = timezone.now()
 
                 # Get complete game state for the AI to make better decisions
                 game_state = {

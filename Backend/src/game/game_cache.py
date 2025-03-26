@@ -111,7 +111,8 @@ def set_game_data(game_id, key1, key2, new_value, timeout=3000):
             return True
         logging.error(f"! Key '{key1}' or '{key2}' does not exist in game {game_id} cache!")
     else:
-        logging.error(f"! Can't update game state because game {game_id} is not in cache!")
+        ...
+        # logging.error(f"! Can't update game state because game {game_id} is not in cache! This isn't to bad :D")
     return False
 
 def get_game_data(game_id, key1=None, key2=None):
@@ -134,7 +135,8 @@ def get_game_data(game_id, key1=None, key2=None):
                 return None
             return game_state_data_key1[key2]
     else:
-        logging.error(f"! Can't get game state because game {game_id} is not in cache!")
+        ...
+        # logging.error(f"! Can't get game state because game {game_id} is not in cache! Not to bad I hope :D")
 
 async def delete_game_from_cache(game_id):
     """ Deletes the game data from cache """
