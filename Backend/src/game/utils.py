@@ -217,7 +217,8 @@ def end_game(game, quit_user_id=None):
         db_update_tournament_ranks(game.tournament)
         # Send the updated tournament ranking to all users of the tournament
         send_ws_all_tournament_members_msg(game.tournament)
-    check_tournament_routine(game.tournament.id)
+    if game.tournament is not None:
+        check_tournament_routine(game.tournament.id)
     return winner, looser
 
 def update_deadline_of_game(game_id):
