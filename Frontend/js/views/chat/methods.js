@@ -506,6 +506,8 @@ export function updateHelpMessage(htmlContent="") {
 }
 
 export function parseChatMessage(msgString) {
+    if (msgString == null)
+        return "";
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
     let parsedContent = msgString.trim();
