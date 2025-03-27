@@ -57,7 +57,7 @@ export default function $callToast(type, message, conversation = null) {
     let duration = "";
     if (conversation) {
         /* CHAT MESSAGE TOAST */
-        duration = 20000
+        duration = 2000
         if (!$id(`message-toast-${conversation.id}`)) {
             toastElement = createConversationToast(conversation);
             audioPlayer.playSound("chatToast");
