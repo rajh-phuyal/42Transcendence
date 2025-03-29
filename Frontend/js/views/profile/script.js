@@ -14,7 +14,7 @@ function populateUserInfo(res) {
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_offline.png";
     // Set the avatar
     const element = $id("avatar");
-    element.src = window.origin + '/media/avatars/' + escapeHTML(res.avatar); //Not needed since its an UUID but just in case :D
+    element.src = window.origin + '/media/avatars/' + escapeHTML(res.avatar); //Not needed since it's an UUID but just in case :D
     // Set the birth name
     let birthName =$id("birth-name");
     let fullName = ""
