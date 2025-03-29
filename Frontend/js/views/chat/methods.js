@@ -6,6 +6,7 @@ import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
 import router from '../../navigation/router.js';
 import { loadTimestamp } from '../../abstracts/timestamps.js';
+import { emojiMap } from './emojimap.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -449,6 +450,23 @@ export function createHelpMessage(input){
     const cmds = ["/G", "/F", "/B", "/U"];
     input = input.toUpperCase();
     let htmlContent = ""
+
+    // Emoji
+    if (emojiMap && Object.keys(emojiMap).length > 0) {
+        const match = input.match(/(?:^|\s):([a-zA-Z0-9_+-]{2,})$/); // Match :word at end or after space
+        if (match) {
+            const query = match[1].toLowerCase();
+            const results = Object.entries(emojiMap)
+                .filter(([alias, emoji]) => alias.startsWith(`:${query}`))
+                .slice(0, 10);
+            if (results.length > 0) {
+                htmlContent = results.map(([alias, emoji]) =>
+                    `<div class="emoji-suggestion">${emoji}${alias}</div>`
+                ).join("");
+            }
+        }
+    }
+
     if (input == "/" || cmds.some(prefix => input.startsWith(prefix))) {
         // We need more options for /G and /F
         if(input.startsWith("/G")) {
