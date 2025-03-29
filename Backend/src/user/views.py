@@ -1,7 +1,8 @@
 # Basics
-# import logging
+import logging, html
 # Django
 from django.db.models import Q
+from django.db import transaction
 from django.utils.translation import gettext as _, activate
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -180,10 +181,12 @@ class UpdateUserInfoView(BaseAuthenticatedView):
         new_last_name = request.data.get('lastName')
         new_language = request.data.get('language')
         new_notes = request.data.get('notes')
-
-        # Check if all fields are not empty
-        if not new_username or not new_first_name or not new_last_name or not new_language:
-            return error_response(_("All keys ('username', 'firstName', 'lastName', 'language') must be provided!"))
+        # Prevent XSS attacks
+        new_username = html.escape(new_username) if new_username else '' # Not needed since the username is validated
+        new_first_name = html.escape(new_first_name) if new_first_name else ''
+        new_last_name = html.escape(new_last_name) if new_last_name else ''
+        new_language = html.escape(new_language) if new_language else '' # Not needed since the language is validated
+        new_notes = html.escape(new_notes) if new_notes else ''
 
         # Check if the new username is valid
         if new_username != user.username:
@@ -202,14 +205,25 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             async_to_sync(send_message_with_delay)(USER_ID_AI, user, 0, _("Okay, I will now speak in ur new favorite language! ;)"))
 
         # Update the user info
-        user.username           = new_username
-        user.first_name         = new_first_name[:10]
-        user.last_name          = new_last_name[:10]
-        user.language           = new_language
-        user.notes              = new_notes[:600] if new_notes else ''
+        with transaction.atomic():
+            # Update the user object
+            if new_username != user.username:
+                # Check if the username already exists
+                if User.objects.filter(username=new_username).exists():
+                    return error_response(_("Username already exists"))
+                else:
+                    user.username           = new_username
+            if new_first_name != user.first_name:
+                user.first_name         = new_first_name[:10]
+            if new_last_name != user.last_name:
+                user.last_name          = new_last_name[:10]
+            if new_language != user.language:
+                user.language           = new_language
+            if new_notes != user.notes:
+                user.notes              = new_notes[:600] if new_notes else ''
 
-        # Save the user object
-        user.save()
+            # Save the user object
+            user.save()
 
         # Return the success response
         return success_response(_("User info updated"), **{'locale': user.language})

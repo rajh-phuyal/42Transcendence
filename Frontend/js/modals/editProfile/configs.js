@@ -24,36 +24,7 @@ export default {
             notesElement.placeholder        = translate("editProfile", "placeholderNotes");
         },
 
-        initTypeListeners(init) {
-            const usernameElement   = this.domManip.$id("modal-edit-profile-username");
-            const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
-            const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
-            const languageElement   = this.domManip.$id("modal-edit-profile-language");
-            if (init) {
-                this.domManip.$on(usernameElement, "input", this.typeCallback);
-                this.domManip.$on(firstNameElement, "input", this.typeCallback);
-                this.domManip.$on(lastNameElement, "input", this.typeCallback);
-                this.domManip.$on(languageElement, "input", this.typeCallback);
-            } else {
-                this.domManip.$off(usernameElement, "input", this.typeCallback);
-                this.domManip.$off(firstNameElement, "input", this.typeCallback);
-                this.domManip.$off(lastNameElement, "input", this.typeCallback);
-                this.domManip.$off(languageElement, "input", this.typeCallback);
-            }
-        },
-
-        typeCallback(event) {
-            const usernameElement   = this.domManip.$id("modal-edit-profile-username");
-            const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
-            const lastNameElement   = this.domManip.$id("modal-edit-profile-last-name");
-            const languageElement   = this.domManip.$id("modal-edit-profile-language");
-            const submitButton      = this.domManip.$id("modal-edit-profile-btn-save");
-            if (usernameElement.value.trim() !== "" && firstNameElement.value.trim() !== "" && lastNameElement.value.trim() !== "" && languageElement.value.trim() !== "")
-                submitButton.disabled = false;
-            else
-                submitButton.disabled = true;
-        },
-
+        // Submit Callback
         submitCallback() {
             const usernameElement   = this.domManip.$id("modal-edit-profile-username");
             const firstNameElement  = this.domManip.$id("modal-edit-profile-first-name");
@@ -101,14 +72,12 @@ export default {
             // Avatar
             avatarElement.src = window.origin + '/media/avatars/' + this.domManip.$id("router-view").getAttribute("data-user-avatar");
             // Add Event Listeners
-            this.initTypeListeners(true);
             this.domManip.$on(submitElement, "click", this.submitCallback);
             return true;
         },
         afterClose () {
             // Remove Event Listeners
             const submitElement     = this.domManip.$id("modal-edit-profile-btn-save");
-            this.initTypeListeners(false);
             this.domManip.$off(submitElement, "click", this.submitCallback);
         }
     }

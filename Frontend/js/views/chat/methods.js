@@ -508,9 +508,21 @@ export function updateHelpMessage(htmlContent="") {
 export function parseChatMessage(msgString) {
     if (msgString == null)
         return "";
+
+    let parsedContent = msgString.trim();
+    if(parsedContent.length == 0)
+        return "";
+    // ADITIONAL XSS Protection
+    // Since the backend should not allow any html aka escape it this shouldn't be neccesary
+    // But in case somehow html finds its way into the db we escape it here to protect the client
+    parsedContent = parsedContent
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     // PARSE THE CONTENT
     // Match @<username>@<userid>@ pattern
-    let parsedContent = msgString.trim();
     if (parsedContent != null) {
         // Make new lines work
         parsedContent = parsedContent.replace(/\n/g, '<br>');
