@@ -295,7 +295,7 @@ export default {
             if (!username)
                 return Promise.resolve(true);
             // Use search endpoint to check if username exists
-            return call(`user/usernameExists/${username}/`, "GET", null, false).then(data => {
+            return call(`user/username-exists/${username}/`, "GET", null, false).then(data => {
                 return data.exists;
             }).catch((error) => {
                 return false;
