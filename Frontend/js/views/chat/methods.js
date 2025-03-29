@@ -494,7 +494,7 @@ export function updateHelpMessage(htmlContent="") {
             const container = $id("chat-view-messages-container");
             container.appendChild(helpContainer);
         }
-        helpContainer.innerHTML = htmlContent; // Don't change to innerHtml -> will destroy the layout of @usernames etc.
+        helpContainer.innerHTML = htmlContent; // Don't change to innerText -> will destroy the layout of @usernames etc.
         // Scroll to bottom
         let scrollContainer = $id("chat-view-messages-container");
         scrollContainer.scrollTop = scrollContainer.scrollHeight + scrollContainer.clientHeight;
