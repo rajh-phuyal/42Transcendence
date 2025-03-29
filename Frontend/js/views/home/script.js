@@ -120,6 +120,7 @@ export async function buildCanvas(){
 
 export async function redraw(image)
 {
+    console.log("redrawing");
     await drawImg(image);
     for (let element of image.lines)
     {
@@ -178,12 +179,13 @@ export async function isHovering(event){
     }
 
     if (foundElement == undefined)
-    {
-        canvasData.highlitedImageID = 0;
-        return ;
-    }
+        {
+            canvasData.highlitedImageID = 0;
+            return ;
+        }
 
     canvasData.highlitedImageID = foundElement.id;
+    console.log("highlighting:", foundElement.src);
     await redraw(foundElement);
 }
 
@@ -194,8 +196,14 @@ export function mouseClick(event){
     if (document.querySelectorAll('.modal.show').length > 0)
         return ;
 
-	let mouseX = event.clientX;
-    let mouseY = event.clientY;
+    let canvas = canvasData.canvas;
+
+	 // get the canvas position relative to the viewport
+     const rect = canvas.getBoundingClientRect();
+
+     // Adjust the mouse position relative to the canvas
+     let mouseX = (event.clientX - rect.left) * (canvas.width / canvas.clientWidth);
+     let mouseY = (event.clientY - rect.top) * (canvas.height / canvas.clientHeight);
 
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
 

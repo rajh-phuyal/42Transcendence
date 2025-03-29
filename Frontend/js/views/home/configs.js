@@ -68,8 +68,8 @@ export default {
 
             // this.domManip.$on(document, "click", mouseClick);
             // this.domManip.$on(document, "mousemove", isHovering);
-            EventListenerManager.linkEventListener("barely-a-body", "home", "click", mouseClick);
-            EventListenerManager.linkEventListener("barely-a-body", "home", "mousemove", isHovering);
+            EventListenerManager.linkEventListener("home-canvas", "home", "click", mouseClick);
+            EventListenerManager.linkEventListener("home-canvas", "home", "mousemove", isHovering);
             // Set the attributes for the modals
             this.setViewAttributes(true);
         },
