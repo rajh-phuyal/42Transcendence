@@ -5,7 +5,7 @@ import { loadTimestamp } from '../../abstracts/timestamps.js';
 function populateUserInfo(res) {
     // Set the username
     let username = $id("username");
-    username.innerHTML = `${translate("profile", "subject")}${res.username}`;
+    username.innerText = `${translate("profile", "subject")}${res.username}`;
     // Set the online eye icon
     let lastSeenImg =$id("last-seen-image");
     if (res.online)
@@ -14,13 +14,13 @@ function populateUserInfo(res) {
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_offline.png";
     // Set the avatar
     const element = $id("avatar");
-    element.src = window.origin + '/media/avatars/' + res.avatar;
+    element.src = window.origin + '/media/avatars/' + escapeHTML(res.avatar); //Not needed since its an UUID but just in case :D
     // Set the birth name
     let birthName =$id("birth-name");
     let fullName = ""
     if (res.firstName)
-        fullName = res.firstName + ", ";
-    fullName += res.lastName;
+        fullName = escapeHTML(res.firstName) + ", ";
+    fullName += escapeHTML(res.lastName);
     if(fullName == "")
         fullName = "&nbsp;";
     birthName.innerHTML = `<b>${translate("profile", "birthName")}</b>${fullName}`;
@@ -36,12 +36,14 @@ function populateUserInfo(res) {
     // Set the language
     let language = $id("language");
     if (res.language)
-        language.innerHTML = `<b>${translate("profile", "language")}</b>${res.language}`;
+        language.innerHTML = `<b>${translate("profile", "language")}</b>${escapeHTML(res.language)}`;
     else
         language.innerHTML = `<b>${translate("profile", "language")}</b>&nbsp;`;
     let notes = $id("notes");
-    if (res.notes !== "")
-        notes.innerHTML = `<b>${translate("profile", "notes")}</b>${res.notes}`;
+    if (res.notes !== "") {
+        let formattedNotes = escapeHTML(res.notes);
+        notes.innerHTML = `<b>${translate("profile", "notes")}</b>${formattedNotes}`;
+    }
 }
 
 function allignStats(elementId, a, b){
@@ -78,6 +80,15 @@ function populateInfoAndStats(res) {
     populateProgress(res.stats.score.experience,    "score-game-exp-progress");
     populateProgress(res.stats.score.performance,   "score-tournament-exp-progress");
     populateProgress(res.stats.score.total,         "score-total-progress");
+}
+
+function escapeHTML(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
 }
 
 export { populateInfoAndStats };
