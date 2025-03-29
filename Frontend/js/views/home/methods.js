@@ -2,17 +2,17 @@ import { $id } from '../../abstracts/dollars.js'
 import canvasData from './data.js';
 import { buildCanvas, redraw } from './script.js';
 
-export async function rescaleCanvas() {
-    let canvasElement = $id("home-canvas");
-    let backgroundImage = $id("home-view-background")
-    if (!canvasElement || !backgroundImage)
-        return;
-    let canvas = canvasData.canvas;
-    canvasData.canvas = canvasElement;
-    canvasData.context = canvas.getContext('2d');
-    canvasData.context.scale(backgroundImage.width, backgroundImage.height);
-    canvasData.context.translate(0, -500);
-    await buildCanvas();
+export async function rescaleCanvas() { // TODO: remove me if nothing goes wrong in testing when resizing the window on home view
+    // let resizeTimeout;
+    // clearTimeout(resizeTimeout);
+    // resizeTimeout = setTimeout(() => {
+    //     console.log("resizing");
+    //     canvasData.context = canvas.getContext('2d');
+    //     canvas.width = 2000;
+    //     canvas.height = 900;
+    //     canvasData.context.imageSmoothingEnabled = true;
+    //     buildCanvas()
+    // }, 100); // wait 100ms after resizing ends
 }
 
 

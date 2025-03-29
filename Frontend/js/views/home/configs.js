@@ -6,6 +6,7 @@ import callToast from '../../abstracts/callToast.js'
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import $store from '../../store/store.js';
+import { rescaleCanvas } from './methods.js';
 
 export default {
     attributes: {
@@ -70,8 +71,24 @@ export default {
             // this.domManip.$on(document, "mousemove", isHovering);
             EventListenerManager.linkEventListener("home-canvas", "home", "click", mouseClick);
             EventListenerManager.linkEventListener("home-canvas", "home", "mousemove", isHovering);
+            EventListenerManager.linkEventListener("barely-a-body", "home", "resize", rescaleCanvas);
             // Set the attributes for the modals
             this.setViewAttributes(true);
+
+
+            
+            // window.addEventListener('resize', () => {
+            //     let resizeTimeout;
+            //     clearTimeout(resizeTimeout);
+            //     resizeTimeout = setTimeout(() => {
+            //         // console.log("resizing");
+            //         canvasData.context = canvas.getContext('2d');
+            //         canvas.width = 2000;
+            //         canvas.height = 900;
+            //         canvasData.context.imageSmoothingEnabled = true;
+            //         buildCanvas()
+            //     }, 100); // wait 100ms after resizing ends
+            // });
         },
     }
 }

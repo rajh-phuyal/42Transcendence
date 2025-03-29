@@ -11,6 +11,7 @@ import { translate } from '../../locale/locale.js';
 
 // Draw the image on the canvas
 function drawImg(image) {
+    // console.log("canvas", canvasData.context);
     canvasData.image = image;
     return new Promise((resolve) => {
         let imageObject = new Image();
@@ -28,6 +29,8 @@ function drawImg(image) {
                 shadowColor = '#FFFCE6'
             else
                 shadowColor = '#100C09';
+            // console.log("shadow color:", shadowColor);
+
 
             context.shadowColor = shadowColor;
             context.shadowOffsetX = image.shadow;
@@ -48,7 +51,7 @@ function drawImg(image) {
         };
 
         imageObject.onerror = function () {
-            console.error("Error loading image:", image.src);
+            // console.error("Error loading image:", image.src);
             resolve();
         };
     });
@@ -107,6 +110,7 @@ async function drawLine(line){
 
 // build the whole canvas
 export async function buildCanvas(){
+    console.error("building");
     await drawImageBook();
         for (const element of backgroundImageBook)
             await drawImg(element);
@@ -120,7 +124,6 @@ export async function buildCanvas(){
 
 export async function redraw(image)
 {
-    console.log("redrawing");
     await drawImg(image);
     for (let element of image.lines)
     {
@@ -185,7 +188,7 @@ export async function isHovering(event){
         }
 
     canvasData.highlitedImageID = foundElement.id;
-    console.log("highlighting:", foundElement.src);
+    // console.log("highlighting:", foundElement.src);
     await redraw(foundElement);
 }
 
