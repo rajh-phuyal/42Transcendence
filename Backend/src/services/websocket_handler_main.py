@@ -1,5 +1,5 @@
 # Basics
-import logging, json, asyncio, html
+import logging, json, asyncio, html, emoji
 # Python stuff
 from django.utils.translation import gettext as _
 from core.exceptions import BarelyAnException
@@ -41,8 +41,9 @@ class WebSocketMessageHandlersMain:
         await validate_conversation_membership_async(consumer.user, conversation_id)
         conversation = await sync_to_async(Conversation.objects.get)(id=conversation_id)
         content = message.get('content', '').strip()
-        content = content.strip('*')    # Messages are not allowed to start or end with a "*" because it's used for template messages
-        content = html.escape(content)  # Prevent XSS attacks
+        content = content.strip('*')                        # Messages are not allowed to start or end with a "*" because it's used for template messages
+        content = html.escape(content)                      # Prevent XSS attacks
+        content = emoji.emojize(content, language='alias')  # To make :tada: into 🎉
         other_user = await get_other_user_async(consumer.user, conversation_id)
         # Content can't be empty
         if not content:
