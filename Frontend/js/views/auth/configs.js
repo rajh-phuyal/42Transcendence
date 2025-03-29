@@ -103,8 +103,10 @@ export default {
             this.domManip.$addClass( flagElementNE,  "modal-toggle-button-disabled");
             // Enable the selected flag
             const enabledElement = this.domManip.$id(`button-local-${this.language}`);
-            this.domManip.$removeClass( enabledElement,   "modal-toggle-button-disabled");
-            this.domManip.$addClass(    enabledElement,   "modal-toggle-button-enabled");
+            if (enabledElement) {
+                this.domManip.$removeClass( enabledElement,   "modal-toggle-button-disabled");
+                this.domManip.$addClass(    enabledElement,   "modal-toggle-button-enabled");
+            }
         },
         /* BUTTON CALLBACKS */
         callbackLogin(event) {

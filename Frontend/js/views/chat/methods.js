@@ -225,28 +225,7 @@ export function createMessage(element, prepend = true) {
     template.querySelector(".chat-view-message-sender").textContent = element.username;
     template.querySelector(".chat-view-message-sender").setAttribute("data-userid", element.userId);
 
-    // PARSE THE CONTENT
-    // Match @<username>@<userid>@ pattern
-    let parsedContent = element.content;
-    if (element.content != null) {
-        // Make new lines work
-        parsedContent = parsedContent.replace(/\n/g, '<br>');
-        // Match @<username>@<userid>@ pattern
-        parsedContent = element.content.replace(
-            /@([^@]+)@([^@]+)@/g,
-            `<span class="mention-user" data-userid="$2">@$1</span>`
-        );
-        // Match #T#<tournamentName>#<tournamentId># pattern
-        parsedContent = parsedContent.replace(
-            /#T#([^#]+)#([^#]+)#/g,
-            '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
-        );
-        // Match #G#<gameId># pattern
-        parsedContent = parsedContent.replace(
-            /#G#([^#]+)#/g,
-            '<span class="mention-game" data-gameid="$1">#$1</span>'
-        );
-    }
+    let parsedContent = parseChatMessage(element.content);
 
     // Set the content of the message
     template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
@@ -515,7 +494,7 @@ export function updateHelpMessage(htmlContent="") {
             const container = $id("chat-view-messages-container");
             container.appendChild(helpContainer);
         }
-        helpContainer.innerHTML = htmlContent;
+        helpContainer.innerHTML = htmlContent; // Don't change to innerText -> will destroy the layout of @usernames etc.
         // Scroll to bottom
         let scrollContainer = $id("chat-view-messages-container");
         scrollContainer.scrollTop = scrollContainer.scrollHeight + scrollContainer.clientHeight;
@@ -524,4 +503,32 @@ export function updateHelpMessage(htmlContent="") {
         if (helpContainer)
             helpContainer.remove();
     }
+}
+
+export function parseChatMessage(msgString) {
+    if (msgString == null)
+        return "";
+    // PARSE THE CONTENT
+    // Match @<username>@<userid>@ pattern
+    let parsedContent = msgString.trim();
+    if (parsedContent != null) {
+        // Make new lines work
+        parsedContent = parsedContent.replace(/\n/g, '<br>');
+        // Match @<username>@<userid>@ pattern
+        parsedContent = parsedContent.replace(
+            /@([^@]+)@([^@]+)@/g,
+            `<span class="mention-user" data-userid="$2">@$1</span>`
+        );
+        // Match #T#<tournamentName>#<tournamentId># pattern
+        parsedContent = parsedContent.replace(
+            /#T#([^#]+)#([^#]+)#/g,
+            '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
+        );
+        // Match #G#<gameId># pattern
+        parsedContent = parsedContent.replace(
+            /#G#([^#]+)#/g,
+            '<span class="mention-game" data-gameid="$1">#$1</span>'
+        );
+    }
+    return parsedContent;
 }
