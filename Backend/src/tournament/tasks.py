@@ -13,6 +13,7 @@ from services.send_ws_msg import send_ws_game_data_msg
 from user.constants import USER_ID_OVERLORDS, USER_ID_AI
 # Tournament
 from tournament.models import Tournament
+from tournament.tournament_manager import check_tournament_routine
 # Game
 from game.models import Game, GameMember
 from game.utils_ws import update_game_state
@@ -20,6 +21,20 @@ from game.AI import clear_ai_stats_cache
 # CHAT
 from chat.message_utils import create_and_send_overloards_pm
 
+@shared_task(ignore_result=True)
+def startup_check_deadline():
+    logging.warning("STARTUP: Checking for overdue games aka ongoing tournaments")
+    # Check all on-going tournaments and call the check_tournament_routine function
+    ongoing_tournaments = Tournament.objects.filter(
+        state=Tournament.TournamentState.ONGOING
+    )
+    for tournament in ongoing_tournaments:
+        logging.warning(f"STARTUP: Checking tournament {tournament.id} ({tournament.name})")
+        # Check if the tournament is finished
+        try:
+            check_tournament_routine(tournament.id)
+        except Exception as e:
+            logging.error(f"Error checking tournament {tournament.id}: {e}")
 @shared_task(ignore_result=True)
 def check_overdue_tournament_games():
     # Check all games that have passed their deadline
