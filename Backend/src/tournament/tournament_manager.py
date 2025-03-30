@@ -245,11 +245,12 @@ def check_final_games_with_more_than_3_members(tournament, final_games):
 
     # Semi-finals are already started, check if both are finished
     logging.info(f"The semi-finals states are: {semi_finals[0].state} and {semi_finals[1].state}")
-    if semi_finals[0].state != Game.GameState.FINISHED:
+    # Need to check if its not finished or quited
+    if semi_finals[0].state not in [Game.GameState.FINISHED, Game.GameState.QUITED]:
         logging.info(f"Case 2.1: Semi-final 1 is not finished yet")
         update_deadlines(tournament, final_games)
         return
-    if semi_finals[1].state != Game.GameState.FINISHED:
+    if semi_finals[1].state not in [Game.GameState.FINISHED, Game.GameState.QUITED]:
         logging.info(f"Case 2.2: Semi-final 2 is not finished yet")
         update_deadlines(tournament, final_games)
         return
