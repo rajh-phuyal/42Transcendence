@@ -1,4 +1,4 @@
-import { tournamentData as data, tournamentData } from "./objects.js";
+import { tournamentData } from "./objects.js";
 import { translate } from '../../locale/locale.js';
 import { $id } from "../../abstracts/dollars.js";
 import router from "../../navigation/router.js";
@@ -12,7 +12,7 @@ const deadlineTimers = {};
 */
 export function updateGames() {
     // Create all games
-    for (let game of data.tournamentGames) {
+    for (let game of tournamentData.tournamentGames) {
         // Find game card in upcoming tab
         let container = $id("container-games-upcoming-list").querySelector(`[gameid="${game.id}"]`);
         // Find game card in finished tab
