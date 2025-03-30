@@ -8,7 +8,6 @@ import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
 import { translate } from './locale/locale.js';
 import { audioPlayer } from './abstracts/audio.js';
-import { rescaleCanvas } from './views/home/methods.js';
 import { historyManager } from './navigation/history.js';
 setViewLoading(true);
 
@@ -136,11 +135,6 @@ window.addEventListener('resize', async () => {
         const params = href.split('?')[1];
         let paramsObject = historyManager.argsStringToObject(params);
         await router(path, paramsObject, false);
-    }
-
-    if (window.location.pathname == "/home") {
-        // Rescale the canvas when the window is resized
-        await rescaleCanvas();
     }
 });
 

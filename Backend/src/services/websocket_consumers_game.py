@@ -5,18 +5,16 @@ from django.utils import timezone # Don't use from datetime import timezone, it 
 # Django
 from django.utils.translation import gettext as _
 # Core
-from core.exceptions import BarelyAnException
 from core.decorators import barely_handle_ws_exceptions
 # User
 from user.constants import USER_ID_AI
 # Game stuff
-from game.models import Game
+from game.models import Game, GameMember
 from game.constants import GAME_FPS, GAME_COUNTDOWN_MAX, RECONNECT_TIMEOUT
 from game.AI import AIPlayer, calculate_ai_difficulty, difficulty_to_string
-from game.game_cache import set_player_input
 from game.utils import is_left_player, get_user_of_game
 from game.utils_ws import update_game_state
-from game.game_cache import get_game_data, set_game_data, init_game_on_cache, delete_game_from_cache
+from game.game_cache import get_game_data, set_game_data, init_game_on_cache, delete_game_from_cache, set_player_input
 from game.game_physics import activate_power_ups, move_paddle, move_ball, apply_wall_bonce, check_paddle_bounce, check_if_game_is_finished, apply_point
 # Services
 from services.constants import PRE_GROUP_GAME
@@ -33,102 +31,135 @@ class GameConsumer(CustomWebSocketLogic):
     game_loops = {}
     ai_players = {}
 
-    @barely_handle_ws_exceptions
-    async def connect(self):
-        await super().connect()
-        # Set self vars for consumer
-        self.game_id = self.scope['url_route']['kwargs']['game_id']
-        self.game = await database_sync_to_async(Game.objects.get)(id=self.game_id)
-        self.isOnlyViewer = False
+    async def _load_game(self):
+        self.game = await database_sync_to_async(
+            # Prefetch the tournament and members to avoid lazy loading issues
+            lambda: Game.objects.select_related("tournament").prefetch_related("members__user").get(id=self.game_id)
+        )()
 
+    async def _is_game_invalid(self):
+        if self.game.state in [Game.GameState.FINISHED, Game.GameState.QUITED]:
+            logging.info(f"WEBSOCKET GAME CONNECT: Game {self.game_id} is not in the right state to be played. CONNECTION CLOSED.")
+            await self.close()
+            return True
+        return False
+
+    async def _authorize_connection(self):
         # CHECK IF CLIENT IS ALLOWED TO CONNECT
-        # Check if the client is a game member...
-        if not await database_sync_to_async(lambda: self.game.members.filter(user=self.user).exists())():
-            logging.info(f"User {self.user.id} is not a member of game: entering viewer mode.")
+        # We have two cases:
+        #     NORMAL GAME:
+        #       - game members:         connect as player
+        #       - game non members:     connect as viewer
+        #    LOCAL TOURNAMENT GAME:
+        #       - tournament admin:     connect as player
+        #       - tournament non admin: connect as viewer
+        allowed = False
+        tournament = self.game.tournament
+
+        if tournament and tournament.local_tournament:
+            logging.info(f"WEBSOCKET GAME CONNECT: Game {self.game_id} is part of a local tournament.")
+            admin = await self._get_tournament_admin(tournament)
+            if admin and admin.user_id == self.user.id:
+                allowed = True
+            else:
+                logging.info(f"WEBSOCKET GAME CONNECT: User {self.user.id} is not tournament admin -> Viewer mode.")
+        else:
+            logging.info("WEBSOCKET GAME CONNECT: Normal game, checking if user is a member.")
+            allowed = await self._is_game_member(self.user.id)
+
+        if not allowed:
             self.isOnlyViewer = True
-            group_name = f"{PRE_GROUP_GAME}{self.game_id}"
-            await channel_layer.group_add(group_name, self.channel_name)
+            await self._join_group()
             await self.accept()
             await send_ws_game_data_msg(self.game_id)
             return
 
-        # Check if game is part of a local tournament...
-        # We need to fetch the tournament from the database since its a lazy load field
-        tournament = await database_sync_to_async(lambda: self.game.tournament)()
-        if tournament and tournament.local_tournament:
-            # ... only the admin can connect to the game
-            admin = await database_sync_to_async(lambda: tournament.members.filter(is_admin=True).first())()
-            if self.user.id != admin.user.id:
-                logging.info(f"User {self.user.id} is not the admin of the local tournament game {self.game_id}. CONNECTION CLOSED.")
-                await self.close()
-        # If the game is not in the right state, close the connection
-        if self.game.state == Game.GameState.FINISHED or self.game.state == Game.GameState.QUITED:
-            await self.close()
-            logging.info(f"Game {self.game_id} is not in the right state to be played. CONNECTION CLOSED.")
+    @database_sync_to_async
+    def _is_game_member(self, user_id):
+        return self.game.members.filter(user_id=user_id).exists()
 
-        # Check if the client is already connected to the game (e.g. in a different tab)
-        # Doesnt work
-        #already_connected = await database_sync_to_async(self.game.get_player_ready)(self.user.id)
-        #if already_connected:
-        #    logging.warning(f"User {self.user.id} attempted to connect to game {self.game_id} multiple times.")
-        #    await self.close()
-        #    raise BarelyAnException(_("You're already playing this game in another tab."))
+    @database_sync_to_async
+    def _get_tournament_admin(self, tournament):
+        return tournament.members.filter(is_admin=True).first()
 
-        # Add client to the channel layer group
+    async def _join_group(self):
         # Note: here i can't use update_client_in_group since this always uses the main ws connection!
         group_name = f"{PRE_GROUP_GAME}{self.game_id}"
         await channel_layer.group_add(group_name, self.channel_name)
-        # Accept the connection
-        await self.accept()
 
-        # CLIENT IS NOW CONNECTED
-        self.isLeftPlayer = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
-        self.leftUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
-        self.rightUser =  await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
-        self.leftMember = await database_sync_to_async(self.game.members.get)(user=self.leftUser)
-        self.rightMember = await database_sync_to_async(self.game.members.get)(user=self.rightUser)
-        # Init game on cache and send the game data
+    async def _init_player_state(self):
+        self.isLeftPlayer   = await database_sync_to_async(is_left_player)(self.game_id, self.user.id)
+        self.leftUser       = await database_sync_to_async(get_user_of_game)(self.game_id, 'playerLeft')
+        self.rightUser      = await database_sync_to_async(get_user_of_game)(self.game_id, 'playerRight')
+        self.leftMember     = await database_sync_to_async(GameMember.objects.get)(game=self.game, user=self.leftUser)
+        self.rightMember    = await database_sync_to_async(GameMember.objects.get)(game=self.game, user=self.rightUser)
+
         await init_game_on_cache(self.game, self.leftMember, self.rightMember)
+        await self.accept()
         await send_ws_game_data_msg(self.game_id)
-        # Logg left and right player
-        logging.info(f"Game {self.game_id} - Left player: {self.leftUser.id} - Right player: {self.rightUser.id}")
-        # SETTING PLAYER(S) READY
+        logging.info(f"WEBSOCKET GAME CONNECT: Game {self.game_id} - Left: {self.leftUser.id}, Right: {self.rightUser.id}")
+
+    async def _set_ready_state(self):
+        tournament = self.game.tournament
         if tournament and tournament.local_tournament:
-            # CASE: A local tournament game: so we need to set both players ready
+            # local tournament game: set both players ready
             await database_sync_to_async(self.game.set_player_ready)(self.leftUser.id, True)
             await database_sync_to_async(self.game.set_player_ready)(self.rightUser.id, True)
         else:
-            # NORMAL CASE: Set only the client ready
+            # normal game: set only the client ready
             await database_sync_to_async(self.game.set_player_ready)(self.user.id, True)
-        # Send the player ready message and the game data
-        left_ready = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
+
+        left_ready  = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
         right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
+        # Send the player ready message and the game data to the group
         await send_ws_game_players_ready_msg(self.game_id, left_ready, right_ready)
         await send_ws_game_data_msg(self.game_id)
+
+    async def _maybe_start_game_loop(self):
         # If both users are ready start the loop
+        left_ready  = await database_sync_to_async(self.game.get_player_ready)(self.leftUser.id)
+        right_ready = await database_sync_to_async(self.game.get_player_ready)(self.rightUser.id)
         if left_ready and right_ready:
             try:
-                # here we can asume the left user is not the AI, when game with ai
+                # here we can asume the left user is not the AI, when game with ai since the AI is always the right player (lower id)
                 if self.game_id not in self.ai_players and self.rightUser.id == USER_ID_AI:
-                    logging.info(f"AI player added to game: {self.game_id}")
-
-                    # we need to start the ai with some difficulty if mid game
-                    ai_score = get_game_data(self.game_id, 'playerRight', 'points') or 0
-                    player_score = get_game_data(self.game_id, 'playerLeft', 'points') or 0
-
-                    # calculate the difficulty
+                    logging.info(f"WEBSOCKET GAME CONNECT: AI player added to game: {self.game_id}")
+                    # calculate the difficulty (we need to start the ai with some difficulty if mid game)
+                    ai_score     = get_game_data(self.game_id, 'playerRight', 'points') or 0
+                    player_score = get_game_data(self.game_id, 'playerLeft',  'points') or 0
                     difficulty = calculate_ai_difficulty(ai_score, player_score)
-                    logging.info(f"Starting AI difficulty: {difficulty_to_string(difficulty)}")
+                    logging.info(f"WEBSOCKET GAME CONNECT: Starting AI difficulty: {difficulty_to_string(difficulty)}")
                     self.ai_players[self.game_id] = {
                         "stateSnapshotAt": timezone.now(),
                         "player": AIPlayer(difficulty=difficulty, game_id=self.game_id),
-                        "side": "playerRight"  # AI is always right player
+                        "side": "playerRight"
                     }
-
             except Exception as e:
-                logging.error(f"Error initializing AI player: {e}")
+                logging.error(f"WEBSOCKET GAME CONNECT: Error initializing AI player: {e}")
 
-            asyncio.create_task(self.start_the_game()) # To not block the connect function
+            asyncio.create_task(self.start_the_game())
+
+    @barely_handle_ws_exceptions
+    async def connect(self):
+        # Future Improvement: check if the user is already connected to the game to prevent multiple connections
+        await super().connect()
+        # Set self vars for consumer
+        self.game_id = self.scope['url_route']['kwargs']['game_id']
+        self.isOnlyViewer = False
+
+        await self._load_game()
+        if await self._is_game_invalid():
+            return
+
+        await self._authorize_connection()
+        if self.isOnlyViewer:
+            return  # Viewer was already accepted and handled
+
+        await self._join_group()
+        await self._init_player_state()
+        await self._set_ready_state()
+        await self._maybe_start_game_loop()
+        return
 
     @barely_handle_ws_exceptions
     async def disconnect(self, close_code):

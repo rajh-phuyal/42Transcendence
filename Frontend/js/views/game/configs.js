@@ -22,7 +22,6 @@ export default {
         leaveLobbyCallback() {
             router('/');
         },
-
         quitGameCallback() {
             // Quit game
             call(`game/delete/${this.gameId}/`, 'DELETE').then(data => {
@@ -114,6 +113,66 @@ export default {
             EventListenerManager.linkEventListener("game-view-tournament-name", "game", "click",    this.mentionClickCallback);
         },
 
+        showControls(clientIsTournamentAdmin) {
+            const clientId = this.$store.fromState('user').id;
+            console.log("clientId, clientIsAdmin", clientId, clientIsTournamentAdmin);
+            // Get the elements (short names so the line has the same length)
+            const controlsLef = this.domManip.$id("player-left-controls");
+            const controlsRig = this.domManip.$id("player-right-controls");
+            // Hide by default
+            controlsLef.style.display = "none";
+            controlsRig.style.display = "none";
+            // Show bottom border for player cards
+            const playerLefBottomPiece = this.domManip.$class("lst")[0];
+            const playerRigBottomPiece = this.domManip.$class("rst")[0];
+            playerLefBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+            playerRigBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+            playerLefBottomPiece.style.borderBottomLeftRadius = "3px";
+            playerRigBottomPiece.style.borderBottomLeftRadius = "3px";
+            playerLefBottomPiece.style.borderBottomRightRadius = "3px";
+            playerRigBottomPiece.style.borderBottomRightRadius = "3px";
+            // Determine if we should show the controls
+            let showLef = false;
+            let showRig = false;
+            // Show hide the controls | on local tournament games only the admin can see the controls
+            // Problem:     for local tournament games the client doesn't need to be a player to see the controls
+            //              but only the admin of the tournament
+            // Quickfix:    If the backend finds a tournament realated to the gameId it will send the key
+            //              clientIsTournamentAdmin = true
+            //              Since this is only for the contols we don't save it in the gameObject but only use it here
+            if (clientIsTournamentAdmin) {
+                // It's a local tournament game and the client is the admin -> show both controls if not ai
+                if (gameObject.playerLeft.id != 2)
+                    showLef = true;
+                if (gameObject.playerRight.id != 2)
+                    showRig = true;
+            } else if (gameObject.clientIsPlayer) {
+                // So client is a player; Check wich side and
+                if (gameObject.playerLeft.id == clientId)
+                    showLef = true;
+                else if (gameObject.playerRight.id == clientId)
+                    showRig = true;
+                // Now check if left or right player is flatmate
+                if (gameObject.playerLeft.id == 3)
+                    showLef = true;
+                else if (gameObject.playerRight.id == 3)
+                    showRig = true;
+            }
+            // Update the actual control elements
+            if (showLef) {
+                controlsLef.style.display = "block";
+                playerLefBottomPiece.style.borderBottom = "none";
+                playerLefBottomPiece.style.borderBottomLeftRadius = "0px";
+                playerLefBottomPiece.style.borderBottomRightRadius = "0px";
+            }
+            if (showRig) {
+                controlsRig.style.display = "block";
+                playerRigBottomPiece.style.borderBottom = "none";
+                playerRigBottomPiece.style.borderBottomLeftRadius = "0px";
+                playerRigBottomPiece.style.borderBottomRightRadius = "0px";
+            }
+        },
+
         async loadDetails() {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
@@ -159,34 +218,7 @@ export default {
                     changeGameState(data.gameData.state);
 
                     // Show / Hide the controls
-                    const controlsLeft = this.domManip.$id("player-left-controls");
-                    const controlsRight = this.domManip.$id("player-right-controls");
-                    // Hide by default
-                    controlsLeft.style.display = "none";
-                    controlsRight.style.display = "none";
-                    // Show bottom border for player cards
-                    const playerLeftBottomPiece = this.domManip.$class("lst")[0];
-                    playerLeftBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
-                    playerLeftBottomPiece.style.borderBottomLeftRadius = "3px";
-                    playerLeftBottomPiece.style.borderBottomRightRadius = "3px";
-                    const playerRightBottomPiece = this.domManip.$class("rst")[0];
-                    playerRightBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
-                    playerRightBottomPiece.style.borderBottomLeftRadius = "3px";
-                    playerRightBottomPiece.style.borderBottomRightRadius = "3px";
-                    // Show the controls if userid matches client if or is flatmate
-                    const clientId = this.$store.fromState('user').id
-                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3){
-                        controlsLeft.style.display = "block";
-                        playerLeftBottomPiece.style.borderBottom = "none";
-                        playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
-                        playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
-                    }
-                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
-                        controlsRight.style.display = "block";
-                        playerRightBottomPiece.style.borderBottom = "none";
-                    playerRightBottomPiece.style.borderBottomLeftRadius = "0px";
-                    playerRightBottomPiece.style.borderBottomRightRadius = "0px";
-                    }
+                    this.showControls(data.gameData.clientIsTournamentAdmin)
                 })
                 .catch(error => {
                     router('/404', {msg: error.message});

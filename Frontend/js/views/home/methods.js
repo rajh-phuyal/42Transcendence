@@ -1,21 +1,3 @@
-import { $id } from '../../abstracts/dollars.js'
-import canvasData from './data.js';
-import { buildCanvas, redraw } from './script.js';
-
-export async function rescaleCanvas() {
-    let canvasElement = $id("home-canvas");
-    let backgroundImage = $id("home-view-background")
-    if (!canvasElement || !backgroundImage)
-        return;
-    let canvas = canvasData.canvas;
-    canvasData.canvas = canvasElement;
-    canvasData.context = canvas.getContext('2d');
-    canvasData.context.scale(backgroundImage.width, backgroundImage.height);
-    canvasData.context.translate(0, -500);
-    await buildCanvas();
-}
-
-
 export function generateTournamentName() {
     var list = [
         "amazing", "great", "awesome", "fantastic", "incredible", "marvelous", "outstanding",
