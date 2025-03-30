@@ -13,6 +13,7 @@ const modalFolders = [
     ["modal-tournament-create", "tournamentCreate"],
     ["modal-tournament-join", "tournamentJoin"],
     ["modal-tournament-history", "tournamentHistory"],
+    ["modal-tournament-local-join", "tournamentLocalJoin"],
     ["modal-template-image", "templateImage"],
     ["modal-avatar-cropper", "avatarCropper"],
 ];
@@ -64,7 +65,6 @@ export default class ModalManager {
     }
 
     async setupModal(modalId) {
-        console.log(`ModalManager: Setting up modal: ${modalId}`);
         const modalElement = $id(modalId);
         if (!modalElement) {
             console.warn(`ModalManager: Modal element not found: ${modalId}`);
@@ -81,7 +81,7 @@ export default class ModalManager {
         // Load the hooks for the modal
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
-        const modalConfig = objectToBind(modalHooks); // TODO: check if this function is not an overkill
+        const modalConfig = objectToBind(modalHooks);
 
         // Prevent duplicate event listeners by removing them first
         $off(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
@@ -105,7 +105,6 @@ export default class ModalManager {
         // Loop through the modals and set them up
         for (const modal of modalsContainer.children) {
             if (modal.tagName === "DIV") { // To prevent setting up the style tag
-                console.log("setupAllModalsForView: Seting up:", modal.id);
                 await this.setupModal(modal.id);
             }
         }
@@ -119,7 +118,6 @@ export default class ModalManager {
       - removes all modals from the DOM
     */
     destroyAllModals() {
-        console.log("ModalManager: Destroying all loaded modals");
         Object.keys(ModalManager.modalInstances).forEach(modalId => {
             const modalElement = $id(modalId);
             // Deal wih the instance
@@ -179,8 +177,19 @@ export default class ModalManager {
         await this.tryToShowModal(modalId);
     }
 
+    closeModal(modalId) {
+        const modalInstance = ModalManager.modalInstances[modalId];
+        if (modalInstance && modalInstance.instance) {
+            modalInstance.instance.hide();
+        }
+    }
+
     /* This can be used from a configs.js of a view to open a modal when a button is clicked */
     on(buttonId, modalId) {
+        if(!buttonId || !modalId) {
+            console.warn("ModalManager: on: need arguments buttonId and modalId");
+            return
+        }
         let element = $id(buttonId);
         if (element) {
             element.setAttribute("target-modal-id", modalId);
@@ -214,10 +223,8 @@ export default class ModalManager {
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
         if (modalHooks.hooks.allowedToOpen) {
-            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))()) {  // TODO: check if this function is not an overkill
-                console.log("ModalManager: tryToShowModal: Not allowed to open modal (Probably the client got redirected)");
+            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))())  // TODO: check if this function is not an overkill
                 return;
-            }
         }
         ModalManager.modalInstances[modalId].instance.show();
     }

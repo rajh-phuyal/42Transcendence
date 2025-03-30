@@ -18,7 +18,4 @@ celery==5.4.0               # Celery for task scheduling and async processing (C
 django-celery-results==2.5.1
 redis==5.0.0
 channels_redis==4.2.1
-
-
-
-
+emoji==2.14.1

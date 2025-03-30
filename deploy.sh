@@ -259,8 +259,11 @@ parse_args()
 	CONTAINERS=""
 	ENV_FLAG_FOUND=false
 	MSG_MISSING_PATH="The -e flag is used but the path is missing. Flag will be ignored!"
+    # Add the ip of the machine to the allowed hosts
+    LOCAL_IP_OF_MACHINE=$(hostname -I | awk '{print $1}')
+    echo -e "LOCAL_IP_OF_MACHINE:\t$LOCAL_IP_OF_MACHINE"
     # Default Domain is $DOMAIN_NAMES_LOCAL
-    DOMAIN_NAMES=$DOMAIN_NAMES_LOCAL
+    DOMAIN_NAMES=${DOMAIN_NAMES_LOCAL}","${LOCAL_IP_OF_MACHINE}
     export LOCAL_DEPLOY=TRUE
 	for arg in "$@"
 	do

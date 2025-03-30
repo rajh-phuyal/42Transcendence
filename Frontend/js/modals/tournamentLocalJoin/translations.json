@@ -1,0 +1,34 @@
+{
+    "title": {
+        "en-US": "Join Local Tournament",
+        "pt-PT": "Participar no Torneio Local",
+        "pt-BR": "Participar no Torneio Local",
+        "de-DE": "An lokalem Turnier teilnehmen",
+        "uk-UA": "Приєднатися до місцевого турніру",
+        "ne-NP": "स्थानीय टुर्नामेन्टमा सामेल हुनुहोस्"
+    },
+    "text": {
+        "en-US": "NOTE: This is a local tournament! You must be physically present to admins machine. Do you confirm that you are physically present?",
+        "pt-PT": "NOTA: Este é um torneio local! Você deve estar fisicamente presente na máquina do administrador. Você confirma que está fisicamente presente?",
+        "pt-BR": "NOTA: Este é um torneio local! Você deve estar fisicamente presente na máquina do administrador. Você confirma que está fisicamente presente?",
+        "de-DE": "HINWEIS: Dies ist ein lokales Turnier! Sie müssen physisch an der Maschine des Administrators anwesend sein. Bestätigen Sie, dass Sie physisch anwesend sind?",
+        "uk-UA": "УВАГА: Це місцевий турнір! Ви повинні фізично бути присутніми на машині адміністратора. Підтверджуєте, що ви фізично присутні?",
+        "ne-NP": "सूचना: यो स्थानीय टुर्नामेन्ट हो! तपाईंलाई प्रशासकको मेसिनमा शारीरिक रूपमा उपस्थित हुनुपर्छ। के तपाईं शारीरिक रूपमा उपस्थित हुनुहुन्छ भन्ने पुष्टि गर्नुहुन्छ?"
+    },
+    "confirm": {
+        "en-US": "Yes, I confirm",
+        "pt-PT": "Sim, eu confirmo",
+        "pt-BR": "Sim, eu confirmo",
+        "de-DE": "Ja, ich bestätige",
+        "uk-UA": "Так, я підтверджую",
+        "ne-NP": "हो, म पुष्टि गर्छु"
+    },
+    "cancel": {
+        "en-US": "No, I cancel",
+        "pt-PT": "Não, eu cancelo",
+        "pt-BR": "Não, eu cancelo",
+        "de-DE": "Nein, ich storniere",
+        "uk-UA": "Ні, я скасовую",
+        "ne-NP": "होइन, म रद्द गर्छु"
+    }
+}

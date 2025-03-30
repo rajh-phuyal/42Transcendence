@@ -1,0 +1,50 @@
+{
+    "titleNormal": {
+        "en-US": "Tournament",
+        "pt-PT": "Torneio",
+        "pt-BR": "Torneio",
+        "de-DE": "Turnier",
+        "uk-UA": "Турнір",
+        "ne-NP": "टुर्नामेन्ट"
+    },
+    "titleSubscribed": {
+        "en-US": "You are subscribed to a tournament",
+        "pt-PT": "Você está inscrito em um torneio",
+        "pt-BR": "Você está inscrito em um torneio",
+        "de-DE": "Sie sind für ein Turnier angemeldet",
+        "uk-UA": "Ви підписані на турнір",
+        "ne-NP": "तपाईं टुर्नामेन्टमा सदस्य हुनुहुन्छ"
+    },
+    "btnLobby": {
+        "en-US": "Lobby",
+        "pt-PT": "Lobby",
+        "pt-BR": "Lobby",
+        "de-DE": "Lobby",
+        "uk-UA": "Лобі",
+        "ne-NP": "लबी"
+    },
+    "btnCreate": {
+        "en-US": "Create",
+        "pt-PT": "Criar",
+        "pt-BR": "Criar",
+        "de-DE": "Erstellen",
+        "uk-UA": "Створити",
+        "ne-NP": "सिर्जना गर्नुहोस्"
+    },
+    "btnJoin": {
+        "en-US": "Join",
+        "pt-PT": "Entrar",
+        "pt-BR": "Entrar",
+        "de-DE": "Beitreten",
+        "uk-UA": "Приєднатися",
+        "ne-NP": "सामेल हुनुहोस्"
+    },
+    "btnHistory": {
+        "en-US": "History",
+        "pt-PT": "Histórico",
+        "pt-BR": "Histórico",
+        "de-DE": "Historie",
+        "uk-UA": "Історія",
+        "ne-NP": "इतिहास"
+    }
+}

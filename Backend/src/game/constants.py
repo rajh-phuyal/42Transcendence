@@ -1,6 +1,7 @@
+from datetime import timedelta
 GAME_COUNTDOWN_MAX = 5 # Notice that the fe needs to have the countdown images for this to work
-GAME_FPS = 15
-RECONNECT_TIMEOUT = 2 # Minutes
+GAME_FPS = 25
+RECONNECT_TIMEOUT = timedelta(seconds=120)
 INIT_BALL_SPEED = 1.5
 BALL_SPEED_STEP = 0.1
 INIT_PADDLE_SIZE = 10
@@ -57,6 +58,7 @@ GAME_STATE = {
     },
     "gameData" : {
         "state": "pending",
+        "deadline": None,
         "tournament": False,
         "playerServes": "playerLeft",
         "remainingServes": 2,

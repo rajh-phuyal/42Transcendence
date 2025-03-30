@@ -1,8 +1,8 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import call from '../../abstracts/call.js';
 import { translate } from '../../locale/locale.js';
 import { createConversationCard, deleteAllConversationCards, selectConversation, createLoadingSpinner, resetConversationView, loadMessages, resetFilter } from './methods.js';
 import router from '../../navigation/router.js';
-import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
@@ -23,7 +23,6 @@ export default {
     methods: {
         setTranslations() {
             this.domManip.$id("chat-view-searchbar").placeholder = translate("chat", "filterConversations");
-            this.domManip.$id("chat-room-heading").innerText = translate("chat", "ChatRoom");
         },
 
         // THE LISTENERS
@@ -254,8 +253,6 @@ export default {
 
         beforeRouteLeave() {
             modalManager.off("chat-view-btn-create-game", "modal-create-game");
-            // Inform WebSocketManager that we are leaving the chat
-            WebSocketManager.setCurrentRoute(undefined);
             // Remove all conversations
             deleteAllConversationCards();
             // Remove all messages
@@ -271,11 +268,10 @@ export default {
         },
 
         async afterDomInsertion() {
+            // Start music
+            audioPlayer.playMusic("chat");
             // Set translations
             this.setTranslations();
-
-            // Inform WebSocketManager that we are entering the chat
-            WebSocketManager.setCurrentRoute("chat");
 
             // Init everything conversation related (right side of view)
             resetConversationView();

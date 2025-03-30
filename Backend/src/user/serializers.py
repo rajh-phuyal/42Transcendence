@@ -1,25 +1,22 @@
+from django.utils.translation import gettext as _
 from django.db.models import Q
 from user.models import User, IsCoolWith
 from rest_framework import serializers
 from user.utils_relationship import get_relationship_status
-from django.core.cache import cache
 from chat.models import Conversation
 from game.models import GameMember
 from tournament.models import TournamentMember, Tournament
 from game.models import GameMember, Game
-from django.db.models import Count, Subquery, Sum, IntegerField
-from django.db.models.functions import Coalesce
-from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP
-import logging
+from django.db.models import Count
+from user.constants import NORM_STATS_SKILL, NORM_STATS_GAME_EXP, NORM_STATS_TOURNAMENT_EXP, USER_ID_OVERLORDS, USER_ID_AI, USER_ID_FLATMATE
 
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatar_path']
+        fields = ['id', 'username', 'avatar']
 
 # This will prepare the data for endpoint '/user/profile/<int:id>/'
 class ProfileSerializer(serializers.ModelSerializer):
-    avatarUrl = serializers.CharField(source='avatar_path')
     firstName = serializers.CharField(source='first_name', default="John")
     lastName = serializers.CharField(source='last_name', default="Doe")
     online = serializers.SerializerMethodField()
@@ -31,18 +28,21 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatarUrl', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats']
+        fields = ['id', 'username', 'avatar', 'firstName', 'lastName', 'online', 'lastLogin', 'language', 'chatId', 'newMessage', 'relationship', 'stats', 'notes']
 
     def get_lastLogin(self, obj):
         # Check if `last_login` is None or `online` is True
-        if obj.last_login is None or self.get_online(obj):
-            return "under surveillance"
+        if obj.id == USER_ID_OVERLORDS or obj.id == USER_ID_AI or obj.id == USER_ID_FLATMATE:
+            return _("always here...")
+        else:
+            if obj.last_login is None:
+                return _("Under surveillance")
+            return obj.last_login
 
         # Otherwise, format `last_login` as 'YYYY-MM-DD hh:mm'
-        return obj.last_login.strftime("%Y-%m-%d %H:%M") #TODO: Issue #193
+        return obj.last_login
 
     def get_online(self, user):
-        # Check if the user's online status is in the cache
         return user.get_online_status()
 
     # Valid types are 'yourself' 'noFriend', 'friend', 'requestSent', 'requestReceived'
@@ -211,12 +211,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 class ListFriendsSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
-    avatarUrl = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
 
     class Meta:
         model = IsCoolWith
-        fields = ['id', 'username', 'avatarUrl', 'status']
+        fields = ['id', 'username', 'avatar', 'status']
 
     def get_other_user(self, obj):
         user_id = self.context.get('target_user_id')
@@ -230,9 +230,9 @@ class ListFriendsSerializer(serializers.ModelSerializer):
         other_user = self.get_other_user(obj)
         return other_user.username
 
-    def get_avatarUrl(self, obj):
+    def get_avatar(self, obj):
         other_user = self.get_other_user(obj)
-        return other_user.avatar_path
+        return other_user.avatar
 
     def get_status(self, obj):
         # TODO: Friendship status should be from the perspective of the requester

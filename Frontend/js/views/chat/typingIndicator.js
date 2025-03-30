@@ -1,5 +1,4 @@
-import { $id, $query, $addClass } from '../../abstracts/dollars.js'
-import { translate } from '../../locale/locale.js';
+import { $id, $addClass } from '../../abstracts/dollars.js'
 
 export function showTypingIndicator(endTimestamp) {
     const container = $id("chat-view-messages-container");

@@ -23,7 +23,6 @@ def barely_handle_exceptions(view_func):
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
             return error_response(_("An unexpected error occurred: {error}").format(error=str(e)))
-
     return wrapper
 
 def barely_handle_ws_exceptions(func):
@@ -33,17 +32,17 @@ def barely_handle_ws_exceptions(func):
             return await func(self, *args, **kwargs)
         except BarelyAnException as e:
             logging.info(f"BarelyAnException occurred: {str(e.detail)} | Status code: {e.status_code}")
-            if self.user:
+            if self.user and self.user.id:
                 await send_ws_error_msg(self.user.id, str(e.detail))
         except ObjectDoesNotExist as e:
             model_name = getattr(e, 'model', None)
             model_name = model_name.__name__ if model_name else _("Object")
             logging.info(f"{model_name} entry not found: {str(e)}")
-            if self.user:
+            if self.user and self.user.id:
                 await send_ws_error_msg(self.user.id, _("{model_name} entry not found").format(model_name=model_name))
         except Exception as e:
             # For unexpected exceptions, fallback to a generic error response
             logging.info(f"Unexpected error occurred in WebSocket: {str(e)}")
-            if self.user:
+            if self.user and self.user.id:
                 await send_ws_error_msg(self.user.id, _("An unexpected error occurred"))
     return wrapper

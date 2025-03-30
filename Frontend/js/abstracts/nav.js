@@ -2,18 +2,21 @@ import $store from '../store/store.js';
 import router from '../navigation/router.js';
 import { $id, $on, $off } from './dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { translate } from '../locale/locale.js';
 
 function updateUserInfo() {
-    $id('profile-nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
+    $id('nav-avatar').src = `${window.location.origin}/media/avatars/${$store.fromState("user").avatar}`;
     // Music Sound icons
-    // Update icons based on initial settings
-    $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
-        ? '/assets/icons_128x128/icon_music-on.png'
-        : '/assets/icons_128x128/icon_music-off.png');
-
-    $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
-        ? '/assets/icons_128x128/icon_sound-on.png'
-        : '/assets/icons_128x128/icon_sound-off.png');
+    // Add a mutation listener for music and sound
+    $store.addMutationListener('setMusic', (music) => {
+        audioPlayer.toggleMusic();
+    });
+    $store.addMutationListener('setSound', (sound) => {
+        audioPlayer.toggleSound();
+    });
+    // Set the music and sound icons
+    audioPlayer.toggleMusic();
+    audioPlayer.toggleSound();
 }
 
 const styleUpdateMap = {
@@ -50,31 +53,21 @@ function updateRouteParams(navigationPathParams, navigationBarMap) {
  * }
  */
 export default function $nav(navigationPathParams = null) {
-    console.log("Navigattion :", navigationPathParams, $store.fromState("user"));
     // nav bar route to Dom elements map
     const navigationBarMap = [
-        { id: 'home-nav', path: '/home' },
-        { id: 'game-nav', path: '/game' },
-        { id: 'tournament-nav', path: '/tournament' },
-        { id: 'chat-nav', path: '/chat' },
-        { id: 'logout-nav', path: '/logout' },
-        { id: 'profile-nav-avatar', path: '/profile' },
-        { id: 'login-nav', path: '/auth' },
-        { id: 'register-nav', path: '/auth' },
-        { id: 'nav-music-icon',
+        { id: 'nav-home', path: '/home' },
+        { id: 'nav-chat', path: '/chat' },
+        { id: 'nav-avatar', path: '/profile' },
+        { id: 'nav-music',
             callback: () => {
-                audioPlayer.toggleMusic();
-                $id("nav-music-icon").src = window.origin + (audioPlayer.musicEnabled
-                    ? '/assets/icons_128x128/icon_music-on.png'
-                    : '/assets/icons_128x128/icon_music-off.png');
+                let music = $store.fromState('music');
+                $store.commit('setMusic', !music);
             }
 		},
-        { id: 'nav-sound-icon',
+        { id: 'nav-sound',
             callback: () => {
-                audioPlayer.toggleSound();
-                $id("nav-sound-icon").src = window.origin + (audioPlayer.soundsEnabled
-                    ? '/assets/icons_128x128/icon_sound-on.png'
-                    : '/assets/icons_128x128/icon_sound-off.png');
+                let sound = $store.fromState('sound');
+                $store.commit('setSound', !sound);
             }
         }
     ];
@@ -89,9 +82,6 @@ export default function $nav(navigationPathParams = null) {
     const routeFinder = (path) => navigationBarMap.find(route => route.path === path);
 
     routeFinder('/profile').params = { id: $store.fromState("user").id };
-    // TODO: @astein: I guess we don't need this line below since
-    // clickig on chat in navbar should not have any params
-    // routeFinder('/chat').params = { id: undefined };
 
     // additional data and styles
     styleUpdateMap?.[routeFinder('/profile').path]?.();
@@ -115,4 +105,23 @@ export default function $nav(navigationPathParams = null) {
 
         $on(navbarObject, 'click', navbarObject._clickHandler);
     }
+}
+
+export function loadTranslationsForTooltips() {
+    $id('nav-home').title   = translate('global:nav', 'home');
+    $id('nav-chat').title   = translate('global:nav', 'chat');
+    $id('nav-avatar').title = translate('global:nav', 'profile');
+    $id('nav-search').title = translate('global:nav', 'search');
+
+    let soundOn = $store.fromState('sound');
+    if (soundOn)
+        $id('nav-sound').title   = translate("global:nav", "soundOn");
+    else
+        $id('nav-sound').title   = translate("global:nav", "soundOff");
+
+    let musicOn = $store.fromState('music');
+    if (musicOn)
+        $id('nav-music').title   = translate("global:nav", "musicOn");
+    else
+        $id('nav-music').title   = translate("global:nav", "musicOff");
 }

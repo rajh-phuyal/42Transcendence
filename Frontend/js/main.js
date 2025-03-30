@@ -1,4 +1,4 @@
-import $nav from './abstracts/nav.js';
+import $nav, { loadTranslationsForTooltips } from './abstracts/nav.js';
 import { setViewLoading } from './abstracts/loading.js';
 import router from './navigation/router.js';
 import { webComponents } from './components/components.js';
@@ -8,7 +8,7 @@ import WebSocketManager from './abstracts/WebSocketManager.js';
 import $callToast from './abstracts/callToast.js';
 import { translate } from './locale/locale.js';
 import { audioPlayer } from './abstracts/audio.js';
-import { zoomIn } from './views/barely-responsive/methods.js';
+import { historyManager } from './navigation/history.js';
 setViewLoading(true);
 
 try {
@@ -21,19 +21,38 @@ try {
 }
 
 window.addEventListener("click", (event) => {
-    // TODO: maybe add the class 'sound-button' to the elements that should play a sound
-    // MAYBE we can somehow define a a list of classes which should make sounds....
-    // oris there a better way to do this?
-    let target = event.target.closest(".sound-button");
-    if(!target)
-        target = event.target.closest(".modal-button");
+    // Handle sound button clicks
+    let soundClasses = [
+        ".click-sound",
+        ".modal-button",
+        ".mention-user",
+        ".mention-game",
+        ".mention-tournament"];
+    let target = null;
+    for (let i = 0; i < soundClasses.length; i++) {
+        target = event.target.closest(soundClasses[i]);
+        if (target) break;
+    }
     if (target) {
-        audioPlayer.playSound("toggle"); // Replace with actual sound name
+        audioPlayer.playSound("click");
     }
 });
 
-window.addEventListener('popstate', () => {
-    router(window.location.pathname)
+// For the Back/Forward buttons in the browser (aka history navigation)
+window.addEventListener('popstate', (event) => {
+    // If barely responsive, do not do anything
+    if ($store.fromState('markbook')) {
+        /* prevent default */
+        event.preventDefault();
+        return;
+    }
+    // The state stored in pushState will be available as `event.state`
+    const state = event.state;
+    if (state && state.path) {
+        // transform params string back to object: "id=1&name=John" => { id: 1, name: "John" }
+        let paramsObject = historyManager.argsStringToObject(state.params);
+        router(state.path, paramsObject, false);
+    }
 });
 
 // get the translations for all the registered views
@@ -41,7 +60,6 @@ $store.dispatch('loadTranslations', routes.map(route => route.view));
 
 // Initializes the nav bar
 $nav();
-
 
 // go to path only after the translations are loaded
 $store.addMutationListener('setTranslations', () => {
@@ -52,7 +70,10 @@ $store.addMutationListener('setTranslations', () => {
     // make the current params an object
     const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
 
-    router(currentRoute, currentParamsObject);
+    router(currentRoute, currentParamsObject, false);
+
+    // Load the Translation Titles for the nav bar
+    loadTranslationsForTooltips();
 
     // set the loading to false
     setViewLoading(false);
@@ -61,14 +82,12 @@ $store.addMutationListener('setTranslations', () => {
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
-        console.log("Web socket is connected!");
         if (setInervalId) {
             $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
-        console.log("Web socket is disconnected!");
         if (!setInervalId && $store.fromState('isAuthenticated')) {
             $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {
@@ -86,7 +105,6 @@ window.addEventListener('select-user-nav', (event) => {
 
 
 /* DESABLE ZOOM*/
-
 document.addEventListener('keydown', function(event) {
     if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=')) {
         event.preventDefault();
@@ -99,18 +117,26 @@ document.addEventListener('wheel', function(event) {
     }
 }, { passive: false });
 
-
-window.onresize = () => {
-	if (window.outerHeight < 1020 || window.outerWidth < 1020){
-        zoomIn(window.outerHeight, window.outerWidth);
-        if (window.location.pathname != "/barely-responsive") {
-            $store.commit("setMarkBook", window.location.pathname);
-            router("/barely-responsive");
+window.addEventListener('resize', async () => {
+    if (window.outerHeight < 1020 || window.outerWidth < 1020) {
+        // Handle the small window size here
+        if (!$store.fromState('markbook')) {
+            $store.commit("setMarkBook", (window.location.pathname + window.location.search));
+            await router("/barely-responsive", {}, false);
         }
-	} else if (window.outerHeight >= 1020 && window.outerWidth >= 1020
-		&& window.location.pathname == "/barely-responsive") {
-			const path = $store.state.markbook;
-			$store.commit("setMarkBook", "");
-			router(path);
-		}
-}
+        return;
+    }
+
+    if (window.outerHeight >= 1020 && window.outerWidth >= 1020 && $store.fromState('markbook')) {
+        const href = $store.state.markbook;
+        $store.commit("setMarkBook", "");
+        /* Split by first ? if exists */
+        const path = href.split('?')[0];
+        const params = href.split('?')[1];
+        let paramsObject = historyManager.argsStringToObject(params);
+        await router(path, paramsObject, false);
+    }
+});
+
+// Trigger the resize event manually when the page loads
+window.dispatchEvent(new Event('resize'));

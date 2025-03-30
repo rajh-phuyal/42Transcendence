@@ -1,28 +1,30 @@
 import $store from '../store/store.js';
 import { $id } from './dollars.js';
 import $callToast from './callToast.js';
-import { buildView, updateParticipantsCard, createGameList, updateRankTable, updateGameCardScore, gameUpdateState, updateTournamentRank, updateGameCard , updateFinalsDiagram, updatePodium } from '../views/tournament/methods.js';
+import { updateView } from '../views/tournament/methodsView.js';
+import { updateMembers } from '../views/tournament/methodsMembers.js';
+import { updateDataMember, updateDataGame } from '../views/tournament/methodsData.js';
+import { updatePodium, updateFinalsDiagram } from '../views/tournament/methodsRankFinals.js';
+
+
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
+import { tournamentData } from '../views/tournament/objects.js';
 const { hostname } = window.location;
 
 class WebSocketManager {
     constructor() {
         this.socket = null;
-        this.currentRoute = undefined;
     }
 
     // Connect to WebSocket with the provided token
     connect() {
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log("WebSocket already connected.");
+        if (this.socket && (this.socket.readyState === WebSocket.CONNECTING || this.socket.readyState === WebSocket.OPEN)) {
             return;
         }
-
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
-            console.log("Not connecting WebSocket - user not authenticated");
             $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
                 if (!isAuthenticated) return;
                 this.connect();
@@ -32,14 +34,12 @@ class WebSocketManager {
 
         const host = hostname;
         const socketUrl = `wss://${host}/ws/app/main/`;
-
-        console.log("Connecting to WebSocket:", socketUrl);
         try {
             this.socket = new WebSocket(socketUrl);
 
             // Log connection events
             this.socket.onopen = () => {
-                console.log("WebSocket connected.");
+                console.log("WebSocket connected:", socketUrl);
                 $store.commit("setWebSocketIsAlive", true);
             };
 
@@ -59,8 +59,6 @@ class WebSocketManager {
             console.error("WebSocket error:", error);
             $store.commit("setWebSocketIsAlive", false);
         };
-
-        // this.socket.addEventListner("message", this.receiveMessage);
     }
 
     // Allowd types are:
@@ -69,7 +67,6 @@ class WebSocketManager {
     // - typing (for sending typing indicator)
     sendMessage(message) {
         this.socket.send(JSON.stringify(message));
-        console.log("FE -> BE:", message);
     }
 
     // The backend send:
@@ -80,7 +77,9 @@ class WebSocketManager {
 
     // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
-        console.log("BE -> FE:", message);
+        // console.log("BE -> FE:", message);
+        const currentRoute = $store.fromState("currentRoute");
+
         switch (message.messageType) {
             // BASIC MESSAGES
             case "error":
@@ -92,16 +91,18 @@ class WebSocketManager {
 
             // CHAT RELATED MESSAGES
             case "chat":
-                audioPlayer.playSound("chat");
-                if (this.currentRoute == "chat")
+                if (currentRoute == "chat") {
+                    audioPlayer.playSound("chat");
                     processIncomingWsChatMessage(message);
-                else
-                    $callToast("error", "Need to implement the notification for chat as toast! issue #217");
+                } else {
+                    // console.log("message:", message);
+                    $callToast("message", message.content, {id: message.conversationId, username: message.username, avatar: message.avatar});
+                }
                 return ;
             case "updateBadge":
                 if (message.what == "all")
                     this.updateNavBarBadge(message.value);
-                else if (message.what == "conversation" && this.currentRoute == "chat")
+                else if (message.what == "conversation" && currentRoute == "chat")
                     updateConversationBadge(message.id, message.value);
                 return ;
             case "newConversation":
@@ -112,32 +113,66 @@ class WebSocketManager {
                 return ;
 
             // TOURNAMENT RELATED MESSAGES
+            case "clientRole":
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received clientRole for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.clientRole = message.clientRole;
+                    updateView();
+                }
+                return ;
             case "tournamentInfo":
-                if (this.currentRoute == "tournament"){
-                    buildView(message.state);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentInfo.id !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentInfo for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.tournamentInfo = message.tournamentInfo;
+                    updateView();
                 }
                 return ;
             case "tournamentMember":
-                updateParticipantsCard(message.tournamentMember);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    updateDataMember(message.tournamentMember);
+                    updateView();
+                }
                 return ;
             case "tournamentMembers":
-                    updateRankTable(message.tournamentMembers);
-                console.log("tournanemtMembers:", message.tournamentMembers);
-                console.log("Length!!!!", message.tournamentMembers.length);
-                if (message.tournamentMembers.length == 3) {
-                    console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
-                    updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    tournamentData.tournamentMembers = message.tournamentMembers;
+                    if (message.tournamentMembers.length == 3) {
+                        console.log("third member:", message.tournamentMembers.find(member => member.rank === 3));
+                        updatePodium(message.tournamentMembers.find(member => member.rank === 3), "third", false);
+                    }
+                    updateView();
                 }
                 return ;
             case "tournamentGame":
-                updateGameCard(message.TournamentGame);
-                updateFinalsDiagram(message.TournamentGame);
+                if (currentRoute == "tournament"){
+                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                        console.log("Received tournamentMember for different tournament. Ignoring it");
+                        return ;
+                    }
+                    updateDataGame(message.tournamentGame);
+                    updateFinalsDiagram(message.tournamentGame);
+                    updateView();
+                }
                 return ;
 
             // PROFILE RELATED MESSAGES
             case "reloadProfile":
-                if (this.currentRoute.startsWith("profile"))
-                    processIncomingReloadMsg(message, this.currentRoute);
+                if (currentRoute === "profile")
+                    processIncomingReloadMsg(message);
                 return ;
         }
 
@@ -145,14 +180,10 @@ class WebSocketManager {
         $callToast("sucess", message.message);
     }
 
-    // Disconnect from WebSocket TODO: #207 we need to be able to specify which connection to close
     disconnect() {
         if (this.socket) {
             this.socket.close();
             this.socket = null;
-            console.log("WebSocket connection closed.");
-        } else {
-            console.log("WebSocket is not connected.");
         }
         // this.socket.removeEventListner("message", this.receiveMessage);
     }
@@ -160,15 +191,7 @@ class WebSocketManager {
     updateNavBarBadge(value) {
 		if (value > 99)
 			value = "99+";
-        $id("chat-nav-badge").textContent = value || "";
-    }
-
-    setCurrentRoute(route) {
-        this.currentRoute = route;
-    }
-
-    getCurrentRoute() {
-        return this.currentRoute;
+        $id("nav-chat-badge").innerHTML = value || "";
     }
 
     reconnect() {

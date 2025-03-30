@@ -2,7 +2,7 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { changeGameState, drawPlayersState } from './methods.js';
+import { changeGameState, drawPlayersState, clearAllGameDeadlines } from './methods.js';
 import { gameObject } from './objects.js';
 import { endGameLoop } from './loop.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
@@ -22,7 +22,6 @@ export default {
         leaveLobbyCallback() {
             router('/');
         },
-
         quitGameCallback() {
             // Quit game
             call(`game/delete/${this.gameId}/`, 'DELETE').then(data => {
@@ -34,7 +33,7 @@ export default {
         },
         playAgainCallback() {
             call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
-                console.log("data:", data);
+                // console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game
                     router(`/game`, {id: data.gameId});
@@ -45,7 +44,6 @@ export default {
             switch (event.key) {
                 case " ":
                     // If game is finished the space key will create a new game
-                    console.log("gameObject.state:", gameObject.state);
                     if (gameObject.state === "finished" || gameObject.state === "quited")
                        this.playAgainCallback();
                     // Only if no connection exists and
@@ -67,7 +65,7 @@ export default {
                                 }
                             })
                             .catch(error => {
-                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
+                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connectionError");
                             });
                     }
                     break;
@@ -104,10 +102,6 @@ export default {
         },
 
         initListeners() {
-            // TODO: translation for buttons should be done in with the abstraction tool TBC
-            this.domManip.$id("button-play-again").innerText = translate("game", "button-play-again");
-            this.domManip.$id("button-leave-lobby").innerText = translate("game", "button-leave-lobby");
-            this.domManip.$id("button-quit-game").innerText = translate("game", "button-quit-game");
             EventListenerManager.linkEventListener("button-leave-lobby",        "game", "click",    this.leaveLobbyCallback);
             EventListenerManager.linkEventListener("button-quit-game",          "game", "click",    this.quitGameCallback);
             EventListenerManager.linkEventListener("button-play-again",         "game", "click",    this.playAgainCallback);
@@ -119,12 +113,70 @@ export default {
             EventListenerManager.linkEventListener("game-view-tournament-name", "game", "click",    this.mentionClickCallback);
         },
 
+        showControls(clientIsTournamentAdmin) {
+            const clientId = this.$store.fromState('user').id;
+            console.log("clientId, clientIsAdmin", clientId, clientIsTournamentAdmin);
+            // Get the elements (short names so the line has the same length)
+            const controlsLef = this.domManip.$id("player-left-controls");
+            const controlsRig = this.domManip.$id("player-right-controls");
+            // Hide by default
+            controlsLef.style.display = "none";
+            controlsRig.style.display = "none";
+            // Show bottom border for player cards
+            const playerLefBottomPiece = this.domManip.$class("lst")[0];
+            const playerRigBottomPiece = this.domManip.$class("rst")[0];
+            playerLefBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+            playerRigBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+            playerLefBottomPiece.style.borderBottomLeftRadius = "3px";
+            playerRigBottomPiece.style.borderBottomLeftRadius = "3px";
+            playerLefBottomPiece.style.borderBottomRightRadius = "3px";
+            playerRigBottomPiece.style.borderBottomRightRadius = "3px";
+            // Determine if we should show the controls
+            let showLef = false;
+            let showRig = false;
+            // Show hide the controls | on local tournament games only the admin can see the controls
+            // Problem:     for local tournament games the client doesn't need to be a player to see the controls
+            //              but only the admin of the tournament
+            // Quickfix:    If the backend finds a tournament realated to the gameId it will send the key
+            //              clientIsTournamentAdmin = true
+            //              Since this is only for the contols we don't save it in the gameObject but only use it here
+            if (clientIsTournamentAdmin) {
+                // It's a local tournament game and the client is the admin -> show both controls if not ai
+                if (gameObject.playerLeft.id != 2)
+                    showLef = true;
+                if (gameObject.playerRight.id != 2)
+                    showRig = true;
+            } else if (gameObject.clientIsPlayer) {
+                // So client is a player; Check wich side and
+                if (gameObject.playerLeft.id == clientId)
+                    showLef = true;
+                else if (gameObject.playerRight.id == clientId)
+                    showRig = true;
+                // Now check if left or right player is flatmate
+                if (gameObject.playerLeft.id == 3)
+                    showLef = true;
+                else if (gameObject.playerRight.id == 3)
+                    showRig = true;
+            }
+            // Update the actual control elements
+            if (showLef) {
+                controlsLef.style.display = "block";
+                playerLefBottomPiece.style.borderBottom = "none";
+                playerLefBottomPiece.style.borderBottomLeftRadius = "0px";
+                playerLefBottomPiece.style.borderBottomRightRadius = "0px";
+            }
+            if (showRig) {
+                controlsRig.style.display = "block";
+                playerRigBottomPiece.style.borderBottom = "none";
+                playerRigBottomPiece.style.borderBottomLeftRadius = "0px";
+                playerRigBottomPiece.style.borderBottomRightRadius = "0px";
+            }
+        },
+
         async loadDetails() {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
-                    console.log("data:", data);
-
                     // Set user cards
                     this.domManip.$id("player-left-username").innerText = data.playerLeft.username;
                     this.domManip.$id("player-left-username").setAttribute("data-userid", data.playerLeft.userId);
@@ -144,13 +196,16 @@ export default {
                     gameObject.playerRight.points = data.playerRight.points;
                     gameObject.playerRight.result = data.playerRight.result;
                     gameObject.mapName = this.maps[data.gameData.mapNumber];
+                    gameObject.deadline = data.gameData.deadline;
 
                     // Check if game is part of tournament
                     if (data.gameData.tournamentId) {
                         gameObject.tournamentId = data.gameData.tournamentId;
                         this.domManip.$id("game-view-tournament-name").innerText = translate("game", "partOfTournament") + data.gameData.tournamentName;
                         this.domManip.$id("game-view-tournament-name").setAttribute("data-tournamentid", data.gameData.tournamentId);
-                        this.domManip.$id("game-view-tournament-name").style.display = "block";
+                        this.domManip.$id("game-view-tournament-name").style.display = "flex";
+                    } else {
+                        this.domManip.$id("game-view-tournament-name").style.display = "none";
                     }
 
                     // I send the ready state also via REST NOW
@@ -163,18 +218,7 @@ export default {
                     changeGameState(data.gameData.state);
 
                     // Show / Hide the controls
-                    const controlsLeft = this.domManip.$id("player-left-controls");
-                    const controlsRight = this.domManip.$id("player-right-controls");
-                    // Hide by default
-                    controlsLeft.style.display = "none";
-                    controlsRight.style.display = "none";
-                    // Show the controls if userid matches client if or is flatmate
-                    const clientId = this.$store.fromState('user').id
-                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3)
-                        controlsLeft.style.display = "block";
-                    console.warn(gameObject.playerRight.id );
-                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3)
-                        controlsRight.style.display = "block";
+                    this.showControls(data.gameData.clientIsTournamentAdmin)
                 })
                 .catch(error => {
                     router('/404', {msg: error.message});
@@ -183,39 +227,59 @@ export default {
 
         initObjects() {
             gameObject.gameId = this.gameId;
+            gameObject.countDownInterval = undefined;
+            gameObject.tournamentId = undefined;
+            gameObject.mapName = undefined;
             gameObject.wsConnection = false;
             gameObject.state = undefined;
-            gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
+            gameObject.frameTime = 1000/25; // NOTE = this means 25 frames per second which should match the backend FPS
             gameObject.lastFrameTime = 0;
-            gameObject.animationId = null;
-            gameObject.sound = null;
+            gameObject.animationId = undefined;
+            gameObject.deadline = undefined;
+            gameObject.sound = undefined;
+            gameObject.paddleWidth = 1;     //  This means 1% of the game field width. If changed; also change the BE = PADDLE_OFFSET
+            gameObject.paddleSpacing = 2;   //  This means 1% of the game field width is keept as a distance btween wall and paddle. If changed; also change the BE = PADDLE_OFFSET
+            gameObject.borderStrokeWidth = 2;
+            gameObject.clientIsPlayer = false; // Since all users can watch the lobby, this is used to determine if the client is a player or a spectator
+
             gameObject.playerInputLeft.paddleMovement = 0;
             gameObject.playerInputLeft.powerupSpeed = false;
             gameObject.playerInputLeft.powerupBig = false;
+
             gameObject.playerInputRight.paddleMovement = 0;
-            gameObject.playerInputRight.powerupFast = false;
             gameObject.playerInputRight.powerupSpeed = false;
+            gameObject.playerInputRight.powerupBig = false;
+
+            gameObject.playerLeft.id = undefined;
             gameObject.playerLeft.state = undefined;
-            gameObject.playerLeft.points = 0
+            gameObject.playerLeft.points = 0;
             gameObject.playerLeft.pos = 50;
             gameObject.playerLeft.size = 10;
+            gameObject.playerLeft.result = undefined;
             gameObject.playerLeft.powerupBig = "unavailable";
             gameObject.playerLeft.powerupSlow = "unavailable";
             gameObject.playerLeft.powerupFast = "unavailable";
-            gameObject.playerLeft.points = 0
+
+            gameObject.playerRight.id = undefined;
             gameObject.playerRight.state = undefined;
+            gameObject.playerRight.points = 0;
             gameObject.playerRight.pos = 50;
             gameObject.playerRight.size = 10;
+            gameObject.playerRight.result = undefined;
             gameObject.playerRight.powerupBig = "unavailable";
             gameObject.playerRight.powerupSlow = "unavailable";
             gameObject.playerRight.powerupFast = "unavailable";
-			gameObject.ball.posX = 50;
-			gameObject.ball.posY = 50;
+
+            gameObject.ball.posX = 50;
+            gameObject.ball.posY = 50;
+            gameObject.ball.height = 1;
+            gameObject.ball.width = 1;
         },
     },
 
     hooks: {
         beforeRouteEnter() {
+            clearAllGameDeadlines();
         },
 
         beforeRouteLeave() {
@@ -226,8 +290,9 @@ export default {
                 this.domManip.$id("game-countdown-image").style.display = "none";
             }
             endGameLoop();
-            this.audioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId)
+            // Reset Game Object
+            this.initObjects();
         },
 
         beforeDomInsertion() {

@@ -20,7 +20,7 @@ export default {
 				nav.classList.remove("d-flex", "flex-row", "justify-content-center");
 				nav.style.display = 'none';
 				$store.addMutationListener("setTranslations", (e) => {
-					console.log("mutation state", e);
+					// console.log("mutation state", e);
 					router("/auth");
 				});
             }

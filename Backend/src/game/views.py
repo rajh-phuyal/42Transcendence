@@ -74,8 +74,17 @@ class LobbyView(BaseAuthenticatedView):
         if member1.user.id == user.id or member2.user.id == user.id:
             client_is_player = True
         tournament_name = None
-        if (game.tournament):
+        if game.tournament:
             tournament_name = game.tournament.name
+        # If it is a local tournament, and it's local, only the admin is a player
+        client_is_admin = False
+        if game.tournament and game.tournament.local_tournament:
+            client_is_player = False # Only the admin is a player (default is False)
+            # Get the tournament member entries
+            tournament_member = game.tournament.members.filter(user=user).first()
+            if tournament_member and tournament_member.is_admin:
+                client_is_player = True
+                client_is_admin = True
         # User with lower id will be playerRight
         if member1.user.id < member2.user.id:
             memberLeft = member2
@@ -85,27 +94,29 @@ class LobbyView(BaseAuthenticatedView):
             memberRight = member2
         response_message = {
             'playerLeft':{
-                'userId': memberLeft.user.id,
-                'username': memberLeft.user.username,
-                'avatar': memberLeft.user.avatar_path,
-                'points': memberLeft.points,
-                'result': memberLeft.result,
-                'ready': game.get_player_ready(memberLeft.user.id),
+                'userId':                   memberLeft.user.id,
+                'username':                 memberLeft.user.username,
+                'avatar':                   memberLeft.user.avatar,
+                'points':                   memberLeft.points,
+                'result':                   memberLeft.result,
+                'ready':                    game.get_player_ready(memberLeft.user.id),
             },
             'playerRight':{
-                'userId': memberRight.user.id,
-                'username': memberRight.user.username,
-                'avatar': memberRight.user.avatar_path,
-                'points': memberRight.points,
-                'result': memberRight.result,
-                'ready': game.get_player_ready(memberRight.user.id),
+                'userId':                   memberRight.user.id,
+                'username':                 memberRight.user.username,
+                'avatar':                   memberRight.user.avatar,
+                'points':                   memberRight.points,
+                'result':                   memberRight.result,
+                'ready':                    game.get_player_ready(memberRight.user.id),
             },
             'gameData': {
-                'state': game.state,
-                'mapNumber': game.map_number,
-                'tournamentId': game.tournament_id,
-                'tournamentName': tournament_name,
-                'clientIsPlayer': client_is_player,
+                'state':                    game.state,
+                'mapNumber':                game.map_number,
+                'tournamentId':             game.tournament_id,
+                'tournamentName':           tournament_name,
+                'clientIsPlayer':           client_is_player,
+                'deadline':                 game.deadline,
+                'clientIsTournamentAdmin':  client_is_admin,
             },
         }
         return success_response(_('Lobby details'), **response_message)

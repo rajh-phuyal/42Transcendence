@@ -1,49 +1,9 @@
 {
-    "group": {
-        "en-US": "group: ",
-        "pt-PT": "grupo: ",
-        "pt-BR": "grupo: ",
-        "de-DE": "Gruppe: ",
-        "uk-UA": "група: ",
-        "ne-NP": "समूह: "
-    },
-    "subject": {
-        "en-US": "Subject: ",
-        "pt-PT": "Sujeito: ",
-        "pt-BR": "Sujeito: ",
-        "de-DE": "Betreff: ",
-        "uk-UA": "Тема: ",
-        "ne-NP": "विषय: "
-    },
-    "lastSeenHeader": {
-        "en-US": "last seen: ",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
-    "textAreaPlaceHolder": {
-        "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / #",
-        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / #",
-        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais demoníacos: @ / #",
-        "de-DE": "Schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\nProbiere die folgenden teuflischen Zeichen aus: @ / #",
-        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони все бачать...\nСпробуйте такі диявольські знаки: @ / #",
-        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नभुल्नुहोस् कि उनीहरू सबै हेर्छन्...\nयी दानवी चिन्हहरू प्रयास गर्नुहोस्: @ / #"
-    },
-    "sendButton": {
-        "en-US": "Send",
-        "pt-PT": "Enviar",
-        "pt-BR": "Enviar",
-        "de-DE": "Senden",
-        "uk-UA": "Надіслати",
-        "ne-NP": "पठाउनुहोस्"
-    },
-    "ChatRoom": {
+    "title": {
         "en-US": "Chat Room",
         "pt-PT": "Sala de Chat",
-        "pt-BR": "Sala de Chat",
-        "de-DE": "Plauderraum",
+        "pt-BR": "Sala de Bate-papo",
+        "de-DE": "Chatraum",
         "uk-UA": "Чат-кімната",
         "ne-NP": "च्याट कोठा"
     },
@@ -55,84 +15,108 @@
         "uk-UA": "фільтрувати...",
         "ne-NP": "फिल्टर गर्नुहोस्..."
     },
+    "subject": {
+        "en-US": "Subject: ",
+        "pt-PT": "Assunto: ",
+        "pt-BR": "Assunto: ",
+        "de-DE": "Betreff: ",
+        "uk-UA": "Тема: ",
+        "ne-NP": "विषय: "
+    },
     "helpMessage/": {
         "en-US": "<strong><u>Use one of those cmds:</u></strong><br>/G - create a new Game<br>/F - change friendship status<br>/B - block user<br>/U - unblock user",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>Use um destes comandos:</u></strong><br>/G - criar um novo jogo<br>/F - alterar o status da amizade<br>/B - bloquear o usuário<br>/U - desbloquear o usuário",
+        "pt-BR": "<strong><u>Use um desses comandos:</u></strong><br>/G - criar um novo jogo<br>/F - alterar o status da amizade<br>/B - bloquear usuário<br>/U - desbloquear usuário",
+        "de-DE": "<strong><u>Verwende einen dieser Befehle:</u></strong><br>/G - ein neues Spiel erstellen<br>/F - Freundschaftsstatus ändern<br>/B - Benutzer blockieren<br>/U - Benutzer entsperren",
+        "uk-UA": "<strong><u>Використовуйте одну з цих команд:</u></strong><br>/G - створити нову гру<br>/F - змінити статус дружби<br>/B - заблокувати користувача<br>/U - розблокувати користувача",
+        "ne-NP": "<strong><u>यी मध्ये कुनै एक आदेश प्रयोग गर्नुहोस्:</u></strong><br>/G - नयाँ खेल सिर्जना गर्नुहोस्<br>/F - मित्रता स्थिति परिवर्तन गर्नुहोस्<br>/B - प्रयोगकर्ता अवरुद्ध गर्नुहोस्<br>/U - प्रयोगकर्तालाई अनवरोध गर्नुहोस्"
     },
     "helpMessage/G0": {
         "en-US": "<strong><u>(1/3) Create a game</u><br>Choose a map</strong> e.g. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>(1/3) Criar um jogo</u><br>Escolha um mapa</strong> ex. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "pt-BR": "<strong><u>(1/3) Criar um jogo</u><br>Escolha um mapa</strong> ex. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "de-DE": "<strong><u>(1/3) Spiel erstellen</u><br>Wählen Sie eine Karte</strong> z.B. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "uk-UA": "<strong><u>(1/3) Створити гру</u><br>Виберіть карту</strong> напр. /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness",
+        "ne-NP": "<strong><u>(1/3) खेल सिर्जना गर्नुहोस्</u><br>नक्सा चयन गर्नुहोस्</strong> जस्तै /G,ufo,<br>ufo<br>lizard-people<br>snowman<br>lochness"
     },
     "helpMessage/G2": {
         "en-US": "<strong><u>(2/3) Create a game</u><br>Wanna play with powerups?</strong> e.g. /G,ufo,yes,<br>yes<br>no",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>(2/3) Criar um jogo</u><br>Quer jogar com powerups?</strong> ex. /G,ufo,sim,<br>sim<br>não",
+        "pt-BR": "<strong><u>(2/3) Criar um jogo</u><br>Quer jogar com powerups?</strong> ex. /G,ufo,s,im,<br>sim<br>não",
+        "de-DE": "<strong><u>(2/3) Spiel erstellen</u><br>Möchten Sie mit Powerups spielen?</strong> z.B. /G,ufo,ja,<br>ja<br>nein",
+        "uk-UA": "<strong><u>(2/3) Створити гру</u><br>Хочете грати з підсилювачами?</strong> напр. /G,ufo,так,<br>так<br>ні",
+        "ne-NP": "<strong><u>(2/3) खेल सिर्जना गर्नुहोस्</u><br>पावरअपसहित खेल्न चाहानुहुन्छ?</strong> जस्तै /G,ufo,हो,<br>हो<br>होइन"
     },
     "helpMessage/G3": {
         "en-US": "<strong><u>(3/3) Create a game</u><br>Press return to create the game</strong>",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>(3/3) Criar um jogo</u><br>Pressione enter para criar o jogo</strong>",
+        "pt-BR": "<strong><u>(3/3) Criar um jogo</u><br>Pressione enter para criar o jogo</strong>",
+        "de-DE": "<strong><u>(3/3) Spiel erstellen</u><br>Drücken Sie Enter, um das Spiel zu erstellen</strong>",
+        "uk-UA": "<strong><u>(3/3) Створити гру</u><br>Натисніть Enter, щоб створити гру</strong>",
+        "ne-NP": "<strong><u>(3/3) खेल सिर्जना गर्नुहोस्</u><br>खेल सिर्जना गर्नको लागि एंटर थिच्नुहोस्</strong>"
     },
     "helpMessage/F": {
         "en-US": "<strong><u>Modify friendship</u><br>Choose an option</strong> e.g. /FS<br>S - Send a friend request<br>C - Cancel the pending friend request<br>A - Accept the pending friend request<br>R - Reject the pending friend request<br>U - Unfriend",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>Modificar amizade</u><br>Escolha uma opção</strong> ex. /FS<br>S - Enviar um pedido de amizade<br>C - Cancelar o pedido de amizade pendente<br>A - Aceitar o pedido de amizade pendente<br>R - Rejeitar o pedido de amizade pendente<br>U - Remover amizade",
+        "pt-BR": "<strong><u>Modificar amizade</u><br>Escolha uma opção</strong> ex. /FS<br>S - Enviar um pedido de amizade<br>C - Cancelar o pedido de amizade pendente<br>A - Aceitar o pedido de amizade pendente<br>R - Rejeitar o pedido de amizade pendente<br>U - Remover amizade",
+        "de-DE": "<strong><u>Freundschaft ändern</u><br>Wählen Sie eine Option</strong> z.B. /FS<br>S - Freundschaftsanfrage senden<br>C - Freundschaftsanfrage abbrechen<br>A - Freundschaftsanfrage annehmen<br>R - Freundschaftsanfrage ablehnen<br>U - Freundschaft kündigen",
+        "uk-UA": "<strong><u>Змінити дружбу</u><br>Виберіть опцію</strong> напр. /FS<br>S - Відправити запит на дружбу<br>C - Скасувати запит на дружбу<br>A - Прийняти запит на дружбу<br>R - Відхилити запит на дружбу<br>U - Відмова від дружби",
+        "ne-NP": "<strong><u>मित्रता परिवर्तन गर्नुहोस्</u><br>विकल्प चयन गर्नुहोस्</strong> जस्तै /FS<br>S - मित्रता अनुरोध पठाउनुहोस्<br>C - पेंडिङ मित्रता अनुरोध रद्द गर्नुहोस्<br>A - पेंडिङ मित्रता अनुरोध स्वीकार गर्नुहोस्<br>R - पेंडिङ मित्रता अनुरोध अस्वीकार गर्नुहोस्<br>U - मित्रता हटाउनुहोस्"
     },
     "helpMessage/F1": {
         "en-US": "<strong><u>Modify friendship</u><br>Press return to apply change of friendship status</strong>",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>Modificar amizade</u><br>Pressione enter para aplicar a mudança de status de amizade</strong>",
+        "pt-BR": "<strong><u>Modificar amizade</u><br>Pressione enter para aplicar a mudança de status de amizade</strong>",
+        "de-DE": "<strong><u>Freundschaft ändern</u><br>Drücken Sie Enter, um die Änderung des Freundschaftsstatus anzuwenden</strong>",
+        "uk-UA": "<strong><u>Змінити дружбу</u><br>Натисніть Enter, щоб застосувати зміну статусу дружби</strong>",
+        "ne-NP": "<strong><u>मित्रता परिवर्तन गर्नुहोस्</u><br>मित्रता स्थिति परिवर्तन लागू गर्न एंटर थिच्नुहोस्</strong>"
     },
     "helpMessage/B": {
         "en-US": "<strong><u>Block this user</u><br>Press return to confirm</strong>",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>Bloquear este usuário</u><br>Pressione enter para confirmar</strong>",
+        "pt-BR": "<strong><u>Bloquear este usuário</u><br>Pressione enter para confirmar</strong>",
+        "de-DE": "<strong><u>Benutzer blockieren</u><br>Drücken Sie Enter, um zu bestätigen</strong>",
+        "uk-UA": "<strong><u>Заблокувати цього користувача</u><br>Натисніть Enter, щоб підтвердити</strong>",
+        "ne-NP": "<strong><u>यो प्रयोगकर्तालाई अवरुद्ध गर्नुहोस्</u><br>पुष्टि गर्न एंटर थिच्नुहोस्</strong>"
     },
     "helpMessage/U": {
         "en-US": "<strong><u>Unblock this user</u><br>Press return to confirm</strong>",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong><u>Desbloquear este usuário</u><br>Pressione enter para confirmar</strong>",
+        "pt-BR": "<strong><u>Desbloquear este usuário</u><br>Pressione enter para confirmar</strong>",
+        "de-DE": "<strong><u>Benutzer entsperren</u><br>Drücken Sie Enter, um zu bestätigen</strong>",
+        "uk-UA": "<strong><u>Розблокувати цього користувача</u><br>Натисніть Enter, щоб підтвердити</strong>",
+        "ne-NP": "<strong><u>यो प्रयोगकर्तालाई अनवरोध गर्नुहोस्</u><br>पुष्टि गर्न एंटर थिच्नुहोस्</strong>"
     },
     "helpMessage/mention-username": {
         "en-US": "<strong>FORMAT HINT:</strong> @username<br>",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong>DICA DE FORMATO:</strong> @username<br>",
+        "pt-BR": "<strong>DICA DE FORMATO:</strong> @username<br>",
+        "de-DE": "<strong>FORMAT-HINWEIS:</strong> @username<br>",
+        "uk-UA": "<strong>ПОРАДА ФОРМАТУ:</strong> @username<br>",
+        "ne-NP": "<strong>ढाँचा सुझाब:</strong> @username<br>"
     },
     "helpMessage/mention-tournament-game": {
         "en-US": "<strong>FORMAT HINT:</strong> #T#tournamentName#tournamentId#<br><strong>FORMAT HINT:</strong> #G#gameId#",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "<strong>DICA DE FORMATO:</strong> #T#nomeDoTorneio#idTorneio#<br><strong>DICA DE FORMATO:</strong> #G#idJogo#",
+        "pt-BR": "<strong>DICA DE FORMATO:</strong> #T#nomeDoTorneio#idTorneio#<br><strong>DICA DE FORMATO:</strong> #G#idJogo#",
+        "de-DE": "<strong>FORMAT-HINWEIS:</strong> #T#turnierName#turnierId#<br><strong>FORMAT-HINWEIS:</strong> #G#spielId#",
+        "uk-UA": "<strong>ПОРАДА ФОРМАТУ:</strong> #T#назваТурніру#ідТурніру#<br><strong>ПОРАДА ФОРМАТУ:</strong> #G#ідТурніру#",
+        "ne-NP": "<strong>ढाँचा सुझाव:</strong> #T#टुर्नामेन्टकोनाम#टुर्नामेन्टकोId#<br><strong>ढाँचा सुझाव:</strong> #G#खेलकोId#"
+    },
+    "textAreaPlaceHolder": {
+        "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / # :",
+        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / # :",
+        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais demoníacos: @ / # :",
+        "de-DE": "Schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\nProbiere die folgenden teuflischen Zeichen aus: @ / # :",
+        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони все бачать...\nСпробуйте такі диявольські знаки: @ / # :",
+        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नभुल्नुहोस् कि उनीहरू सबै हेर्छन्...\nयी दानवी चिन्हहरू प्रयास गर्नुहोस्: @ / # :"
+    },
+    "sendButton": {
+        "en-US": "Send",
+        "pt-PT": "Enviar",
+        "pt-BR": "Enviar",
+        "de-DE": "Senden",
+        "uk-UA": "Надіслати",
+        "ne-NP": "पठाउनुहोस्"
     }
 }

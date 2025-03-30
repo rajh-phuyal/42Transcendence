@@ -1,14 +1,14 @@
 # Basics
-import logging
+import logging, re, html
 from rest_framework import status
 # Django
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.utils.translation import gettext as _
 from django.db import transaction
 # Core
 from core.exceptions import BarelyAnException
 # Services
-from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg
+from services.send_ws_msg import send_ws_tournament_pm, send_ws_tournament_info_msg, send_ws_tournament_member_msg, send_ws_all_tournament_members_msg, send_ws_tournament_client_role_msg
 from services.channel_groups import delete_tournament_group
 # User
 from user.constants import USER_ID_AI, USER_ID_FLATMATE
@@ -16,19 +16,22 @@ from user.models import User
 from user.exceptions import BlockingException
 from user.utils import get_user_by_id
 from user.utils_relationship import are_friends, is_blocking, is_blocked
-# Game
-from game.models import Game
-from game.serializer import GameSerializer
 # Tournament
-from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT
+from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT, MAX_LENGHT_OF_TOURNAMENT_NAME
 from tournament.models import Tournament, TournamentMember
-from tournament.serializer import TournamentMemberSerializer
 # Chat
 from chat.message_utils import create_and_send_overloards_pm
 
 def validate_tournament_creation(name, map_number):
-    if name is None or not isinstance(name, str):
+    if name is None or not isinstance(name, str) or name == "":
         raise BarelyAnException(_("Can't create a tournament without a name"))
+    # Protect against XSS attacks ( Not really needed since we allow only letters, numbers, hyphens and underscores )
+    name = html.escape(name)
+    # Validate tournament name using regex
+    if not re.match(r'^[a-zA-Z0-9\-_]+$', name):
+        raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
+    if len(name) > MAX_LENGHT_OF_TOURNAMENT_NAME:
+        raise BarelyAnException(_("Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters").format(MAX_LENGHT_OF_TOURNAMENT_NAME))
     if map_number is None or not isinstance(map_number, int):
         raise BarelyAnException(_("Can't create a tournament without specifying a map number"))
     if map_number not in [1, 2, 3, 4]:
@@ -53,15 +56,12 @@ def validate_tournament_users(creator_id, opponent_ids, local_tournament, public
     if not opponent_ids:
         opponent_ids = None
 
-    # Validate tournament params for edge cases
-    if local_tournament and public_tournament:
-        raise BarelyAnException(_("Tournament can't be both local and public"))
-    if local_tournament and opponent_ids is None:
-        raise BarelyAnException(_("Local tournaments require opponent ids"))
+    # IF PRIVATE -> needs opponents
+    if not public_tournament and opponent_ids is None:
+        raise BarelyAnException(_("Private tournaments require opponent ids"))
+    # IF PUBLIC -> can't have opponents
     if public_tournament and opponent_ids is not None:
         raise BarelyAnException(_("Public tournaments can't have opponent ids"))
-    if not local_tournament and not public_tournament and opponent_ids is None:
-        raise BarelyAnException(_("You must invite opponents to a private tournament"))
     if opponent_ids is None:
         return tournament_user_objects
     if not isinstance(opponent_ids, list):
@@ -214,7 +214,8 @@ def join_tournament(user, tournament_id):
             tournament_member = TournamentMember.objects.select_for_update().get(user_id=user.id, tournament_id=tournament_id)
             tournament_member.accepted = True
             tournament_member.save()
-
+    # The role of the client changed -> send him a ws message
+    send_ws_tournament_client_role_msg(tournament, user, "member")
     # Send the member update to tournament channel group
     send_ws_tournament_member_msg(tournament_member)
     # Send a PM between admin and new member
@@ -237,6 +238,8 @@ def leave_tournament(user, tournament_id):
     # Admin can't leave (needs to delete the tournament instead)
     if tournament_member.is_admin:
             raise BarelyAnException(_("Admin can't leave the tournament. Please delete the tournament instead"))
+    # The role of the client changed -> send him a ws message
+    send_ws_tournament_client_role_msg(tournament, user, "fan")
     # First inform the users via the group channel ...
     send_ws_tournament_member_msg(tournament_member, leave=True)
     # ... also send a PM to the admin ...
@@ -279,9 +282,10 @@ def start_tournament(user, tournament_id):
         # Split into accepted and not accepted members
         accepted_members = tournament_members.filter(accepted=True)
         not_accepted_members = tournament_members.filter(accepted=False)
-        # Check if all members who accepted the invitation are online
-        if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
-            raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
+        # Check if all members who accepted the invitation are online (if remote tournament)
+        if not tournament.local_tournament:
+            if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
+                raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
         # Remove all persons who have not accepted the invitation
         for member in not_accepted_members:
             send_ws_tournament_member_msg(member, leave=True)

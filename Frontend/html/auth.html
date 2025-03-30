@@ -1,48 +1,153 @@
-<div class="out-div">
-    <div id="auth-view">
-		<img src="../assets/backgrounds/auth.png" alt="Autentication Box">
-        <auth-card login="true"></auth-card>
+<div class="view-base">
+    <div class="view-container">
+        <div class="view-image-wrapper">
+            <img src="../assets/backgrounds/auth.png" class="view-background-image" draggable="false">
+            <div class="view-overlay-grid">
+                <!-- INPUTS -->
+                <form id="auth-form" onsubmit="return false;" style="display: contents;">
+                    <input  id="auth-username"             maxlength="8"        class="grid-cell default-grid-area iuse barely-an-input auth-input" autocomplete="username">
+                    <img    id="auth-username-validate"                         class="grid-cell default-grid-area iusev" src="../../../../assets/icons_128x128/icon_auth_x.png" value="2" tabindex="-1">
+                    <input  id="auth-pswd1" type="password"                     class="grid-cell default-grid-area ipswd1 barely-an-input auth-input" autocomplete="current-password">
+                    <img    id="auth-btn-show-pswd1"                            class="grid-cell default-grid-area ipswd1b modal-button modal-image-button click-sound" src="../../../../assets/icons_128x128/icon_eye_closed.png" value="1" tabindex="-1">
+                    <input  id="auth-pswd2"                  type="Password"    class="grid-cell default-grid-area ipswd2 barely-an-input auth-input" autocomplete="new-password">
+                    <img    id="auth-btn-show-pswd2"                            class="grid-cell default-grid-area ipswd2b modal-button modal-image-button click-sound" src="../../../../assets/icons_128x128/icon_eye_closed.png" value="2" tabindex="-1">
+                    <!-- BUTTONS -->
+                    <button    id="auth-btn-login"            type="button"     class="grid-cell default-grid-area btnl modal-button auth-button" disabled=true></button>
+                    <button    id="auth-btn-register"         type="button"     class="grid-cell default-grid-area btnr modal-button auth-button" disabled=true></button>
+                    <button    id="auth-btn-back"             type="button"     class="grid-cell default-grid-area btnl modal-button auth-button"></button>
+                    <button    id="auth-btn-submit"           type="button"     class="grid-cell default-grid-area btnr modal-button auth-button" disabled="true"></button>
+                    <!-- FLAG BUTTONS -->
+                    <button id="button-local-en-US"                             class="grid-cell default-grid-area modal-toggle-button modal-toggle-button-enabled  btn-sidebar btnus"   value="en-US" tabindex="-1">🇺🇸</button>
+                    <button id="button-local-pt-PT"                             class="grid-cell default-grid-area modal-toggle-button modal-toggle-button-disabled btn-sidebar btnptp"  value="pt-PT" tabindex="-1">🇵🇹</button>
+                    <button id="button-local-pt-BR"                             class="grid-cell default-grid-area modal-toggle-button modal-toggle-button-disabled btn-sidebar btnptb"  value="pt-BR" tabindex="-1">🇧🇷</button>
+                    <button id="button-local-de-DE"                             class="grid-cell default-grid-area modal-toggle-button modal-toggle-button-disabled btn-sidebar btnde"   value="de-DE" tabindex="-1">🇩🇪</button>
+                    <button id="button-local-uk-UA"                             class="grid-cell default-grid-area modal-toggle-button modal-toggle-button-disabled btn-sidebar btnuk"   value="uk-UA" tabindex="-1">🇺🇦</button>
+                    <button id="button-local-ne-NP"                             class="grid-cell default-grid-area modal-toggle-button modal-toggle-button-disabled btn-sidebar btnne"   value="ne-NP" tabindex="-1">🇳🇵</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-
 <style>
-	.out-div {
-		padding-top: 10vh;
-		width: 100vw;
-		height: 100vh;
-		background-color: #fff7e6;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-    #auth-view {
-        height: 100%;
-		width: 100%;
-		max-width: 900px;
-        background-color: #fff7e6;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		position: relative;
+    /* Somehow this is neccesarry since this is the only view where we don't
+    show the NavBar which height is 10vh! So here we need to change the heigt */
+    html, body {
+        height: 90vh !important;
+    }
+    .view-overlay-grid {
+        grid-template-columns: repeat(auto-fill, 2.5%);
+        grid-template-rows: repeat(auto-fill, 5%);
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      iuse   iuse   iuse   iuse   iuse   iuse   iuse   iuse   iusev   iusev   .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      iuse   iuse   iuse   iuse   iuse   iuse   iuse   iuse   iusev   iusev   .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1b ipswd1b .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1 ipswd1b ipswd1b .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2b ipswd2b .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2 ipswd2b ipswd2b .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btnl   btnl   btnl   btnl   .      .      btnr   btnr   btnr    btnr    .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btnl   btnl   btnl   btnl   .      .      btnr   btnr   btnr    btnr    .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      btnus  btnptp btnptb btnde  btnuk  btnne  .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .        .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+    }
+    /* INPUTS */
+    .iuse {
+        grid-area: iuse;
+        height: 80%;
+    }
+    .iusev {
+        grid-area: iusev;
+        height: 40%;
+        width: 40%;
+    }
+    .ipswd1 {
+        grid-area: ipswd1;
+        height: 80%;
+    }
+    .ipswd1b {
+        grid-area: ipswd1b;
+        height: 50%;
+        width: 50%;
+    }
+    .ipswd2 {
+        grid-area: ipswd2;
+        height: 80%;
+    }
+    .ipswd2b {
+        grid-area: ipswd2b;
+        height: 50%;
+        width: 50%;
+    }
+    /* BUTTONS  */
+    .btnl {
+        grid-area: btnl;
+        height: 80%;
+    }
+    .btnr {
+        grid-area: btnr;
+        height: 80%;
     }
 
-    /* .background-image-div {
-        /* width: 900px; Set the desired width */
-        /* height: 900px; /* Set the desired height */
-        /* background-image: url('../assets/backgrounds/auth.png');
-        background-size: cover;
-        background-position: center; */
-        /* margin: 0% 27%; */
-        /* padding: 325px 0px 0px 160px; */
-    /* } */
-
-	/* #auth-view > img {
-		position: absolute;
-		width: 60%;
-		height: 60%;
-		top: 0;
-		left: 0;
-	} */
-
+    /* FLAGS */
+    .btnus {
+        grid-area: btnus;
+        height: 80%;
+        width: 80%;
+    }
+    .btnptp {
+        grid-area: btnptp;
+        height: 80%;
+        width: 80%;
+    }
+    .btnptb {
+        grid-area: btnptb;
+        height: 80%;
+        width: 80%;
+    }
+    .btnde {
+        grid-area: btnde;
+        height: 80%;
+        width: 80%;
+    }
+    .btnuk {
+        grid-area: btnuk;
+        height: 80%;
+        width: 80%;
+    }
+    .btnne {
+        grid-area: btnne;
+        height: 80%;
+        width: 80%;
+    }
+    /* PASSWORD BORDERS */
+    .border-green, .border-green:active, .border-green:focus, .border-green:focus-visible {
+        border: 2px solid green !important;
+    }
+    .border-red, .border-red:active, .border-red:focus, .border-red:focus-visible {
+        border: 2px solid red !important;
+    }
+    .auth-input {
+        border: 2px solid white;
+    }
+    .auth-input:disabled, .auth-input[disabled]{
+        background-color:rgba(32, 31, 31, 0.9) !important;
+    }
+    .auth-button:disabled, .auth-button[disabled]{
+        background-color:rgba(32, 31, 31, 0.9) !important;
+        border: 2px solid black !important;
+        color: rgb(71, 67, 67) !important;
+    }
+    .auth-button:hover {
+        background-color:rgba(32, 31, 31, 0.9) !important;
+        border: 2px solid black !important;
+}
 </style>

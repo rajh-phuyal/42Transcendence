@@ -37,8 +37,8 @@ export const mutations = {
     setWebsocketIsAlive: {
         stateName: 'webSocketIsAlive',
         onUpdate: (state, value) => {
-            state.websocketIsAlive = value; 
-        },   
+            state.websocketIsAlive = value;
+        },
         presistence: false,
     },
 	setMarkBook: {
@@ -47,5 +47,25 @@ export const mutations = {
 			state.markbook = value;
 		},
 		presistence: true,
-	}
+	},
+    setCurrentRoute: {
+        stateName: 'currentRoute',
+        onUpdate: (state, value) => {
+            state.currentRoute = value;
+        }
+    },
+    setMusic: {
+        stateName: 'music',
+        onUpdate: (state, value) => {
+            state.music = value;
+        },
+        presistence: true,
+    },
+    setSound: {
+        stateName: 'sound',
+        onUpdate: (state, value) => {
+            state.sound = value;
+        },
+        presistence: true,
+    }
 };

@@ -36,7 +36,7 @@ class LoadConversationsView(BaseAuthenticatedView):
         # Serialize the conversations
         serializer = ConversationsSerializer(conversations, many=True, context={'user': user})
         if not serializer.data or len(serializer.data) == 0:
-            return success_response(_('No conversations found. Use the searchbar on the navigation bar to find a user. Then on the profile click on the letter symbol to start a conversation!'), status_code=status.HTTP_202_ACCEPTED)
+            return success_response(_('No conversations found...'), status_code=status.HTTP_202_ACCEPTED)
         return success_response(_('Conversations loaded successfully'), data=serializer.data)
 
 class LoadConversationView(BaseAuthenticatedView):
@@ -49,7 +49,11 @@ class LoadConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request, conversation_id=None):
         user = request.user
-        msgid = int(request.GET.get('msgid', 0))
+        raw_msgid = request.GET.get('msgid', '0')
+        try:
+            msgid = int(raw_msgid)
+        except (ValueError, TypeError):
+            return error_response(_('Invalid message ID for infinite scroll'), status_code=status.HTTP_400_BAD_REQUEST)
         if(msgid < 0):
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
         conversation =  Conversation.objects.get(id=conversation_id)
@@ -96,7 +100,7 @@ class LoadConversationView(BaseAuthenticatedView):
         # Serialize messages
         serialized_messages = MessageSerializer(messages, many=True)
         # Get the conversation avatar and name
-        conversation_avatar = other_user.avatar_path
+        conversation_avatar = other_user.avatar
         conversation_name = other_user.username
         # Prepare the response
         response_data = {

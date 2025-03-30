@@ -4,6 +4,9 @@ from django.db import transaction
 
 # Only called when finishing a game
 def db_update_tournament_member_stats(game, game_member_winner, game_member_looser):
+    # Only update if its a round robin game! aka Game.GameType.NORMAL
+    if game.type != 'normal':
+        return
     # 0. calculate point difference
     difference = game_member_winner.points - game_member_looser.points
 

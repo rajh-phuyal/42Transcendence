@@ -1,0 +1,62 @@
+<div class="modal fade" id="modal-tournament-local-join" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div id="modal-tournament-local-join-content" class="modal-content image-modal-content">
+            <div class="modal-body image-modal-body">
+                <img src='../../assets/backgrounds/modal-tournament-local-join.png' class="image-modal-background-image">
+                <div id="modal-tournament-local-join-grid" class="view-overlay-grid">
+                    <h5 id="modal-tournament-local-join-title" class="modal-title grid-cell default-grid-area title"></h5>
+                    <button type="button" class="grid-cell default-grid-area btncl btn-close btn-close-white modal-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="grid-cell default-grid-area flex">
+                        <h6 id="modal-tournament-local-join-text"></h6>
+                    </div>
+                    <button id="modal-tournament-local-join-btn-join"   class="grid-cell default-grid-area btns btn modal-button" ></button>
+                    <button id="modal-tournament-local-join-btn-cancel" class="grid-cell default-grid-area btnc btn modal-button" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    #modal-tournament-local-join-content {
+        height: 400px !important;
+    }
+    #modal-tournament-local-join-grid{
+        grid-template-columns: repeat(auto-fill, 7%) !important;
+        grid-template-rows: repeat(auto-fill, 7%) !important;
+        grid-template-areas:
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      btncl  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      title  title  title  title  title  title  title  title  title  title  title  title  .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   flex   .     "
+            ".      btnc   btnc   btnc   btnc   btnc   .      .      btns   btns   btns   btns   btns   .     "
+            ".      btnc   btnc   btnc   btnc   btnc   .      .      btns   btns   btns   btns   btns   .     "
+    }
+
+    .title {
+        grid-area: title;
+        color: black;
+    }
+    .flex {
+        grid-area: flex;
+        color: black;
+    }
+    .btns {
+        grid-area: btns;
+        height: 70%;
+    }
+    .btncl {
+        grid-area: btncl;
+    }
+    .btnc {
+        grid-area: btnc;
+        height: 70%;
+    }
+</style>

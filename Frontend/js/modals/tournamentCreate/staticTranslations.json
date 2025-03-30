@@ -1,0 +1,11 @@
+{
+    "modal-tournament-create-title":        "title",
+    "modal-tournament-tournament-name":     "name",
+    "modal-tournament-create-priv-title":   "titlePrivacy",
+    "modal-tournament-create-type-title":   "titleType",
+    "modal-tournament-create-map-title":    "titleMap",
+    "modal-tournament-pu-title":            "titlePu",
+    "modal-tournament-opponents-header":    "titleUsers",
+    "modal-tournament-create-btn-back":     "btnBack",
+    "modal-tournament-create-btn-create":   "btnCreate"
+}

@@ -44,4 +44,5 @@ ENTRYPOINT ["/tools/entrypoint.sh"]
 EXPOSE 8000
 
 # Run with ASGI server
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "app.asgi:application"]
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "-v", "0", "app.asgi:application"]
+
