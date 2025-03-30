@@ -49,7 +49,11 @@ class LoadConversationView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def put(self, request, conversation_id=None):
         user = request.user
-        msgid = int(request.GET.get('msgid', 0))
+        raw_msgid = request.GET.get('msgid', '0')
+        try:
+            msgid = int(raw_msgid)
+        except (ValueError, TypeError):
+            return error_response(_('Invalid message ID for infinite scroll'), status_code=status.HTTP_400_BAD_REQUEST)
         if(msgid < 0):
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
         conversation =  Conversation.objects.get(id=conversation_id)
