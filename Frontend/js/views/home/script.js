@@ -174,11 +174,10 @@ export async function isHovering(event){
         }
     }
 
-    if (foundElement == undefined)
-        {
-            canvasData.highlitedImageID = 0;
-            return ;
-        }
+    if (foundElement == undefined) {
+        canvasData.highlitedImageID = 0;
+        return ;
+    }
 
     canvasData.highlitedImageID = foundElement.id;
     await redraw(foundElement);

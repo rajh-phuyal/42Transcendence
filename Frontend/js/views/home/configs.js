@@ -57,10 +57,9 @@ export default {
 
             // Get the canvas element and its context
             canvasData.canvas = this.domManip.$id("home-canvas");
-            let canvas = canvasData.canvas;
-            canvasData.context = canvas.getContext('2d');
-            canvas.width = 2000;
-            canvas.height = 900;
+            canvasData.context = canvasData.canvas.getContext('2d');
+            canvasData.canvas.width = 2000;
+            canvasData.canvas.height = 900;
             canvasData.context.imageSmoothingEnabled = true;
 
             // build thexport e first frame
