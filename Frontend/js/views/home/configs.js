@@ -1,9 +1,6 @@
 import { audioPlayer } from '../../abstracts/audio.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
 import canvasData from './data.js'
-import call from '../../abstracts/call.js'
-import callToast from '../../abstracts/callToast.js'
-import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import $store from '../../store/store.js';
 

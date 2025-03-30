@@ -1,6 +1,5 @@
 import {imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
-import { $id } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
 
 /*

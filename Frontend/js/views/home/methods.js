@@ -1,7 +1,3 @@
-import { $id } from '../../abstracts/dollars.js'
-import canvasData from './data.js';
-import { buildCanvas, redraw } from './script.js';
-
 export function generateTournamentName() {
     var list = [
         "amazing", "great", "awesome", "fantastic", "incredible", "marvelous", "outstanding",
