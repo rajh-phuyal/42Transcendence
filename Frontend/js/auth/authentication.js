@@ -42,9 +42,9 @@ class Auth {
                         if (!await this.refreshToken()) {
                             this._lastCheckTimestamp = now;
                             return false;
-                        }    
+                        }
                     } catch (error) {
-                        this._lastCheckTimestamp = now; 
+                        this._lastCheckTimestamp = now;
                         return false;
                     }
                     this.isAuthenticated = true;

@@ -11,10 +11,15 @@ async function call(url, method, data = null, showToast = true) {
         method: method,
         headers: headers,
         credentials: 'include',
-/*        ...(data && method !== 'GET' && method !== 'DELETE') ? {
+        /*        ...(data && method !== 'GET' && method !== 'DELETE') ? {
             body: JSON.stringify(data),
-        } : {}, */
-    };
+            } : {}, */
+        };
+
+    // TODO: DONT DO THIS -> WILL TRIGGER RECURSION
+    // Check if user is authenticated
+    // import $auth from '../auth/authentication.js';
+    //await $auth.isUserAuthenticated();
 
     // Add body only when appropriate
     if (data && method !== 'GET' && method !== 'DELETE') {
