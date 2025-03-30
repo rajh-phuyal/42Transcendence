@@ -31,8 +31,10 @@ def startup_check_deadline():
     for tournament in ongoing_tournaments:
         logging.warning(f"STARTUP: Checking tournament {tournament.id} ({tournament.name})")
         # Check if the tournament is finished
-        check_tournament_routine(tournament.id)
-
+        try:
+            check_tournament_routine(tournament.id)
+        except Exception as e:
+            logging.error(f"Error checking tournament {tournament.id}: {e}")
 @shared_task(ignore_result=True)
 def check_overdue_tournament_games():
     # Check all games that have passed their deadline
