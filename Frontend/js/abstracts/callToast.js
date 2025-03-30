@@ -57,7 +57,7 @@ export default function $callToast(type, message, conversation = null) {
     let duration = "";
     if (conversation) {
         /* CHAT MESSAGE TOAST */
-        duration = 2000
+        duration = 4000
         if (!$id(`message-toast-${conversation.id}`)) {
             toastElement = createConversationToast(conversation);
             audioPlayer.playSound("chatToast");
@@ -68,7 +68,7 @@ export default function $callToast(type, message, conversation = null) {
         toastTitle = translate("global:toast", "titleChat") + conversation.username;
     } else {
         /* SUCCESS / ERROR TOAST */
-        duration = 5000
+        duration = 7000
         if(!message)
             return;
         toastElement = $id(`${type}-toast`);

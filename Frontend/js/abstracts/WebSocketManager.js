@@ -20,10 +20,9 @@ class WebSocketManager {
 
     // Connect to WebSocket with the provided token
     connect() {
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        if (this.socket && (this.socket.readyState === WebSocket.CONNECTING || this.socket.readyState === WebSocket.OPEN)) {
             return;
         }
-
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
             $store.addMutationListener('setIsAuthenticated', (isAuthenticated) => {
