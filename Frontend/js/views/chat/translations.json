@@ -104,12 +104,12 @@
         "ne-NP": "<strong>ढाँचा सुझाव:</strong> #T#टुर्नामेन्टकोनाम#टुर्नामेन्टकोId#<br><strong>ढाँचा सुझाव:</strong> #G#खेलकोId#"
     },
     "textAreaPlaceHolder": {
-        "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / #",
-        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / #",
-        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais demoníacos: @ / #",
-        "de-DE": "Schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\nProbiere die folgenden teuflischen Zeichen aus: @ / #",
-        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони все бачать...\nСпробуйте такі диявольські знаки: @ / #",
-        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नभुल्नुहोस् कि उनीहरू सबै हेर्छन्...\nयी दानवी चिन्हहरू प्रयास गर्नुहोस्: @ / #"
+        "en-US": "write a message... Just don’t forget that they see everything...\nTry the following devilish signs: @ / # :",
+        "pt-PT": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais diabólicos: @ / # :",
+        "pt-BR": "escreva uma mensagem... Só não se esqueça de que eles veem tudo...\nExperimente os seguintes sinais demoníacos: @ / # :",
+        "de-DE": "Schreibe eine Nachricht... Vergiss nur nicht, dass sie alles sehen...\nProbiere die folgenden teuflischen Zeichen aus: @ / # :",
+        "uk-UA": "напишіть повідомлення... Тільки не забудьте, що вони все бачать...\nСпробуйте такі диявольські знаки: @ / # :",
+        "ne-NP": "सन्देश लेख्नुहोस्... बस यति मात्र नभुल्नुहोस् कि उनीहरू सबै हेर्छन्...\nयी दानवी चिन्हहरू प्रयास गर्नुहोस्: @ / # :"
     },
     "sendButton": {
         "en-US": "Send",
