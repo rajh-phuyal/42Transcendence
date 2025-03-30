@@ -282,9 +282,10 @@ def start_tournament(user, tournament_id):
         # Split into accepted and not accepted members
         accepted_members = tournament_members.filter(accepted=True)
         not_accepted_members = tournament_members.filter(accepted=False)
-        # Check if all members who accepted the invitation are online
-        if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
-            raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
+        # Check if all members who accepted the invitation are online (if remote tournament)
+        if not tournament.local_tournament:
+            if not all([tournament_members.user.get_online_status() for tournament_members in accepted_members]):
+                raise BarelyAnException(_("All members who joined the tournament need to be online to start the tournament"))
         # Remove all persons who have not accepted the invitation
         for member in not_accepted_members:
             send_ws_tournament_member_msg(member, leave=True)
