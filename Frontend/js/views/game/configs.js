@@ -22,7 +22,6 @@ export default {
         leaveLobbyCallback() {
             router('/');
         },
-
         quitGameCallback() {
             // Quit game
             call(`game/delete/${this.gameId}/`, 'DELETE').then(data => {
@@ -175,13 +174,14 @@ export default {
                     playerRightBottomPiece.style.borderBottomRightRadius = "3px";
                     // Show the controls if userid matches client if or is flatmate
                     const clientId = this.$store.fromState('user').id
-                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3){
+                    // Show hide the controls | on local tournament games only the admin can see the controls
+                    if (gameObject.clientIsPlayer && (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3)){
                         controlsLeft.style.display = "block";
                         playerLeftBottomPiece.style.borderBottom = "none";
                         playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
                         playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
                     }
-                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
+                    if (gameObject.clientIsPlayer && (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3)){
                         controlsRight.style.display = "block";
                         playerRightBottomPiece.style.borderBottom = "none";
                     playerRightBottomPiece.style.borderBottomLeftRadius = "0px";

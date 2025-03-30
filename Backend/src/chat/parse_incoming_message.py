@@ -20,7 +20,7 @@ async def check_if_msg_is_cmd(user, other_user, content):
     e.g. **FS,12,42**store it in the db and send it to the conversation.
     """
     from user.utils_relationship import block_user, unblock_user, send_request, accept_request, cancel_request, reject_request, unfriend
-    logging.info(f"User/other_user: %s/%s", user.id, other_user.id)
+    # logging.info(f"User/other_user: %s/%s", user.id, other_user.id)
     if content.startswith("/"):
         content_upper = content.upper()
         if content_upper == "/FS":
