@@ -89,7 +89,7 @@ async function router(path, params = null, updateHistory = true) {
     // Auth check
     const userAuthenticated = await $auth.isUserAuthenticated();
     if (path === "/barely-responsive") {
-        console.log("TODO: check if we need this if!");
+        // This view doesnt need auth and also shouldn't redirect to auth
     } else if (userAuthenticated && path === '/auth') {
         // console.log("Redirecting to home");
         path = '/home';
@@ -122,10 +122,12 @@ async function router(path, params = null, updateHistory = true) {
     if (route && route.view !== "404")
         $store.commit('setCurrentRoute', route.view);
 
+    // Show hide the nav bar
+    let nav = document.getElementById('navigator');
     if (route.view == "auth" || route.view == "barely-responsive") {
-        let nav = document.getElementById('navigator');
         nav.style.display = 'none';
-    }
+    } else
+        nav.style.display = 'flex';
 
     EventListenerManager.unlinkEventListenersView(viewContainer.dataset.view);
     // Close all modals before switching routes

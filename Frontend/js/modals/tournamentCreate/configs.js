@@ -14,9 +14,8 @@ export default {
 
     methods: {
         translateElements() {
-            // TODO: check if this transaltion works
             this.domManip.$id("modal-tournament-tournament-title").setAttribute("placeholder", translate("tournamentCreate", "placeholderName"));
-            this.domManip.$id("modal-tournament-opponents-content").setAttribute("placeholder", translate("tournamentCreate", "placeholderInviteUser"));
+            this.domManip.$id("modal-tournament-opponents-content").title = translate("tournamentCreate", "placeholderInviteUser");
         },
 
         updatePrivacy() {
@@ -150,6 +149,9 @@ export default {
         callbackCreateTournament() {
             this.domManip.$id("modal-tournament-tournament-title").value = this.domManip.$id("modal-tournament-tournament-title").value.trim();
             const tournamentName = this.domManip.$id("modal-tournament-tournament-title").value.trim();
+            // For public tournaments remove the opponents
+            if(this.public)
+                this.opponentIds = [];
             call('tournament/create/', "POST", {
                 "name":             tournamentName,
                 "public":           this.public,

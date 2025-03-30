@@ -5,6 +5,8 @@
             <div class="view-overlay-grid">
                 <!-- TOURNAMENT HEADING -->
                 <div id="game-view-tournament-name" class="grid-cell default-grid-area tname mention-tournament" style="display: none;"></div>
+                <!-- DEADLINE -->
+                <div id="game-view-deadline"        class="grid-cell default-grid-area dline" style="display: none;"></div>
                 <!-- LEFT PLAYER -->
                 <h2 id="player-left-username" class="grid-cell default-grid-area lun user-card username mention-user"></h2>
                 <div                          class="grid-cell default-grid-area lav user-card">
@@ -21,7 +23,7 @@
                         <img id="player-left-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
-                <h5 id="player-left-controls" class="grid-cell default-grid-area user-card ctrll"></h5>
+                <h6 id="player-left-controls" class="grid-cell default-grid-area user-card ctrll"></h6>
                 <!-- RIGHT PLAYER -->
                 <h2 id="player-right-username" class="grid-cell default-grid-area run user-card username mention-user"></h2>
                 <div                           class="grid-cell default-grid-area rav user-card">
@@ -38,7 +40,7 @@
                         <img id="player-right-powerups-big"    class="player-powerup-status" src="" draggable="false">
                     </div>
                 </div>
-                <h5 id="player-right-controls" class="grid-cell default-grid-area user-card ctrlr"></h5>
+                <h6 id="player-right-controls" class="grid-cell default-grid-area user-card ctrlr"></h6>
                 <!-- GAME FIELD -->
                 <div id="game-view-middle-side-container-top-text"  class="grid-cell default-grid-area field"></div>
                 <canvas id="game-field"                             class="grid-cell default-grid-area field"></canvas>
@@ -73,13 +75,24 @@
             ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
             ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
             ".      ctrll  ctrll  ctrll  ctrll  .      .      .      .      .      field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field  field field  field  .      .      .      .      .      ctrlr  ctrlr  ctrlr  ctrlr  .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
-            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .      .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      dline  dline  .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      dline  dline  .      .      .      .      .      .      .      .      .     .      .      .      .      .      .      .      .      .      .     "
+            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa  btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .     .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
+            ".      btnl   btnl   btnl   btnl   .      .      .      .      .      .      .      .      .      .      .      btnpa  btnpa  btnpa  btnpa  btnpa  btnpa  btnpa  btnpa  .      .      .      .      .      .     .      .      .      .      .      btnq    btnq   btnq   btnq  .     "
     }
 
     /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
+    .dline {
+        grid-area: dline;
+        background-color: rgba(20, 15, 15, 0.726);
+        color: rgb(255, 255, 255) !important;
+        border: 0.1vw solid white;
+        border-radius: 3px;
+        height: 90%;
+        font-size: min(10vw, 20px);
+        font-weight: bold;
+        text-align: center;
+    }
     .tname {
         grid-area: tname;
         background-color: rgba(20, 15, 15, 0.726);

@@ -24,12 +24,12 @@
         "ne-NP": "पावरअप"
     },
     "placeholderSearchbar": {
-        "en-US": "Invite a user",
-        "pt-PT": "Convidar um usuário",
-        "pt-BR": "Convidar um usuário",
-        "de-DE": "Benutzer einladen",
-        "uk-UA": "Запросити користувача",
-        "ne-NP": "एक प्रयोगकर्तालाई निम्त्याउनुहोस्"
+        "en-US": "Search for users to invite...",
+        "pt-PT": "Procure utilizadores para convidar...",
+        "pt-BR": "Procure usuários para convidar...",
+        "de-DE": "Suche nach Benutzern, die du einladen möchtest...",
+        "uk-UA": "Шукайте користувачів для запрошення...",
+        "ne-NP": "आमंत्रण गर्नका लागि प्रयोगकर्ताहरू खोज्नुहोस्..."
     },
     "btnCreate": {
         "en-US": "Create Game",

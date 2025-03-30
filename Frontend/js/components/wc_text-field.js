@@ -1,5 +1,5 @@
 import { createHelpMessage, updateHelpMessage } from '../views/chat/methods.js';
-import { $id, $queryAll } from '../abstracts/dollars.js';
+import { $id, $queryAll, $on } from '../abstracts/dollars.js';
 import { translate } from '../locale/locale.js';
 import router from '../navigation/router.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
@@ -42,11 +42,10 @@ class TextField extends HTMLElement {
     connectedCallback() {
         this.render();
         const inputElement = this.shadow.getElementById("textFieldButton");
-        // TODO: should use $on !
-        inputElement.addEventListener('click', this.buttonclick.bind(this));
+        $on(inputElement, 'click', this.buttonclick.bind(this));
         const inputElement2 = this.shadow.getElementById("text-field");
-        inputElement2.addEventListener('keydown', this.handleKeyPress.bind(this));
-        inputElement2.addEventListener('input', this.handleMessageInput.bind(this));
+        $on(inputElement2, 'keydown', this.handleKeyPress.bind(this));
+        $on(inputElement2, 'input', this.handleMessageInput.bind(this));
     }
 
     startSendingMessage(){
@@ -54,10 +53,6 @@ class TextField extends HTMLElement {
         let value = inputElement.value.trim();
         if (value === '')
             return;
-        /* To not be exposed to html injection we have to escape the html syntax */
-        value = value.replace(/[&<>"'`=]/g, function(s) {
-            return `&#${s.charCodeAt(0)};`;
-        });
         // Reset text box & hide the help message when the user sends a message
         inputElement.value = '';
         this.setEnabled(false);

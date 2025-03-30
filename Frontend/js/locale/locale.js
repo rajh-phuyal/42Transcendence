@@ -11,14 +11,14 @@ import { $id } from '../abstracts/dollars.js'
  */
 export const translate = (namespace, key, params = null) => {
     // Trying to get clients local language e.g. en-US
-    const locale = $store.state.locale;
+    const locale = $store.fromState('locale');
     if(!locale) {
         console.warn("No locale set in store");
         return key;
     }
 
     // Trying to load the translation dict from store
-    let translation = $store.state.translations?.[namespace]?.[key]?.[locale];
+    let translation = $store.fromState('translations')?.[namespace]?.[key]?.[locale];
     if (!translation) {
         console.warn(`Translation for ${namespace}.${key} not found for locale ${locale}`);
         return key;
@@ -51,7 +51,7 @@ async function loadAndExecuteTranslations(subject, modal=false) {
             for (const key in translationMapData) {
                 let targetElement = $id(key)
                 if(!targetElement) {
-                    console.error("Error in staticTranslation.js for view: %s; html element '%s' not found", subject, key);
+                    console.log("Error in staticTranslation.js for view: %s; html element '%s' not found", subject, key);
                     continue;
                 }
                 let translatedString = translate(subject, translationMapData[key]);
@@ -60,7 +60,7 @@ async function loadAndExecuteTranslations(subject, modal=false) {
             }
         }
     } catch(error) {
-        console.error("Error on translation: Check if file: 'staticTranslations.json' exists for this subject: %s; error: %s", subject, error);
+        console.log("Error on translation: Check if file: 'staticTranslations.json' exists for this subject: %s; error: %s", subject, error);
     }
 }
 

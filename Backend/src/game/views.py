@@ -106,6 +106,7 @@ class LobbyView(BaseAuthenticatedView):
                 'tournamentId': game.tournament_id,
                 'tournamentName': tournament_name,
                 'clientIsPlayer': client_is_player,
+                'deadline': game.deadline,
             },
         }
         return success_response(_('Lobby details'), **response_message)

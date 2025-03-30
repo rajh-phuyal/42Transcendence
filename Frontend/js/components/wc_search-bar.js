@@ -7,26 +7,32 @@ class SearchBar extends HTMLElement {
         this.searchResults = [];
         this.searchType = "users";
         this.onlySearchFriends = false;
+        this.includeSelf = false;
         this.width = "300";
         this.onClickEvent = "select-user";
         this.clearOnClick = false;
+        this.debounceTimeout = null;
+        this.lastInputValue = "";
     }
 
     static get observedAttributes() {
-        return ["placeholder", "width", "search-type", "on-click-event", "clear-on-click", "only-search-friends"];
+        return ["width", "search-type", "on-click-event", "clear-on-click", "only-search-friends", "include-self"];
     }
 
     reRenderAndAttach() {
         this.render();
-        this.shadow.getElementById("input-bar").addEventListener('keydown', this.handleKeyPress.bind(this));
+        this.shadow.getElementById("input-bar").addEventListener('input', this.handleKeyInput.bind(this));
+        this.shadow.getElementById("input-bar").addEventListener('keydown', this.handleKeydown.bind(this));
+        this.shadow.getElementById("input-bar").addEventListener('blur', this.handleBlur.bind(this));
     }
 
     connectedCallback() {
         this.reRenderAndAttach();
     }
 
-    handleKeyPress(event) {
+    handleKeyInput(event) {
         const value = event.target.value.trim();
+        this.lastInputValue = value; // To avoid race conditions
 
         if (!value) {
             this.searchResults = [];
@@ -34,27 +40,25 @@ class SearchBar extends HTMLElement {
             return;
         }
 
-        const endpoint = {
-            "users": `user/search/${value}/`,
-            "tournaments": `tournament/to-join/`
-        }
+        clearTimeout(this.debounceTimeout);
 
-        setTimeout(() => {
+        this.debounceTimeout = setTimeout(() => {
+            const endpoint = {
+                "users": `user/search/${value}/`,
+                "tournaments": `tournament/to-join/`
+            }
+
             let filter = ""
             if (this.onlySearchFriends)
                 filter = "?onlyFriends=true"
+            if (this.includeSelf)
+                filter += filter ? "&includeSelf=true" : "?includeSelf=true";
+            console.warn("FILTER: ", filter);
             call(endpoint[this.searchType] + filter, 'GET')
                 .then(response => {
+                    if (this.lastInputValue !== value) return;
                     this.searchResults = response?.[this.searchType] || [];
                     this.updateSearchResults(this.searchType, value);
-                    // Check if Enter is pressed & first result exists, then trigger click
-                    if (event.key === "Enter") {
-                        if (this.searchResults.length > 0) {
-                            const firstItem = this.shadow.querySelector('.dropdown div');
-                            if (firstItem)
-                                firstItem.click();
-                        }
-                    }
                 })
                 .catch(error => {
                     console.error("Error fetching search results:", error);
@@ -64,14 +68,51 @@ class SearchBar extends HTMLElement {
         }, 300); // delay to allow the input to be typed
     }
 
+    handleKeydown(event) {
+        if (event.key === "Escape") {
+            // Esc clears the input
+            this.shadow.getElementById("input-bar").value = "";
+            this.handleKeyInput(event);
+        } else if (event.key === "Enter") {
+            // Enter -> selects first result exists, then trigger click
+            if (this.searchResults.length > 0) {
+                const firstItem = this.shadow.querySelector('.dropdown div');
+                if (firstItem)
+                    firstItem.click();
+            }
+        }
+    }
+
+    handleBlur(event) {
+        setTimeout(() => {
+            this.shadow.getElementById("input-bar").value = "";
+            this.searchResults = [];
+            const dropdown = this.shadow.querySelector('.dropdown');
+            dropdown.innerHTML = "";
+            dropdown.style.display = 'none';
+        }, 500); // Delay just enough to let click event fire so the client can click on the dropdown
+    }
+
     updateSearchResults(type, value) {
         const dropdown = this.shadow.querySelector('.dropdown');
         if (!dropdown) return;
 
-        if (!this.searchResults.length) {
+        if (!this.searchResults.length && !value) {
+            /* Input is empty */
             this.searchResults = [];
             dropdown.innerHTML = "";
             dropdown.style.display = 'none';
+            return;
+        } else if (!this.searchResults.length) {
+            /* No results */
+            this.searchResults = [];
+            dropdown.innerHTML = "";
+            dropdown.style.display = 'block'
+            const emptyMessage = document.createElement('div');
+            emptyMessage.classList.add('no-results');
+            emptyMessage.textContent = "❌ 🔍 ❌"
+            emptyMessage.style.textAlign = "center";
+            dropdown.appendChild(emptyMessage);
             return;
         }
 
@@ -113,9 +154,7 @@ class SearchBar extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "placeholder") {
-            this.placeholder = newValue;
-        } else if (name === "width") {
+        if (name === "width") {
             this.width = newValue;
         } else if (name === "search-type") {
             this.searchType = newValue;
@@ -125,6 +164,8 @@ class SearchBar extends HTMLElement {
             this.clearOnClick = newValue;
         } else if (name === "only-search-friends") {
             this.onlySearchFriends = newValue === "true";
+        } else if (name === "include-self") {
+            this.includeSelf = newValue === "true";
         }
         this.render();
     }
@@ -204,8 +245,8 @@ class SearchBar extends HTMLElement {
                 }
 
                 .user-image {
-                    width: 32px;
-                    height: 32px;
+                    width: 21px;
+                    height: 28px;
                     border: 1px solid #2A2A2A;
                     flex-shrink: 0;
                 }
@@ -224,7 +265,8 @@ class SearchBar extends HTMLElement {
             </style>
 
             <div class="container">
-                <input id="input-bar" type="text" placeholder="${this.placeholder || 'Search...'}" class="search-box">
+                <!-- THE PLACEHOLDER ARE JUST DOTS SO WE DON'T HAVE TO TRANSLATE THEM - TRANSLATION WILL BE IN TITLE / TOOLTIP -->
+                <input id="input-bar" type="text" placeholder="..." class="search-box">
                 <div class="dropdown" style="display: none"></div>
             </div>
         `;

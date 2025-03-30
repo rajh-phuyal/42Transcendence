@@ -95,7 +95,7 @@ class WebSocketManager {
                     audioPlayer.playSound("chat");
                     processIncomingWsChatMessage(message);
                 } else {
-                    console.log("message:", message);
+                    // console.log("message:", message);
                     $callToast("message", message.content, {id: message.conversationId, username: message.username, avatar: message.avatar});
                 }
                 return ;

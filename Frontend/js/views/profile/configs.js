@@ -1,3 +1,4 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
 import router from '../../navigation/router.js';
@@ -189,6 +190,8 @@ export default {
                 router('/404');
                 return;
             }
+            // Start music
+            audioPlayer.playMusic("profile");
 			call(`user/profile/${this.routeParams.id}/`, "GET").then((res)=>{
                 this.result = res;
                 // console.error("profileData ", this.result);

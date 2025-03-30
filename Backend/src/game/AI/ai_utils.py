@@ -1,7 +1,5 @@
 import os
 from app.settings import DEBUG
-from game.game_cache import set_game_data, get_game_data
-from datetime import datetime, timezone
 from django.core.cache import cache
 
 def difficulty_to_string(difficulty: int) -> str:

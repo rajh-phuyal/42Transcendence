@@ -1,6 +1,7 @@
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import { translate } from '../../locale/locale.js';
 import router from '../../navigation/router.js';
+import { audioPlayer } from '../../abstracts/audio.js';
 
 export default {
     attributes: {
@@ -28,6 +29,7 @@ export default {
         },
 
         afterDomInsertion() {
+            audioPlayer.playMusic("404");
             if (this.routeParams && this.routeParams.msg)
                 this.domManip.$id("404-title").innerText = "404 | "+ this.routeParams.msg;
             else

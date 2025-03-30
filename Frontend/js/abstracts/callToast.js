@@ -2,6 +2,7 @@ import { $id, $class, $on } from '../abstracts/dollars.js';
 import { audioPlayer } from '../abstracts/audio.js';
 import router from '../navigation/router.js'
 import { translate } from '../locale/locale.js';
+import { parseChatMessage } from '../views/chat/methods.js';
 
 /* INTERNAL CHAT TOAST RELATED */
 function routeToConversation(event) {
@@ -63,7 +64,7 @@ export default function $callToast(type, message, conversation = null) {
         } else
         toastElement = $id(`message-toast-${conversation.id}`);
         toastMsgElement = toastElement.querySelector(".message-toast-message");
-        message = message; // TODO: Parse the message for usernames
+        message = parseChatMessage(message);
         toastTitle = translate("global:toast", "titleChat") + conversation.username;
     } else {
         /* SUCCESS / ERROR TOAST */
@@ -83,7 +84,7 @@ export default function $callToast(type, message, conversation = null) {
     let toastTitleElement = ""
     toastTitleElement = toastElement.querySelector(".toast-title");
     toastTitleElement.textContent = toastTitle;
-    toastMsgElement.textContent = message;
+    toastMsgElement.innerHTML = message;
     // Set duration
     // Create a new toast instance
     new bootstrap.Toast(toastElement, { autohide: true, delay: duration }).show();

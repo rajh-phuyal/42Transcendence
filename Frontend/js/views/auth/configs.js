@@ -1,3 +1,4 @@
+import { audioPlayer } from '../../abstracts/audio.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js';
@@ -102,8 +103,10 @@ export default {
             this.domManip.$addClass( flagElementNE,  "modal-toggle-button-disabled");
             // Enable the selected flag
             const enabledElement = this.domManip.$id(`button-local-${this.language}`);
-            this.domManip.$removeClass( enabledElement,   "modal-toggle-button-disabled");
-            this.domManip.$addClass(    enabledElement,   "modal-toggle-button-enabled");
+            if (enabledElement) {
+                this.domManip.$removeClass( enabledElement,   "modal-toggle-button-disabled");
+                this.domManip.$addClass(    enabledElement,   "modal-toggle-button-enabled");
+            }
         },
         /* BUTTON CALLBACKS */
         callbackLogin(event) {
@@ -262,10 +265,6 @@ export default {
         flagCallback(event) {
             this.language = event.target.value;
             $store.commit('setLocale', this.language);
-            // Translate all filter inputs // TODO: doesnt work!
-            const filerElements = this.domManip.$class("search-box");
-            for (const element of filerElements)
-                element.setAttribute("placeholder", translate("global:nav", "placeholderSearchbar"));
             this.updateFlags();
             // Translate view
             router("/auth");
@@ -296,7 +295,7 @@ export default {
             if (!username)
                 return Promise.resolve(true);
             // Use search endpoint to check if username exists
-            return call(`user/usernameExists/${username}/`, "GET", null, false).then(data => {
+            return call(`user/username-exists/${username}/`, "GET", null, false).then(data => {
                 return data.exists;
             }).catch((error) => {
                 return false;
@@ -305,7 +304,7 @@ export default {
     },
     hooks: {
         beforeRouteEnter() {
-
+            audioPlayer.stop();
         },
 
         beforeRouteLeave() {

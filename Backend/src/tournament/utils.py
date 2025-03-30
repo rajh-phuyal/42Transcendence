@@ -1,8 +1,8 @@
 # Basics
-import logging, re
+import logging, re, html
 from rest_framework import status
 # Django
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from django.utils.translation import gettext as _
 from django.db import transaction
 # Core
@@ -16,19 +16,17 @@ from user.models import User
 from user.exceptions import BlockingException
 from user.utils import get_user_by_id
 from user.utils_relationship import are_friends, is_blocking, is_blocked
-# Game
-from game.models import Game
-from game.serializer import GameSerializer
 # Tournament
 from tournament.constants import MAX_PLAYERS_FOR_TOURNAMENT, MAX_LENGHT_OF_TOURNAMENT_NAME
 from tournament.models import Tournament, TournamentMember
-from tournament.serializer import TournamentMemberSerializer
 # Chat
 from chat.message_utils import create_and_send_overloards_pm
 
 def validate_tournament_creation(name, map_number):
-    if name is None or not isinstance(name, str):
+    if name is None or not isinstance(name, str) or name == "":
         raise BarelyAnException(_("Can't create a tournament without a name"))
+    # Protect against XSS attacks ( Not really needed since we allow only letters, numbers, hyphens and underscores )
+    name = html.escape(name)
     # Validate tournament name using regex
     if not re.match(r'^[a-zA-Z0-9\-_]+$', name):
         raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
