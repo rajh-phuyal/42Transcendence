@@ -1,6 +1,7 @@
 import {imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
 import { $id } from '../../abstracts/dollars.js';
+import { translate } from '../../locale/locale.js';
 
 /*
 *************************************************************
@@ -60,7 +61,7 @@ async function drawImageBook(){
 }
 
 // draw the label in the canvas
-function drawLabel(label){
+async function drawLabel(label){
 
     let context = canvasData.context;
 
@@ -78,14 +79,14 @@ function drawLabel(label){
     context.font = "bold 16px Chalkduster";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(label.text, label.x + (label.width / 2), label.y + (label.height / 2))
+    context.fillText(translate("home", label.text), label.x + (label.width / 2), label.y + (label.height / 2))
     context.closePath();
 
 
 }
 
 // draw a line in the canvas
-function drawLine(line){
+async function drawLine(line){
 
     let context = canvasData.context;
 
@@ -107,22 +108,22 @@ function drawLine(line){
 // build the whole canvas
 export async function buildCanvas(){
     await drawImageBook();
-    for (const element of backgroundImageBook)
-        await drawImg(element);
+        for (const element of backgroundImageBook)
+            await drawImg(element);
 
-    for (const element of labels)
-        drawLabel(element);
+        for (const element of labels)
+            await drawLabel(element);
 
-    for (const element of lines)
-        drawLine(element);
+        for (const element of lines)
+            await drawLine(element);
 }
 
-async function redraw(image)
+export async function redraw(image)
 {
     await drawImg(image);
     for (let element of image.lines)
     {
-        drawLine(lines[element]);
+        await drawLine(lines[element]);
     }
 
 }
@@ -143,10 +144,8 @@ function isContained(x, y, img){
 export async function isHovering(event){
 
     // This should prevent the background to respond if a modal is open
-    // TODO: since the refactoring of the modal system, this is not working anymore
-    // let modalElement = $id('home-modal');
-    // if (modalElement.classList.contains('show'))
-    //     return ;
+    if (document.querySelectorAll('.modal.show').length > 0)
+        return ;
 
     let canvas = canvasData.canvas;
 
@@ -192,10 +191,8 @@ export async function isHovering(event){
 export function mouseClick(event){
 
     // This should prevent the background to respond if a modal is open
-    // TODO: since the refactoring of the modal system, this is not working anymore
-    // let modalElement = $id('home-modal');
-    // if (modalElement.classList.contains('show'))
-    //     return ;
+    if (document.querySelectorAll('.modal.show').length > 0)
+        return ;
 
 	let mouseX = event.clientX;
     let mouseY = event.clientY;

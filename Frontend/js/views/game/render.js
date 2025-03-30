@@ -283,6 +283,8 @@ const drawField = (gameField, ctx) => {
 
 export function gameRender () {
 	const gameField = $id("game-field");
+    if(!gameField)
+        return
     const ctx = gameField.getContext('2d');
 	ctx.clearRect(0, 0, gameField.width, gameField.height);
 	drawField(gameField, ctx);
@@ -305,9 +307,7 @@ export function toggleGamefieldVisible(visible) {
         const ctx = gameField.getContext('2d');
         ctx.clearRect(0, 0, gameField.width, gameField.height);
         gameRender(gameField, ctx);
-        // Hide the tournament banner if it is a tournament game
-        if (gameObject.tournamentId)
-            tournamentBanner.style.display = "none";
+        tournamentBanner.style.display = "none";
     } else {
         // Load the background lobby image
         imgPath = window.location.origin + '/assets/backgrounds/game.png';
@@ -315,9 +315,10 @@ export function toggleGamefieldVisible(visible) {
         gameField.style.display = "none";
         // Show the tournament banner if it is a tournament game
         if (gameObject.tournamentId)
-            tournamentBanner.style.display = "block";
+            tournamentBanner.style.display = "flex";
+        else
+            tournamentBanner.style.display = "none";
     }
-    // TODO: maybe here we can make a smooth transition
     const gameImage = $id("view-game-background");
     gameImage.src = imgPath;
 }

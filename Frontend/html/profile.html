@@ -1,60 +1,53 @@
-<!--                  THIS IS THE MAIN DIV FOR PROFILE VIEW                  -->
-<!-- ####################################################################### -->
-<div class="view-base">
+<div class="view-base  view-background-color">
     <div class="view-container">
         <div class="view-image-wrapper">
-            <img src="../assets/backgrounds/profile.png" alt="Background Image" class="view-background-image">
+            <img id="profile-view-background-image"src="../assets/backgrounds/profile.png" class="view-background-image" draggable="false">
             <div class="view-overlay-grid">
                 <!-- DETAILS LEFT -->
-                <h4  id="username"        class="grid-cell default-grid-area uname">TODO REMOVE</h4>
-                <img id="avatar"          class="grid-cell default-grid-area avatar" alt="Avatar">
-                <h5  id="birth-name"      class="grid-cell default-grid-area bname blackout">actual name</h5>
-                <h5  id="last-seen-text"  class="grid-cell default-grid-area lseent blackout">last seen</h5>
-                <img id="last-seen-image" class="grid-cell default-grid-area lseeni blackout">last seen</h5>
-                <h5  id="language"        class="grid-cell default-grid-area lang blackout">lang</h5>
+                <h4  id="username"        class="grid-cell default-grid-area uname"></h4>
+                <img id="avatar"          class="grid-cell default-grid-area avatar" draggable="false">
+                <h5  id="birth-name"      class="grid-cell default-grid-area bname blackout"></h5>
+                <h5  id="last-seen-text"  class="grid-cell default-grid-area lseent blackout"></h5>
+                <img id="last-seen-image" class="grid-cell default-grid-area lseeni blackout" draggable="false">
+                <h5  id="language"        class="grid-cell default-grid-area lang blackout"></h5>
+                <!-- NOTES -->
+                <h6 id="notes" class="grid-cell default-grid-area notes"></h6>
                 <!-- BUTTONS -->
-                <img id="button-top-left"     class="grid-cell default-grid-area btn1 modal-button modal-image-button"></img>
-                <img id="button-top-middle"   class="grid-cell default-grid-area btn2 modal-button modal-image-button"></img>
-                <img id="button-top-right"    class="grid-cell default-grid-area btn3 modal-button modal-image-button"></img>
-                <img id="button-bottom-left"  class="grid-cell default-grid-area btn4 modal-button modal-image-button"></img>
-                <img id="button-bottom-right" class="grid-cell default-grid-area btn5 modal-button modal-image-button"></img>
+                <img id="button-top-left"     class="grid-cell default-grid-area btn1 modal-button modal-image-button click-sound" draggable="false">
+                <img id="button-top-middle"   class="grid-cell default-grid-area btn2 modal-button modal-image-button click-sound" draggable="false">
+                <img id="button-top-right"    class="grid-cell default-grid-area btn3 modal-button modal-image-button click-sound" draggable="false">
+                <img id="button-bottom-left"  class="grid-cell default-grid-area btn4 modal-button modal-image-button click-sound" draggable="false">
+                <img id="button-bottom-right" class="grid-cell default-grid-area btn5 modal-button modal-image-button click-sound" draggable="false">
                 <!-- STATS -->
-                <h4                                     class="grid-cell default-grid-area stath blackout">STATS</h4>
-                <h5 id="stats-games"                    class="grid-cell default-grid-area statg  game-stats-parameters">Games won: 0/0 </h5>
-                <h5 id="stats-tournament-first-place"   class="grid-cell default-grid-area statt1 game-stats-parameters">1st place: 0/0 </h5>
-                <h5 id="stats-tournament-second-place"  class="grid-cell default-grid-area statt2 game-stats-parameters ">2nd place: 0/0 </h5>
-                <h5 id="stats-tournament-third-place"   class="grid-cell default-grid-area statt3 game-stats-parameters">3rd place: 0/0 </h5>
+                <h4 id="stats-title"                    class="grid-cell default-grid-area stath blackout"></h4>
+                <h6 id="stats-games"                    class="grid-cell default-grid-area statg  game-stats-parameters"></h6>
+                <h6 id="stats-tournament-first-place"   class="grid-cell default-grid-area statt1 game-stats-parameters"></h6>
+                <h6 id="stats-tournament-second-place"  class="grid-cell default-grid-area statt2 game-stats-parameters "></h6>
+                <h6 id="stats-tournament-third-place"   class="grid-cell default-grid-area statt3 game-stats-parameters"></h6>
                 <!-- EXPERIENCE -->
-                <h4 class="grid-cell default-grid-area exph blackout">EXPERIENCE</h4>
+                <h4 id="progress-title" class="grid-cell default-grid-area exph blackout"></h4>
                 <!-- EXPERIENCE NAMES -->
-                <h5 id="score-skill-name"          class="grid-cell default-grid-area expns  progress-grid-name">Skill</h5>
-                <h5 id="score-game-exp-name"       class="grid-cell default-grid-area expng  progress-grid-name">GExp</h5>
-                <h5 id="score-tournament-exp-name" class="grid-cell default-grid-area expnt  progress-grid-name">TExp</h5>
-                <h5 id="score-total-name"          class="grid-cell default-grid-area expnsu progress-grid-name">Total</h5>
+                <h5 id="score-skill-name"          class="grid-cell default-grid-area expns  progress-grid-name"></h5>
+                <h5 id="score-game-exp-name"       class="grid-cell default-grid-area expng  progress-grid-name"></h5>
+                <h5 id="score-tournament-exp-name" class="grid-cell default-grid-area expnt  progress-grid-name"></h5>
+                <h5 id="score-total-name"          class="grid-cell default-grid-area expnsu progress-grid-name"></h5>
                 <!-- EXPERENCE PORGRESS BARS -->
-
-
                 <div class="grid-cell default-grid-area expps progress">
-                    <div id="score-skill-progress"      class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div id="score-skill-progress"                      class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="grid-cell default-grid-area exppg progress">
-                    <div id="score-game-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div id="score-game-exp-progress"                   class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="grid-cell default-grid-area exppt progress">
-                    <div id="score-tournament-exp-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div id="score-tournament-exp-progress"             class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="grid-cell default-grid-area exppsu progress">
-                    <div id="score-total-progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div id="score-total-progress"                      class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
-
-<!--          THIS ARE SYTLES FOR THE MAIN DIV FOR PROFILE VIEW                 -->
-<!--            NOTE: some styles are defined in main.css!                   -->
-<!-- ####################################################################### -->
 <style>
     /* The basic valus of the grid are already set in main.css */
     .view-overlay-grid {
@@ -65,25 +58,24 @@
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      uname  uname  uname  uname  .      .      .      btn1   btn2   btn3   btn4   btn5   .      .      .      .     "
+            ".      .      .      .      uname  uname  uname  uname  lseeni .      .      btn1   btn2   btn3   btn4   btn5   .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      btn1   btn2   btn3   btn4   btn5   .      .      .      .     "
-            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      avatar avatar .      .      .      .      stath  stath  stath  stath  stath  stath  .      .      .      .     "
-            ".      .      .      .      avatar avatar .      .      .      .      statg  statg  statg  statt1 statt2 statt3 .      .      .      .     "
-            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      statt1 statt2 statt3 .      .      .      .     "
-            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      statt1 statt2 statt3 .      .      .      .     "
-            ".      .      .      .      avatar avatar .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      exph   exph   exph   exph   exph   exph   .      .      .      .     "
-            ".      .      .      .      bname  bname  bname  bname  .      .      .      .      .      .      .      .      .      .      .      .     "
-            ".      .      .      .      lseeni lseent lseent lseent .      .      expns  expns  expns  expps  expps  expps  .      .      .      .     "
-            ".      .      .      .      lang   lang   lang   lang   .      .      expng  expng  expng  exppg  exppg  exppg  .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      expnt  expnt  expnt  exppt  exppt  exppt  .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      expnsu expnsu expnsu exppsu exppsu exppsu .      .      .      .     "
-            ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      avatar avatar .      bname  bname  bname  .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      avatar avatar .      bname  bname  bname  .      stath  stath  stath  stath  stath  .      .      .      .     "
+            ".      .      .      .      avatar avatar .      lseent lseent lseent .      statg  statg  statg  statg  statg  .      .      .      .     "
+            ".      .      .      .      avatar avatar .      lseent lseent lseent .      statt1 statt1 statt1 statt1 statt1 .      .      .      .     "
+            ".      .      .      .      avatar avatar .      lang   lang   lang   .      statt2 statt2 statt2 statt2 statt2 .      .      .      .     "
+            ".      .      .      .      avatar avatar .      lang   lang   lang   .      statt3 statt3 statt3 statt3 statt3 .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  .      .      .      .      .      .      .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  .      .      exph   exph   exph   .      .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  expns  expns  expps  expps  expps  .      .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  expng  expng  exppg  exppg  exppg  .      .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  expnt  expnt  exppt  exppt  exppt  .      .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  expnsu expnsu exppsu exppsu exppsu .      .      .      .      .     "
+            ".      .      .      .      notes  notes  notes  notes  notes  notes  .      .      .      .      .      .      .      .      .      .     "
             ".      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .      .     "
     }
 
-    /* FOR EACH GRID AREA WE NEED TO DEFINE THE STYLES */
     /* DETAILS LEFT */
     .avatar {
         grid-area: avatar;
@@ -91,11 +83,13 @@
 
     .uname {
         grid-area: uname;
-        justify-self: center;
+        text-align: left;
+        /* justify-self: center; */
     }
 
     .bname {
         grid-area: bname;
+        text-align: left;
     }
     .lseeni {
         grid-area: lseeni;
@@ -105,9 +99,19 @@
     }
     .lseent {
         grid-area: lseent;
+        text-align: left;
     }
     .lang {
         grid-area: lang;
+        text-align: left;
+    }
+    .notes {
+        grid-area: notes;
+        text-align: center;
+        border-radius: 2px;
+        height: 90% !important;
+        padding: 5px;
+        font-style: italic;
     }
     /* BUTTONS */
     .btn1 {
@@ -131,15 +135,19 @@
     }
     .statg {
         grid-area: statg;
+        text-align: left;
     }
     .statt1 {
         grid-area: statt1;
+        text-align: left;
     }
     .statt2 {
         grid-area: statt2;
+        text-align: left;
     }
     .statt3 {
         grid-area: statt3;
+        text-align: left;
     }
     /* EXPERIENCE */
     .exph {
@@ -148,15 +156,23 @@
     /* EXPERIENCE NAMES */
     .expns {
         grid-area: expns;
+        text-align: right;
+        margin-right: 20px;
     }
     .expng {
         grid-area: expng;
+        text-align: right;
+        margin-right: 20px;
     }
     .expnt {
         grid-area: expnt;
+        text-align: right;
+        margin-right: 20px;
     }
     .expnsu {
         grid-area: expnsu;
+        text-align: right;
+        margin-right: 20px;
     }
     /* EXPERENCE PORGRESS BARS */
     .expps {

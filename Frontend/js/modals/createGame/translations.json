@@ -1,0 +1,66 @@
+{
+    "title": {
+        "en-US": "Create a friendly match",
+        "pt-PT": "Criar um jogo amigável",
+        "pt-BR": "Criar uma partida amigável",
+        "de-DE": "Ein Freundschaftsspiel erstellen",
+        "uk-UA": "Створити дружній матч",
+        "ne-NP": "एक मित्रवत् खेल सिर्जना गर्नुहोस्"
+    },
+    "maps": {
+        "en-US": "Maps",
+        "pt-PT": "Mapas",
+        "pt-BR": "Mapas",
+        "de-DE": "Karten",
+        "uk-UA": "Карти",
+        "ne-NP": "नक्सा"
+    },
+    "powerups": {
+        "en-US": "Powerups",
+        "pt-PT": "Power-ups",
+        "pt-BR": "Power-ups",
+        "de-DE": "Power-ups",
+        "uk-UA": "Пауер-апи",
+        "ne-NP": "पावरअप"
+    },
+    "placeholderSearchbar": {
+        "en-US": "Search for users to invite...",
+        "pt-PT": "Procure utilizadores para convidar...",
+        "pt-BR": "Procure usuários para convidar...",
+        "de-DE": "Suche nach Benutzern, die du einladen möchtest...",
+        "uk-UA": "Шукайте користувачів для запрошення...",
+        "ne-NP": "आमंत्रण गर्नका लागि प्रयोगकर्ताहरू खोज्नुहोस्..."
+    },
+    "btnCreate": {
+        "en-US": "Create Game",
+        "pt-PT": "Criar Jogo",
+        "pt-BR": "Criar Jogo",
+        "de-DE": "Spiel erstellen",
+        "uk-UA": "Створити гру",
+        "ne-NP": "खेल सिर्जना गर्नुहोस्"
+    },
+    "btnPowerups": {
+        "en-US": "Powerups",
+        "pt-PT": "Power-ups",
+        "pt-BR": "Power-ups",
+        "de-DE": "Power-ups",
+        "uk-UA": "Пауер-апи",
+        "ne-NP": "पावरअप"
+    },
+    "selectOpponent": {
+        "en-US": "You need to select an opponent first!",
+        "pt-PT": "Você precisa selecionar um oponente primeiro!",
+        "pt-BR": "Você precisa selecionar um oponente primeiro!",
+        "de-DE": "Sie müssen zuerst einen Gegner auswählen!",
+        "uk-UA": "Вам потрібно спочатку вибрати суперника!",
+        "ne-NP": "तपाईंले पहिले विपक्षी चयन गर्नुपर्नेछ!"
+    },
+    "selectMap": {
+        "en-US": "You need to select a map first!",
+        "pt-PT": "Você precisa selecionar um mapa primeiro!",
+        "pt-BR": "Você precisa selecionar um mapa primeiro!",
+        "de-DE": "Sie müssen zuerst eine Karte auswählen!",
+        "uk-UA": "Вам потрібно спочатку вибрати карту!",
+        "ne-NP": "तपाईंले पहिले नक्सा चयन गर्नुपर्नेछ!"
+    }
+}

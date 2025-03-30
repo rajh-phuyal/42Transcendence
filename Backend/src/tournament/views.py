@@ -1,18 +1,15 @@
 # Basics
-import re, logging
 from rest_framework import status
 # Django
-from django.db import transaction
 from django.utils.translation import gettext as _
-from django.db import models
 from asgiref.sync import async_to_sync
 # Core
 from core.authentication import BaseAuthenticatedView
 from core.response import success_response, error_response
 from core.decorators import barely_handle_exceptions
-from core.exceptions import BarelyAnException
 # User
 from user.models import User
+from user.utils_relationship import is_blocking
 # Services
 from services.constants import PRE_GROUP_TOURNAMENT
 from services.send_ws_msg import send_ws_tournament_pm
@@ -46,21 +43,31 @@ class EnrolmentView(BaseAuthenticatedView):
 # History of tournaments of user including all tournament states
 class HistoryView(BaseAuthenticatedView):
     @barely_handle_exceptions
-    def get(self, request):
-        user = request.user
-        # Get all tournaments of the user
-        tournaments = TournamentMember.objects.filter(
-            user_id=user.id
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name'),
-            tournamentState=models.F('tournament__state')
-        ).values(
-            'tournamentId',
-            'tournamentName',
-            'tournamentState'
+    def get(self, request, userid):
+        requester = request.user
+        try:
+            target = User.objects.get(id=userid)
+        except User.DoesNotExist:
+            return error_response(_("User not found"), status_code=status.HTTP_404_NOT_FOUND)
+        # Check if the requester is blocked by the target user
+        if is_blocking(target, requester):
+            return error_response(_("You are blocked by this user"), status_code=status.HTTP_403_FORBIDDEN)
+
+        # Get all tournaments of the target user
+        tournaments = Tournament.objects.filter(
+            members__user=target,
+            state__in=[Tournament.TournamentState.ONGOING, Tournament.TournamentState.FINISHED]
+        ).order_by(
+            'state',
+            '-finish_time'
         )
-        return success_response(_("User's tournament history fetched successfully"), **{'tournaments': tournaments})
+
+        # Serialize the tournaments using TournamentInfoSerializer
+        serializer_tournaments = TournamentInfoSerializer(tournaments, many=True)
+
+        return success_response(_("Tournament history fetched successfully"), **{
+            'tournaments': serializer_tournaments.data
+        })
 
 # All tournaments where user is invited to and public tournaments
 class ToJoinView(BaseAuthenticatedView):
@@ -72,48 +79,29 @@ class ToJoinView(BaseAuthenticatedView):
             user_id=user.id,
             accepted=False,
             tournament__state=Tournament.TournamentState.SETUP
-        ).annotate(
-            tournamentId=models.F('tournament_id'),
-            tournamentName=models.F('tournament__name')
-        ).values(
-            'tournamentId',
-            'tournamentName'
-        )
+        ).select_related('tournament')
+        invited_tournament_objects = [tournament_member.tournament for tournament_member in invited_tournaments]
         public_tournaments = Tournament.objects.filter(
             public_tournament=True,
             state=Tournament.TournamentState.SETUP
-        ).annotate(
-            tournamentId=models.F('id'),
-            tournamentName=models.F('name')
-        ).values(
-            'tournamentId',
-            'tournamentName'
         )
         # Merge the two querysets
-        tournaments = list(invited_tournaments) + list(public_tournaments)
-        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournaments})
+        tournaments = invited_tournament_objects + list(public_tournaments)
+        tournamentsSerializer = TournamentInfoSerializer(tournaments, many=True)
+        return success_response(_("Returning the tournaments which are available for the user"), **{'tournaments': tournamentsSerializer.data})
 
 class CreateTournamentView(BaseAuthenticatedView):
     @barely_handle_exceptions
     def post(self, request):
-        logging.info(f"Request data: {request.data}")
+        # logging.info(f"Request data: {request.data}")
         # Get the user from the request
         user = request.user
-        tournament_name = request.data.get('name')
-
-        # Check if tournament name is not empty
-        if not tournament_name:
-            raise BarelyAnException(_("Tournament name cannot be empty"))
-
-        # Validate tournament name using regex
-        if not re.match(r'^[a-zA-Z0-9\-_]+$', tournament_name):
-            raise BarelyAnException(_("Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"))
-
+        tournament_name = request.data.get('name').strip()
         tournament = create_tournament(
             creator_id=user.id,
             name=tournament_name,
-            local_tournament=request.data.get('localTournament'),
-            public_tournament=request.data.get('publicTournament'),
+            local_tournament=request.data.get('local'),
+            public_tournament=request.data.get('public'),
             map_number=request.data.get('mapNumber'),
             powerups=request.data.get('powerups'),
             opponent_ids=request.data.get('opponentIds')

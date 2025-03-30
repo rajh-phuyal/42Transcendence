@@ -1,19 +1,16 @@
-<!--                  THIS IS THE MAIN DIV FOR CHAT VIEW                     -->
-<!-- ####################################################################### -->
-<div class="view-base">
+<div class="view-base view-background-color">
     <div class="view-container">
         <div class="view-image-wrapper">
-            <img src="../assets/backgrounds/chat.png" alt="Background Image" class="view-background-image">
+            <img src="../assets/backgrounds/chat.png" class="view-background-image" draggable="false">
             <div class="view-overlay-grid">
-                <h2 id="chat-room-heading" class="grid-cell default-grid-area header" style="color: white;">chat room</h2>
+                <h2 id="chat-room-heading" class="grid-cell default-grid-area header" style="color: white;"></h2>
                 <input id="chat-view-searchbar" class="grid-cell default-grid-area barely-an-input search">
                 <div id="chat-view-details" class="grid-cell default-grid-area details">
-                    <div id="chat-view-header-subject" style="font-weight: bold;"></div>
-                    <div id="chat-view-header-last-seen-header"></div>
+                    <div id="chat-view-header-subject" class="sound-button" style="font-weight: bold;"></div>
                 </div>
                 <div id="chat-view-details-img" class="grid-cell default-grid-area details-img">
-                    <img id="chat-view-header-avatar" alt="error loading image">
-                    <img id="chat-view-header-online-icon" src="../assets/icons_128x128/icon_online.png" alt="error loading image">
+                    <img id="chat-view-header-avatar" class="sound-button" draggable="false">
+                    <img id="chat-view-header-online-icon" src="../assets/icons_128x128/icon_online.png" draggable="false">
                 </div>
                 <div id="chat-view-conversations-container" class="grid-cell default-grid-area convs barely-a-scroll-class">
                     <span id="chat-view-conversations-no-converations-found"></span>
@@ -21,11 +18,11 @@
                 <div id="chat-view-messages-container" class="grid-cell default-grid-area msgs barely-a-scroll-class"></div>
                 <text-field id="chat-view-text-field" class="grid-cell default-grid-area input" width="100" height="100" clear="true"></text-field>
                 <div class="grid-cell default-grid-area btncrga">
-                    <img id="chat-view-btn-create-game" class="modal-button modal-image-button" src="../assets/icons_128x128/icon_game_invite.png" style="height: 90%; align-self: center; padding: 0px 0px 2px 0px;">
+                    <img id="chat-view-btn-create-game" class="modal-button modal-image-button click-sound" src="../assets/icons_128x128/icon_game_invite.png" style="height: 90%; align-self: center; padding: 0px 0px 2px 0px;" draggable="false">
                 </div>
                 <div id="chat-view-eye-container" class="grid-cell default-grid-area eye">
-                    <img id="chat-view-eye-background" src="../assets/images/chat/eye.png" alt="Main Image" style="display: block;">
-                    <img id="chat-view-eye-pupil" src="../assets/images/chat/ball.png" alt="Overlay Image" style="display: block;">
+                    <img id="chat-view-eye-background" src="../assets/images/chat/eye.png" style="display: block;" draggable="false">
+                    <img id="chat-view-eye-pupil" src="../assets/images/chat/ball.png" style="display: block;" draggable="false">
                 </div>
             </div>
         </div>
@@ -108,6 +105,7 @@
         height: 100%;
         width: 95%;
         margin-left: 2.5%;
+        text-align: left;
     }
 
     .eye {
@@ -158,11 +156,11 @@
 <!--                    CONERSATION CARD TEMPLATE                            -->
 <!-- ####################################################################### -->
 <template id="chat-view-conversation-card-template">
-    <div class="chat-view-conversation-card">
-        <img class="chat-view-conversation-card-avatar" alt="error loading image">
+    <div class="chat-view-conversation-card click-sound">
+        <img class="chat-view-conversation-card-avatar" draggable="false">
         <h4 class="chat-view-conversation-card-username"></h4>
         <div class="chat-view-conversation-card-unseen-container">
-            <img class="chat-view-conversation-card-unseen-image" src="../assets/icons_128x128/icon_msg_unread.png" alt="error loading image"></img>
+            <img class="chat-view-conversation-card-unseen-image" src="../assets/icons_128x128/icon_msg_unread.png" draggable="false">
             <span class="chat-view-conversation-card-unseen-counter"></span>
         </div>
     </div>
@@ -303,9 +301,11 @@
     }
     .chat-view-message-box-incoming {
         background-color: #efe7d380;
+        white-space: pre-wrap;
     }
     .chat-view-message-box-outgoing {
         background-color: #b6af9e7e;
+        white-space: pre-wrap;
     }
     .chat-view-message-box-overlords {
         display: flex;
@@ -336,5 +336,6 @@
         padding: 10px;
         width: max-content;
         border-radius: 3px;
+        text-align: left !important;
     }
 </style>

@@ -2,6 +2,8 @@ import $store from '../store/store.js';
 import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
+import { $class } from '../abstracts/dollars.js';
+import { translate } from '../locale/locale.js';
 
 class Auth {
     constructor() {
@@ -17,11 +19,9 @@ class Auth {
 
     async isUserAuthenticated() {
         const now = Date.now();
-        console.log("Checking authentication");
 
         // Return cached result if within timeout window
         if (this._lastCheckTimestamp && (now - this._lastCheckTimestamp < this._cacheTimeout)) {
-            console.log("Using cached auth result:", this.isAuthenticated);
             return this.isAuthenticated;
         }
 
@@ -31,12 +31,12 @@ class Auth {
 
             try {
                 console.log("Calling auth/verify/ endpoint");
-            
+
                 const response = await call('auth/verify/', 'GET', null, false);
                 this.isAuthenticated = response.isAuthenticated;
                 console.log("Auth check response:", response);
             } catch (error) {
-                console.log("Auth check failed:", error);
+                console.log("Auth check failed: User not authenticated");
                 this.isAuthenticated = false;
                 this.clearAuthCache();
             } finally {
@@ -48,8 +48,9 @@ class Auth {
                 }
             }
 
-            $store.commit('setIsAuthenticated', this.isAuthenticated);
             console.log("Auth check successful");
+            $store.commit('setIsAuthenticated', this.isAuthenticated);
+            $store.commit('setLocale', response.locale); //TODO: triggers mutation listeners
 
             if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
                 console.log("Connecting WebSocket");

@@ -2,9 +2,10 @@ import { translate } from '../../locale/locale.js';
 import call from '../../abstracts/call.js';
 import router from '../../navigation/router.js';
 import WebSocketManagerGame from '../../abstracts/WebSocketManagerGame.js';
-import { changeGameState, drawPlayersState } from './methods.js';
+import { changeGameState, drawPlayersState, clearAllGameDeadlines } from './methods.js';
 import { gameObject } from './objects.js';
 import { endGameLoop } from './loop.js';
+import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 
 export default {
     attributes: {
@@ -33,7 +34,7 @@ export default {
         },
         playAgainCallback() {
             call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
-                console.log("data:", data);
+                // console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game
                     router(`/game`, {id: data.gameId});
@@ -44,7 +45,6 @@ export default {
             switch (event.key) {
                 case " ":
                     // If game is finished the space key will create a new game
-                    console.log("gameObject.state:", gameObject.state);
                     if (gameObject.state === "finished" || gameObject.state === "quited")
                        this.playAgainCallback();
                     // Only if no connection exists and
@@ -66,7 +66,7 @@ export default {
                                 }
                             })
                             .catch(error => {
-                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connection-error");
+                                this.domManip.$id("game-view-middle-side-container-top-text").innerText = translate("game", "connectionError");
                             });
                     }
                     break;
@@ -102,67 +102,22 @@ export default {
 
         },
 
-        initListeners(init = true) {
-            const buttonLeaveLobby = this.domManip.$id("button-leave-lobby");
-            const buttonQuitGame = this.domManip.$id("button-quit-game");
-            const buttonPlayAgain = this.domManip.$id("button-play-again");
-            const leftUsername = this.domManip.$id("player-left-username");
-            const leftAvatar = this.domManip.$id("player-left-avatar");
-            const rightUsername = this.domManip.$id("player-right-username");
-            const rightAvatar = this.domManip.$id("player-right-avatar");
-            const tournamentName = this.domManip.$id("game-view-tournament-name");
-
-            if (init) {
-                // TODO: translation for buttons should be done in with the abstraction tool TBC
-                buttonLeaveLobby.name = translate("game", "button-leave-lobby");
-                buttonLeaveLobby.render();
-                buttonQuitGame.name = translate("game", "button-quit-game");
-                buttonQuitGame.render();
-                buttonPlayAgain.name = translate("game", "button-play-again");
-                buttonPlayAgain.render();
-                this.domManip.$on(buttonLeaveLobby, "click", this.leaveLobbyCallback);
-                this.domManip.$on(buttonQuitGame, "click", this.quitGameCallback);
-                this.domManip.$on(buttonPlayAgain, "click", this.playAgainCallback);
-                this.domManip.$on(document, 'keydown', this.menuKeysCallback);
-                this.domManip.$on(leftUsername, 'click', this.mentionClickCallback);
-                this.domManip.$on(leftAvatar, 'click', this.mentionClickCallback);
-                this.domManip.$on(rightUsername, 'click', this.mentionClickCallback);
-                this.domManip.$on(rightAvatar, 'click', this.mentionClickCallback);
-                this.domManip.$on(tournamentName, 'click', this.mentionClickCallback);
-                return ;
-            }
-
-            if (!init) {
-                if (buttonLeaveLobby) {
-                    // Remove the event listener if exists
-                    if (buttonLeaveLobby.eventListeners)
-                        this.domManip.$off(buttonLeaveLobby, "click");
-                    if (buttonQuitGame.eventListeners)
-                        this.domManip.$off(buttonQuitGame, "click");
-                    if (buttonPlayAgain.eventListeners)
-                        this.domManip.$off(buttonPlayAgain, "click");
-                    if (document.eventListeners)
-                        this.domManip.$off(document, 'keydown', this.menuKeysCallback);
-                    if (leftUsername.eventListeners)
-                        this.domManip.$off(leftUsername, 'click', this.mentionClickCallback);
-                    if (leftAvatar.eventListeners)
-                        this.domManip.$off(leftAvatar, 'click', this.mentionClickCallback);
-                    if (rightUsername.eventListeners)
-                        this.domManip.$off(rightUsername, 'click', this.mentionClickCallback);
-                    if (rightAvatar.eventListeners)
-                        this.domManip.$off(rightAvatar, 'click', this.mentionClickCallback);
-                    if (tournamentName.eventListeners)
-                        this.domManip.$off(tournamentName, 'click', this.mentionClickCallback);
-                }
-            }
+        initListeners() {
+            EventListenerManager.linkEventListener("button-leave-lobby",        "game", "click",    this.leaveLobbyCallback);
+            EventListenerManager.linkEventListener("button-quit-game",          "game", "click",    this.quitGameCallback);
+            EventListenerManager.linkEventListener("button-play-again",         "game", "click",    this.playAgainCallback);
+            EventListenerManager.linkEventListener("barely-a-body",             "game", "keydown",  this.menuKeysCallback);
+            EventListenerManager.linkEventListener("player-left-username",      "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("player-left-avatar",        "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("player-right-username",     "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("player-right-avatar",       "game", "click",    this.mentionClickCallback);
+            EventListenerManager.linkEventListener("game-view-tournament-name", "game", "click",    this.mentionClickCallback);
         },
 
         async loadDetails() {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
-                    console.log("data:", data);
-
                     // Set user cards
                     this.domManip.$id("player-left-username").innerText = data.playerLeft.username;
                     this.domManip.$id("player-left-username").setAttribute("data-userid", data.playerLeft.userId);
@@ -175,18 +130,23 @@ export default {
 
                     // Set game data
                     gameObject.clientIsPlayer = data.gameData.clientIsPlayer;
+                    gameObject.playerLeft.id = data.playerLeft.userId;
+                    gameObject.playerRight.id = data.playerRight.userId;
                     gameObject.playerLeft.points = data.playerLeft.points;
                     gameObject.playerLeft.result = data.playerLeft.result;
                     gameObject.playerRight.points = data.playerRight.points;
                     gameObject.playerRight.result = data.playerRight.result;
                     gameObject.mapName = this.maps[data.gameData.mapNumber];
+                    gameObject.deadline = data.gameData.deadline;
 
                     // Check if game is part of tournament
                     if (data.gameData.tournamentId) {
                         gameObject.tournamentId = data.gameData.tournamentId;
                         this.domManip.$id("game-view-tournament-name").innerText = translate("game", "partOfTournament") + data.gameData.tournamentName;
                         this.domManip.$id("game-view-tournament-name").setAttribute("data-tournamentid", data.gameData.tournamentId);
-                        this.domManip.$id("game-view-tournament-name").style.display = "block";
+                        this.domManip.$id("game-view-tournament-name").style.display = "flex";
+                    } else {
+                        this.domManip.$id("game-view-tournament-name").style.display = "none";
                     }
 
                     // I send the ready state also via REST NOW
@@ -197,49 +157,97 @@ export default {
                     if (data.gameData.state === "ongoing")
                         data.gameData.state = "paused";
                     changeGameState(data.gameData.state);
+
+                    // Show / Hide the controls
+                    const controlsLeft = this.domManip.$id("player-left-controls");
+                    const controlsRight = this.domManip.$id("player-right-controls");
+                    // Hide by default
+                    controlsLeft.style.display = "none";
+                    controlsRight.style.display = "none";
+                    // Show bottom border for player cards
+                    const playerLeftBottomPiece = this.domManip.$class("lst")[0];
+                    playerLeftBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+                    playerLeftBottomPiece.style.borderBottomLeftRadius = "3px";
+                    playerLeftBottomPiece.style.borderBottomRightRadius = "3px";
+                    const playerRightBottomPiece = this.domManip.$class("rst")[0];
+                    playerRightBottomPiece.style.borderBottom = "0.3vw solid rgb(143, 148, 112)";
+                    playerRightBottomPiece.style.borderBottomLeftRadius = "3px";
+                    playerRightBottomPiece.style.borderBottomRightRadius = "3px";
+                    // Show the controls if userid matches client if or is flatmate
+                    const clientId = this.$store.fromState('user').id
+                    if (gameObject.playerLeft.id == clientId || gameObject.playerLeft.id == 3){
+                        controlsLeft.style.display = "block";
+                        playerLeftBottomPiece.style.borderBottom = "none";
+                        playerLeftBottomPiece.style.borderBottomLeftRadius = "0px";
+                        playerLeftBottomPiece.style.borderBottomRightRadius = "0px";
+                    }
+                    if (gameObject.playerRight.id == clientId || gameObject.playerRight.id == 3){
+                        controlsRight.style.display = "block";
+                        playerRightBottomPiece.style.borderBottom = "none";
+                    playerRightBottomPiece.style.borderBottomLeftRadius = "0px";
+                    playerRightBottomPiece.style.borderBottomRightRadius = "0px";
+                    }
                 })
                 .catch(error => {
-                        const msg = "404 | " + error.message;
-                        router('/404', {msg: msg});
+                    router('/404', {msg: error.message});
                 });
         },
 
         initObjects() {
             gameObject.gameId = this.gameId;
+            gameObject.countDownInterval = undefined;
+            gameObject.tournamentId = undefined;
+            gameObject.mapName = undefined;
             gameObject.wsConnection = false;
             gameObject.state = undefined;
-            gameObject.frameTime = 1000/15; // NOTE: this means 15 frames per second which should match the backend FPS
+            gameObject.frameTime = 1000/25; // NOTE = this means 25 frames per second which should match the backend FPS
             gameObject.lastFrameTime = 0;
-            gameObject.animationId = null;
-            gameObject.sound = null;
+            gameObject.animationId = undefined;
+            gameObject.deadline = undefined;
+            gameObject.sound = undefined;
+            gameObject.paddleWidth = 1;     //  This means 1% of the game field width. If changed; also change the BE = PADDLE_OFFSET
+            gameObject.paddleSpacing = 2;   //  This means 1% of the game field width is keept as a distance btween wall and paddle. If changed; also change the BE = PADDLE_OFFSET
+            gameObject.borderStrokeWidth = 2;
+            gameObject.clientIsPlayer = false; // Since all users can watch the lobby, this is used to determine if the client is a player or a spectator
+
             gameObject.playerInputLeft.paddleMovement = 0;
             gameObject.playerInputLeft.powerupSpeed = false;
             gameObject.playerInputLeft.powerupBig = false;
+
             gameObject.playerInputRight.paddleMovement = 0;
-            gameObject.playerInputRight.powerupFast = false;
             gameObject.playerInputRight.powerupSpeed = false;
+            gameObject.playerInputRight.powerupBig = false;
+
+            gameObject.playerLeft.id = undefined;
             gameObject.playerLeft.state = undefined;
-            gameObject.playerLeft.points = 0
+            gameObject.playerLeft.points = 0;
             gameObject.playerLeft.pos = 50;
             gameObject.playerLeft.size = 10;
+            gameObject.playerLeft.result = undefined;
             gameObject.playerLeft.powerupBig = "unavailable";
             gameObject.playerLeft.powerupSlow = "unavailable";
             gameObject.playerLeft.powerupFast = "unavailable";
-            gameObject.playerLeft.points = 0
+
+            gameObject.playerRight.id = undefined;
             gameObject.playerRight.state = undefined;
+            gameObject.playerRight.points = 0;
             gameObject.playerRight.pos = 50;
             gameObject.playerRight.size = 10;
+            gameObject.playerRight.result = undefined;
             gameObject.playerRight.powerupBig = "unavailable";
             gameObject.playerRight.powerupSlow = "unavailable";
             gameObject.playerRight.powerupFast = "unavailable";
-			gameObject.ball.posX = 50;
-			gameObject.ball.posY = 50;
+
+            gameObject.ball.posX = 50;
+            gameObject.ball.posY = 50;
+            gameObject.ball.height = 1;
+            gameObject.ball.width = 1;
         },
     },
 
     hooks: {
         beforeRouteEnter() {
-
+            clearAllGameDeadlines();
         },
 
         beforeRouteLeave() {
@@ -249,23 +257,22 @@ export default {
                 gameObject.countDownInterval = undefined;
                 this.domManip.$id("game-countdown-image").style.display = "none";
             }
-            this.initListeners(false);
             endGameLoop();
-            this.audioPlayer.stop();
             WebSocketManagerGame.disconnect(this.gameId)
+            // Reset Game Object
+            this.initObjects();
         },
 
         beforeDomInsertion() {
-
         },
 
         async afterDomInsertion() {
-            this.initListeners();
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
-                console.warn("Invalid game id '%s' from routeParams?.id -> redir to home", this.routeParams.id);
-                router('/');
+                router('/404');
                 return;
             }
+            // Initialize the event listeners
+            this.initListeners();
             // Setting the gameId from the route params
             this.gameId = this.routeParams.id;
             // Initialize the game object

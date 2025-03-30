@@ -1,57 +1,94 @@
 import { $id } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
-import $store from '../../store/store.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
 
 function populateUserInfo(res) {
+    // Set the username
     let username = $id("username");
-    username.textContent = translate("profile", "subject") + res.username;
-    const element = $id("avatar");
-    element.src = window.origin + '/media/avatars/' + res.avatarUrl;
-    let birthName =$id("birth-name");
-    birthName.textContent = translate("profile", "birthName") + res.lastName + ", " + res.firstName;
-    let lastSeenText =$id("last-seen-text");
+    username.innerText = `${translate("profile", "subject")}${res.username}`;
+    // Set the online eye icon
     let lastSeenImg =$id("last-seen-image");
-
     if (res.online)
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_online.png";
     else
         lastSeenImg.src = "../../../../assets/icons_128x128/icon_offline.png";
-    lastSeenText.textContent = translate("profile", "lastSeen") + res.lastLogin;
-    let language =$id("language");
-    language.textContent = translate("profile", "language") + res.language;
+    // Set the avatar
+    const element = $id("avatar");
+    element.src = window.origin + '/media/avatars/' + escapeHTML(res.avatar); //Not needed since it's an UUID but just in case :D
+    // Set the birth name
+    let birthName =$id("birth-name");
+    let fullName = ""
+    if (res.firstName)
+        fullName = escapeHTML(res.firstName) + ", ";
+    fullName += escapeHTML(res.lastName);
+    if(fullName == "")
+        fullName = "&nbsp;";
+    birthName.innerHTML = `<b>${translate("profile", "birthName")}</b>${fullName}`;
+    // Set the last seen text
+    let lastSeenTextElement = $id("last-seen-text");
+    let lastSeenText = "";
+    if (res.lastLogin) {
+        res.lastLogin = loadTimestamp(res.lastLogin, "YYYY-MM-DD HH:mm"); // Convert lastLogin to local time using moment.js
+        lastSeenText = `<b>${translate("profile", "lastSeen")}</b>${res.lastLogin}`;
+    } else
+    lastSeenText = `<b>${translate("profile", "lastSeen")}</b>&nbsp;`;
+    lastSeenTextElement.innerHTML = lastSeenText;
+    // Set the language
+    let language = $id("language");
+    if (res.language)
+        language.innerHTML = `<b>${translate("profile", "language")}</b>${escapeHTML(res.language)}`;
+    else
+        language.innerHTML = `<b>${translate("profile", "language")}</b>&nbsp;`;
+    let notes = $id("notes");
+    if (res.notes !== "") {
+        let formattedNotes = escapeHTML(res.notes);
+        notes.innerHTML = `<b>${translate("profile", "notes")}</b>${formattedNotes}`;
+    }
+}
+
+function allignStats(elementId, a, b){
+    const offset = 6;
+    let element = $id(elementId);
+    if(!element)
+        return
+    // Count the chars of a, add spacs until offset is reached, add b
+    element.innerHTML = (a + "&nbsp;".repeat(offset - a.length) + b);
 }
 
 function populateStats(res) {
-    let element = $id("stats-games");
-    element.textContent = translate("profile", "gamesWon") + res.stats.game.won + "/" + res.stats.game.played;
-    element = $id("stats-tournament-first-place");
-    element.textContent = translate("profile", "firstPlace") + res.stats.tournament.firstPlace + "/" + res.stats.tournament.played;
-    element = $id("stats-tournament-second-place");
-    element.textContent = translate("profile", "secondPlace") + res.stats.tournament.secondPlace + "/" + res.stats.tournament.played;
-    element = $id("stats-tournament-third-place");
-    element.textContent = translate("profile", "thirdPlace") + res.stats.tournament.thirdPlace + "/" + res.stats.tournament.played;
+    if (res.stats === "")
+        return ;
+    allignStats("stats-games",                  `${res.stats.game.won}/${res.stats.game.played}`,                           translate("profile", "gamesWon"));
+    allignStats("stats-tournament-first-place", `${res.stats.tournament.firstPlace}/${res.stats.tournament.played}`,        translate("profile", "firstPlace"));
+    allignStats("stats-tournament-second-place",`${res.stats.tournament.secondPlace}/${res.stats.tournament.played}`,       translate("profile", "secondPlace"));
+    allignStats("stats-tournament-third-place", `${res.stats.tournament.thirdPlace}/${res.stats.tournament.played}`,        translate("profile", "thirdPlace"));
 }
 
 function populateProgress(res, identity) {
-    let id = identity + "progress";
-    let percentageValue = res * 100;
-
-    let progressBar =$id(id);
+    let percentageValue = res;
+    let progressBar = $id(identity);
     progressBar.style.width =  percentageValue + '%';
-
-    // TODO: check if still needed
-    //id = identity + "percentage";
-    //let percentage =$id(id);
-    //percentage.textContent = percentageValue + "%";
+    progressBar.setAttribute("aria-valuenow", percentageValue);
 }
 
 function populateInfoAndStats(res) {
     populateUserInfo(res);
     populateStats(res);
-    populateProgress(res.stats.score.skill, "score-skill-");
-    populateProgress(res.stats.score.experience, "score-game-exp-");
-    populateProgress(res.stats.score.performance, "score-tournament-exp-");
-    populateProgress(res.stats.score.total, "score-total-");
+    if (res.stats === "")
+        return ;
+    populateProgress(res.stats.score.skill,         "score-skill-progress");
+    populateProgress(res.stats.score.experience,    "score-game-exp-progress");
+    populateProgress(res.stats.score.performance,   "score-tournament-exp-progress");
+    populateProgress(res.stats.score.total,         "score-total-progress");
+}
+
+function escapeHTML(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
 }
 
 export { populateInfoAndStats };

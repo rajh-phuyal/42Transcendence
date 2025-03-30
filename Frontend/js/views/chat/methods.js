@@ -1,10 +1,12 @@
 import $store from '../../store/store.js';
 import call from '../../abstracts/call.js';
-import { $id, $queryAll, $on, $off, $class, $addClass } from '../../abstracts/dollars.js'
+import { $id, $queryAll, $on, $off } from '../../abstracts/dollars.js'
 import WebSocketManager from '../../abstracts/WebSocketManager.js';
 import { translate } from '../../locale/locale.js';
 import { showTypingIndicator } from './typingIndicator.js';
 import router from '../../navigation/router.js';
+import { loadTimestamp } from '../../abstracts/timestamps.js';
+import { emojiMap } from './emojimap.js';
 
 // -----------------------------------------------------------------------------
 // WEBSOCKET MANAGER TRIGGERS
@@ -21,8 +23,9 @@ export function processIncomingWsChatMessage(message) {
     // The conversation card is already selected so we can just add the message
     const currentConversationId = $id("chat-view-text-field").getAttribute("conversation-id");
     if (currentConversationId && currentConversationId == message.conversationId) {
-        // Remove the typing indicator
-        showTypingIndicator(Date.now());
+        // Remove the typing indicator if its form the other user
+        if (message.userId != $store.fromState("user").id)
+            showTypingIndicator(Date.now());
         // Create the message
         createMessage(message, false);
         // Scroll to the bottom
@@ -62,15 +65,13 @@ export function updateConversationBadge(conversationId, value) {
 export function createConversationCard(element, highlight = false) {
     const container = $id("chat-view-conversations-container");
     if (!container) {
-        console.error("Conversations container not found.");
+        console.log("Conversations container not found.");
         return;
     }
 
     // Check if card already exists
-    if ($id("chat-view-conversation-card-" + element.conversationId)) {
-        console.warn("Conversation card already exists:", element.conversationId);
+    if ($id("chat-view-conversation-card-" + element.conversationId))
         return;
-    }
 
     // Clone the template
     const conversation = $id("chat-view-conversation-card-template").content.cloneNode(true);
@@ -225,31 +226,13 @@ export function createMessage(element, prepend = true) {
     template.querySelector(".chat-view-message-sender").textContent = element.username;
     template.querySelector(".chat-view-message-sender").setAttribute("data-userid", element.userId);
 
-    // PARSE THE CONTENT
-    // Match @<username>@<userid>@ pattern
-    let parsedContent = element.content;
-    if (element.content != null) {
-        parsedContent = element.content.replace(
-            /@([^@]+)@([^@]+)@/g,
-            `<span class="mention-user" data-userid="$2">@$1</span>`
-        );
-        // Match #T#<tournamentName>#<tournamentId># pattern
-        parsedContent = parsedContent.replace(
-            /#T#([^#]+)#([^#]+)#/g,
-            '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
-        );
-        // Match #G#<gameId># pattern
-        parsedContent = parsedContent.replace(
-            /#G#([^#]+)#/g,
-            '<span class="mention-game" data-gameid="$1">#$1</span>'
-        );
-    }
+    let parsedContent = parseChatMessage(element.content);
 
     // Set the content of the message
     template.querySelector(".chat-view-message-box").innerHTML = parsedContent;
 
     // Set the timestamp and the node id
-    template.querySelector(".chat-view-message-timestamp").textContent = moment(element.createdAt).format("h:mma DD-MM-YYYY");
+    template.querySelector(".chat-view-message-timestamp").textContent = loadTimestamp(element.createdAt, "YYYY-MM-DD HH:mm");
     template.querySelector(containerId).setAttribute("message-id", element.id);
 
     // Prepend or append the message to the container
@@ -276,7 +259,7 @@ export function createMessage(element, prepend = true) {
         - client clicking on a conversation card
         - route param in the URL (e.g /chat?id=9)
     This function will then:
-        - set the conversation id to other functions where we need them: TODO: not sure if this is a smart approach
+        - set the conversation id to other functions where we need them
         - clear the current conversation
         - load the conversation from the server
         - set the info section about the conversation (chat name, avatar, etc)
@@ -292,13 +275,10 @@ export async function selectConversation(conversationId){
 
     // Highlight the selected conversation card
     if (!highlightConversationCard(conversationId)) {
-        console.log("Conversation card not found:", conversationId);
+        // console.log("Conversation card not found:", conversationId);
         router("/chat");
         return;
     }
-
-    // Set url params // TODO: @astein: Not sure if this is the best approach since I don't fully understand the router :D
-    history.pushState({}, "Chat", "/chat?id=" + conversationId);
 
     // Load the conversation header and messages
     await loadMessages(conversationId);
@@ -310,7 +290,7 @@ export async function selectConversation(conversationId){
     inputField.style.display = "flex";
     let createGameButton = $id("chat-view-btn-create-game");
     createGameButton.style.display = "flex";
-    console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
+    // console.log("Draft:", $id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft"));
     inputField.setInput($id("chat-view-conversation-card-" + conversationId).getAttribute("message-draft") || "");
     inputField.focus();
 
@@ -333,7 +313,7 @@ export function loadMessages(conversationId) {
 
     // Prevent duplicate requests
     if (messageContainer.getAttribute("loading") === "true") {
-        console.warn("Messages are already loading. Please wait.");
+        console.log("Messages are already loading. Please wait.");
         return Promise.resolve();
     }
 
@@ -470,12 +450,29 @@ export function createHelpMessage(input){
     const cmds = ["/G", "/F", "/B", "/U"];
     input = input.toUpperCase();
     let htmlContent = ""
+
+    // Emoji
+    if (emojiMap && Object.keys(emojiMap).length > 0) {
+        const match = input.match(/(?:^|\s):([a-zA-Z0-9_+-]{2,})$/); // Match :word at end or after space
+        if (match) {
+            const query = match[1].toLowerCase();
+            const results = Object.entries(emojiMap)
+                .filter(([alias, emoji]) => alias.startsWith(`:${query}`))
+                .slice(0, 10);
+            if (results.length > 0) {
+                htmlContent = results.map(([alias, emoji]) =>
+                    `<div class="emoji-suggestion">${emoji}${alias}</div>`
+                ).join("");
+            }
+        }
+    }
+
     if (input == "/" || cmds.some(prefix => input.startsWith(prefix))) {
         // We need more options for /G and /F
         if(input.startsWith("/G")) {
             // Count the typed "," to determine the step of the game creation
             const commaCount = input.split(",").length - 1;
-            console.log("Comma count:", commaCount);
+            // console.log("Comma count:", commaCount);
             if (commaCount < 2)
                 htmlContent = translate("chat", "helpMessage/G0");
             else if (commaCount == 2) {
@@ -499,10 +496,6 @@ export function createHelpMessage(input){
             htmlContent += translate("chat", "helpMessage/mention-tournament-game");
     }
 
-
-
-
-
     updateHelpMessage(htmlContent);
 }
 
@@ -519,7 +512,7 @@ export function updateHelpMessage(htmlContent="") {
             const container = $id("chat-view-messages-container");
             container.appendChild(helpContainer);
         }
-        helpContainer.innerHTML = htmlContent;
+        helpContainer.innerHTML = htmlContent; // Don't change to innerText -> will destroy the layout of @usernames etc.
         // Scroll to bottom
         let scrollContainer = $id("chat-view-messages-container");
         scrollContainer.scrollTop = scrollContainer.scrollHeight + scrollContainer.clientHeight;
@@ -530,3 +523,42 @@ export function updateHelpMessage(htmlContent="") {
     }
 }
 
+export function parseChatMessage(msgString) {
+    if (msgString == null)
+        return "";
+
+    let parsedContent = msgString.trim();
+    if(parsedContent.length == 0)
+        return "";
+    // ADITIONAL XSS Protection
+    // Since the backend should not allow any html aka escape it this shouldn't be neccesary
+    // But in case somehow html finds its way into the db we escape it here to protect the client
+    parsedContent = parsedContent
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    // PARSE THE CONTENT
+    // Match @<username>@<userid>@ pattern
+    if (parsedContent != null) {
+        // Make new lines work
+        parsedContent = parsedContent.replace(/\n/g, '<br>');
+        // Match @<username>@<userid>@ pattern
+        parsedContent = parsedContent.replace(
+            /@([^@]+)@([^@]+)@/g,
+            `<span class="mention-user" data-userid="$2">@$1</span>`
+        );
+        // Match #T#<tournamentName>#<tournamentId># pattern
+        parsedContent = parsedContent.replace(
+            /#T#([^#]+)#([^#]+)#/g,
+            '<span class="mention-tournament" data-tournamentid="$2">#$1</span>'
+        );
+        // Match #G#<gameId># pattern
+        parsedContent = parsedContent.replace(
+            /#G#([^#]+)#/g,
+            '<span class="mention-game" data-gameid="$1">#$1</span>'
+        );
+    }
+    return parsedContent;
+}

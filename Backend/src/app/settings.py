@@ -115,6 +115,8 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             'hosts': [('redis', os.environ.get('REDIS_PORT'))],  # the name of our Redis container in Docker
+            "capacity": 5000,   # For each layer we allow 5000 messages to be stored, wich is a lot but neccessary for high framerate gamesX
+            "expiry":   5,      # To not stack to many messages in redis: if a consumer doesn't take the message in 5 seconds, it will be removed
         },
     },
 }
@@ -217,6 +219,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'core.cookies.CookieJWTAuthentication',
     ],
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ"
 }
 
 SIMPLE_JWT = {

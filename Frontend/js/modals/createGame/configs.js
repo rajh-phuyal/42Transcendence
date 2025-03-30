@@ -1,6 +1,7 @@
 import $callToast from '../../abstracts/callToast.js';
 import call from '../../abstracts/call.js'
 import router from '../../navigation/router.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -21,6 +22,10 @@ export default {
     },
 
     methods: {
+        translateElements() {
+            this.domManip.$id("modal-create-game-opponent-search").title = translate("createGame", "placeholderSearchbar");
+        },
+
         /* This functions toggles between selecting a user and fixing it */
         updateOpponentSection() {
             const search = this.domManip.$id("modal-create-game-opponent-search");
@@ -52,11 +57,11 @@ export default {
 
         callbackSearchbar(event) {
             const user = event.detail.user;
-            console.log(user);
+            // console.log(user);
             this.opponentId = user.id;
-            this.avatar = user.avatar_path;
+            this.avatar = user.avatar;
             this.username = user.username;
-            console.log(this.opponentId, this.avatar, this.username);
+            // console.log(this.opponentId, this.avatar, this.username);
             this.updateOpponentSection();
         },
 
@@ -72,6 +77,8 @@ export default {
                 btn.classList.remove("modal-toggle-button-disabled");
                 btn.classList.add("modal-toggle-button-enabled");
             }
+            // Deactive the button for asthetics
+            event.srcElement.blur();
         },
 
         callbackSelectMap(event) {
@@ -97,13 +104,12 @@ export default {
         },
 
         createGame() {
-            /* TODO: This section needs translations!! */
             if (!this.opponentId) {
-                $callToast("error", "U need to select an opponent first");
+                $callToast("error", translate("createGame", "selectOpponent"));
                 return;
             }
             if(!this.map) {
-                $callToast("error", "U need to select a map first");
+                $callToast("error", translate("createGame", "selectMap"));
                 return;
             }
             const data = {
@@ -149,10 +155,7 @@ export default {
             return true;
         },
         async beforeOpen () {
-            console.log("beforeOpen of modal-create-game");
-
-            // Set modal title
-            this.domManip.$id("modal-create-game-title").textContent = "Create friendly match"; //TODO: translate
+            this.translateElements();
 
             // Fetching the attributes from view and store them locally
             this.isOpponentFixed = false;

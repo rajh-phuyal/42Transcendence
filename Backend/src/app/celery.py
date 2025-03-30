@@ -12,6 +12,7 @@ app = Celery('app')
 # the configuration object to child processes.
 # All celery-related config keys should have the `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
+app.conf.broker_connection_retry_on_startup = True
 
 # Auto-discover tasks from all installed apps.
 app.autodiscover_tasks()
@@ -23,6 +24,6 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'check-for-overdue-games': {
         'task': 'tournament.tasks.check_overdue_tournament_games',
-        'schedule': crontab(minute='*'),  # Runs every 5 minutes TODO: Reset to 1 minute
+        'schedule': timedelta(seconds=5),  # Run every 5 seconds
     },
 }

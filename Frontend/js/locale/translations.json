@@ -26,5 +26,89 @@
             "uk-UA": "Запит не вдався",
             "ne-NP": "अनुरोध समाप्त भएको छ।"
         }
+    },
+    "nav": {
+        "search": {
+            "en-US": "Search for users...",
+            "pt-PT": "Procurar utilizadores...",
+            "pt-BR": "Procurar utilizadores...",
+            "de-DE": "Benutzer suchen...",
+            "uk-UA": "Пошук користувачів...",
+            "ne-NP": "प्रयोगकर्ताहरू खोज्नुहोस्..."
+        },
+        "home": {
+            "en-US": "Go to Home",
+            "pt-PT": "Ir para Início",
+            "pt-BR": "Ir para Início",
+            "de-DE": "Zur Startseite",
+            "uk-UA": "Перейти на головну",
+            "ne-NP": "घरमा जानुहोस्"
+        },
+        "chat": {
+            "en-US": "Go to Chat",
+            "pt-PT": "Ir para Chat",
+            "pt-BR": "Ir para Chat",
+            "de-DE": "Zum Chat",
+            "uk-UA": "Перейти до чату",
+            "ne-NP": "च्याटमा जानुहोस्"
+        },
+        "profile": {
+            "en-US": "Go to your Profile",
+            "pt-PT": "Ir para o seu Perfil",
+            "pt-BR": "Ir para o seu Perfil",
+            "de-DE": "Zum Profil",
+            "uk-UA": "Перейти до вашого профілю",
+            "ne-NP": "तपाईंको प्रोफाइलमा जानुहोस्"
+        },
+        "musicOn": {
+            "en-US": "Music is on",
+            "pt-PT": "Música ligada",
+            "pt-BR": "Música ligada",
+            "de-DE": "Musik ist an",
+            "uk-UA": "Музика увімкнена",
+            "ne-NP": "संगीत चालू छ"
+        },
+        "musicOff": {
+            "en-US": "Music is off",
+            "pt-PT": "Música desligada",
+            "pt-BR": "Música desligada",
+            "de-DE": "Musik ist aus",
+            "uk-UA": "Музика вимкнена",
+            "ne-NP": "संगीत बन्द छ"
+        },
+        "soundOn": {
+            "en-US": "Sound is on",
+            "pt-PT": "Som ligado",
+            "pt-BR": "Som ligado",
+            "de-DE": "Ton ist an",
+            "uk-UA": "Звук увімкнено",
+            "ne-NP": "ध्वनि चालू छ"
+        },
+        "soundOff": {
+            "en-US": "Sound is off",
+            "pt-PT": "Som desligado",
+            "pt-BR": "Som desligado",
+            "de-DE": "Ton ist aus",
+            "uk-UA": "Звук вимкнено",
+            "ne-NP": "ध्वनि बन्द छ"
+        }
+    },
+    "toast": {
+        "title": {
+            "en-US": "Message from the Overlords",
+            "pt-PT": "Mensagem dos Senhores",
+            "pt-BR": "Mensagem dos Senhores",
+            "de-DE": "Nachricht von den Overlords",
+            "uk-UA": "Повідомлення від Повелителів",
+            "ne-NP": "अधिपतिहरूको सन्देश"
+        },
+        "titleChat": {
+            "en-US": "Message from: ",
+            "pt-PT": "Mensagem de: ",
+            "pt-BR": "Mensagem de: ",
+            "de-DE": "Nachricht von: ",
+            "uk-UA": "Повідомлення від: ",
+            "ne-NP": "बाट सन्देश: "
+        }
     }
 }

@@ -1,3 +1,4 @@
+from tournament.constants import MAX_LENGHT_OF_TOURNAMENT_NAME
 from django.db import models
 
 class Tournament(models.Model):
@@ -12,7 +13,7 @@ class Tournament(models.Model):
         choices=TournamentState.choices,
         default=TournamentState.SETUP
     )
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=MAX_LENGHT_OF_TOURNAMENT_NAME)
     local_tournament = models.BooleanField()
     public_tournament = models.BooleanField()
     map_number = models.IntegerField()
@@ -29,7 +30,7 @@ class Tournament(models.Model):
 
 class TournamentMember(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='tournament_members')
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='tournaments')
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='members')
     tournament_alias = models.CharField(max_length=150, null=True, blank=True)
     is_admin = models.BooleanField(default=False)

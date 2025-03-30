@@ -3,7 +3,7 @@ import logging
 # Django
 from django.db import transaction
 from django.db.models import F
-from django.utils import timezone
+from django.utils import timezone # Don't use from datetime import timezone, it will conflict with django timezone!
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 # User
@@ -82,7 +82,7 @@ def mark_all_messages_as_seen(user, conversation):
             )
 
             # Update messages
-            unread_messages.update(seen_at=timezone.now()) #TODO: Issue #193
+            unread_messages.update(seen_at=timezone.now())
             # Update unread counter
             conversation_member = ConversationMember.objects.select_for_update().get(conversation_id=conversation, user=user)
             conversation_member.unread_counter = 0

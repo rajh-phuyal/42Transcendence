@@ -1,122 +1,145 @@
 {
+    "controlsLeft": {
+        "en-US": "Controls<br> &nbsp;&nbsp;'W' up <br> &nbsp;&nbsp;'S' down <br> &nbsp;&nbsp;'1' big <br> &nbsp;&nbsp;'2' slow &larr;<br> &nbsp;&nbsp;'2' fast &rarr;<br>",
+        "pt-PT": "Controles<br> &nbsp;&nbsp;'W' para cima <br> &nbsp;&nbsp;'S' para baixo <br> &nbsp;&nbsp;'1' grande <br> &nbsp;&nbsp;'2' lento &larr;<br> &nbsp;&nbsp;'2' rápido &rarr;<br>",
+        "pt-BR": "Controles<br> &nbsp;&nbsp;'W' para cima <br> &nbsp;&nbsp;'S' para baixo <br> &nbsp;&nbsp;'1' grande <br> &nbsp;&nbsp;'2' lento &larr;<br> &nbsp;&nbsp;'2' rápido &rarr;<br>",
+        "de-DE": "Steuerung<br> &nbsp;&nbsp;'W' hoch <br> &nbsp;&nbsp;'S' runter <br> &nbsp;&nbsp;'1' groß <br> &nbsp;&nbsp;'2' langsam &larr;<br> &nbsp;&nbsp;'2' schnell &rarr;<br>",
+        "uk-UA": "Управління<br> &nbsp;&nbsp;'W' вгору <br> &nbsp;&nbsp;'S' вниз <br> &nbsp;&nbsp;'1' велике <br> &nbsp;&nbsp;'2' повільно &larr;<br> &nbsp;&nbsp;'2' швидко &rarr;<br>",
+        "ne-NP": "नियन्त्रणहरू<br> &nbsp;&nbsp;'W' माथि <br> &nbsp;&nbsp;'S' तल <br> &nbsp;&nbsp;'1' ठूलो <br> &nbsp;&nbsp;'2' ढिलो &larr;<br> &nbsp;&nbsp;'2' छिटो &rarr;<br>"
+    },
+    "controlsRight": {
+        "en-US": "Controls<br> &nbsp;&nbsp;'O' Up <br> &nbsp;&nbsp;'L' Down <br> &nbsp;&nbsp;'8' big <br> &nbsp;&nbsp;'9' slow &larr;<br> &nbsp;&nbsp;'9' fast &rarr;<br>",
+        "pt-PT": "Controles<br> &nbsp;&nbsp;'O' para cima <br> &nbsp;&nbsp;'L' para baixo <br> &nbsp;&nbsp;'8' grande <br> &nbsp;&nbsp;'9' lento &larr;<br> &nbsp;&nbsp;'9' rápido &rarr;<br>",
+        "pt-BR": "Controles<br> &nbsp;&nbsp;'O' para cima <br> &nbsp;&nbsp;'L' para baixo <br> &nbsp;&nbsp;'8' grande <br> &nbsp;&nbsp;'9' lento &larr;<br> &nbsp;&nbsp;'9' rápido &rarr;<br>",
+        "de-DE": "Steuerung<br> &nbsp;&nbsp;'O' hoch <br> &nbsp;&nbsp;'L' runter <br> &nbsp;&nbsp;'8' groß <br> &nbsp;&nbsp;'9' langsam &larr;<br> &nbsp;&nbsp;'9' schnell &rarr;<br>",
+        "uk-UA": "Управління<br> &nbsp;&nbsp;'O' вгору <br> &nbsp;&nbsp;'L' вниз <br> &nbsp;&nbsp;'8' велике <br> &nbsp;&nbsp;'9' повільно &larr;<br> &nbsp;&nbsp;'9' швидко &rarr;<br>",
+        "ne-NP": "नियन्त्रणहरू<br> &nbsp;&nbsp;'O' माथि <br> &nbsp;&nbsp;'L' तल <br> &nbsp;&nbsp;'8' ठूलो <br> &nbsp;&nbsp;'9' ढिलो &larr;<br> &nbsp;&nbsp;'9' छिटो &rarr;<br>"
+    },
+    "btnLeaveLobby": {
+        "en-US": "Leave the lobby",
+        "pt-PT": "Sair do lobby",
+        "pt-BR": "Sair do lobby",
+        "de-DE": "Verlasse die Lobby",
+        "uk-UA": "Покинути лобі",
+        "ne-NP": "लबी छोड्नुहोस्"
+    },
+    "btnQuitGame": {
+        "en-US": "Quit this game",
+        "pt-PT": "Sair deste jogo",
+        "pt-BR": "Sair deste jogo",
+        "de-DE": "Spiel beenden",
+        "uk-UA": "Вийти з гри",
+        "ne-NP": "यो खेलबाट बाहिर जानुहोस्"
+    },
+    "btnPlayAgain": {
+        "en-US": "Create same game again",
+        "pt-PT": "Criar o mesmo jogo novamente",
+        "pt-BR": "Criar o mesmo jogo novamente",
+        "de-DE": "Erstelle das gleiche Spiel erneut",
+        "uk-UA": "Створити ту ж гру знову",
+        "ne-NP": "उस्तै खेल फेरि सिर्जना गर्नुहोस्"
+    },
     "partOfTournament": {
         "en-US": "Part of tournament: ",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Parte do torneio: ",
+        "pt-BR": "Parte do torneio: ",
+        "de-DE": "Teil des Turniers: ",
+        "uk-UA": "Частина турніру: ",
+        "ne-NP": "टुर्नामेन्टको भाग: "
     },
-    "paused-connect": {
+    "connectionError": {
+        "en-US": "Could not connect to server\nPress space to try again",
+        "pt-PT": "Não foi possível conectar ao servidor\nPressione espaço para tentar novamente",
+        "pt-BR": "Não foi possível conectar ao servidor\nPressione espaço para tentar novamente",
+        "de-DE": "Konnte nicht mit dem Server verbinden\nDrücken Sie die Leertaste, um es erneut zu versuchen",
+        "uk-UA": "Не вдалося підключитися до сервера\nНатисніть пробіл, щоб спробувати знову",
+        "ne-NP": "सर्भरसँग जडान गर्न सकिएन\nफेरि प्रयास गर्न स्पेस थिच्नुहोस्"
+    },
+    "pausedConnect": {
         "en-US": "Game is paused\nPress space to connect",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Jogo pausado\nPressione espaço para conectar",
+        "pt-BR": "Jogo pausado\nPressione espaço para conectar",
+        "de-DE": "Spiel ist pausiert\nDrücken Sie die Leertaste, um sich zu verbinden",
+        "uk-UA": "Гра на паузі\nНатисніть пробіл для підключення",
+        "ne-NP": "खेल रोकिएको छ\nजडान गर्न स्पेस थिच्नुहोस्"
     },
-    "connected-waiting": {
+    "connectedWaiting": {
         "en-US": "Connected\nWaiting for other player to connect",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Conectado\nAguardando o outro jogador se conectar",
+        "pt-BR": "Conectado\nAguardando o outro jogador se conectar",
+        "de-DE": "Verbunden\nWarten auf den anderen Spieler, um sich zu verbinden",
+        "uk-UA": "Підключено\nОчікування на підключення іншого гравця",
+        "ne-NP": "जडान भएको छ\nअर्को खेलाडीको जडानको प्रतीक्षामा"
     },
     "pending": {
         "en-US": "Game is pending\nPress space to connect",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Jogo pendente\nPressione espaço para conectar",
+        "pt-BR": "Jogo pendente\nPressione espaço para conectar",
+        "de-DE": "Spiel ist ausstehend\nDrücken Sie die Leertaste, um sich zu verbinden",
+        "uk-UA": "Гра в очікуванні\nНатисніть пробіл для підключення",
+        "ne-NP": "खेल पेंडिङ्गमा छ\nजडान गर्न स्पेस थिच्नुहोस्"
     },
-    "spectator-connect": {
+    "spectatorConnect": {
         "en-US": "You are not part of this game!\nPress space to watch it live",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Você não faz parte deste jogo!\nPressione espaço para assistir ao vivo",
+        "pt-BR": "Você não faz parte deste jogo!\nPressione espaço para assistir ao vivo",
+        "de-DE": "Du bist nicht Teil dieses Spiels!\nDrücke die Leertaste, um es live zu sehen",
+        "uk-UA": "Ви не є частиною цієї гри!\nНатисніть пробіл, щоб дивитися в прямому ефірі",
+        "ne-NP": "तपाईं यो खेलको भाग हुनुहुन्न!\nयसलाई लाइभ हेर्न स्पेस थिच्नुहोस्"
     },
-    "spectator-waiting": {
+    "spectatorWaiting": {
         "en-US": "Connected\nWaiting for players",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Conectado\nAguardando jogadores",
+        "pt-BR": "Conectado\nAguardando jogadores",
+        "de-DE": "Verbunden\nWarten auf Spieler",
+        "uk-UA": "Підключено\nОчікування гравців",
+        "ne-NP": "जडान भएको छ\nखेलाडीहरूको प्रतीक्षामा"
     },
     "ready": {
         "en-US": "READY",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "PRONTO",
+        "pt-BR": "PRONTO",
+        "de-DE": "BEREIT",
+        "uk-UA": "ГОТОВО",
+        "ne-NP": "तयार"
     },
     "finished": {
         "en-US": "Game is over\nPress space to create a new game with the same settings",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Jogo finalizado\nPressione espaço para criar um novo jogo com as mesmas configurações",
+        "pt-BR": "Jogo finalizado\nPressione espaço para criar um novo jogo com as mesmas configurações",
+        "de-DE": "Spiel ist vorbei\nDrücken Sie die Leertaste, um ein neues Spiel mit denselben Einstellungen zu erstellen",
+        "uk-UA": "Гра завершена\nНатисніть пробіл, щоб створити нову гру з тими самими налаштуваннями",
+        "ne-NP": "खेल सकियो\nउस्तै सेटिङ्गहरूसँग नयाँ खेल सिर्जना गर्न स्पेस थिच्नुहोस्"
     },
     "quited": {
         "en-US": "Game was quited\nPress space to create a new game with the same settings",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "O jogo foi quitado\nPressione espaço para criar um novo jogo com as mesmas configurações",
+        "pt-BR": "O jogo foi quitado\nPressione espaço para criar um novo jogo com as mesmas configurações",
+        "de-DE": "Das Spiel wurde beendet\nDrücken Sie die Leertaste, um ein neues Spiel mit denselben Einstellungen zu erstellen",
+        "uk-UA": "Гра була завершена\nНатисніть пробіл, щоб створити нову гру з тими самими налаштуваннями",
+        "ne-NP": "खेल रद्द गरियो\nउस्तै सेटिङ्गहरूसँग नयाँ खेल सिर्जना गर्न स्पेस थिच्नुहोस्"
     },
     "deleted": {
         "en-US": "Game was deleted\nWill redirect to home in 5 seconds...",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "O jogo foi excluído\nSerá redirecionado para a página inicial em 5 segundos...",
+        "pt-BR": "O jogo foi excluído\nSerá redirecionado para a página inicial em 5 segundos...",
+        "de-DE": "Das Spiel wurde gelöscht\nIn 5 Sekunden erfolgt eine Weiterleitung zur Startseite...",
+        "uk-UA": "Гра була видалена\nЧерез 5 секунд буде перенаправлено на головну сторінку...",
+        "ne-NP": "खेल मेटाइएको छ\n५ सेकेण्डमा गृहपृष्ठमा पुनःनिर्देशित गरिनेछ..."
     },
     "redirTournament": {
         "en-US": "Game is over\nWill redirect to tournament lobby in 5 seconds...",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+        "pt-PT": "Jogo finalizado\nSerá redirecionado para o lobby do torneio em 5 segundos...",
+        "pt-BR": "Jogo finalizado\nSerá redirecionado para o lobby do torneio em 5 segundos...",
+        "de-DE": "Spiel ist vorbei\nIn 5 Sekunden erfolgt eine Weiterleitung zur Turnier-Lobby...",
+        "uk-UA": "Гра завершена\nЧерез 5 секунд буде перенаправлено в турнірну лобі...",
+        "ne-NP": "खेल सकियो\n५ सेकेण्डमा टुर्नामेन्ट लबीमा पुनःनिर्देशित गरिनेछ..."
     },
-    "connection-error": {
-        "en-US": "Could not connect to server\nPress space to try again",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
-    "button-leave-lobby": {
-        "en-US": "Leave the lobby",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
-    "button-quit-game": {
-        "en-US": "Quit this game",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
-    },
-    "button-play-again": {
-        "en-US": "Create same game again",
-        "pt-PT": "",
-        "pt-BR": "",
-        "de-DE": "",
-        "uk-UA": "",
-        "ne-NP": ""
+    "tooltipHurryUp": {
+        "en-US": "Hurry up! You need to connect in time to not lose the game!",
+        "pt-PT": "Pressa! Você precisa se conectar a tempo para não perder o jogo!",
+        "pt-BR": "Pressa! Você precisa se conectar a tempo para não perder o jogo!",
+        "de-DE": "Beeil dich! Sie müssen rechtzeitig eine Verbindung herstellen, um das Spiel nicht zu verlieren!",
+        "uk-UA": "Поспішайте! Вам потрібно підключитися вчасно, щоб не програти гру!"
     }
 }

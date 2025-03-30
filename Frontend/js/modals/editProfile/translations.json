@@ -1,0 +1,50 @@
+{
+    "title": {
+        "en-US": "Edit Profile",
+        "pt-PT": "Editar Perfil",
+        "pt-BR": "Editar Perfil",
+        "de-DE": "Profil bearbeiten",
+        "uk-UA": "Редагувати профіль",
+        "ne-NP": "प्रोफाइल सम्पादन गर्नुहोस्"
+    },
+    "btnSave": {
+        "en-US": "Save",
+        "pt-PT": "Salvar",
+        "pt-BR": "Salvar",
+        "de-DE": "Speichern",
+        "uk-UA": "Зберегти",
+        "ne-NP": "सुरक्षित गर्नुहोस्"
+    },
+    "placeholderUsername": {
+        "en-US": "username",
+        "pt-PT": "nome de usuário",
+        "pt-BR": "nome de usuário",
+        "de-DE": "Benutzername",
+        "uk-UA": "ім'я користувача",
+        "ne-NP": "प्रयोगकर्ता नाम"
+    },
+    "placeholderFirstName": {
+        "en-US": "first name",
+        "pt-PT": "primeiro nome",
+        "pt-BR": "primeiro nome",
+        "de-DE": "Vorname",
+        "uk-UA": "ім'я",
+        "ne-NP": "पहिलो नाम"
+    },
+    "placeholderLastName": {
+        "en-US": "last name",
+        "pt-PT": "último nome",
+        "pt-BR": "último nome",
+        "de-DE": "Nachname",
+        "uk-UA": "прізвище",
+        "ne-NP": "थर"
+    },
+    "placeholderNotes": {
+        "en-US": "What else do you think the overlords should know about you? Just kidding, they know it already, but here you can share it with other users too.",
+        "pt-PT": "O que mais acha que os senhores deveriam saber sobre você? Só brincando, eles já sabem, mas aqui você também pode compartilhar com outros usuários.",
+        "pt-BR": "O que mais você acha que os senhores deveriam saber sobre você? Brincadeira, eles já sabem, mas aqui você também pode compartilhar com outros usuários.",
+        "de-DE": "Was denken Sie, sollten die Overlords noch über Sie wissen? Nur Spaß, sie wissen es schon, aber hier können Sie es auch mit anderen Nutzern teilen.",
+        "uk-UA": "Що ще, на вашу думку, повинні знати повелителі про вас? Жартую, вони вже знають, але тут ви також можете поділитися цим з іншими користувачами.",
+        "ne-NP": "अरु के कुरा तपाईं सोच्नुहुन्छ कि अधिपतिहरूले तपाईंको बारेमा थाहा पाउनु पर्छ? मजाक गर्दैछु, उनीहरूले यसलाई पहिले नै थाहा पाएको छ, तर यहाँ तपाईं यसलाई अन्य प्रयोगकर्ताहरूसँग पनि साझा गर्न सक्नुहुन्छ।"
+    }
+}
