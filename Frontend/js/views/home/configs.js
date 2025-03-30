@@ -1,9 +1,6 @@
 import { audioPlayer } from '../../abstracts/audio.js';
 import { mouseClick, isHovering, buildCanvas } from './script.js'
 import canvasData from './data.js'
-import call from '../../abstracts/call.js'
-import callToast from '../../abstracts/callToast.js'
-import { modalManager } from '../../abstracts/ModalManager.js';
 import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 import $store from '../../store/store.js';
 
@@ -57,10 +54,9 @@ export default {
 
             // Get the canvas element and its context
             canvasData.canvas = this.domManip.$id("home-canvas");
-            let canvas = canvasData.canvas;
-            canvasData.context = canvas.getContext('2d');
-            canvas.width = 2000;
-            canvas.height = 900;
+            canvasData.context = canvasData.canvas.getContext('2d');
+            canvasData.canvas.width = 2000;
+            canvasData.canvas.height = 900;
             canvasData.context.imageSmoothingEnabled = true;
 
             // build thexport e first frame
@@ -68,8 +64,8 @@ export default {
 
             // this.domManip.$on(document, "click", mouseClick);
             // this.domManip.$on(document, "mousemove", isHovering);
-            EventListenerManager.linkEventListener("barely-a-body", "home", "click", mouseClick);
-            EventListenerManager.linkEventListener("barely-a-body", "home", "mousemove", isHovering);
+            EventListenerManager.linkEventListener("home-canvas", "home", "click", mouseClick);
+            EventListenerManager.linkEventListener("home-canvas", "home", "mousemove", isHovering);
             // Set the attributes for the modals
             this.setViewAttributes(true);
         },
