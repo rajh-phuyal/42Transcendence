@@ -1,6 +1,5 @@
 import {imageBook, backgroundImageBook, labels, lines} from './objects.js'
 import canvasData from './data.js'
-import { $id } from '../../abstracts/dollars.js';
 import { translate } from '../../locale/locale.js';
 
 /*
@@ -17,7 +16,6 @@ function drawImg(image) {
         let image = canvasData.image;
 
         imageObject.src = image.src;
-
         imageObject.onload = function () {
             let context = canvasData.context;
             let shadowColor;
@@ -28,7 +26,6 @@ function drawImg(image) {
                 shadowColor = '#FFFCE6'
             else
                 shadowColor = '#100C09';
-
             context.shadowColor = shadowColor;
             context.shadowOffsetX = image.shadow;
             context.shadowOffsetY = image.shadow;
@@ -48,7 +45,6 @@ function drawImg(image) {
         };
 
         imageObject.onerror = function () {
-            console.error("Error loading image:", image.src);
             resolve();
         };
     });
@@ -177,8 +173,7 @@ export async function isHovering(event){
         }
     }
 
-    if (foundElement == undefined)
-    {
+    if (foundElement == undefined) {
         canvasData.highlitedImageID = 0;
         return ;
     }
@@ -194,8 +189,14 @@ export function mouseClick(event){
     if (document.querySelectorAll('.modal.show').length > 0)
         return ;
 
-	let mouseX = event.clientX;
-    let mouseY = event.clientY;
+    let canvas = canvasData.canvas;
+
+	 // get the canvas position relative to the viewport
+     const rect = canvas.getBoundingClientRect();
+
+     // Adjust the mouse position relative to the canvas
+     let mouseX = (event.clientX - rect.left) * (canvas.width / canvas.clientWidth);
+     let mouseY = (event.clientY - rect.top) * (canvas.height / canvas.clientHeight);
 
     let foundElement = imageBook.find(element => isContained(mouseX, mouseY, element));
 

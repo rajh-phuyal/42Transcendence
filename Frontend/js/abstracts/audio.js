@@ -24,6 +24,7 @@ export default class AudioPlayer {
             { title: "lizard-people",        audio: new Audio("../assets/audio/music/lizard-people.mp3") },
             { title: "snowman",              audio: new Audio("../assets/audio/music/snowman.mp3") },
             { title: "lochness",             audio: new Audio("../assets/audio/music/lochness.mp3") },
+            { title: "404",                  audio: new Audio("../assets/audio/music/404.mp3") }
         ];
 
         this.sounds = [

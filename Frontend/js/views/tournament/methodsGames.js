@@ -1,4 +1,4 @@
-import { tournamentData as data } from "./objects.js";
+import { tournamentData } from "./objects.js";
 import { translate } from '../../locale/locale.js';
 import { $id } from "../../abstracts/dollars.js";
 import router from "../../navigation/router.js";
@@ -12,7 +12,7 @@ const deadlineTimers = {};
 */
 export function updateGames() {
     // Create all games
-    for (let game of data.tournamentGames) {
+    for (let game of tournamentData.tournamentGames) {
         // Find game card in upcoming tab
         let container = $id("container-games-upcoming-list").querySelector(`[gameid="${game.id}"]`);
         // Find game card in finished tab
@@ -62,9 +62,16 @@ function updateGameCard(container, game) {
             container.style.display = "grid";
             container.title = translate("tournament", "tooltipGameDeadline");
             startGameDeadline(container, game.id, game.deadline);
-            // Animate the card if the user is part of the game
-            if (container.getAttribute("player-left-id") == $store.fromState("user").id || container.getAttribute("player-right-id") == $store.fromState("user").id)
-                container.style.animation = "pulse-game-card 2s infinite";
+            // Animate the card
+            if (tournamentData.tournamentInfo && tournamentData.tournamentInfo.local) {
+                // Local Tournament so only animate if client is admin
+                if (tournamentData.clientRole === "admin")
+                    container.style.animation = "pulse-game-card 2s infinite";
+            } else {
+                // Remote Tournament so animate if the user is part of the game
+                if (container.getAttribute("player-left-id") == $store.fromState("user").id || container.getAttribute("player-right-id") == $store.fromState("user").id)
+                    container.style.animation = "pulse-game-card 2s infinite";
+            }
         }
         else
             container.style.display = "none";
