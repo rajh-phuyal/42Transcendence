@@ -28,32 +28,33 @@ class Auth {
         // Create new auth check promise
         return await (async () => {
             this.isAuthenticated = false;
+            let response = null;
 
             try {
-                console.log("Calling auth/verify/ endpoint");
-
-                const response = await call('auth/verify/', 'GET', null, false);
+                response = await call('auth/verify/', 'GET', null, false);
                 this.isAuthenticated = response.isAuthenticated;
-                console.log("Auth check response:", response);
             } catch (error) {
-                console.log("Auth check failed: User not authenticated");
                 this.isAuthenticated = false;
                 this.clearAuthCache();
             } finally {
                 if (!this.isAuthenticated) {
-                    if (!this.refreshToken()) {
+                    try {
+                        if (!await this.refreshToken()) {
+                            this._lastCheckTimestamp = now;
+                            return false;
+                        }    
+                    } catch (error) {
+                        this._lastCheckTimestamp = now; 
                         return false;
                     }
                     this.isAuthenticated = true;
                 }
             }
 
-            console.log("Auth check successful");
             $store.commit('setIsAuthenticated', this.isAuthenticated);
-            $store.commit('setLocale', response.locale); //TODO: triggers mutation listeners
+            $store.commit('setLocale', response?.locale);
 
             if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
-                console.log("Connecting WebSocket");
                 WebSocketManager.connect();
             }
 
@@ -65,15 +66,9 @@ class Auth {
 
     async refreshToken() {
         try {
-            const response = await call('auth/token/refresh/', 'POST');
-
-            if (!response.ok) {
-                throw new Error('Token refresh failed');
-            }
-
-            return true;
+            const response = await call('auth/token/refresh/', 'POST', null, false);
+            return response.statusCode === 200;
         } catch (error) {
-            console.error('Error refreshing token:', error);
             return false;
         }
     }
