@@ -64,7 +64,7 @@ function updateGameCard(container, game) {
             startGameDeadline(container, game.id, game.deadline);
             // Animate the card
             if (tournamentData.tournamentInfo && tournamentData.tournamentInfo.local) {
-                // Local Tournament so only anmiate if client is admin
+                // Local Tournament so only animate if client is admin
                 if (tournamentData.clientRole === "admin")
                     container.style.animation = "pulse-game-card 2s infinite";
             } else {
