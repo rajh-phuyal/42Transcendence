@@ -153,6 +153,10 @@ class InternalTokenObtainPairView(TokenObtainPairView):
 
 
 class LogoutView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    @barely_handle_exceptions
     def post(self, request):
         return unset_jwt_cookies(success_response(_("Successfully logged out")))
 
