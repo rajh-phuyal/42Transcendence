@@ -335,17 +335,36 @@ export function updateGameObjects(beMessage) {
     }
 }
 
+function paddleMovementNormalizer(paddleMovement) {
+    switch (paddleMovement) {
+        case -1:
+            console.log("up");
+            return '-';
+        case 0:
+            console.log("stop");
+            return '0';
+        case 1:
+            console.log("down");
+            return '+';
+        default:
+            return '0';
+    }
+}
+
 export function sendPlayerInput() {
+
+    const leftPaddleMovement = paddleMovementNormalizer(gameObject.playerInputLeft.paddleMovement);
+    const rightPaddleMovement = paddleMovementNormalizer(gameObject.playerInputRight.paddleMovement);
     //Send the ws message to the server
     const message = {
         messageType: "playerInput",
         playerLeft: {
-            movePaddle: gameObject.playerInputLeft.paddleMovement || "0",
+            movePaddle: leftPaddleMovement || "0",
             activatePowerupBig: gameObject.playerInputLeft.powerupBig || false,
             activatePowerupSpeed: gameObject.playerInputLeft.powerupSpeed || false
         },
         playerRight: {
-            movePaddle: gameObject.playerInputRight.paddleMovement || "0",
+            movePaddle: rightPaddleMovement || "0",
             activatePowerupBig: gameObject.playerInputRight.powerupBig || false,
             activatePowerupSpeed: gameObject.playerInputRight.powerupSpeed || false
         }
