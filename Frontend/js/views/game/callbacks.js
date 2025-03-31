@@ -4,24 +4,10 @@ export function keyPressCallback(event) {
     switch (event.key) {
         // Player LEFT
         case "w":
-            if (!gameObject.playerInputLeft.paddleMovement) { // to prevent unpredictable pedal movement if the game with a key press already
-                gameObject.playerInputLeft.paddleMovement = -1;
-                return ;
-            }
-            // Move the paddle up
-            gameObject.playerInputLeft.paddleMovement--;
-            if (gameObject.playerInputLeft.paddleMovement < -1)
-                gameObject.playerInputLeft.paddleMovement = -1;
+            gameObject.keyStrokes.w = true;
             break;
         case "s":
-            if (!gameObject.playerInputLeft.paddleMovement) {
-                gameObject.playerInputLeft.paddleMovement = 1;
-                return ;
-            }
-                // Move the paddle down
-            gameObject.playerInputLeft.paddleMovement++;
-            if (gameObject.playerInputLeft.paddleMovement > 1)
-                gameObject.playerInputLeft.paddleMovement = 1;
+            gameObject.keyStrokes.s = true;
             break;
         case "1":
             // Activate the powerup
@@ -34,22 +20,10 @@ export function keyPressCallback(event) {
 
         // Player RIGHT
         case "o":
-            if (!gameObject.playerInputRight.paddleMovement) {
-                gameObject.playerInputRight.paddleMovement = -1;
-                return ;
-            }
-            gameObject.playerInputRight.paddleMovement--;
-            if (gameObject.playerInputRight.paddleMovement < -1)
-                gameObject.playerInputRight.paddleMovement = -1;
+            gameObject.keyStrokes.o = true;
             break;
         case "l":
-            if (!gameObject.playerInputRight.paddleMovement) {
-                gameObject.playerInputRight.paddleMovement = 1;
-                return ;
-            }
-            gameObject.playerInputRight.paddleMovement++;
-            if (gameObject.playerInputRight.paddleMovement > 1)
-                gameObject.playerInputRight.paddleMovement = 1;
+            gameObject.keyStrokes.l = true;
             break;
         case "8":
             // Activate the powerup
@@ -69,36 +43,18 @@ export function keyReleaseCallback(event) {
     switch (event.key) {
         // Player LEFT
         case "w":
-            if (!gameObject.playerInputLeft.paddleMovement) {
-                gameObject.playerInputLeft.paddleMovement = 0;
-                return ;
-            }
-            // Stop the paddle
-            gameObject.playerInputLeft.paddleMovement++;
+            gameObject.keyStrokes.w = false;
             break;
         case "s":
-            if (!gameObject.playerInputLeft.paddleMovement) {
-                gameObject.playerInputLeft.paddleMovement = 0;
-                return ;
-            }
-            // Stop the paddle
-            gameObject.playerInputLeft.paddleMovement--;
+            gameObject.keyStrokes.s = false;
             break;
 
         // Player RIGHT
         case "o":
-            if (!gameObject.playerInputRight.paddleMovement) {
-                gameObject.playerInputRight.paddleMovement = 0;
-                return ;
-            }
-            gameObject.playerInputRight.paddleMovement++;
+            gameObject.keyStrokes.o = false;
             break;
         case "l":
-            if (!gameObject.playerInputRight.paddleMovement) {
-                gameObject.playerInputRight.paddleMovement = 0;
-                return ;
-            }
-            gameObject.playerInputRight.paddleMovement--;
+            gameObject.keyStrokes.l = false;
             break;
     }
 }

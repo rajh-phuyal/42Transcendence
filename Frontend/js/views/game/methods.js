@@ -335,36 +335,29 @@ export function updateGameObjects(beMessage) {
     }
 }
 
-function paddleMovementNormalizer(paddleMovement) {
-    switch (paddleMovement) {
-        case -1:
-            console.log("up");
-            return '-';
-        case 0:
-            console.log("stop");
-            return '0';
-        case 1:
-            console.log("down");
-            return '+';
-        default:
-            return '0';
-    }
+function paddleMovementNormalizer(playerObject, upKey, downKey) {
+    if (upKey && !downKey)
+        playerObject.paddleMovement = '-';
+    else if (!upKey && downKey)
+        playerObject.paddleMovement = '+';
+    else if (!upKey && !downKey)
+        playerObject.paddleMovement = '0';
 }
 
 export function sendPlayerInput() {
 
-    const leftPaddleMovement = paddleMovementNormalizer(gameObject.playerInputLeft.paddleMovement);
-    const rightPaddleMovement = paddleMovementNormalizer(gameObject.playerInputRight.paddleMovement);
+    paddleMovementNormalizer(gameObject.playerInputLeft, gameObject.keyStrokes.w, gameObject.keyStrokes.s);
+    paddleMovementNormalizer(gameObject.playerInputRight, gameObject.keyStrokes.o, gameObject.keyStrokes.l);
     //Send the ws message to the server
     const message = {
         messageType: "playerInput",
         playerLeft: {
-            movePaddle: leftPaddleMovement || "0",
+            movePaddle: gameObject.playerInputLeft.paddleMovement || "0",
             activatePowerupBig: gameObject.playerInputLeft.powerupBig || false,
             activatePowerupSpeed: gameObject.playerInputLeft.powerupSpeed || false
         },
         playerRight: {
-            movePaddle: rightPaddleMovement || "0",
+            movePaddle: gameObject.playerInputRight.paddleMovement || "0",
             activatePowerupBig: gameObject.playerInputRight.powerupBig || false,
             activatePowerupSpeed: gameObject.playerInputRight.powerupSpeed || false
         }
