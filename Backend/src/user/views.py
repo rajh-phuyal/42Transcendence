@@ -65,7 +65,7 @@ class UsernameView(APIView):
         return success_response(_("Username does not exist"), exists=False)
 
     # Since we can't use BaseAuthenticatedView here, we need to handle the exceptions manually
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def put(self, request, *args, **kwargs):
