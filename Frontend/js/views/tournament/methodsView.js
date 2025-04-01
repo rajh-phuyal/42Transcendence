@@ -23,7 +23,7 @@ import { deleteTournament, joinTournament, leaveTournament, startTournament } fr
             - state ongoing / finished:
                 - hide all buttons
         */
-export function updateView() {
+export function updateView(isGame = false) {
     // If state is deleted, redirect to home
     if (data.tournamentInfo.state === "deleted") {
         router('/home');
@@ -44,9 +44,9 @@ export function updateView() {
     // Open the correct tab
     if(data.tournamentInfo.state === "setup")
         changeTabs("members");
-    else if(data.tournamentInfo.state === "ongoing")
+    else if(!isGame && data.tournamentInfo.state === "ongoing")
         changeTabs("games-upcoming");
-    else
+    else if (data.tournamentInfo.state === "finished")
         changeTabs("finals");
 }
 
