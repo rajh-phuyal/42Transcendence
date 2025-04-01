@@ -6,7 +6,7 @@ export default {
     },
 
     methods: {
-        deleteTournamentCard() {
+        deleteTournamentCards() {
             const container = this.domManip.$id("modal-tournament-join-list");
             const cards = container.querySelectorAll(".modal-tournament-join-card-container");
             for (let card of cards) {
@@ -17,7 +17,7 @@ export default {
         fetchAvailableTournaments() {
             call('tournament/to-join/', "GET").then(data => {
                 const container = this.domManip.$id("modal-tournament-join-list");
-                this.deleteTournamentCard();
+                this.deleteTournamentCards();
                 if (data.tournaments.length === 0)
                     this.domManip.$id("modal-tournament-join-result-not-found-message").style.display = "block";
                 else
