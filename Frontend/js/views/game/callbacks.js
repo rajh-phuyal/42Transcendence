@@ -4,34 +4,32 @@ export function keyPressCallback(event) {
     switch (event.key) {
         // Player LEFT
         case "w":
-            // Move the paddle up
-            gameObject.playerInputLeft.paddleMovement = "-";
+            gameObject.keyStrokes.w = true;
             break;
         case "s":
-            // Move the paddle down
-            gameObject.playerInputLeft.paddleMovement = "+";
+            gameObject.keyStrokes.s = true;
             break;
-        case "1":
+        case "a":
             // Activate the powerup
             gameObject.playerInputLeft.powerupBig = true;
             break;
-        case "2":
+        case "d":
             // Activate the powerup
             gameObject.playerInputLeft.powerupSpeed = true;
             break;
 
         // Player RIGHT
-        case "o":
-            gameObject.playerInputRight.paddleMovement = "-";
+        case "ArrowUp":
+            gameObject.keyStrokes.o = true;
             break;
-        case "l":
-            gameObject.playerInputRight.paddleMovement = "+";
+        case "ArrowDown":
+            gameObject.keyStrokes.l = true;
             break;
-        case "8":
+        case "ArrowRight":
             // Activate the powerup
             gameObject.playerInputRight.powerupBig = true;
             break;
-        case "9":
+        case "ArrowLeft":
             // Activate the powerup
             gameObject.playerInputRight.powerupSpeed = true;
             break;
@@ -45,20 +43,18 @@ export function keyReleaseCallback(event) {
     switch (event.key) {
         // Player LEFT
         case "w":
-            // Stop the paddle
-            gameObject.playerInputLeft.paddleMovement = "0";
+            gameObject.keyStrokes.w = false;
             break;
         case "s":
-            // Stop the paddle
-            gameObject.playerInputLeft.paddleMovement = "0";
+            gameObject.keyStrokes.s = false;
             break;
 
         // Player RIGHT
-        case "o":
-            gameObject.playerInputRight.paddleMovement = "0";
+        case "ArrowUp":
+            gameObject.keyStrokes.o = false;
             break;
-        case "l":
-            gameObject.playerInputRight.paddleMovement = "0";
+        case "ArrowDown":
+            gameObject.keyStrokes.l = false;
             break;
     }
 }
