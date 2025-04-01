@@ -9,27 +9,27 @@ export function keyPressCallback(event) {
         case "s":
             gameObject.keyStrokes.s = true;
             break;
-        case "1":
+        case "a":
             // Activate the powerup
             gameObject.playerInputLeft.powerupBig = true;
             break;
-        case "2":
+        case "d":
             // Activate the powerup
             gameObject.playerInputLeft.powerupSpeed = true;
             break;
 
         // Player RIGHT
-        case "o":
+        case "ArrowUp":
             gameObject.keyStrokes.o = true;
             break;
-        case "l":
+        case "ArrowDown":
             gameObject.keyStrokes.l = true;
             break;
-        case "8":
+        case "ArrowRight":
             // Activate the powerup
             gameObject.playerInputRight.powerupBig = true;
             break;
-        case "9":
+        case "ArrowLeft":
             // Activate the powerup
             gameObject.playerInputRight.powerupSpeed = true;
             break;
@@ -50,10 +50,10 @@ export function keyReleaseCallback(event) {
             break;
 
         // Player RIGHT
-        case "o":
+        case "ArrowUp":
             gameObject.keyStrokes.o = false;
             break;
-        case "l":
+        case "ArrowDown":
             gameObject.keyStrokes.l = false;
             break;
     }

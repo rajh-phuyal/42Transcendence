@@ -1,19 +1,19 @@
 {
     "controlsLeft": {
-        "en-US": "Controls<br> &nbsp;&nbsp;'W' up <br> &nbsp;&nbsp;'S' down <br> &nbsp;&nbsp;'1' big <br> &nbsp;&nbsp;'2' slow &larr;<br> &nbsp;&nbsp;'2' fast &rarr;<br>",
-        "pt-PT": "Controles<br> &nbsp;&nbsp;'W' para cima <br> &nbsp;&nbsp;'S' para baixo <br> &nbsp;&nbsp;'1' grande <br> &nbsp;&nbsp;'2' lento &larr;<br> &nbsp;&nbsp;'2' rápido &rarr;<br>",
-        "pt-BR": "Controles<br> &nbsp;&nbsp;'W' para cima <br> &nbsp;&nbsp;'S' para baixo <br> &nbsp;&nbsp;'1' grande <br> &nbsp;&nbsp;'2' lento &larr;<br> &nbsp;&nbsp;'2' rápido &rarr;<br>",
-        "de-DE": "Steuerung<br> &nbsp;&nbsp;'W' hoch <br> &nbsp;&nbsp;'S' runter <br> &nbsp;&nbsp;'1' groß <br> &nbsp;&nbsp;'2' langsam &larr;<br> &nbsp;&nbsp;'2' schnell &rarr;<br>",
-        "uk-UA": "Управління<br> &nbsp;&nbsp;'W' вгору <br> &nbsp;&nbsp;'S' вниз <br> &nbsp;&nbsp;'1' велике <br> &nbsp;&nbsp;'2' повільно &larr;<br> &nbsp;&nbsp;'2' швидко &rarr;<br>",
-        "ne-NP": "नियन्त्रणहरू<br> &nbsp;&nbsp;'W' माथि <br> &nbsp;&nbsp;'S' तल <br> &nbsp;&nbsp;'1' ठूलो <br> &nbsp;&nbsp;'2' ढिलो &larr;<br> &nbsp;&nbsp;'2' छिटो &rarr;<br>"
+        "en-US": "Controls<br> &nbsp;&nbsp;'W' up <br> &nbsp;&nbsp;'S' down <br> &nbsp;&nbsp;'A' big <br> &nbsp;&nbsp;'D' slow &larr;<br> &nbsp;&nbsp;'D' fast &rarr;<br>",
+        "pt-PT": "Controles<br> &nbsp;&nbsp;'W' para cima <br> &nbsp;&nbsp;'S' para baixo <br> &nbsp;&nbsp;'A' grande <br> &nbsp;&nbsp;'D' lento &larr;<br> &nbsp;&nbsp;'D' rápido &rarr;<br>",
+        "pt-BR": "Controles<br> &nbsp;&nbsp;'W' para cima <br> &nbsp;&nbsp;'S' para baixo <br> &nbsp;&nbsp;'A' grande <br> &nbsp;&nbsp;'D' lento &larr;<br> &nbsp;&nbsp;'D' rápido &rarr;<br>",
+        "de-DE": "Steuerung<br> &nbsp;&nbsp;'W' hoch <br> &nbsp;&nbsp;'S' runter <br> &nbsp;&nbsp;'A' groß <br> &nbsp;&nbsp;'D' langsam &larr;<br> &nbsp;&nbsp;'D' schnell &rarr;<br>",
+        "uk-UA": "Управління<br> &nbsp;&nbsp;'W' вгору <br> &nbsp;&nbsp;'S' вниз <br> &nbsp;&nbsp;'A' велике <br> &nbsp;&nbsp;'D' повільно &larr;<br> &nbsp;&nbsp;'D' швидко &rarr;<br>",
+        "ne-NP": "नियन्त्रणहरू<br> &nbsp;&nbsp;'W' माथि <br> &nbsp;&nbsp;'S' तल <br> &nbsp;&nbsp;'A' ठूलो <br> &nbsp;&nbsp;'D' ढिलो &larr;<br> &nbsp;&nbsp;'D' छिटो &rarr;<br>"
     },
     "controlsRight": {
-        "en-US": "Controls<br> &nbsp;&nbsp;'O' Up <br> &nbsp;&nbsp;'L' Down <br> &nbsp;&nbsp;'8' big <br> &nbsp;&nbsp;'9' slow &larr;<br> &nbsp;&nbsp;'9' fast &rarr;<br>",
-        "pt-PT": "Controles<br> &nbsp;&nbsp;'O' para cima <br> &nbsp;&nbsp;'L' para baixo <br> &nbsp;&nbsp;'8' grande <br> &nbsp;&nbsp;'9' lento &larr;<br> &nbsp;&nbsp;'9' rápido &rarr;<br>",
-        "pt-BR": "Controles<br> &nbsp;&nbsp;'O' para cima <br> &nbsp;&nbsp;'L' para baixo <br> &nbsp;&nbsp;'8' grande <br> &nbsp;&nbsp;'9' lento &larr;<br> &nbsp;&nbsp;'9' rápido &rarr;<br>",
-        "de-DE": "Steuerung<br> &nbsp;&nbsp;'O' hoch <br> &nbsp;&nbsp;'L' runter <br> &nbsp;&nbsp;'8' groß <br> &nbsp;&nbsp;'9' langsam &larr;<br> &nbsp;&nbsp;'9' schnell &rarr;<br>",
-        "uk-UA": "Управління<br> &nbsp;&nbsp;'O' вгору <br> &nbsp;&nbsp;'L' вниз <br> &nbsp;&nbsp;'8' велике <br> &nbsp;&nbsp;'9' повільно &larr;<br> &nbsp;&nbsp;'9' швидко &rarr;<br>",
-        "ne-NP": "नियन्त्रणहरू<br> &nbsp;&nbsp;'O' माथि <br> &nbsp;&nbsp;'L' तल <br> &nbsp;&nbsp;'8' ठूलो <br> &nbsp;&nbsp;'9' ढिलो &larr;<br> &nbsp;&nbsp;'9' छिटो &rarr;<br>"
+        "en-US": "Controls<br> &nbsp;&nbsp;'⇧' Up <br> &nbsp;&nbsp;'⇩' Down <br> &nbsp;&nbsp;'⇨' big <br> &nbsp;&nbsp;'⇦' slow &larr;<br> &nbsp;&nbsp;'⇦' fast &rarr;<br>",
+        "pt-PT": "Controles<br> &nbsp;&nbsp;'⇧' para cima <br> &nbsp;&nbsp;'⇩' para baixo <br> &nbsp;&nbsp;'⇨' grande <br> &nbsp;&nbsp;'⇦' lento &larr;<br> &nbsp;&nbsp;'⇦' rápido &rarr;<br>",
+        "pt-BR": "Controles<br> &nbsp;&nbsp;'⇧' para cima <br> &nbsp;&nbsp;'⇩' para baixo <br> &nbsp;&nbsp;'⇨' grande <br> &nbsp;&nbsp;'⇦' lento &larr;<br> &nbsp;&nbsp;'⇦' rápido &rarr;<br>",
+        "de-DE": "Steuerung<br> &nbsp;&nbsp;'⇧' hoch <br> &nbsp;&nbsp;'⇩' runter <br> &nbsp;&nbsp;'⇨' groß <br> &nbsp;&nbsp;'⇦' langsam &larr;<br> &nbsp;&nbsp;'⇦' schnell &rarr;<br>",
+        "uk-UA": "Управління<br> &nbsp;&nbsp;'⇧' вгору <br> &nbsp;&nbsp;'⇩' вниз <br> &nbsp;&nbsp;'⇨' велике <br> &nbsp;&nbsp;'⇦' повільно &larr;<br> &nbsp;&nbsp;'⇦' швидко &rarr;<br>",
+        "ne-NP": "नियन्त्रणहरू<br> &nbsp;&nbsp;'⇧' माथि <br> &nbsp;&nbsp;'⇩' तल <br> &nbsp;&nbsp;'⇨' ठूलो <br> &nbsp;&nbsp;'⇦' ढिलो &larr;<br> &nbsp;&nbsp;'⇦' छिटो &rarr;<br>"
     },
     "btnLeaveLobby": {
         "en-US": "Leave the lobby",
