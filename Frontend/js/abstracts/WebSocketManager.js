@@ -165,7 +165,7 @@ class WebSocketManager {
                     }
                     updateDataGame(message.tournamentGame);
                     updateFinalsDiagram(message.tournamentGame);
-                    updateView();
+                    updateView(true);
                 }
                 return ;
 
