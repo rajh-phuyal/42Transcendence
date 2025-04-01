@@ -6,10 +6,22 @@ export default {
     },
 
     methods: {
+        deleteTournamentCard() {
+            const container = this.domManip.$id("modal-tournament-join-list");
+            const cards = container.querySelectorAll(".modal-tournament-join-card-container");
+            for (let card of cards) {
+                card.removeEventListener("click", this.cardCallback.bind(this));
+            }
+        },
+
         fetchAvailableTournaments() {
             call('tournament/to-join/', "GET").then(data => {
                 const container = this.domManip.$id("modal-tournament-join-list");
-                container.innerHTML = "";
+                this.deleteTournamentCard();
+                if (data.tournaments.length === 0)
+                    this.domManip.$id("modal-tournament-join-result-not-found-message").style.display = "block";
+                else
+                    this.domManip.$id("modal-tournament-join-result-not-found-message").style.display = "none";
                 for (let tournament of data.tournaments) {
                     this.createJoinTournamentCard(tournament);
                 }
