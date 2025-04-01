@@ -46,7 +46,7 @@ export function updateView(isGame = false) {
         changeTabs("members");
     else if(!isGame && data.tournamentInfo.state === "ongoing")
         changeTabs("games-upcoming");
-    else if (!isGame && data.tournamentInfo.state === "finished")
+    else if (data.tournamentInfo.state === "finished")
         changeTabs("finals");
 }
 

@@ -21,9 +21,8 @@ export default {
 
     methods: {
         leaveLobbyCallback() {
-            // here
-            if (this.tournamentId) {
-                router(`/tournament`, { id: this.tournamentId });
+            if (gameObject.tournamentId) {
+                router(`/tournament`, { id: gameObject.tournamentId });
                 return;
             }
             router('/');
@@ -182,8 +181,6 @@ export default {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
-                    console.log("game data:", data);
-                    this.tournamentId = data.gameData.tournamentId;
                     // Set user cards
                     this.domManip.$id("player-left-username").innerText = data.playerLeft.username;
                     this.domManip.$id("player-left-username").setAttribute("data-userid", data.playerLeft.userId);
