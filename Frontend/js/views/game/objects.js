@@ -52,5 +52,11 @@ export const gameObject = {
         posY: 50,
         height: 1,
         width: 1
+    },
+    keyStrokes:{
+        w: undefined,
+        s: undefined,
+        o: undefined,
+        l: undefined
     }
 }

@@ -14,5 +14,13 @@
         "de-DE": "Zurück",
         "uk-UA": "Назад",
         "ne-NP": "फिर्ता"
+    },
+    "resultNotFoundMessage": {
+        "en-US": "No tournaments available... Create one!",
+        "pt-PT": "Não há torneios disponíveis... Crie um!",
+        "pt-BR": "Não há torneios disponíveis... Crie um!",
+        "de-DE": "Keine Turniere verfügbar... Erstellen Sie eines!",
+        "uk-UA": "Турніри недоступні... Створіть один!",
+        "ne-NP": "कोई टूर्नामेंट उपलब्ध नहीं है... एक बनाएं!"
     }
 }

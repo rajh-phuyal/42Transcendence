@@ -335,7 +335,19 @@ export function updateGameObjects(beMessage) {
     }
 }
 
+function paddleMovementNormalizer(playerObject, upKey, downKey) {
+    if (upKey && !downKey)
+        playerObject.paddleMovement = '-';
+    else if (!upKey && downKey)
+        playerObject.paddleMovement = '+';
+    else if (!upKey && !downKey)
+        playerObject.paddleMovement = '0';
+}
+
 export function sendPlayerInput() {
+
+    paddleMovementNormalizer(gameObject.playerInputLeft, gameObject.keyStrokes.w, gameObject.keyStrokes.s);
+    paddleMovementNormalizer(gameObject.playerInputRight, gameObject.keyStrokes.o, gameObject.keyStrokes.l);
     //Send the ws message to the server
     const message = {
         messageType: "playerInput",
