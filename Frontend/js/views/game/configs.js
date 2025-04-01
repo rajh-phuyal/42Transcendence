@@ -20,6 +20,10 @@ export default {
 
     methods: {
         leaveLobbyCallback() {
+            if (gameObject.tournamentId) {
+                router(`/tournament`, { id: gameObject.tournamentId });
+                return;
+            }
             router('/');
         },
         quitGameCallback() {
@@ -33,7 +37,6 @@ export default {
         },
         playAgainCallback() {
             call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
-                // console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game
                     router(`/game`, {id: data.gameId});
