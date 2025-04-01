@@ -10,7 +10,7 @@ export default {
             const container = this.domManip.$id("modal-tournament-join-list");
             const cards = container.querySelectorAll(".modal-tournament-join-card-container");
             for (let card of cards) {
-                card.removeEventListener("click", this.cardCallback.bind(this));
+                card.remove();
             }
         },
 
