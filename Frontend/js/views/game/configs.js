@@ -10,6 +10,7 @@ import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 export default {
     attributes: {
         gameId: null,
+        tournamentId: null,
         maps: {
             1: "ufo",
             2: "lizard-people",
@@ -20,6 +21,11 @@ export default {
 
     methods: {
         leaveLobbyCallback() {
+            // here
+            if (this.tournamentId) {
+                router(`/tournament`, { id: this.tournamentId });
+                return;
+            }
             router('/');
         },
         quitGameCallback() {
@@ -33,7 +39,6 @@ export default {
         },
         playAgainCallback() {
             call(`game/play-again/${this.gameId}/`, 'PUT').then(data => {
-                // console.log("data:", data);
                 if (data.status === "success" && data.gameId) {
                     // Reload the game
                     router(`/game`, {id: data.gameId});
@@ -177,6 +182,8 @@ export default {
             // Load the data from REST API
             return call(`game/lobby/${this.gameId}/`, 'GET')
                 .then(data => {
+                    console.log("game data:", data);
+                    this.tournamentId = data.gameData.tournamentId;
                     // Set user cards
                     this.domManip.$id("player-left-username").innerText = data.playerLeft.username;
                     this.domManip.$id("player-left-username").setAttribute("data-userid", data.playerLeft.userId);
