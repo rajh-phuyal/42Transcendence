@@ -10,7 +10,6 @@ import { EventListenerManager } from '../../abstracts/EventListenerManager.js';
 export default {
     attributes: {
         gameId: null,
-        tournamentId: null,
         maps: {
             1: "ufo",
             2: "lizard-people",
