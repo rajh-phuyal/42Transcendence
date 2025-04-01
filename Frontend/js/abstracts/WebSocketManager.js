@@ -159,7 +159,7 @@ class WebSocketManager {
                 return ;
             case "tournamentGame":
                 if (currentRoute == "tournament"){
-                    if (message.tournamentId !== tournamentData.tournamentInfo.id) {
+                    if (message?.tournamentId !== tournamentData?.tournamentInfo?.id) {
                         console.log("Received tournamentMember for different tournament. Ignoring it");
                         return ;
                     }
