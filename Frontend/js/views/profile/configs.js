@@ -160,6 +160,14 @@ export default {
 
     hooks: {
         beforeRouteEnter() {
+            this.buttonTopLeft.image = undefined;
+            this.buttonTopLeft.method = undefined;
+            this.buttonTopMiddle.image = undefined;
+            this.buttonTopMiddle.method = undefined;
+            this.buttonTopRight.image = undefined;
+            this.buttonTopRight.method = undefined;
+            this.result = null;
+            this.cropper = undefined;
 
         },
 

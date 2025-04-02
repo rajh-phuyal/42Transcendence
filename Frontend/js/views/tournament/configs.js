@@ -29,6 +29,7 @@ export default {
 
     hooks: {
         beforeRouteEnter() {
+            this.data = undefined;
         },
 
         beforeRouteLeave() {
