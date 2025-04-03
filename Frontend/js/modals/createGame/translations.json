@@ -1,11 +1,11 @@
 {
     "title": {
-        "en-US": "Create a friendly match",
-        "pt-PT": "Criar um jogo amigável",
-        "pt-BR": "Criar uma partida amigável",
-        "de-DE": "Ein Freundschaftsspiel erstellen",
-        "uk-UA": "Створити дружній матч",
-        "ne-NP": "एक मित्रवत् खेल सिर्जना गर्नुहोस्"
+        "en-US": "Friendly Match",
+        "pt-PT": "Jogo Amigável",
+        "pt-BR": "Partida Amistosa",
+        "de-DE": "Freundschaftsspiel",
+        "uk-UA": "Товариський матч",
+        "ne-NP": "मैत्रीपूर्ण खेल"
     },
     "maps": {
         "en-US": "Maps",
