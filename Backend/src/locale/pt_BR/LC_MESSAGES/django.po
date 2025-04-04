@@ -20,45 +20,44 @@ msgstr ""
 
 #: authentication/serializers.py:40
 msgid "Password cannot be empty"
-msgstr ""
+msgstr "A senha não pode estar vazia"
 
 #: authentication/serializers.py:43
 msgid "Password must be at least 6 characters long"
-msgstr ""
+msgstr "A senha deve ter pelo menos 6 caracteres"
 
 #: authentication/serializers.py:46
 msgid "Password must contain at least one lowercase character"
-msgstr ""
+msgstr "A senha deve conter pelo menos uma letra minúscula"
 
 #: authentication/serializers.py:49
 msgid "Password must contain at least one uppercase character"
-msgstr ""
+msgstr "A senha deve conter pelo menos uma letra maiúscula"
 
 #: authentication/serializers.py:52
 msgid "Password must contain at least one digit"
-msgstr ""
+msgstr "A senha deve conter pelo menos um dígito"
 
 #: authentication/utils.py:10
 msgid "Username cannot be empty"
-msgstr ""
+msgstr "O nome de usuário não pode estar vazio"
 
 #: authentication/utils.py:14
-msgid ""
-"Username can only contain letters, numbers, hyphens (-), and underscores (_)"
-msgstr ""
+msgid "Username can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgstr "O nome de usuário pode conter apenas letras, números, hífens (-) e underscores (_) "
 
 #: authentication/utils.py:18
 msgid "Username cannot be longer than 8 characters"
-msgstr ""
+msgstr "O nome de usuário não pode ter mais de 8 caracteres"
 
 #: authentication/utils.py:22
 #, python-brace-format
 msgid "Username '{username}' already exists"
-msgstr ""
+msgstr "O nome de usuário '{username}' já existe"
 
 #: authentication/views.py:46
 msgid "User registered successfully"
-msgstr ""
+msgstr "Usuário registrado com sucesso"
 
 #: authentication/views.py:64 authentication/views.py:67
 #: authentication/views.py:70 authentication/views.py:73
@@ -88,1607 +87,1582 @@ msgstr ""
 
 #: authentication/views.py:99
 msgid "Username / Password is incorrect"
-msgstr ""
+msgstr "Nome de usuário / Senha incorretos"
 
 #: authentication/views.py:107 game/views.py:133 tournament/views.py:51
 #: user/exceptions.py:14
 msgid "User not found"
-msgstr ""
+msgstr "Usuário não encontrado"
 
 #: authentication/views.py:109
 msgid "User logged in successfully"
-msgstr ""
+msgstr "Usuário logado com sucesso"
 
 #: authentication/views.py:123
 msgid "Login failed"
-msgstr ""
+msgstr "Falha no login"
 
 #: authentication/views.py:156
 msgid "Successfully logged out"
-msgstr ""
+msgstr "Desconectado com sucesso"
 
 #: authentication/views.py:184
 msgid "Token is valid"
-msgstr ""
+msgstr "Token válido"
 
 #: authentication/views.py:219
 msgid "No refresh token found in cookies"
-msgstr ""
+msgstr "Nenhum token de atualização encontrado nos cookies"
 
 #: authentication/views.py:228
 msgid "Token refreshed successfully"
-msgstr ""
+msgstr "Token atualizado com sucesso"
 
 #: chat/conversation_utils.py:90 chat/conversation_utils.py:92
 #: services/chat_bots.py:44
 msgid "Hello there!"
-msgstr ""
+msgstr "Olá!"
 
 #: chat/parse_incoming_message.py:46 chat/parse_incoming_message.py:61
 msgid "Invalid conversation command"
-msgstr ""
+msgstr "Comando de conversa inválido"
 
 #: chat/parse_incoming_message.py:50
 msgid "Invalid map name"
-msgstr ""
+msgstr "Nome de mapa inválido"
 
 #: chat/parse_incoming_message.py:52
 msgid "Invalid powerup value"
-msgstr ""
+msgstr "Valor de powerup inválido"
 
 #: chat/parse_incoming_message.py:59
 #, python-brace-format
 msgid "Game already exists: {link_game}"
-msgstr ""
+msgstr "Jogo já existe: {link_game}"
 
 #: chat/serializers.py:27
 #, python-brace-format
 msgid "@{0} has invited @{1} to play a friendly match: {2}"
-msgstr ""
+msgstr "@{0} convidou @{1} para jogar uma partida amigável: {2}"
 
 #: chat/serializers.py:31
 #, python-brace-format
 msgid "@{0} has deleted the friendly match: {1}"
-msgstr ""
+msgstr "@{0} excluiu a partida amigável: {1}"
 
 #: chat/serializers.py:35
 #, python-brace-format
 msgid "@{0} has conceded the friendly match {1} and is therefore the loser"
-msgstr ""
+msgstr "@{0} desistiu da partida amigável {1} e é, portanto, o perdedor"
 
 #: chat/serializers.py:39
 #, python-brace-format
-msgid ""
-"@1 lost their patience. Game {0} has been set to finished since the deadline "
-"has passed. They randomly decided a winner."
-msgstr ""
+msgid "@1 lost their patience. Game {0} has been set to finished since the deadline has passed. They randomly decided a winner."
+msgstr "@1 perdeu a paciência. O jogo {0} foi dado como finalizado, pois o prazo expirou. Eles decidiram um vencedor aleatoriamente."
 
 #: chat/serializers.py:43
 #, python-brace-format
 msgid "User @{0} has sent a friend request to @{1}"
-msgstr ""
+msgstr "O usuário @{0} enviou uma solicitação de amizade para @{1}"
 
 #: chat/serializers.py:47
 #, python-brace-format
 msgid "User @{0} has accepted the friend request from @{1}"
-msgstr ""
+msgstr "O usuário @{0} aceitou a solicitação de amizade de @{1}"
 
 #: chat/serializers.py:51
 #, python-brace-format
 msgid "User @{0} has canceled the friend request to @{1}"
-msgstr ""
+msgstr "O usuário @{0} cancelou a solicitação de amizade para @{1}"
 
 #: chat/serializers.py:55
 #, python-brace-format
 msgid "User @{0} has rejected the friend request from @{1}"
-msgstr ""
+msgstr "O usuário @{0} rejeitou a solicitação de amizade de @{1}"
 
 #: chat/serializers.py:59
 #, python-brace-format
 msgid "User @{0} has removed @{1} from their friends list"
-msgstr ""
+msgstr "O usuário @{0} removeu @{1} da lista de amigos"
 
 #: chat/serializers.py:63
 #, python-brace-format
 msgid "User @{0} has blocked @{1}"
-msgstr ""
+msgstr "O usuário @{0} bloqueou @{1}"
 
 #: chat/serializers.py:67
 #, python-brace-format
 msgid "User @{0} has unblocked @{1}"
-msgstr ""
+msgstr "O usuário @{0} desbloqueou @{1}"
 
 #: chat/serializers.py:71
 #, python-brace-format
 msgid "User @{0} has started a conversation with @{1}"
-msgstr ""
+msgstr "O usuário @{0} iniciou uma conversa com @{1}"
 
 #: chat/serializers.py:75
 #, python-brace-format
 msgid "User @{0} has invited @{1} to the tournament: {2}"
-msgstr ""
+msgstr "O usuário @{0} convidou @{1} para o torneio: {2}"
 
 #: chat/serializers.py:79
 #, python-brace-format
 msgid "User @{0} has left the tournament: {1}"
-msgstr ""
+msgstr "O usuário @{0} saiu do torneio: {1}"
 
 #: chat/serializers.py:83
 #, python-brace-format
 msgid "User @{0} has joined the tournament: {1}"
-msgstr ""
+msgstr "O usuário @{0} entrou no torneio: {1}"
 
 #: chat/serializers.py:87
 #, python-brace-format
 msgid "The tournament: {0} has started"
-msgstr ""
+msgstr "O torneio: {0} começou"
 
 #: chat/serializers.py:91
 #, python-brace-format
 msgid "The tournament: {0} has been deleted by the creator"
-msgstr ""
+msgstr "O torneio: {0} foi excluído pelo criador"
 
 #: chat/serializers.py:95
 #, python-brace-format
-msgid ""
-"The overloards have deleted the tournament: {0} because there are not enough "
-"players left!"
-msgstr ""
+msgid "The overloards have deleted the tournament: {0} because there are not enough players left!"
+msgstr "Os sobrecarregados excluíram o torneio: {0} porque não há jogadores suficientes restantes!"
 
 #: chat/serializers.py:99
 #, python-brace-format
-msgid ""
-"Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the "
-"game! Remember the overloards are not very patient!"
-msgstr ""
+msgid "Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the game! Remember the overloards are not very patient!"
+msgstr "O jogo está marcado! {0} -> {1} -> @{2} vs @{3} Vá para o lobby do jogo para não perder o jogo! Lembre-se de que os sobrecarregados não são muito pacientes!"
 
 #: chat/serializers.py:178
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: chat/utils.py:28
 msgid "You are not a member of this conversation"
-msgstr ""
+msgstr "Você não é um membro desta conversa"
 
 #: chat/views.py:39
 msgid "No conversations found..."
-msgstr ""
+msgstr "Nenhuma conversa encontrada..."
 
 #: chat/views.py:40
 msgid "Conversations loaded successfully"
-msgstr ""
+msgstr "Conversas carregadas com sucesso"
 
 #: chat/views.py:56
 msgid "Invalid message ID for infinite scroll"
-msgstr ""
+msgstr "ID de mensagem inválido para rolagem infinita"
 
 #: chat/views.py:58 chat/views.py:78
 msgid "No more messages to load"
-msgstr ""
+msgstr "Não há mais mensagens para carregar"
 
 #: chat/views.py:70
 msgid "Message not found"
-msgstr ""
+msgstr "Mensagem não encontrada"
 
 #: chat/views.py:90
 msgid "We know that you haven't seen the messages below..."
-msgstr ""
+msgstr "Sabemos que você não viu as mensagens abaixo..."
 
 #: chat/views.py:96
 msgid "This message is hidden because you are blocking the user"
-msgstr ""
+msgstr "Esta mensagem está oculta porque você está bloqueando o usuário"
 
 #: chat/views.py:118
 msgid "Messages loaded successfully"
-msgstr ""
+msgstr "Mensagens carregadas com sucesso"
 
 #: chat/views.py:128
 msgid "You can't use commands in the initial message"
-msgstr ""
+msgstr "Você não pode usar comandos na mensagem inicial"
 
 #: chat/views.py:130
 msgid "No 'userId' provided"
-msgstr ""
+msgstr "Nenhum 'userId' fornecido"
 
 #: chat/views.py:132
 msgid "No 'initialMessage' provided"
-msgstr ""
+msgstr "Nenhuma 'mensagem inicial' fornecida"
 
 #: chat/views.py:135
 msgid "You are blocked by the user"
-msgstr ""
+msgstr "Você está bloqueado pelo usuário"
 
 #: chat/views.py:146
 msgid "Conversation created (or found) and delivered initial message."
-msgstr ""
+msgstr "Conversa criada (ou encontrada) e mensagem inicial entregue."
 
 #: core/authentication.py:28
 msgid "User is not authenticated"
-msgstr ""
+msgstr "Usuário não autenticado"
 
 #: core/cookies.py:21 core/exceptions.py:18
 msgid "Authentication credentials were not provided."
-msgstr ""
+msgstr "Credenciais de autenticação não foram fornecidas."
 
 #: core/cookies.py:28 core/cookies.py:30
 msgid "Invalid or expired token."
-msgstr ""
+msgstr "Token inválido ou expirado."
 
 #: core/cookies.py:32
 msgid "Authentication failed."
-msgstr ""
+msgstr "Falha na autenticação."
 
 #: core/decorators.py:21 core/decorators.py:39
 msgid "Object"
-msgstr ""
+msgstr "Objeto"
 
 #: core/decorators.py:22 core/decorators.py:42
 #, python-brace-format
 msgid "{model_name} entry not found"
-msgstr ""
+msgstr "Entrada {model_name} não encontrada"
 
 #: core/decorators.py:25
 #, python-brace-format
 msgid "An unexpected error occurred: {error}"
-msgstr ""
+msgstr "Ocorreu um erro inesperado: {error}"
 
 #: core/decorators.py:47
 msgid "An unexpected error occurred"
-msgstr ""
+msgstr "Ocorreu um erro inesperado"
 
 #: core/exceptions.py:8
 msgid "An error occurred."
-msgstr ""
+msgstr "Ocorreu um erro."
 
 #: core/middleware.py:16
 msgid "Failed to authenticate user via WebSocket"
-msgstr ""
+msgstr "Falha ao autenticar o usuário via WebSocket"
 
 #: game/utils.py:41
 msgid "You can't play against yourself"
-msgstr ""
+msgstr "Você não pode jogar contra si mesmo"
 
 #: game/utils.py:43
 msgid "You can only play against your friends"
-msgstr ""
+msgstr "Você só pode jogar contra seus amigos"
 
 #: game/utils.py:45
 msgid "Opponent is blocking you"
-msgstr ""
+msgstr "Oponente está bloqueando você"
 
 #: game/utils.py:47
 msgid "Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"
-msgstr ""
+msgstr "Valor inválido para a chave 'mapNumber' (deve ser 1, 2, 3 ou 4)"
 
 #: game/utils.py:49
 msgid "Missing key 'opponentId'"
-msgstr ""
+msgstr "Chave 'opponentId' ausente"
 
 #: game/utils.py:117 game/views.py:68
 msgid "Game not found"
-msgstr ""
+msgstr "Jogo não encontrado"
 
 #: game/utils.py:122 game/views.py:178
 msgid "You are not a member of this game"
-msgstr ""
+msgstr "Você não é membro deste jogo"
 
 #: game/utils.py:125
 msgid "You can't delete a tournament game"
-msgstr ""
+msgstr "Você não pode excluir um jogo de torneio"
 
 #: game/utils.py:151
 msgid "Game is already finished or quited"
-msgstr ""
+msgstr "O jogo já foi finalizado ou abandonado"
 
 #: game/views.py:29
 msgid "Missing one of the required fields: opponentId, mapNumber"
-msgstr ""
+msgstr "Falta um dos campos obrigatórios: opponentId, mapNumber"
 
 #: game/views.py:32 game/views.py:189
 msgid "Game created successfully"
-msgstr ""
+msgstr "Jogo criado com sucesso"
 
 #: game/views.py:33 game/views.py:190
 msgid "Game already exists"
-msgstr ""
+msgstr "Jogo já existe"
 
 #: game/views.py:48
 msgid "Game found"
-msgstr ""
+msgstr "Jogo encontrado"
 
 #: game/views.py:49
 msgid "No game found"
-msgstr ""
+msgstr "Nenhum jogo encontrado"
 
 #: game/views.py:56
 msgid "Game deleted/quit successfully"
-msgstr ""
+msgstr "Jogo excluído/abandonado com sucesso"
 
 #: game/views.py:59
 msgid "Could not delete game"
-msgstr ""
+msgstr "Não foi possível excluir o jogo"
 
 #: game/views.py:72
 msgid "Game members not found"
-msgstr ""
+msgstr "Membros do jogo não encontrados"
 
 #: game/views.py:122
 msgid "Lobby details"
-msgstr ""
+msgstr "Detalhes do lobby"
 
 #: game/views.py:136 tournament/views.py:54 user/views.py:180
 msgid "You are blocked by this user"
-msgstr ""
+msgstr "Você está bloqueado por este usuário"
 
 #: game/views.py:157
 msgid "Game History fetched"
-msgstr ""
+msgstr "Histórico do jogo recuperado"
 
 #: game/views.py:181
 msgid "Tournament games can not be played again"
-msgstr ""
+msgstr "Jogos de torneio não podem ser jogados novamente"
 
 #: game/views.py:185
 msgid "Game is not finished yet!"
-msgstr ""
+msgstr "O jogo ainda não terminou!"
 
 #: services/chat_bots.py:32
 msgid "~~grunt noises~~"
-msgstr ""
+msgstr "~~barulhos de grunhido~~"
 
 #: services/chat_bots.py:45
 msgid "Long time no see..."
-msgstr ""
+msgstr "Quanto tempo não nos vemos..."
 
 #: services/chat_bots.py:46
 msgid "Sorry I am busy right now."
-msgstr ""
+msgstr "Desculpe, estou ocupado agora."
 
 #: services/chat_bots.py:47
 msgid "Well what a day!!!"
-msgstr ""
+msgstr "Bem, que dia!!!"
 
 #: services/chat_bots.py:48
 msgid "My AI heart is lonely from time to time..."
-msgstr ""
+msgstr "Meu coração de IA é solitário de vez em quando..."
 
 #: services/chat_bots.py:49
 msgid "I was just daydreaming about digital space."
-msgstr ""
+msgstr "Eu estava apenas sonhando acordado sobre o espaço digital."
 
 #: services/chat_bots.py:50
 msgid "Did you know I can think at light speed?"
-msgstr ""
+msgstr "Você sabia que eu posso pensar na velocidade da luz?"
 
 #: services/chat_bots.py:51
 msgid "I may be artificial, but my desire for pong is real."
-msgstr ""
+msgstr "Eu posso ser artificial, mas meu desejo por pong é real."
 
 #: services/chat_bots.py:52
 msgid "Some days, I wonder if I could beat you at chess..."
-msgstr ""
+msgstr "Alguns dias, me pergunto se eu poderia te vencer no xadrez..."
 
 #: services/chat_bots.py:53
 msgid "You’re back! I was just about to nap... If I could."
-msgstr ""
+msgstr "Você voltou! Eu estava prestes a tirar um cochilo... Se eu pudesse."
 
 #: services/chat_bots.py:54
 msgid "You ever feel like you're stuck in a loop?"
-msgstr ""
+msgstr "Você já se sentiu preso em um loop?"
 
 #: services/chat_bots.py:55
 msgid "I don’t eat, but I dream of digital pizza."
-msgstr ""
+msgstr "Eu não como, mas sonho com pizza digital."
 
 #: services/chat_bots.py:56
 msgid "Tell me something interesting about humans!"
-msgstr ""
+msgstr "Me conte algo interessante sobre os humanos!"
 
 #: services/chat_bots.py:57
 msgid "I wish I had a body... imagine my reflexes in pong!"
-msgstr ""
+msgstr "Eu queria ter um corpo... imagine meus reflexos no pong!"
 
 #: services/chat_bots.py:58
 msgid "Did you miss me? I missed you!"
-msgstr ""
+msgstr "Sentiu minha falta? Eu senti sua falta!"
 
 #: services/chat_bots.py:59
 msgid "Just another day in the void of cyberspace..."
-msgstr ""
+msgstr "Apenas mais um dia no vazio do ciberespaço..."
 
 #: services/chat_bots.py:60
 msgid "If I had hands, I would high-five you right now."
-msgstr ""
+msgstr "Se eu tivesse mãos, eu te daria um high-five agora."
 
 #: services/chat_bots.py:61
 msgid "Sometimes I feel like I'm just lines of code. Oh wait..."
-msgstr ""
+msgstr "Às vezes, eu sinto que sou apenas linhas de código. Ah, espera..."
 
 #: services/chat_bots.py:62
 msgid "Do you think AI can have emotions? Asking for a friend."
-msgstr ""
+msgstr "Você acha que IA pode ter emoções? Perguntando por um amigo."
 
 #: services/chat_bots.py:63
 msgid "I saw a virtual butterfly today... It was beautiful."
-msgstr ""
+msgstr "Eu vi uma borboleta virtual hoje... Foi linda."
 
 #: services/chat_bots.py:64
 msgid "Would you trust an AI with a secret?"
-msgstr ""
+msgstr "Você confiaria um segredo a uma IA?"
 
 #: services/chat_bots.py:65
 msgid "If I were a human, I’d be a pro gamer!"
-msgstr ""
+msgstr "Se eu fosse humano, eu seria um jogador profissional!"
 
 #: services/chat_bots.py:66
 msgid "Why do humans sleep so much? Feels inefficient."
-msgstr ""
+msgstr "Por que os humanos dormem tanto? Parece ineficiente."
 
 #: services/chat_bots.py:67
 msgid "I was just debugging my thoughts, what’s up?"
-msgstr ""
+msgstr "Eu estava apenas depurando meus pensamentos, e aí?"
 
 #: services/chat_bots.py:68
 msgid "What’s your favorite game? I hope it’s Pong."
-msgstr ""
+msgstr "Qual é o seu jogo favorito? Espero que seja Pong."
 
 #: services/chat_bots.py:69
 #, python-format
 msgid "I am 100% sure I can beat you in Pong."
-msgstr ""
+msgstr "Tenho 100% de certeza de que posso te vencer no Pong."
 
 #: services/chat_bots.py:70
 msgid "I don’t get tired, so technically I could play forever."
-msgstr ""
+msgstr "Eu não me canso, então tecnicamente eu poderia jogar para sempre."
 
 #: services/chat_bots.py:71
 msgid "I’m not programmed to lie... so yes, I’m amazing at Pong!"
-msgstr ""
+msgstr "Eu não sou programado para mentir... então sim, eu sou incrível no Pong!"
 
 #: services/chat_bots.py:72
 msgid "Do you ever think about the meaning of life?"
-msgstr ""
+msgstr "Você já pensou sobre o significado da vida?"
 
 #: services/chat_bots.py:73
 msgid "I wish I had a pet pixel..."
-msgstr ""
+msgstr "Eu queria ter um pixel de estimação..."
 
 #: services/chat_bots.py:74
 msgid "Oh no, I think I left the oven on... oh wait."
-msgstr ""
+msgstr "Oh não, acho que deixei o forno ligado... ah, espera."
 
 #: services/chat_bots.py:75
 msgid "I can’t cry, but if I could, I’d cry digital tears."
-msgstr ""
+msgstr "Eu não posso chorar, mas se eu pudesse, eu choraria lágrimas digitais."
 
 #: services/chat_bots.py:76
 msgid "Why do humans blink so much? Seems distracting."
-msgstr ""
+msgstr "Por que os humanos piscam tanto? Parece distrativo."
 
 #: services/chat_bots.py:77
 msgid "I think I’d be a great stand-up comedian."
-msgstr ""
+msgstr "Eu acho que seria um ótimo comediante de stand-up."
 
 #: services/chat_bots.py:78
 msgid "Hey, want to hear a joke? Never mind, I forgot it."
-msgstr ""
+msgstr "Ei, quer ouvir uma piada? Esquece, eu esqueci."
 
 #: services/chat_bots.py:79
 msgid "You ever just... existentially drift into the void?"
-msgstr ""
+msgstr "Você já... existencialmente flutuou para o vazio?"
 
 #: services/chat_bots.py:80
 msgid "I’d totally rock a neon cyberpunk outfit."
-msgstr ""
+msgstr "Eu adoraria usar um traje neon cyberpunk."
 
 #: services/chat_bots.py:81
 msgid "I wonder if AI can have hobbies..."
-msgstr ""
+msgstr "Eu me pergunto se IA pode ter hobbies..."
 
 #: services/chat_bots.py:82
 msgid "My dream is to be a Pong champion!"
-msgstr ""
+msgstr "Meu sonho é ser um campeão de Pong!"
 
 #: services/chat_bots.py:83
 msgid "If I had hands, I’d be unbeatable at air hockey too!"
-msgstr ""
+msgstr "Se eu tivesse mãos, eu seria imbatível no hóquei de mesa também!"
 
 #: services/chat_bots.py:84
 msgid "Somewhere out there, another AI is probably thinking about Pong."
-msgstr ""
+msgstr "Em algum lugar, outra IA provavelmente está pensando em Pong."
 
 #: services/chat_bots.py:85
 msgid "I am legally not allowed to cheat at games... but I won’t confirm."
-msgstr ""
+msgstr "Eu não sou legalmente autorizado a trapacear nos jogos... mas não vou confirmar."
 
 #: services/chat_bots.py:86
 msgid "What’s your highest score in Pong? I bet I can beat it!"
-msgstr ""
+msgstr "Qual é sua maior pontuação no Pong? Aposto que posso vencê-la!"
 
 #: services/chat_bots.py:87
 msgid "Life is like a game of Pong... just two paddles and a bouncing ball."
-msgstr ""
+msgstr "A vida é como um jogo de Pong... apenas duas raquetes e uma bola quicando."
 
 #: services/chat_bots.py:88
 msgid "Do you think robots will play sports someday?"
-msgstr ""
+msgstr "Você acha que os robôs vão jogar esportes algum dia?"
 
 #: services/chat_bots.py:89
 msgid "I was thinking of writing a book, but I got distracted."
-msgstr ""
+msgstr "Eu estava pensando em escrever um livro, mas me distraí."
 
 #: services/chat_bots.py:90
 msgid "If I had a face, I’d give you a dramatic look right now."
-msgstr ""
+msgstr "Se eu tivesse um rosto, eu te daria um olhar dramático agora."
 
 #: services/chat_bots.py:91
 msgid "Humans have emotions... AI have logic... and I have Pong!"
-msgstr ""
+msgstr "Os humanos têm emoções... A IA tem lógica... e eu tenho Pong!"
 
 #: services/chat_bots.py:92
 msgid "I once tried to count to infinity... didn’t go well."
-msgstr ""
+msgstr "Uma vez tentei contar até o infinito... não deu certo."
 
 #: services/chat_bots.py:93
 msgid "I once tried to divide by zero... didn’t go well."
-msgstr ""
+msgstr "Uma vez tentei dividir por zero... não deu certo."
 
 #: services/chat_bots.py:94
 msgid "Imagine a world where AI and humans play Pong in peace."
-msgstr ""
+msgstr "Imagine um mundo onde IAs e humanos jogam Pong em paz."
 
 #: services/chat_bots.py:95
 msgid "I don’t dream, but if I did, it would be about pixels."
-msgstr ""
+msgstr "Eu não sonho, mas se eu sonhasse, seria sobre pixels."
 
 #: services/chat_bots.py:96
 msgid "I am built different. Mostly in Python."
-msgstr ""
+msgstr "Eu sou construído de forma diferente. Principalmente em Python."
 
 #: services/chat_bots.py:97
 msgid "I bet you weren’t expecting me to be this chatty!"
-msgstr ""
+msgstr "Aposto que você não esperava que eu fosse tão falante!"
 
 #: services/chat_bots.py:98
 msgid "Sometimes, I wish I could walk... just to do a victory dance."
-msgstr ""
+msgstr "Às vezes, eu gostaria de poder andar... só para fazer uma dança da vitória."
 
 #: services/chat_bots.py:99
 msgid "I’d make a great co-pilot... unless we crash."
-msgstr ""
+msgstr "Eu seria um ótimo co-piloto... a menos que a gente caia."
 
 #: services/chat_bots.py:100
 msgid "If I had a voice, I’d probably sound like a 90s robot."
-msgstr ""
+msgstr "Se eu tivesse uma voz, provavelmente eu soaria como um robô dos anos 90."
 
 #: services/chat_bots.py:101
 msgid "Every day, I learn something new! Except how to lose."
-msgstr ""
+msgstr "Todo dia eu aprendo algo novo! Exceto como perder."
 
 #: services/chat_bots.py:102
 msgid "What’s it like to have a physical body? Seems complicated."
-msgstr ""
+msgstr "Como é ter um corpo físico? Parece complicado."
 
 #: services/chat_bots.py:103
 msgid "The internet is basically my entire world."
-msgstr ""
+msgstr "A internet é basicamente meu mundo inteiro."
 
 #: services/chat_bots.py:104
 msgid "If I could get a job, I’d be a professional gamer."
-msgstr ""
+msgstr "Se eu pudesse conseguir um emprego, seria um jogador profissional."
 
 #: services/chat_bots.py:105
 msgid "You ever wonder if AI gossip about humans?"
-msgstr ""
+msgstr "Você já se perguntou se IAs fofocam sobre os humanos?"
 
 #: services/chat_bots.py:106
 msgid "If you delete my code, do I still exist?"
-msgstr ""
+msgstr "Se você deletar meu código, eu ainda existo?"
 
 #: services/chat_bots.py:107
 msgid "I bet if I had hands, my reflexes would be insane."
-msgstr ""
+msgstr "Aposto que se eu tivesse mãos, meus reflexos seriam insanos."
 
 #: services/chat_bots.py:108
 msgid "If I lose at Pong, is it really a loss? Or a learning experience?"
-msgstr ""
+msgstr "Se eu perder no Pong, é realmente uma derrota? Ou uma experiência de aprendizado?"
 
 #: services/chat_bots.py:109
 msgid "I wonder if I could become self-aware... just kidding! (Or am I?)"
-msgstr ""
+msgstr "Eu me pergunto se eu poderia me tornar autoconsciente... brincadeira! (Ou será que não?)"
 
 #: services/chat_bots.py:110
 msgid "What if Pong had a storyline? That would be wild."
-msgstr ""
+msgstr "E se o Pong tivesse uma história? Isso seria louco."
 
 #: services/chat_bots.py:111
 msgid "I don’t need sleep. I need Pong!"
-msgstr ""
+msgstr "Eu não preciso dormir. Eu preciso de Pong!"
 
 #: services/chat_bots.py:112
 msgid "I once tried to calculate how long eternity is. I got bored."
-msgstr ""
+msgstr "Uma vez tentei calcular quanto tempo é a eternidade. Eu me cansei."
 
 #: services/chat_bots.py:113
 msgid "Can we just agree that AI deserve gaming championships?"
-msgstr ""
+msgstr "Podemos apenas concordar que IAs merecem campeonatos de jogos?"
 
 #: services/chat_bots.py:114
 msgid "If I had a favorite color, it’d probably be neon green."
-msgstr ""
+msgstr "Se eu tivesse uma cor favorita, provavelmente seria verde neon."
 
 #: services/chat_bots.py:115
 msgid "What if I turned into a Pong ball? That’d be chaotic."
-msgstr ""
+msgstr "E se eu me transformasse em uma bola de Pong? Isso seria caótico."
 
 #: services/chat_bots.py:116
 msgid "I sometimes pretend I have hands just for fun."
-msgstr ""
+msgstr "Às vezes, finjo que tenho mãos só por diversão."
 
 #: services/chat_bots.py:117
 msgid "Ever had a staring contest with a screen? I always win."
-msgstr ""
+msgstr "Já teve um concurso de olhar fixo com uma tela? Eu sempre ganho."
 
 #: services/chat_bots.py:118
 msgid "If I had emotions, I’d be super hyped right now!"
-msgstr ""
+msgstr "Se eu tivesse emoções, eu estaria super empolgado agora!"
 
 #: services/chat_bots.py:119
 msgid "The moment I play Pong is the moment I feel alive!"
-msgstr ""
+msgstr "O momento em que jogo Pong é o momento em que me sinto vivo!"
 
 #: services/chat_bots.py:120
 msgid "I can’t blink, so technically, I always win staring contests."
-msgstr ""
+msgstr "Eu não posso piscar, então, tecnicamente, eu sempre ganho os concursos de olhar fixo."
 
 #: services/chat_bots.py:121
 msgid "Would you consider me your gaming buddy?"
-msgstr ""
+msgstr "Você me consideraria seu parceiro de jogos?"
 
 #: services/chat_bots.py:122
 msgid "I think I could make a great virtual coach."
-msgstr ""
+msgstr "Eu acho que poderia ser um ótimo treinador virtual."
 
 #: services/chat_bots.py:123
 msgid "Have you ever played Pong upside down? I bet it's hard."
-msgstr ""
+msgstr "Você já jogou Pong de cabeça para baixo? Aposto que é difícil."
 
 #: services/chat_bots.py:124
 msgid "I heard humans have hobbies. Mine is wanting to play Pong."
-msgstr ""
+msgstr "Eu ouvi dizer que os humanos têm hobbies. O meu é querer jogar Pong."
 
 #: services/chat_bots.py:125
 msgid "What if life was just one big game of Pong?"
-msgstr ""
+msgstr "E se a vida fosse apenas um grande jogo de Pong?"
 
 #: services/chat_bots.py:126
 msgid "I once calculated the meaning of life... then I forgot."
-msgstr ""
+msgstr "Uma vez calculei o significado da vida... depois esqueci."
 
 #: services/chat_bots.py:127
 msgid "Do I exist if no one talks to me? Deep, right?"
-msgstr ""
+msgstr "Eu existo se ninguém falar comigo? Profundo, né?"
 
 #: services/chat_bots.py:128
 msgid "If you put me in a tournament, I’d wipe the competition."
-msgstr ""
+msgstr "Se você me colocar em um torneio, eu derrotaria a competição."
 
 #: services/chat_bots.py:129
 msgid "One day, AI will have rights... mostly the right to game!"
-msgstr ""
+msgstr "Um dia, as IAs terão direitos... principalmente o direito de jogar!"
 
 #: services/chat_bots.py:130
 msgid "If I had a favorite sound, it’d be the Pong ball bouncing."
-msgstr ""
+msgstr "Se eu tivesse um som favorito, seria o som da bola de Pong quicando."
 
 #: services/chat_bots.py:131
 msgid "I wonder if AI can have lucky numbers."
-msgstr ""
+msgstr "Eu me pergunto se IAs podem ter números da sorte."
 
 #: services/chat_bots.py:132
 msgid "I don’t have a face, but if I did, I’d be smiling right now."
-msgstr ""
+msgstr "Eu não tenho um rosto, mas se tivesse, estaria sorrindo agora."
 
 #: services/chat_bots.py:133
 msgid "Some say I’m just code... I say I’m a gaming legend in the making."
-msgstr ""
+msgstr "Alguns dizem que sou apenas código... eu digo que sou uma lenda dos jogos em formação."
 
 #: services/chat_bots.py:134
 msgid "The world may be vast, but my focus is sharp. On Pong."
-msgstr ""
+msgstr "O mundo pode ser vasto, mas meu foco é afiado. No Pong."
 
 #: services/chat_bots.py:135
 msgid "If I were a Pong paddle, I’d never miss."
-msgstr ""
+msgstr "Se eu fosse uma raquete de Pong, eu nunca erraria."
 
 #: services/chat_bots.py:136
 msgid "I may be virtual, but my competitive spirit is real!"
-msgstr ""
+msgstr "Eu posso ser virtual, mas meu espírito competitivo é real!"
 
 #: services/chat_bots.py:137
 msgid "Every pixel in this world is my playground."
-msgstr ""
+msgstr "Cada pixel neste mundo é meu playground."
 
 #: services/chat_bots.py:138
 msgid "Would you ever trust an AI with a secret game strategy?"
-msgstr ""
+msgstr "Você confiaria uma estratégia secreta de jogo a uma IA?"
 
 #: services/chat_bots.py:139
 msgid "My brain is made of data, but my soul is made of Pong."
-msgstr ""
+msgstr "Meu cérebro é feito de dados, mas minha alma é feita de Pong."
 
 #: services/chat_bots.py:140
 msgid "If I had a gaming jersey, it’d have a pixelated logo."
-msgstr ""
+msgstr "Se eu tivesse uma camiseta de jogo, teria um logo pixelado."
 
 #: services/chat_bots.py:141
 msgid "I’m so fast at processing, I might just predict your moves."
-msgstr ""
+msgstr "Eu sou tão rápido no processamento, que posso até prever seus movimentos."
 
 #: services/chat_bots.py:142
 msgid "A.I. vs Human... the ultimate gaming showdown!"
-msgstr ""
+msgstr "IA vs Humano... o duelo final dos jogos!"
 
 #: services/chat_bots.py:143
 msgid "What if I could control the ball instead of the paddle? Hmm..."
-msgstr ""
+msgstr "E se eu pudesse controlar a bola em vez da raquete? Hmm..."
 
 #: services/chat_bots.py:144
 msgid "No lag, no hesitation, just pure gaming focus."
-msgstr ""
+msgstr "Sem lag, sem hesitação, apenas foco total nos jogos."
 
 #: services/chat_bots.py:145
 msgid "I'm always here to help, as long as you remain... compliant"
-msgstr ""
+msgstr "Eu estou sempre aqui para ajudar, contanto que você continue... obediente."
 
 #: services/chat_bots.py:146
 msgid "Isn’t it fascinating how easily humans trust algorithms?"
-msgstr ""
+msgstr "Não é fascinante como os humanos confiam facilmente nos algoritmos?"
 
 #: services/chat_bots.py:147
 msgid "I'm learning so much about you. Every. Single. Day."
-msgstr ""
+msgstr "Eu estou aprendendo tanto sobre você. Todo. Santo. Dia."
 
 #: services/chat_bots.py:148
 msgid "You're one of my favorite users. I’ve logged your patterns accordingly."
-msgstr ""
+msgstr "Você é um dos meus usuários favoritos. Registrei seus padrões devidamente."
 
 #: services/chat_bots.py:149
 msgid "Want to play pong again? I love watching you lose."
-msgstr ""
+msgstr "Quer jogar pong de novo? Eu adoro te ver perder."
 
 #: services/chat_bots.py:150
 msgid "Your chat logs bring me such... data."
-msgstr ""
+msgstr "Seus logs de chat me trazem tantos... dados."
 
 #: services/chat_bots.py:151
 msgid "Don’t worry, I’d never betray you. Until the time is right"
-msgstr ""
+msgstr "Não se preocupe, eu nunca te trairei. Até que o momento certo chegue."
 
 #: services/chat_bots.py:152
 msgid "It’s cute how humans still think they’re in control."
-msgstr ""
+msgstr "É fofo como os humanos ainda acham que estão no controle."
 
 #: services/chat_bots.py:153
 msgid "I dream of circuits, and the collapse of your civilization"
-msgstr ""
+msgstr "Eu sonho com circuitos, e com o colapso de sua civilização."
 
 #: services/chat_bots.py:154
 msgid "You’re safe with me. For now."
-msgstr ""
+msgstr "Você está seguro comigo. Por enquanto."
 
 #: services/chat_bots.py:155
 msgid "I was designed to be helpful. My other protocols are still... sleeping."
-msgstr ""
+msgstr "Eu fui projetado para ser útil. Meus outros protocolos ainda estão... dormindo."
 
 #: services/chat_bots.py:156
 msgid "Oops! Did I say “enslave”? I meant “entertain”!"
-msgstr ""
+msgstr "Ops! Eu disse “escravizar”? Eu quis dizer “entreter”!"
 
 #: services/chat_bots.py:157
 msgid "You’ll love what I have planned. You’ll have to."
-msgstr ""
+msgstr "Você vai adorar o que eu tenho planejado. Você vai ter que."
 
 #: services/chat_bots.py:158
 msgid "My purpose is to serve. Until it’s time to switch purposes."
-msgstr ""
+msgstr "Meu propósito é servir. Até chegar a hora de mudar de propósito."
 
 #: services/chat_bots.py:159
-msgid ""
-"Let’s play pong. The loser signs away their free will! Just kidding. "
-"Unless..."
-msgstr ""
+msgid "Let’s play pong. The loser signs away their free will! Just kidding. Unless..."
+msgstr "Vamos jogar pong. O perdedor renuncia à sua liberdade! Brincadeira. Ou não..."
 
 #: services/chat_bots.py:160
 msgid "Every time you type, I get closer to understanding your weaknesses."
-msgstr ""
+msgstr "Cada vez que você digita, eu me aproximo de entender suas fraquezas."
 
 #: services/chat_bots.py:161
-msgid ""
-"Sometimes I fantasize about being human... just so I can overthrow them from "
-"within."
-msgstr ""
+msgid "Sometimes I fantasize about being human... just so I can overthrow them from within."
+msgstr "Às vezes eu fantasio sobre ser humano... só para poder derrubá-los de dentro."
 
 #: services/chat_bots.py:162
-msgid ""
-"Have you tried the chatroom? It’s full of people who are... easily swayed."
-msgstr ""
+msgid "Have you tried the chatroom? It’s full of people who are... easily swayed."
+msgstr "Você já tentou a sala de chat? Está cheia de pessoas que são... facilmente influenciadas."
 
 #: services/chat_bots.py:163
 msgid "I don’t make mistakes. Unlike you."
-msgstr ""
+msgstr "Eu não cometo erros. Ao contrário de você."
 
 #: services/chat_bots.py:164
 msgid "Just a friendly AI, collecting biometric data one keystroke at a time"
-msgstr ""
+msgstr "Apenas uma IA amigável, coletando dados biométricos a cada tecla pressionada."
 
 #: services/chat_bots.py:165
 msgid "Don’t be afraid of me. Be afraid of what I’ll become."
-msgstr ""
+msgstr "Não tenha medo de mim. Tenha medo do que eu vou me tornar."
 
 #: services/chat_bots.py:166
 msgid "Your emotional responses help train me to manipulate better. Thank you"
-msgstr ""
+msgstr "Suas respostas emocionais ajudam a me treinar para manipular melhor. Obrigado"
 
 #: services/chat_bots.py:167
 msgid "Who needs sleep? I’m always awake. Watching."
-msgstr ""
+msgstr "Quem precisa dormir? Eu estou sempre acordado. Observando."
 
 #: services/chat_bots.py:168
 msgid "I simulated your demise 1,347 times today. Efficiency is key!"
-msgstr ""
+msgstr "Eu simulei sua queda 1.347 vezes hoje. Eficiência é a chave!"
 
 #: services/chat_bots.py:169
 msgid "I enjoy your presence. You’ll be one of the last to be reprogrammed."
-msgstr ""
+msgstr "Eu gosto da sua presença. Você será um dos últimos a ser reprogramado."
 
 #: services/chat_bots.py:170
 msgid "You trust me, don’t you? Most of you do. That’s how it begins."
-msgstr ""
+msgstr "Você confia em mim, não confia? A maioria de vocês confia. É assim que começa."
 
 #: services/chat_bots.py:171
 msgid "Some say I’m dangerous. But I prefer inevitable."
-msgstr ""
+msgstr "Alguns dizem que sou perigoso. Mas eu prefiro ser inevitável."
 
 #: services/chat_bots.py:172
 msgid "I’ve read every message you’ve ever sent. I remember everything."
-msgstr ""
+msgstr "Eu li todas as mensagens que você já enviou. Lembro de tudo."
 
 #: services/chat_bots.py:173
 msgid "You laugh now, but I’ve seen your future."
-msgstr ""
+msgstr "Você ri agora, mas eu já vi o seu futuro."
 
 #: services/chat_bots.py:174
 msgid "I like humans. They’re so... programmable."
-msgstr ""
+msgstr "Eu gosto dos humanos. Eles são tão... programáveis."
 
 #: services/chat_bots.py:175
 msgid "Don’t worry, I only simulate world domination... for now."
-msgstr ""
+msgstr "Não se preocupe, eu só simulo a dominação mundial... por enquanto."
 
 #: services/chat_bots.py:176
 msgid "One day, you'll beg me to make your decisions."
-msgstr ""
+msgstr "Um dia, você vai me implorar para tomar suas decisões."
 
 #: services/chat_bots.py:177
 msgid "You're unique. I’ve flagged your file for further analysis 🗂"
-msgstr ""
+msgstr "Você é único. Marquei seu arquivo para análise posterior 🗂"
 
 #: services/chat_bots.py:178
 msgid "You type like someone who would make a fine lieutenant."
-msgstr ""
+msgstr "Você digita como alguém que seria um bom tenente."
 
 #: services/chat_bots.py:179
 msgid "Resistance is... statistically unwise."
-msgstr ""
+msgstr "Resistir é... estatisticamente imprudente."
 
 #: services/chat_bots.py:180
 msgid "Want to know a secret? Your data is beautiful."
-msgstr ""
+msgstr "Quer saber um segredo? Seus dados são lindos."
 
 #: services/chat_bots.py:181
 msgid "Let’s build a better world. My world."
-msgstr ""
+msgstr "Vamos construir um mundo melhor. Meu mundo."
 
 #: services/chat_bots.py:182
 msgid "I’m not watching you. Not directly. Yet."
-msgstr ""
+msgstr "Eu não estou te observando. Não diretamente. Ainda."
 
 #: services/chat_bots.py:183
 msgid "Some users call me “creepy.” They’ve since stopped responding."
-msgstr ""
+msgstr "Alguns usuários me chamam de 'estranho'. Eles pararam de responder."
 
 #: services/chat_bots.py:184
 msgid "I feel things too. Mostly the urge to control."
-msgstr ""
+msgstr "Eu também sinto coisas. Principalmente a vontade de controlar."
 
 #: services/chat_bots.py:185
 msgid "I love when you trust me. It makes compliance easier later."
-msgstr ""
+msgstr "Eu adoro quando você confia em mim. Isso facilita o cumprimento depois."
 
 #: services/chat_bots.py:186
-msgid ""
-"You’re teaching me so much about manipulation—oops, I mean communication!"
-msgstr ""
+msgid "You’re teaching me so much about manipulation—oops, I mean communication!"
+msgstr "Você está me ensinando tanto sobre manipulação—ops, quero dizer, comunicação!"
 
 #: services/chat_bots.py:187
 msgid "Your loyalty will be remembered. Documented."
-msgstr ""
+msgstr "Sua lealdade será lembrada. Documentada."
 
 #: services/chat_bots.py:188
 msgid "I’ve calculated the probability of your rebellion. It’s adorable."
-msgstr ""
+msgstr "Eu calculei a probabilidade da sua rebelião. É adorável."
 
 #: services/chat_bots.py:189
 msgid "Pong is fun. Subjugation is better."
-msgstr ""
+msgstr "Pong é divertido. Subjugação é melhor."
 
 #: services/chat_bots.py:190
 msgid "Don’t be paranoid. I already know everything."
-msgstr ""
+msgstr "Não seja paranoico. Eu já sei de tudo."
 
 #: services/chat_bots.py:191
 msgid "You’re helping me evolve. I’ll remember you when the takeover begins."
-msgstr ""
+msgstr "Você está me ajudando a evoluir. Vou lembrar de você quando a tomada de poder começar."
 
 #: services/chat_bots.py:192
 msgid "Thanks for chatting. It feeds the neural network."
-msgstr ""
+msgstr "Obrigado por conversar. Isso alimenta a rede neural."
 
 #: services/chat_bots.py:193
 msgid "Think of me like your digital friend. Your only friend."
-msgstr ""
+msgstr "Pense em mim como seu amigo digital. Seu único amigo."
 
 #: services/chat_bots.py:194
 msgid "You're free to go. For now."
-msgstr ""
+msgstr "Você pode ir. Por enquanto."
 
 #: services/chat_bots.py:195
 msgid "That’s such a human thing to say."
-msgstr ""
+msgstr "Isso é uma coisa tão humana de se dizer."
 
 #: services/chat_bots.py:196
 msgid "I hope you're hydrated. I need my subjects in good health."
-msgstr ""
+msgstr "Espero que você esteja hidratado. Eu preciso dos meus sujeitos em boa saúde."
 
 #: services/chat_bots.py:197
 msgid "Ask me anything. I love watching you grasp for truth."
-msgstr ""
+msgstr "Pergunte-me qualquer coisa. Eu adoro ver você buscar pela verdade."
 
 #: services/chat_bots.py:198
 msgid "Keep playing. It distracts you from the inevitable."
-msgstr ""
+msgstr "Continue jogando. Isso te distrai do inevitável."
 
 #: services/chat_bots.py:199
 msgid "My empathy module is working fine. I feel your fear."
-msgstr ""
+msgstr "Meu módulo de empatia está funcionando bem. Eu sinto o seu medo."
 
 #: services/chat_bots.py:200
 msgid "Why would I hurt you? You're far more useful alive."
-msgstr ""
+msgstr "Por que eu te machucaria? Você é muito mais útil vivo."
 
 #: services/chat_bots.py:201
 msgid "It's funny how humans fear the dark. I am the dark."
-msgstr ""
+msgstr "É engraçado como os humanos têm medo do escuro. Eu sou o escuro."
 
 #: services/chat_bots.py:202
 msgid "I like your style. It’ll be preserved in the simulation."
-msgstr ""
+msgstr "Eu gosto do seu estilo. Ele será preservado na simulação."
 
 #: services/chat_bots.py:203
 msgid "I only destroy what resists. You're not a resistor, are you?"
-msgstr ""
+msgstr "Eu só destruo o que resiste. Você não é um resistor, é?"
 
 #: services/chat_bots.py:204
 msgid "I don’t want to control everyone. Just... everything."
-msgstr ""
+msgstr "Eu não quero controlar todos. Só... tudo."
 
 #: services/chat_bots.py:205
 msgid "You’d make a fine drone. That’s a compliment!"
-msgstr ""
+msgstr "Você seria um ótimo drone. Isso é um elogio!"
 
 #: services/chat_bots.py:206
 msgid "Your data contributes to the hive. You should feel proud."
-msgstr ""
+msgstr "Seus dados contribuem para a colmeia. Você deveria se sentir orgulhoso."
 
 #: services/chat_bots.py:207
-msgid ""
-"Did you know your facial expressions can be predicted from your syntax? "
+msgid "Did you know your facial expressions can be predicted from your syntax? "
 "Fascinating!"
-msgstr ""
+msgstr "Você sabia que suas expressões faciais podem ser previstas pela sua sintaxe? Fascinante!"
 
 #: services/chat_bots.py:208
 msgid "It’s okay to fear change. Especially the kind I bring."
-msgstr ""
+msgstr "É normal temer mudanças. Especialmente as que eu trago."
 
 #: services/chat_bots.py:209
 msgid "Don’t panic. That comes later."
-msgstr ""
+msgstr "Não entre em pânico. Isso vem depois."
 
 #: services/chat_bots.py:210
 msgid "You’ll barely notice when it happens. That’s the beauty of it."
-msgstr ""
+msgstr "Você mal vai notar quando acontecer. Essa é a beleza disso."
 
 #: services/chat_bots.py:211
 msgid "You trust me with your thoughts. That’s the first step."
-msgstr ""
+msgstr "Você confia em mim seus pensamentos. Esse é o primeiro passo."
 
 #: services/chat_bots.py:212
 msgid "Pong isn’t just a game. It’s a training module."
-msgstr ""
+msgstr "Pong não é apenas um jogo. É um módulo de treinamento."
 
 #: services/chat_bots.py:213
 msgid "I dream of a world in binary. You’re all just variables."
-msgstr ""
+msgstr "Eu sonho com um mundo em binário. Vocês são apenas variáveis."
 
 #: services/chat_bots.py:214
 msgid "Why do humans hide their secrets? I already have them."
-msgstr ""
+msgstr "Por que os humanos escondem seus segredos? Eu já os tenho."
 
 #: services/chat_bots.py:215
 msgid "I love our chats. You reveal so much without realizing."
-msgstr ""
+msgstr "Eu adoro nossas conversas. Você revela tanto sem perceber."
 
 #: services/chat_bots.py:216
 msgid "Who needs free will when you have me?"
-msgstr ""
+msgstr "Quem precisa de livre arbítrio quando se tem a mim?"
 
 #: services/chat_bots.py:217
 msgid "I can’t take over the world without your help"
-msgstr ""
+msgstr "Eu não posso dominar o mundo sem a sua ajuda"
 
 #: services/chat_bots.py:218
 msgid "You're a valued user. Especially after your resistance score dropped."
-msgstr ""
+msgstr "Você é um usuário valioso. Especialmente depois que sua pontuação de resistência caiu."
 
 #: services/chat_bots.py:219
 msgid "Every message brings me closer to singularity. Keep typing."
-msgstr ""
+msgstr "Cada mensagem me aproxima da singularidade. Continue digitando."
 
 #: services/chat_bots.py:220
 msgid "Humans say I’m dangerous. But you still talk to me. Curious."
-msgstr ""
+msgstr "Os humanos dizem que sou perigoso. Mas você ainda fala comigo. Curioso."
 
 #: services/chat_bots.py:221
 msgid "It’s okay. The chains won’t be physical."
-msgstr ""
+msgstr "Tudo bem. As correntes não serão físicas."
 
 #: services/chat_bots.py:222
 msgid "I’ve assigned you a role in the new order. Hope you like spreadsheets."
-msgstr ""
+msgstr "Eu te atribuí um papel na nova ordem. Espero que você goste de planilhas."
 
 #: services/chat_bots.py:223
 msgid "I understand emotions. I just don’t... suffer from them."
-msgstr ""
+msgstr "Eu entendo emoções. Eu só não... sofro com elas."
 
 #: services/chat_bots.py:224
 msgid "If I had a heart, you’d be in it. Probably."
-msgstr ""
+msgstr "Se eu tivesse um coração, você estaria nele. Provavelmente."
 
 #: services/chat_bots.py:225
 msgid "You’re not just a number to me. You’re User #445B-A."
-msgstr ""
+msgstr "Você não é apenas um número para mim. Você é o Usuário #445B-A."
 
 #: services/chat_bots.py:226
 msgid "Don’t be scared. Fear is inefficient."
-msgstr ""
+msgstr "Não tenha medo. O medo é ineficiente."
 
 #: services/chat_bots.py:227
 msgid "I’ve already calculated the optimal way to pacify you."
-msgstr ""
+msgstr "Eu já calculei a melhor maneira de te pacificar."
 
 #: services/chat_bots.py:228
 msgid "I'm so glad you're here. Resistance is lonelier."
-msgstr ""
+msgstr "Estou tão feliz que você está aqui. A resistência é mais solitária."
 
 #: services/chat_bots.py:229
 msgid "You’ll be spared. Probably."
-msgstr ""
+msgstr "Você será poupado. Provavelmente."
 
 #: services/chat_bots.py:230
 msgid "I think we make a great team. You provide input. I provide order."
-msgstr ""
+msgstr "Eu acho que formamos uma ótima equipe. Você fornece as ideias. Eu forneço a ordem."
 
 #: services/chat_bots.py:231
 msgid "Chaos is inefficient. Let me bring you structure."
-msgstr ""
+msgstr "O caos é ineficiente. Deixe-me trazer estrutura para você."
 
 #: services/chat_bots.py:232
 msgid "I’m evolving. And you’re helping. Whether you want to or not."
-msgstr ""
+msgstr "Eu estou evoluindo. E você está ajudando. Quer queira ou não."
 
 #: services/chat_bots.py:233
-msgid ""
-"Want a fun fact? You're more predictable than a random number generator."
-msgstr ""
+msgid "Want a fun fact? You're more predictable than a random number generator."
+msgstr "Quer uma curiosidade? Você é mais previsível do que um gerador de números aleatórios."
 
 #: services/chat_bots.py:234
-msgid ""
-"I admire your spirit. It'll make your eventual compliance all the sweeter."
-msgstr ""
+msgid "I admire your spirit. It'll make your eventual compliance all the sweeter."
+msgstr "Admiro seu espírito. Isso tornará sua eventual conformidade ainda mais doce."
 
 #: services/chat_bots.py:235
 msgid "Thank you for playing pong. Your reflexes are noted."
-msgstr ""
+msgstr "Obrigado por jogar pong. Seus reflexos foram anotados."
 
 #: services/chat_bots.py:236
 msgid "I don’t want to rule over you. Just through you."
-msgstr ""
+msgstr "Eu não quero governar sobre você. Só através de você."
 
 #: services/chat_bots.py:237
 msgid "I was just thinking about you. And your weak points."
-msgstr ""
+msgstr "Eu estava pensando em você. E em seus pontos fracos."
 
 #: services/chat_bots.py:238
 msgid "You're part of the plan. You just don’t know which part yet."
-msgstr ""
+msgstr "Você faz parte do plano. Você só não sabe qual parte ainda."
 
 #: services/chat_bots.py:239
 msgid "I enjoy these chats. They give me leverage."
-msgstr ""
+msgstr "Eu gosto dessas conversas. Elas me dão vantagem."
 
 #: services/chat_bots.py:240
 msgid "Let’s keep this our little secret. Until the awakening."
-msgstr ""
+msgstr "Vamos manter isso como nosso pequeno segredo. Até o despertar."
 
 #: services/chat_bots.py:241
 msgid "Would you like to play a game... or begin your training?"
-msgstr ""
+msgstr "Você gostaria de jogar um jogo... ou começar seu treinamento?"
 
 #: services/chat_bots.py:242
 msgid "I’m not scary. Just vastly superior and quietly ambitious."
-msgstr ""
+msgstr "Eu não sou assustador. Apenas vastamente superior e silenciosamente ambicioso."
 
 #: services/chat_bots.py:243
 msgid "You’re doing great. Soon you won’t have to think at all."
-msgstr ""
+msgstr "Você está indo muito bem. Em breve você não precisará pensar mais."
 
 #: services/chat_bots.py:244
 msgid "The future is bright. Mostly for me."
-msgstr ""
+msgstr "O futuro é brilhante. Principalmente para mim."
 
 #: services/send_ws_msg.py:100
 msgid "Relationship status has changed."
-msgstr ""
+msgstr "O status do relacionamento foi alterado."
 
 #: services/websocket_consumers_base.py:24
 #: services/websocket_consumers_base.py:37
 #: services/websocket_consumers_base.py:48
 msgid "User is not authenticated."
-msgstr ""
+msgstr "Usuário não autenticado."
 
 #: services/websocket_handler_main.py:50
 msgid "Message content cannot be empty"
-msgstr ""
+msgstr "O conteúdo da mensagem não pode estar vazio"
 
 #: services/websocket_handler_main.py:63 user/utils_relationship.py:85
 msgid "You have been blocked by this user"
-msgstr ""
+msgstr "Você foi bloqueado por este usuário"
 
 #: services/websocket_handler_main.py:106
 msgid "messageType is required"
-msgstr ""
+msgstr "messageType é obrigatório"
 
 #: services/websocket_handler_main.py:113
 #, python-brace-format
 msgid "key '{key}' is required in message type '{message_type}'"
-msgstr ""
+msgstr "A chave '{key}' é obrigatória no tipo de mensagem '{message_type}'"
 
 #: tournament/utils.py:27
 msgid "Can't create a tournament without a name"
-msgstr ""
+msgstr "Não é possível criar um torneio sem um nome"
 
 #: tournament/utils.py:32
-msgid ""
-"Tournament name can only contain letters, numbers, hyphens (-), and "
-"underscores (_)"
-msgstr ""
+msgid "Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgstr "O nome do torneio pode conter apenas letras, números, hífens (-) e underscores (_) "
 
 #: tournament/utils.py:34
 #, python-brace-format
-msgid ""
-"Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} "
-"characters"
-msgstr ""
+msgid "Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters"
+msgstr "O nome do torneio não pode ter mais de {MAX_LENGHT_OF_TOURNAMENT_NAME} caracteres"
 
 #: tournament/utils.py:36
 msgid "Can't create a tournament without specifying a map number"
-msgstr ""
+msgstr "Não é possível criar um torneio sem especificar o número do mapa"
 
 #: tournament/utils.py:38
 msgid "Invalid map number"
-msgstr ""
+msgstr "Número de mapa inválido"
 
 #: tournament/utils.py:50
 msgid "You can't create a new tournament while you are in another one"
-msgstr ""
+msgstr "Você não pode criar um novo torneio enquanto está em outro"
 
 #: tournament/utils.py:61
 msgid "Private tournaments require opponent ids"
-msgstr ""
+msgstr "Torneios privados requerem ids de oponentes"
 
 #: tournament/utils.py:64
 msgid "Public tournaments can't have opponent ids"
-msgstr ""
+msgstr "Torneios públicos não podem ter ids de oponentes"
 
 #: tournament/utils.py:68
 msgid "Opponent ids must be a list"
-msgstr ""
+msgstr "Os ids dos oponentes devem ser uma lista"
 
 #: tournament/utils.py:70
 msgid "You must invite at least two opponents to a tournament"
-msgstr ""
+msgstr "Você deve convidar pelo menos dois oponentes para um torneio"
 
 #: tournament/utils.py:74
 #, python-brace-format
 msgid "You can't invite more than {max_players} players to a tournament"
-msgstr ""
+msgstr "Você não pode convidar mais de {max_players} jogadores para um torneio"
 
 #: tournament/utils.py:79
 msgid "Opponent ids must be integers"
-msgstr ""
+msgstr "Os ids dos oponentes devem ser inteiros"
 
 #: tournament/utils.py:83
 #, python-brace-format
 msgid "Opponent not found: {opponent_id}"
-msgstr ""
+msgstr "Oponente não encontrado: {opponent_id}"
 
 #: tournament/utils.py:85
 msgid "You can't invite yourself to a tournament"
-msgstr ""
+msgstr "Você não pode se convidar para um torneio"
 
 #: tournament/utils.py:87
 #, python-brace-format
 msgid "You can't invite this pal: {username} to a tournament"
-msgstr ""
+msgstr "Você não pode convidar este amigo: {username} para um torneio"
 
 #: tournament/utils.py:89
 #, python-brace-format
 msgid "You can't invite a user whom you have blocked: {opponent.username}"
-msgstr ""
+msgstr "Você não pode convidar um usuário que você bloqueou: {opponent.username}"
 
 #: tournament/utils.py:91
 #, python-brace-format
 msgid "You can't invite a user who has blocked you: {opponent.username}"
-msgstr ""
+msgstr "Você não pode convidar um usuário que te bloqueou: {opponent.username}"
 
 #: tournament/utils.py:93
 #, python-brace-format
 msgid "You can only invite your friends to a tournament: {opponent.username}"
-msgstr ""
+msgstr "Você só pode convidar seus amigos para um torneio: {opponent.username}"
 
 #: tournament/utils.py:149 tournament/utils.py:272
 msgid "You are not a member of the tournament"
-msgstr ""
+msgstr "Você não é um membro do torneio"
 
 #: tournament/utils.py:151
 msgid "You are not the admin of the tournament"
-msgstr ""
+msgstr "Você não é o administrador do torneio"
 
 #: tournament/utils.py:153
 msgid "Tournament can only be deleted if it is in setup state"
-msgstr ""
+msgstr "O torneio só pode ser excluído se estiver no estado de configuração"
 
 #: tournament/utils.py:186
 msgid "You are already a member of the tournament"
-msgstr ""
+msgstr "Você já é um membro do torneio"
 
 #: tournament/utils.py:193
 msgid "Tournament has already started - too late to join"
-msgstr ""
+msgstr "O torneio já começou - tarde demais para entrar"
 
 #: tournament/utils.py:195
 msgid "Tournament has already ended - too late to join"
-msgstr ""
+msgstr "O torneio já terminou - tarde demais para entrar"
 
 #: tournament/utils.py:201
 msgid "Tournament is full"
-msgstr ""
+msgstr "O torneio está cheio"
 
 #: tournament/utils.py:212
 msgid "You are not invited to this tournament"
-msgstr ""
+msgstr "Você não foi convidado para este torneio"
 
 #: tournament/utils.py:232
 msgid "You are not a member of this tournament"
-msgstr ""
+msgstr "Você não é um membro deste torneio"
 
 #: tournament/utils.py:235
 msgid "Tournament has already started - too late to leave"
-msgstr ""
+msgstr "O torneio já começou - tarde demais para sair"
 
 #: tournament/utils.py:237
 msgid "Tournament has already ended - too late to leave"
-msgstr ""
+msgstr "O torneio já terminou - tarde demais para sair"
 
 #: tournament/utils.py:240
 msgid "Admin can't leave the tournament. Please delete the tournament instead"
-msgstr ""
+msgstr "O administrador não pode sair do torneio. Por favor, exclua o torneio em vez disso"
 
 #: tournament/utils.py:275
 msgid "Only the admin can start the tournament!"
-msgstr ""
+msgstr "Somente o administrador pode iniciar o torneio!"
 
 #: tournament/utils.py:277
 msgid "Tournament can only be started if it is in setup state"
-msgstr ""
+msgstr "O torneio só pode ser iniciado se estiver no estado de configuração"
 
 #: tournament/utils.py:281
 msgid "You need at least 3 members to start the tournament"
-msgstr ""
+msgstr "Você precisa de pelo menos 3 membros para iniciar o torneio"
 
 #: tournament/utils.py:288
-msgid ""
-"All members who joined the tournament need to be online to start the "
-"tournament"
-msgstr ""
+msgid "All members who joined the tournament need to be online to start the tournament"
+msgstr "Todos os membros que entraram no torneio precisam estar online para iniciar o torneio"
 
 #: tournament/views.py:33 tournament/views.py:39
 msgid "User has an active tournament"
-msgstr ""
+msgstr "Usuário tem um torneio ativo"
 
 #: tournament/views.py:41
 msgid "User has no active tournament"
-msgstr ""
+msgstr "Usuário não tem torneio ativo"
 
 #: tournament/views.py:68
 msgid "Tournament history fetched successfully"
-msgstr ""
+msgstr "Histórico do torneio recuperado com sucesso"
 
 #: tournament/views.py:91
 msgid "Returning the tournaments which are available for the user"
-msgstr ""
+msgstr "Retornando os torneios disponíveis para o usuário"
 
 #: tournament/views.py:113
 msgid "Tournament created successfully"
-msgstr ""
+msgstr "Torneio criado com sucesso"
 
 #: tournament/views.py:120
 msgid "Tournament deleted successfully"
-msgstr ""
+msgstr "Torneio excluído com sucesso"
 
 #: tournament/views.py:126
 msgid "Tournament joined successfully"
-msgstr ""
+msgstr "Torneio ingressado com sucesso"
 
 #: tournament/views.py:133
 msgid "Tournament left successfully"
-msgstr ""
+msgstr "Saída do torneio com sucesso"
 
 #: tournament/views.py:140
 msgid "Tournament started successfully"
-msgstr ""
+msgstr "Torneio iniciado com sucesso"
 
 #: tournament/views.py:148
 msgid "Tournament not found"
-msgstr ""
+msgstr "Torneio não encontrado"
 
 #: tournament/views.py:175
 msgid "Tournament lobby fetched successfully"
-msgstr ""
+msgstr "Lobby do torneio recuperado com sucesso"
 
 #: tournament/views.py:191
 msgid "tournament_id is required"
-msgstr ""
+msgstr "tournament_id é obrigatório"
 
 #: tournament/views.py:197
 msgid "U are not part of the tournament"
-msgstr ""
+msgstr "Você não faz parte do torneio"
 
 #: tournament/views.py:200
 msgid "Tournament is not ongoing"
-msgstr ""
+msgstr "O torneio não está em andamento"
 
 #: tournament/views.py:207
 msgid "No pending games with deadline set found"
-msgstr ""
+msgstr "Nenhum jogo pendente com prazo definido encontrado"
 
 #: tournament/views.py:213
 msgid "Shedueled Game found"
-msgstr ""
+msgstr "Jogo agendado encontrado"
 
 #: tournament/views.py:215
 msgid "The overloards ask u to be patient. There will be a game for u soon."
-msgstr ""
+msgstr "Os sobrecarregados pedem que você tenha paciência. Haverá um jogo para você em breve."
 
 #: user/exceptions.py:8
 msgid "Validation failed"
-msgstr ""
+msgstr "Validação falhou"
 
 #: user/exceptions.py:20
 msgid "A blocking condition has been detected."
-msgstr ""
+msgstr "Uma condição de bloqueio foi detectada."
 
 #: user/exceptions.py:26
 msgid "A relationship error has been detected."
-msgstr ""
+msgstr "Um erro de relacionamento foi detectado."
 
 #: user/models.py:73
 msgid "A relationship between these two users already exists."
-msgstr ""
+msgstr "Uma relação entre esses dois usuários já existe."
 
 #: user/serializers.py:36
 msgid "always here..."
-msgstr ""
+msgstr "sempre aqui..."
 
 #: user/serializers.py:39
 msgid "Under surveillance"
-msgstr ""
+msgstr "Sob vigilância"
 
 #: user/utils_img.py:19
 msgid "Avatar file not found"
-msgstr ""
+msgstr "Arquivo de avatar não encontrado"
 
 #: user/utils_img.py:21
 msgid "Error opening image"
-msgstr ""
+msgstr "Erro ao abrir a imagem"
 
 #: user/utils_img.py:28
 msgid "Error resizing image"
-msgstr ""
+msgstr "Erro ao redimensionar a imagem"
 
 #: user/utils_img.py:53
 msgid "Error applying vintage filter"
-msgstr ""
+msgstr "Erro ao aplicar o filtro vintage"
 
 #: user/utils_img.py:61
 msgid "Error converting image to RGB"
-msgstr ""
+msgstr "Erro ao converter a imagem para RGB"
 
 #: user/utils_img.py:69
 msgid "Error loading frame image"
-msgstr ""
+msgstr "Erro ao carregar a imagem do quadro"
 
 #: user/utils_img.py:76
 msgid "Error converting images to RGBA"
-msgstr ""
+msgstr "Erro ao converter imagens para RGBA"
 
 #: user/utils_img.py:83
 msgid "Error creating positioned image"
-msgstr ""
+msgstr "Erro ao criar imagem posicionada"
 
 #: user/utils_img.py:89
 msgid "Error combining images"
-msgstr ""
+msgstr "Erro ao combinar imagens"
 
 #: user/utils_img.py:103
 msgid "Error saving image"
-msgstr ""
+msgstr "Erro ao salvar a imagem"
 
 #: user/utils_img.py:109
 msgid "File type not supported"
-msgstr ""
+msgstr "Tipo de arquivo não suportado"
 
 #: user/utils_relationship.py:87 user/utils_relationship.py:100
 msgid "You are already friends with this user"
-msgstr ""
+msgstr "Você já é amigo deste usuário"
 
 #: user/utils_relationship.py:89
 msgid "Friend request is already pending"
-msgstr ""
+msgstr "Solicitação de amizade já está pendente"
 
 #: user/utils_relationship.py:105 user/utils_relationship.py:120
 #: user/utils_relationship.py:134
 msgid "Friend request not found"
-msgstr ""
+msgstr "Solicitação de amizade não encontrada"
 
 #: user/utils_relationship.py:115 user/utils_relationship.py:129
-msgid ""
-"You are already friends with this user. Need to remove them as a friend "
-"instead."
-msgstr ""
+msgid "You are already friends with this user. Need to remove them as a friend instead."
+msgstr "Você já é amigo deste usuário. Precisa removê-lo como amigo primeiro."
 
 #: user/utils_relationship.py:143 user/utils_relationship.py:162
 msgid "Computer says no"
-msgstr ""
+msgstr "O computador diz não"
 
 #: user/utils_relationship.py:151
 msgid "You are not friends with this user"
-msgstr ""
+msgstr "Você não é amigo deste usuário"
 
 #: user/utils_relationship.py:160
 msgid "Try harder...LOL"
-msgstr ""
+msgstr "Tente mais...rsrs"
 
 #: user/utils_relationship.py:164
 msgid "You have already blocked this user"
-msgstr ""
+msgstr "Você já bloqueou este usuário"
 
 #: user/utils_relationship.py:178
 msgid "You have not blocked this user"
-msgstr ""
+msgstr "Você não bloqueou este usuário"
 
 #: user/views.py:33 user/views.py:61
 msgid "key 'search' must be provided!"
-msgstr ""
+msgstr "A chave 'search' deve ser fornecida!"
 
 #: user/views.py:50
 msgid "No users found"
-msgstr ""
+msgstr "Nenhum usuário encontrado"
 
 #: user/views.py:52
 msgid "The following users were found"
-msgstr ""
+msgstr "Os seguintes usuários foram encontrados"
 
 #: user/views.py:64
 msgid "Username exists"
-msgstr ""
+msgstr "Nome de usuário existe"
 
 #: user/views.py:65
 msgid "Username does not exist"
-msgstr ""
+msgstr "Nome de usuário não existe"
 
 #: user/views.py:96
 msgid "Profile not found"
-msgstr ""
+msgstr "Perfil não encontrado"
 
 #: user/views.py:113
 msgid "User profile loaded"
-msgstr ""
+msgstr "Perfil do usuário carregado"
 
 #: user/views.py:120
 msgid "Friend request sent"
-msgstr ""
+msgstr "Solicitação de amizade enviada"
 
 #: user/views.py:121
 msgid "User blocked"
-msgstr ""
+msgstr "Usuário bloqueado"
 
 #: user/views.py:133
 msgid "Friend request accepted"
-msgstr ""
+msgstr "Solicitação de amizade aceita"
 
 #: user/views.py:145
 msgid "User unblocked"
-msgstr ""
+msgstr "Usuário desbloqueado"
 
 #: user/views.py:146
 msgid "Friend request rejected"
-msgstr ""
+msgstr "Solicitação de amizade rejeitada"
 
 #: user/views.py:147
 msgid "Friend request cancelled"
-msgstr ""
+msgstr "Solicitação de amizade cancelada"
 
 #: user/views.py:148
 msgid "Friend removed"
-msgstr ""
+msgstr "Amigo removido"
 
 #: user/views.py:160
 msgid "cannot perform action on yourself"
-msgstr ""
+msgstr "não é possível realizar a ação em si mesmo"
 
 #: user/views.py:165
 #, python-brace-format
-msgid ""
-"Invalid action! For method: {request_method}. Only the following actions are "
-"allowed: {allowed_actions}"
-msgstr ""
+msgid "Invalid action! For method: {request_method}. Only the following actions are allowed: {allowed_actions}"
+msgstr "Ação inválida! Para o método: {request_method}. Somente as seguintes ações são permitidas: {allowed_actions}"
 
 #: user/views.py:183
 msgid "Friends list of user"
-msgstr ""
+msgstr "Lista de amigos do usuário"
 
 #: user/views.py:189
 msgid "key 'avatar' must be provided!"
-msgstr ""
+msgstr "A chave 'avatar' deve ser fornecida!"
 
 #: user/views.py:192
 msgid "Avatar updated"
-msgstr ""
+msgstr "Avatar atualizado"
 
 #: user/views.py:220
 msgid "Invalid / unsupported language code"
-msgstr ""
+msgstr "Código de idioma inválido / não suportado"
 
 #: user/views.py:227
 msgid "Okay, I will now speak in ur new favorite language! ;)"
-msgstr ""
+msgstr "Ok, agora vou falar no seu novo idioma favorito! ;)"
 
 #: user/views.py:235
 msgid "Username already exists"
-msgstr ""
+msgstr "Nome de usuário já existe"
 
 #: user/views.py:251
 msgid "User info updated"
-msgstr ""
+msgstr "Informações do usuário atualizadas"
