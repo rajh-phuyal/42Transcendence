@@ -19,45 +19,44 @@ msgstr ""
 
 #: authentication/serializers.py:40
 msgid "Password cannot be empty"
-msgstr ""
+msgstr "Das Passwort darf nicht leer sein"
 
 #: authentication/serializers.py:43
 msgid "Password must be at least 6 characters long"
-msgstr ""
+msgstr "Das Passwort muss mindestens 6 Zeichen lang sein"
 
 #: authentication/serializers.py:46
 msgid "Password must contain at least one lowercase character"
-msgstr ""
+msgstr "Das Passwort muss mindestens ein Kleinbuchstabe enthalten"
 
 #: authentication/serializers.py:49
 msgid "Password must contain at least one uppercase character"
-msgstr ""
+msgstr "Das Passwort muss mindestens ein Großbuchstabe enthalten"
 
 #: authentication/serializers.py:52
 msgid "Password must contain at least one digit"
-msgstr ""
+msgstr "Das Passwort muss mindestens eine Ziffer enthalten"
 
 #: authentication/utils.py:10
 msgid "Username cannot be empty"
-msgstr ""
+msgstr "Der Benutzername darf nicht leer sein"
 
 #: authentication/utils.py:14
-msgid ""
-"Username can only contain letters, numbers, hyphens (-), and underscores (_)"
-msgstr ""
+msgid "Username can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgstr "Der Benutzername darf nur Buchstaben, Zahlen, Bindestriche (-) und Unterstriche (_) enthalten"
 
 #: authentication/utils.py:18
 msgid "Username cannot be longer than 8 characters"
-msgstr ""
+msgstr "Der Benutzername darf nicht länger als 8 Zeichen sein"
 
 #: authentication/utils.py:22
 #, python-brace-format
 msgid "Username '{username}' already exists"
-msgstr ""
+msgstr "Der Benutzername '{username}' ist bereits vergeben"
 
 #: authentication/views.py:46
 msgid "User registered successfully"
-msgstr ""
+msgstr "Benutzer erfolgreich registriert"
 
 #: authentication/views.py:64 authentication/views.py:67
 #: authentication/views.py:70 authentication/views.py:73

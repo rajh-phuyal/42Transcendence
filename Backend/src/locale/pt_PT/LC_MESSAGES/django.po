@@ -82,7 +82,7 @@ msgstr "Utilizador registado com sucesso"
 #: core/authentication.py:78 user/views.py:69 user/views.py:72 user/views.py:75
 #: user/views.py:78 user/views.py:81 user/views.py:84 user/views.py:87
 msgid "Method not allowed"
-msgstr ""
+msgstr "Método não permitido"
 
 #: authentication/views.py:99
 msgid "Username / Password is incorrect"
