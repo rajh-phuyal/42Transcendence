@@ -90,7 +90,7 @@ export default class ModalManager {
         // Attach Bootstrap event listeners
         $on(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
         $on(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
-        $on(modalElement, 'hide.bs.modal', this.changeFocus.bind(this));
+        $on(modalElement, 'hide.bs.modal', this.changeFocus);
     }
 
     /* To fix area-hidden error */
