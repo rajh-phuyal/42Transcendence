@@ -2,7 +2,7 @@
 import random, asyncio
 from asgiref.sync import sync_to_async
 # Django
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, activate
 # User
 from user.constants import USER_ID_AI, USER_ID_FLATMATE
 from user.models import User
@@ -13,13 +13,17 @@ from services.send_ws_msg import send_ws_badge, send_ws_badge_all, send_ws_chat,
 async def send_message_with_delay(sender, receiver, delay=None, message_txt = None):
     from chat.conversation_utils import get_or_create_conversation
     from chat.message_utils import create_msg_db
+
+    # Since this function runs in a different thread, we need to set the language for the current thread
+    activate(receiver.language)
+
     if isinstance(sender, int):
         sender = await sync_to_async(User.objects.get)(id=sender)
     if isinstance(receiver, int):
         receiver = await sync_to_async(User.objects.get)(id=receiver)
     conversation = await sync_to_async(get_or_create_conversation)(sender, receiver)
     # Send a typing indicator
-    await send_ws_chat_typing(receiver.id, conversation.id, True);
+    await send_ws_chat_typing(receiver.id, conversation.id, True)
     # Simulate a delay before sending the message
     if delay is None:
         delay = random.uniform(0.5, 3.0)
