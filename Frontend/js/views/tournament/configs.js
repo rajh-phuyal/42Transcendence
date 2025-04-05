@@ -10,7 +10,6 @@ import { updatePodium, updateFinalsDiagram } from './methodsRankFinals.js';
 
 export default {
     attributes: {
-        data: undefined,
     },
 
     methods: {
