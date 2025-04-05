@@ -1,4 +1,5 @@
 import { audioPlayer } from '../../abstracts/audio.js';
+import $store from '../../store/store.js';
 import call from '../../abstracts/call.js'
 import { populateInfoAndStats } from './script.js';
 import router from '../../navigation/router.js';
@@ -191,6 +192,13 @@ export default {
         },
 
         afterDomInsertion() {
+            /* Somehow we load this view after register see issue #501
+            We shouldn be here! So this could fix it: */
+            if ($store.fromState("currentRoute") != "profile") {
+                console.log("we are routing home - let's research this later - but it's not a bug ;)");
+                router("/home");
+                return;
+            }
             if (!this.routeParams?.id || isNaN(this.routeParams.id)) {
                 router('/404');
                 return;
