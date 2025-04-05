@@ -10,7 +10,6 @@ import { updatePodium, updateFinalsDiagram } from './methodsRankFinals.js';
 
 export default {
     attributes: {
-        data: undefined,
     },
 
     methods: {
@@ -29,7 +28,6 @@ export default {
 
     hooks: {
         beforeRouteEnter() {
-            this.data = undefined;
         },
 
         beforeRouteLeave() {

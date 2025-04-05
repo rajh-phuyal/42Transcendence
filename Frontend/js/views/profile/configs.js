@@ -21,7 +21,6 @@ export default {
         },
 
         result: null,
-        cropper: undefined,
 
         buttonSettings: {
             friend: {
@@ -167,8 +166,6 @@ export default {
             this.buttonTopRight.image = undefined;
             this.buttonTopRight.method = undefined;
             this.result = null;
-            this.cropper = undefined;
-
         },
 
         beforeRouteLeave() {
