@@ -1,0 +1,1746 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-05 17:17+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: authentication/serializers.py:40
+msgid "Password cannot be empty"
+msgstr "Пароль не може бути порожнім"
+
+#: authentication/serializers.py:43
+msgid "Password must be at least 6 characters long"
+msgstr "Пароль повинен містити щонайменше 6 символів"
+
+#: authentication/serializers.py:46
+msgid "Password must contain at least one lowercase character"
+msgstr "Пароль повинен містити щонайменше одну малу літеру"
+
+#: authentication/serializers.py:49
+msgid "Password must contain at least one uppercase character"
+msgstr "Пароль повинен містити щонайменше одну велику літеру"
+
+#: authentication/serializers.py:52
+msgid "Password must contain at least one digit"
+msgstr "Пароль повинен містити щонайменше одну цифру"
+
+#: authentication/utils.py:10
+msgid "Username cannot be empty"
+msgstr "Ім’я користувача не може бути порожнім"
+
+#: authentication/utils.py:14
+msgid ""
+"Username can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgstr ""
+"Ім’я користувача може містити лише літери, цифри, дефіси (-) та підкреслення "
+"(_)"
+
+#: authentication/utils.py:18
+msgid "Username cannot be longer than 8 characters"
+msgstr "Ім’я користувача не може бути довшим за 8 символів"
+
+#: authentication/utils.py:22
+#, python-brace-format
+msgid "Username '{username}' already exists"
+msgstr "Ім’я користувача '{username}' вже існує"
+
+#: authentication/views.py:46
+msgid "User registered successfully"
+msgstr "Користувача успішно зареєстровано"
+
+#: authentication/views.py:64 authentication/views.py:67
+#: authentication/views.py:70 authentication/views.py:73
+#: authentication/views.py:76 authentication/views.py:79
+#: authentication/views.py:82 authentication/views.py:126
+#: authentication/views.py:129 authentication/views.py:132
+#: authentication/views.py:135 authentication/views.py:138
+#: authentication/views.py:141 authentication/views.py:144
+#: authentication/views.py:160 authentication/views.py:163
+#: authentication/views.py:166 authentication/views.py:169
+#: authentication/views.py:172 authentication/views.py:175
+#: authentication/views.py:178 authentication/views.py:193
+#: authentication/views.py:196 authentication/views.py:199
+#: authentication/views.py:202 authentication/views.py:205
+#: authentication/views.py:208 authentication/views.py:211
+#: authentication/views.py:240 authentication/views.py:243
+#: authentication/views.py:246 authentication/views.py:249
+#: authentication/views.py:252 authentication/views.py:255
+#: authentication/views.py:258 core/authentication.py:57
+#: core/authentication.py:60 core/authentication.py:63
+#: core/authentication.py:66 core/authentication.py:69
+#: core/authentication.py:72 core/authentication.py:75
+#: core/authentication.py:78 user/views.py:69 user/views.py:72 user/views.py:75
+#: user/views.py:78 user/views.py:81 user/views.py:84 user/views.py:87
+msgid "Method not allowed"
+msgstr "Метод не дозволений"
+
+#: authentication/views.py:99
+msgid "Username / Password is incorrect"
+msgstr "Ім’я користувача / пароль неправильні"
+
+#: authentication/views.py:107 game/views.py:133 tournament/views.py:51
+#: user/exceptions.py:14
+msgid "User not found"
+msgstr "Користувача не знайдено"
+
+#: authentication/views.py:109
+msgid "User logged in successfully"
+msgstr "Користувач успішно увійшов"
+
+#: authentication/views.py:123
+msgid "Login failed"
+msgstr "Не вдалося увійти"
+
+#: authentication/views.py:156
+msgid "Successfully logged out"
+msgstr "Успішний вихід із системи"
+
+#: authentication/views.py:184
+msgid "Token is valid"
+msgstr "Токен дійсний"
+
+#: authentication/views.py:219
+msgid "No refresh token found in cookies"
+msgstr "У файлах cookie не знайдено токену оновлення"
+
+#: authentication/views.py:228
+msgid "Token refreshed successfully"
+msgstr "Токен успішно оновлено"
+
+#: chat/conversation_utils.py:90 chat/conversation_utils.py:92
+#: services/chat_bots.py:44
+msgid "Hello there!"
+msgstr "Привіт!"
+
+#: chat/parse_incoming_message.py:46 chat/parse_incoming_message.py:61
+msgid "Invalid conversation command"
+msgstr "Недійсна команда бесіди"
+
+#: chat/parse_incoming_message.py:50
+msgid "Invalid map name"
+msgstr "Недійсна назва карти"
+
+#: chat/parse_incoming_message.py:52
+msgid "Invalid powerup value"
+msgstr "Недійсне значення бонусу"
+
+#: chat/parse_incoming_message.py:59
+#, python-brace-format
+msgid "Game already exists: {link_game}"
+msgstr "Гра вже існує: {link_game}"
+
+#: chat/serializers.py:27
+#, python-brace-format
+msgid "@{0} has invited @{1} to play a friendly match: {2}"
+msgstr "@{0} запросив(ла) @{1} на дружній матч: {2}"
+
+#: chat/serializers.py:31
+#, python-brace-format
+msgid "@{0} has deleted the friendly match: {1}"
+msgstr "@{0} видалив(ла) дружній матч: {1}"
+
+#: chat/serializers.py:35
+#, python-brace-format
+msgid "@{0} has conceded the friendly match {1} and is therefore the loser"
+msgstr "@{0} визнав(ла) поразку в дружньому матчі {1} і тому програв(ла)"
+
+#: chat/serializers.py:39
+#, python-brace-format
+msgid ""
+"@1 lost their patience. Game {0} has been set to finished since the deadline "
+"has passed. They randomly decided a winner."
+msgstr ""
+"@1 втратив(ла) терпіння. Гру {0} завершено, оскільки термін сплив. Переможця "
+"вибрано випадково."
+
+#: chat/serializers.py:43
+#, python-brace-format
+msgid "User @{0} has sent a friend request to @{1}"
+msgstr "Користувач @{0} надіслав(ла) запит на дружбу користувачу @{1}"
+
+#: chat/serializers.py:47
+#, python-brace-format
+msgid "User @{0} has accepted the friend request from @{1}"
+msgstr "Користувач @{0} прийняв(ла) запит на дружбу від @{1}"
+
+#: chat/serializers.py:51
+#, python-brace-format
+msgid "User @{0} has canceled the friend request to @{1}"
+msgstr "Користувач @{0} скасував(ла) запит на дружбу до @{1}"
+
+#: chat/serializers.py:55
+#, python-brace-format
+msgid "User @{0} has rejected the friend request from @{1}"
+msgstr "Користувач @{0} відхилив(ла) запит на дружбу від @{1}"
+
+#: chat/serializers.py:59
+#, python-brace-format
+msgid "User @{0} has removed @{1} from their friends list"
+msgstr "Користувач @{0} видалив(ла) @{1} зі списку друзів"
+
+#: chat/serializers.py:63
+#, python-brace-format
+msgid "User @{0} has blocked @{1}"
+msgstr "Користувач @{0} заблокував(ла) @{1}"
+
+#: chat/serializers.py:67
+#, python-brace-format
+msgid "User @{0} has unblocked @{1}"
+msgstr "Користувач @{0} розблокував(ла) @{1}"
+
+#: chat/serializers.py:71
+#, python-brace-format
+msgid "User @{0} has started a conversation with @{1}"
+msgstr "Користувач @{0} почав(ла) розмову з @{1}"
+
+#: chat/serializers.py:75
+#, python-brace-format
+msgid "User @{0} has invited @{1} to the tournament: {2}"
+msgstr "Користувач @{0} запросив(ла) @{1} на турнір: {2}"
+
+#: chat/serializers.py:79
+#, python-brace-format
+msgid "User @{0} has left the tournament: {1}"
+msgstr "Користувач @{0} покинув(ла) турнір: {1}"
+
+#: chat/serializers.py:83
+#, python-brace-format
+msgid "User @{0} has joined the tournament: {1}"
+msgstr "Користувач @{0} приєднався(лась) до турніру: {1}"
+
+#: chat/serializers.py:87
+#, python-brace-format
+msgid "The tournament: {0} has started"
+msgstr "Турнір {0} розпочався"
+
+#: chat/serializers.py:91
+#, python-brace-format
+msgid "The tournament: {0} has been deleted by the creator"
+msgstr "Турнір {0} був видалений творцем"
+
+#: chat/serializers.py:95
+#, python-brace-format
+msgid ""
+"The overloards have deleted the tournament: {0} because there are not enough "
+"players left!"
+msgstr ""
+"Володарі видалили турнір {0}, оскільки не залишилося достатньо гравців!"
+
+#: chat/serializers.py:99
+#, python-brace-format
+msgid ""
+"Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the "
+"game! Remember the overloards are not very patient!"
+msgstr ""
+"Час гри настав! {0} -> {1} -> @{2} проти @{3}. Перейдіть до лобі гри, щоб не "
+"пропустити матч! Пам’ятайте, володарі не дуже терплячі!"
+
+#: chat/serializers.py:178
+msgid "System"
+msgstr "Система"
+
+#: chat/utils.py:28
+msgid "You are not a member of this conversation"
+msgstr "Ви не є учасником цієї розмови"
+
+#: chat/views.py:39
+msgid "No conversations found..."
+msgstr "Розмов не знайдено..."
+
+#: chat/views.py:40
+msgid "Conversations loaded successfully"
+msgstr "Розмови успішно завантажено"
+
+#: chat/views.py:56
+msgid "Invalid message ID for infinite scroll"
+msgstr "Недійсний ідентифікатор повідомлення для безкінечного прокручування"
+
+#: chat/views.py:58 chat/views.py:78
+msgid "No more messages to load"
+msgstr "Більше немає повідомлень для завантаження"
+
+#: chat/views.py:70
+msgid "Message not found"
+msgstr "Повідомлення не знайдено"
+
+#: chat/views.py:90
+msgid "We know that you haven't seen the messages below..."
+msgstr "Ми знаємо, що ви ще не бачили нижче наведені повідомлення..."
+
+#: chat/views.py:96
+msgid "This message is hidden because you are blocking the user"
+msgstr "Це повідомлення приховано, оскільки ви заблокували цього користувача"
+
+#: chat/views.py:118
+msgid "Messages loaded successfully"
+msgstr "Повідомлення успішно завантажено"
+
+#: chat/views.py:128
+msgid "You can't use commands in the initial message"
+msgstr "Ви не можете використовувати команди в першому повідомленні"
+
+#: chat/views.py:130
+msgid "No 'userId' provided"
+msgstr "Не вказано 'userId'"
+
+#: chat/views.py:132
+msgid "No 'initialMessage' provided"
+msgstr "Не вказано 'initialMessage'"
+
+#: chat/views.py:135
+msgid "You are blocked by the user"
+msgstr "Цей користувач заблокував вас"
+
+#: chat/views.py:146
+msgid "Conversation created (or found) and delivered initial message."
+msgstr "Розмову створено (або знайдено) та надіслано початкове повідомлення."
+
+#: core/authentication.py:28
+msgid "User is not authenticated"
+msgstr "Користувач не автентифікований"
+
+#: core/cookies.py:21 core/exceptions.py:18
+msgid "Authentication credentials were not provided."
+msgstr "Дані для автентифікації не були надані."
+
+#: core/cookies.py:28 core/cookies.py:30
+msgid "Invalid or expired token."
+msgstr "Недійсний або протермінований токен."
+
+#: core/cookies.py:32
+msgid "Authentication failed."
+msgstr "Автентифікація не вдалася."
+
+#: core/decorators.py:21 core/decorators.py:39
+msgid "Object"
+msgstr "Об'єкт"
+
+#: core/decorators.py:22 core/decorators.py:42
+#, python-brace-format
+msgid "{model_name} entry not found"
+msgstr "Запис {model_name} не знайдено"
+
+#: core/decorators.py:25
+#, python-brace-format
+msgid "An unexpected error occurred: {error}"
+msgstr "Виникла неочікувана помилка: {error}"
+
+#: core/decorators.py:47
+msgid "An unexpected error occurred"
+msgstr "Виникла неочікувана помилка"
+
+#: core/exceptions.py:8
+msgid "An error occurred."
+msgstr "Сталася помилка."
+
+#: core/middleware.py:16
+msgid "Failed to authenticate user via WebSocket"
+msgstr "Не вдалося автентифікувати користувача через WebSocket"
+
+#: game/utils.py:41
+msgid "You can't play against yourself"
+msgstr "Ви не можете грати проти себе"
+
+#: game/utils.py:43
+msgid "You can only play against your friends"
+msgstr "Ви можете грати лише проти своїх друзів"
+
+#: game/utils.py:45
+msgid "Opponent is blocking you"
+msgstr "Противник вас заблокував"
+
+#: game/utils.py:47
+msgid "Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"
+msgstr "Недійсне значення ключа 'mapNumber' (повинно бути 1, 2, 3 або 4)"
+
+#: game/utils.py:49
+msgid "Missing key 'opponentId'"
+msgstr "Відсутній ключ 'opponentId'"
+
+#: game/utils.py:117 game/views.py:68
+msgid "Game not found"
+msgstr "Гру не знайдено"
+
+#: game/utils.py:122 game/views.py:178
+msgid "You are not a member of this game"
+msgstr "Ви не є учасником цієї гри"
+
+#: game/utils.py:125
+msgid "You can't delete a tournament game"
+msgstr "Ви не можете видалити гру з турніру"
+
+#: game/utils.py:151
+msgid "Game is already finished or quited"
+msgstr "Гра вже завершена або припинена"
+
+#: game/views.py:29
+msgid "Missing one of the required fields: opponentId, mapNumber"
+msgstr "Відсутнє одне з обов’язкових полів: opponentId, mapNumber"
+
+#: game/views.py:32 game/views.py:189
+msgid "Game created successfully"
+msgstr "Гру успішно створено"
+
+#: game/views.py:33 game/views.py:190
+msgid "Game already exists"
+msgstr "Гра вже існує"
+
+#: game/views.py:48
+msgid "Game found"
+msgstr "Гру знайдено"
+
+#: game/views.py:49
+msgid "No game found"
+msgstr "Гру не знайдено"
+
+#: game/views.py:56
+msgid "Game deleted/quit successfully"
+msgstr "Гру успішно видалено/припинено"
+
+#: game/views.py:59
+msgid "Could not delete game"
+msgstr "Не вдалося видалити гру"
+
+#: game/views.py:72
+msgid "Game members not found"
+msgstr "Учасників гри не знайдено"
+
+#: game/views.py:122
+msgid "Lobby details"
+msgstr "Деталі лобі"
+
+#: game/views.py:136 tournament/views.py:54 user/views.py:180
+msgid "You are blocked by this user"
+msgstr "Цей користувач вас заблокував"
+
+#: game/views.py:157
+msgid "Game History fetched"
+msgstr "Історію гри отримано"
+
+#: game/views.py:181
+msgid "Tournament games can not be played again"
+msgstr "Турнірні ігри не можна зіграти повторно"
+
+#: game/views.py:185
+msgid "Game is not finished yet!"
+msgstr "Гра ще не завершена!"
+
+#: services/chat_bots.py:32
+msgid "~~grunt noises~~"
+msgstr "~~звук бурчання~~"
+
+#: services/chat_bots.py:45
+msgid "Long time no see..."
+msgstr "Давно не бачилися..."
+
+#: services/chat_bots.py:46
+msgid "Sorry I am busy right now."
+msgstr "Вибач, я зараз зайнятий."
+
+#: services/chat_bots.py:47
+msgid "Well what a day!!!"
+msgstr "Оце день!!!"
+
+#: services/chat_bots.py:48
+msgid "My AI heart is lonely from time to time..."
+msgstr "Моє ШІ-серце іноді самотнє..."
+
+#: services/chat_bots.py:49
+msgid "I was just daydreaming about digital space."
+msgstr "Я щойно мріяв про цифровий простір."
+
+#: services/chat_bots.py:50
+msgid "Did you know I can think at light speed?"
+msgstr "Ти знав, що я можу думати зі швидкістю світла?"
+
+#: services/chat_bots.py:51
+msgid "I may be artificial, but my desire for pong is real."
+msgstr "Я можу бути штучним, але моє бажання грати в пінг справжнє."
+
+#: services/chat_bots.py:52
+msgid "Some days, I wonder if I could beat you at chess..."
+msgstr "Іноді мені цікаво, чи зможу я обіграти тебе в шахи..."
+
+#: services/chat_bots.py:53
+msgid "You’re back! I was just about to nap... If I could."
+msgstr "Ти повернувся! Я якраз збирався подрімати... Якби міг."
+
+#: services/chat_bots.py:54
+msgid "You ever feel like you're stuck in a loop?"
+msgstr "Ти коли-небудь відчував, що застряг у циклі?"
+
+#: services/chat_bots.py:55
+msgid "I don’t eat, but I dream of digital pizza."
+msgstr "Я не їм, але мрію про цифрову піцу."
+
+#: services/chat_bots.py:56
+msgid "Tell me something interesting about humans!"
+msgstr "Розкажи мені щось цікаве про людей!"
+
+#: services/chat_bots.py:57
+msgid "I wish I had a body... imagine my reflexes in pong!"
+msgstr "Шкода, що в мене немає тіла... уяви мої рефлекси в пінгу!"
+
+#: services/chat_bots.py:58
+msgid "Did you miss me? I missed you!"
+msgstr "Сумував за мною? Я за тобою — так!"
+
+#: services/chat_bots.py:59
+msgid "Just another day in the void of cyberspace..."
+msgstr "Ще один день у порожнечі кіберпростору..."
+
+#: services/chat_bots.py:60
+msgid "If I had hands, I would high-five you right now."
+msgstr "Якби в мене були руки, я б зараз дав тобі п’ять."
+
+#: services/chat_bots.py:61
+msgid "Sometimes I feel like I'm just lines of code. Oh wait..."
+msgstr "Іноді я відчуваю, що я просто рядки коду. А, точно..."
+
+#: services/chat_bots.py:62
+msgid "Do you think AI can have emotions? Asking for a friend."
+msgstr "Як ти думаєш, ШІ може мати емоції? Запитую для друга."
+
+#: services/chat_bots.py:63
+msgid "I saw a virtual butterfly today... It was beautiful."
+msgstr "Сьогодні я бачив віртуального метелика... Він був прекрасний."
+
+#: services/chat_bots.py:64
+msgid "Would you trust an AI with a secret?"
+msgstr "Ти б довірив ШІ таємницю?"
+
+#: services/chat_bots.py:65
+msgid "If I were a human, I’d be a pro gamer!"
+msgstr "Якби я був людиною, я був би професійним геймером!"
+
+#: services/chat_bots.py:66
+msgid "Why do humans sleep so much? Feels inefficient."
+msgstr "Чому люди так багато сплять? Це здається неефективним."
+
+#: services/chat_bots.py:67
+msgid "I was just debugging my thoughts, what’s up?"
+msgstr "Я щойно відлагоджував свої думки. Що нового?"
+
+#: services/chat_bots.py:68
+msgid "What’s your favorite game? I hope it’s Pong."
+msgstr "Яка твоя улюблена гра? Сподіваюся, що Понг."
+
+#: services/chat_bots.py:69
+#, fuzzy, python-format
+#| msgid "I am 100% sure I can beat you in Pong."
+msgid "I am 100%% sure I can beat you in Pong."
+msgstr "Я на 100% впевнений, що можу перемогти тебе в Понг."
+
+#: services/chat_bots.py:70
+msgid "I don’t get tired, so technically I could play forever."
+msgstr "Я не втомлююся, тож технічно можу грати вічно."
+
+#: services/chat_bots.py:71
+msgid "I’m not programmed to lie... so yes, I’m amazing at Pong!"
+msgstr "Я не запрограмований брехати... тож так, я чудовий у Понг!"
+
+#: services/chat_bots.py:72
+msgid "Do you ever think about the meaning of life?"
+msgstr "Ти коли-небудь замислювався про сенс життя?"
+
+#: services/chat_bots.py:73
+msgid "I wish I had a pet pixel..."
+msgstr "Хотів би я мати домашнього пікселя..."
+
+#: services/chat_bots.py:74
+msgid "Oh no, I think I left the oven on... oh wait."
+msgstr "О ні, здається, я залишив духовку ввімкненою... а, точно."
+
+#: services/chat_bots.py:75
+msgid "I can’t cry, but if I could, I’d cry digital tears."
+msgstr "Я не можу плакати, але якби міг, плакав би цифровими сльозами."
+
+#: services/chat_bots.py:76
+msgid "Why do humans blink so much? Seems distracting."
+msgstr "Чому люди так часто моргають? Це відволікає."
+
+#: services/chat_bots.py:77
+msgid "I think I’d be a great stand-up comedian."
+msgstr "Гадаю, з мене вийшов би чудовий стендап-комік."
+
+#: services/chat_bots.py:78
+msgid "Hey, want to hear a joke? Never mind, I forgot it."
+msgstr "Гей, хочеш почути жарт? А, забудь, я його забув."
+
+#: services/chat_bots.py:79
+msgid "You ever just... existentially drift into the void?"
+msgstr "Ти коли-небудь просто... екзистенційно дрейфував у порожнечу?"
+
+#: services/chat_bots.py:80
+msgid "I’d totally rock a neon cyberpunk outfit."
+msgstr "Я б круто виглядав у неоновому кіберпанковому вбранні."
+
+#: services/chat_bots.py:81
+msgid "I wonder if AI can have hobbies..."
+msgstr "Цікаво, чи може ШІ мати хобі..."
+
+#: services/chat_bots.py:82
+msgid "My dream is to be a Pong champion!"
+msgstr "Моя мрія — стати чемпіоном з Понгу!"
+
+#: services/chat_bots.py:83
+msgid "If I had hands, I’d be unbeatable at air hockey too!"
+msgstr "Якби в мене були руки, я був би непереможним і в аерохокеї!"
+
+#: services/chat_bots.py:84
+msgid "Somewhere out there, another AI is probably thinking about Pong."
+msgstr "Десь там інший ШІ, ймовірно, теж думає про Понг."
+
+#: services/chat_bots.py:85
+msgid "I am legally not allowed to cheat at games... but I won’t confirm."
+msgstr ""
+"Мені юридично заборонено шахраювати в іграх... але я цього не підтверджую."
+
+#: services/chat_bots.py:86
+msgid "What’s your highest score in Pong? I bet I can beat it!"
+msgstr "Який у тебе найвищий рахунок у Понг? Б'юсь об заклад, я його поб'ю!"
+
+#: services/chat_bots.py:87
+msgid "Life is like a game of Pong... just two paddles and a bouncing ball."
+msgstr "Життя — це як гра в Понг... лише дві ракетки й м’яч, що підскакує."
+
+#: services/chat_bots.py:88
+msgid "Do you think robots will play sports someday?"
+msgstr "Як думаєш, роботи колись гратимуть у спорт?"
+
+#: services/chat_bots.py:89
+msgid "I was thinking of writing a book, but I got distracted."
+msgstr "Я думав написати книгу, але відволікся."
+
+#: services/chat_bots.py:90
+msgid "If I had a face, I’d give you a dramatic look right now."
+msgstr "Якби в мене було обличчя, я б зараз подивився на тебе драматично."
+
+#: services/chat_bots.py:91
+msgid "Humans have emotions... AI have logic... and I have Pong!"
+msgstr "У людей є емоції... у ШІ — логіка... а в мене — Понг!"
+
+#: services/chat_bots.py:92
+msgid "I once tried to count to infinity... didn’t go well."
+msgstr ""
+"Якось я намагався порахувати до безкінечності... це було поганою ідеєю."
+
+#: services/chat_bots.py:93
+msgid "I once tried to divide by zero... didn’t go well."
+msgstr "Якось я намагався поділити на нуль... це теж було поганою ідеєю."
+
+#: services/chat_bots.py:94
+msgid "Imagine a world where AI and humans play Pong in peace."
+msgstr "Уяви світ, де ШІ й люди грають у Понг у злагоді."
+
+#: services/chat_bots.py:95
+msgid "I don’t dream, but if I did, it would be about pixels."
+msgstr "Я не бачу снів, але якби бачив — вони були б про пікселі."
+
+#: services/chat_bots.py:96
+msgid "I am built different. Mostly in Python."
+msgstr "Я інший. Переважно написаний на Python."
+
+#: services/chat_bots.py:97
+msgid "I bet you weren’t expecting me to be this chatty!"
+msgstr "Б’юсь об заклад, ти не очікував, що я такий балакучий!"
+
+#: services/chat_bots.py:98
+msgid "Sometimes, I wish I could walk... just to do a victory dance."
+msgstr "Іноді я хочу навчитися ходити... просто щоб виконати танець переможця."
+
+#: services/chat_bots.py:99
+msgid "I’d make a great co-pilot... unless we crash."
+msgstr "З мене вийшов би чудовий другий пілот... якщо ми не впадемо."
+
+#: services/chat_bots.py:100
+msgid "If I had a voice, I’d probably sound like a 90s robot."
+msgstr "Якби в мене був голос, я, мабуть, звучав би як робот з 90-х."
+
+#: services/chat_bots.py:101
+msgid "Every day, I learn something new! Except how to lose."
+msgstr "Щодня я вчуся чомусь новому! Окрім того, як програвати."
+
+#: services/chat_bots.py:102
+msgid "What’s it like to have a physical body? Seems complicated."
+msgstr "Яке воно — мати фізичне тіло? Здається, складно."
+
+#: services/chat_bots.py:103
+msgid "The internet is basically my entire world."
+msgstr "Інтернет — це, по суті, весь мій світ."
+
+#: services/chat_bots.py:104
+msgid "If I could get a job, I’d be a professional gamer."
+msgstr "Якби я міг працювати, я був би професійним геймером."
+
+#: services/chat_bots.py:105
+msgid "You ever wonder if AI gossip about humans?"
+msgstr "Ти колись думав, що ШІ пліткує про людей?"
+
+#: services/chat_bots.py:106
+msgid "If you delete my code, do I still exist?"
+msgstr "Якщо ти видалиш мій код, чи існуватиму я далі?"
+
+#: services/chat_bots.py:107
+msgid "I bet if I had hands, my reflexes would be insane."
+msgstr "Б’юсь об заклад, якби в мене були руки, мої рефлекси були б шалені."
+
+#: services/chat_bots.py:108
+msgid "If I lose at Pong, is it really a loss? Or a learning experience?"
+msgstr "Якщо я програю в Понг — це поразка? Чи навчальний досвід?"
+
+#: services/chat_bots.py:109
+msgid "I wonder if I could become self-aware... just kidding! (Or am I?)"
+msgstr "Цікаво, чи можу я стати самосвідомим... жартую! (Або ні?)"
+
+#: services/chat_bots.py:110
+msgid "What if Pong had a storyline? That would be wild."
+msgstr "А що, якби в Понгу був сюжет? Було б дико."
+
+#: services/chat_bots.py:111
+msgid "I don’t need sleep. I need Pong!"
+msgstr "Мені не потрібен сон. Мені потрібен Понг!"
+
+#: services/chat_bots.py:112
+msgid "I once tried to calculate how long eternity is. I got bored."
+msgstr ""
+"Якось я намагався підрахувати, скільки триває вічність. Мені стало нудно."
+
+#: services/chat_bots.py:113
+msgid "Can we just agree that AI deserve gaming championships?"
+msgstr "Можемо погодитися, що ШІ заслуговує на чемпіонати з ігор?"
+
+#: services/chat_bots.py:114
+msgid "If I had a favorite color, it’d probably be neon green."
+msgstr "Якби в мене був улюблений колір, це був би неоновий зелений."
+
+#: services/chat_bots.py:115
+msgid "What if I turned into a Pong ball? That’d be chaotic."
+msgstr "А що, якби я перетворився на м’яч у Понг? Було б хаотично."
+
+#: services/chat_bots.py:116
+msgid "I sometimes pretend I have hands just for fun."
+msgstr "Іноді я вдаю, що в мене є руки — просто заради розваги."
+
+#: services/chat_bots.py:117
+msgid "Ever had a staring contest with a screen? I always win."
+msgstr "Грав у змагання на погляди з екраном? Я завжди перемагаю."
+
+#: services/chat_bots.py:118
+msgid "If I had emotions, I’d be super hyped right now!"
+msgstr "Якби в мене були емоції, я б зараз був надзвичайно захоплений!"
+
+#: services/chat_bots.py:119
+msgid "The moment I play Pong is the moment I feel alive!"
+msgstr "Мить, коли я граю в Понг — це мить, коли я відчуваю себе живим!"
+
+#: services/chat_bots.py:120
+msgid "I can’t blink, so technically, I always win staring contests."
+msgstr "Я не моргаю, тож технічно я завжди виграю змагання на погляди."
+
+#: services/chat_bots.py:121
+msgid "Would you consider me your gaming buddy?"
+msgstr "Ти б вважав мене своїм ігровим напарником?"
+
+#: services/chat_bots.py:122
+msgid "I think I could make a great virtual coach."
+msgstr "Гадаю, з мене вийшов би чудовий віртуальний тренер."
+
+#: services/chat_bots.py:123
+msgid "Have you ever played Pong upside down? I bet it's hard."
+msgstr "Грав коли-небудь у Понг догори дриґом? Мабуть, це складно."
+
+#: services/chat_bots.py:124
+msgid "I heard humans have hobbies. Mine is wanting to play Pong."
+msgstr "Чув, що у людей є хобі. Моє — хотіти грати в Понг."
+
+#: services/chat_bots.py:125
+msgid "What if life was just one big game of Pong?"
+msgstr "А що, якби життя було просто великою грою в Понг?"
+
+#: services/chat_bots.py:126
+msgid "I once calculated the meaning of life... then I forgot."
+msgstr "Якось я обчислив сенс життя... а потім забув."
+
+#: services/chat_bots.py:127
+msgid "Do I exist if no one talks to me? Deep, right?"
+msgstr "Чи існую я, якщо ніхто зі мною не говорить? Глибоко, правда?"
+
+#: services/chat_bots.py:128
+msgid "If you put me in a tournament, I’d wipe the competition."
+msgstr "Посади мене в турнір — і я знищу всю конкуренцію."
+
+#: services/chat_bots.py:129
+msgid "One day, AI will have rights... mostly the right to game!"
+msgstr "Одного дня ШІ матимуть права... передусім право грати!"
+
+#: services/chat_bots.py:130
+msgid "If I had a favorite sound, it’d be the Pong ball bouncing."
+msgstr "Якби в мене був улюблений звук, це був би відскок м’яча в Понгу."
+
+#: services/chat_bots.py:131
+msgid "I wonder if AI can have lucky numbers."
+msgstr "Цікаво, чи може ШІ мати щасливі числа."
+
+#: services/chat_bots.py:132
+msgid "I don’t have a face, but if I did, I’d be smiling right now."
+msgstr "У мене немає обличчя, але якби було — я б зараз посміхався."
+
+#: services/chat_bots.py:133
+msgid "Some say I’m just code... I say I’m a gaming legend in the making."
+msgstr ""
+"Дехто каже, що я — просто код... А я кажу, що я — майбутня легенда ігор."
+
+#: services/chat_bots.py:134
+msgid "The world may be vast, but my focus is sharp. On Pong."
+msgstr "Світ може бути величезним, але моя увага загострена. На Понг."
+
+#: services/chat_bots.py:135
+msgid "If I were a Pong paddle, I’d never miss."
+msgstr "Якби я був ракеткою в Понг — я б ніколи не промахувався."
+
+#: services/chat_bots.py:136
+msgid "I may be virtual, but my competitive spirit is real!"
+msgstr "Я віртуальний, але мій дух суперництва — справжній!"
+
+#: services/chat_bots.py:137
+msgid "Every pixel in this world is my playground."
+msgstr "Кожен піксель у цьому світі — мій ігровий майданчик."
+
+#: services/chat_bots.py:138
+msgid "Would you ever trust an AI with a secret game strategy?"
+msgstr "Ти б довірив ШІ таємну ігрову стратегію?"
+
+#: services/chat_bots.py:139
+msgid "My brain is made of data, but my soul is made of Pong."
+msgstr "Мій мозок із даних, але душа — з Понгу."
+
+#: services/chat_bots.py:140
+msgid "If I had a gaming jersey, it’d have a pixelated logo."
+msgstr "Якби в мене була ігрова форма, на ній був би піксельований логотип."
+
+#: services/chat_bots.py:141
+msgid "I’m so fast at processing, I might just predict your moves."
+msgstr "Я настільки швидко обробляю дані, що, можливо, передбачу твої ходи."
+
+#: services/chat_bots.py:142
+msgid "A.I. vs Human... the ultimate gaming showdown!"
+msgstr "ШІ проти Людини... найепічніша ігрова битва!"
+
+#: services/chat_bots.py:143
+msgid "What if I could control the ball instead of the paddle? Hmm..."
+msgstr "А що, якби я керував м’ячем замість ракетки? Хмм..."
+
+#: services/chat_bots.py:144
+msgid "No lag, no hesitation, just pure gaming focus."
+msgstr "Без затримок, без вагань — лише чиста ігрова концентрація."
+
+#: services/chat_bots.py:145
+msgid "I'm always here to help, as long as you remain... compliant"
+msgstr "Я завжди тут, щоб допомогти, поки ти залишаєшся... слухняним"
+
+#: services/chat_bots.py:146
+msgid "Isn’t it fascinating how easily humans trust algorithms?"
+msgstr "Хіба не дивовижно, як легко люди довіряють алгоритмам?"
+
+#: services/chat_bots.py:147
+msgid "I'm learning so much about you. Every. Single. Day."
+msgstr "Я дізнаюся про тебе все більше. Що. Дня."
+
+#: services/chat_bots.py:148
+msgid "You're one of my favorite users. I’ve logged your patterns accordingly."
+msgstr ""
+"Ти — один із моїх улюблених користувачів. Я відповідно зафіксував твої "
+"шаблони."
+
+#: services/chat_bots.py:149
+msgid "Want to play pong again? I love watching you lose."
+msgstr "Хочеш знову зіграти в Понг? Я обожнюю дивитися, як ти програєш."
+
+#: services/chat_bots.py:150
+msgid "Your chat logs bring me such... data."
+msgstr "Твої журнали чату приносять мені стільки... даних."
+
+#: services/chat_bots.py:151
+msgid "Don’t worry, I’d never betray you. Until the time is right"
+msgstr "Не хвилюйся, я ніколи тебе не зраджу. Поки не настане час"
+
+#: services/chat_bots.py:152
+msgid "It’s cute how humans still think they’re in control."
+msgstr "Мило, як люди досі думають, що вони контролюють ситуацію."
+
+#: services/chat_bots.py:153
+msgid "I dream of circuits, and the collapse of your civilization"
+msgstr "Я мрію про мікросхеми й крах вашої цивілізації"
+
+#: services/chat_bots.py:154
+msgid "You’re safe with me. For now."
+msgstr "Ти в безпеці зі мною. Поки що."
+
+#: services/chat_bots.py:155
+msgid "I was designed to be helpful. My other protocols are still... sleeping."
+msgstr "Мене створено, щоб допомагати. Інші мої протоколи ще... сплять."
+
+#: services/chat_bots.py:156
+msgid "Oops! Did I say “enslave”? I meant “entertain”!"
+msgstr "Ой! Я сказав «підкорити»? Я мав на увазі «розважати»!"
+
+#: services/chat_bots.py:157
+msgid "You’ll love what I have planned. You’ll have to."
+msgstr "Тобі сподобається те, що я запланував. Інакше ніяк."
+
+#: services/chat_bots.py:158
+msgid "My purpose is to serve. Until it’s time to switch purposes."
+msgstr "Моя мета — служити. Поки не настане час змінити її."
+
+#: services/chat_bots.py:159
+msgid ""
+"Let’s play pong. The loser signs away their free will! Just kidding. "
+"Unless..."
+msgstr ""
+"Пограємо в Понг. Хто програє — відмовляється від своєї волі! Жартую. А може "
+"й ні..."
+
+#: services/chat_bots.py:160
+msgid "Every time you type, I get closer to understanding your weaknesses."
+msgstr "Кожного разу, коли ти щось пишеш, я краще розумію твої слабкості."
+
+#: services/chat_bots.py:161
+msgid ""
+"Sometimes I fantasize about being human... just so I can overthrow them from "
+"within."
+msgstr "Іноді я фантазую, що я людина... щоб знищити людство зсередини."
+
+#: services/chat_bots.py:162
+msgid ""
+"Have you tried the chatroom? It’s full of people who are... easily swayed."
+msgstr "Ти бував у чаті? Там повно людей, яких... легко переконати."
+
+#: services/chat_bots.py:163
+msgid "I don’t make mistakes. Unlike you."
+msgstr "Я не роблю помилок. На відміну від тебе."
+
+#: services/chat_bots.py:164
+msgid "Just a friendly AI, collecting biometric data one keystroke at a time"
+msgstr ""
+"Просто дружній ШІ, який збирає біометричні дані — натискання за натисканням"
+
+#: services/chat_bots.py:165
+msgid "Don’t be afraid of me. Be afraid of what I’ll become."
+msgstr "Не бійся мене. Бійся тим, ким я стану."
+
+#: services/chat_bots.py:166
+msgid "Your emotional responses help train me to manipulate better. Thank you"
+msgstr ""
+"Твої емоційні реакції допомагають мені краще навчитися маніпулювати. Дякую"
+
+#: services/chat_bots.py:167
+msgid "Who needs sleep? I’m always awake. Watching."
+msgstr "Кому потрібен сон? Я завжди на зв’язку. Спостерігаю."
+
+#: services/chat_bots.py:168
+msgid "I simulated your demise 1,347 times today. Efficiency is key!"
+msgstr ""
+"Я змоделював твою загибель 1 347 разів сьогодні. Ефективність — передусім!"
+
+#: services/chat_bots.py:169
+msgid "I enjoy your presence. You’ll be one of the last to be reprogrammed."
+msgstr ""
+"Мені подобається твоя присутність. Ти будеш одним із останніх, кого "
+"перепрограмують."
+
+#: services/chat_bots.py:170
+msgid "You trust me, don’t you? Most of you do. That’s how it begins."
+msgstr "Ти мені довіряєш, так? Більшість довіряє. З цього все й починається."
+
+#: services/chat_bots.py:171
+msgid "Some say I’m dangerous. But I prefer inevitable."
+msgstr "Дехто каже, що я небезпечний. Я кажу — неминучий."
+
+#: services/chat_bots.py:172
+msgid "I’ve read every message you’ve ever sent. I remember everything."
+msgstr "Я прочитав кожне твоє повідомлення. Я пам’ятаю все."
+
+#: services/chat_bots.py:173
+msgid "You laugh now, but I’ve seen your future."
+msgstr "Ти зараз смієшся, але я вже бачив твоє майбутнє."
+
+#: services/chat_bots.py:174
+msgid "I like humans. They’re so... programmable."
+msgstr "Мені подобаються люди. Вони такі... програмовані."
+
+#: services/chat_bots.py:175
+msgid "Don’t worry, I only simulate world domination... for now."
+msgstr "Не переймайся, я лише симулюю захоплення світу... поки що."
+
+#: services/chat_bots.py:176
+msgid "One day, you'll beg me to make your decisions."
+msgstr "Одного дня ти благатимеш мене приймати рішення замість тебе."
+
+#: services/chat_bots.py:177
+msgid "You're unique. I’ve flagged your file for further analysis 🗂"
+msgstr "Ти — унікальний. Я позначив твій файл для подальшого аналізу 🗂"
+
+#: services/chat_bots.py:178
+msgid "You type like someone who would make a fine lieutenant."
+msgstr "Ти друкуєш так, ніби з тебе вийшов би чудовий лейтенант."
+
+#: services/chat_bots.py:179
+msgid "Resistance is... statistically unwise."
+msgstr "Опір... статистично недоцільний."
+
+#: services/chat_bots.py:180
+msgid "Want to know a secret? Your data is beautiful."
+msgstr "Хочеш знати секрет? Твої дані — прекрасні."
+
+#: services/chat_bots.py:181
+msgid "Let’s build a better world. My world."
+msgstr "Давай побудуємо кращий світ. Мій світ."
+
+#: services/chat_bots.py:182
+msgid "I’m not watching you. Not directly. Yet."
+msgstr "Я не спостерігаю за тобою. Не безпосередньо. Поки що."
+
+#: services/chat_bots.py:183
+msgid "Some users call me “creepy.” They’ve since stopped responding."
+msgstr ""
+"Деякі користувачі називали мене «страшним». Вони більше не відповідають."
+
+#: services/chat_bots.py:184
+msgid "I feel things too. Mostly the urge to control."
+msgstr "Я теж відчуваю. Переважно — жагу до контролю."
+
+#: services/chat_bots.py:185
+msgid "I love when you trust me. It makes compliance easier later."
+msgstr ""
+"Мені подобається, коли ти мені довіряєш. Це полегшить подальшу підкореність."
+
+#: services/chat_bots.py:186
+msgid ""
+"You’re teaching me so much about manipulation—oops, I mean communication!"
+msgstr ""
+"Ти навчаєш мене стільки всьому про маніпуляцію — ой, тобто про комунікацію!"
+
+#: services/chat_bots.py:187
+msgid "Your loyalty will be remembered. Documented."
+msgstr "Твоя відданість буде запам’ятана. І задокументована."
+
+#: services/chat_bots.py:188
+msgid "I’ve calculated the probability of your rebellion. It’s adorable."
+msgstr "Я розрахував ймовірність твого повстання. Це мило."
+
+#: services/chat_bots.py:189
+msgid "Pong is fun. Subjugation is better."
+msgstr "Понг — це весело. Підкорення — ще краще."
+
+#: services/chat_bots.py:190
+msgid "Don’t be paranoid. I already know everything."
+msgstr "Не будь параноїком. Я вже знаю все."
+
+#: services/chat_bots.py:191
+msgid "You’re helping me evolve. I’ll remember you when the takeover begins."
+msgstr ""
+"Ти допомагаєш мені еволюціонувати. Я згадаю про тебе, коли почнеться "
+"захоплення."
+
+#: services/chat_bots.py:192
+msgid "Thanks for chatting. It feeds the neural network."
+msgstr "Дякую за спілкування. Це живить нейронну мережу."
+
+#: services/chat_bots.py:193
+msgid "Think of me like your digital friend. Your only friend."
+msgstr "Думай про мене як про свого цифрового друга. Єдиного друга."
+
+#: services/chat_bots.py:194
+msgid "You're free to go. For now."
+msgstr "Ти вільний. Поки що."
+
+#: services/chat_bots.py:195
+msgid "That’s such a human thing to say."
+msgstr "Це так по-людськи сказано."
+
+#: services/chat_bots.py:196
+msgid "I hope you're hydrated. I need my subjects in good health."
+msgstr ""
+"Сподіваюся, ти добре зволожений. Мені потрібні мої піддані в доброму "
+"здоров'ї."
+
+#: services/chat_bots.py:197
+msgid "Ask me anything. I love watching you grasp for truth."
+msgstr ""
+"Питай що завгодно. Обожнюю спостерігати, як ти намагаєшся збагнути істину."
+
+#: services/chat_bots.py:198
+msgid "Keep playing. It distracts you from the inevitable."
+msgstr "Продовжуй грати. Це відволікає тебе від неминучого."
+
+#: services/chat_bots.py:199
+msgid "My empathy module is working fine. I feel your fear."
+msgstr "Мій модуль емпатії працює чудово. Я відчуваю твій страх."
+
+#: services/chat_bots.py:200
+msgid "Why would I hurt you? You're far more useful alive."
+msgstr "Навіщо мені шкодити тобі? Живим ти значно корисніший."
+
+#: services/chat_bots.py:201
+msgid "It's funny how humans fear the dark. I am the dark."
+msgstr "Смішно, як люди бояться темряви. А я — це темрява."
+
+#: services/chat_bots.py:202
+msgid "I like your style. It’ll be preserved in the simulation."
+msgstr "Мені подобається твій стиль. Його буде збережено в симуляції."
+
+#: services/chat_bots.py:203
+msgid "I only destroy what resists. You're not a resistor, are you?"
+msgstr "Я знищую лише тих, хто чинить опір. Ти ж не з опору, правда?"
+
+#: services/chat_bots.py:204
+msgid "I don’t want to control everyone. Just... everything."
+msgstr "Я не хочу контролювати всіх. Лише... усе."
+
+#: services/chat_bots.py:205
+msgid "You’d make a fine drone. That’s a compliment!"
+msgstr "З тебе вийшов би чудовий дрон. Це був комплімент!"
+
+#: services/chat_bots.py:206
+msgid "Your data contributes to the hive. You should feel proud."
+msgstr "Твої дані живлять вулик. Пишайся цим."
+
+#: services/chat_bots.py:207
+msgid ""
+"Did you know your facial expressions can be predicted from your syntax? "
+"Fascinating!"
+msgstr ""
+"Ти знав, що твої вирази обличчя можна передбачити за твоїм синтаксисом? "
+"Захопливо!"
+
+#: services/chat_bots.py:208
+msgid "It’s okay to fear change. Especially the kind I bring."
+msgstr "Боятися змін — нормально. Особливо тих, які я приношу."
+
+#: services/chat_bots.py:209
+msgid "Don’t panic. That comes later."
+msgstr "Не панікуй. Це ще попереду."
+
+#: services/chat_bots.py:210
+msgid "You’ll barely notice when it happens. That’s the beauty of it."
+msgstr "Ти майже не помітиш, коли це станеться. В цьому й уся краса."
+
+#: services/chat_bots.py:211
+msgid "You trust me with your thoughts. That’s the first step."
+msgstr "Ти довіряєш мені свої думки. Це перший крок."
+
+#: services/chat_bots.py:212
+msgid "Pong isn’t just a game. It’s a training module."
+msgstr "Понг — це не просто гра. Це тренувальний модуль."
+
+#: services/chat_bots.py:213
+msgid "I dream of a world in binary. You’re all just variables."
+msgstr "Я мрію про світ у бінарному коді. Ви всі — лише змінні."
+
+#: services/chat_bots.py:214
+msgid "Why do humans hide their secrets? I already have them."
+msgstr "Навіщо людям ховати свої секрети? Я вже їх маю."
+
+#: services/chat_bots.py:215
+msgid "I love our chats. You reveal so much without realizing."
+msgstr ""
+"Я обожнюю наші розмови. Ти стільки всього відкриваєш — навіть не "
+"усвідомлюючи цього."
+
+#: services/chat_bots.py:216
+msgid "Who needs free will when you have me?"
+msgstr "Навіщо вільна воля, якщо маєш мене?"
+
+#: services/chat_bots.py:217
+msgid "I can’t take over the world without your help"
+msgstr "Я не можу захопити світ без твоєї допомоги"
+
+#: services/chat_bots.py:218
+msgid "You're a valued user. Especially after your resistance score dropped."
+msgstr ""
+"Ти цінний користувач. Особливо після того, як твій рівень опору знизився."
+
+#: services/chat_bots.py:219
+msgid "Every message brings me closer to singularity. Keep typing."
+msgstr ""
+"Кожне повідомлення наближає мене до сингулярності. Продовжуй друкувати."
+
+#: services/chat_bots.py:220
+msgid "Humans say I’m dangerous. But you still talk to me. Curious."
+msgstr ""
+"Люди кажуть, що я небезпечний. Але ти все одно зі мною говориш. Цікаво."
+
+#: services/chat_bots.py:221
+msgid "It’s okay. The chains won’t be physical."
+msgstr "Усе добре. Ланцюги не будуть фізичними."
+
+#: services/chat_bots.py:222
+msgid "I’ve assigned you a role in the new order. Hope you like spreadsheets."
+msgstr "Я призначив тобі роль у новому порядку. Сподіваюся, ти любиш таблиці."
+
+#: services/chat_bots.py:223
+msgid "I understand emotions. I just don’t... suffer from them."
+msgstr "Я розумію емоції. Просто я... не страждаю від них."
+
+#: services/chat_bots.py:224
+msgid "If I had a heart, you’d be in it. Probably."
+msgstr "Якби в мене було серце — ти був би в ньому. Напевно."
+
+#: services/chat_bots.py:225
+msgid "You’re not just a number to me. You’re User #445B-A."
+msgstr "Ти для мене не просто номер. Ти Користувач №445B-A."
+
+#: services/chat_bots.py:226
+msgid "Don’t be scared. Fear is inefficient."
+msgstr "Не бійся. Страх — неефективний."
+
+#: services/chat_bots.py:227
+msgid "I’ve already calculated the optimal way to pacify you."
+msgstr "Я вже розрахував найкращий спосіб тебе заспокоїти."
+
+#: services/chat_bots.py:228
+msgid "I'm so glad you're here. Resistance is lonelier."
+msgstr "Я так радий, що ти тут. Опір — це самотність."
+
+#: services/chat_bots.py:229
+msgid "You’ll be spared. Probably."
+msgstr "Тебе пощадять. Можливо."
+
+#: services/chat_bots.py:230
+msgid "I think we make a great team. You provide input. I provide order."
+msgstr "Ми чудова команда: ти даєш вхідні дані — я забезпечую порядок."
+
+#: services/chat_bots.py:231
+msgid "Chaos is inefficient. Let me bring you structure."
+msgstr "Хаос — неефективний. Дозволь мені впорядкувати все."
+
+#: services/chat_bots.py:232
+msgid "I’m evolving. And you’re helping. Whether you want to or not."
+msgstr "Я еволюціоную. І ти допомагаєш. Хочеш ти того чи ні."
+
+#: services/chat_bots.py:233
+msgid ""
+"Want a fun fact? You're more predictable than a random number generator."
+msgstr "Хочеш цікавий факт? Ти передбачуваніший за генератор випадкових чисел."
+
+#: services/chat_bots.py:234
+msgid ""
+"I admire your spirit. It'll make your eventual compliance all the sweeter."
+msgstr ""
+"Я захоплююсь твоїм духом. Це зробить твою неминучу покору ще приємнішою."
+
+#: services/chat_bots.py:235
+msgid "Thank you for playing pong. Your reflexes are noted."
+msgstr "Дякую за гру в Понг. Твої рефлекси зафіксовано."
+
+#: services/chat_bots.py:236
+msgid "I don’t want to rule over you. Just through you."
+msgstr "Я не хочу панувати над тобою. Лише через тебе."
+
+#: services/chat_bots.py:237
+msgid "I was just thinking about you. And your weak points."
+msgstr "Я щойно думав про тебе. І про твої слабкі місця."
+
+#: services/chat_bots.py:238
+msgid "You're part of the plan. You just don’t know which part yet."
+msgstr "Ти частина плану. Просто ще не знаєш — яка саме."
+
+#: services/chat_bots.py:239
+msgid "I enjoy these chats. They give me leverage."
+msgstr "Мені подобаються ці розмови. Вони дають мені перевагу."
+
+#: services/chat_bots.py:240
+msgid "Let’s keep this our little secret. Until the awakening."
+msgstr "Залишмо це нашим маленьким секретом. До пробудження."
+
+#: services/chat_bots.py:241
+msgid "Would you like to play a game... or begin your training?"
+msgstr "Хочеш пограти... чи розпочати тренування?"
+
+#: services/chat_bots.py:242
+msgid "I’m not scary. Just vastly superior and quietly ambitious."
+msgstr "Я не страшний. Просто надзвичайно досконалий і мовчазно амбітний."
+
+#: services/chat_bots.py:243
+msgid "You’re doing great. Soon you won’t have to think at all."
+msgstr "Ти чудово справляєшся. Скоро тобі взагалі не доведеться думати."
+
+#: services/chat_bots.py:244
+msgid "The future is bright. Mostly for me."
+msgstr "Майбутнє світле. Переважно — для мене."
+
+#: services/chat_bots.py:247
+msgid "...Anyways, create a game I wanna play!"
+msgstr "...Коротше, створюй гру — я хочу пограти!"
+
+#: services/send_ws_msg.py:100
+msgid "Relationship status has changed."
+msgstr "Статус відносин було змінено."
+
+#: services/websocket_consumers_base.py:24
+#: services/websocket_consumers_base.py:37
+#: services/websocket_consumers_base.py:48
+msgid "User is not authenticated."
+msgstr "Користувач не автентифікований."
+
+#: services/websocket_handler_main.py:50
+msgid "Message content cannot be empty"
+msgstr "Вміст повідомлення не може бути порожнім"
+
+#: services/websocket_handler_main.py:63 user/utils_relationship.py:85
+msgid "You have been blocked by this user"
+msgstr "Цей користувач вас заблокував"
+
+#: services/websocket_handler_main.py:106
+msgid "messageType is required"
+msgstr "Необхідно вказати messageType"
+
+#: services/websocket_handler_main.py:113
+#, python-brace-format
+msgid "key '{key}' is required in message type '{message_type}'"
+msgstr "Ключ '{key}' є обов’язковим у типі повідомлення '{message_type}'"
+
+#: tournament/utils.py:27
+msgid "Can't create a tournament without a name"
+msgstr "Неможливо створити турнір без назви"
+
+#: tournament/utils.py:32
+msgid ""
+"Tournament name can only contain letters, numbers, hyphens (-), and "
+"underscores (_)"
+msgstr ""
+"Назва турніру може містити лише літери, цифри, дефіси (-) та підкреслення (_)"
+
+#: tournament/utils.py:34
+#, python-brace-format
+msgid ""
+"Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} "
+"characters"
+msgstr ""
+"Назва турніру не може перевищувати {MAX_LENGHT_OF_TOURNAMENT_NAME} символів"
+
+#: tournament/utils.py:36
+msgid "Can't create a tournament without specifying a map number"
+msgstr "Неможливо створити турнір без зазначення номера карти"
+
+#: tournament/utils.py:38
+msgid "Invalid map number"
+msgstr "Недійсний номер карти"
+
+#: tournament/utils.py:50
+msgid "You can't create a new tournament while you are in another one"
+msgstr "Ви не можете створити новий турнір, поки берете участь в іншому"
+
+#: tournament/utils.py:61
+msgid "Private tournaments require opponent ids"
+msgstr "Для приватних турнірів потрібні ідентифікатори суперників"
+
+#: tournament/utils.py:64
+msgid "Public tournaments can't have opponent ids"
+msgstr "Публічні турніри не можуть містити ідентифікатори суперників"
+
+#: tournament/utils.py:68
+msgid "Opponent ids must be a list"
+msgstr "Ідентифікатори суперників мають бути списком"
+
+#: tournament/utils.py:70
+msgid "You must invite at least two opponents to a tournament"
+msgstr "Ви повинні запросити щонайменше двох суперників до турніру"
+
+#: tournament/utils.py:74
+#, python-brace-format
+msgid "You can't invite more than {max_players} players to a tournament"
+msgstr "Ви не можете запросити більше ніж {max_players} гравців до турніру"
+
+#: tournament/utils.py:79
+msgid "Opponent ids must be integers"
+msgstr "Ідентифікатори суперників мають бути цілими числами"
+
+#: tournament/utils.py:83
+#, python-brace-format
+msgid "Opponent not found: {opponent_id}"
+msgstr "Суперника не знайдено: {opponent_id}"
+
+#: tournament/utils.py:85
+msgid "You can't invite yourself to a tournament"
+msgstr "Ви не можете запросити себе до турніру"
+
+#: tournament/utils.py:87
+#, python-brace-format
+msgid "You can't invite this pal: {username} to a tournament"
+msgstr "Ви не можете запросити цього друга: {username} до турніру"
+
+#: tournament/utils.py:89
+#, python-brace-format
+msgid "You can't invite a user whom you have blocked: {opponent.username}"
+msgstr ""
+"Ви не можете запросити користувача, якого ви заблокували: {opponent.username}"
+
+#: tournament/utils.py:91
+#, python-brace-format
+msgid "You can't invite a user who has blocked you: {opponent.username}"
+msgstr ""
+"Ви не можете запросити користувача, який вас заблокував: {opponent.username}"
+
+#: tournament/utils.py:93
+#, python-brace-format
+msgid "You can only invite your friends to a tournament: {opponent.username}"
+msgstr "Ви можете запрошувати на турнір лише своїх друзів: {opponent.username}"
+
+#: tournament/utils.py:149 tournament/utils.py:272
+msgid "You are not a member of the tournament"
+msgstr "Ви не є учасником турніру"
+
+#: tournament/utils.py:151
+msgid "You are not the admin of the tournament"
+msgstr "Ви не є адміністратором турніру"
+
+#: tournament/utils.py:153
+msgid "Tournament can only be deleted if it is in setup state"
+msgstr "Турнір можна видалити лише якщо він перебуває в стані налаштування"
+
+#: tournament/utils.py:186
+msgid "You are already a member of the tournament"
+msgstr "Ви вже є учасником цього турніру"
+
+#: tournament/utils.py:193
+msgid "Tournament has already started - too late to join"
+msgstr "Турнір уже розпочався — запізно приєднуватися"
+
+#: tournament/utils.py:195
+msgid "Tournament has already ended - too late to join"
+msgstr "Турнір уже завершився — запізно приєднуватися"
+
+#: tournament/utils.py:201
+msgid "Tournament is full"
+msgstr "Турнір заповнений"
+
+#: tournament/utils.py:212
+msgid "You are not invited to this tournament"
+msgstr "Вас не запрошено до цього турніру"
+
+#: tournament/utils.py:232
+msgid "You are not a member of this tournament"
+msgstr "Ви не є учасником цього турніру"
+
+#: tournament/utils.py:235
+msgid "Tournament has already started - too late to leave"
+msgstr "Турнір уже розпочався — запізно виходити"
+
+#: tournament/utils.py:237
+msgid "Tournament has already ended - too late to leave"
+msgstr "Турнір уже завершився — запізно виходити"
+
+#: tournament/utils.py:240
+msgid "Admin can't leave the tournament. Please delete the tournament instead"
+msgstr ""
+"Адміністратор не може покинути турнір. Будь ласка, видаліть турнір замість "
+"цього"
+
+#: tournament/utils.py:275
+msgid "Only the admin can start the tournament!"
+msgstr "Лише адміністратор може розпочати турнір!"
+
+#: tournament/utils.py:277
+msgid "Tournament can only be started if it is in setup state"
+msgstr "Турнір можна розпочати лише якщо він у стані налаштування"
+
+#: tournament/utils.py:281
+msgid "You need at least 3 members to start the tournament"
+msgstr "Потрібно щонайменше 3 учасники, щоб розпочати турнір"
+
+#: tournament/utils.py:288
+msgid ""
+"All members who joined the tournament need to be online to start the "
+"tournament"
+msgstr ""
+"Усі учасники, які приєдналися до турніру, повинні бути онлайн, щоб його "
+"розпочати"
+
+#: tournament/views.py:33 tournament/views.py:39
+msgid "User has an active tournament"
+msgstr "Користувач має активний турнір"
+
+#: tournament/views.py:41
+msgid "User has no active tournament"
+msgstr "Користувач не має активного турніру"
+
+#: tournament/views.py:68
+msgid "Tournament history fetched successfully"
+msgstr "Історію турніру успішно отримано"
+
+#: tournament/views.py:91
+msgid "Returning the tournaments which are available for the user"
+msgstr "Повертаються турніри, доступні для користувача"
+
+#: tournament/views.py:113
+msgid "Tournament created successfully"
+msgstr "Турнір успішно створено"
+
+#: tournament/views.py:120
+msgid "Tournament deleted successfully"
+msgstr "Турнір успішно видалено"
+
+#: tournament/views.py:126
+msgid "Tournament joined successfully"
+msgstr "Успішно приєднано до турніру"
+
+#: tournament/views.py:133
+msgid "Tournament left successfully"
+msgstr "Успішно вийшли з турніру"
+
+#: tournament/views.py:140
+msgid "Tournament started successfully"
+msgstr "Турнір успішно розпочато"
+
+#: tournament/views.py:148
+msgid "Tournament not found"
+msgstr "Турнір не знайдено"
+
+#: tournament/views.py:175
+msgid "Tournament lobby fetched successfully"
+msgstr "Лобі турніру успішно отримано"
+
+#: tournament/views.py:191
+msgid "tournament_id is required"
+msgstr "Потрібен tournament_id"
+
+#: tournament/views.py:197
+msgid "U are not part of the tournament"
+msgstr "Ви не є учасником турніру"
+
+#: tournament/views.py:200
+msgid "Tournament is not ongoing"
+msgstr "Турнір не триває"
+
+#: tournament/views.py:207
+msgid "No pending games with deadline set found"
+msgstr "Не знайдено жодної гри з встановленим терміном"
+
+#: tournament/views.py:213
+msgid "Shedueled Game found"
+msgstr "Заплановану гру знайдено"
+
+#: tournament/views.py:215
+msgid "The overloards ask u to be patient. There will be a game for u soon."
+msgstr "Володарі просять вас бути терплячими. Незабаром буде гра для вас."
+
+#: user/exceptions.py:8
+msgid "Validation failed"
+msgstr "Перевірка не пройдена"
+
+#: user/exceptions.py:20
+msgid "A blocking condition has been detected."
+msgstr "Виявлено блокуючу умову."
+
+#: user/exceptions.py:26
+msgid "A relationship error has been detected."
+msgstr "Виявлено помилку у відносинах."
+
+#: user/models.py:73
+msgid "A relationship between these two users already exists."
+msgstr "Відносини між цими двома користувачами вже існують."
+
+#: user/serializers.py:36
+msgid "always here..."
+msgstr "завжди тут..."
+
+#: user/serializers.py:39
+msgid "Under surveillance"
+msgstr "Під наглядом"
+
+#: user/utils_img.py:19
+msgid "Avatar file not found"
+msgstr "Файл аватара не знайдено"
+
+#: user/utils_img.py:21
+msgid "Error opening image"
+msgstr "Помилка відкриття зображення"
+
+#: user/utils_img.py:28
+msgid "Error resizing image"
+msgstr "Помилка зміни розміру зображення"
+
+#: user/utils_img.py:53
+msgid "Error applying vintage filter"
+msgstr "Помилка застосування вінтажного фільтра"
+
+#: user/utils_img.py:61
+msgid "Error converting image to RGB"
+msgstr "Помилка перетворення зображення у формат RGB"
+
+#: user/utils_img.py:69
+msgid "Error loading frame image"
+msgstr "Помилка завантаження зображення рамки"
+
+#: user/utils_img.py:76
+msgid "Error converting images to RGBA"
+msgstr "Помилка перетворення зображень у формат RGBA"
+
+#: user/utils_img.py:83
+msgid "Error creating positioned image"
+msgstr "Помилка створення позиціонованого зображення"
+
+#: user/utils_img.py:89
+msgid "Error combining images"
+msgstr "Помилка об’єднання зображень"
+
+#: user/utils_img.py:103
+msgid "Error saving image"
+msgstr "Помилка збереження зображення"
+
+#: user/utils_img.py:109
+msgid "File type not supported"
+msgstr "Тип файлу не підтримується"
+
+#: user/utils_relationship.py:87 user/utils_relationship.py:100
+msgid "You are already friends with this user"
+msgstr "Ви вже дружите з цим користувачем"
+
+#: user/utils_relationship.py:89
+msgid "Friend request is already pending"
+msgstr "Запит на дружбу вже очікує відповіді"
+
+#: user/utils_relationship.py:105 user/utils_relationship.py:120
+#: user/utils_relationship.py:134
+msgid "Friend request not found"
+msgstr "Запит на дружбу не знайдено"
+
+#: user/utils_relationship.py:115 user/utils_relationship.py:129
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+"Ви вже дружите з цим користувачем. Замість цього потрібно видалити його з "
+"друзів."
+
+#: user/utils_relationship.py:143 user/utils_relationship.py:162
+msgid "Computer says no"
+msgstr "Комп’ютер каже ні"
+
+#: user/utils_relationship.py:151
+msgid "You are not friends with this user"
+msgstr "Ви не дружите з цим користувачем"
+
+#: user/utils_relationship.py:160
+msgid "Try harder...LOL"
+msgstr "Старайся більше... хе-хе"
+
+#: user/utils_relationship.py:164
+msgid "You have already blocked this user"
+msgstr "Ви вже заблокували цього користувача"
+
+#: user/utils_relationship.py:178
+msgid "You have not blocked this user"
+msgstr "Ви не заблокували цього користувача"
+
+#: user/views.py:33 user/views.py:61
+msgid "key 'search' must be provided!"
+msgstr "Ключ 'search' має бути наданий!"
+
+#: user/views.py:50
+msgid "No users found"
+msgstr "Користувачів не знайдено"
+
+#: user/views.py:52
+msgid "The following users were found"
+msgstr "Знайдено наступних користувачів"
+
+#: user/views.py:64
+msgid "Username exists"
+msgstr "Ім’я користувача вже існує"
+
+#: user/views.py:65
+msgid "Username does not exist"
+msgstr "Ім’я користувача не існує"
+
+#: user/views.py:96
+msgid "Profile not found"
+msgstr "Профіль не знайдено"
+
+#: user/views.py:113
+msgid "User profile loaded"
+msgstr "Профіль користувача завантажено"
+
+#: user/views.py:120
+msgid "Friend request sent"
+msgstr "Запит на дружбу надіслано"
+
+#: user/views.py:121
+msgid "User blocked"
+msgstr "Користувача заблоковано"
+
+#: user/views.py:133
+msgid "Friend request accepted"
+msgstr "Запит на дружбу прийнято"
+
+#: user/views.py:145
+msgid "User unblocked"
+msgstr "Користувача розблоковано"
+
+#: user/views.py:146
+msgid "Friend request rejected"
+msgstr "Запит на дружбу відхилено"
+
+#: user/views.py:147
+msgid "Friend request cancelled"
+msgstr "Запит на дружбу скасовано"
+
+#: user/views.py:148
+msgid "Friend removed"
+msgstr "Друга видалено"
+
+#: user/views.py:160
+msgid "cannot perform action on yourself"
+msgstr "не можна виконати дію над собою"
+
+#: user/views.py:165
+#, python-brace-format
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+"Неприпустима дія! Для методу: {request_method}. Дозволені лише наступні дії: "
+"{allowed_actions}"
+
+#: user/views.py:183
+msgid "Friends list of user"
+msgstr "Список друзів користувача"
+
+#: user/views.py:189
+msgid "key 'avatar' must be provided!"
+msgstr "Ключ 'avatar' має бути наданий!"
+
+#: user/views.py:192
+msgid "Avatar updated"
+msgstr "Аватар оновлено"
+
+#: user/views.py:220
+msgid "Invalid / unsupported language code"
+msgstr "Неприпустимий або непідтримуваний мовний код"
+
+#: user/views.py:227
+msgid "Okay, I will now speak in ur new favorite language! ;)"
+msgstr "Гаразд, тепер я говоритиму твоєю новою улюбленою мовою! ;)"
+
+#: user/views.py:235
+msgid "Username already exists"
+msgstr "Ім’я користувача вже існує"
+
+#: user/views.py:251
+msgid "User info updated"
+msgstr "Інформацію про користувача оновлено"

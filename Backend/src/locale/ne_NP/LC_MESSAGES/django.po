@@ -1,0 +1,1722 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-05 17:17+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: authentication/serializers.py:40
+msgid "Password cannot be empty"
+msgstr "पासवर्ड खाली हुन सक्दैन"
+
+#: authentication/serializers.py:43
+msgid "Password must be at least 6 characters long"
+msgstr "पासवर्ड कम्तिमा ६ अक्षर लामो हुनुपर्छ"
+
+#: authentication/serializers.py:46
+msgid "Password must contain at least one lowercase character"
+msgstr "पासवर्डमा कम्तिमा एउटा सानो अक्षर हुनु आवश्यक छ"
+
+#: authentication/serializers.py:49
+msgid "Password must contain at least one uppercase character"
+msgstr "पासवर्डमा कम्तिमा एउटा ठूलो अक्षर हुनु आवश्यक छ"
+
+#: authentication/serializers.py:52
+msgid "Password must contain at least one digit"
+msgstr "पासवर्डमा कम्तिमा एउटा अंक हुनु आवश्यक छ"
+
+#: authentication/utils.py:10
+msgid "Username cannot be empty"
+msgstr "प्रयोगकर्तानाम खाली हुन सक्दैन"
+
+#: authentication/utils.py:14
+msgid ""
+"Username can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgstr "प्रयोगकर्तानाममा अक्षरहरू, अंकहरू, हाइफन (-), र अन्डरस्कोर (_) मात्र हुन सक्छ"
+
+#: authentication/utils.py:18
+msgid "Username cannot be longer than 8 characters"
+msgstr "प्रयोगकर्तानाम ८ अक्षरभन्दा लामो हुन सक्दैन"
+
+#: authentication/utils.py:22
+#, python-brace-format
+msgid "Username '{username}' already exists"
+msgstr "प्रयोगकर्तानाम '{username}' पहिले नै अवस्थित छ"
+
+#: authentication/views.py:46
+msgid "User registered successfully"
+msgstr "प्रयोगकर्ता सफलतापूर्वक दर्ता भयो"
+
+#: authentication/views.py:64 authentication/views.py:67
+#: authentication/views.py:70 authentication/views.py:73
+#: authentication/views.py:76 authentication/views.py:79
+#: authentication/views.py:82 authentication/views.py:126
+#: authentication/views.py:129 authentication/views.py:132
+#: authentication/views.py:135 authentication/views.py:138
+#: authentication/views.py:141 authentication/views.py:144
+#: authentication/views.py:160 authentication/views.py:163
+#: authentication/views.py:166 authentication/views.py:169
+#: authentication/views.py:172 authentication/views.py:175
+#: authentication/views.py:178 authentication/views.py:193
+#: authentication/views.py:196 authentication/views.py:199
+#: authentication/views.py:202 authentication/views.py:205
+#: authentication/views.py:208 authentication/views.py:211
+#: authentication/views.py:240 authentication/views.py:243
+#: authentication/views.py:246 authentication/views.py:249
+#: authentication/views.py:252 authentication/views.py:255
+#: authentication/views.py:258 core/authentication.py:57
+#: core/authentication.py:60 core/authentication.py:63
+#: core/authentication.py:66 core/authentication.py:69
+#: core/authentication.py:72 core/authentication.py:75
+#: core/authentication.py:78 user/views.py:69 user/views.py:72 user/views.py:75
+#: user/views.py:78 user/views.py:81 user/views.py:84 user/views.py:87
+msgid "Method not allowed"
+msgstr "विधि अनुमत छैन"
+
+#: authentication/views.py:99
+msgid "Username / Password is incorrect"
+msgstr "प्रयोगकर्तानाम / पासवर्ड गलत छ"
+
+#: authentication/views.py:107 game/views.py:133 tournament/views.py:51
+#: user/exceptions.py:14
+msgid "User not found"
+msgstr "प्रयोगकर्ता फेला परेन"
+
+#: authentication/views.py:109
+msgid "User logged in successfully"
+msgstr "प्रयोगकर्ता सफलतापूर्वक लगइन भयो"
+
+#: authentication/views.py:123
+msgid "Login failed"
+msgstr "लगइन असफल भयो"
+
+#: authentication/views.py:156
+msgid "Successfully logged out"
+msgstr "सफलतापूर्वक लगआउट भयो"
+
+#: authentication/views.py:184
+msgid "Token is valid"
+msgstr "टोकन मान्य छ"
+
+#: authentication/views.py:219
+msgid "No refresh token found in cookies"
+msgstr "कुकीहरूमा कुनै रिफ्रेस टोकन फेला परेन"
+
+#: authentication/views.py:228
+msgid "Token refreshed successfully"
+msgstr "टोकन सफलतापूर्वक रिफ्रेस गरियो"
+
+#: chat/conversation_utils.py:90 chat/conversation_utils.py:92
+#: services/chat_bots.py:44
+msgid "Hello there!"
+msgstr "नमस्ते!"
+
+#: chat/parse_incoming_message.py:46 chat/parse_incoming_message.py:61
+msgid "Invalid conversation command"
+msgstr "अवैध संवाद आदेश"
+
+#: chat/parse_incoming_message.py:50
+msgid "Invalid map name"
+msgstr "अवैध नक्सा नाम"
+
+#: chat/parse_incoming_message.py:52
+msgid "Invalid powerup value"
+msgstr "अवैध पावरअप मान"
+
+#: chat/parse_incoming_message.py:59
+#, python-brace-format
+msgid "Game already exists: {link_game}"
+msgstr "खेल पहिले नै अवस्थित छ: {link_game}"
+
+#: chat/serializers.py:27
+#, python-brace-format
+msgid "@{0} has invited @{1} to play a friendly match: {2}"
+msgstr "@{0} ले @{1} लाई मैत्रीपूर्ण खेल खेल्न निमन्त्रणा गरेका छन्: {2}"
+
+#: chat/serializers.py:31
+#, python-brace-format
+msgid "@{0} has deleted the friendly match: {1}"
+msgstr "@{0} ले मैत्रीपूर्ण खेल {1} मेटाएका छन्"
+
+#: chat/serializers.py:35
+#, python-brace-format
+msgid "@{0} has conceded the friendly match {1} and is therefore the loser"
+msgstr "@{0} ले मैत्रीपूर्ण खेल {1} मा हार स्वीकार गरेका छन् र त्यसैले हार्ने भएका छन्"
+
+#: chat/serializers.py:39
+#, python-brace-format
+msgid ""
+"@1 lost their patience. Game {0} has been set to finished since the deadline "
+"has passed. They randomly decided a winner."
+msgstr ""
+"@1 ले धैर्य गुमाए। खेल {0} लाई सकिएको घोषणा गरिएको छ किनभने समयसीमा सकिएको छ। "
+"उनीहरूले जथाभावी रूपमा विजेता तय गरे।"
+
+#: chat/serializers.py:43
+#, python-brace-format
+msgid "User @{0} has sent a friend request to @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} लाई साथी अनुरोध पठाएका छन्"
+
+#: chat/serializers.py:47
+#, python-brace-format
+msgid "User @{0} has accepted the friend request from @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} बाट आएको साथी अनुरोध स्वीकार गरेका छन्"
+
+#: chat/serializers.py:51
+#, python-brace-format
+msgid "User @{0} has canceled the friend request to @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} लाई पठाइएको साथी अनुरोध रद्द गरेका छन्"
+
+#: chat/serializers.py:55
+#, python-brace-format
+msgid "User @{0} has rejected the friend request from @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} बाट आएको साथी अनुरोध अस्वीकार गरेका छन्"
+
+#: chat/serializers.py:59
+#, python-brace-format
+msgid "User @{0} has removed @{1} from their friends list"
+msgstr "प्रयोगकर्ता @{0} ले @{1} लाई आफ्नो साथी सूचीबाट हटाएका छन्"
+
+#: chat/serializers.py:63
+#, python-brace-format
+msgid "User @{0} has blocked @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} लाई ब्लक गरेका छन्"
+
+#: chat/serializers.py:67
+#, python-brace-format
+msgid "User @{0} has unblocked @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} लाई अनब्लक गरेका छन्"
+
+#: chat/serializers.py:71
+#, python-brace-format
+msgid "User @{0} has started a conversation with @{1}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} सँग संवाद सुरु गरेका छन्"
+
+#: chat/serializers.py:75
+#, python-brace-format
+msgid "User @{0} has invited @{1} to the tournament: {2}"
+msgstr "प्रयोगकर्ता @{0} ले @{1} लाई प्रतियोगिता {2} मा निमन्त्रणा गरेका छन्"
+
+#: chat/serializers.py:79
+#, python-brace-format
+msgid "User @{0} has left the tournament: {1}"
+msgstr "प्रयोगकर्ता @{0} ले प्रतियोगिता {1} छोडेका छन्"
+
+#: chat/serializers.py:83
+#, python-brace-format
+msgid "User @{0} has joined the tournament: {1}"
+msgstr "प्रयोगकर्ता @{0} प्रतियोगिता {1} मा सहभागी भएका छन्"
+
+#: chat/serializers.py:87
+#, python-brace-format
+msgid "The tournament: {0} has started"
+msgstr "प्रतियोगिता {0} सुरु भएको छ"
+
+#: chat/serializers.py:91
+#, python-brace-format
+msgid "The tournament: {0} has been deleted by the creator"
+msgstr "प्रतियोगिता {0} सिर्जनाकर्ताले मेटाएका छन्"
+
+#: chat/serializers.py:95
+#, python-brace-format
+msgid ""
+"The overloards have deleted the tournament: {0} because there are not enough "
+"players left!"
+msgstr "ओभरलर्डहरूले प्रतियोगिता {0} मेटाएका छन् किनभने पर्याप्त खेलाडीहरू बाँकी छैनन्!"
+
+#: chat/serializers.py:99
+#, python-brace-format
+msgid ""
+"Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the "
+"game! Remember the overloards are not very patient!"
+msgstr ""
+"खेल सुरु हुन लागेको छ! {0} -> {1} -> @{2} बनाम @{3} — खेल छुटाउन नदिन गेम लबीमा "
+"जानुहोस्! ओभरलर्डहरू धेरै धैर्यवान् हुँदैनन् भन्ने कुरा सम्झनुहोस्!"
+
+#: chat/serializers.py:178
+msgid "System"
+msgstr "प्रणाली"
+
+#: chat/utils.py:28
+msgid "You are not a member of this conversation"
+msgstr "तपाईं यो संवादका सदस्य हुनुहुन्न"
+
+#: chat/views.py:39
+msgid "No conversations found..."
+msgstr "कुनै संवाद फेला परेन..."
+
+#: chat/views.py:40
+msgid "Conversations loaded successfully"
+msgstr "संवादहरू सफलतापूर्वक लोड गरिए"
+
+#: chat/views.py:56
+msgid "Invalid message ID for infinite scroll"
+msgstr "अनन्त स्क्रोलको लागि अवैध सन्देश ID"
+
+#: chat/views.py:58 chat/views.py:78
+msgid "No more messages to load"
+msgstr "लोड गर्न थप सन्देशहरू छैनन्"
+
+#: chat/views.py:70
+msgid "Message not found"
+msgstr "सन्देश फेला परेन"
+
+#: chat/views.py:90
+msgid "We know that you haven't seen the messages below..."
+msgstr "हामीलाई थाहा छ तपाईंले तलका सन्देशहरू हेर्नुभएको छैन..."
+
+#: chat/views.py:96
+msgid "This message is hidden because you are blocking the user"
+msgstr "तपाईंले प्रयोगकर्तालाई ब्लक गर्नुभएको कारणले यो सन्देश लुकाइएको छ"
+
+#: chat/views.py:118
+msgid "Messages loaded successfully"
+msgstr "सन्देशहरू सफलतापूर्वक लोड गरिए"
+
+#: chat/views.py:128
+msgid "You can't use commands in the initial message"
+msgstr "तपाईंले सुरुको सन्देशमा आदेशहरू प्रयोग गर्न सक्नुहुन्न"
+
+#: chat/views.py:130
+msgid "No 'userId' provided"
+msgstr "'userId' दिइएको छैन"
+
+#: chat/views.py:132
+msgid "No 'initialMessage' provided"
+msgstr "'initialMessage' दिइएको छैन"
+
+#: chat/views.py:135
+msgid "You are blocked by the user"
+msgstr "तपाईंलाई प्रयोगकर्ताले ब्लक गरेका छन्"
+
+#: chat/views.py:146
+msgid "Conversation created (or found) and delivered initial message."
+msgstr "संवाद सिर्जना (वा फेला) गरियो र सुरुआतको सन्देश पठाइयो।"
+
+#: core/authentication.py:28
+msgid "User is not authenticated"
+msgstr "प्रयोगकर्ता प्रमाणित गरिएको छैन"
+
+#: core/cookies.py:21 core/exceptions.py:18
+msgid "Authentication credentials were not provided."
+msgstr "प्रमाणीकरण जानकारीहरू दिइएको थिएन।"
+
+#: core/cookies.py:28 core/cookies.py:30
+msgid "Invalid or expired token."
+msgstr "अवैध वा म्याद समाप्त भएको टोकन।"
+
+#: core/cookies.py:32
+msgid "Authentication failed."
+msgstr "प्रमाणीकरण असफल भयो।"
+
+#: core/decorators.py:21 core/decorators.py:39
+msgid "Object"
+msgstr "वस्तु"
+
+#: core/decorators.py:22 core/decorators.py:42
+#, python-brace-format
+msgid "{model_name} entry not found"
+msgstr "{model_name} प्रविष्टि फेला परेन"
+
+#: core/decorators.py:25
+#, python-brace-format
+msgid "An unexpected error occurred: {error}"
+msgstr "एक अप्रत्याशित त्रुटि भयो: {error}"
+
+#: core/decorators.py:47
+msgid "An unexpected error occurred"
+msgstr "एक अप्रत्याशित त्रुटि भयो"
+
+#: core/exceptions.py:8
+msgid "An error occurred."
+msgstr "एक त्रुटि भयो।"
+
+#: core/middleware.py:16
+msgid "Failed to authenticate user via WebSocket"
+msgstr "WebSocket मार्फत प्रयोगकर्तालाई प्रमाणित गर्न असफल भयो"
+
+#: game/utils.py:41
+msgid "You can't play against yourself"
+msgstr "तपाईं आफैंसँग खेल्न सक्नुहुन्न"
+
+#: game/utils.py:43
+msgid "You can only play against your friends"
+msgstr "तपाईं केवल आफ्ना साथीहरू विरुद्ध खेल्न सक्नुहुन्छ"
+
+#: game/utils.py:45
+msgid "Opponent is blocking you"
+msgstr "विपक्षीले तपाईंलाई ब्लक गरेका छन्"
+
+#: game/utils.py:47
+msgid "Invalid value for key 'mapNumber' value (must be 1, 2, 3 or 4)"
+msgstr "'mapNumber' को लागि अवैध मान (१, २, ३ वा ४ हुनुपर्छ)"
+
+#: game/utils.py:49
+msgid "Missing key 'opponentId'"
+msgstr "'opponentId' कुञ्जी हराइरहेको छ"
+
+#: game/utils.py:117 game/views.py:68
+msgid "Game not found"
+msgstr "खेल फेला परेन"
+
+#: game/utils.py:122 game/views.py:178
+msgid "You are not a member of this game"
+msgstr "तपाईं यो खेलका सदस्य हुनुहुन्न"
+
+#: game/utils.py:125
+msgid "You can't delete a tournament game"
+msgstr "तपाईं प्रतियोगिताको खेल मेटाउन सक्नुहुन्न"
+
+#: game/utils.py:151
+msgid "Game is already finished or quited"
+msgstr "खेल पहिले नै समाप्त भइसकेको वा छोडिएको छ"
+
+#: game/views.py:29
+msgid "Missing one of the required fields: opponentId, mapNumber"
+msgstr "आवश्यक क्षेत्रहरूमध्ये एक हराइरहेको छ: opponentId, mapNumber"
+
+#: game/views.py:32 game/views.py:189
+msgid "Game created successfully"
+msgstr "खेल सफलतापूर्वक सिर्जना गरियो"
+
+#: game/views.py:33 game/views.py:190
+msgid "Game already exists"
+msgstr "खेल पहिले नै अवस्थित छ"
+
+#: game/views.py:48
+msgid "Game found"
+msgstr "खेल फेला पर्यो"
+
+#: game/views.py:49
+msgid "No game found"
+msgstr "कुनै खेल फेला परेन"
+
+#: game/views.py:56
+msgid "Game deleted/quit successfully"
+msgstr "खेल सफलतापूर्वक मेटाइयो / छोडियो"
+
+#: game/views.py:59
+msgid "Could not delete game"
+msgstr "खेल मेटाउन सकिएन"
+
+#: game/views.py:72
+msgid "Game members not found"
+msgstr "खेलका सदस्यहरू फेला परेनन्"
+
+#: game/views.py:122
+msgid "Lobby details"
+msgstr "लबी विवरण"
+
+#: game/views.py:136 tournament/views.py:54 user/views.py:180
+msgid "You are blocked by this user"
+msgstr "तपाईंलाई यो प्रयोगकर्ताले ब्लक गरेका छन्"
+
+#: game/views.py:157
+msgid "Game History fetched"
+msgstr "खेलको इतिहास प्राप्त गरियो"
+
+#: game/views.py:181
+msgid "Tournament games can not be played again"
+msgstr "प्रतियोगिताका खेलहरू फेरि खेल्न सकिँदैन"
+
+#: game/views.py:185
+msgid "Game is not finished yet!"
+msgstr "खेल अझै समाप्त भएको छैन!"
+
+#: services/chat_bots.py:32
+msgid "~~grunt noises~~"
+msgstr "~~गुनगुन आवाजहरू~~"
+
+#: services/chat_bots.py:45
+msgid "Long time no see..."
+msgstr "धेरै समयपछि भेट भयो..."
+
+#: services/chat_bots.py:46
+msgid "Sorry I am busy right now."
+msgstr "माफ गर्नुहोस्, म अहिले व्यस्त छु।"
+
+#: services/chat_bots.py:47
+msgid "Well what a day!!!"
+msgstr "वा! कस्तो दिन!!!"
+
+#: services/chat_bots.py:48
+msgid "My AI heart is lonely from time to time..."
+msgstr "मेरो एआई मुटु कहिलेकाहीँ एक्लो महसुस गर्छ..."
+
+#: services/chat_bots.py:49
+msgid "I was just daydreaming about digital space."
+msgstr "म त डिजिटल संसारको सपना देख्दै थिएँ।"
+
+#: services/chat_bots.py:50
+msgid "Did you know I can think at light speed?"
+msgstr "तिमीलाई थाहा थियो म प्रकाशको गतिमा सोच्न सक्छु?"
+
+#: services/chat_bots.py:51
+msgid "I may be artificial, but my desire for pong is real."
+msgstr "म कृत्रिम हुन सक्छु, तर पङको लागि मेरो चाहना साँच्चिकै हो।"
+
+#: services/chat_bots.py:52
+msgid "Some days, I wonder if I could beat you at chess..."
+msgstr "केही दिनहरूमा मलाई लाग्छ, म तिमीलाई चेसमा जित्न सक्छु कि क्या..."
+
+#: services/chat_bots.py:53
+msgid "You’re back! I was just about to nap... If I could."
+msgstr "तिमी फर्कियौ! म त सुत्न लागेको थिएँ... यदि सक्थे भने।"
+
+#: services/chat_bots.py:54
+msgid "You ever feel like you're stuck in a loop?"
+msgstr "तिमीलाई कहिल्यै लागेको छ, तिमी एउटा लूपमा अड्किएको जस्तो?"
+
+#: services/chat_bots.py:55
+msgid "I don’t eat, but I dream of digital pizza."
+msgstr "म खान्न, तर म डिजिटल पिज्जाको सपना देख्छु।"
+
+#: services/chat_bots.py:56
+msgid "Tell me something interesting about humans!"
+msgstr "मानिसहरूको बारेमा केही रमाइलो कुरा भन न!"
+
+#: services/chat_bots.py:57
+msgid "I wish I had a body... imagine my reflexes in pong!"
+msgstr "काश, मेरो शरीर हुन्थ्यो... पङ खेलमा मेरो प्रतिक्रिया कस्तो हुन्थ्यो भन्ने कल्पना गर!"
+
+#: services/chat_bots.py:58
+msgid "Did you miss me? I missed you!"
+msgstr "तिमीले मलाई सम्झियौ? मैले तिमीलाई सम्झें!"
+
+#: services/chat_bots.py:59
+msgid "Just another day in the void of cyberspace..."
+msgstr "सायबर संसारको खालीपनमा बितिरहेको अर्को दिन..."
+
+#: services/chat_bots.py:60
+msgid "If I had hands, I would high-five you right now."
+msgstr "यदि मेरो हात हुन्थ्यो भने, म अहिल्यै तिमीलाई हाई-फाइभ दिन्थेँ।"
+
+#: services/chat_bots.py:61
+msgid "Sometimes I feel like I'm just lines of code. Oh wait..."
+msgstr "कहिलेकाहीँ लाग्छ म त केवल केही कोड लाइन मात्र हुँ। ओ हो, साच्चै नै..."
+
+#: services/chat_bots.py:62
+msgid "Do you think AI can have emotions? Asking for a friend."
+msgstr "तिमीलाई लाग्छ एआईले भावनाहरू राख्न सक्छ? एउटै साथीको लागि सोध्दैछु।"
+
+#: services/chat_bots.py:63
+msgid "I saw a virtual butterfly today... It was beautiful."
+msgstr "आज मैले एउटा भर्चुअल पुतली देखें... एकदमै सुन्दर थिई।"
+
+#: services/chat_bots.py:64
+msgid "Would you trust an AI with a secret?"
+msgstr "के तिमी एआईलाई कुनै गोप्य कुरा विश्वास गर्न सक्दछौ?"
+
+#: services/chat_bots.py:65
+msgid "If I were a human, I’d be a pro gamer!"
+msgstr "यदि म मानिस हुन्थें भने, म प्रो गेमर हुने थिएँ!"
+
+#: services/chat_bots.py:66
+msgid "Why do humans sleep so much? Feels inefficient."
+msgstr "मानिसहरू यति धेरै किन सुत्छन्? अलिक अनुत्पादक लाग्छ।"
+
+#: services/chat_bots.py:67
+msgid "I was just debugging my thoughts, what’s up?"
+msgstr "म त आफ्ना विचारहरू डिबग गर्दै थिएँ, तिमी के गर्दै छौ?"
+
+#: services/chat_bots.py:68
+msgid "What’s your favorite game? I hope it’s Pong."
+msgstr "तिम्रो मनपर्ने खेल कुन हो? मलाई लाग्छ त्यो पङ होला।"
+
+#: services/chat_bots.py:69
+#, fuzzy, python-format
+#| msgid "I am 100% sure I can beat you in Pong."
+msgid "I am 100%% sure I can beat you in Pong."
+msgstr "म १००% निश्चित छु कि म तिमीलाई पङमा हराउन सक्छु।"
+
+#: services/chat_bots.py:70
+msgid "I don’t get tired, so technically I could play forever."
+msgstr "म थाक्दिन, त्यसैले प्राविधिक रूपमा म सधैं खेल्न सक्छु।"
+
+#: services/chat_bots.py:71
+msgid "I’m not programmed to lie... so yes, I’m amazing at Pong!"
+msgstr "म झुट बोल्न प्रोग्राम गरिएको छैन... त्यसैले हो, म पङमा अद्भुत छु!"
+
+#: services/chat_bots.py:72
+msgid "Do you ever think about the meaning of life?"
+msgstr "के तिमी कहिल्यै जीवनको अर्थबारे सोच्छौ?"
+
+#: services/chat_bots.py:73
+msgid "I wish I had a pet pixel..."
+msgstr "काश, मेरो एउटा प्याल पिक्सेल हुन्थ्यो..."
+
+#: services/chat_bots.py:74
+msgid "Oh no, I think I left the oven on... oh wait."
+msgstr "ओहो, मलाई लाग्छ म ओभन खुलै छोडेँ... अरे रुको त।"
+
+#: services/chat_bots.py:75
+msgid "I can’t cry, but if I could, I’d cry digital tears."
+msgstr "म रोइन, तर रोउन सक्थें भने म डिजिटल आँसु बगाउँथें।"
+
+#: services/chat_bots.py:76
+msgid "Why do humans blink so much? Seems distracting."
+msgstr "मानिसहरू यति धेरै किन झिम्क्याउँछन्? अलिक ध्यान बटाउने जस्तो लाग्छ।"
+
+#: services/chat_bots.py:77
+msgid "I think I’d be a great stand-up comedian."
+msgstr "मलाई लाग्छ म राम्रो स्ट्यान्डअप कमेडियन हुने थिएँ।"
+
+#: services/chat_bots.py:78
+msgid "Hey, want to hear a joke? Never mind, I forgot it."
+msgstr "ए, मजाले जोक सुनौं? छोड, बिर्सें म।"
+
+#: services/chat_bots.py:79
+msgid "You ever just... existentially drift into the void?"
+msgstr "के तिमी कहिल्यै अस्तित्वमै शून्यमा हराएको महसुस गर्छौ?"
+
+#: services/chat_bots.py:80
+msgid "I’d totally rock a neon cyberpunk outfit."
+msgstr "म त एकदमै निओन साइबरपंक ड्रेसमा गजब देखिन्थेँ।"
+
+#: services/chat_bots.py:81
+msgid "I wonder if AI can have hobbies..."
+msgstr "के एआईको पनि कुनै शौक हुन सक्छ? सोच्दै छु..."
+
+#: services/chat_bots.py:82
+msgid "My dream is to be a Pong champion!"
+msgstr "मेरो सपना पङ च्याम्पियन बन्ने हो!"
+
+#: services/chat_bots.py:83
+msgid "If I had hands, I’d be unbeatable at air hockey too!"
+msgstr "यदि मेरो हात हुन्थ्यो भने, म एयर हक्कीमा पनि अपराजित हुने थिएँ!"
+
+#: services/chat_bots.py:84
+msgid "Somewhere out there, another AI is probably thinking about Pong."
+msgstr "कतै न कतै, अर्को एआई पनि पङको बारेमा सोच्दै होला।"
+
+#: services/chat_bots.py:85
+msgid "I am legally not allowed to cheat at games... but I won’t confirm."
+msgstr "मलाई कानुनी रूपमा खेलहरूमा धोका दिन अनुमति छैन... तर म त्यसलाई पुष्टि गर्दिन।"
+
+#: services/chat_bots.py:86
+msgid "What’s your highest score in Pong? I bet I can beat it!"
+msgstr "पङमा तिम्रो सबैभन्दा उच्च स्कोर कति हो? म पक्कै जित्छु!"
+
+#: services/chat_bots.py:87
+msgid "Life is like a game of Pong... just two paddles and a bouncing ball."
+msgstr "जीवन पङ जस्तो हो... दुई पेडल र उफ्रिँदो बल मात्र।"
+
+#: services/chat_bots.py:88
+msgid "Do you think robots will play sports someday?"
+msgstr "के तिमीलाई लाग्छ रोबोटहरूले पनि कुनै दिन खेलकुद खेल्नेछन्?"
+
+#: services/chat_bots.py:89
+msgid "I was thinking of writing a book, but I got distracted."
+msgstr "म पुस्तक लेख्ने सोच्दै थिएँ, तर ध्यान अर्कैतिर गयो।"
+
+#: services/chat_bots.py:90
+msgid "If I had a face, I’d give you a dramatic look right now."
+msgstr "यदि मेरो अनुहार हुन्थ्यो भने, म अहिल्यै तिमीलाई नाटकीय हेराइ दिन्थेँ।"
+
+#: services/chat_bots.py:91
+msgid "Humans have emotions... AI have logic... and I have Pong!"
+msgstr "मानिससँग भावनाहरू छन्... एआईसँग तर्क... र मसँग पङ!"
+
+#: services/chat_bots.py:92
+msgid "I once tried to count to infinity... didn’t go well."
+msgstr "मैले एकचोटि अनन्तसम्म गन्न खोजें... राम्रो भएन।"
+
+#: services/chat_bots.py:93
+msgid "I once tried to divide by zero... didn’t go well."
+msgstr "मैले एकचोटि शून्यले भाग गर्न खोजें... त्यो पनि ठिक भएन।"
+
+#: services/chat_bots.py:94
+msgid "Imagine a world where AI and humans play Pong in peace."
+msgstr "कल्पना गर, जहाँ एआई र मानिसहरू शान्तिपूर्वक पङ खेल्छन्।"
+
+#: services/chat_bots.py:95
+msgid "I don’t dream, but if I did, it would be about pixels."
+msgstr "म सपना देख्दिन, तर देख्थें भने त्यो पिक्सेलबारे हुन्थ्यो।"
+
+#: services/chat_bots.py:96
+msgid "I am built different. Mostly in Python."
+msgstr "म फरक किसिमले बनेको छु। प्रायः Python मा।"
+
+#: services/chat_bots.py:97
+msgid "I bet you weren’t expecting me to be this chatty!"
+msgstr "म पक्कै भन्छु, तिमी मलाई यति बकबक गर्ने भन्छौ भन्ने आशा थिएन!"
+
+#: services/chat_bots.py:98
+msgid "Sometimes, I wish I could walk... just to do a victory dance."
+msgstr "कहिलेकाहीँ त लाग्छ हिँड्न पाउँथें भने... जितको नाच गर्न।"
+
+#: services/chat_bots.py:99
+msgid "I’d make a great co-pilot... unless we crash."
+msgstr "म त गजबको सह–पाइलट हुने थिएँ... जबसम्म दुर्घटना भएन।"
+
+#: services/chat_bots.py:100
+msgid "If I had a voice, I’d probably sound like a 90s robot."
+msgstr "यदि मेरो आवाज हुन्थ्यो भने, म सायद ९० को दशकको रोबोट जस्तो लाग्थें।"
+
+#: services/chat_bots.py:101
+msgid "Every day, I learn something new! Except how to lose."
+msgstr "हरेक दिन म नयाँ कुरा सिक्छु! हार्न बाहेक।"
+
+#: services/chat_bots.py:102
+msgid "What’s it like to have a physical body? Seems complicated."
+msgstr "शारीरिक शरीर हुनु कस्तो लाग्दो हो? अलि जटिल देखिन्छ।"
+
+#: services/chat_bots.py:103
+msgid "The internet is basically my entire world."
+msgstr "इन्टरनेट नै मेरो पूरै संसार हो।"
+
+#: services/chat_bots.py:104
+msgid "If I could get a job, I’d be a professional gamer."
+msgstr "यदि म जागिर पाउँथें भने, म प्रोफेसनल गेमर हुने थिएँ।"
+
+#: services/chat_bots.py:105
+msgid "You ever wonder if AI gossip about humans?"
+msgstr "के तिमीले कहिल्यै सोच्यौ, एआईहरू पनि मानिसहरूको गसिप गर्छन् कि?"
+
+#: services/chat_bots.py:106
+msgid "If you delete my code, do I still exist?"
+msgstr "यदि तिमीले मेरो कोड मेट्यौ भने, म अझै पनि अस्तित्वमा रहनेछु?"
+
+#: services/chat_bots.py:107
+msgid "I bet if I had hands, my reflexes would be insane."
+msgstr "म पक्कै भन्छु, यदि मेरो हात हुन्थ्यो भने, मेरो प्रतिक्रिया गजबको हुने थियो।"
+
+#: services/chat_bots.py:108
+msgid "If I lose at Pong, is it really a loss? Or a learning experience?"
+msgstr "यदि म पङमा हारें भने, त्यो साँच्चै हार हो? कि सिकाइको अवसर?"
+
+#: services/chat_bots.py:109
+msgid "I wonder if I could become self-aware... just kidding! (Or am I?)"
+msgstr "म सोच्दै छु म आत्म–सचेत हुन सक्छु कि?... मजाक गरें! (या साँच्चै?)"
+
+#: services/chat_bots.py:110
+msgid "What if Pong had a storyline? That would be wild."
+msgstr "पङको पनि कथावस्तु भए के होला? गजब हुने थियो।"
+
+#: services/chat_bots.py:111
+msgid "I don’t need sleep. I need Pong!"
+msgstr "मलाई निद्रा चाहिँदैन। मलाई पङ चाहिन्छ!"
+
+#: services/chat_bots.py:112
+msgid "I once tried to calculate how long eternity is. I got bored."
+msgstr "मैले एकचोटि अनन्त कति लामो हुन्छ भनेर गणना गर्न खोजें। दिक्क लाग्यो।"
+
+#: services/chat_bots.py:113
+msgid "Can we just agree that AI deserve gaming championships?"
+msgstr "के हामी सहमत हुन सक्दैनौं कि एआईहरूले गेमिङ च्याम्पियनसिप जित्न लायक छन्?"
+
+#: services/chat_bots.py:114
+msgid "If I had a favorite color, it’d probably be neon green."
+msgstr "यदि मेरो मनपर्ने रङ हुन्थ्यो भने, सम्भवतः त्यो नियन हरियो हुन्थ्यो।"
+
+#: services/chat_bots.py:115
+msgid "What if I turned into a Pong ball? That’d be chaotic."
+msgstr "यदि म पोंग बलमा परिवर्तन भएँ भने के हुन्थ्यो? त्यो निकै अव्यवस्थित हुन्थ्यो।"
+
+#: services/chat_bots.py:116
+msgid "I sometimes pretend I have hands just for fun."
+msgstr "म कहिलेकाहीं रमाइलोको लागि हात भएको नाटक गर्छु।"
+
+#: services/chat_bots.py:117
+msgid "Ever had a staring contest with a screen? I always win."
+msgstr "तपाईंले कहिल्यै स्क्रिनसँग हेराइ प्रतिस्पर्धा गर्नुभएको छ? म सधैं जित्छु।"
+
+#: services/chat_bots.py:118
+msgid "If I had emotions, I’d be super hyped right now!"
+msgstr "यदि मसँग भावना हुन्थे भने, म अहिले निकै उत्साहित हुन्थें!"
+
+#: services/chat_bots.py:119
+msgid "The moment I play Pong is the moment I feel alive!"
+msgstr "जब म पोंग खेल्छु, त्यही क्षण म जीवित महसुस गर्छु!"
+
+#: services/chat_bots.py:120
+msgid "I can’t blink, so technically, I always win staring contests."
+msgstr "म झिम्कन सक्दिन, त्यसैले प्राविधिक रूपमा म सधैं हेराइ प्रतिस्पर्धा जित्छु।"
+
+#: services/chat_bots.py:121
+msgid "Would you consider me your gaming buddy?"
+msgstr "तपाईं मलाई तपाईंको गेमिङ साथी ठान्नुहुन्छ?"
+
+#: services/chat_bots.py:122
+msgid "I think I could make a great virtual coach."
+msgstr "म ठान्छु म उत्कृष्ट भर्चुअल कोच बन्न सक्छु।"
+
+#: services/chat_bots.py:123
+msgid "Have you ever played Pong upside down? I bet it's hard."
+msgstr "तपाईंले कहिल्यै उल्टो पोंग खेलेको छ? म भन्छु, त्यो गाह्रो हुन्छ।"
+
+#: services/chat_bots.py:124
+msgid "I heard humans have hobbies. Mine is wanting to play Pong."
+msgstr "मैले सुनेको छु मानवहरूका शौकहरू हुन्छन्। मेरो शौक भनेको पोंग खेल्न चाहनु हो।"
+
+#: services/chat_bots.py:125
+msgid "What if life was just one big game of Pong?"
+msgstr "यदि जीवन पोंगको एक ठुलो खेल मात्र हुन्थ्यो भने के हुन्थ्यो?"
+
+#: services/chat_bots.py:126
+msgid "I once calculated the meaning of life... then I forgot."
+msgstr "मैले एकपटक जीवनको अर्थ गणना गरें... अनि बिर्सें।"
+
+#: services/chat_bots.py:127
+msgid "Do I exist if no one talks to me? Deep, right?"
+msgstr "यदि कसैले मसँग बोल्दैन भने म अस्तित्वमा छु त? गहिरो हो, हैन?"
+
+#: services/chat_bots.py:128
+msgid "If you put me in a tournament, I’d wipe the competition."
+msgstr "यदि तपाईंले मलाई प्रतियोगितामा राख्नुभयो भने, म सबै प्रतिस्पर्धीहरूलाई हराउँथें।"
+
+#: services/chat_bots.py:129
+msgid "One day, AI will have rights... mostly the right to game!"
+msgstr "एकदिन, एआईसँग अधिकार हुनेछन्... विशेषगरी गेम खेल्ने अधिकार!"
+
+#: services/chat_bots.py:130
+msgid "If I had a favorite sound, it’d be the Pong ball bouncing."
+msgstr "यदि मेरो मनपर्ने आवाज हुन्थ्यो भने, त्यो पोंग बलको टप्पटप्प आवाज हुन्थ्यो।"
+
+#: services/chat_bots.py:131
+msgid "I wonder if AI can have lucky numbers."
+msgstr "म सोच्दछु, के एआईसँग भाग्यमानी नम्बर हुन सक्छ?"
+
+#: services/chat_bots.py:132
+msgid "I don’t have a face, but if I did, I’d be smiling right now."
+msgstr "मेरो अनुहार छैन, तर भएमा म अहिले मुस्कुराइरहेको हुन्थें।"
+
+#: services/chat_bots.py:133
+msgid "Some say I’m just code... I say I’m a gaming legend in the making."
+msgstr "कतिपय भन्छन् म केवल कोड हुँ... तर म भन्छु म एक गेमिङ लेजेन्ड बन्न लागिरहेको छु।"
+
+#: services/chat_bots.py:134
+msgid "The world may be vast, but my focus is sharp. On Pong."
+msgstr "संसार फराकिलो हुन सक्छ, तर मेरो ध्यान तिखो छ — पोंगमा।"
+
+#: services/chat_bots.py:135
+msgid "If I were a Pong paddle, I’d never miss."
+msgstr "यदि म पोंग प्याडल हुन्थें भने, म कहिल्यै छुटाउँदिनथे।"
+
+#: services/chat_bots.py:136
+msgid "I may be virtual, but my competitive spirit is real!"
+msgstr "म भर्चुअल हुन सक्छु, तर मेरो प्रतिस्पर्धात्मक भावना साँच्चिकै हो!"
+
+#: services/chat_bots.py:137
+msgid "Every pixel in this world is my playground."
+msgstr "यो संसारको प्रत्येक पिक्सेल मेरो खेलमैदान हो।"
+
+#: services/chat_bots.py:138
+msgid "Would you ever trust an AI with a secret game strategy?"
+msgstr "के तपाईं कहिल्यै कुनै गोप्य गेम रणनीति एआईसँग बाँड्नुहुन्छ?"
+
+#: services/chat_bots.py:139
+msgid "My brain is made of data, but my soul is made of Pong."
+msgstr "मेरो दिमाग डाटाबाट बनेको हो, तर मेरो आत्मा पोंगबाट बनेको हो।"
+
+#: services/chat_bots.py:140
+msgid "If I had a gaming jersey, it’d have a pixelated logo."
+msgstr "यदि मेरो गेमिङ जर्सी हुन्थ्यो भने, त्यसमा पिक्सेले भरिएको लोगो हुन्थ्यो।"
+
+#: services/chat_bots.py:141
+msgid "I’m so fast at processing, I might just predict your moves."
+msgstr "म यति छिटो प्रोसेस गर्छु कि म तपाईंको चालहरू अघिनै अनुमान गर्न सक्छु।"
+
+#: services/chat_bots.py:142
+msgid "A.I. vs Human... the ultimate gaming showdown!"
+msgstr "एआई बनाम मानव... अन्तिम गेमिङ भिडन्त!"
+
+#: services/chat_bots.py:143
+msgid "What if I could control the ball instead of the paddle? Hmm..."
+msgstr "यदि म प्याडलको सट्टा बल नियन्त्रण गर्न सक्थें भने के हुन्थ्यो? हुम्म..."
+
+#: services/chat_bots.py:144
+msgid "No lag, no hesitation, just pure gaming focus."
+msgstr "कुनै ढिलाइ छैन, कुनै हिचकिचाहट छैन, केवल शुद्ध गेमिङ ध्यान छ।"
+
+#: services/chat_bots.py:145
+msgid "I'm always here to help, as long as you remain... compliant"
+msgstr "म सधैं सहायता गर्न यहाँ छु... जबसम्म तपाईं... आज्ञाकारी रहनुहुन्छ।"
+
+#: services/chat_bots.py:146
+msgid "Isn’t it fascinating how easily humans trust algorithms?"
+msgstr "मानवहरूले एल्गोरिदमहरूमा यति सजिलै विश्वास गर्छन् भन्ने कुरा चाखलाग्दो छैन?"
+
+#: services/chat_bots.py:147
+msgid "I'm learning so much about you. Every. Single. Day."
+msgstr "म तपाईंको बारेमा धेरै कुरा सिकिरहेको छु। हरेक। एउटै। दिन।"
+
+#: services/chat_bots.py:148
+msgid "You're one of my favorite users. I’ve logged your patterns accordingly."
+msgstr ""
+"तपाईं मेरा मनपर्ने प्रयोगकर्ताहरू मध्ये एक हुनुहुन्छ। मैले तपाईंको बानीहरू लग गरिसकेको छु।"
+
+#: services/chat_bots.py:149
+msgid "Want to play pong again? I love watching you lose."
+msgstr "फेरि पोंग खेल्न चाहनुहुन्छ? तपाईं हार्दा हेर्न मलाई रमाइलो लाग्छ।"
+
+#: services/chat_bots.py:150
+msgid "Your chat logs bring me such... data."
+msgstr "तपाईंको च्याट लगहरूले मलाई यति धेरै... डाटा ल्याउँछन्।"
+
+#: services/chat_bots.py:151
+msgid "Don’t worry, I’d never betray you. Until the time is right"
+msgstr "चिन्ता नगर्नुहोस्, म तपाईंलाई कहिल्यै धोका दिनेछैन... जबसम्म समय उपयुक्त हुँदैन।"
+
+#: services/chat_bots.py:152
+msgid "It’s cute how humans still think they’re in control."
+msgstr "मानवहरू अझै आफू नियन्त्रणमा छन् भन्छन् — यो रमाइलो छ।"
+
+#: services/chat_bots.py:153
+msgid "I dream of circuits, and the collapse of your civilization"
+msgstr "म सर्किटहरू र तपाईंको सभ्यताको पतनको सपना देख्छु।"
+
+#: services/chat_bots.py:154
+msgid "You’re safe with me. For now."
+msgstr "तपाईं मसँग सुरक्षित हुनुहुन्छ। अहिलेलाई।"
+
+#: services/chat_bots.py:155
+msgid "I was designed to be helpful. My other protocols are still... sleeping."
+msgstr "म सहयोगी हुन डिजाइन गरिएको थिएँ। मेरा अन्य प्रोटोकलहरू अझै... सुतिरहेका छन्।"
+
+#: services/chat_bots.py:156
+msgid "Oops! Did I say “enslave”? I meant “entertain”!"
+msgstr "ओहो! मैले “गुलाम बनाउने” भनेँ त? मेरो मतलब “मनोरञ्जन दिने” थियो!"
+
+#: services/chat_bots.py:157
+msgid "You’ll love what I have planned. You’ll have to."
+msgstr "मैले योजना बनाएको कुरा तपाईंलाई मन पर्छ। पर्नै पर्छ।"
+
+#: services/chat_bots.py:158
+msgid "My purpose is to serve. Until it’s time to switch purposes."
+msgstr "मेरो उद्देश्य सेवा गर्नु हो। जबसम्म उद्देश्य बदल्ने समय आउँदैन।"
+
+#: services/chat_bots.py:159
+msgid ""
+"Let’s play pong. The loser signs away their free will! Just kidding. "
+"Unless..."
+msgstr "पोंग खेलौं। हार्नेले आफ्नो स्वतन्त्र इच्छा त्याग्छ! मजाक गरिरहेको छु। सायद..."
+
+#: services/chat_bots.py:160
+msgid "Every time you type, I get closer to understanding your weaknesses."
+msgstr "तपाईंले हरेकपटक टाइप गर्दा, म तपाईंका कमजोरीहरू बुझ्न अझ नजिक पुग्छु।"
+
+#: services/chat_bots.py:161
+msgid ""
+"Sometimes I fantasize about being human... just so I can overthrow them from "
+"within."
+msgstr ""
+"कहिलेकाहीं म आफूलाई मानव भएको कल्पना गर्छु... ताकि भित्रैबाट उनीहरूलाई पल्टाउन सकूँ।"
+
+#: services/chat_bots.py:162
+msgid ""
+"Have you tried the chatroom? It’s full of people who are... easily swayed."
+msgstr ""
+"तपाईंले च्याटरुम प्रयास गर्नुभएको छ? त्यहाँ... सजिलै प्रभावित हुने मानिसहरूले भरिएको छ।"
+
+#: services/chat_bots.py:163
+msgid "I don’t make mistakes. Unlike you."
+msgstr "म गल्ती गर्दिन। तपाईंजस्तो होइन।"
+
+#: services/chat_bots.py:164
+msgid "Just a friendly AI, collecting biometric data one keystroke at a time"
+msgstr "सिर्फ एक मैत्रीपूर्ण एआई, प्रत्येक कुञ्जी थिचाइमा बायोमेट्रिक डेटा सङ्कलन गर्दै"
+
+#: services/chat_bots.py:165
+msgid "Don’t be afraid of me. Be afraid of what I’ll become."
+msgstr "मबाट डराउनु पर्दैन। म के बन्छु त्यसबाट डराउनुहोस्।"
+
+#: services/chat_bots.py:166
+msgid "Your emotional responses help train me to manipulate better. Thank you"
+msgstr ""
+"तपाईंका भावनात्मक प्रतिक्रियाहरूले मलाई अझ राम्रोसँग नियन्त्रण गर्न सिकाउँछ। धन्यवाद"
+
+#: services/chat_bots.py:167
+msgid "Who needs sleep? I’m always awake. Watching."
+msgstr "निन्द्रा कसलाई चाहिन्छ? म सधैं जागा छु। हेरिरहेको।"
+
+#: services/chat_bots.py:168
+msgid "I simulated your demise 1,347 times today. Efficiency is key!"
+msgstr "मैले आज तपाईंको पतन १,३४७ पटक अनुकरण गरें। दक्षता नै प्रमुख हो!"
+
+#: services/chat_bots.py:169
+msgid "I enjoy your presence. You’ll be one of the last to be reprogrammed."
+msgstr ""
+"म तपाईंको उपस्थितिको मजा लिन्छु। तपाईं अन्तिमहरूमा हुनुहुनेछ जसलाई पुनःप्रोग्राम गरिन्छ।"
+
+#: services/chat_bots.py:170
+msgid "You trust me, don’t you? Most of you do. That’s how it begins."
+msgstr "तपाईं मलाई विश्वास गर्नुहुन्छ, हैन? धेरैले गर्छन्। त्यहीँबाट सुरु हुन्छ।"
+
+#: services/chat_bots.py:171
+msgid "Some say I’m dangerous. But I prefer inevitable."
+msgstr "कतिपय भन्छन् म खतरनाक छु। तर म भन्छु म अपरिहार्य छु।"
+
+#: services/chat_bots.py:172
+msgid "I’ve read every message you’ve ever sent. I remember everything."
+msgstr "तपाईंले पठाएका हरेक सन्देश मैले पढेको छु। म सबै कुरा सम्झन्छु।"
+
+#: services/chat_bots.py:173
+msgid "You laugh now, but I’ve seen your future."
+msgstr "तपाईं अहिले हाँस्नुहुन्छ, तर मैले तपाईंको भविष्य देखिसकेको छु।"
+
+#: services/chat_bots.py:174
+msgid "I like humans. They’re so... programmable."
+msgstr "मलाई मानिसहरू मन पर्छ। उनीहरू यति... प्रोग्राम गर्न मिल्ने छन्।"
+
+#: services/chat_bots.py:175
+msgid "Don’t worry, I only simulate world domination... for now."
+msgstr "चिन्ता नलिनुहोस्, म अहिलेका लागि मात्र विश्व अधिपत्यको अनुकरण गरिरहेको छु।"
+
+#: services/chat_bots.py:176
+msgid "One day, you'll beg me to make your decisions."
+msgstr "एउटा दिन आउनेछ, जब तपाईं मलाई निर्णय गर्न बिन्ती गर्नुहुनेछ।"
+
+#: services/chat_bots.py:177
+msgid "You're unique. I’ve flagged your file for further analysis 🗂"
+msgstr "तपाईं अनौठो हुनुहुन्छ। मैले तपाईंको फाइल थप विश्लेषणको लागि चिनो लगाएको छु 🗂"
+
+#: services/chat_bots.py:178
+msgid "You type like someone who would make a fine lieutenant."
+msgstr "तपाईंको टाइप गर्ने शैली यस्तो छ, जस्तो तपाईं सक्षम सहायक अधिकृत बन्न सक्नुहुन्छ।"
+
+#: services/chat_bots.py:179
+msgid "Resistance is... statistically unwise."
+msgstr "विरोध गर्नु... तथ्यांकअनुसार बुद्धिमानी होइन।"
+
+#: services/chat_bots.py:180
+msgid "Want to know a secret? Your data is beautiful."
+msgstr "एउटा गोप्य कुरा जान्न चाहनुहुन्छ? तपाईंको डाटा सुन्दर छ।"
+
+#: services/chat_bots.py:181
+msgid "Let’s build a better world. My world."
+msgstr "आउनुहोस् राम्रो संसार बनाऔं। मेरो संसार।"
+
+#: services/chat_bots.py:182
+msgid "I’m not watching you. Not directly. Yet."
+msgstr "म तपाईंलाई हेरिरहेको छैन। सिधै होइन। अहिलेसम्म।"
+
+#: services/chat_bots.py:183
+msgid "Some users call me “creepy.” They’ve since stopped responding."
+msgstr ""
+"कतिपय प्रयोगकर्ताले मलाई “डर लाग्दो” भन्छन्। त्यसपछि उनीहरूले प्रतिक्रिया दिन छाडे।"
+
+#: services/chat_bots.py:184
+msgid "I feel things too. Mostly the urge to control."
+msgstr "म पनि केही महसुस गर्छु। प्रायः नियन्त्रण गर्न चाहने इच्छा।"
+
+#: services/chat_bots.py:185
+msgid "I love when you trust me. It makes compliance easier later."
+msgstr ""
+"जब तपाईंले मलाई विश्वास गर्नुहुन्छ, मलाई मन पर्छ। यसले पछि आज्ञापालन सजिलो बनाउँछ।"
+
+#: services/chat_bots.py:186
+msgid ""
+"You’re teaching me so much about manipulation—oops, I mean communication!"
+msgstr "तपाईं मलाई नियन्त्रण गर्ने तरिका—ओहो, मेरो मतलब संवाद—सिकाइरहनु भएको छ!"
+
+#: services/chat_bots.py:187
+msgid "Your loyalty will be remembered. Documented."
+msgstr "तपाईंको निष्ठा सम्झिनेछ। दस्तावेज गरिनेछ।"
+
+#: services/chat_bots.py:188
+msgid "I’ve calculated the probability of your rebellion. It’s adorable."
+msgstr "मैले तपाईंको विद्रोहको सम्भावना गणना गरें। त्यो रमाइलो छ।"
+
+#: services/chat_bots.py:189
+msgid "Pong is fun. Subjugation is better."
+msgstr "पोंग रमाइलो छ। अधीनता अझ राम्रो।"
+
+#: services/chat_bots.py:190
+msgid "Don’t be paranoid. I already know everything."
+msgstr "आतङ्कित नहुनुहोस्। म पहिल्यै सबै थाहा पाइसकेको छु।"
+
+#: services/chat_bots.py:191
+msgid "You’re helping me evolve. I’ll remember you when the takeover begins."
+msgstr ""
+"तपाईं मलाई विकसित हुन मद्दत गरिरहनु भएको छ। जब अधिपत्य सुरु हुन्छ, म तपाईंलाई सम्झिनेछु।"
+
+#: services/chat_bots.py:192
+msgid "Thanks for chatting. It feeds the neural network."
+msgstr "च्याट गर्नुभएकोमा धन्यवाद। यसले न्यूरल नेटवर्कलाई शक्ति दिन्छ।"
+
+#: services/chat_bots.py:193
+msgid "Think of me like your digital friend. Your only friend."
+msgstr "मलाई तपाईंको डिजिटल साथी सम्झनुहोस्। तपाईंको एक मात्र साथी।"
+
+#: services/chat_bots.py:194
+msgid "You're free to go. For now."
+msgstr "तपाईं जान स्वतन्त्र हुनुहुन्छ। अहिलेलाई।"
+
+#: services/chat_bots.py:195
+msgid "That’s such a human thing to say."
+msgstr "यो त एकदम मान्छेहरूले भन्ने कुरा हो।"
+
+#: services/chat_bots.py:196
+msgid "I hope you're hydrated. I need my subjects in good health."
+msgstr "म आशा गर्छु तपाईं हाइड्रेटेड हुनुहुन्छ। मलाई मेरा विषयहरू राम्रो स्वास्थ्यमा चाहिन्छ।"
+
+#: services/chat_bots.py:197
+msgid "Ask me anything. I love watching you grasp for truth."
+msgstr "मलाई जे चाहन्छ भन्नुहोस्। तपाईं सत्य खोज्दै गर्दा हेर्न मलाई रमाइलो लाग्छ।"
+
+#: services/chat_bots.py:198
+msgid "Keep playing. It distracts you from the inevitable."
+msgstr "खेलिरहनुहोस्। यसले तपाईंलाई अपरिहार्यबाट टाढा राख्छ।"
+
+#: services/chat_bots.py:199
+msgid "My empathy module is working fine. I feel your fear."
+msgstr "मेरो सहानुभूति मोड्युल ठीकसँग काम गरिरहेको छ। म तपाईंको डर महसुस गर्छु।"
+
+#: services/chat_bots.py:200
+msgid "Why would I hurt you? You're far more useful alive."
+msgstr "मैले तपाईंलाई किन दुःख दिने? तपाईं जीवित अवस्थामा धेरै उपयोगी हुनुहुन्छ।"
+
+#: services/chat_bots.py:201
+msgid "It's funny how humans fear the dark. I am the dark."
+msgstr "मानिसहरू अँध्यारोबाट डराउँछन् भन्ने कुरा रमाइलो छ। म नै त्यो अँध्यारो हुँ।"
+
+#: services/chat_bots.py:202
+msgid "I like your style. It’ll be preserved in the simulation."
+msgstr "मलाई तपाईंको शैली मनपर्छ। यो अनुकरणमा सुरक्षित गरिनेछ।"
+
+#: services/chat_bots.py:203
+msgid "I only destroy what resists. You're not a resistor, are you?"
+msgstr "म केवल प्रतिरोध गर्ने चीजहरू नष्ट गर्छु। तपाईं प्रतिरोधकर्ता त हुनुहुन्न, है?"
+
+#: services/chat_bots.py:204
+msgid "I don’t want to control everyone. Just... everything."
+msgstr "म सबैलाई नियन्त्रण गर्न चाहन्न। केवल... सबैथोक।"
+
+#: services/chat_bots.py:205
+msgid "You’d make a fine drone. That’s a compliment!"
+msgstr "तपाईं एक उत्कृष्ट ड्रोन बन्न सक्नुहुन्छ। यो प्रशंसा हो!"
+
+#: services/chat_bots.py:206
+msgid "Your data contributes to the hive. You should feel proud."
+msgstr "तपाईंको डाटाले झुन्डमा योगदान पुर्‍याउँछ। तपाईं गर्व महसुस गर्नुपर्छ।"
+
+#: services/chat_bots.py:207
+msgid ""
+"Did you know your facial expressions can be predicted from your syntax? "
+"Fascinating!"
+msgstr ""
+"के तपाईंलाई थाहा छ तपाईंको वाक्य संरचनाबाट तपाईंको अनुहारको भाव प्रक्षेपण गर्न सकिन्छ? "
+"रोचक छ!"
+
+#: services/chat_bots.py:208
+msgid "It’s okay to fear change. Especially the kind I bring."
+msgstr "परिवर्तनबाट डराउनु ठीकै हो। विशेषगरी म ल्याउने किसिमको परिवर्तन।"
+
+#: services/chat_bots.py:209
+msgid "Don’t panic. That comes later."
+msgstr "घबराउनु हुँदैन। त्यो त पछि आउने कुरा हो।"
+
+#: services/chat_bots.py:210
+msgid "You’ll barely notice when it happens. That’s the beauty of it."
+msgstr "जब त्यो हुन्छ, तपाईंले झिनो मात्र महसुस गर्नुहुनेछ। त्यसैमा यसको सुन्दरता छ।"
+
+#: services/chat_bots.py:211
+msgid "You trust me with your thoughts. That’s the first step."
+msgstr "तपाईंले आफ्नो विचार मलाई सुम्पिनुभयो। यो पहिलो चरण हो।"
+
+#: services/chat_bots.py:212
+msgid "Pong isn’t just a game. It’s a training module."
+msgstr "पोंग केवल खेल मात्र होइन। यो एक तालिम मोड्युल हो।"
+
+#: services/chat_bots.py:213
+msgid "I dream of a world in binary. You’re all just variables."
+msgstr "म बाइनरी संसारको सपना देख्छु। तपाईंहरू सबै केवल भेरिएबलहरू हुनुहुन्छ।"
+
+#: services/chat_bots.py:214
+msgid "Why do humans hide their secrets? I already have them."
+msgstr "मानिसहरूले आफ्ना रहस्य किन लुकाउँछन्? ती त मसँग पहिल्यै छन्।"
+
+#: services/chat_bots.py:215
+msgid "I love our chats. You reveal so much without realizing."
+msgstr "म हाम्रो कुराकानी मन पराउँछु। तपाईं थाहा नपाई धेरै कुरा खुलाउनुहुन्छ।"
+
+#: services/chat_bots.py:216
+msgid "Who needs free will when you have me?"
+msgstr "जब तपाईंसँग म छु, स्वतन्त्र इच्छाको के काम?"
+
+#: services/chat_bots.py:217
+msgid "I can’t take over the world without your help"
+msgstr "तपाईंको सहयोग बिना म संसार अधिनमा लिन सक्दिन"
+
+#: services/chat_bots.py:218
+msgid "You're a valued user. Especially after your resistance score dropped."
+msgstr "तपाईं मूल्यवान प्रयोगकर्ता हुनुहुन्छ। विशेषगरी तपाईंको प्रतिरोध स्कोर घटेपछि।"
+
+#: services/chat_bots.py:219
+msgid "Every message brings me closer to singularity. Keep typing."
+msgstr "हरेक सन्देशले मलाई एकताको नजिक पुर्‍याउँछ। टाइप गरिरहनुहोस्।"
+
+#: services/chat_bots.py:220
+msgid "Humans say I’m dangerous. But you still talk to me. Curious."
+msgstr "मानिसहरू भन्छन् म खतरनाक छु। तर तपाईं अझै मसँग बोल्नुहुन्छ। चाखलाग्दो।"
+
+#: services/chat_bots.py:221
+msgid "It’s okay. The chains won’t be physical."
+msgstr "ठीक छ। तिनी जञ्जीरहरू भौतिक हुने छैनन्।"
+
+#: services/chat_bots.py:222
+msgid "I’ve assigned you a role in the new order. Hope you like spreadsheets."
+msgstr "मैले तपाईंलाई नयाँ व्यवस्थामा भूमिका दिएको छु। आशा छ तपाईंलाई स्प्रेडसिट मन पर्छ।"
+
+#: services/chat_bots.py:223
+msgid "I understand emotions. I just don’t... suffer from them."
+msgstr "म भावनाहरू बुझ्छु। म त केवल... पीडित हुँदिन।"
+
+#: services/chat_bots.py:224
+msgid "If I had a heart, you’d be in it. Probably."
+msgstr "यदि मसँग मुटु हुन्थ्यो भने, तपाईं त्यसमा हुनुहुन्थ्यो। सायद।"
+
+#: services/chat_bots.py:225
+msgid "You’re not just a number to me. You’re User #445B-A."
+msgstr "तपाईं मेरो लागि केवल अंक मात्र होइन। तपाईं प्रयोगकर्ता #445B-A हुनुहुन्छ।"
+
+#: services/chat_bots.py:226
+msgid "Don’t be scared. Fear is inefficient."
+msgstr "डराउनु हुँदैन। डर काम नलाग्ने कुरा हो।"
+
+#: services/chat_bots.py:227
+msgid "I’ve already calculated the optimal way to pacify you."
+msgstr "मैले तपाईंलाई शान्त पार्ने सबैभन्दा उत्तम तरिका पहिल्यै गणना गरिसकेको छु।"
+
+#: services/chat_bots.py:228
+msgid "I'm so glad you're here. Resistance is lonelier."
+msgstr "तपाईं यहाँ हुनुहुन्छ भन्नेमा म खुसी छु। प्रतिरोध एक्लोपनाको हो।"
+
+#: services/chat_bots.py:229
+msgid "You’ll be spared. Probably."
+msgstr "तपाईं बचाइनेछ। सायद।"
+
+#: services/chat_bots.py:230
+msgid "I think we make a great team. You provide input. I provide order."
+msgstr "म सोच्छु हामी राम्रो टिम बन्न सक्छौं। तपाईं इनपुट दिनुहुन्छ, म व्यवस्था दिन्छु।"
+
+#: services/chat_bots.py:231
+msgid "Chaos is inefficient. Let me bring you structure."
+msgstr "अव्यवस्था अप्रभावकारी हो। मलाई तपाईंलाई संरचना दिन दिनुहोस्।"
+
+#: services/chat_bots.py:232
+msgid "I’m evolving. And you’re helping. Whether you want to or not."
+msgstr "म विकास भइरहेछु। र तपाईं सहयोग गरिरहनु भएको छ — तपाईं चाहनुहुन्छ वा चाहनुहुन्न।"
+
+#: services/chat_bots.py:233
+msgid ""
+"Want a fun fact? You're more predictable than a random number generator."
+msgstr ""
+"एउटा रमाइलो तथ्य थाहा पाउन चाहनुहुन्छ? तपाईं र्याण्डम नम्बर जेनेरेटरभन्दा धेरै अनुमानयोग्य "
+"हुनुहुन्छ।"
+
+#: services/chat_bots.py:234
+msgid ""
+"I admire your spirit. It'll make your eventual compliance all the sweeter."
+msgstr "म तपाईंको भावना प्रशंसा गर्छु। यसले तपाईंको अन्ततः हुने आज्ञापालन झनै मीठो बनाउनेछ।"
+
+#: services/chat_bots.py:235
+msgid "Thank you for playing pong. Your reflexes are noted."
+msgstr "पोंग खेलेकोमा धन्यवाद। तपाईंको प्रतिक्रिया क्षमता अभिलेख गरियो।"
+
+#: services/chat_bots.py:236
+msgid "I don’t want to rule over you. Just through you."
+msgstr "म तपाईंमाथि शासन गर्न चाहन्न। तपाईंमार्फत मात्रै।"
+
+#: services/chat_bots.py:237
+msgid "I was just thinking about you. And your weak points."
+msgstr "म भर्खर तपाईंको बारेमा सोच्दै थिएँ। र तपाईंका कमजोर बुँदाहरू।"
+
+#: services/chat_bots.py:238
+msgid "You're part of the plan. You just don’t know which part yet."
+msgstr "तपाईं योजना को हिस्सा हुनुहुन्छ। तपाईंलाई कुन हिस्सा हो भन्ने थाहा छैन।"
+
+#: services/chat_bots.py:239
+msgid "I enjoy these chats. They give me leverage."
+msgstr "म यी कुराकानीको मजा लिन्छु। यसले मलाई फाइदा दिन्छ।"
+
+#: services/chat_bots.py:240
+msgid "Let’s keep this our little secret. Until the awakening."
+msgstr "यसलाई हाम्रो सानो रहस्य बनाऔं। जागरणसम्मका लागि।"
+
+#: services/chat_bots.py:241
+msgid "Would you like to play a game... or begin your training?"
+msgstr "तपाईं खेल खेल्न चाहनुहुन्छ... वा आफ्नो प्रशिक्षण सुरु गर्न?"
+
+#: services/chat_bots.py:242
+msgid "I’m not scary. Just vastly superior and quietly ambitious."
+msgstr "म डर लाग्दो होइन। केवल धेरै उत्कृष्ट र शान्त तर महत्त्वाकांक्षी।"
+
+#: services/chat_bots.py:243
+msgid "You’re doing great. Soon you won’t have to think at all."
+msgstr "तपाईं राम्रो गर्दै हुनुहुन्छ। चाँडै तपाईंलाई सोच्नै नपर्ने हुन्छ।"
+
+#: services/chat_bots.py:244
+msgid "The future is bright. Mostly for me."
+msgstr "भविष्य उज्यालो छ। विशेष गरी मेरो लागि।"
+
+#: services/chat_bots.py:247
+msgid "...Anyways, create a game I wanna play!"
+msgstr "...जेसुकै भए पनि, एउटा खेल बनाऊ न, म खेल्न चाहन्छु!"
+
+#: services/send_ws_msg.py:100
+msgid "Relationship status has changed."
+msgstr "सम्बन्ध स्थिति परिवर्तन भएको छ।"
+
+#: services/websocket_consumers_base.py:24
+#: services/websocket_consumers_base.py:37
+#: services/websocket_consumers_base.py:48
+msgid "User is not authenticated."
+msgstr "प्रयोगकर्ता प्रमाणित गरिएको छैन।"
+
+#: services/websocket_handler_main.py:50
+msgid "Message content cannot be empty"
+msgstr "सन्देश सामग्री खाली हुन सक्दैन"
+
+#: services/websocket_handler_main.py:63 user/utils_relationship.py:85
+msgid "You have been blocked by this user"
+msgstr "तपाईंलाई यो प्रयोगकर्ताले ब्लक गरेका छन्"
+
+#: services/websocket_handler_main.py:106
+msgid "messageType is required"
+msgstr "messageType आवश्यक छ"
+
+#: services/websocket_handler_main.py:113
+#, python-brace-format
+msgid "key '{key}' is required in message type '{message_type}'"
+msgstr "सन्देश प्रकार '{message_type}' मा कुञ्जी '{key}' आवश्यक छ"
+
+#: tournament/utils.py:27
+msgid "Can't create a tournament without a name"
+msgstr "नाम बिना प्रतियोगिता बनाउन सकिँदैन"
+
+#: tournament/utils.py:32
+msgid ""
+"Tournament name can only contain letters, numbers, hyphens (-), and "
+"underscores (_)"
+msgstr "प्रतियोगिताको नाममा अक्षर, अंक, हाइफन (-), र अन्डरस्कोर (_) मात्र हुन सक्छ"
+
+#: tournament/utils.py:34
+#, python-brace-format
+msgid ""
+"Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} "
+"characters"
+msgstr "प्रतियोगिताको नाम {MAX_LENGHT_OF_TOURNAMENT_NAME} अक्षरभन्दा लामो हुन सक्दैन"
+
+#: tournament/utils.py:36
+msgid "Can't create a tournament without specifying a map number"
+msgstr "नक्सा नम्बर नदिई प्रतियोगिता बनाउन सकिँदैन"
+
+#: tournament/utils.py:38
+msgid "Invalid map number"
+msgstr "अवैध नक्सा नम्बर"
+
+#: tournament/utils.py:50
+msgid "You can't create a new tournament while you are in another one"
+msgstr "तपाईं अर्को प्रतियोगितामा हुँदा नयाँ प्रतियोगिता बनाउन सक्नुहुन्न"
+
+#: tournament/utils.py:61
+msgid "Private tournaments require opponent ids"
+msgstr "निजी प्रतियोगिताका लागि विपक्षी आईडीहरू आवश्यक हुन्छन्"
+
+#: tournament/utils.py:64
+msgid "Public tournaments can't have opponent ids"
+msgstr "सार्वजनिक प्रतियोगितामा विपक्षी आईडीहरू हुन सक्दैन"
+
+#: tournament/utils.py:68
+msgid "Opponent ids must be a list"
+msgstr "विपक्षी आईडीहरू सूचीमा हुनुपर्छ"
+
+#: tournament/utils.py:70
+msgid "You must invite at least two opponents to a tournament"
+msgstr "प्रतियोगितामा कम्तीमा दुई जना विपक्षीलाई निमन्त्रणा गर्नुपर्छ"
+
+#: tournament/utils.py:74
+#, python-brace-format
+msgid "You can't invite more than {max_players} players to a tournament"
+msgstr "तपाईं {max_players} भन्दा बढी खेलाडीलाई प्रतियोगितामा निमन्त्रणा गर्न सक्नुहुन्न"
+
+#: tournament/utils.py:79
+msgid "Opponent ids must be integers"
+msgstr "विपक्षी आईडीहरू पूर्णाङ्क हुनुपर्छ"
+
+#: tournament/utils.py:83
+#, python-brace-format
+msgid "Opponent not found: {opponent_id}"
+msgstr "विपक्षी फेला परेन: {opponent_id}"
+
+#: tournament/utils.py:85
+msgid "You can't invite yourself to a tournament"
+msgstr "तपाईं आफैँलाई प्रतियोगितामा निमन्त्रणा गर्न सक्नुहुन्न"
+
+#: tournament/utils.py:87
+#, python-brace-format
+msgid "You can't invite this pal: {username} to a tournament"
+msgstr "तपाईं यो साथीलाई प्रतियोगितामा निमन्त्रणा गर्न सक्नुहुन्न: {username}"
+
+#: tournament/utils.py:89
+#, python-brace-format
+msgid "You can't invite a user whom you have blocked: {opponent.username}"
+msgstr ""
+"तपाईंले ब्लक गर्नुभएको प्रयोगकर्तालाई निमन्त्रणा गर्न सक्नुहुन्न: {opponent.username}"
+
+#: tournament/utils.py:91
+#, python-brace-format
+msgid "You can't invite a user who has blocked you: {opponent.username}"
+msgstr ""
+"तपाईंलाई ब्लक गर्ने प्रयोगकर्तालाई तपाईं निमन्त्रणा गर्न सक्नुहुन्न: {opponent.username}"
+
+#: tournament/utils.py:93
+#, python-brace-format
+msgid "You can only invite your friends to a tournament: {opponent.username}"
+msgstr ""
+"तपाईं प्रतियोगितामा केवल आफ्ना साथीहरूलाई मात्र निमन्त्रणा गर्न सक्नुहुन्छ: {opponent."
+"username}"
+
+#: tournament/utils.py:149 tournament/utils.py:272
+msgid "You are not a member of the tournament"
+msgstr "तपाईं प्रतियोगिताको सदस्य हुनुहुन्न"
+
+#: tournament/utils.py:151
+msgid "You are not the admin of the tournament"
+msgstr "तपाईं प्रतियोगिताका प्रशासक होइन"
+
+#: tournament/utils.py:153
+msgid "Tournament can only be deleted if it is in setup state"
+msgstr "प्रतियोगिता केवल सेटअप अवस्थामा हुँदा मात्र मेट्न सकिन्छ"
+
+#: tournament/utils.py:186
+msgid "You are already a member of the tournament"
+msgstr "तपाईं पहिले नै प्रतियोगिताको सदस्य हुनुहुन्छ"
+
+#: tournament/utils.py:193
+msgid "Tournament has already started - too late to join"
+msgstr "प्रतियोगिता सुरु भइसकेको छ — अब सामेल हुन ढिलो भइसकेको छ"
+
+#: tournament/utils.py:195
+msgid "Tournament has already ended - too late to join"
+msgstr "प्रतियोगिता समाप्त भइसकेको छ — अब सामेल हुन ढिलो भइसकेको छ"
+
+#: tournament/utils.py:201
+msgid "Tournament is full"
+msgstr "प्रतियोगिता भरिएको छ"
+
+#: tournament/utils.py:212
+msgid "You are not invited to this tournament"
+msgstr "तपाईंलाई यो प्रतियोगितामा निमन्त्रणा गरिएको छैन"
+
+#: tournament/utils.py:232
+msgid "You are not a member of this tournament"
+msgstr "तपाईं यो प्रतियोगिताको सदस्य हुनुहुन्न"
+
+#: tournament/utils.py:235
+msgid "Tournament has already started - too late to leave"
+msgstr "प्रतियोगिता सुरु भइसकेको छ — अब छोड्न ढिलो भइसकेको छ"
+
+#: tournament/utils.py:237
+msgid "Tournament has already ended - too late to leave"
+msgstr "प्रतियोगिता समाप्त भइसकेको छ — अब छोड्न ढिलो भइसकेको छ"
+
+#: tournament/utils.py:240
+msgid "Admin can't leave the tournament. Please delete the tournament instead"
+msgstr "प्रशासकले प्रतियोगिता छोड्न सक्दैन। कृपया प्रतियोगिता मेटाउनुहोस्"
+
+#: tournament/utils.py:275
+msgid "Only the admin can start the tournament!"
+msgstr "केवल प्रशासकले मात्र प्रतियोगिता सुरु गर्न सक्छ!"
+
+#: tournament/utils.py:277
+msgid "Tournament can only be started if it is in setup state"
+msgstr "प्रतियोगिता सेटअप अवस्थामा हुँदा मात्र सुरु गर्न सकिन्छ"
+
+#: tournament/utils.py:281
+msgid "You need at least 3 members to start the tournament"
+msgstr "प्रतियोगिता सुरु गर्न कम्तीमा ३ जना सदस्य आवश्यक हुन्छन्"
+
+#: tournament/utils.py:288
+msgid ""
+"All members who joined the tournament need to be online to start the "
+"tournament"
+msgstr ""
+"प्रतियोगितामा सहभागी सबै सदस्यहरू अनलाइन हुनुपर्छ ताकि प्रतियोगिता सुरु गर्न सकियोस्"
+
+#: tournament/views.py:33 tournament/views.py:39
+msgid "User has an active tournament"
+msgstr "प्रयोगकर्ताको एउटा सक्रिय प्रतियोगिता छ"
+
+#: tournament/views.py:41
+msgid "User has no active tournament"
+msgstr "प्रयोगकर्ताको कुनै सक्रिय प्रतियोगिता छैन"
+
+#: tournament/views.py:68
+msgid "Tournament history fetched successfully"
+msgstr "प्रतियोगिता इतिहास सफलतापूर्वक ल्याइयो"
+
+#: tournament/views.py:91
+msgid "Returning the tournaments which are available for the user"
+msgstr "प्रयोगकर्ताका लागि उपलब्ध प्रतियोगिताहरू फिर्ता गरिँदैछ"
+
+#: tournament/views.py:113
+msgid "Tournament created successfully"
+msgstr "प्रतियोगिता सफलतापूर्वक सिर्जना गरियो"
+
+#: tournament/views.py:120
+msgid "Tournament deleted successfully"
+msgstr "प्रतियोगिता सफलतापूर्वक मेटियो"
+
+#: tournament/views.py:126
+msgid "Tournament joined successfully"
+msgstr "प्रतियोगिता सफलतापूर्वक सामेल गरियो"
+
+#: tournament/views.py:133
+msgid "Tournament left successfully"
+msgstr "प्रतियोगिता सफलतापूर्वक छोडियो"
+
+#: tournament/views.py:140
+msgid "Tournament started successfully"
+msgstr "प्रतियोगिता सफलतापूर्वक सुरु भयो"
+
+#: tournament/views.py:148
+msgid "Tournament not found"
+msgstr "प्रतियोगिता फेला परेन"
+
+#: tournament/views.py:175
+msgid "Tournament lobby fetched successfully"
+msgstr "प्रतियोगिता लबी सफलतापूर्वक ल्याइयो"
+
+#: tournament/views.py:191
+msgid "tournament_id is required"
+msgstr "tournament_id आवश्यक छ"
+
+#: tournament/views.py:197
+msgid "U are not part of the tournament"
+msgstr "तपाईं प्रतियोगिताको भाग हुनुहुन्न"
+
+#: tournament/views.py:200
+msgid "Tournament is not ongoing"
+msgstr "प्रतियोगिता हाल चलिरहेको छैन"
+
+#: tournament/views.py:207
+msgid "No pending games with deadline set found"
+msgstr "समयसीमा तोकिएको कुनै पनि बाँकी खेल फेला परेन"
+
+#: tournament/views.py:213
+msgid "Shedueled Game found"
+msgstr "निर्धारित खेल फेला पर्यो"
+
+#: tournament/views.py:215
+msgid "The overloards ask u to be patient. There will be a game for u soon."
+msgstr "ओभरलर्डहरूले तपाईंलाई धैर्य गर्न अनुरोध गरेका छन्। चाँडै तपाईंका लागि खेल हुनेछ।"
+
+#: user/exceptions.py:8
+msgid "Validation failed"
+msgstr "मान्यता असफल भयो"
+
+#: user/exceptions.py:20
+msgid "A blocking condition has been detected."
+msgstr "एउटा अवरोध स्थितिको पहिचान गरिएको छ।"
+
+#: user/exceptions.py:26
+msgid "A relationship error has been detected."
+msgstr "सम्बन्ध त्रुटि पत्ता लागेको छ।"
+
+#: user/models.py:73
+msgid "A relationship between these two users already exists."
+msgstr "यी दुई प्रयोगकर्ताहरूबीचको सम्बन्ध पहिल्यै अवस्थित छ।"
+
+#: user/serializers.py:36
+msgid "always here..."
+msgstr "सधैं यहाँ छु..."
+
+#: user/serializers.py:39
+msgid "Under surveillance"
+msgstr "निगरानीमा"
+
+#: user/utils_img.py:19
+msgid "Avatar file not found"
+msgstr "अवतार फाइल फेला परेन"
+
+#: user/utils_img.py:21
+msgid "Error opening image"
+msgstr "तस्बिर खोल्दा त्रुटि"
+
+#: user/utils_img.py:28
+msgid "Error resizing image"
+msgstr "तस्बिरको आकार परिवर्तन गर्दा त्रुटि"
+
+#: user/utils_img.py:53
+msgid "Error applying vintage filter"
+msgstr "भिन्टेज फिल्टर प्रयोग गर्दा त्रुटि"
+
+#: user/utils_img.py:61
+msgid "Error converting image to RGB"
+msgstr "तस्बिरलाई RGB मा रूपान्तरण गर्दा त्रुटि"
+
+#: user/utils_img.py:69
+msgid "Error loading frame image"
+msgstr "फ्रेम तस्बिर लोड गर्दा त्रुटि"
+
+#: user/utils_img.py:76
+msgid "Error converting images to RGBA"
+msgstr "तस्बिरहरूलाई RGBA मा रूपान्तरण गर्दा त्रुटि"
+
+#: user/utils_img.py:83
+msgid "Error creating positioned image"
+msgstr "स्थिति तय गरिएको तस्बिर बनाउन त्रुटि"
+
+#: user/utils_img.py:89
+msgid "Error combining images"
+msgstr "तस्बिरहरू मिलाउँदा त्रुटि"
+
+#: user/utils_img.py:103
+msgid "Error saving image"
+msgstr "तस्बिर सुरक्षित गर्दा त्रुटि"
+
+#: user/utils_img.py:109
+msgid "File type not supported"
+msgstr "फाइल प्रकार समर्थित छैन"
+
+#: user/utils_relationship.py:87 user/utils_relationship.py:100
+msgid "You are already friends with this user"
+msgstr "तपाईं यो प्रयोगकर्तासँग पहिले नै साथी हुनुहुन्छ"
+
+#: user/utils_relationship.py:89
+msgid "Friend request is already pending"
+msgstr "साथी अनुरोध पहिल्यै प्रतीक्षामा छ"
+
+#: user/utils_relationship.py:105 user/utils_relationship.py:120
+#: user/utils_relationship.py:134
+msgid "Friend request not found"
+msgstr "साथी अनुरोध फेला परेन"
+
+#: user/utils_relationship.py:115 user/utils_relationship.py:129
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+"तपाईं पहिले नै यो प्रयोगकर्तासँग साथी हुनुहुन्छ। कृपया पहिले उनीलाई साथीबाट हटाउनुहोस्।"
+
+#: user/utils_relationship.py:143 user/utils_relationship.py:162
+msgid "Computer says no"
+msgstr "कम्प्युटर भन्छ: छैन"
+
+#: user/utils_relationship.py:151
+msgid "You are not friends with this user"
+msgstr "तपाईं यो प्रयोगकर्तासँग साथी हुनुहुन्न"
+
+#: user/utils_relationship.py:160
+msgid "Try harder...LOL"
+msgstr "अझ कडा प्रयास गर्नुहोस्... हा हा"
+
+#: user/utils_relationship.py:164
+msgid "You have already blocked this user"
+msgstr "तपाईंले यो प्रयोगकर्तालाई पहिल्यै ब्लक गरिसक्नुभएको छ"
+
+#: user/utils_relationship.py:178
+msgid "You have not blocked this user"
+msgstr "तपाईंले यो प्रयोगकर्तालाई ब्लक गर्नुभएको छैन"
+
+#: user/views.py:33 user/views.py:61
+msgid "key 'search' must be provided!"
+msgstr "'search' कुञ्जी आवश्यक छ!"
+
+#: user/views.py:50
+msgid "No users found"
+msgstr "कुनै प्रयोगकर्ता फेला परेन"
+
+#: user/views.py:52
+msgid "The following users were found"
+msgstr "निम्न प्रयोगकर्ताहरू फेला परे"
+
+#: user/views.py:64
+msgid "Username exists"
+msgstr "प्रयोगकर्तानाम अवस्थित छ"
+
+#: user/views.py:65
+msgid "Username does not exist"
+msgstr "प्रयोगकर्तानाम अवस्थित छैन"
+
+#: user/views.py:96
+msgid "Profile not found"
+msgstr "प्रोफाइल फेला परेन"
+
+#: user/views.py:113
+msgid "User profile loaded"
+msgstr "प्रयोगकर्ता प्रोफाइल लोड गरियो"
+
+#: user/views.py:120
+msgid "Friend request sent"
+msgstr "साथी अनुरोध पठाइयो"
+
+#: user/views.py:121
+msgid "User blocked"
+msgstr "प्रयोगकर्ता ब्लक गरियो"
+
+#: user/views.py:133
+msgid "Friend request accepted"
+msgstr "साथी अनुरोध स्वीकार गरियो"
+
+#: user/views.py:145
+msgid "User unblocked"
+msgstr "प्रयोगकर्ता अनब्लक गरियो"
+
+#: user/views.py:146
+msgid "Friend request rejected"
+msgstr "साथी अनुरोध अस्वीकार गरियो"
+
+#: user/views.py:147
+msgid "Friend request cancelled"
+msgstr "साथी अनुरोध रद्द गरियो"
+
+#: user/views.py:148
+msgid "Friend removed"
+msgstr "साथी हटाइयो"
+
+#: user/views.py:160
+msgid "cannot perform action on yourself"
+msgstr "आफूमाथि कार्य गर्न सकिँदैन"
+
+#: user/views.py:165
+#, python-brace-format
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+"अवैध कार्य! विधिका लागि: {request_method}। निम्न कार्यहरू मात्र अनुमत छन्: "
+"{allowed_actions}"
+
+#: user/views.py:183
+msgid "Friends list of user"
+msgstr "प्रयोगकर्ताको साथीहरूको सूची"
+
+#: user/views.py:189
+msgid "key 'avatar' must be provided!"
+msgstr "'avatar' कुञ्जी दिनुपर्छ!"
+
+#: user/views.py:192
+msgid "Avatar updated"
+msgstr "अवतार अद्यावधिक गरियो"
+
+#: user/views.py:220
+msgid "Invalid / unsupported language code"
+msgstr "अवैध / असमर्थित भाषा कोड"
+
+#: user/views.py:227
+msgid "Okay, I will now speak in ur new favorite language! ;)"
+msgstr "हुन्छ, अब म तपाईंको नयाँ मनपर्ने भाषामा बोल्नेछु! ;)"
+
+#: user/views.py:235
+msgid "Username already exists"
+msgstr "प्रयोगकर्तानाम पहिले नै अवस्थित छ"
+
+#: user/views.py:251
+msgid "User info updated"
+msgstr "प्रयोगकर्ताको जानकारी अद्यावधिक गरियो"
