@@ -90,10 +90,10 @@ export default class ModalManager {
         // Attach Bootstrap event listeners
         $on(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
         $on(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
-        $on(modalElement, 'hide.bs.modal', this.changeFocus);
+        $on(modalElement, 'hide.bs.modal', this.changeFocus.bind(this));
         }
 
-        changeFocus(modalId) {
+        changeFocus(event) {
             const homeButton = $id("nav-home");
             if (homeButton) {
                 homeButton.focus(); // Focus on the home button
