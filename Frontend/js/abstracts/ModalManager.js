@@ -86,21 +86,22 @@ export default class ModalManager {
         // Prevent duplicate event listeners by removing them first
         $off(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
         $off(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
-        $off(modalElement, 'hide.bs.modal', this.changeFocus.bind(this));
+        $off(modalElement, 'hide.bs.modal', this.changeFocus);
         // Attach Bootstrap event listeners
         $on(modalElement, 'show.bs.modal', modalHooks?.hooks?.beforeOpen?.bind(modalConfig));
         $on(modalElement, 'hidden.bs.modal', modalHooks?.hooks?.afterClose?.bind(modalConfig));
         $on(modalElement, 'hide.bs.modal', this.changeFocus.bind(this));
-        }
+    }
 
-        changeFocus(event) {
-            const homeButton = $id("nav-home");
-            if (homeButton) {
-                homeButton.focus(); // Focus on the home button
-            } else {
-                console.warn(`ModalManager: Home button not found: function changeFocus`);
-            }
+    /* To fix area-hidden error */
+    changeFocus(event) {
+        const homeButton = $id("nav-home");
+        if (homeButton) {
+            homeButton.focus(); // Focus on the home button
+        } else {
+            console.warn(`ModalManager: Home button not found: function changeFocus`);
         }
+    }
 
     /* FUNCTIONS FOR THE ROUTER
     ========================================================================= */
