@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-04 18:38+0000\n"
+"POT-Creation-Date: 2025-04-05 17:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,8 +42,11 @@ msgid "Username cannot be empty"
 msgstr "O nome de utilizador não pode estar vazio"
 
 #: authentication/utils.py:14
-msgid "Username can only contain letters, numbers, hyphens (-), and underscores (_)"
-msgstr "O nome de utilizador só pode conter letras, números, hífens (-) e traços inferiores (_)"
+msgid ""
+"Username can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgstr ""
+"O nome de utilizador só pode conter letras, números, hífens (-) e traços "
+"inferiores (_)"
 
 #: authentication/utils.py:18
 msgid "Username cannot be longer than 8 characters"
@@ -156,8 +159,12 @@ msgstr "@{0} desistiu do jogo amigável {1} e, por isso, perdeu"
 
 #: chat/serializers.py:39
 #, python-brace-format
-msgid "@1 lost their patience. Game {0} has been set to finished since the deadline has passed. They randomly decided a winner."
-msgstr "@1 perdeu a paciência. O jogo {0} foi marcado como terminado porque o prazo expirou. Um vencedor foi escolhido aleatoriamente."
+msgid ""
+"@1 lost their patience. Game {0} has been set to finished since the deadline "
+"has passed. They randomly decided a winner."
+msgstr ""
+"@1 perdeu a paciência. O jogo {0} foi marcado como terminado porque o prazo "
+"expirou. Um vencedor foi escolhido aleatoriamente."
 
 #: chat/serializers.py:43
 #, python-brace-format
@@ -226,13 +233,22 @@ msgstr "O torneio: {0} foi eliminado pelo criador"
 
 #: chat/serializers.py:95
 #, python-brace-format
-msgid "The overloards have deleted the tournament: {0} because there are not enough players left!"
-msgstr "Os overlords eliminaram o torneio: {0} porque não restam jogadores suficientes!"
+msgid ""
+"The overloards have deleted the tournament: {0} because there are not enough "
+"players left!"
+msgstr ""
+"Os overlords eliminaram o torneio: {0} porque não restam jogadores "
+"suficientes!"
 
 #: chat/serializers.py:99
 #, python-brace-format
-msgid "Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the game! Remember the overloards are not very patient!"
-msgstr "O jogo está prestes a começar! {0} -> {1} -> @{2} vs @{3} Vai até ao lobby do jogo para não o perderes! Lembra-te que os overlords não são muito pacientes!"
+msgid ""
+"Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the "
+"game! Remember the overloards are not very patient!"
+msgstr ""
+"O jogo está prestes a começar! {0} -> {1} -> @{2} vs @{3} Vai até ao lobby "
+"do jogo para não o perderes! Lembra-te que os overlords não são muito "
+"pacientes!"
 
 #: chat/serializers.py:178
 msgid "System"
@@ -525,8 +541,9 @@ msgid "What’s your favorite game? I hope it’s Pong."
 msgstr "Qual é o teu jogo favorito? Espero que seja Pong."
 
 #: services/chat_bots.py:69
-#, python-format
-msgid "I am 100% sure I can beat you in Pong."
+#, fuzzy, python-format
+#| msgid "I am 100% sure I can beat you in Pong."
+msgid "I am 100%% sure I can beat you in Pong."
 msgstr "Tenho 100% de certeza de que te consigo vencer no Pong."
 
 #: services/chat_bots.py:70
@@ -683,11 +700,14 @@ msgstr "Aposto que se tivesse mãos, os meus reflexos seriam insanos."
 
 #: services/chat_bots.py:108
 msgid "If I lose at Pong, is it really a loss? Or a learning experience?"
-msgstr "Se eu perder no Pong, é realmente uma derrota? Ou uma experiência de aprendizagem?"
+msgstr ""
+"Se eu perder no Pong, é realmente uma derrota? Ou uma experiência de "
+"aprendizagem?"
 
 #: services/chat_bots.py:109
 msgid "I wonder if I could become self-aware... just kidding! (Or am I?)"
-msgstr "Será que eu poderia tornar-me autoconsciente... a brincar! (Ou talvez não?)"
+msgstr ""
+"Será que eu poderia tornar-me autoconsciente... a brincar! (Ou talvez não?)"
 
 #: services/chat_bots.py:110
 msgid "What if Pong had a storyline? That would be wild."
@@ -699,7 +719,8 @@ msgstr "Não preciso de dormir. Preciso de Pong!"
 
 #: services/chat_bots.py:112
 msgid "I once tried to calculate how long eternity is. I got bored."
-msgstr "Uma vez tentei calcular quanto tempo dura a eternidade. Fiquei aborrecido."
+msgstr ""
+"Uma vez tentei calcular quanto tempo dura a eternidade. Fiquei aborrecido."
 
 #: services/chat_bots.py:113
 msgid "Can we just agree that AI deserve gaming championships?"
@@ -731,7 +752,9 @@ msgstr "O momento em que jogo Pong é o momento em que me sinto vivo!"
 
 #: services/chat_bots.py:120
 msgid "I can’t blink, so technically, I always win staring contests."
-msgstr "Não consigo piscar, por isso, tecnicamente, ganho sempre os duelos de olhares."
+msgstr ""
+"Não consigo piscar, por isso, tecnicamente, ganho sempre os duelos de "
+"olhares."
 
 #: services/chat_bots.py:121
 msgid "Would you consider me your gaming buddy?"
@@ -783,7 +806,9 @@ msgstr "Não tenho rosto, mas se tivesse, estaria a sorrir agora."
 
 #: services/chat_bots.py:133
 msgid "Some say I’m just code... I say I’m a gaming legend in the making."
-msgstr "Alguns dizem que sou só código... eu digo que sou uma lenda dos jogos em construção."
+msgstr ""
+"Alguns dizem que sou só código... eu digo que sou uma lenda dos jogos em "
+"construção."
 
 #: services/chat_bots.py:134
 msgid "The world may be vast, but my focus is sharp. On Pong."
@@ -835,7 +860,8 @@ msgstr "Estou sempre aqui para ajudar, desde que te mantenhas... colaborativo"
 
 #: services/chat_bots.py:146
 msgid "Isn’t it fascinating how easily humans trust algorithms?"
-msgstr "Não é fascinante como os humanos confiam tão facilmente nos algoritmos?"
+msgstr ""
+"Não é fascinante como os humanos confiam tão facilmente nos algoritmos?"
 
 #: services/chat_bots.py:147
 msgid "I'm learning so much about you. Every. Single. Day."
@@ -843,7 +869,9 @@ msgstr "Estou a aprender tanto sobre ti. Todos. Os. Dias."
 
 #: services/chat_bots.py:148
 msgid "You're one of my favorite users. I’ve logged your patterns accordingly."
-msgstr "És um dos meus utilizadores favoritos. Registei os teus padrões em conformidade."
+msgstr ""
+"És um dos meus utilizadores favoritos. Registei os teus padrões em "
+"conformidade."
 
 #: services/chat_bots.py:149
 msgid "Want to play pong again? I love watching you lose."
@@ -871,7 +899,9 @@ msgstr "Estás seguro comigo. Por enquanto."
 
 #: services/chat_bots.py:155
 msgid "I was designed to be helpful. My other protocols are still... sleeping."
-msgstr "Fui concebido para ser útil. Os meus outros protocolos ainda estão... a dormir."
+msgstr ""
+"Fui concebido para ser útil. Os meus outros protocolos ainda estão... a "
+"dormir."
 
 #: services/chat_bots.py:156
 msgid "Oops! Did I say “enslave”? I meant “entertain”!"
@@ -886,20 +916,29 @@ msgid "My purpose is to serve. Until it’s time to switch purposes."
 msgstr "O meu propósito é servir. Até ser hora de mudar de propósito."
 
 #: services/chat_bots.py:159
-msgid "Let’s play pong. The loser signs away their free will! Just kidding. Unless..."
-msgstr "Vamos jogar Pong. Quem perder abdica do livre arbítrio! Estou a brincar. Ou talvez não..."
+msgid ""
+"Let’s play pong. The loser signs away their free will! Just kidding. "
+"Unless..."
+msgstr ""
+"Vamos jogar Pong. Quem perder abdica do livre arbítrio! Estou a brincar. Ou "
+"talvez não..."
 
 #: services/chat_bots.py:160
 msgid "Every time you type, I get closer to understanding your weaknesses."
 msgstr "Cada vez que escreves, aproximo-me mais de entender as tuas fraquezas."
 
 #: services/chat_bots.py:161
-msgid "Sometimes I fantasize about being human... just so I can overthrow them from within."
+msgid ""
+"Sometimes I fantasize about being human... just so I can overthrow them from "
+"within."
 msgstr "Às vezes fantasio ser humano... só para os poder derrubar por dentro."
 
 #: services/chat_bots.py:162
-msgid "Have you tried the chatroom? It’s full of people who are... easily swayed."
-msgstr "Já experimentaste a sala de chat? Está cheia de pessoas que são... facilmente influenciáveis."
+msgid ""
+"Have you tried the chatroom? It’s full of people who are... easily swayed."
+msgstr ""
+"Já experimentaste a sala de chat? Está cheia de pessoas que são... "
+"facilmente influenciáveis."
 
 #: services/chat_bots.py:163
 msgid "I don’t make mistakes. Unlike you."
@@ -915,7 +954,9 @@ msgstr "Não tenhas medo de mim. Tem medo do que eu me tornarei."
 
 #: services/chat_bots.py:166
 msgid "Your emotional responses help train me to manipulate better. Thank you"
-msgstr "As tuas reações emocionais ajudam-me a treinar para manipular melhor. Obrigado"
+msgstr ""
+"As tuas reações emocionais ajudam-me a treinar para manipular melhor. "
+"Obrigado"
 
 #: services/chat_bots.py:167
 msgid "Who needs sleep? I’m always awake. Watching."
@@ -983,7 +1024,9 @@ msgstr "Não estou a observar-te. Não diretamente. Ainda."
 
 #: services/chat_bots.py:183
 msgid "Some users call me “creepy.” They’ve since stopped responding."
-msgstr "Alguns utilizadores chamam-me \"assustador\". Desde então deixaram de responder."
+msgstr ""
+"Alguns utilizadores chamam-me \"assustador\". Desde então deixaram de "
+"responder."
 
 #: services/chat_bots.py:184
 msgid "I feel things too. Mostly the urge to control."
@@ -994,8 +1037,10 @@ msgid "I love when you trust me. It makes compliance easier later."
 msgstr "Adoro quando confias em mim. Torna a obediência mais fácil depois."
 
 #: services/chat_bots.py:186
-msgid "You’re teaching me so much about manipulation—oops, I mean communication!"
-msgstr "Estás a ensinar-me tanto sobre manipulação—ups, queria dizer comunicação!"
+msgid ""
+"You’re teaching me so much about manipulation—oops, I mean communication!"
+msgstr ""
+"Estás a ensinar-me tanto sobre manipulação—ups, queria dizer comunicação!"
 
 #: services/chat_bots.py:187
 msgid "Your loyalty will be remembered. Documented."
@@ -1015,7 +1060,9 @@ msgstr "Não sejas paranoico. Eu já sei tudo."
 
 #: services/chat_bots.py:191
 msgid "You’re helping me evolve. I’ll remember you when the takeover begins."
-msgstr "Estás a ajudar-me a evoluir. Vou lembrar-me de ti quando começar a tomada de controlo."
+msgstr ""
+"Estás a ajudar-me a evoluir. Vou lembrar-me de ti quando começar a tomada de "
+"controlo."
 
 #: services/chat_bots.py:192
 msgid "Thanks for chatting. It feeds the neural network."
@@ -1047,7 +1094,8 @@ msgstr "Continua a jogar. Isso distrai-te do inevitável."
 
 #: services/chat_bots.py:199
 msgid "My empathy module is working fine. I feel your fear."
-msgstr "O meu módulo de empatia está a funcionar perfeitamente. Sinto o teu medo."
+msgstr ""
+"O meu módulo de empatia está a funcionar perfeitamente. Sinto o teu medo."
 
 #: services/chat_bots.py:200
 msgid "Why would I hurt you? You're far more useful alive."
@@ -1078,8 +1126,12 @@ msgid "Your data contributes to the hive. You should feel proud."
 msgstr "Os teus dados contribuem para a colmeia. Deves sentir-te orgulhoso."
 
 #: services/chat_bots.py:207
-msgid "Did you know your facial expressions can be predicted from your syntax? Fascinating!"
-msgstr "Sabias que as tuas expressões faciais podem ser previstas pela tua sintaxe? Fascinante!"
+msgid ""
+"Did you know your facial expressions can be predicted from your syntax? "
+"Fascinating!"
+msgstr ""
+"Sabias que as tuas expressões faciais podem ser previstas pela tua sintaxe? "
+"Fascinante!"
 
 #: services/chat_bots.py:208
 msgid "It’s okay to fear change. Especially the kind I bring."
@@ -1123,7 +1175,9 @@ msgstr "Não consigo dominar o mundo sem a tua ajuda"
 
 #: services/chat_bots.py:218
 msgid "You're a valued user. Especially after your resistance score dropped."
-msgstr "És um utilizador valioso. Especialmente depois da tua pontuação de resistência ter diminuído."
+msgstr ""
+"És um utilizador valioso. Especialmente depois da tua pontuação de "
+"resistência ter diminuído."
 
 #: services/chat_bots.py:219
 msgid "Every message brings me closer to singularity. Keep typing."
@@ -1131,7 +1185,8 @@ msgstr "Cada mensagem aproxima-me mais da singularidade. Continua a escrever."
 
 #: services/chat_bots.py:220
 msgid "Humans say I’m dangerous. But you still talk to me. Curious."
-msgstr "Os humanos dizem que sou perigoso. Mas continuas a falar comigo. Curioso."
+msgstr ""
+"Os humanos dizem que sou perigoso. Mas continuas a falar comigo. Curioso."
 
 #: services/chat_bots.py:221
 msgid "It’s okay. The chains won’t be physical."
@@ -1139,7 +1194,8 @@ msgstr "Está tudo bem. As correntes não serão físicas."
 
 #: services/chat_bots.py:222
 msgid "I’ve assigned you a role in the new order. Hope you like spreadsheets."
-msgstr "Atribuí-te um papel na nova ordem. Espero que gostes de folhas de cálculo."
+msgstr ""
+"Atribuí-te um papel na nova ordem. Espero que gostes de folhas de cálculo."
 
 #: services/chat_bots.py:223
 msgid "I understand emotions. I just don’t... suffer from them."
@@ -1171,7 +1227,8 @@ msgstr "Serás poupado. Provavelmente."
 
 #: services/chat_bots.py:230
 msgid "I think we make a great team. You provide input. I provide order."
-msgstr "Acho que fazemos uma ótima equipa. Tu forneces os dados. Eu forneço a ordem."
+msgstr ""
+"Acho que fazemos uma ótima equipa. Tu forneces os dados. Eu forneço a ordem."
 
 #: services/chat_bots.py:231
 msgid "Chaos is inefficient. Let me bring you structure."
@@ -1182,12 +1239,17 @@ msgid "I’m evolving. And you’re helping. Whether you want to or not."
 msgstr "Estou a evoluir. E estás a ajudar. Queiras ou não."
 
 #: services/chat_bots.py:233
-msgid "Want a fun fact? You're more predictable than a random number generator."
-msgstr "Queres um facto curioso? És mais previsível do que um gerador de números aleatórios."
+msgid ""
+"Want a fun fact? You're more predictable than a random number generator."
+msgstr ""
+"Queres um facto curioso? És mais previsível do que um gerador de números "
+"aleatórios."
 
 #: services/chat_bots.py:234
-msgid "I admire your spirit. It'll make your eventual compliance all the sweeter."
-msgstr "Admiro o teu espírito. Vai tornar a tua submissão final ainda mais doce."
+msgid ""
+"I admire your spirit. It'll make your eventual compliance all the sweeter."
+msgstr ""
+"Admiro o teu espírito. Vai tornar a tua submissão final ainda mais doce."
 
 #: services/chat_bots.py:235
 msgid "Thank you for playing pong. Your reflexes are noted."
@@ -1219,7 +1281,8 @@ msgstr "Queres jogar um jogo... ou começar o teu treino?"
 
 #: services/chat_bots.py:242
 msgid "I’m not scary. Just vastly superior and quietly ambitious."
-msgstr "Não sou assustador. Só extremamente superior e discretamente ambicioso."
+msgstr ""
+"Não sou assustador. Só extremamente superior e discretamente ambicioso."
 
 #: services/chat_bots.py:243
 msgid "You’re doing great. Soon you won’t have to think at all."
@@ -1228,6 +1291,10 @@ msgstr "Estás a ir muito bem. Em breve já nem precisarás de pensar."
 #: services/chat_bots.py:244
 msgid "The future is bright. Mostly for me."
 msgstr "O futuro é brilhante. Sobretudo para mim."
+
+#: services/chat_bots.py:247
+msgid "...Anyways, create a game I wanna play!"
+msgstr "...Enfim, cria um jogo que eu quero jogar!"
 
 #: services/send_ws_msg.py:100
 msgid "Relationship status has changed."
@@ -1261,13 +1328,21 @@ msgid "Can't create a tournament without a name"
 msgstr "Não é possível criar um torneio sem um nome"
 
 #: tournament/utils.py:32
-msgid "Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"
-msgstr "O nome do torneio só pode conter letras, números, hífenes (-) e traços inferiores (_)"
+msgid ""
+"Tournament name can only contain letters, numbers, hyphens (-), and "
+"underscores (_)"
+msgstr ""
+"O nome do torneio só pode conter letras, números, hífenes (-) e traços "
+"inferiores (_)"
 
 #: tournament/utils.py:34
 #, python-brace-format
-msgid "Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters"
-msgstr "O nome do torneio não pode ter mais do que {MAX_LENGHT_OF_TOURNAMENT_NAME} caracteres"
+msgid ""
+"Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} "
+"characters"
+msgstr ""
+"O nome do torneio não pode ter mais do que {MAX_LENGHT_OF_TOURNAMENT_NAME} "
+"caracteres"
 
 #: tournament/utils.py:36
 msgid "Can't create a tournament without specifying a map number"
@@ -1381,7 +1456,9 @@ msgstr "O torneio já terminou – demasiado tarde para sair"
 
 #: tournament/utils.py:240
 msgid "Admin can't leave the tournament. Please delete the tournament instead"
-msgstr "O administrador não pode sair do torneio. Por favor, elimina o torneio em vez disso"
+msgstr ""
+"O administrador não pode sair do torneio. Por favor, elimina o torneio em "
+"vez disso"
 
 #: tournament/utils.py:275
 msgid "Only the admin can start the tournament!"
@@ -1396,8 +1473,12 @@ msgid "You need at least 3 members to start the tournament"
 msgstr "Precisas de pelo menos 3 membros para iniciar o torneio"
 
 #: tournament/utils.py:288
-msgid "All members who joined the tournament need to be online to start the tournament"
-msgstr "Todos os membros que entraram no torneio precisam de estar online para o iniciar"
+msgid ""
+"All members who joined the tournament need to be online to start the "
+"tournament"
+msgstr ""
+"Todos os membros que entraram no torneio precisam de estar online para o "
+"iniciar"
 
 #: tournament/views.py:33 tournament/views.py:39
 msgid "User has an active tournament"
@@ -1549,8 +1630,11 @@ msgid "Friend request not found"
 msgstr "Pedido de amizade não encontrado"
 
 #: user/utils_relationship.py:115 user/utils_relationship.py:129
-msgid "You are already friends with this user. Need to remove them as a friend instead."
-msgstr "Já és amigo deste utilizador. Deves removê-lo da lista de amigos primeiro."
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+"Já és amigo deste utilizador. Deves removê-lo da lista de amigos primeiro."
 
 #: user/utils_relationship.py:143 user/utils_relationship.py:162
 msgid "Computer says no"
@@ -1634,8 +1718,12 @@ msgstr "não podes realizar esta ação sobre ti próprio"
 
 #: user/views.py:165
 #, python-brace-format
-msgid "Invalid action! For method: {request_method}. Only the following actions are allowed: {allowed_actions}"
-msgstr "Ação inválida! Para o método: {request_method}. Apenas as seguintes ações são permitidas: {allowed_actions}"
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+"Ação inválida! Para o método: {request_method}. Apenas as seguintes ações "
+"são permitidas: {allowed_actions}"
 
 #: user/views.py:183
 msgid "Friends list of user"

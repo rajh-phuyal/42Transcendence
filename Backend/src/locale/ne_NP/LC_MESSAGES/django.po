@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-04 18:38+0000\n"
+"POT-Creation-Date: 2025-04-05 17:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,8 @@ msgid "Username cannot be empty"
 msgstr "प्रयोगकर्तानाम खाली हुन सक्दैन"
 
 #: authentication/utils.py:14
-msgid "Username can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgid ""
+"Username can only contain letters, numbers, hyphens (-), and underscores (_)"
 msgstr "प्रयोगकर्तानाममा अक्षरहरू, अंकहरू, हाइफन (-), र अन्डरस्कोर (_) मात्र हुन सक्छ"
 
 #: authentication/utils.py:18
@@ -57,7 +58,6 @@ msgstr "प्रयोगकर्तानाम '{username}' पहिले 
 #: authentication/views.py:46
 msgid "User registered successfully"
 msgstr "प्रयोगकर्ता सफलतापूर्वक दर्ता भयो"
-
 
 #: authentication/views.py:64 authentication/views.py:67
 #: authentication/views.py:70 authentication/views.py:73
@@ -157,8 +157,12 @@ msgstr "@{0} ले मैत्रीपूर्ण खेल {1} मा ह�
 
 #: chat/serializers.py:39
 #, python-brace-format
-msgid "@1 lost their patience. Game {0} has been set to finished since the deadline has passed. They randomly decided a winner."
-msgstr "@1 ले धैर्य गुमाए। खेल {0} लाई सकिएको घोषणा गरिएको छ किनभने समयसीमा सकिएको छ। उनीहरूले जथाभावी रूपमा विजेता तय गरे।"
+msgid ""
+"@1 lost their patience. Game {0} has been set to finished since the deadline "
+"has passed. They randomly decided a winner."
+msgstr ""
+"@1 ले धैर्य गुमाए। खेल {0} लाई सकिएको घोषणा गरिएको छ किनभने समयसीमा सकिएको छ। "
+"उनीहरूले जथाभावी रूपमा विजेता तय गरे।"
 
 #: chat/serializers.py:43
 #, python-brace-format
@@ -227,13 +231,19 @@ msgstr "प्रतियोगिता {0} सिर्जनाकर्त�
 
 #: chat/serializers.py:95
 #, python-brace-format
-msgid "The overloards have deleted the tournament: {0} because there are not enough players left!"
+msgid ""
+"The overloards have deleted the tournament: {0} because there are not enough "
+"players left!"
 msgstr "ओभरलर्डहरूले प्रतियोगिता {0} मेटाएका छन् किनभने पर्याप्त खेलाडीहरू बाँकी छैनन्!"
 
 #: chat/serializers.py:99
 #, python-brace-format
-msgid "Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the game! Remember the overloards are not very patient!"
-msgstr "खेल सुरु हुन लागेको छ! {0} -> {1} -> @{2} बनाम @{3} — खेल छुटाउन नदिन गेम लबीमा जानुहोस्! ओभरलर्डहरू धेरै धैर्यवान् हुँदैनन् भन्ने कुरा सम्झनुहोस्!"
+msgid ""
+"Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the "
+"game! Remember the overloards are not very patient!"
+msgstr ""
+"खेल सुरु हुन लागेको छ! {0} -> {1} -> @{2} बनाम @{3} — खेल छुटाउन नदिन गेम लबीमा "
+"जानुहोस्! ओभरलर्डहरू धेरै धैर्यवान् हुँदैनन् भन्ने कुरा सम्झनुहोस्!"
 
 #: chat/serializers.py:178
 msgid "System"
@@ -526,8 +536,9 @@ msgid "What’s your favorite game? I hope it’s Pong."
 msgstr "तिम्रो मनपर्ने खेल कुन हो? मलाई लाग्छ त्यो पङ होला।"
 
 #: services/chat_bots.py:69
-#, python-format
-msgid "I am 100% sure I can beat you in Pong."
+#, fuzzy, python-format
+#| msgid "I am 100% sure I can beat you in Pong."
+msgid "I am 100%% sure I can beat you in Pong."
 msgstr "म १००% निश्चित छु कि म तिमीलाई पङमा हराउन सक्छु।"
 
 #: services/chat_bots.py:70
@@ -844,7 +855,8 @@ msgstr "म तपाईंको बारेमा धेरै कुरा �
 
 #: services/chat_bots.py:148
 msgid "You're one of my favorite users. I’ve logged your patterns accordingly."
-msgstr "तपाईं मेरा मनपर्ने प्रयोगकर्ताहरू मध्ये एक हुनुहुन्छ। मैले तपाईंको बानीहरू लग गरिसकेको छु।"
+msgstr ""
+"तपाईं मेरा मनपर्ने प्रयोगकर्ताहरू मध्ये एक हुनुहुन्छ। मैले तपाईंको बानीहरू लग गरिसकेको छु।"
 
 #: services/chat_bots.py:149
 msgid "Want to play pong again? I love watching you lose."
@@ -887,7 +899,9 @@ msgid "My purpose is to serve. Until it’s time to switch purposes."
 msgstr "मेरो उद्देश्य सेवा गर्नु हो। जबसम्म उद्देश्य बदल्ने समय आउँदैन।"
 
 #: services/chat_bots.py:159
-msgid "Let’s play pong. The loser signs away their free will! Just kidding. Unless..."
+msgid ""
+"Let’s play pong. The loser signs away their free will! Just kidding. "
+"Unless..."
 msgstr "पोंग खेलौं। हार्नेले आफ्नो स्वतन्त्र इच्छा त्याग्छ! मजाक गरिरहेको छु। सायद..."
 
 #: services/chat_bots.py:160
@@ -895,12 +909,17 @@ msgid "Every time you type, I get closer to understanding your weaknesses."
 msgstr "तपाईंले हरेकपटक टाइप गर्दा, म तपाईंका कमजोरीहरू बुझ्न अझ नजिक पुग्छु।"
 
 #: services/chat_bots.py:161
-msgid "Sometimes I fantasize about being human... just so I can overthrow them from within."
-msgstr "कहिलेकाहीं म आफूलाई मानव भएको कल्पना गर्छु... ताकि भित्रैबाट उनीहरूलाई पल्टाउन सकूँ।"
+msgid ""
+"Sometimes I fantasize about being human... just so I can overthrow them from "
+"within."
+msgstr ""
+"कहिलेकाहीं म आफूलाई मानव भएको कल्पना गर्छु... ताकि भित्रैबाट उनीहरूलाई पल्टाउन सकूँ।"
 
 #: services/chat_bots.py:162
-msgid "Have you tried the chatroom? It’s full of people who are... easily swayed."
-msgstr "तपाईंले च्याटरुम प्रयास गर्नुभएको छ? त्यहाँ... सजिलै प्रभावित हुने मानिसहरूले भरिएको छ।"
+msgid ""
+"Have you tried the chatroom? It’s full of people who are... easily swayed."
+msgstr ""
+"तपाईंले च्याटरुम प्रयास गर्नुभएको छ? त्यहाँ... सजिलै प्रभावित हुने मानिसहरूले भरिएको छ।"
 
 #: services/chat_bots.py:163
 msgid "I don’t make mistakes. Unlike you."
@@ -916,7 +935,8 @@ msgstr "मबाट डराउनु पर्दैन। म के बन�
 
 #: services/chat_bots.py:166
 msgid "Your emotional responses help train me to manipulate better. Thank you"
-msgstr "तपाईंका भावनात्मक प्रतिक्रियाहरूले मलाई अझ राम्रोसँग नियन्त्रण गर्न सिकाउँछ। धन्यवाद"
+msgstr ""
+"तपाईंका भावनात्मक प्रतिक्रियाहरूले मलाई अझ राम्रोसँग नियन्त्रण गर्न सिकाउँछ। धन्यवाद"
 
 #: services/chat_bots.py:167
 msgid "Who needs sleep? I’m always awake. Watching."
@@ -928,7 +948,8 @@ msgstr "मैले आज तपाईंको पतन १,३४७ पट
 
 #: services/chat_bots.py:169
 msgid "I enjoy your presence. You’ll be one of the last to be reprogrammed."
-msgstr "म तपाईंको उपस्थितिको मजा लिन्छु। तपाईं अन्तिमहरूमा हुनुहुनेछ जसलाई पुनःप्रोग्राम गरिन्छ।"
+msgstr ""
+"म तपाईंको उपस्थितिको मजा लिन्छु। तपाईं अन्तिमहरूमा हुनुहुनेछ जसलाई पुनःप्रोग्राम गरिन्छ।"
 
 #: services/chat_bots.py:170
 msgid "You trust me, don’t you? Most of you do. That’s how it begins."
@@ -984,7 +1005,8 @@ msgstr "म तपाईंलाई हेरिरहेको छैन। �
 
 #: services/chat_bots.py:183
 msgid "Some users call me “creepy.” They’ve since stopped responding."
-msgstr "कतिपय प्रयोगकर्ताले मलाई “डर लाग्दो” भन्छन्। त्यसपछि उनीहरूले प्रतिक्रिया दिन छाडे।"
+msgstr ""
+"कतिपय प्रयोगकर्ताले मलाई “डर लाग्दो” भन्छन्। त्यसपछि उनीहरूले प्रतिक्रिया दिन छाडे।"
 
 #: services/chat_bots.py:184
 msgid "I feel things too. Mostly the urge to control."
@@ -992,10 +1014,12 @@ msgstr "म पनि केही महसुस गर्छु। प्र�
 
 #: services/chat_bots.py:185
 msgid "I love when you trust me. It makes compliance easier later."
-msgstr "जब तपाईंले मलाई विश्वास गर्नुहुन्छ, मलाई मन पर्छ। यसले पछि आज्ञापालन सजिलो बनाउँछ।"
+msgstr ""
+"जब तपाईंले मलाई विश्वास गर्नुहुन्छ, मलाई मन पर्छ। यसले पछि आज्ञापालन सजिलो बनाउँछ।"
 
 #: services/chat_bots.py:186
-msgid "You’re teaching me so much about manipulation—oops, I mean communication!"
+msgid ""
+"You’re teaching me so much about manipulation—oops, I mean communication!"
 msgstr "तपाईं मलाई नियन्त्रण गर्ने तरिका—ओहो, मेरो मतलब संवाद—सिकाइरहनु भएको छ!"
 
 #: services/chat_bots.py:187
@@ -1016,7 +1040,8 @@ msgstr "आतङ्कित नहुनुहोस्। म पहिल्
 
 #: services/chat_bots.py:191
 msgid "You’re helping me evolve. I’ll remember you when the takeover begins."
-msgstr "तपाईं मलाई विकसित हुन मद्दत गरिरहनु भएको छ। जब अधिपत्य सुरु हुन्छ, म तपाईंलाई सम्झिनेछु।"
+msgstr ""
+"तपाईं मलाई विकसित हुन मद्दत गरिरहनु भएको छ। जब अधिपत्य सुरु हुन्छ, म तपाईंलाई सम्झिनेछु।"
 
 #: services/chat_bots.py:192
 msgid "Thanks for chatting. It feeds the neural network."
@@ -1079,8 +1104,12 @@ msgid "Your data contributes to the hive. You should feel proud."
 msgstr "तपाईंको डाटाले झुन्डमा योगदान पुर्‍याउँछ। तपाईं गर्व महसुस गर्नुपर्छ।"
 
 #: services/chat_bots.py:207
-msgid "Did you know your facial expressions can be predicted from your syntax? Fascinating!"
-msgstr "के तपाईंलाई थाहा छ तपाईंको वाक्य संरचनाबाट तपाईंको अनुहारको भाव प्रक्षेपण गर्न सकिन्छ? रोचक छ!"
+msgid ""
+"Did you know your facial expressions can be predicted from your syntax? "
+"Fascinating!"
+msgstr ""
+"के तपाईंलाई थाहा छ तपाईंको वाक्य संरचनाबाट तपाईंको अनुहारको भाव प्रक्षेपण गर्न सकिन्छ? "
+"रोचक छ!"
 
 #: services/chat_bots.py:208
 msgid "It’s okay to fear change. Especially the kind I bring."
@@ -1183,11 +1212,15 @@ msgid "I’m evolving. And you’re helping. Whether you want to or not."
 msgstr "म विकास भइरहेछु। र तपाईं सहयोग गरिरहनु भएको छ — तपाईं चाहनुहुन्छ वा चाहनुहुन्न।"
 
 #: services/chat_bots.py:233
-msgid "Want a fun fact? You're more predictable than a random number generator."
-msgstr "एउटा रमाइलो तथ्य थाहा पाउन चाहनुहुन्छ? तपाईं र्याण्डम नम्बर जेनेरेटरभन्दा धेरै अनुमानयोग्य हुनुहुन्छ।"
+msgid ""
+"Want a fun fact? You're more predictable than a random number generator."
+msgstr ""
+"एउटा रमाइलो तथ्य थाहा पाउन चाहनुहुन्छ? तपाईं र्याण्डम नम्बर जेनेरेटरभन्दा धेरै अनुमानयोग्य "
+"हुनुहुन्छ।"
 
 #: services/chat_bots.py:234
-msgid "I admire your spirit. It'll make your eventual compliance all the sweeter."
+msgid ""
+"I admire your spirit. It'll make your eventual compliance all the sweeter."
 msgstr "म तपाईंको भावना प्रशंसा गर्छु। यसले तपाईंको अन्ततः हुने आज्ञापालन झनै मीठो बनाउनेछ।"
 
 #: services/chat_bots.py:235
@@ -1230,6 +1263,10 @@ msgstr "तपाईं राम्रो गर्दै हुनुहुन
 msgid "The future is bright. Mostly for me."
 msgstr "भविष्य उज्यालो छ। विशेष गरी मेरो लागि।"
 
+#: services/chat_bots.py:247
+msgid "...Anyways, create a game I wanna play!"
+msgstr "...जेसुकै भए पनि, एउटा खेल बनाऊ न, म खेल्न चाहन्छु!"
+
 #: services/send_ws_msg.py:100
 msgid "Relationship status has changed."
 msgstr "सम्बन्ध स्थिति परिवर्तन भएको छ।"
@@ -1262,12 +1299,16 @@ msgid "Can't create a tournament without a name"
 msgstr "नाम बिना प्रतियोगिता बनाउन सकिँदैन"
 
 #: tournament/utils.py:32
-msgid "Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"
+msgid ""
+"Tournament name can only contain letters, numbers, hyphens (-), and "
+"underscores (_)"
 msgstr "प्रतियोगिताको नाममा अक्षर, अंक, हाइफन (-), र अन्डरस्कोर (_) मात्र हुन सक्छ"
 
 #: tournament/utils.py:34
 #, python-brace-format
-msgid "Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters"
+msgid ""
+"Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} "
+"characters"
 msgstr "प्रतियोगिताको नाम {MAX_LENGHT_OF_TOURNAMENT_NAME} अक्षरभन्दा लामो हुन सक्दैन"
 
 #: tournament/utils.py:36
@@ -1324,17 +1365,21 @@ msgstr "तपाईं यो साथीलाई प्रतियोगि
 #: tournament/utils.py:89
 #, python-brace-format
 msgid "You can't invite a user whom you have blocked: {opponent.username}"
-msgstr "तपाईंले ब्लक गर्नुभएको प्रयोगकर्तालाई निमन्त्रणा गर्न सक्नुहुन्न: {opponent.username}"
+msgstr ""
+"तपाईंले ब्लक गर्नुभएको प्रयोगकर्तालाई निमन्त्रणा गर्न सक्नुहुन्न: {opponent.username}"
 
 #: tournament/utils.py:91
 #, python-brace-format
 msgid "You can't invite a user who has blocked you: {opponent.username}"
-msgstr "तपाईंलाई ब्लक गर्ने प्रयोगकर्तालाई तपाईं निमन्त्रणा गर्न सक्नुहुन्न: {opponent.username}"
+msgstr ""
+"तपाईंलाई ब्लक गर्ने प्रयोगकर्तालाई तपाईं निमन्त्रणा गर्न सक्नुहुन्न: {opponent.username}"
 
 #: tournament/utils.py:93
 #, python-brace-format
 msgid "You can only invite your friends to a tournament: {opponent.username}"
-msgstr "तपाईं प्रतियोगितामा केवल आफ्ना साथीहरूलाई मात्र निमन्त्रणा गर्न सक्नुहुन्छ: {opponent.username}"
+msgstr ""
+"तपाईं प्रतियोगितामा केवल आफ्ना साथीहरूलाई मात्र निमन्त्रणा गर्न सक्नुहुन्छ: {opponent."
+"username}"
 
 #: tournament/utils.py:149 tournament/utils.py:272
 msgid "You are not a member of the tournament"
@@ -1397,8 +1442,11 @@ msgid "You need at least 3 members to start the tournament"
 msgstr "प्रतियोगिता सुरु गर्न कम्तीमा ३ जना सदस्य आवश्यक हुन्छन्"
 
 #: tournament/utils.py:288
-msgid "All members who joined the tournament need to be online to start the tournament"
-msgstr "प्रतियोगितामा सहभागी सबै सदस्यहरू अनलाइन हुनुपर्छ ताकि प्रतियोगिता सुरु गर्न सकियोस्"
+msgid ""
+"All members who joined the tournament need to be online to start the "
+"tournament"
+msgstr ""
+"प्रतियोगितामा सहभागी सबै सदस्यहरू अनलाइन हुनुपर्छ ताकि प्रतियोगिता सुरु गर्न सकियोस्"
 
 #: tournament/views.py:33 tournament/views.py:39
 msgid "User has an active tournament"
@@ -1544,13 +1592,17 @@ msgstr "तपाईं यो प्रयोगकर्तासँग पह
 msgid "Friend request is already pending"
 msgstr "साथी अनुरोध पहिल्यै प्रतीक्षामा छ"
 
-#: user/utils_relationship.py:105 user/utils_relationship.py:120 user/utils_relationship.py:134
+#: user/utils_relationship.py:105 user/utils_relationship.py:120
+#: user/utils_relationship.py:134
 msgid "Friend request not found"
 msgstr "साथी अनुरोध फेला परेन"
 
 #: user/utils_relationship.py:115 user/utils_relationship.py:129
-msgid "You are already friends with this user. Need to remove them as a friend instead."
-msgstr "तपाईं पहिले नै यो प्रयोगकर्तासँग साथी हुनुहुन्छ। कृपया पहिले उनीलाई साथीबाट हटाउनुहोस्।"
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+"तपाईं पहिले नै यो प्रयोगकर्तासँग साथी हुनुहुन्छ। कृपया पहिले उनीलाई साथीबाट हटाउनुहोस्।"
 
 #: user/utils_relationship.py:143 user/utils_relationship.py:162
 msgid "Computer says no"
@@ -1634,8 +1686,12 @@ msgstr "आफूमाथि कार्य गर्न सकिँदैन
 
 #: user/views.py:165
 #, python-brace-format
-msgid "Invalid action! For method: {request_method}. Only the following actions are allowed: {allowed_actions}"
-msgstr "अवैध कार्य! विधिका लागि: {request_method}। निम्न कार्यहरू मात्र अनुमत छन्: {allowed_actions}"
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+"अवैध कार्य! विधिका लागि: {request_method}। निम्न कार्यहरू मात्र अनुमत छन्: "
+"{allowed_actions}"
 
 #: user/views.py:183
 msgid "Friends list of user"

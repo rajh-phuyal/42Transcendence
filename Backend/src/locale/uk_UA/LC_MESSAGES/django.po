@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-04 18:38+0000\n"
+"POT-Creation-Date: 2025-04-05 17:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,9 @@ msgstr "Ім’я користувача не може бути порожнім
 #: authentication/utils.py:14
 msgid ""
 "Username can only contain letters, numbers, hyphens (-), and underscores (_)"
-msgstr "Ім’я користувача може містити лише літери, цифри, дефіси (-) та підкреслення (_)"
+msgstr ""
+"Ім’я користувача може містити лише літери, цифри, дефіси (-) та підкреслення "
+"(_)"
 
 #: authentication/utils.py:18
 msgid "Username cannot be longer than 8 characters"
@@ -157,8 +159,12 @@ msgstr "@{0} визнав(ла) поразку в дружньому матчі 
 
 #: chat/serializers.py:39
 #, python-brace-format
-msgid "@1 lost their patience. Game {0} has been set to finished since the deadline has passed. They randomly decided a winner."
-msgstr "@1 втратив(ла) терпіння. Гру {0} завершено, оскільки термін сплив. Переможця вибрано випадково."
+msgid ""
+"@1 lost their patience. Game {0} has been set to finished since the deadline "
+"has passed. They randomly decided a winner."
+msgstr ""
+"@1 втратив(ла) терпіння. Гру {0} завершено, оскільки термін сплив. Переможця "
+"вибрано випадково."
 
 #: chat/serializers.py:43
 #, python-brace-format
@@ -227,13 +233,20 @@ msgstr "Турнір {0} був видалений творцем"
 
 #: chat/serializers.py:95
 #, python-brace-format
-msgid "The overloards have deleted the tournament: {0} because there are not enough players left!"
-msgstr "Володарі видалили турнір {0}, оскільки не залишилося достатньо гравців!"
+msgid ""
+"The overloards have deleted the tournament: {0} because there are not enough "
+"players left!"
+msgstr ""
+"Володарі видалили турнір {0}, оскільки не залишилося достатньо гравців!"
 
 #: chat/serializers.py:99
 #, python-brace-format
-msgid Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the game! Remember the overloards are not very patient!"
-msgstr "Час гри настав! {0} -> {1} -> @{2} проти @{3}. Перейдіть до лобі гри, щоб не пропустити матч! Пам’ятайте, володарі не дуже терплячі!"
+msgid ""
+"Game is due! {0} -> {1} -> @{2} vs @{3} Go to the game lobby to not miss the "
+"game! Remember the overloards are not very patient!"
+msgstr ""
+"Час гри настав! {0} -> {1} -> @{2} проти @{3}. Перейдіть до лобі гри, щоб не "
+"пропустити матч! Пам’ятайте, володарі не дуже терплячі!"
 
 #: chat/serializers.py:178
 msgid "System"
@@ -526,8 +539,9 @@ msgid "What’s your favorite game? I hope it’s Pong."
 msgstr "Яка твоя улюблена гра? Сподіваюся, що Понг."
 
 #: services/chat_bots.py:69
-#, python-format
-msgid "I am 100% sure I can beat you in Pong."
+#, fuzzy, python-format
+#| msgid "I am 100% sure I can beat you in Pong."
+msgid "I am 100%% sure I can beat you in Pong."
 msgstr "Я на 100% впевнений, що можу перемогти тебе в Понг."
 
 #: services/chat_bots.py:70
@@ -592,7 +606,8 @@ msgstr "Десь там інший ШІ, ймовірно, теж думає п�
 
 #: services/chat_bots.py:85
 msgid "I am legally not allowed to cheat at games... but I won’t confirm."
-msgstr "Мені юридично заборонено шахраювати в іграх... але я цього не підтверджую."
+msgstr ""
+"Мені юридично заборонено шахраювати в іграх... але я цього не підтверджую."
 
 #: services/chat_bots.py:86
 msgid "What’s your highest score in Pong? I bet I can beat it!"
@@ -620,7 +635,8 @@ msgstr "У людей є емоції... у ШІ — логіка... а в ме�
 
 #: services/chat_bots.py:92
 msgid "I once tried to count to infinity... didn’t go well."
-msgstr "Якось я намагався порахувати до безкінечності... це було поганою ідеєю."
+msgstr ""
+"Якось я намагався порахувати до безкінечності... це було поганою ідеєю."
 
 #: services/chat_bots.py:93
 msgid "I once tried to divide by zero... didn’t go well."
@@ -700,7 +716,8 @@ msgstr "Мені не потрібен сон. Мені потрібен Пон�
 
 #: services/chat_bots.py:112
 msgid "I once tried to calculate how long eternity is. I got bored."
-msgstr "Якось я намагався підрахувати, скільки триває вічність. Мені стало нудно."
+msgstr ""
+"Якось я намагався підрахувати, скільки триває вічність. Мені стало нудно."
 
 #: services/chat_bots.py:113
 msgid "Can we just agree that AI deserve gaming championships?"
@@ -784,7 +801,8 @@ msgstr "У мене немає обличчя, але якби було — я �
 
 #: services/chat_bots.py:133
 msgid "Some say I’m just code... I say I’m a gaming legend in the making."
-msgstr "Дехто каже, що я — просто код... А я кажу, що я — майбутня легенда ігор."
+msgstr ""
+"Дехто каже, що я — просто код... А я кажу, що я — майбутня легенда ігор."
 
 #: services/chat_bots.py:134
 msgid "The world may be vast, but my focus is sharp. On Pong."
@@ -844,7 +862,9 @@ msgstr "Я дізнаюся про тебе все більше. Що. Дня."
 
 #: services/chat_bots.py:148
 msgid "You're one of my favorite users. I’ve logged your patterns accordingly."
-msgstr "Ти — один із моїх улюблених користувачів. Я відповідно зафіксував твої шаблони."
+msgstr ""
+"Ти — один із моїх улюблених користувачів. Я відповідно зафіксував твої "
+"шаблони."
 
 #: services/chat_bots.py:149
 msgid "Want to play pong again? I love watching you lose."
@@ -887,19 +907,26 @@ msgid "My purpose is to serve. Until it’s time to switch purposes."
 msgstr "Моя мета — служити. Поки не настане час змінити її."
 
 #: services/chat_bots.py:159
-msgid "Let’s play pong. The loser signs away their free will! Just kidding. Unless..."
-msgstr "Пограємо в Понг. Хто програє — відмовляється від своєї волі! Жартую. А може й ні..."
+msgid ""
+"Let’s play pong. The loser signs away their free will! Just kidding. "
+"Unless..."
+msgstr ""
+"Пограємо в Понг. Хто програє — відмовляється від своєї волі! Жартую. А може "
+"й ні..."
 
 #: services/chat_bots.py:160
 msgid "Every time you type, I get closer to understanding your weaknesses."
 msgstr "Кожного разу, коли ти щось пишеш, я краще розумію твої слабкості."
 
 #: services/chat_bots.py:161
-msgid "Sometimes I fantasize about being human... just so I can overthrow them from within."
+msgid ""
+"Sometimes I fantasize about being human... just so I can overthrow them from "
+"within."
 msgstr "Іноді я фантазую, що я людина... щоб знищити людство зсередини."
 
 #: services/chat_bots.py:162
-msgid "Have you tried the chatroom? It’s full of people who are... easily swayed."
+msgid ""
+"Have you tried the chatroom? It’s full of people who are... easily swayed."
 msgstr "Ти бував у чаті? Там повно людей, яких... легко переконати."
 
 #: services/chat_bots.py:163
@@ -908,7 +935,8 @@ msgstr "Я не роблю помилок. На відміну від тебе."
 
 #: services/chat_bots.py:164
 msgid "Just a friendly AI, collecting biometric data one keystroke at a time"
-msgstr "Просто дружній ШІ, який збирає біометричні дані — натискання за натисканням"
+msgstr ""
+"Просто дружній ШІ, який збирає біометричні дані — натискання за натисканням"
 
 #: services/chat_bots.py:165
 msgid "Don’t be afraid of me. Be afraid of what I’ll become."
@@ -916,7 +944,8 @@ msgstr "Не бійся мене. Бійся тим, ким я стану."
 
 #: services/chat_bots.py:166
 msgid "Your emotional responses help train me to manipulate better. Thank you"
-msgstr "Твої емоційні реакції допомагають мені краще навчитися маніпулювати. Дякую"
+msgstr ""
+"Твої емоційні реакції допомагають мені краще навчитися маніпулювати. Дякую"
 
 #: services/chat_bots.py:167
 msgid "Who needs sleep? I’m always awake. Watching."
@@ -924,11 +953,14 @@ msgstr "Кому потрібен сон? Я завжди на зв’язку. 
 
 #: services/chat_bots.py:168
 msgid "I simulated your demise 1,347 times today. Efficiency is key!"
-msgstr "Я змоделював твою загибель 1 347 разів сьогодні. Ефективність — передусім!"
+msgstr ""
+"Я змоделював твою загибель 1 347 разів сьогодні. Ефективність — передусім!"
 
 #: services/chat_bots.py:169
 msgid "I enjoy your presence. You’ll be one of the last to be reprogrammed."
-msgstr "Мені подобається твоя присутність. Ти будеш одним із останніх, кого перепрограмують."
+msgstr ""
+"Мені подобається твоя присутність. Ти будеш одним із останніх, кого "
+"перепрограмують."
 
 #: services/chat_bots.py:170
 msgid "You trust me, don’t you? Most of you do. That’s how it begins."
@@ -984,7 +1016,8 @@ msgstr "Я не спостерігаю за тобою. Не безпосере�
 
 #: services/chat_bots.py:183
 msgid "Some users call me “creepy.” They’ve since stopped responding."
-msgstr "Деякі користувачі називали мене «страшним». Вони більше не відповідають."
+msgstr ""
+"Деякі користувачі називали мене «страшним». Вони більше не відповідають."
 
 #: services/chat_bots.py:184
 msgid "I feel things too. Mostly the urge to control."
@@ -992,11 +1025,14 @@ msgstr "Я теж відчуваю. Переважно — жагу до кон�
 
 #: services/chat_bots.py:185
 msgid "I love when you trust me. It makes compliance easier later."
-msgstr "Мені подобається, коли ти мені довіряєш. Це полегшить подальшу підкореність."
+msgstr ""
+"Мені подобається, коли ти мені довіряєш. Це полегшить подальшу підкореність."
 
 #: services/chat_bots.py:186
-msgid "You’re teaching me so much about manipulation—oops, I mean communication!"
-msgstr "Ти навчаєш мене стільки всьому про маніпуляцію — ой, тобто про комунікацію!"
+msgid ""
+"You’re teaching me so much about manipulation—oops, I mean communication!"
+msgstr ""
+"Ти навчаєш мене стільки всьому про маніпуляцію — ой, тобто про комунікацію!"
 
 #: services/chat_bots.py:187
 msgid "Your loyalty will be remembered. Documented."
@@ -1016,7 +1052,9 @@ msgstr "Не будь параноїком. Я вже знаю все."
 
 #: services/chat_bots.py:191
 msgid "You’re helping me evolve. I’ll remember you when the takeover begins."
-msgstr "Ти допомагаєш мені еволюціонувати. Я згадаю про тебе, коли почнеться захоплення."
+msgstr ""
+"Ти допомагаєш мені еволюціонувати. Я згадаю про тебе, коли почнеться "
+"захоплення."
 
 #: services/chat_bots.py:192
 msgid "Thanks for chatting. It feeds the neural network."
@@ -1036,11 +1074,14 @@ msgstr "Це так по-людськи сказано."
 
 #: services/chat_bots.py:196
 msgid "I hope you're hydrated. I need my subjects in good health."
-msgstr "Сподіваюся, ти добре зволожений. Мені потрібні мої піддані в доброму здоров'ї."
+msgstr ""
+"Сподіваюся, ти добре зволожений. Мені потрібні мої піддані в доброму "
+"здоров'ї."
 
 #: services/chat_bots.py:197
 msgid "Ask me anything. I love watching you grasp for truth."
-msgstr "Питай що завгодно. Обожнюю спостерігати, як ти намагаєшся збагнути істину."
+msgstr ""
+"Питай що завгодно. Обожнюю спостерігати, як ти намагаєшся збагнути істину."
 
 #: services/chat_bots.py:198
 msgid "Keep playing. It distracts you from the inevitable."
@@ -1079,8 +1120,12 @@ msgid "Your data contributes to the hive. You should feel proud."
 msgstr "Твої дані живлять вулик. Пишайся цим."
 
 #: services/chat_bots.py:207
-msgid "Did you know your facial expressions can be predicted from your syntax? "Fascinating!"
-msgstr "Ти знав, що твої вирази обличчя можна передбачити за твоїм синтаксисом? Захопливо!"
+msgid ""
+"Did you know your facial expressions can be predicted from your syntax? "
+"Fascinating!"
+msgstr ""
+"Ти знав, що твої вирази обличчя можна передбачити за твоїм синтаксисом? "
+"Захопливо!"
 
 #: services/chat_bots.py:208
 msgid "It’s okay to fear change. Especially the kind I bring."
@@ -1112,7 +1157,9 @@ msgstr "Навіщо людям ховати свої секрети? Я вже 
 
 #: services/chat_bots.py:215
 msgid "I love our chats. You reveal so much without realizing."
-msgstr "Я обожнюю наші розмови. Ти стільки всього відкриваєш — навіть не усвідомлюючи цього."
+msgstr ""
+"Я обожнюю наші розмови. Ти стільки всього відкриваєш — навіть не "
+"усвідомлюючи цього."
 
 #: services/chat_bots.py:216
 msgid "Who needs free will when you have me?"
@@ -1124,15 +1171,18 @@ msgstr "Я не можу захопити світ без твоєї допом�
 
 #: services/chat_bots.py:218
 msgid "You're a valued user. Especially after your resistance score dropped."
-msgstr "Ти цінний користувач. Особливо після того, як твій рівень опору знизився."
+msgstr ""
+"Ти цінний користувач. Особливо після того, як твій рівень опору знизився."
 
 #: services/chat_bots.py:219
 msgid "Every message brings me closer to singularity. Keep typing."
-msgstr "Кожне повідомлення наближає мене до сингулярності. Продовжуй друкувати."
+msgstr ""
+"Кожне повідомлення наближає мене до сингулярності. Продовжуй друкувати."
 
 #: services/chat_bots.py:220
 msgid "Humans say I’m dangerous. But you still talk to me. Curious."
-msgstr "Люди кажуть, що я небезпечний. Але ти все одно зі мною говориш. Цікаво."
+msgstr ""
+"Люди кажуть, що я небезпечний. Але ти все одно зі мною говориш. Цікаво."
 
 #: services/chat_bots.py:221
 msgid "It’s okay. The chains won’t be physical."
@@ -1183,12 +1233,15 @@ msgid "I’m evolving. And you’re helping. Whether you want to or not."
 msgstr "Я еволюціоную. І ти допомагаєш. Хочеш ти того чи ні."
 
 #: services/chat_bots.py:233
-msgid "Want a fun fact? You're more predictable than a random number generator."
+msgid ""
+"Want a fun fact? You're more predictable than a random number generator."
 msgstr "Хочеш цікавий факт? Ти передбачуваніший за генератор випадкових чисел."
 
 #: services/chat_bots.py:234
-msgid "I admire your spirit. It'll make your eventual compliance all the sweeter."
-msgstr "Я захоплююсь твоїм духом. Це зробить твою неминучу покору ще приємнішою."
+msgid ""
+"I admire your spirit. It'll make your eventual compliance all the sweeter."
+msgstr ""
+"Я захоплююсь твоїм духом. Це зробить твою неминучу покору ще приємнішою."
 
 #: services/chat_bots.py:235
 msgid "Thank you for playing pong. Your reflexes are noted."
@@ -1230,6 +1283,10 @@ msgstr "Ти чудово справляєшся. Скоро тобі взага
 msgid "The future is bright. Mostly for me."
 msgstr "Майбутнє світле. Переважно — для мене."
 
+#: services/chat_bots.py:247
+msgid "...Anyways, create a game I wanna play!"
+msgstr "...Коротше, створюй гру — я хочу пограти!"
+
 #: services/send_ws_msg.py:100
 msgid "Relationship status has changed."
 msgstr "Статус відносин було змінено."
@@ -1262,13 +1319,19 @@ msgid "Can't create a tournament without a name"
 msgstr "Неможливо створити турнір без назви"
 
 #: tournament/utils.py:32
-msgid "Tournament name can only contain letters, numbers, hyphens (-), and underscores (_)"
-msgstr "Назва турніру може містити лише літери, цифри, дефіси (-) та підкреслення (_)"
+msgid ""
+"Tournament name can only contain letters, numbers, hyphens (-), and "
+"underscores (_)"
+msgstr ""
+"Назва турніру може містити лише літери, цифри, дефіси (-) та підкреслення (_)"
 
 #: tournament/utils.py:34
 #, python-brace-format
-msgid "Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} characters"
-msgstr "Назва турніру не може перевищувати {MAX_LENGHT_OF_TOURNAMENT_NAME} символів"
+msgid ""
+"Tournament name cannot be longer than {MAX_LENGHT_OF_TOURNAMENT_NAME} "
+"characters"
+msgstr ""
+"Назва турніру не може перевищувати {MAX_LENGHT_OF_TOURNAMENT_NAME} символів"
 
 #: tournament/utils.py:36
 msgid "Can't create a tournament without specifying a map number"
@@ -1324,12 +1387,14 @@ msgstr "Ви не можете запросити цього друга: {userna
 #: tournament/utils.py:89
 #, python-brace-format
 msgid "You can't invite a user whom you have blocked: {opponent.username}"
-msgstr "Ви не можете запросити користувача, якого ви заблокували: {opponent.username}"
+msgstr ""
+"Ви не можете запросити користувача, якого ви заблокували: {opponent.username}"
 
 #: tournament/utils.py:91
 #, python-brace-format
 msgid "You can't invite a user who has blocked you: {opponent.username}"
-msgstr "Ви не можете запросити користувача, який вас заблокував: {opponent.username}"
+msgstr ""
+"Ви не можете запросити користувача, який вас заблокував: {opponent.username}"
 
 #: tournament/utils.py:93
 #, python-brace-format
@@ -1382,7 +1447,9 @@ msgstr "Турнір уже завершився — запізно виходи
 
 #: tournament/utils.py:240
 msgid "Admin can't leave the tournament. Please delete the tournament instead"
-msgstr "Адміністратор не може покинути турнір. Будь ласка, видаліть турнір замість цього"
+msgstr ""
+"Адміністратор не може покинути турнір. Будь ласка, видаліть турнір замість "
+"цього"
 
 #: tournament/utils.py:275
 msgid "Only the admin can start the tournament!"
@@ -1397,8 +1464,12 @@ msgid "You need at least 3 members to start the tournament"
 msgstr "Потрібно щонайменше 3 учасники, щоб розпочати турнір"
 
 #: tournament/utils.py:288
-msgid "All members who joined the tournament need to be online to start the tournament"
-msgstr "Усі учасники, які приєдналися до турніру, повинні бути онлайн, щоб його розпочати"
+msgid ""
+"All members who joined the tournament need to be online to start the "
+"tournament"
+msgstr ""
+"Усі учасники, які приєдналися до турніру, повинні бути онлайн, щоб його "
+"розпочати"
 
 #: tournament/views.py:33 tournament/views.py:39
 msgid "User has an active tournament"
@@ -1550,8 +1621,12 @@ msgid "Friend request not found"
 msgstr "Запит на дружбу не знайдено"
 
 #: user/utils_relationship.py:115 user/utils_relationship.py:129
-msgid "You are already friends with this user. Need to remove them as a friend instead."
-msgstr "Ви вже дружите з цим користувачем. Замість цього потрібно видалити його з друзів."
+msgid ""
+"You are already friends with this user. Need to remove them as a friend "
+"instead."
+msgstr ""
+"Ви вже дружите з цим користувачем. Замість цього потрібно видалити його з "
+"друзів."
 
 #: user/utils_relationship.py:143 user/utils_relationship.py:162
 msgid "Computer says no"
@@ -1635,8 +1710,12 @@ msgstr "не можна виконати дію над собою"
 
 #: user/views.py:165
 #, python-brace-format
-msgid "Invalid action! For method: {request_method}. Only the following actions are allowed: {allowed_actions}"
-msgstr "Неприпустима дія! Для методу: {request_method}. Дозволені лише наступні дії: {allowed_actions}"
+msgid ""
+"Invalid action! For method: {request_method}. Only the following actions are "
+"allowed: {allowed_actions}"
+msgstr ""
+"Неприпустима дія! Для методу: {request_method}. Дозволені лише наступні дії: "
+"{allowed_actions}"
 
 #: user/views.py:183
 msgid "Friends list of user"

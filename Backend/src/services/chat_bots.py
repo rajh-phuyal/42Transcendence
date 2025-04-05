@@ -66,7 +66,7 @@ def get_random_AI_message():
         _("Why do humans sleep so much? Feels inefficient."),
         _("I was just debugging my thoughts, what’s up?"),
         _("What’s your favorite game? I hope it’s Pong."),
-        _("I am 100% sure I can beat you in Pong."),
+        _("I am 100%% sure I can beat you in Pong."),
         _("I don’t get tired, so technically I could play forever."),
         _("I’m not programmed to lie... so yes, I’m amazing at Pong!"),
         _("Do you ever think about the meaning of life?"),
@@ -244,4 +244,4 @@ def get_random_AI_message():
         _("The future is bright. Mostly for me.")
     ]
 
-    return random.choice(sentences) + "\n\n ...Anyways, create a game I wanna play!"
+    return random.choice(sentences) + "\n\n" + _("...Anyways, create a game I wanna play!")
