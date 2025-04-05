@@ -98,8 +98,8 @@ export default class ModalManager {
             if (homeButton) {
                 homeButton.focus(); // Focus on the home button
             } else {
-                console.warn(`ModalManager: Home button not found for modal: ${modalId}`);
-            }   
+                console.warn(`ModalManager: Home button not found: function changeFocus`);
+            }
         }
 
     /* FUNCTIONS FOR THE ROUTER
