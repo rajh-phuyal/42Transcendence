@@ -282,6 +282,7 @@ export default {
 
     hooks: {
         beforeRouteEnter() {
+            this.gameId = null,
             clearAllGameDeadlines();
         },
 
