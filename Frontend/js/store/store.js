@@ -48,14 +48,14 @@ class Store {
 
         this.notifyListeners(mutationName, value);
 
-        if (!this.mutations[mutationName]?.presistence) return;
+        if (!this.mutations[mutationName]?.persistence) return;
 
-        // clear all the mutations, that have presistence set to false
+        // clear all the mutations, that have persistence set to false
         let savedObject = {};
         for (const value of _.values(this.mutations)) {
             const stateKey = value.stateName;
 
-            if (value.presistence) {
+            if (value.persistence) {
                 savedObject[stateKey] = this.state[stateKey];
             }
         }
