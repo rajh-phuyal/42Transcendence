@@ -47,6 +47,11 @@ class WebSocketManager {
                 // Dispatch data to appropriate handlers based on message type
             };
 
+            this.socket.onclose = (event) => {
+                console.log("WebSocket closed:", event);
+                $store.commit("setWebSocketIsAlive", false);
+            }
+
         } catch (error) {
             console.error("WebSocket connection error:", error);
             $store.commit("setWebSocketIsAlive", false);
@@ -189,11 +194,6 @@ class WebSocketManager {
 		if (value > 99)
 			value = "99+";
         $id("nav-chat-badge").innerHTML = value || "";
-    }
-
-    reconnect() {
-        this.disconnect();
-        this.connect();
     }
 }
 

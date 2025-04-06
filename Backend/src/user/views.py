@@ -247,5 +247,6 @@ class UpdateUserInfoView(BaseAuthenticatedView):
             # Save the user object
             user.save()
 
-        # Return the success response
+        # Return the success response in the new language
+        activate(user.language)
         return success_response(_("User info updated"), **{'locale': user.language})

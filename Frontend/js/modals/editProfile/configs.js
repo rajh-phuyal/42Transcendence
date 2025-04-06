@@ -4,6 +4,7 @@ import router from '../../navigation/router.js';
 import $store from '../../store/store.js';
 import { translate } from '../../locale/locale.js';
 import { loadTranslationsForTooltips } from '../../abstracts/nav.js';
+import WebSocketManager from '../../abstracts/WebSocketManager.js';
 
 export default {
     attributes: {
@@ -42,10 +43,14 @@ export default {
                 console.warn(data);
                 if (!data.status === "success")
                     return;
-                $callToast("success", data.message);
+                // First change language in the store...
                 this.$store.commit("setLocale", data.locale);
+                // ...then show the toast so the user can see the message in the correct language
+                $callToast("success", data.message);
                 // Translate Navbar elements
                 loadTranslationsForTooltips();
+                // Reconnect the WebSocket so the be consumer will use the new language
+                WebSocketManager.disconnect(); // Mutation listener will reconnect
                 router('/profile', { id: $store.fromState("user").id});
             }).catch((error) => {
                 console.error('Error:', error);

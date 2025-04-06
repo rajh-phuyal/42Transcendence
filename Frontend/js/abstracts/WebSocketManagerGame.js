@@ -1,13 +1,8 @@
 import $store from '../store/store.js';
-import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import { endGameLoop } from '../views/game/loop.js';
-import router from '../navigation/router.js';
 import { updateReadyStatefromWS, updateGameObjects } from '../views/game/methods.js';
 import { gameObject } from '../views/game/objects.js';
-
-
-
 const { hostname } = window.location;
 
 class WebSocketManagerGame {
@@ -95,12 +90,6 @@ class WebSocketManagerGame {
         } else {
             // console.log("GAME WebSocket is not connected.");
         }
-    }
-
-    // TODO: do we use this?
-    reconnect() {
-        this.disconnect();
-        this.connect();
     }
 }
 
