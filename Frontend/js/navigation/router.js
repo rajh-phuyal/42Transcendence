@@ -82,7 +82,7 @@ async function router(path, params = null, updateHistory = true) {
     if (path === "/logout") {
         const success = await $auth.logout();
         if (success)
-			router("/auth");
+			await router("/auth");
 		return ;
     }
 

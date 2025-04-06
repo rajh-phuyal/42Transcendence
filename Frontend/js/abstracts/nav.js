@@ -127,7 +127,7 @@ export function loadTranslationsForTooltips() {
 }
 
 export function setNavVisibility(visible = true){
-    let nav = document.getElementById('navigator');
+    let nav = $id('navigator');
     if (!nav)
         return;
     if (visible) {

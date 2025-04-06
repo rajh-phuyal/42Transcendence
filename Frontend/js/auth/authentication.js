@@ -88,7 +88,7 @@ class Auth {
             this.isAuthenticated = false;
             $store.commit('setIsAuthenticated', false);
             WebSocketManager.disconnect();
-            $store.clear();
+            await $store.clear();
 
             if (broadcast) {
                 // Broadcast logout to other tabs

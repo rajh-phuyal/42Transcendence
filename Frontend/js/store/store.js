@@ -67,11 +67,11 @@ class Store {
         await this.actions[actionName](this, payload);
     }
 
-    clear() {
+    async clear() {
         // Reset to initial state
         this.state = { ...this.initialState };
         $removeLocal("store");
-        this.dispatch('loadTranslations', routes.map(route => route.view));
+        await this.dispatch('loadTranslations', routes.map(route => route.view));
     }
 }
 
