@@ -1,8 +1,8 @@
 import { routes } from './routes.js';
-import { functionalRoutes } from './functionalRoutes.js';
 import { setViewLoading, isViewLoading } from '../abstracts/loading.js';
 import { $id, $queryAll } from '../abstracts/dollars.js';
 // bind store, auth and other singleton to 'this' in the hooks
+import { setNavVisibility } from '../abstracts/nav.js';
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
 import $syncer from '../sync/Syncer.js';
@@ -78,12 +78,12 @@ async function router(path, params = null, updateHistory = true) {
     //
     // I also create this function isViewLoading but it doesnt work for the first load
 
-    // check for routes pre authentication check
-    const functionalRoute = functionalRoutes.find(route => route.path === path);
-    if (functionalRoute && !functionalRoute?.requireAuth) {
-        await functionalRoute.execute.bind(simpleObjectToBind())();
-        setViewLoading(false);
-        return;
+
+    if (path === "/logout") {
+        const success = await $auth.logout();
+        if (success)
+			await router("/auth");
+		return ;
     }
 
     // Auth check
@@ -97,13 +97,6 @@ async function router(path, params = null, updateHistory = true) {
     } else if (!userAuthenticated && path !== '/auth') {
         path = '/auth';
         params = null;
-    }
-
-    // execute the functional route which needs auth
-    if (functionalRoute) {
-        await functionalRoute.execute.bind(simpleObjectToBind())();
-        setViewLoading(false);
-        return;
     }
 
     const viewContainer = $id('router-view');
@@ -123,11 +116,10 @@ async function router(path, params = null, updateHistory = true) {
         $store.commit('setCurrentRoute', route.view);
 
     // Show hide the nav bar
-    let nav = document.getElementById('navigator');
     if (route.view == "auth" || route.view == "barely-responsive") {
-        nav.style.display = 'none';
+        setNavVisibility(false);
     } else
-        nav.style.display = 'flex';
+        setNavVisibility(true);
 
     EventListenerManager.unlinkEventListenersView(viewContainer.dataset.view);
     // Close all modals before switching routes
