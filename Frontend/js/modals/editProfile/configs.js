@@ -40,7 +40,6 @@ export default {
                 language:   languageElement.value.trim(),
                 notes:      noteElement.value.trim()
             }).then(data => {
-                console.warn(data);
                 if (!data.status === "success")
                     return;
                 // First change language in the store...
