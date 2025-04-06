@@ -2,6 +2,7 @@ import { state } from './states.js';
 import { mutations } from './mutations.js';
 import { actions } from './actions.js';
 import { $getLocal, $removeLocal, $setLocal } from '../abstracts/dollars.js';
+import { routes } from '../navigation/routes.js';
 
 class Store {
     constructor(initialState, mutations, actions) {
@@ -70,6 +71,7 @@ class Store {
         // Reset to initial state
         this.state = { ...this.initialState };
         $removeLocal("store");
+        this.dispatch('loadTranslations', routes.map(route => route.view));
     }
 }
 

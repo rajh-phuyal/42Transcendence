@@ -32,7 +32,7 @@ export const mutations = {
         onUpdate: (state, value) => {
             state.translations = value;
         },
-        presistence: false,
+        presistence: true,
     },
     setWebsocketIsAlive: {
         stateName: 'webSocketIsAlive',

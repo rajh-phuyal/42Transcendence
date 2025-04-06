@@ -125,3 +125,17 @@ export function loadTranslationsForTooltips() {
     else
         $id('nav-music').title   = translate("global:nav", "musicOff");
 }
+
+export function setNavVisibility(visible = true){
+    let nav = document.getElementById('navigator');
+    if (!nav)
+        return;
+    if (visible) {
+        loadTranslationsForTooltips()
+        nav.style.display = 'flex';
+        nav.classList.add("d-flex", "flex-row", "justify-content-center");
+        return ;
+    }
+    nav.style.display = 'none';
+    nav.classList.remove("d-flex", "flex-row", "justify-content-center");
+}
