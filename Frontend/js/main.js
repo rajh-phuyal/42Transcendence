@@ -65,13 +65,13 @@ let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
         if (setInervalId) {
-            $callToast("success", translate("global:main", "connectionReestablished"))
+            // $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
         if (!setInervalId && $store.fromState('isAuthenticated')) {
-            $callToast("error", translate("global:main", "connectionError"))
+            // $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {
                 WebSocketManager.connect();
             }, 2000);
