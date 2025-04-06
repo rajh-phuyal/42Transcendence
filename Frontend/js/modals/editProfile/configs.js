@@ -40,7 +40,7 @@ export default {
                 language:   languageElement.value.trim(),
                 notes:      noteElement.value.trim()
             }).then(data => {
-                if (!data.status === "success")
+                if (data.status !== "success")
                     return;
                 // First change language in the store...
                 this.$store.commit("setLocale", data.locale);
