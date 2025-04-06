@@ -2,6 +2,7 @@ import { state } from './states.js';
 import { mutations } from './mutations.js';
 import { actions } from './actions.js';
 import { $getLocal, $removeLocal, $setLocal } from '../abstracts/dollars.js';
+import { routes } from '../navigation/routes.js';
 
 class Store {
     constructor(initialState, mutations, actions) {
@@ -47,14 +48,14 @@ class Store {
 
         this.notifyListeners(mutationName, value);
 
-        if (!this.mutations[mutationName]?.presistence) return;
+        if (!this.mutations[mutationName]?.persistence) return;
 
-        // clear all the mutations, that have presistence set to false
+        // clear all the mutations, that have persistence set to false
         let savedObject = {};
         for (const value of _.values(this.mutations)) {
             const stateKey = value.stateName;
 
-            if (value.presistence) {
+            if (value.persistence) {
                 savedObject[stateKey] = this.state[stateKey];
             }
         }
@@ -66,10 +67,11 @@ class Store {
         await this.actions[actionName](this, payload);
     }
 
-    clear() {
+    async clear() {
         // Reset to initial state
         this.state = { ...this.initialState };
         $removeLocal("store");
+        await this.dispatch('loadTranslations', routes.map(route => route.view));
     }
 }
 

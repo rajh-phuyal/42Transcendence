@@ -56,40 +56,22 @@ window.addEventListener('popstate', (event) => {
 });
 
 // get the translations for all the registered views
-$store.dispatch('loadTranslations', routes.map(route => route.view));
+await $store.dispatch('loadTranslations', routes.map(route => route.view));
 
 // Initializes the nav bar
 $nav();
-
-// go to path only after the translations are loaded
-$store.addMutationListener('setTranslations', () => {
-    // get the current route and its params
-    const currentRoute = window.location.pathname;
-    const currentParams = window.location.search;
-
-    // make the current params an object
-    const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
-
-    router(currentRoute, currentParamsObject, false);
-
-    // Load the Translation Titles for the nav bar
-    loadTranslationsForTooltips();
-
-    // set the loading to false
-    setViewLoading(false);
-});
 
 let setInervalId = undefined;
 $store.addMutationListener('setWebSocketIsAlive', (state) => {
     if (state) {
         if (setInervalId) {
-            $callToast("success", translate("global:main", "connectionReestablished"))
+            // $callToast("success", translate("global:main", "connectionReestablished"))
             clearInterval(setInervalId);
             setInervalId = undefined;
         }
     } else {
         if (!setInervalId && $store.fromState('isAuthenticated')) {
-            $callToast("error", translate("global:main", "connectionError"))
+            // $callToast("error", translate("global:main", "connectionError"))
             setInervalId = setInterval(() => {
                 WebSocketManager.connect();
             }, 2000);
@@ -137,6 +119,13 @@ window.addEventListener('resize', async () => {
         await router(path, paramsObject, false);
     }
 });
+
+// route to the current page
+const currentRoute = window.location.pathname;
+const currentParams = window.location.search;
+// make the current params an object
+const currentParamsObject = Object.fromEntries(new URLSearchParams(currentParams));
+router(currentRoute, currentParamsObject, false);
 
 // Trigger the resize event manually when the page loads
 window.dispatchEvent(new Event('resize'));

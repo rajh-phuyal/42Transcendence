@@ -2,8 +2,6 @@ import $store from '../store/store.js';
 import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
-import { $class } from '../abstracts/dollars.js';
-import { translate } from '../locale/locale.js';
 
 class Auth {
     constructor() {
@@ -73,14 +71,14 @@ class Auth {
         }
     }
 
-    authenticate(username, password) {
-        return call('auth/login/', 'POST',
+    async authenticate(username, password) {
+        return await call('auth/login/', 'POST',
             { username: username, password: password }
         );
     }
 
-	createUser(username, password, language = 'en-US') {
-		return call(`auth/register/?language=${language}`, 'POST',
+	async createUser(username, password, language = 'en-US') {
+		return await call(`auth/register/?language=${language}`, 'POST',
 			{ username: username, password: password }
 		);
 	}
@@ -101,7 +99,7 @@ class Auth {
             this.isAuthenticated = false;
             $store.commit('setIsAuthenticated', false);
             WebSocketManager.disconnect();
-            $store.clear();
+            await $store.clear();
 
             if (broadcast) {
                 // Broadcast logout to other tabs
