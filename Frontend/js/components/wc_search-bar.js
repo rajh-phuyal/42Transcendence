@@ -53,7 +53,6 @@ class SearchBar extends HTMLElement {
                 filter = "?onlyFriends=true"
             if (this.includeSelf)
                 filter += filter ? "&includeSelf=true" : "?includeSelf=true";
-            console.warn("FILTER: ", filter);
             call(endpoint[this.searchType] + filter, 'GET')
                 .then(response => {
                     if (this.lastInputValue !== value) return;
