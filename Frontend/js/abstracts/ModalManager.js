@@ -95,9 +95,9 @@ export default class ModalManager {
 
     /* To fix area-hidden error */
     changeFocus(event) {
-        const homeButton = $id("nav-home");
-        if (homeButton) {
-            homeButton.focus(); // Focus on the home button
+        const navHeading = $id("nav-title");
+        if (navHeading) {
+            navHeading.focus(); // Focus on the home button
         } else {
             console.warn(`ModalManager: Home button not found: function changeFocus`);
         }
