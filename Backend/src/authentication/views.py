@@ -60,13 +60,13 @@ class RegisterView(APIView):
         except Exception as e:
             raise exceptions.APIException(f"Error during user registration: {str(e)}")
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def put(self, request):
+    def put(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def delete(self, request):
+    def delete(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def patch(self, request, *args, **kwargs):
@@ -122,13 +122,13 @@ class InternalTokenObtainPairView(TokenObtainPairView):
             return custom_response
         return error_response(_("Login failed"))
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def put(self, request):
+    def put(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def delete(self, request):
+    def delete(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def patch(self, request, *args, **kwargs):
@@ -151,7 +151,6 @@ class InternalTokenObtainPairView(TokenObtainPairView):
         serializer.is_valid(raise_exception=True)
         return serializer.user
 
-
 class LogoutView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
@@ -159,6 +158,28 @@ class LogoutView(APIView):
     @barely_handle_exceptions
     def post(self, request):
         return unset_jwt_cookies(success_response(_("Successfully logged out")))
+
+    # Since we can't use BaseAuthenticatedView here, we need to handle the exceptions manually
+    def get(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def put(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def delete(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class TokenVerifyView(BaseAuthenticatedView):
     @barely_handle_exceptions
@@ -170,6 +191,28 @@ class TokenVerifyView(BaseAuthenticatedView):
             'isAuthenticated': True,
             'locale': request.user.language,
         })
+
+    # Since we can't use BaseAuthenticatedView here, we need to handle the exceptions manually
+    def post(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def put(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def delete(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def patch(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def head(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def options(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def trace(self, request, *args, **kwargs):
+        return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class InternalTokenRefreshView(TokenRefreshView):
     @barely_handle_exceptions
@@ -197,13 +240,13 @@ class InternalTokenRefreshView(TokenRefreshView):
 
         return response
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def put(self, request):
+    def put(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def delete(self, request):
+    def delete(self, request, *args, **kwargs):
         return error_response(_("Method not allowed"), status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def patch(self, request, *args, **kwargs):

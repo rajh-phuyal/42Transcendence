@@ -599,6 +599,10 @@ docker_fclean() {
 	rm -f ".transcendence_env_path"
 	print_header "${OR}" "Delete the link to the environment file...${GR}DONE${NC}"
 
+	print_header "${OR}" "Delete the .mo files..."
+	rm -rf Backend/src/locale/*/LC_MESSAGES/*.mo
+	print_header "${OR}" "Delete the .mo files...${GR}DONE${NC}"
+
 	print_header "${RD}" "Do u additionaly do a full clean aka 'docker system prune -a --volumes -f' (y/n): "
 	read -p "choose: " confirm
 	if [[ "$confirm" == "y" ]]; then

@@ -20,7 +20,7 @@ export const translate = (namespace, key, params = null) => {
     // Trying to load the translation dict from store
     let translation = $store.fromState('translations')?.[namespace]?.[key]?.[locale];
     if (!translation) {
-        console.warn(`Translation for ${namespace}.${key} not found for locale ${locale}`);
+        console.log(`Translation for ${namespace}.${key} not found for locale ${locale}`);
         return key;
     }
 

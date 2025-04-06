@@ -1,12 +1,9 @@
 import $store from '../store/store.js';
-import { $id } from './dollars.js';
 import $callToast from './callToast.js';
+import { $id } from './dollars.js';
 import { updateView } from '../views/tournament/methodsView.js';
-import { updateMembers } from '../views/tournament/methodsMembers.js';
 import { updateDataMember, updateDataGame } from '../views/tournament/methodsData.js';
 import { updatePodium, updateFinalsDiagram } from '../views/tournament/methodsRankFinals.js';
-
-
 import { processIncomingWsChatMessage, updateConversationBadge, createConversationCard, updateTypingState } from '../views/chat/methods.js';
 import { processIncomingReloadMsg } from '../views/profile/methods.js';
 import { audioPlayer } from '../abstracts/audio.js';
