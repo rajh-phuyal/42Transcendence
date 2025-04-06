@@ -97,7 +97,7 @@ export default class ModalManager {
     changeFocus(event) {
         const navHeading = $id("nav-title");
         if (navHeading) {
-            navHeading.focus(); // Focus on the home button
+            navHeading.focus(); // Focus on the title / heading
         } else {
             console.warn(`ModalManager: Home button not found: function changeFocus`);
         }
