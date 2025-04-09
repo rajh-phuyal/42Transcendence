@@ -70,9 +70,10 @@ class LoadConversationView(BaseAuthenticatedView):
                 raise BarelyAnException(_('Message not found'), status_code=status.HTTP_404_NOT_FOUND)
             queryset = queryset.filter(id__lt=msgid)
         queryset = queryset.order_by('-created_at')
-        last_seen_msg = queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
+        last_seen_msg = queryset.filter(seen_at__isnull=False).order_by('-seen_at').exclude(user=user).exclude(user=the_overloards).first()
         # Exclude the user from unseen messages because they can't miss their own messages.
-        unseen_messages = queryset.filter(seen_at__isnull=True).exclude(user=user)
+        # Also exclude the overlords messages
+        unseen_messages = queryset.filter(seen_at__isnull=True).exclude(user=user).exclude(user=the_overloards)
         messages = queryset[:NO_OF_MSG_TO_LOAD]
         if not messages:
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
