@@ -63,7 +63,7 @@ async function router(path, params = null, updateHistory = true) {
         return;
     setViewLoading(true);
 
-    // TODO: prevent router to be called multiple times -> only if the view is loaded
+    // FUTURE: prevent router to be called multiple times -> only if the view is loaded
     // ---
     // THE CODE BELOW DOES NOT WORK
     //if (isViewLoading()) {

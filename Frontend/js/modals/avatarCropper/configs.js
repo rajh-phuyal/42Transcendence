@@ -2,6 +2,7 @@ import Cropper from '../../libraries/cropperjs/cropper.esm.js'
 import $callToast from '../../abstracts/callToast.js';
 import $store from '../../store/store.js';
 import router from '../../navigation/router.js';
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -19,7 +20,7 @@ export default {
 
             const file = event.target.files[0]; // Get the selected file
             if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
-                $callToast("error", "Invalid file type. Please select a PNG or JPEG file.");
+                $callToast("error", translate("avatarCropper", "select-image"));
                 return;
             }
             if (file) {
@@ -74,7 +75,7 @@ export default {
         submitAvatar() {
             // check if any image as been selected
             if (!this.cropper || !this.cropper.getImageData().naturalWidth) {
-                $callToast("error", "You need to select an image"); /* TODO: translate */
+                $callToast("error", translate("avatarCropper", "select-image"));
                 return ;
             }
             // Extract the cropped portion of the selected image
@@ -83,7 +84,7 @@ export default {
                 height: 208
             });
             if (!croppedCanvas) {
-                $callToast("error", "failed to load image"); /* TODO: translate */
+                $callToast("error", translate("avatarCropper", "failed-to-load-img"));
                 return ;
             }
             // prepare image to send to backend

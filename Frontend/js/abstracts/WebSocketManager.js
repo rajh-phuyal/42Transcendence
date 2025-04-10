@@ -71,13 +71,6 @@ class WebSocketManager {
         this.socket.send(JSON.stringify(message));
     }
 
-    // The backend send:
-    // - chat (for receiving chat messages)
-    // - update
-    //      - "what": "conversation","all"
-    //      - "id": <conversationid>
-
-    // TODO: make sure all WS messages cases are checking if the view that is loaded is the correct one
     receiveMessage(message) {
         // console.log("BE -> FE:", message);
         const currentRoute = $store.fromState("currentRoute");
@@ -178,7 +171,7 @@ class WebSocketManager {
                 return ;
         }
 
-        console.warn("FE doen't know what to do with this type:", message);
+        console.log("FE doen't know what to do with this type:", message);
         $callToast("sucess", message.message);
     }
 
