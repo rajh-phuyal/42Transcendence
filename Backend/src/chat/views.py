@@ -59,7 +59,7 @@ class LoadConversationView(BaseAuthenticatedView):
         conversation =  Conversation.objects.get(id=conversation_id)
         validate_conversation_membership(user, conversation)
         # Determine blocking status
-        the_overloards = User.objects.get(id=USER_ID_OVERLORDS)
+        the_overlords = User.objects.get(id=USER_ID_OVERLORDS)
         other_user = get_other_user(user, conversation)
         is_blocking = user_is_blocking(user.id, other_user.id)
         is_blocked = user_is_blocked(user.id, other_user.id)
@@ -70,9 +70,10 @@ class LoadConversationView(BaseAuthenticatedView):
                 raise BarelyAnException(_('Message not found'), status_code=status.HTTP_404_NOT_FOUND)
             queryset = queryset.filter(id__lt=msgid)
         queryset = queryset.order_by('-created_at')
-        last_seen_msg = queryset.filter(seen_at__isnull=False).order_by('-seen_at').first()
+        last_seen_msg = queryset.filter(seen_at__isnull=False).order_by('-seen_at').exclude(user=user).exclude(user=the_overlords).first()
         # Exclude the user from unseen messages because they can't miss their own messages.
-        unseen_messages = queryset.filter(seen_at__isnull=True).exclude(user=user)
+        # Also exclude the overlords messages
+        unseen_messages = queryset.filter(seen_at__isnull=True).exclude(user=user).exclude(user=the_overlords)
         messages = queryset[:NO_OF_MSG_TO_LOAD]
         if not messages:
             return error_response(_('No more messages to load'), status_code=status.HTTP_400_BAD_REQUEST)
@@ -84,7 +85,7 @@ class LoadConversationView(BaseAuthenticatedView):
             message = messages[i]
             # If needed add separator message
             if unseen_messages.exists() and last_seen_msg and message.id == last_seen_msg.id:
-                    messages.insert(i, TempConversationMessage(overlords_instance=the_overloards,
+                    messages.insert(i, TempConversationMessage(overlords_instance=the_overlords,
                        conversation=conversation,
                        created_at=last_seen_msg.created_at,
                        content= _("We know that you haven't seen the messages below..."))
