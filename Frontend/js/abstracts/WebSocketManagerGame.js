@@ -24,8 +24,8 @@ class WebSocketManagerGame {
         // TODO: check if connected to correct game @xico this shouldn't be a big problem since we always pass the gameId as a parameter
         // This connect function is called when we route to a game. So when we leave the game view to another view, we first disconnect the socket
         // and then connect to the new game. So we technically don't need to check if we are connected to the correct game. I guess...
-        // we could check if this.gameId !== undefined. If it is not undefined first close the old one and then conntinue
-        // Not sure if this breaks anything. So up to you @xico. Implement the fix or remove this comment :D
+        // We could check if this.gameId !== undefined. If it is not undefined, first close the old connection and then continue.
+        // Not sure if this breaks anything. So up to you @xico. Implement the fix or remove this comment. :D
 
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
