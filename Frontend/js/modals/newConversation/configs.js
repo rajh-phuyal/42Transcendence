@@ -50,7 +50,7 @@ export default {
                     throw new Error("Attribute 'data-relationship' is missing or empty");
                 }
                 if(dataRel && dataRel?.isBlocked) {
-                    $callToast("error", translate("profile", "blocked")); // TODO: translate files
+                    $callToast("error", translate("profile", "blocked"));
                     return false;
                 }
             } catch (error) {
@@ -86,7 +86,7 @@ export default {
 
             this.enableButtonCallback();
 
-            // TODO: set the focus to the textarea
+            // FUTURE: set the focus to the textarea
             // Not sure how since this code snippet doesnt fit to our setup...
             // https://getbootstrap.com/docs/4.0/components/modal/#how-it-works
 

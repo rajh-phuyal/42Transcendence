@@ -174,7 +174,7 @@ export function clearAllGameDeadlines() {
 
 // Used to trigger the animation of the score change
 function triggerScoreAnimation(scoreContainer) {
-    // TODO: this is not working super well. The animation is not always triggered
+    // FUTURE: this is not working super well. The animation is not always triggered but it'snice to have and not critical
     scoreContainer.style.animation = 'none';
     scoreContainer.offsetHeight;
     // Apply the animation (again)
