@@ -78,14 +78,6 @@ async function router(path, params = null, updateHistory = true) {
     //
     // I also create this function isViewLoading but it doesnt work for the first load
 
-
-    if (path === "/logout") {
-        const success = await $auth.logout();
-        if (success)
-			await router("/auth");
-		return ;
-    }
-
     // Auth check
     const userAuthenticated = await $auth.isUserAuthenticated();
     if (path === "/barely-responsive") {
@@ -95,8 +87,16 @@ async function router(path, params = null, updateHistory = true) {
         path = '/home';
         params = null;
     } else if (!userAuthenticated && path !== '/auth') {
+        await $auth.logout(false);
         path = '/auth';
         params = null;
+    }
+
+    if (path === "/logout") {
+        await $auth.logout();
+        // Even if fail to logout try to route to auth
+        await router("/auth");
+        return ;
     }
 
     const viewContainer = $id('router-view');

@@ -31,6 +31,8 @@ class Auth {
             try {
                 response = await call('auth/verify/', 'GET', null, false);
                 this.isAuthenticated = response.isAuthenticated;
+                if (response && response.locale)
+                    $store.commit('setLocale', response?.locale);
             } catch (error) {
                 this.isAuthenticated = false;
                 this.clearAuthCache();
@@ -48,16 +50,11 @@ class Auth {
                     this.isAuthenticated = true;
                 }
             }
-
             $store.commit('setIsAuthenticated', this.isAuthenticated);
-            $store.commit('setLocale', response?.locale);
-
             if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
                 WebSocketManager.connect();
             }
-
             this._lastCheckTimestamp = now;
-
             return this.isAuthenticated;
         })();
     }
@@ -106,7 +103,7 @@ class Auth {
                 $syncer.broadcast("authentication-state", { logout: true });
             }
 
-            // Don't redirect here, let the functional route handle it
+            // Don't redirect here, let the router handle it
             return true;
         } catch (error) {
             console.error('Logout error:', error);
