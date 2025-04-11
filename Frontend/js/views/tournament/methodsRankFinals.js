@@ -1,4 +1,3 @@
-/* TODO: This file and it's logic is not revised yet */
 import router from "../../navigation/router.js";
 import { $id } from "../../abstracts/dollars.js";
 import { translate } from '../../locale/locale.js';

@@ -2,7 +2,7 @@
 A web-based Pong game with enhanced gameplay features
 
 ## Requirements / DEPENDENCIES
-## TODO: Maybe include in deploy.sh
+## FUTURE: Maybe include in deploy.sh
 
 ```bash
 sudo apt install -y uidmap

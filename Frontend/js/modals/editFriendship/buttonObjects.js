@@ -1,9 +1,7 @@
-import { translate } from '../../locale/locale.js';
-
 export const buttonObjects = {
     // users are friends 0
     "friend": {
-        text: translate("editFriendship", "confirmRemoveFriend"),
+        textKey: "confirmRemoveFriend",
         secondaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -12,7 +10,7 @@ export const buttonObjects = {
     },
     // users are not friends 1
     "noFriend": {
-        text: translate("editFriendship", "sendRequest"),
+        textKey: "sendRequest",
         secondaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -21,7 +19,7 @@ export const buttonObjects = {
     },
     // friend request received 2
     "requestReceived": {
-        text: translate("editFriendship", "acceptRequest"),
+        textKey: "acceptRequest",
         secondaryButton: true,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -30,7 +28,7 @@ export const buttonObjects = {
     },
     // friend request sent 3
     "requestSent": {
-        text: translate("editFriendship", "cancelRequest"),
+        textKey: "cancelRequest",
         secondaryButton: false,
         leftButtonMethod: undefined,
         leftButtonMethod: undefined,
@@ -39,14 +37,14 @@ export const buttonObjects = {
     },
     // block user 4
     "unblocked": {
-        text: translate("editFriendship", "blockUser"),
+        textKey: "blockUser",
         leftButtonMethod: undefined,
         method: "POST",
         Url: "user/relationship/block/",
     },
     // unblock user 5
     "blocked": {
-        text: translate("editFriendship", "unblockUser"),
+        text: "unblockUser",
         leftButtonMethod: undefined,
         method: "DELETE",
         Url: "user/relationship/unblock/",
