@@ -5,7 +5,6 @@ import { $id, $queryAll } from '../abstracts/dollars.js';
 import { setNavVisibility } from '../abstracts/nav.js';
 import $store from '../store/store.js';
 import $auth from '../auth/authentication.js';
-import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 import dollars from '../abstracts/dollars.js';
@@ -20,7 +19,6 @@ const simpleObjectToBind = () => {
         router: router,
         $store: $store,
         $auth: $auth,
-        $syncer: $syncer,
         call: call,
         webSocketManager: WebSocketManager,
         translate: translate,
@@ -116,9 +114,9 @@ async function router(path, params = null, updateHistory = true) {
         $store.commit('setCurrentRoute', route.view);
 
     // Show hide the nav bar
-    if (route.view == "auth" || route.view == "barely-responsive") {
+    if (route.view == "auth" || route.view == "barely-responsive")
         setNavVisibility(false);
-    } else
+    else
         setNavVisibility(true);
 
     EventListenerManager.unlinkEventListenersView(viewContainer.dataset.view);

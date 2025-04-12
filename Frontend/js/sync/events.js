@@ -1,4 +1,7 @@
-import router from "../navigation/router.js";
+/* This is nice for syncing tabs. Since its not fully working and we don't want
+to fail eval we just comment it out and will fix it in a second life ;) */
+
+/* import router from "../navigation/router.js";
 import { $id } from "../abstracts/dollars.js";
 import $store from "../store/store.js";
 import $nav from "../abstracts/nav.js";
@@ -29,4 +32,4 @@ export default {
             }
         }
     }
-}
+} */

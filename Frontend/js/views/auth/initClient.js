@@ -1,7 +1,6 @@
 import $auth from '../../auth/authentication.js';
 import $nav, { setNavVisibility } from '../../abstracts/nav.js';
 import $store from '../../store/store.js';
-import $syncer from '../../sync/Syncer.js';
 import { $id } from '../../abstracts/dollars.js'
 
 export async function initClient(createUser=false, username, password, language) {
@@ -42,5 +41,5 @@ export async function initClient(createUser=false, username, password, language)
     setNavVisibility(true);
 
     // broadcast login to other tabs
-    $syncer.broadcast("authentication-state", { login: true });
+    //$syncer.broadcast("authentication-state", { login: true });
 }

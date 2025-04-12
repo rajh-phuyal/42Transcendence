@@ -1,4 +1,7 @@
-import events from "./events.js";
+/* This is nice for syncing tabs. Since its not fully working and we don't want
+to fail eval we just comment it out and will fix it in a second life ;) */
+
+/* import events from "./events.js";
 
 class Syncer {
     constructor() {
@@ -27,3 +30,4 @@ class Syncer {
 
 const $syncer = new Syncer();
 export default $syncer;
+ */

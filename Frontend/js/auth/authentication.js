@@ -1,5 +1,4 @@
 import $store from '../store/store.js';
-import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
@@ -98,10 +97,10 @@ class Auth {
             WebSocketManager.disconnect();
             await $store.clear();
 
-            if (broadcast) {
-                // Broadcast logout to other tabs
-                $syncer.broadcast("authentication-state", { logout: true });
-            }
+            //if (broadcast) {
+            //    // Broadcast logout to other tabs
+            //    //$syncer.broadcast("authentication-state", { logout: true });
+            //}
 
             // Don't redirect here, let the router handle it
             return true;
