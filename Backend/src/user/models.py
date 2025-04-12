@@ -29,7 +29,7 @@ class User(AbstractUser):
         if status:
             cache.set(f'{PRE_DATA_USER_ONLINE}{self.id}', status, timeout=3000)  # 3000 seconds = 50 minutes
             cache.set(f'{PRE_CHANNEL_USER}{self.id}', channel_name, timeout=3000)
-            # TODO:should be matched with the JWT token expiration time
+            # FUTURE: should be matched with the JWT token expiration time
             # And refresh if the client is still active or is calling an enpoint
         else:
             cache.delete(f'{PRE_DATA_USER_ONLINE}{self.id}')

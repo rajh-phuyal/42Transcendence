@@ -1,5 +1,4 @@
 import $store from '../store/store.js';
-import $syncer from '../sync/Syncer.js';
 import call from '../abstracts/call.js';
 import WebSocketManager from '../abstracts/WebSocketManager.js';
 
@@ -25,37 +24,45 @@ class Auth {
 
         // Create new auth check promise
         return await (async () => {
+            this.isAuthenticated = false;
+            let response = null;
+
             try {
-                const response = await call('auth/verify/', 'GET', null, false);
-                if (!response.isAuthenticated) {
-                    return false;
-                }
+                response = await call('auth/verify/', 'GET', null, false);
                 this.isAuthenticated = response.isAuthenticated;
-                $store.commit('setIsAuthenticated', this.isAuthenticated);
-                $store.commit('setLocale', response.locale);
-                if (this.isAuthenticated && !$store.fromState('webSocketIsAlive'))
-                    WebSocketManager.connect();
-                this._lastCheckTimestamp = now;
+                if (response && response.locale)
+                    $store.commit('setLocale', response?.locale);
             } catch (error) {
-                console.log("Auth check failed: User not authenticated");
                 this.isAuthenticated = false;
                 this.clearAuthCache();
+            } finally {
+                if (!this.isAuthenticated) {
+                    try {
+                        if (!await this.refreshToken()) {
+                            this._lastCheckTimestamp = now;
+                            return false;
+                        }
+                    } catch (error) {
+                        this._lastCheckTimestamp = now;
+                        return false;
+                    }
+                    this.isAuthenticated = true;
+                }
             }
+            $store.commit('setIsAuthenticated', this.isAuthenticated);
+            if (this.isAuthenticated && !$store.fromState('webSocketIsAlive')) {
+                WebSocketManager.connect();
+            }
+            this._lastCheckTimestamp = now;
             return this.isAuthenticated;
         })();
     }
 
     async refreshToken() {
         try {
-            const response = await call('auth/token/refresh/', 'POST');
-
-            if (!response.ok) {
-                throw new Error('Token refresh failed');
-            }
-
-            return true;
+            const response = await call('auth/token/refresh/', 'POST', null, false);
+            return response.statusCode === 200;
         } catch (error) {
-            console.error('Error refreshing token:', error);
             return false;
         }
     }
@@ -90,12 +97,12 @@ class Auth {
             WebSocketManager.disconnect();
             await $store.clear();
 
-            if (broadcast) {
-                // Broadcast logout to other tabs
-                $syncer.broadcast("authentication-state", { logout: true });
-            }
+            //if (broadcast) {
+            //    // Broadcast logout to other tabs
+            //    //$syncer.broadcast("authentication-state", { logout: true });
+            //}
 
-            // Don't redirect here, let the functional route handle it
+            // Don't redirect here, let the router handle it
             return true;
         } catch (error) {
             console.error('Logout error:', error);

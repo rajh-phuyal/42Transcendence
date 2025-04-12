@@ -151,6 +151,8 @@ export default {
             if (this.mode === "login") {
                 // Login
                 await initClient(false, inputUsername.value, inputPswd1.value, this.language);
+                // broadcast login to other tabs
+                // $syncer.broadcast("authentication-state", { login: true });
                 router("/home");
             } else if (this.mode === "register") {
                 // check if passwords match
