@@ -1,5 +1,5 @@
 #!/bin/bash
-# TODO:
+# FUTURE:
 # This script is working but needs to be imporved a little bit with those things:
 # - sort out all the volumes and mounts we use
 #
@@ -61,17 +61,18 @@ ALLOWED_COMMANDS_STR=$(IFS=","; echo "${ALLOWED_COMMANDS[*]}")
 #	| `test`  | Starts as script to test the backend api                                                                               |
 #
 # CONTAINER:
-ALLOWED_CONTAINERS=("fe" "be" "db" "pa" "redis")
+ALLOWED_CONTAINERS=("fe" "be" "db" "pa" "mb")
 #   The container is the service that should be affected by the command.
 #   If no container is specified ALL containers will be affected.
 #   The allowed containers are:
 #
-#	| Container  | Service  | Volumes          | Description                                  |
-#	|------------|----------|------------------|----------------------------------------------|
-#	| `fe`       | frontend | media-volume     | The frontend service (nginx, html, css, Js)  |
-#	| `be`       | backend  | media-volume     | The backend service (django)                 |
-#	| `db`       | database | db-volume        | The database service (postgres)              |
-#	| `pa`       | pgadmin  | pa-volume        | The pgadmin service (pgadmin)                |
+#	| Container  | Service  | Volumes                    | Description                                  |
+#	|------------|----------|----------------------------|----------------------------------------------|
+#	| `fe`       | frontend | media-volume               | The frontend service (nginx, html, css, Js)  |
+#	| `be`       | backend  | media-volume               | The backend service (django)                 |
+#	| `db`       | database | db-volume                  | The database service (postgres)              |
+#	| `pa`       | pgadmin  | pa-volume                  | The pgadmin service (pgadmin)                |
+#	| `mb`       | redis    | -                          | The redis service                            |
 #
 # DOCKER VOLUMES
 #   The Script also creates the docker volumes!
@@ -344,9 +345,6 @@ parse_args()
     # Export the DOMAIN_NAMES
     export DOMAIN_NAMES
     echo -e "DOMAIN_NAMES:\t$DOMAIN_NAMES"
-	# Exporting the user and the group so that docker compse can use this
-	#export UID=$(id -u)
-	#export GID=$(id -g)
 	print_header "${BL}" "Parsing arguments...${GR}DONE${NC}"
 }
 
@@ -504,6 +502,15 @@ check_path_and_permission()
 			"couldn't create folder: $path_formated!" \
 			false
 	fi
+
+	# if [[ "$1" == *"$DB_VOLUME_NAME"* ]]; then
+	# 	perform_task_with_spinner \
+	# 	" ...setting permissions for PostgreSQL" \
+	# 	'chmod 777 $path' \
+	# 	"permissions set for $path" \
+	# 	"couldn't set permissions for: $path_formated!" \
+	# 	false
+	# fi
 }
 
 # Function to check if the folders for the volumes are there

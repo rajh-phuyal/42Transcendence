@@ -1,11 +1,10 @@
 # This is the configuration for all docker services we use to stay:
 # BARELY ALIVE
-
 services:
+  # postgres database
   db:
     container_name: db
     image: db:latest
-    #user: "${UID}:${GID}"
     build:
       context: ./Database/Postgres
       dockerfile: postgres.dockerfile
@@ -13,8 +12,6 @@ services:
       DB_NAME : $DB_NAME
       POSTGRES_USER : $DB_USER      #POSTGRES_USER is the default var name for the user and can not be changed
       POSTGRES_PASSWORD : $DB_PSWD  #POSTGRES_PASSWORD is the default var name for the password and can not be changed
-    ports:
-      - "${DB_PORT}:5432"
     volumes:
       - db-volume:/var/lib/postgresql/data
     restart: unless-stopped
@@ -24,10 +21,10 @@ services:
       timeout: 5s
       retries: 5
 
+  # pgadmin
   pa:
     container_name: pa
     image: pa:latest
-    #user: "${UID}:${GID}"
     build:
       context: ./Database/PgAdmin
       dockerfile: pgadmin.dockerfile
@@ -37,14 +34,12 @@ services:
         PA_DB_USER : $PA_DB_USER
         PA_DB_PSWD : $PA_DB_PSWD
     depends_on:
-      fe:
+      db:
         condition: service_healthy
     environment:
       PGADMIN_DEFAULT_EMAIL : $PA_MAIL
       PGADMIN_DEFAULT_PASSWORD : $PA_PSWD
       DOMAIN_NAMES : $DOMAIN_NAMES
-    ports:
-      - "1234:80"
     volumes:
       - pa-volume:/var/lib/pgadmin
     restart: unless-stopped
@@ -55,15 +50,17 @@ services:
       retries: 20
       start_period: 30s
 
+  # django backend
   be:
     container_name: be
     image: be:latest
-    #user: "${UID}:${GID}"
     build:
       context: ./Backend
       dockerfile: django.dockerfile
     depends_on:
-      redis:
+      mb:
+        condition: service_healthy
+      db:
         condition: service_healthy
     environment:
       LOCAL_DEPLOY            : $LOCAL_DEPLOY
@@ -77,10 +74,7 @@ services:
       DJANGO_ALLOWED_HOSTS    : $DOMAIN_NAMES
       MEDIA_VOLUME_NAME       : $MEDIA_VOLUME_NAME
       REDIS_PORT              : $REDIS_PORT
-    ports:
-      - "8000:8000" #need to be changed. remove it after
     volumes:
-      - ./Backend/src:/app
       - media-volume:/$MEDIA_VOLUME_NAME
     restart: unless-stopped
     healthcheck:
@@ -90,40 +84,27 @@ services:
       retries: 3
       start_period: 10s
 
+  # nginx frontend
   fe:
     container_name: fe
     image: fe:latest
-    #user: "${UID}:${GID}"
     build:
       context: ./Frontend
       dockerfile: nginx.dockerfile
     depends_on:
       be:
         condition: service_healthy
+      pa:
+        condition: service_healthy
     environment:
       LOCAL_DEPLOY : $LOCAL_DEPLOY
       DOMAIN_NAMES : $DOMAIN_NAMES
     ports:
-      - "80:80"   #For redirecting to https
-      - "443:443" #Maybe need to change later 443
+      - "80:80"   # For redirecting to https
+      - "443:443" # For https
     volumes:
-      - media-volume:/media
-      # TODO
-      # ----
-      # All those mount points are usefull for development sincee we dont
-      # have to restart the container if we do small changes.
-      # For delivery we should have entrypoint-script which will be called
-      # by the dockerfile to copy all those files (if not already there) to
-      # the fe-volume.
-      #
-      # To make the ssl more secure we do not mount the certificate at all
-      # we copy and conif it as a first step in the dockerfile
-      - ./Frontend/html:/usr/share/nginx/html
-      - ./Frontend/css:/usr/share/nginx/css
-      - ./Frontend/js:/usr/share/nginx/js
-      - ./Frontend/assets:/usr/share/nginx/assets
+      - media-volume:/media:ro  # Mount as read-only
     restart: unless-stopped
-    # TODO: revise it the healthceck is good enough...
     healthcheck:
       test: ["CMD", "sh", "-c", "/tools/healthcheck.sh"]
       interval: 30s
@@ -131,41 +112,41 @@ services:
       retries: 3
       start_period: 10s
 
-  redis:
-    image: redis:7.0
-    container_name: redis
+  # Message Broker redis
+  mb:
+    container_name: mb
+    image: mb:latest
+    build:
+      context: ./MessageBroker
+      dockerfile: redis.dockerfile
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
-    ports:
-      - "${REDIS_PORT}:6379"
 
 networks:
   default:
     name: $DOCKER_NETWORK
     driver: bridge
 
-# TODO
-# HERE WE CONFIGURE THE VOLUME BEFORE DELIVERING
 volumes:
   db-volume:
     name: db-volume
     driver_opts:
       type: none
-      device: ${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
+      device: ${VOLUME_ROOT_PATH}${DB_VOLUME_NAME}/
       o: bind
   pa-volume:
     name: pa-volume
     driver_opts:
       type: none
-      device: ${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
+      device: ${VOLUME_ROOT_PATH}${PA_VOLUME_NAME}/
       o: bind
   media-volume:
     name: media-volume
     driver_opts:
       type: none
-      device: ${VOLUME_ROOT_PATH}${MEDIA_VOLUME_NAME}/ #This will be auto updated via deploy.sh!
+      device: ${VOLUME_ROOT_PATH}${MEDIA_VOLUME_NAME}/
       o: bind

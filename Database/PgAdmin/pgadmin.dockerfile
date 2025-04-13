@@ -7,7 +7,7 @@ USER root
 
 # curl for the healthcheck
 # envsubst (gettext package) for env var expanision in config files
-RUN apk --no-cache add curl gettext
+RUN apk --no-cache add curl gettext postgresql-client
 
 # Define build arguments will be set in the docker-compose file
 ARG PA_DB_NAME
