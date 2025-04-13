@@ -10,6 +10,19 @@ RUN mkdir -p  /media/avatars /tmp/nginx/ /tools/
 # Copy the media files
 COPY ./assets/avatars/* /media/avatars/
 
+# Copy the html files
+COPY ./html/* /usr/share/nginx/html/
+
+# Copy the css files
+COPY ./css/* /usr/share/nginx/css/
+
+# Copy the js files
+COPY ./js/* /usr/share/nginx/js/
+
+# Copy the assets files
+COPY ./assets/ /usr/share/nginx/assets/
+
+
 # Copy configuration files
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 

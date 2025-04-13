@@ -23,7 +23,7 @@ COPY ./init-db /docker-entrypoint-initdb.d/
 
 # Make a directory for the tools
 RUN mkdir -p /tools
-RUN chown -R $UID:$GID /tools
+RUN chown -R postgres:postgres /tools
 
 # Copy the custom entrypoint script and make it executable
 COPY ./tools/entrypoint.sh /tools/entrypoint.sh
@@ -34,8 +34,6 @@ RUN chmod +x /tools/root_accounts.sh
 # Copy the dummy data script and make it executable
 COPY ./tools/create_dummy.sh /tools/create_dummy.sh
 RUN chmod +x /tools/create_dummy.sh
-# Change the owner of the tools directory
-RUN chown -R $UID:$GID /tools
 # Expose the default PostgreSQL port
 EXPOSE 5432
 
