@@ -31,7 +31,7 @@ AUTH_USER_MODEL = 'user.User'
 
 # DEBUG MODE
 local_deploy = os.getenv('LOCAL_DEPLOY', 'True')
-DEBUG = 'false'
+DEBUG = False
 # DEBUG = local_deploy.lower() == 'true'
 # FUTURE: change before delivery to: DEBUG = False
 print(f"DEBUG is set to: {DEBUG}")
