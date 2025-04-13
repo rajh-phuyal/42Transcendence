@@ -31,8 +31,9 @@ AUTH_USER_MODEL = 'user.User'
 
 # DEBUG MODE
 local_deploy = os.getenv('LOCAL_DEPLOY', 'True')
-DEBUG = local_deploy.lower() == 'true'
-# TODO: change before delivery to: DEBUG = False
+DEBUG = 'false'
+# DEBUG = local_deploy.lower() == 'true'
+# FUTURE: change before delivery to: DEBUG = False
 print(f"DEBUG is set to: {DEBUG}")
 
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
@@ -82,7 +83,7 @@ CORS_ALLOWED_ORIGINS = [f'https://{domain}' for domain in ALLOWED_HOSTS]
 ROOT_URLCONF = 'app.urls'
 
 # For Celery | periodically check for tasks e.g. tournament deadlines
-CELERY_BROKER_URL = 'redis://redis:6379/0'  # Use Redis as the broker
+CELERY_BROKER_URL = 'redis://mb:6379/0'  # Use Redis as the broker
 CELERY_RESULT_BACKEND = 'django-db'  # Store task results in the database
 CELERY_ACCEPT_CONTENT = ['json']  # Only accept JSON-serialized content
 CELERY_TASK_SERIALIZER = 'json'  # Serialize tasks in JSON format
@@ -114,7 +115,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('redis', os.environ.get('REDIS_PORT'))],  # the name of our Redis container in Docker
+            'hosts': [('mb', os.environ.get('REDIS_PORT'))],  # the name of our Redis container in Docker
             "capacity": 5000,   # For each layer we allow 5000 messages to be stored, wich is a lot but neccessary for high framerate gamesX
             "expiry":   5,      # To not stack to many messages in redis: if a consumer doesn't take the message in 5 seconds, it will be removed
         },

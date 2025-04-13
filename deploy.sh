@@ -1,5 +1,5 @@
 #!/bin/bash
-# TODO:
+# FUTURE:
 # This script is working but needs to be imporved a little bit with those things:
 # - sort out all the volumes and mounts we use
 #
@@ -503,14 +503,14 @@ check_path_and_permission()
 			false
 	fi
 
-	if [[ "$1" == *"$DB_VOLUME_NAME"* ]]; then
-		perform_task_with_spinner \
-		" ...setting permissions for PostgreSQL" \
-		'chmod 777 $path' \
-		"permissions set for $path" \
-		"couldn't set permissions for: $path_formated!" \
-		false
-	fi
+	# if [[ "$1" == *"$DB_VOLUME_NAME"* ]]; then
+	# 	perform_task_with_spinner \
+	# 	" ...setting permissions for PostgreSQL" \
+	# 	'chmod 777 $path' \
+	# 	"permissions set for $path" \
+	# 	"couldn't set permissions for: $path_formated!" \
+	# 	false
+	# fi
 }
 
 # Function to check if the folders for the volumes are there

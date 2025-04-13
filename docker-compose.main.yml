@@ -34,7 +34,7 @@ services:
         PA_DB_USER : $PA_DB_USER
         PA_DB_PSWD : $PA_DB_PSWD
     depends_on:
-      fe:
+      db:
         condition: service_healthy
     environment:
       PGADMIN_DEFAULT_EMAIL : $PA_MAIL
@@ -59,6 +59,8 @@ services:
       dockerfile: django.dockerfile
     depends_on:
       mb:
+        condition: service_healthy
+      db:
         condition: service_healthy
     environment:
       LOCAL_DEPLOY            : $LOCAL_DEPLOY
@@ -91,6 +93,8 @@ services:
       dockerfile: nginx.dockerfile
     depends_on:
       be:
+        condition: service_healthy
+      pa:
         condition: service_healthy
     environment:
       LOCAL_DEPLOY : $LOCAL_DEPLOY

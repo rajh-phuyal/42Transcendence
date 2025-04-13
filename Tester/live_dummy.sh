@@ -53,8 +53,7 @@ reset_sequence()
 {
   local table_name=$1
   local sequence_name="${table_name}_id_seq"
-  docker exec -it db psql -U admin -d barelyalivedb -c "SELECT setval('$sequence_name', COALESCE((SELECT MAX(id) FROM $table_name), 1) + 1, false);" > /dev/null \
-  	|| err_msg "Failed to reset sequence for table '$table_name'."
+  docker exec -it db psql -U admin -d barelyalivedb -c "SELECT setval('$sequence_name', COALESCE((SELECT MAX(id) FROM $table_name), 1) + 1, false);"
   #printf "\e[32mSequence for table '%s' reset to match the highest current ID...\e[0m\n" "$table_name"
 }
 
