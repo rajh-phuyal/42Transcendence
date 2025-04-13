@@ -75,7 +75,7 @@ export const showGame = (show) => {
         gameImage.style.display = "block";
         animateImage("game-view-map-image", "fadein", "3s");
     } else {
-        // TODO: this doesn't work yet
+        // TODO: this doesn't work yet I don't remember what I meant here. @xico maybe u can research what this function does and if this comment is still up to date?
         gameViewImageContainer.style.backgroundImage = `${window.location.origin}/assets/images/game/lobby.png`;
         gameImage.style.display = "none";
         gameField.style.display = "none";

@@ -1,13 +1,8 @@
 import $store from '../store/store.js';
-import { $id, $on } from './dollars.js';
 import $callToast from './callToast.js';
 import { endGameLoop } from '../views/game/loop.js';
-import router from '../navigation/router.js';
 import { updateReadyStatefromWS, updateGameObjects } from '../views/game/methods.js';
 import { gameObject } from '../views/game/objects.js';
-
-
-
 const { hostname } = window.location;
 
 class WebSocketManagerGame {
@@ -26,7 +21,11 @@ class WebSocketManagerGame {
 
         if (this.socket && this.socket.readyState === WebSocket.OPEN)
             return;
-        // TODO: check if connected to correct game
+        // TODO: check if connected to correct game @xico this shouldn't be a big problem since we always pass the gameId as a parameter
+        // This connect function is called when we route to a game. So when we leave the game view to another view, we first disconnect the socket
+        // and then connect to the new game. So we technically don't need to check if we are connected to the correct game. I guess...
+        // We could check if this.gameId !== undefined. If it is not undefined, first close the old connection and then continue.
+        // Not sure if this breaks anything. So up to you @xico. Implement the fix or remove this comment. :D
 
         // Don't try to connect if not authenticated
         if (!$store.fromState('isAuthenticated')) {
@@ -95,12 +94,6 @@ class WebSocketManagerGame {
         } else {
             // console.log("GAME WebSocket is not connected.");
         }
-    }
-
-    // TODO: do we use this?
-    reconnect() {
-        this.disconnect();
-        this.connect();
     }
 }
 

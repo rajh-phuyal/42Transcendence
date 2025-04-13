@@ -2,6 +2,7 @@ import router from '../../navigation/router.js';
 import call from '../../abstracts/call.js';
 import $callToast from '../../abstracts/callToast.js';
 import { buttonObjects } from "./buttonObjects.js"
+import { translate } from '../../locale/locale.js';
 
 export default {
     attributes: {
@@ -25,7 +26,7 @@ export default {
 
             // friendship portion of the modal
             let element = this.domManip.$id("modal-edit-friendship-friendship-text")
-            element.textContent = buttonObjects[this.relationship.state].text;
+            element.textContent = translate("editFriendship", buttonObjects[this.relationship.state].textKey);
             if (this.relationship.state == "noFriend" && (this.relationship.isBlocked || this.relationship.isBlocking))
                 {
                     element.style.display = "none";
@@ -41,7 +42,7 @@ export default {
 
             else {
                 element = this.domManip.$id("modal-edit-friendship-block-text")
-                element.textContent = buttonObjects[blockIndex].text;
+                element.textContent = translate("editFriendship", buttonObjects[blockIndex].textKey);
             }
         },
 
@@ -110,9 +111,6 @@ export default {
                 console.error("editFriendshipModal: Couldn't find or parse the relationship attribute in the view");
                 return false;
             }
-
-            // Set modal title
-            this.domManip.$id("modal-edit-friendship-title").textContent = "Edit Friendship"; //Todo: translate
 
             // Set the modal content according to the relationship
             this.initModal()

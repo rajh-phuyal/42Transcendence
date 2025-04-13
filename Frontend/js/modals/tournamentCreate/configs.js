@@ -29,7 +29,6 @@ export default {
                 this.domManip.$removeClass(privImgPrivate, enabled);
                 this.domManip.$addClass(privImgPrivate, disabled);
                 // Hide the select opponent area
-                console.warn(this.domManip.$id("modal-tournament-opponents-header"));
                 this.domManip.$id("modal-tournament-opponents-header").style.display = "none";
                 this.domManip.$id("modal-tournament-opponents-content").style.display = "none";
             } else {

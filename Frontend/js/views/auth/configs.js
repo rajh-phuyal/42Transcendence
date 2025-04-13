@@ -145,12 +145,15 @@ export default {
             this.mode = "main";
             this.updateView();
         },
-        callbackSubmit(event) {
+        async callbackSubmit(event) {
             const inputUsername = this.domManip.$id("auth-username");
             const inputPswd1    = this.domManip.$id("auth-pswd1");
             if (this.mode === "login") {
                 // Login
-                initClient(false, inputUsername.value, inputPswd1.value, this.language);
+                await initClient(false, inputUsername.value, inputPswd1.value, this.language);
+                // broadcast login to other tabs
+                // $syncer.broadcast("authentication-state", { login: true });
+                router("/home");
             } else if (this.mode === "register") {
                 // check if passwords match
                 const inputPswd1    = this.domManip.$id("auth-pswd1");
@@ -160,7 +163,8 @@ export default {
                     return;
                 }
                 // Register
-                initClient(true, inputUsername.value, inputPswd1.value, this.language);
+                await initClient(true, inputUsername.value, inputPswd1.value, this.language);
+                router("/profile", { id: $store.fromState("user").id });
             }
         },
         /* INPUT CALLBACKS */

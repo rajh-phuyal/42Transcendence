@@ -178,7 +178,7 @@ def end_game(game, quit_user_id=None):
         if quit_user_id:
             if quit_user_id == USER_ID_OVERLORDS:
                 # If the the overlords decided that the game is - choose a winner
-                # Random select a user to loose:TODO: implement a better logic
+                # Random select a user to loose:FUTURE: implement a better logic
                 if random.random() < 0.5:
                     game_member_1.result = GameMember.GameResult.LOST
                     game_member_2.result = GameMember.GameResult.WON

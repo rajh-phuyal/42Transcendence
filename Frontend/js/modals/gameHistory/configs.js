@@ -107,7 +107,7 @@ export default {
                     throw new Error("Attribute 'data-relationship' is missing or empty");
                 }
                 if(dataRel && dataRel?.isBlocked) {
-                    $callToast("error", translate("profile", "blocked")); // TODO: translate files
+                    $callToast("error", translate("profile", "blocked"));
                     return false;
                 }
             } catch (error) {

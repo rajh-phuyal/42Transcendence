@@ -30,5 +30,21 @@
         "de-DE": "Zurück",
         "uk-UA": "Назад",
         "ne-NP": "फिर्ता"
+    },
+    "select-image": {
+        "en-US": "You need to select a valid image file",
+        "pt-PT": "Você precisa selecionar um arquivo de imagem válido",
+        "pt-BR": "Você precisa selecionar um arquivo de imagem válido",
+        "de-DE": "Sie müssen eine gültige Bilddatei auswählen",
+        "uk-UA": "Вам потрібно вибрати дійсний файл зображення",
+        "ne-NP": "तपाईंले मान्य छवि फाइल चयन गर्न आवश्यक छ"
+    },
+    "failed-to-load-img": {
+        "en-US": "Failed to load the image",
+        "pt-PT": "Falha ao carregar a imagem",
+        "pt-BR": "Falha ao carregar a imagem",
+        "de-DE": "Bild konnte nicht geladen werden",
+        "uk-UA": "Не вдалося завантажити зображення",
+        "ne-NP": "तस्बिर लोड गर्न असफल भयो"
     }
 }

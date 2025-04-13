@@ -11,9 +11,6 @@ async function call(url, method, data = null, showToast = true) {
         method: method,
         headers: headers,
         credentials: 'include',
-/*        ...(data && method !== 'GET' && method !== 'DELETE') ? {
-            body: JSON.stringify(data),
-        } : {}, */
     };
 
     // Add body only when appropriate

@@ -35,7 +35,8 @@ export default {
             else
                 this.domManip.$id("404-title").innerText = translate("404", "title");
             EventListenerManager.linkEventListener("home-button", "404", "click", this.buttonCallback);
-            EventListenerManager.linkEventListener("barely-a-body", "404", "keydown", this.keydownCallback);
+            // FUTURE: This is a nice idea but atm this listener is not removed so the esc still works after leaving the view - if time need to reserach why
+            // EventListenerManager.linkEventListener("barely-a-body", "404", "keydown", this.keydownCallback);
         },
     }
 }

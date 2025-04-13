@@ -8,13 +8,11 @@ const modalFolders = [
     ["modal-friends-list", "friendsList"],
     ["modal-create-game", "createGame"],
     ["modal-game-history", "gameHistory"],
-    ["modal-template", "template"],
     ["modal-tournament-main", "tournamentMain"],
     ["modal-tournament-create", "tournamentCreate"],
     ["modal-tournament-join", "tournamentJoin"],
     ["modal-tournament-history", "tournamentHistory"],
     ["modal-tournament-local-join", "tournamentLocalJoin"],
-    ["modal-template-image", "templateImage"],
     ["modal-avatar-cropper", "avatarCropper"],
 ];
 export default class ModalManager {
@@ -95,12 +93,9 @@ export default class ModalManager {
 
     /* To fix area-hidden error */
     changeFocus(event) {
-        const homeButton = $id("nav-home");
-        if (homeButton) {
-            homeButton.focus(); // Focus on the home button
-        } else {
-            console.warn(`ModalManager: Home button not found: function changeFocus`);
-        }
+        // Blur the currently focused element, if any
+        if (document.activeElement)
+            document.activeElement.blur();
     }
 
     /* FUNCTIONS FOR THE ROUTER
@@ -235,7 +230,7 @@ export default class ModalManager {
         const modalHooks = await ModalManager.loadModalHooks(modalId);
         if (!modalHooks) return; // Error msg will be already displayed in the loadModalHooks function
         if (modalHooks.hooks.allowedToOpen) {
-            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))())  // TODO: check if this function is not an overkill
+            if (! await modalHooks.hooks.allowedToOpen.bind(objectToBind(modalHooks))())  // FUTURE: check if this function is not an overkill
                 return;
         }
         ModalManager.modalInstances[modalId].instance.show();
